@@ -1,0 +1,15 @@
+{
+  "case": "API-B01",
+  "attempt": "",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "command": [
+    "pnpm",
+    "--filter",
+    "autobyteus-server-ts",
+    "build"
+  ],
+  "started": "2026-09-30T12:21:48.254357+00:00",
+  "finished": "2026-09-30T12:22:02.373812+00:00",
+  "exit_code": 0,
+  "log": "API-B01.log"
+}

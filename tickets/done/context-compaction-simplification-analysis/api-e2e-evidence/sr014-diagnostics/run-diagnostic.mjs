@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createSanitizedTestEnvironment,serverRoot} from '../../../../../test-support/live-e2e/test-runtime-bootstrap.mjs';
+import {runCapturedLiveE2eProcess} from '../../../../../test-support/live-e2e/live-e2e-evidence-scanner.mjs';
+const here=path.dirname(fileURLToPath(import.meta.url));const server=JSON.parse(fs.readFileSync(path.join(here,'owned-server.json'),'utf8'));
+const mode=process.argv.includes('--full')?'full':'direct';const target=mode==='full'?'tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts':null;
+const args=['exec','vitest','run',...(target?[target]:[]),'--config',`../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-${mode}.config.ts`,'--no-watch'];
+const env={RUN_REAL_E2E:'1',AUTOBYTEUS_TEST_RUNTIME_ROOT:server.runtimeRoot,AUTOBYTEUS_TEST_SERVER_URL:server.serverUrl,AUTOBYTEUS_TEST_DATABASE_URL:server.database.databaseUrl,LMSTUDIO_HOSTS:'http://localhost:1234',AUTOBYTEUS_LIVE_E2E_SCENARIOS:'lmstudio.qwen36.compaction-agent-flow'};
+fs.writeFileSync(path.join(here,`${mode}-execution.json`),JSON.stringify({started:new Date().toISOString(),command:['pnpm',...args],cwd:serverRoot,environment:env},null,2),{flag:'wx'});
+const result=await runCapturedLiveE2eProcess({command:'pnpm',args,cwd:serverRoot,env:createSanitizedTestEnvironment(env)});
+fs.writeFileSync(path.join(here,`${mode}.log`),result.stdout+'\n'+result.stderr);
+fs.writeFileSync(path.join(here,`${mode}-result.json`),JSON.stringify({completed:new Date().toISOString(),status:result.status,signal:result.signal},null,2));
+console.log(result.stdout.slice(-2000),result.stderr.slice(-1000));process.exitCode=result.status;

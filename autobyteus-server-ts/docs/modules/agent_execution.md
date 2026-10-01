@@ -240,9 +240,10 @@ both fields. See [LLM Management](./llm_management.md#persisted-run-model-select
 
 The same run's next normal message/restore consumes the saved pair without a
 new provider conversation. Save neither activates a backend nor compacts,
-converts, or resets history. Existing memory/compaction lineage remains in
-place; ordinary later execution uses its existing runtime algorithm with the
-selected model, without promising identical future compaction timing.
+converts, or resets history. Existing WorkingContext and raw evidence remain in
+place; historical category/lineage files are not rewritten or made current
+continuation dependencies. Ordinary later execution uses its runtime compaction
+path with the selected model, without promising identical future timing.
 
 Studio adds a separate owner-aware guard before this General lane. A live
 Application binding locks configuration without exposing Application managers

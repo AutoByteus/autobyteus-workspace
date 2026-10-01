@@ -1,0 +1,1253 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentRuntimeState initialized for agent_id 'recovery_tester_4050'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_4050': No tools provided in config.
+Agent 'recovery_tester_4050': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_4050'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_4050' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_4050'.
+Registered AgentContext for agent_id 'recovery_tester_4050'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_4050'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_4050'.
+Agent 'recovery_tester_4050' created and stored successfully.
+Agent 'recovery_tester_4050' requesting runtime to start.
+AgentRuntime for 'recovery_tester_4050': Starting worker.
+AgentWorker 'recovery_tester_4050': Starting...
+AgentWorker 'recovery_tester_4050' asyncRun(): Starting.
+Agent 'recovery_tester_4050': Runtime init completed (event store initialized).
+Agent 'recovery_tester_4050': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_4050': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_4050': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Agent 'recovery_tester_4050': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Agent 'recovery_tester_4050': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_4050': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_4050': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Agent 'recovery_tester_4050': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_4050': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_4050': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_4050': Final processed system prompt configured and captured. Trace ID: rt_1790799466360_05b3d499-3528-4abc-8c9f-f1a51d04a256. Final length: 28.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Agent 'recovery_tester_4050': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentWorker 'recovery_tester_4050' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentEventStream (ID: 8ff89e61-fbd5-4ce2-b10c-957ef7b754ed) initialized for agent_id 'recovery_tester_4050'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4050',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4050',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4050',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4050',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'recovery_tester_4050',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjrz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_4050',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjrz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+compaction_failed {
+  agent_id: 'recovery_tester_4050',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjrz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: post response exhausted'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_4050',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_muojrjrz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_completed {
+  agent_id: 'recovery_tester_4050',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_muojrjrz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4050',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Agent 'recovery_tester_4050' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentWorker 'recovery_tester_4050': Stop requested.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentExternalEventNotifier (NotifierID: 04ba3006-4e0a-400d-9d87-56856a5c5119, AgentID: recovery_tester_4050) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_4050' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_4050': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentWorker 'recovery_tester_4050': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_4050': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+Unregistered AgentContext for agent_id 'recovery_tester_4050'.
+AgentRuntime for 'recovery_tester_4050': Context unregistered.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks
+AgentRuntime for 'recovery_tester_4050' stop() method completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentRuntimeState initialized for agent_id 'recovery_tester_6739'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_6739': No tools provided in config.
+Agent 'recovery_tester_6739': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_6739'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_6739' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_6739'.
+Registered AgentContext for agent_id 'recovery_tester_6739'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_6739'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_6739'.
+Agent 'recovery_tester_6739' created and stored successfully.
+Agent 'recovery_tester_6739' requesting runtime to start.
+AgentRuntime for 'recovery_tester_6739': Starting worker.
+AgentWorker 'recovery_tester_6739': Starting...
+AgentWorker 'recovery_tester_6739' asyncRun(): Starting.
+Agent 'recovery_tester_6739': Runtime init completed (event store initialized).
+Agent 'recovery_tester_6739': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_6739': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_6739': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Agent 'recovery_tester_6739': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Agent 'recovery_tester_6739': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_6739': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_6739': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Agent 'recovery_tester_6739': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_6739': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_6739': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_6739': Final processed system prompt configured and captured. Trace ID: rt_1790799466508_28d081b4-7bf7-4481-843c-758e0dc2a092. Final length: 28.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Agent 'recovery_tester_6739': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentWorker 'recovery_tester_6739' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentEventStream (ID: effa96ca-35dd-4b8e-8fae-336ace91304b) initialized for agent_id 'recovery_tester_6739'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6739',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6739',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6739',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6739',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'recovery_tester_6739',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjv8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_6739',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjv8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+compaction_failed {
+  agent_id: 'recovery_tester_6739',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjv8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: post response exhausted'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Agent 'recovery_tester_6739' requesting runtime interrupt.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_6739',
+  turn_id: 'turn_0006',
+  compaction_operation_id: 'compaction_operation_muojrjv8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0006',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_completed {
+  agent_id: 'recovery_tester_6739',
+  turn_id: 'turn_0006',
+  compaction_operation_id: 'compaction_operation_muojrjv8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0006',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6739',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6739',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Agent 'recovery_tester_6739' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentWorker 'recovery_tester_6739': Stop requested.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentExternalEventNotifier (NotifierID: 8ac93b17-ae02-4385-9c3a-cb52ff079155, AgentID: recovery_tester_6739) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_6739' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_6739': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentWorker 'recovery_tester_6739': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_6739': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+Unregistered AgentContext for agent_id 'recovery_tester_6739'.
+AgentRuntime for 'recovery_tester_6739': Context unregistered.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it
+AgentRuntime for 'recovery_tester_6739' stop() method completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentRuntimeState initialized for agent_id 'recovery_tester_9733'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_9733': No tools provided in config.
+Agent 'recovery_tester_9733': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_9733'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_9733' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_9733'.
+Registered AgentContext for agent_id 'recovery_tester_9733'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_9733'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_9733'.
+Agent 'recovery_tester_9733' created and stored successfully.
+Agent 'recovery_tester_9733' requesting runtime to start.
+AgentRuntime for 'recovery_tester_9733': Starting worker.
+AgentWorker 'recovery_tester_9733': Starting...
+AgentWorker 'recovery_tester_9733' asyncRun(): Starting.
+Agent 'recovery_tester_9733': Runtime init completed (event store initialized).
+Agent 'recovery_tester_9733': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_9733': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_9733': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Agent 'recovery_tester_9733': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Agent 'recovery_tester_9733': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_9733': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_9733': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Agent 'recovery_tester_9733': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_9733': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_9733': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_9733': Final processed system prompt configured and captured. Trace ID: rt_1790799466652_cb14caa5-1e2e-48a7-bb31-e15eee02aabb. Final length: 28.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Agent 'recovery_tester_9733': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentWorker 'recovery_tester_9733' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentEventStream (ID: 68a8bffc-d064-4668-8fa1-c8e29a1ce481) initialized for agent_id 'recovery_tester_9733'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9733',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9733',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9733',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_9733',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjyp_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+compaction_failed {
+  agent_id: 'recovery_tester_9733',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muojrjyp_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: held'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Agent 'recovery_tester_9733' requesting runtime interrupt.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Agent 'recovery_tester_9733' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+ROOT_FENCE_RESULT {
+  accepted: false,
+  code: 'no_active_turn',
+  message: "Agent 'recovery_tester_9733' has no active turn to interrupt.",
+  turnId: null
+}
+Agent 'recovery_tester_9733' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentWorker 'recovery_tester_9733': Stop requested.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6a76e838-be91-4302-a88a-aeff85362eee, AgentID: recovery_tester_9733) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_9733' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_9733': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentWorker 'recovery_tester_9733': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_9733': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+Unregistered AgentContext for agent_id 'recovery_tester_9733'.
+AgentRuntime for 'recovery_tester_9733': Context unregistered.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AgentRuntime for 'recovery_tester_9733' stop() method completed.
+
+ ❯ tests/unit/agent-execution/agent-run-compaction-races.test.ts (3 tests | 1 failed) 371ms
+     ✓ latches a next-turn grant while consumed A final hooks are unfinished, without rerunning A or its hooks 153ms
+     ✓ cancelling a bound recovery turn in its input pipeline revokes permission; prequeued C cannot inherit it 143ms
+     × root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry 74ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-compaction-races.test.ts > supported recovery lifecycle races with native runtime and server FIFO > root shutdown fences queued input and interrupts held A before quiescence, without consuming a retry
+AssertionError: expected { accepted: false, …(3) } to match object { accepted: true }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accepted": true,
++   "accepted": false,
+  }
+
+ ❯ tests/unit/agent-execution/agent-run-compaction-races.test.ts:69:19
+     67|    const fenced=await f.run.fenceInputAndInterruptForRootShutdown();
+     68|    console.info('ROOT_FENCE_RESULT',fenced);
+     69|    expect(fenced).toMatchObject({accepted:true});
+       |                   ^
+     70|    expect((await f.submit('B')).ack.accepted).toBe(false);
+     71|    expect(f.parent.requests).toHaveLength(3);expect(f.compress).toHave…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  22:17:42
+   Duration  3.95s (transform 2.21s, setup 17ms, import 3.09s, tests 371ms, environment 0ms)
+

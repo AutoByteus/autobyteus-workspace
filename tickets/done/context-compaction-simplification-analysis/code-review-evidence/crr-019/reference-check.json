@@ -1,0 +1,10 @@
+{
+  "cumulative_count": 5247,
+  "direct_transport_count": 275,
+  "missing": [],
+  "old_live_test_intentionally_removed_and_mapped": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+  "preimage": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-012/source-before/autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+  "new_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/native-input-history/native-accepted-input-history.integration.test.ts",
+  "cumulative_count_after_receipt": 5248,
+  "receipt_added_after_confirmed_send": true
+}

@@ -1,0 +1,38 @@
+{
+  "current": [
+    " tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts",
+    " tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > keeps multi-turn text/tool order without repeating result.response",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > keeps headless denial failed despite result SUCCESS",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps exit0 DONE to provider-step success without inventing shell exit",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps exit8_empty DONE to provider-step success without inventing shell exit",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps not_found DONE to provider-step success without inventing shell exit",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > does not mark headless denial green when the turn reports SUCCESS",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > prioritizes an explicit tool error even when AGY labels the step DONE",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > emits assistant text that satisfies the canonical segment lifecycle contract",
+    " tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output"
+  ],
+  "baseline": [
+    " tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts",
+    " tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > keeps multi-turn text/tool order without repeating result.response",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > keeps headless denial failed despite result SUCCESS",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps exit0 DONE to provider-step success without inventing shell exit",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps exit8_empty DONE to provider-step success without inventing shell exit",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps not_found DONE to provider-step success without inventing shell exit",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > does not mark headless denial green when the turn reports SUCCESS",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > prioritizes an explicit tool error even when AGY labels the step DONE",
+    " tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > emits assistant text that satisfies the canonical segment lifecycle contract",
+    " tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation",
+    " tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output"
+  ],
+  "sameFailureNames": true,
+  "note": "15 failures reproduced at base; dependency trees reused, base core source and base presentation dist. Not a full-suite or live-product verdict."
+}

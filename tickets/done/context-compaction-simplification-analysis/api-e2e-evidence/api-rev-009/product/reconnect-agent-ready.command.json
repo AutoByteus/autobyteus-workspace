@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T13:07:46.066491+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "async () => {await __abDemo.click({text:\"api9 reviewer\"});return {end:document.body.innerText.slice(-1000),draft:document.querySelector(\"main textarea\").value,buttons:[...document.querySelectorAll(\"main button\")].map(x=>({title:x.title,disabled:x.disabled}))};}"
+  ],
+  "controlPort": 56935
+}

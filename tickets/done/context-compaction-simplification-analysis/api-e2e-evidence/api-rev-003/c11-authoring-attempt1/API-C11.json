@@ -1,0 +1,43 @@
+{
+  "case": "API-C11",
+  "started": "2026-09-30T12:23:42.232Z",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-structural",
+  "database": {
+    "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db",
+    "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db",
+    "rootKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db.secret.key"
+  },
+  "pids": [
+    12902
+  ],
+  "checkpoints": [],
+  "result": "Fail",
+  "seedHashes": {
+    "agents/cut-complete/raw_traces_active.jsonl": "6bb67668ad5a750ed76f7db8cc5d33968ac0e9a9624cbf3def86450904dfeda8",
+    "agents/cut-complete/run_metadata.json": "a41e36ef3d2fa7341913da0e0980a1709fabd87c0d2a18c3e28f521aeda4f75c",
+    "agents/cut-complete/working_context_snapshot.json": "5e7004506eb402d4615a92596af5920ca91cb7c28aad5dfc7752752f83f1d585",
+    "agents/cut-partial/raw_traces_active.jsonl": "3cd3647727f2cee11d5e8714b71175bdd74764f12f667dd364c192b91d871680",
+    "agents/cut-partial/run_metadata.json": "64801c13df506ce31b24b00c611d899f05020480a5103c685155945a1a949b01",
+    "agents/cut-partial/working_context_snapshot.json": "66dea812a61110dd377016b5c6bb1b04cc9fe286945a0728defacf5eb5a92e75",
+    "agents/cut-raw-ahead/raw_traces_active.jsonl": "29a76372cf79cf581fef7f4ecc5d0facbee28d4d577a8a278a3ee08afc5d4965",
+    "agents/cut-raw-ahead/run_metadata.json": "08bd563de140acc909e505164bf36f9a94387cb03c0d5333856c5b23714685e8",
+    "agents/cut-raw-ahead/working_context_snapshot.json": "f0f1464bcf2f513b9a1037470879cdd26e02c77a0009d11854a633ebde9475f7",
+    "agents/cut-zero/raw_traces_active.jsonl": "ec4777802af890158c087a524a34c68ceca9bf2860df960c53a13ec84d8f047d",
+    "agents/cut-zero/run_metadata.json": "6ed679223d418e272e25b2def44f68f1af7f70f380d5b61231a80377607eb70c",
+    "agents/cut-zero/working_context_snapshot.json": "bc8175ff653ef615f4db72d6a5093e7349970de3f290c913cbe28377eae29cf1",
+    "agents/released-v5/run_metadata.json": "b6e288a44a3a70a20dbcbb69a83b55154b85579261377921afe9eeacae4ceb96",
+    "agents/released-v5/working_context_snapshot.json": "31f9827747cee9c6b392ef723bf9554285f806be549cff2ab7ac09b452f42299"
+  },
+  "serverUrl": "http://127.0.0.1:59828",
+  "error": {
+    "name": "AssertionError",
+    "message": "Startup must preserve current writer packages and supported v5\n+ actual - expected\n... Skipped lines\n\n  {\n    'agents/cut-complete/raw_traces_active.jsonl': '6bb67668ad5a750ed76f7db8cc5d33968ac0e9a9624cbf3def86450904dfeda8',\n    'agents/cut-complete/run_metadata.json': 'a41e36ef3d2fa7341913da0e0980a1709fabd87c0d2a18c3e28f521aeda4f75c',\n    'agents/cut-complete/working_context_snapshot.json': '5e7004506eb402d4615a92596af5920ca91cb7c28aad5dfc7752752f83f1d585',\n    'agents/cut-partial/raw_traces_active.jsonl': '3cd3647727f2cee11d5e8714b71175bdd74764f12f667dd364c192b91d871680',\n...\n    'agents/released-v5/run_metadata.json': 'b6e288a44a3a70a20dbcbb69a83b55154b85579261377921afe9eeacae4ceb96',\n+   'agents/released-v5/working_context_snapshot.json': 'c13827ab0b843feaf76b0142b4d35cae28e5955f1c2a906d49dd2598e26115e0',\n+   'run_history_index.json': '63777131fc84f2ac6cc14e5b91990e8a801694048abb15d52963c1282ca2adc5',\n+   'team_run_history_index.json': '37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570'\n-   'agents/released-v5/working_context_snapshot.json': '31f9827747cee9c6b392ef723bf9554285f806be549cff2ab7ac09b452f42299'\n  }\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Startup must preserve current writer packages and supported v5\n+ actual - expected\n... Skipped lines\n\n  {\n    'agents/cut-complete/raw_traces_active.jsonl': '6bb67668ad5a750ed76f7db8cc5d33968ac0e9a9624cbf3def86450904dfeda8',\n    'agents/cut-complete/run_metadata.json': 'a41e36ef3d2fa7341913da0e0980a1709fabd87c0d2a18c3e28f521aeda4f75c',\n    'agents/cut-complete/working_context_snapshot.json': '5e7004506eb402d4615a92596af5920ca91cb7c28aad5dfc7752752f83f1d585',\n    'agents/cut-partial/raw_traces_active.jsonl': '3cd3647727f2cee11d5e8714b71175bdd74764f12f667dd364c192b91d871680',\n...\n    'agents/released-v5/run_metadata.json': 'b6e288a44a3a70a20dbcbb69a83b55154b85579261377921afe9eeacae4ceb96',\n+   'agents/released-v5/working_context_snapshot.json': 'c13827ab0b843feaf76b0142b4d35cae28e5955f1c2a906d49dd2598e26115e0',\n+   'run_history_index.json': '63777131fc84f2ac6cc14e5b91990e8a801694048abb15d52963c1282ca2adc5',\n+   'team_run_history_index.json': '37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570'\n-   'agents/released-v5/working_context_snapshot.json': '31f9827747cee9c6b392ef723bf9554285f806be549cff2ab7ac09b452f42299'\n  }\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-003/structural-server.mjs:59:9"
+  },
+  "cleanup": {
+    "runtimeRemoved": true,
+    "databaseRemoved": true,
+    "keyRemoved": true
+  },
+  "finished": "2026-09-30T12:23:44.316Z"
+}

@@ -1,0 +1,1006 @@
+[
+  {
+    "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/index.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/index.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/index.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/index.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/launch-profile.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-backend-sdk/dist/launch-profile.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/index.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/index.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/index.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/manifests.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/manifests.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "test-support/live-e2e/compaction-quality-checks.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "test-support/live-e2e/live-e2e-harness.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "test-support/live-e2e/run-live-e2e.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C01.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C01.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C02.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C02.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C03.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C03.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C04.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C04.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C05.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C05.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C06.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C06.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C07.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C07.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/cleanup.txt",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/final-status.txt",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/input-hashes.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/input-status.txt",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/plan.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/prerequisite-triage.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/results.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/run-case.py",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-B01.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-B01.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-attempt1.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-attempt1.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-normalizer-pass.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-normalizer-pass.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-quality-alarm-pass.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-quality-alarm-pass.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-tools-pass.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-tools-pass.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05-attempt1.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05-attempt1.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt1.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt1.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt2.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt2.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt3.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt3.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-preflight.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-preflight.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality-attempt1.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality-attempt1.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-explicit-tuple.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-history-fixture.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-history-readonly.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-inherit-tuple.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-unavailable-retained.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-unavailable-seed.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C10.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F004-triage.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F005-replay.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/authority-recheck.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/browser-observations.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/durable-tests.patch",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/final-cleanup-checks.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/final-source-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/first-flow-observations.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/handoff-receipt.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/investigation-decision-log.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server-cleanup.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web-cleanup.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/plan.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/process-snapshot-probe.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/replay-semantic.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/results.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/run-case.py",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/run-owned-live.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/seed-owned-history.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-attempt1-observations.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-final-observations.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-review.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D01-A.jsonl",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D02-B.jsonl",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D03-B.jsonl",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D04-A.jsonl",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/coordination-receipt.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/cumulative-harness-diff.patch",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-comparison.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-execution-import-error.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-execution.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-import-error.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-result-import-error.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-result.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/extract-full-observation.py",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/final-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-all-exit-reconstructed.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-all-exit-reconstruction.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-comparison.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-execution.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-observation-setup.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-observations.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-prerequisites.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-result.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-wire-observer.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-wire.jsonl",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-five-pass.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-import-error.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-initial.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-response-fixture-error.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-six-pass.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-stream-fixture-error.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/manifest.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server-cleanup.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owner-regression.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/preflight.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/reference-files.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/run-diagnostic.mjs",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/semantic-adjudication.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-direct.config.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-full.config.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-instrumentation.config.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/wire-observer.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/core-status.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/input-and-source-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/removal-audit.txt",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/server-boundary-history.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/shared-harness-residual.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/source-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/source-audit.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/origin-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/origin-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-probes.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-probes.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-vitest.config.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-v6-candidate.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/prompt-recovery-proposal.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/configuration-reconstruction.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/frozen-repeated-input.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/recovery-probes.log",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/recovery-probes.test.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/source-and-input-audit.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/vitest.config.ts",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr015/README.md",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr015/evidence-reconciliation.json",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr015/prompt-v5-to-v6-candidate.diff",
+    "identicalToPendingVersion": true
+  },
+  {
+    "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+    "identicalToPendingVersion": true
+  }
+]

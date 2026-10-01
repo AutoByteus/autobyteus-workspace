@@ -1,0 +1,34 @@
+{
+  "hash": "7acd8aeb",
+  "configHash": "386b6393",
+  "lockfileHash": "e63464aa",
+  "browserHash": "3babaaef",
+  "optimized": {
+    "@iconify/vue": {
+      "src": "../../../../../../../../node_modules/.pnpm/@iconify+vue@5.0.0_vue@3.5.28_typescript@5.9.3_/node_modules/@iconify/vue/dist/iconify.js",
+      "file": "@iconify_vue.js",
+      "fileHash": "8b07abe6",
+      "needsInterop": true
+    },
+    "vue": {
+      "src": "../../../../../../../../node_modules/.pnpm/vue@3.5.28_typescript@5.9.3/node_modules/vue/dist/vue.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "dc95ebfa",
+      "needsInterop": false
+    },
+    "zod": {
+      "src": "../../../../../../../../node_modules/.pnpm/zod@4.3.6/node_modules/zod/index.js",
+      "file": "zod.js",
+      "fileHash": "b0192696",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-IZCPPLWX": {
+      "file": "chunk-IZCPPLWX.js"
+    },
+    "chunk-DZZM6G22": {
+      "file": "chunk-DZZM6G22.js"
+    }
+  }
+}

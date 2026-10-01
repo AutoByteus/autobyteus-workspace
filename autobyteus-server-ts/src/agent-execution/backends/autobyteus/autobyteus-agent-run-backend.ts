@@ -1,10 +1,11 @@
+import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
 import { AgentEventStream } from "autobyteus-ts";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
+import type { AgentRunBackend, AgentRunCompactionRecoveryCapability, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
 import type {
   AgentRunBackendInputDispatch,
   AgentRunBackendInputDispatchResult,
@@ -16,6 +17,9 @@ import { PendingSystemInstructionEvent } from "../../events/pending-system-instr
 
 export type AutoByteusAgentLike = {
   agentId: string;
+  getCompactionRecovery: () => CompactionRecoveryBlock | null;
+  authorizeCompactionRetry: (input: CompactionRetryRequest) => "accepted" | "stale" | "stopped";
+  revokeUnusedCompactionRetry: (input: CompactionRetryRequest) => "revoked" | "stale" | "in_use";
   context?: AgentContext;
   currentStatus?: string;
   postUserMessage?: (message: AgentInputUserMessage) => Promise<void>;
@@ -53,8 +57,14 @@ export type AutoByteusAgentLike = {
 
 type AutoByteusAgentRunBackendOptions = {
   isActive: () => boolean;
-  removeAgent: (runId: string) => Promise<boolean>;
+  removeAgent: (runId: string, shutdownTimeout: number) => Promise<boolean>;
   pendingSystemInstructionCapture?: SystemInstructionTraceRecord | null;
+};
+
+type StreamSession = {
+  stream: AgentEventStream;
+  pump: Promise<void>;
+  disposed: boolean;
 };
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
@@ -72,12 +82,17 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 export class AutoByteusAgentRunBackend implements AgentRunBackend {
   readonly runId: string;
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  readonly compactionRecovery: Extract<AgentRunCompactionRecoveryCapability, { kind: "supported" }> = {
+    kind: "supported",
+    getSnapshot: () => this.agent.getCompactionRecovery(),
+    authorize: async (input) => this.isActive() ? this.agent.authorizeCompactionRetry(input) : "stopped",
+    revokeUnused: async (input) => this.agent.revokeUnusedCompactionRetry(input),
+  };
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly eventConverter: AutoByteusStreamEventConverter;
   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
-  private stream: AgentEventStream | null = null;
-  private isStreamClosed = true;
+  private session: StreamSession | null = null;
   private lifecycleState: "active" | "terminating" | "terminated" = "active";
   private terminationPromise: Promise<AgentOperationResult> | null = null;
   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
@@ -112,16 +127,18 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       currentStatus: this.agent.currentStatus,
       context: this.agent.context ?? null,
       isActive: this.isActive(),
+      recoverableBlock: this.compactionRecovery.getSnapshot(),
     });
   }
 
   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+    if (this.lifecycleState !== "active") return () => {};
     this.sourceListeners.add(listener);
     this.ensureSubscribed();
     return () => {
       this.sourceListeners.delete(listener);
       if (this.sourceListeners.size === 0) {
-        this.closeStream();
+        this.disposeSession(this.session);
       }
     };
   }
@@ -132,6 +149,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     if (dispatch.kind !== "start_turn") {
       return {
         forwarded: false,
+        delivery: "not_delivered",
         code: "UNSUPPORTED_RUNTIME_COMMAND",
         message: "AutoByteus does not support active-turn input append.",
         turnId: null,
@@ -141,6 +159,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       const result = buildRunNotFoundResult(this.runId);
       return {
         forwarded: false,
+        delivery: "not_delivered",
         code: result.code,
         message: result.message,
         turnId: null,
@@ -158,6 +177,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       const result = buildCommandFailure("send user input", error);
       return {
         forwarded: false,
+        delivery: "uncertain",
         code: result.code,
         message: result.message,
         turnId: null,
@@ -222,15 +242,36 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
 
     this.lifecycleState = "terminating";
+    const session = this.session;
+    const deadline = Date.now() + 10_000;
+    const expired = Symbol("shutdown deadline");
+    let timer: ReturnType<typeof setTimeout>;
+    const timeout = new Promise<typeof expired>((resolve) => {
+      timer = setTimeout(() => resolve(expired), Math.max(0, deadline - Date.now()));
+    });
     this.terminationPromise = (async () => {
       try {
-        this.closeStream();
-        await this.options.removeAgent(this.runId);
+        const removed = await Promise.race([
+          this.options.removeAgent(this.runId, Math.max(0, deadline - Date.now()) / 1000), timeout,
+        ]);
+        if (removed === expired) throw new Error("Native shutdown deadline exceeded.");
+        if (!removed && this.options.isActive()) throw new Error("Native run remains registered.");
+        // Resource shutdown succeeded. Projection delivery cannot undo that result.
         this.lifecycleState = "terminated";
+        if (session) {
+          const drained = await Promise.race([
+            session.stream.close().then(() => session.pump).catch((error) => {
+              console.warn(`Native event drain failed for '${this.runId}'.`, error);
+            }), timeout,
+          ]);
+          if (drained === expired) console.warn(`Native event drain deadline exceeded for '${this.runId}'.`);
+        }
         return { accepted: true };
       } catch (error) {
         return buildCommandFailure("terminate run", error);
       } finally {
+        clearTimeout(timer!);
+        this.disposeSession(session);
         this.terminationPromise = null;
       }
     })();
@@ -238,45 +279,35 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   }
 
   private ensureSubscribed(): void {
-    if (!this.isStreamClosed) {
-      return;
-    }
-
-    const stream = new AgentEventStream(this.agent as any);
-    this.stream = stream;
-    this.isStreamClosed = false;
-
-    void (async () => {
+    if (this.session || this.lifecycleState !== "active") return;
+    const session: StreamSession = {
+      stream: new AgentEventStream(this.agent as any), pump: Promise.resolve(), disposed: false,
+    };
+    this.session = session;
+    session.pump = (async () => {
       try {
-        for await (const event of stream.allEvents()) {
-          if (this.isStreamClosed) {
-            break;
-          }
+        for await (const event of session.stream.allEvents()) {
+          if (session.disposed) break;
           const convertedEvent = this.eventConverter.convert(event);
-          if (!convertedEvent) {
-            continue;
-          }
+          if (!convertedEvent) continue;
           for (const listener of this.sourceListeners) {
-            await listener([convertedEvent]);
+            if (session.disposed) break;
+            try { await listener([convertedEvent]); }
+            catch (error) { console.warn(`Native event listener failed for '${this.runId}'.`, error); }
           }
         }
-      } catch {
-        // Ignore transport shutdown races; callers observe disconnection through inactivity.
+      } catch (error) {
+        console.warn(`Native event pump failed for '${this.runId}'.`, error);
       } finally {
-        if (!this.isStreamClosed) {
-          this.closeStream();
-        }
+        this.disposeSession(session);
       }
     })();
   }
 
-  private closeStream(): void {
-    if (this.isStreamClosed) {
-      return;
-    }
-    this.isStreamClosed = true;
-    const stream = this.stream;
-    this.stream = null;
-    void stream?.close().catch(() => {});
+  private disposeSession(session: StreamSession | null): void {
+    if (!session || session.disposed) return;
+    session.disposed = true;
+    if (this.session === session) this.session = null;
+    void session.stream.close().catch(() => {});
   }
 }

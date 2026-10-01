@@ -1,0 +1,912 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/team-root-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/team-root-collaborators.test.ts > collaborators hosted in a Team root (AR-006) > includes a hosted collaborator Team's live input snapshots in the root package
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/team-root-collaborators.test.ts (6 tests) 366ms
+stdout | tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts > Agent root of a standalone run > creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts (7 tests) 303ms
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentRuntimeState initialized for agent_id 'recovery_tester_8389'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_8389': No tools provided in config.
+Agent 'recovery_tester_8389': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_8389'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_8389' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_8389'.
+Registered AgentContext for agent_id 'recovery_tester_8389'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_8389'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_8389'.
+Agent 'recovery_tester_8389' created and stored successfully.
+Agent 'recovery_tester_8389' requesting runtime to start.
+AgentRuntime for 'recovery_tester_8389': Starting worker.
+AgentWorker 'recovery_tester_8389': Starting...
+AgentWorker 'recovery_tester_8389' asyncRun(): Starting.
+Agent 'recovery_tester_8389': Runtime init completed (event store initialized).
+Agent 'recovery_tester_8389': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_8389': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_8389': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_8389': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_8389': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_8389': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_8389': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_8389': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_8389': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_8389': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_8389': Final processed system prompt configured and captured. Trace ID: rt_1790873918444_9c407979-8701-4ac1-ad33-749a65fabc76. Final length: 28.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_8389': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentWorker 'recovery_tester_8389' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentEventStream (ID: b9bc05d3-fbd7-4559-a26a-a9a6d4c4bf21) initialized for agent_id 'recovery_tester_8389'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8389',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8389',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8389',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Created agent session 864de9cc-4249-459e-bb48-5ad3f7335aaf for run team-run-root
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Agent Team WebSocket connected: session=864de9cc-4249-459e-bb48-5ad3f7335aaf, run=team-run-root
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_8389',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bd0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+compaction_failed {
+  agent_id: 'recovery_tester_8389',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bd0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: first'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_8389',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bd0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+compaction_completed {
+  agent_id: 'recovery_tester_8389',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bd0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8389',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_8389',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Closed agent session 864de9cc-4249-459e-bb48-5ad3f7335aaf
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_8389' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentWorker 'recovery_tester_8389': Stop requested.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 7eb2ef47-029e-451c-b362-fbac0de038ed, AgentID: recovery_tester_8389) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_8389' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_8389': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentWorker 'recovery_tester_8389': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_8389': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+Unregistered AgentContext for agent_id 'recovery_tester_8389'.
+AgentRuntime for 'recovery_tester_8389': Context unregistered.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_team wakes held A via configured handle and keeps B queued, without reactivation
+AgentRuntime for 'recovery_tester_8389' stop() method completed.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentRuntimeState initialized for agent_id 'recovery_tester_6934'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_6934': No tools provided in config.
+Agent 'recovery_tester_6934': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_6934'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_6934' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_6934'.
+Registered AgentContext for agent_id 'recovery_tester_6934'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_6934'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_6934'.
+Agent 'recovery_tester_6934' created and stored successfully.
+Agent 'recovery_tester_6934' requesting runtime to start.
+AgentRuntime for 'recovery_tester_6934': Starting worker.
+AgentWorker 'recovery_tester_6934': Starting...
+AgentWorker 'recovery_tester_6934' asyncRun(): Starting.
+Agent 'recovery_tester_6934': Runtime init completed (event store initialized).
+Agent 'recovery_tester_6934': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_6934': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_6934': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_6934': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_6934': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_6934': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_6934': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_6934': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_6934': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_6934': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_6934': Final processed system prompt configured and captured. Trace ID: rt_1790873918585_6b3430a5-1f62-48f6-981a-c0f847862012. Final length: 28.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_6934': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentWorker 'recovery_tester_6934' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentEventStream (ID: 2de81930-781e-4003-aabd-840bb1e39432) initialized for agent_id 'recovery_tester_6934'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6934',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6934',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6934',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_6934',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bgc_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+compaction_failed {
+  agent_id: 'recovery_tester_6934',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bgc_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: first'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_6934',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bgc_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+compaction_completed {
+  agent_id: 'recovery_tester_6934',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mups3bgc_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6934',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_6934',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+Agent 'recovery_tester_6934' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentWorker 'recovery_tester_6934': Stop requested.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentExternalEventNotifier (NotifierID: 90bfb996-9ece-431e-bf92-bceae55a6156, AgentID: recovery_tester_6934) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_6934' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_6934': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentWorker 'recovery_tester_6934': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_6934': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+Unregistered AgentContext for agent_id 'recovery_tester_6934'.
+AgentRuntime for 'recovery_tester_6934': Context unregistered.
+
+stdout | tests/unit/agent-execution/root-recovery-command.test.ts > actual root user command compaction recovery ingress > agent_org wakes held A via configured handle and keeps B queued, without reactivation
+AgentRuntime for 'recovery_tester_6934' stop() method completed.
+
+ ✓ tests/unit/agent-execution/root-recovery-command.test.ts (2 tests) 252ms
+stdout | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts (3 tests) 8ms
+
+ Test Files  4 passed (4)
+      Tests  18 passed (18)
+   Start at  18:58:31
+   Duration  7.62s (transform 2.83s, setup 27ms, import 5.90s, tests 930ms, environment 0ms)
+

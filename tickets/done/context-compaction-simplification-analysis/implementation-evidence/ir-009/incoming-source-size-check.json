@@ -1,0 +1,934 @@
+[
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/collaborator-mention-note.ts",
+    "effective": 104
+  },
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+    "effective": 5
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+    "effective": 151
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "effective": 56
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/index.ts",
+    "effective": 3
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+    "effective": 217
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-address-allocator.ts",
+    "effective": 36
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-candidate-policy.ts",
+    "effective": 126
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+    "effective": 35
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-entry-builder.ts",
+    "effective": 96
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-errors.ts",
+    "effective": 26
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-identity-allocator.ts",
+    "effective": 58
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-mention-admission.ts",
+    "effective": 137
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-root-port.ts",
+    "effective": 25
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-runnability-validator.ts",
+    "effective": 43
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-source-projector.ts",
+    "effective": 127
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/collaborator-handle-preparation.ts",
+    "effective": 58
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+    "effective": 52
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+    "effective": 261
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "effective": 246
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/located-execution-structure.ts",
+    "effective": 17
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/member-execution-context.ts",
+    "effective": 88
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/root-execution-identity.ts",
+    "effective": 145
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+    "effective": 368
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+    "effective": 96
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/root-operation-gate.ts",
+    "effective": 32
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+    "effective": 41
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-target.ts",
+    "effective": 22
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-context-enricher.ts",
+    "effective": 43
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts",
+    "effective": 66
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "effective": 412
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+    "effective": 309
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+    "effective": 189
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+    "effective": 74
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+    "effective": 253
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+    "effective": 280
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-collaboration-binding.ts",
+    "effective": 19
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "effective": 412
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts",
+    "effective": 68
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/domain/memory-recording-models.ts",
+    "effective": 106
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/collaboration-member-memory-targets.ts",
+    "effective": 150
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts",
+    "effective": 259
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts",
+    "effective": 232
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/store/agent-memory-layout.ts",
+    "effective": 111
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/store/external-runtime-memory-writer.ts",
+    "effective": 118
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-event.ts",
+    "effective": 14
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-execution-tree.ts",
+    "effective": 30
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "effective": 484
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-agent-status-snapshot-projector.ts",
+    "effective": 41
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+    "effective": 267
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+    "effective": 209
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+    "effective": 46
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-reference-content-service.ts",
+    "effective": 88
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-collaborators.ts",
+    "effective": 91
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-execution-tree-mutator.ts",
+    "effective": 181
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-planner.ts",
+    "effective": 82
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-event-retirement.ts",
+    "effective": 51
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+    "effective": 292
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-source-resolver.ts",
+    "effective": 38
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root-event.ts",
+    "effective": 15
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "effective": 469
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-tree.ts",
+    "effective": 45
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts",
+    "effective": 20
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-collaborators.ts",
+    "effective": 87
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+    "effective": 73
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+    "effective": 225
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-host-context-builder.ts",
+    "effective": 64
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+    "effective": 183
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-member-view-projection-service.ts",
+    "effective": 95
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts",
+    "effective": 140
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+    "effective": 44
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+    "effective": 173
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "effective": 239
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+    "effective": 269
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-source-resolver.ts",
+    "effective": 25
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-tree-mutator.ts",
+    "effective": 127
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+    "effective": 497
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts",
+    "effective": 56
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts",
+    "effective": 47
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+    "effective": 121
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "effective": 494
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+    "effective": 72
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/configured-agent-execution-registry.ts",
+    "effective": 64
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/flat-team-member-config-resolver.ts",
+    "effective": 33
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+    "effective": 92
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/resolved-team-recipient.ts",
+    "effective": 5
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+    "effective": 318
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+    "effective": 89
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-recipient-resolver.ts",
+    "effective": 60
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-collaborator-hosting.ts",
+    "effective": 53
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+    "effective": 128
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-collaborators.ts",
+    "effective": 111
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-builder.ts",
+    "effective": 80
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts",
+    "effective": 219
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-execution-resolution.ts",
+    "effective": 25
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+    "effective": 257
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+    "effective": 34
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-source-resolver.ts",
+    "effective": 40
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts",
+    "effective": 75
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/schema.ts",
+    "effective": 85
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/services/collaborator-root-port-resolver.ts",
+    "effective": 73
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts",
+    "effective": 80
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/run-history.ts",
+    "effective": 253
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/agent-collaboration-references.ts",
+    "effective": 41
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+    "effective": 285
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/index.ts",
+    "effective": 52
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/websocket/agent.ts",
+    "effective": 181
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/websocket/index.ts",
+    "effective": 45
+  },
+  {
+    "path": "autobyteus-server-ts/src/application-agent-tools/services/application-agent-tool-capability.ts",
+    "effective": 133
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts",
+    "effective": 139
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts",
+    "effective": 126
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+    "effective": 192
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+    "effective": 119
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+    "effective": 75
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/agent-run-history-index-types.ts",
+    "effective": 31
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/collaborator-entry-tree-mapping.ts",
+    "effective": 36
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+    "effective": 126
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts",
+    "effective": 105
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/run-projection-types.ts",
+    "effective": 131
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+    "effective": 66
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+    "effective": 246
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-org-member-run-view-projection-service.ts",
+    "effective": 131
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+    "effective": 490
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts",
+    "effective": 144
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts",
+    "effective": 120
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/standalone-run-liveness.ts",
+    "effective": 54
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts",
+    "effective": 99
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-schema.ts",
+    "effective": 138
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-path.ts",
+    "effective": 11
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-schema.ts",
+    "effective": 93
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-store.ts",
+    "effective": 68
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-history-index-record-types.ts",
+    "effective": 13
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-history-index-store.ts",
+    "effective": 168
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts",
+    "effective": 112
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts",
+    "effective": 24
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+    "effective": 435
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/team-run-execution-tree-schema.ts",
+    "effective": 117
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts",
+    "effective": 155
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "effective": 79
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "effective": 90
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+    "effective": 202
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts",
+    "effective": 469
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts",
+    "effective": 257
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts",
+    "effective": 229
+  },
+  {
+    "path": "autobyteus-server-ts/src/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts",
+    "effective": 270
+  },
+  {
+    "path": "autobyteus-server-ts/src/token-usage/providers/token-usage-display-field-capturer.ts",
+    "effective": 138
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts",
+    "effective": 65
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-control-message-dtos.ts",
+    "effective": 29
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts",
+    "effective": 216
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-stream-server-message.ts",
+    "effective": 93
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-task-execution-message-dtos.ts",
+    "effective": 20
+  },
+  {
+    "path": "autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts",
+    "effective": 47
+  },
+  {
+    "path": "autobyteus-ts/src/agent/message/inter-agent-sender.ts",
+    "effective": 10
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager.ts",
+    "effective": 497
+  },
+  {
+    "path": "autobyteus-ts/src/memory/raw-trace-ingestion.ts",
+    "effective": 149
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputForm.vue",
+    "effective": 51
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+    "effective": 332
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/CollaboratorAddFailureNotice.vue",
+    "effective": 38
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/MentionChipRow.vue",
+    "effective": 32
+  },
+  {
+    "path": "autobyteus-web/components/chat/ChatTargetMenu.vue",
+    "effective": 77
+  },
+  {
+    "path": "autobyteus-web/components/conversation/UserMessage.vue",
+    "effective": 148
+  },
+  {
+    "path": "autobyteus-web/components/conversation/segments/InterAgentMessageSegment.vue",
+    "effective": 152
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentEventMonitor.vue",
+    "effective": 88
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceSurface.vue",
+    "effective": 109
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue",
+    "effective": 78
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/AgentRunTaskRows.vue",
+    "effective": 64
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+    "effective": 231
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue",
+    "effective": 419
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue",
+    "effective": 216
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    "effective": 98
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "effective": 29
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/runMentionScope.ts",
+    "effective": 53
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/useComposerTarget.ts",
+    "effective": 66
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/useRunMentionMenu.ts",
+    "effective": 145
+  },
+  {
+    "path": "autobyteus-web/composables/useContextAttachmentComposer.ts",
+    "effective": 357
+  },
+  {
+    "path": "autobyteus-web/composables/useWorkspaceHistoryTreeState.ts",
+    "effective": 449
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/collaboratorQueries.ts",
+    "effective": 36
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/runHistoryQueries.ts",
+    "effective": 305
+  },
+  {
+    "path": "autobyteus-web/localization/messages/en/chat.ts",
+    "effective": 97
+  },
+  {
+    "path": "autobyteus-web/localization/messages/zh-CN/chat.ts",
+    "effective": 96
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationChildContextFactory.ts",
+    "effective": 30
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "effective": 298
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "effective": 110
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationIndex.ts",
+    "effective": 110
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "effective": 247
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgCommunicationPerspective.ts",
+    "effective": 59
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts",
+    "effective": 166
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+    "effective": 323
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionViewIndex.ts",
+    "effective": 155
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgMemberContextFactory.ts",
+    "effective": 45
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+    "effective": 474
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/AgentStreamingService.ts",
+    "effective": 314
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/TeamStreamingService.ts",
+    "effective": 425
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts",
+    "effective": 247
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/handlers/memberInputMessageHandler.ts",
+    "effective": 42
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts",
+    "effective": 73
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/messageTypes.ts",
+    "effective": 313
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/teamClientMessageFactory.ts",
+    "effective": 47
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/agentSourceSelectors.ts",
+    "effective": 117
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/collaboratorAddFailures.ts",
+    "effective": 26
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/collaboratorCandidatesService.ts",
+    "effective": 93
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/runProjectionConversation.ts",
+    "effective": 340
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts",
+    "effective": 155
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamRunContextHydrationService.ts",
+    "effective": 320
+  },
+  {
+    "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+    "effective": 167
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts",
+    "effective": 153
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts",
+    "effective": 93
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts",
+    "effective": 326
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewModels.ts",
+    "effective": 68
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+    "effective": 406
+  },
+  {
+    "path": "autobyteus-web/stores/activeContextStore.ts",
+    "effective": 278
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "effective": 352
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "effective": 285
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "effective": 456
+  },
+  {
+    "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+    "effective": 482
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTeamExecutionRows.ts",
+    "effective": 106
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTypes.ts",
+    "effective": 259
+  },
+  {
+    "path": "autobyteus-web/types/agent/AgentContext.ts",
+    "effective": 44
+  },
+  {
+    "path": "autobyteus-web/types/conversation.ts",
+    "effective": 92
+  },
+  {
+    "path": "autobyteus-web/types/node.ts",
+    "effective": 60
+  },
+  {
+    "path": "autobyteus-web/types/segments.ts",
+    "effective": 111
+  },
+  {
+    "path": "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+    "effective": 93
+  },
+  {
+    "path": "autobyteus-web/types/workspace/collaborationMessagesContextView.ts",
+    "effective": 35
+  },
+  {
+    "path": "autobyteus-web/utils/agentOrgHistoryRows.ts",
+    "effective": 229
+  },
+  {
+    "path": "autobyteus-web/utils/collaboration/interAgentDelivery.ts",
+    "effective": 13
+  },
+  {
+    "path": "autobyteus-web/utils/collaboration/memberDisplayName.ts",
+    "effective": 13
+  },
+  {
+    "path": "autobyteus-web/utils/collaborators/collaboratorMentionText.ts",
+    "effective": 72
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+    "effective": 302
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextFileOwner.ts",
+    "effective": 90
+  },
+  {
+    "path": "autobyteus-web/utils/nodeEndpoints.ts",
+    "effective": 68
+  },
+  {
+    "path": "autobyteus-web/utils/runTreeProjection.ts",
+    "effective": 371
+  },
+  {
+    "path": "autobyteus-web/utils/runTreeSummary.ts",
+    "effective": 24
+  },
+  {
+    "path": "autobyteus-web/utils/teamCommunication/teamCommunicationPerspective.ts",
+    "effective": 59
+  }
+]

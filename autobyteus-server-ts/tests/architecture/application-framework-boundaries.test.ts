@@ -3046,7 +3046,6 @@ describe("application framework architecture boundaries", () => {
       return imported;
     }).sort();
     expect(ambientRunServiceImports).toEqual([
-      "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts:getAgentRunService",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",

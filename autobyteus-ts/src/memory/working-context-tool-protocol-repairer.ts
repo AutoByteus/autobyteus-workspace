@@ -181,7 +181,7 @@ function buildInsertedToolResultMessage(
   const toolResult = completed
     ? completed.toolResult
     : null;
-  const toolError = completed?.toolError ?? SYNTHETIC_TOOL_RESULT_ERROR(toolName, callId);
+  const toolError = completed ? completed.toolError : SYNTHETIC_TOOL_RESULT_ERROR(toolName, callId);
   const message = new Message(MessageRole.TOOL, {
     content: null,
     tool_payload: new ToolResultPayload(callId, toolName, toolResult, toolError),

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/derive-recovery.py", line 13, in <module>
+    assert all(d['body']['max_tokens']==8192 for d in comps)
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/derive-recovery.py", line 13, in <genexpr>
+    assert all(d['body']['max_tokens']==8192 for d in comps)
+KeyError: 'max_tokens'

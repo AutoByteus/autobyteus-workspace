@@ -1,0 +1,11 @@
+{
+  "result": "Design Impact",
+  "finding": "IR004-DI001",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues.",
+    "recipient_address": "/solution_designer"
+  },
+  "excluded": "Implementation incomplete; no source/API/Delivery route"
+}

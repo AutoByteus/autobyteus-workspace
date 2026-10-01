@@ -1,0 +1,1 @@
+export const useFileExplorerStore=()=>({openFile(){},openFilePreview(){}});export const useWindowNodeContextStore=()=>({isEmbeddedWindow:false});export const useWorkspaceStore=()=>({activeWorkspace:null});

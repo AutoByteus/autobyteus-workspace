@@ -1,0 +1,16 @@
+[
+  "autobyteus-ts/docs/agent_memory_design.md",
+  "autobyteus-ts/docs/agent_memory_design_nodejs.md",
+  "autobyteus-server-ts/docs/modules/agent_memory.md",
+  "autobyteus-server-ts/docs/ARCHITECTURE.md",
+  "autobyteus-web/docs/settings.md",
+  "autobyteus-web/docs/agent_execution_architecture.md",
+  "autobyteus-web/docs/memory.md",
+  "autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md",
+  "autobyteus-server-ts/docs/modules/agent_definition.md",
+  "autobyteus-server-ts/docs/modules/agent_tools.md",
+  "autobyteus-ts/docs/llm_module_design.md",
+  "autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md",
+  "autobyteus-server-ts/docs/modules/agent_execution.md",
+  "autobyteus-server-ts/docs/modules/agent_work_traces.md"
+]

@@ -1,5 +1,7 @@
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { defineStore } from 'pinia'
-import { shallowReactive, shallowRef } from 'vue'
+import { shallowReactive, shallowRef, watch } from 'vue'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { ContextFilePath } from '~/types/conversation'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
@@ -37,6 +39,12 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const services = new Map<string, AgentRunCollaborationStreamingService>()
   const inspections = new Map<string, Promise<void>>()
   const autoExpanded = new Set<string>()
+  const terminations = new Map<string, object>()
+  const binding = useWindowNodeContextStore()
+  const activities = useAgentActivityStore()
+  const assertNotTerminating = (id: string) => {
+    if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
+  }
 
   const setContext = (hostRunId: string, context: AgentRunCollaborationContext | null) => {
     const next = { ...contexts.value }
@@ -58,8 +66,9 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   const publish = (hostRunId: string, context: AgentRunCollaborationContext, commitActivities: () => void) => {
     const previous = contexts.value[hostRunId]
-    if (previous) context.adoptLocalContexts(previous)
+    const adopt = previous ? context.prepareLocalContextAdoption(previous) : () => undefined
     commitActivities()
+    adopt()
     setContext(hostRunId, context)
     errors[hostRunId] = null
     openNewTaskTeams(hostRunId, context)
@@ -68,14 +77,22 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
 
   const attach = (hostRunId: string): AgentRunCollaborationStreamingService => {
+    assertNotTerminating(hostRunId)
+    inspections.delete(hostRunId)
     const existing = services.get(hostRunId)
     if (existing) return existing
+    const revision = binding.bindingRevision
+    const isCurrent = () => services.get(hostRunId) === service
+      && binding.bindingRevision === revision && !terminations.has(hostRunId)
     const service = new AgentRunCollaborationStreamingService({
-      hostRunId,
-      publish: (context, commit) => publish(hostRunId, context, commit),
-      onInactive: () => { services.delete(hostRunId) },
-      reportError: (message) => { errors[hostRunId] = message },
-      onCollaboratorAdded: (context) => openNewTaskTeams(hostRunId, context),
+      hostRunId, isCurrent,
+      publish: (context, commit) => {
+        if (!isCurrent()) throw new Error('Agent collaboration stream ownership released.')
+        publish(hostRunId, context, commit)
+      },
+      onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
+      reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
+      onCollaboratorAdded: (context) => { if (isCurrent()) openNewTaskTeams(hostRunId, context) },
     })
     services.set(hostRunId, service)
     service.connect()
@@ -83,27 +100,85 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
 
   const detach = (hostRunId: string) => {
-    services.get(hostRunId)?.disconnect()
+    const service = services.get(hostRunId)
     services.delete(hostRunId)
+    service?.disconnect()
   }
 
   /** Loads the stored (or live) view without restoring anything. */
   const inspect = (hostRunId: string): Promise<void> => {
+    if (terminations.has(hostRunId) || services.has(hostRunId)) return Promise.resolve()
     const pending = inspections.get(hostRunId)
     if (pending) return pending
+    const revision = binding.bindingRevision
+    const activityRevisions = new Map(contexts.value[hostRunId]?.listAgentContextEntries()
+      .map(entry => [entry.agentRunId, activities.getActivityContentRevision(entry.agentRunId)]))
+    const isCurrent = () => inspections.get(hostRunId) === attempt
+      && binding.bindingRevision === revision && !services.has(hostRunId) && !terminations.has(hostRunId)
     const attempt = (async () => {
       try {
         const view = await readAgentRunCollaboration(hostRunId)
-        if (services.get(hostRunId)?.isReady()) return
+        if (!isCurrent()) return
         if (!view) { setContext(hostRunId, null); return }
-        const staged = await stageAgentRunCollaborationContext({ hostRunId, view })
-        publish(hostRunId, staged.context, staged.commitActivities)
+        const staged = await stageAgentRunCollaborationContext({ hostRunId, view, isCurrent, activityRevisions })
+        if (isCurrent()) publish(hostRunId, staged.context, staged.commitActivities)
       } catch (cause) {
-        errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
+        if (isCurrent()) errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
       }
-    })().finally(() => inspections.delete(hostRunId))
+    })().finally(() => { if (inspections.get(hostRunId) === attempt) inspections.delete(hostRunId) })
     inspections.set(hostRunId, attempt)
     return attempt
+  }
+
+  /** One request-local exclusion owned here, never a server receipt or input ledger. */
+  const beginHostTermination = (hostRunId: string) => {
+    assertNotTerminating(hostRunId)
+    const token = {}
+    const revision = binding.bindingRevision
+    const root = contexts.value[hostRunId]
+    const view = root?.view
+    const children = root?.listAgentContextEntries().map(entry => ({ ...entry,
+      state: entry.context.state, runtimeKind: entry.context.config.runtimeKind,
+      instance: entry.context.state.inputProjection?.runInstanceId,
+      activityIds: activities.getNativeCompactionActivityIds(entry.agentRunId),
+    })) ?? []
+    terminations.set(hostRunId, token)
+    inspections.delete(hostRunId)
+    // Deliberate retirement BEFORE the command: absence later is not a transport receipt.
+    detach(hostRunId)
+    root?.requireReopen('Agent collaboration requires fresh inspection after Stop.')
+    let confirmed = false
+    const ownsScope = () => terminations.get(hostRunId) === token
+      && binding.bindingRevision === revision && contexts.value[hostRunId] === root
+      && root?.view === view && !services.has(hostRunId)
+    return Object.freeze({
+      confirm: (): boolean => {
+        if (confirmed || !ownsScope() || (root?.listAgentContextEntries().length ?? 0) !== children.length) return false
+        // Validate the WHOLE batch before even one activity or context changes.
+        if (children.some(child => root?.getAgentContext(child.agentRunId) !== child.context
+          || root?.getChild(child.agentRunId)?.address !== child.memberAddress
+          || child.context.state !== child.state || child.state.runId !== child.agentRunId
+          || child.context.config.runtimeKind !== child.runtimeKind
+          || (!!child.state.inputProjection?.runInstanceId && child.state.inputProjection.runInstanceId !== child.instance))) return false
+        for (const child of children) {
+          if (child.runtimeKind === 'autobyteus') {
+            child.state.compactionStatus = activities.applyConfirmedNativeTermination(child.agentRunId,
+              [...child.activityIds, ...activities.getNativeCompactionActivityIds(child.agentRunId)], child.state.compactionStatus)
+          }
+        }
+        root?.setActive(false)
+        confirmed = true
+        return true
+      },
+      finish: (): void => {
+        if (terminations.get(hostRunId) !== token) return
+        // setActive replaced our captured view on success; all other ownership still holds.
+        const inspectConfirmed = confirmed && binding.bindingRevision === revision
+          && contexts.value[hostRunId] === root && !services.has(hostRunId)
+        terminations.delete(hostRunId)
+        if (inspectConfirmed) void inspect(hostRunId)
+      },
+    })
   }
 
   /**
@@ -111,6 +186,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * view otherwise. Called for the selected standalone run.
    */
   const syncHost = (hostRunId: string, hostRunning: boolean) => {
+    if (terminations.has(hostRunId)) return
+    if (contexts.value[hostRunId]?.phase === 'reopen_required' && !services.has(hostRunId)) return
     if (hostRunning) attach(hostRunId)
     else {
       detach(hostRunId)
@@ -144,13 +221,14 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   const submit = async (hostRunId: string, agentRunId: string, context: AgentContext,
     content: string, paths: readonly ContextFilePath[]): Promise<void> => {
+    assertNotTerminating(hostRunId)
+    if (contexts.value[hostRunId]?.getAgentContext(agentRunId) !== context) throw new Error('Agent collaboration child was replaced.')
     if (context.submissionPending) throw new Error('A message to this collaborator is already pending.')
     const mentions = mentionsPresentInText(content, context.requestedMentions)
     let attachments = paths.map((attachment) => ({ ...attachment }))
     const messageId = crypto.randomUUID()
     const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions })
-    Object.assign(submission.message, { messageId, dedupeKey })
+    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     try {
       // Attaching makes the root command-ready; a stopped host is restored first.
       const service = attach(hostRunId)
@@ -183,7 +261,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     const child = agentRunId ? collaboration?.getChild(agentRunId) : null
     const context = agentRunId ? collaboration?.getAgentContext(agentRunId) : null
     if (!collaboration || !child || !context) return null
-    const service = () => services.get(hostRunId)
+    const service = () => { assertNotTerminating(hostRunId); return services.get(hostRunId) }
     return Object.freeze({
       kind: child.kind === 'task_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
       host: Object.freeze({ hostRunId }),
@@ -204,13 +282,23 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
 
   const release = (hostRunId: string) => {
+    inspections.delete(hostRunId)
+    terminations.delete(hostRunId)
     detach(hostRunId)
     setContext(hostRunId, null)
     delete selection[hostRunId]
+    delete expandedTeams[hostRunId]
+    delete errors[hostRunId]
   }
 
+  watch(() => binding.bindingRevision, () => {
+    const ids = new Set([...Object.keys(contexts.value), ...services.keys(), ...inspections.keys(), ...terminations.keys()])
+    ids.forEach(release)
+    autoExpanded.clear()
+  }, { flush: 'sync' })
+
   return {
-    contexts, errors, contextFor, syncHost, inspect, attach, release,
+    contexts, errors, contextFor, syncHost, inspect, attach, release, beginHostTermination,
     selectChild, selectedChild, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
   }
 })

@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:17:04.374Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "874AE1E81D71BE579A534ACAFD17046D",
+    "--script",
+    "async()=>{let a=await __abDemo.type({selector:'textarea'},'API6-SEED1\\n'+'Synthetic inventory record; owner Mira Chen; customer Northwind Helios. '.repeat(260),{delayMs:0});if(!a.ok)return a;return {type:a,send:await __abDemo.click({text:'Send message'})};}"
+  ]
+}

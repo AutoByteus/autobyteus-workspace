@@ -1,0 +1,30 @@
+{
+  "case": "API-C04",
+  "attempt": "",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+    "tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+    "tests/unit/config/compaction-model-settings.test.ts",
+    "tests/unit/agent-execution/compaction/compaction-parent-credentials.test.ts",
+    "tests/unit/agent-execution/compaction/compaction-llm-factory.test.ts",
+    "tests/unit/services/server-settings-service.test.ts",
+    "tests/unit/agent-memory/agent-memory-service.test.ts",
+    "tests/unit/agent-memory/memory-file-store.test.ts",
+    "tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts",
+    "tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts",
+    "tests/unit/application-platform/application-platform-lifecycle.test.ts",
+    "tests/unit/context-files/context-file-access-containment.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T12:20:04.742736+00:00",
+  "finished": "2026-09-30T12:20:13.879583+00:00",
+  "exit_code": 0,
+  "log": "API-C04.log"
+}

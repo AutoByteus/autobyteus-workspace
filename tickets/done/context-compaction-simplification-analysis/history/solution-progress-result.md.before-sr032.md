@@ -1,0 +1,9 @@
+# SR-031 — Validate the real-usage premise, not just reachable code
+
+Approved requirements SR028 and reviewed design SR030 remain. ARCH-REV-003 Pass is historical design authority; IR004 is incomplete, not accepted. **Evidence Clarification: IR004-DI001's exact identical Team/Org resend trigger is not established as supported real usage.**
+
+The retained synthetic test calls real handlers/queue/core but repeats B explicitly. Actual frontend Team/Org sends create new message identities; Team coalesces an in-flight duplicate; timeout/disconnect reject pending commands and reconnect does not replay outbound sends. This is not proof of impossibility, but is insufficient basis for new command-admission/identity-lifetime architecture. Ask reporter for an actual producer/action or governing contract and its forward trace if one exists.
+
+The premature unhanded SR031 architecture candidate is withdrawn and archived; no new service/queue/claim/lifetime/ACK behavior authorized. Existing held-message/three-attempt/fresh-user design is unchanged. No failure relabelled Pass, no implementation/API/Delivery completion. Full result: production-scenario-clarification.sr031.md; E31 and solution-recovery-evidence/sr031/scenario-premise.json. No SD source/test/provider/git-finalization work. Existing WIP and all historical limits preserved.
+
+Implementation acknowledgment: the reporter confirms no independent supported same-ID Team/Org resend producer/contract or forward witness beyond the injected diagnostic, withdraws its production-blocker interpretation, preserves the exact failing result, and continues supported SR030 implementation/checks without the withdrawn machinery. Evidence: solution-recovery-evidence/sr031/implementation-acknowledgment.json. This closes the pending premise inquiry on present evidence, not implementation or validation; no new requirements, design, SR round or downstream handoff.

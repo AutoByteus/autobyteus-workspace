@@ -79,9 +79,15 @@ const makeContext = () => {
   const state = new AgentRuntimeState('agent-1');
   const context = new AgentContext('agent-1', config, state);
 
-  context.state.statusManagerRef = { emit_status_update: vi.fn(async () => undefined) } as any;
+  context.state.statusManagerRef = { executeLifecycleProcessors: vi.fn(async () => undefined),
+    emit_status_update: vi.fn(async () => undefined) } as any;
   context.state.statusDeriver = new AgentStatusDeriver(AgentStatus.UNINITIALIZED);
   context.state.memoryManager = {
+    getCompactionRecovery: () => null,
+    canStartCompactionTurn: () => true,
+    bindCompactionRetryTurn: () => true,
+    retireCompactionTurn: () => undefined,
+    revokeCompactionRetry: () => undefined,
     startTurn: () => 'turn-1'
   } as any;
   return context;

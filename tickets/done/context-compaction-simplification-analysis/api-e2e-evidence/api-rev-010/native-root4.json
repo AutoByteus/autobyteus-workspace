@@ -1,0 +1,16 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T16:58:19.729406+00:00",
+  "finished": "2026-10-01T16:58:25.473259+00:00",
+  "exit": 0
+}

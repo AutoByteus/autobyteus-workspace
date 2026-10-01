@@ -1,3 +1,6 @@
+import { EventEmitter } from 'autobyteus-ts/events/event-emitter.js';
+import { EventType } from 'autobyteus-ts/events/event-types.js';
+import { afterEach } from 'vitest';
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
@@ -15,6 +18,9 @@ const createBackend = (overrides: {
 } = {}) => {
   const agent = {
     agentId: "agent-1",
+    getCompactionRecovery: () => null,
+    authorizeCompactionRetry: () => "stale",
+    revokeUnusedCompactionRetry: () => "stale",
     currentStatus: "idle",
     postUserMessage: vi.fn().mockResolvedValue(undefined),
     postToolExecutionApproval: vi.fn().mockResolvedValue({
@@ -107,6 +113,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(backend.getLifecycleSnapshot()).toEqual({
       availability: "active",
       phase: "idle",
+      recoverableBlock: null,
       currentTurn: { kind: "NONE" },
     });
     expect(backend.getPlatformAgentRunId()).toBe("agent-1");
@@ -188,7 +195,7 @@ describe("AutoByteusAgentRunBackend", () => {
 
     const result = await backend.terminate();
 
-    expect(removeAgent).toHaveBeenCalledWith("agent-1");
+    expect(removeAgent).toHaveBeenCalledWith("agent-1", expect.any(Number));
     expect(result).toEqual({ accepted: true });
   });
 
@@ -225,6 +232,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(agent.postUserMessage).not.toHaveBeenCalledWith(expect.objectContaining({ content: "late" }));
     expect(sendWhileTerminating).toEqual({
       forwarded: false,
+      delivery: "not_delivered",
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
       turnId: null,
@@ -252,6 +260,7 @@ describe("AutoByteusAgentRunBackend", () => {
       message: new AgentInputUserMessage("late"),
     })).resolves.toEqual({
       forwarded: false,
+      delivery: "not_delivered",
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
       turnId: null,
@@ -274,6 +283,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(agent.stop).not.toHaveBeenCalled();
     expect(sendResult).toEqual({
       forwarded: false,
+      delivery: "not_delivered",
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
       turnId: null,
@@ -299,5 +309,75 @@ describe("AutoByteusAgentRunBackend", () => {
       code: "RUNTIME_COMMAND_FAILED",
       message: "Failed to interrupt run: Error: interrupt failed",
     });
+  });
+});
+
+const flushPump = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
+const deferred = <T>() => { let resolve!: (value: T) => void; const promise = new Promise<T>(done => { resolve = done; }); return { promise, resolve }; };
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
+const withStream = (removeAgent: (id: string, seconds: number) => Promise<boolean>) => {
+  const notifier = new EventEmitter();
+  const h = createBackend({ agent: { context: { statusManager: { notifier } } as any }, removeAgent: removeAgent as any });
+  const emit = (phase: string) => notifier.emit(EventType.AGENT_COMPACTION_STATUS_UPDATED,
+    { payload: { phase, compaction_operation_id: 'native-operation', turn_id: 'turn-1' }, agent_id: 'agent-1' });
+  return { ...h, emit };
+};
+describe('native shutdown event drain', () => {
+  it('keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription', async () => {
+    const remove = deferred<boolean>(); const listenerDone = deferred<void>(); const received: string[] = [];
+    const h = withStream(() => remove.promise);
+    h.backend.subscribeToSourceEventBatches(async ([event]) => {
+      received.push((event as any).payload.phase);
+      if (received.length === 1) await listenerDone.promise;
+    });
+    h.emit('started'); await flushPump();
+    let settled = false;
+    const termination = h.backend.terminate().then(result => { settled = true; return result; });
+    h.emit('stopped'); remove.resolve(true);
+    await Promise.resolve(); await Promise.resolve();
+    expect(settled).toBe(false);
+    listenerDone.resolve();
+    await expect(termination).resolves.toEqual({ accepted: true });
+    expect(received).toEqual(['started', 'stopped']);
+    const late = vi.fn(); h.backend.subscribeToSourceEventBatches(late); h.emit('started');
+    await Promise.resolve(); expect(late).not.toHaveBeenCalled();
+  });
+  it('uses only the remainder of one ten-second deadline for a hung listener without undoing resource success', async () => {
+    vi.useFakeTimers(); const remove = deferred<boolean>(); const listenerDone = deferred<void>();
+    const removeAgent = vi.fn(() => remove.promise); const h = withStream(removeAgent);
+    h.backend.subscribeToSourceEventBatches(() => listenerDone.promise);
+    h.emit('started'); await flushPump();
+    const termination = h.backend.terminate();
+    await vi.advanceTimersByTimeAsync(9000); remove.resolve(true); await vi.advanceTimersByTimeAsync(0);
+    let settled = false; void termination.then(() => { settled = true; });
+    await vi.advanceTimersByTimeAsync(999); expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(1); await expect(termination).resolves.toEqual({ accepted: true });
+    expect(removeAgent).toHaveBeenCalledWith('agent-1', 10);
+    listenerDone.resolve();
+  });
+  it('does not turn an unfinished removal or a still-registered run into success', async () => {
+    vi.useFakeTimers(); const remove = deferred<boolean>(); const h = withStream(() => remove.promise);
+    const termination = h.backend.terminate(); await vi.advanceTimersByTimeAsync(10000);
+    await expect(termination).resolves.toMatchObject({ accepted: false });
+    remove.resolve(true);
+    const active = withStream(async () => false);
+    await expect(active.backend.terminate()).resolves.toMatchObject({ accepted: false });
+  });
+  it('old pump disposal cannot close a replacement stream, and unsubscribe alone emits no stopped', async () => {
+    const h = withStream(async () => true); const oldDone = deferred<void>();
+    const old = vi.fn(() => oldDone.promise); const unsubscribe = h.backend.subscribeToSourceEventBatches(old);
+    h.emit('started'); await vi.waitFor(() => expect(old).toHaveBeenCalledOnce()); unsubscribe();
+    const next = vi.fn(); const stop = h.backend.subscribeToSourceEventBatches(next);
+    oldDone.resolve(); await flushPump();
+    h.emit('completed'); await vi.waitFor(() => expect(next).toHaveBeenCalledOnce());
+    expect((next.mock.calls[0][0][0] as any).payload.phase).toBe('completed');
+    stop();
+  });
+  it('continues draining other listeners when one observer fails', async () => {
+    const h = withStream(async () => true); const seen = vi.fn();
+    h.backend.subscribeToSourceEventBatches(async () => { throw new Error('projection failed'); });
+    h.backend.subscribeToSourceEventBatches(seen); h.emit('stopped');
+    await expect(h.backend.terminate()).resolves.toEqual({ accepted: true });
+    expect(seen).toHaveBeenCalledOnce();
   });
 });

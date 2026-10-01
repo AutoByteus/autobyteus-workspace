@@ -1,0 +1,168 @@
+{
+  "head": "026476691c62bda309ce7f2a9342ebb444959f98",
+  "mergeHead": "d057801c89f26bc69a97331b59631c00519aec98",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "unmerged": 0,
+  "stagedCount": 672,
+  "indexUnchanged": true,
+  "stashUnchanged": true,
+  "pinnedFileCount": 39290,
+  "changedPinned": [
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+      "before": "261388ecdb7759d5cea1bf5537e7415e56380fe9d92d8789e2d44cac27684f0b",
+      "after": "483d7c11eea8378add82d867fa3a8e65196ef7c5e0a6bd658222eccc0bf49b28"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+      "before": "7e87354586f4e0430100bbe86ef412bd29450d92669543adf8a8b926021ce34b",
+      "after": "9372bf7f747008389367103ccc700c1d5af40187f4d4e5403f94db74f06d1245"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+      "before": "a383407dc0cfd826473d549edcbbb0786ca03946aba067a849a774847bcbf3b2",
+      "after": "3ad4cff17437d0c67b79fbf7a015f52ca5b0c764b69b2db030714ec711be9321"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+      "before": "84e63343e5ebfab808be6af470963ecce95d6cc044859eeff36f2f2d7b5a4203",
+      "after": "a70a7959e127da11860d9f1eecdf48087d89429e4e25aea999a11eb86f7c108e"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+      "before": "40aa74dcaaeea66103b63ec84eddf626197f543616eee339415d0370963fc278",
+      "after": "35f2d41886680f691ed13b9fe07a3907d7a568342e32bd27737376f1f73c7050"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+      "before": "6c19dcc60a2766fc20c1507d27b389f112bbba13cb6a808d919c2a371ccd4fc0",
+      "after": "e6ef737f4713cea7ac8db7e1a05a7334a034f7927ed7a79ae70a673e70cd7632"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+      "before": "08fba85cdcce61abb45c4ef6f72b4b441c38918d2f9217711936a8cb2874f372",
+      "after": "d17e8dd5eb233ff0a3006eac93ff7ef37b5769e553faa8d880d3d76f7c0e665c"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs",
+      "before": "9b14139e2115c4425ec48e717774b4b1d255d0d1bb5362b45b122401a6f0f016",
+      "after": "c910176bbf8f92a94c19d2b0a6ad25ca4d341d3c6ef7365d80a0fff58bffb905"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+      "before": "c943b87ec4cd002357c51ac4dcb8a0411beb80c5657afc5c6cb77ee97386567b",
+      "after": "b62adb584a7de0bae5fc9ae25a557ebeb0cfb42fc1d529f24927fb44dd7086e7"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+      "before": "36340e214320d52b0ce814626f73a85bce11ab6865566533adf950861181a054",
+      "after": "112688c3376d362f604fd51c60da9d5d0a62cb60c1cbccaa02b26d8835065176"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+      "before": "da9690a5ae6f3d21cc18f4c78c6e1dc84ce9e0662bf49cd4c97b0a7f79da0b7d",
+      "after": "783547fc842ff46a63b53cc2fc5cd2f9d93e6284614daa206109c5eec95ab905"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "before": "7350d6a2017e15b58cf93d54a1c684b71dac25a5c3b625359f0382c0c60879da",
+      "after": "061534d410c7e9292dcb4460c96b37253cf3175e8888e4a5d68fcac47b90fc61"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "before": "653eb2186513752415ec7398083458e6dafcf7dc7525d3065e0af0fe273a7089",
+      "after": "4804294119cffa09ef479d4af03527844d69816a46ba257adf2d24b115e72aa8"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+      "before": "701894c28c8a99989a557e0b6b48f4d4b738358e7d4473409558132264ddebbd",
+      "after": "fa1ce283525ce6017758276c08bff04b0353b158141e2baea4ebac3f6e3ed0e9"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts",
+      "before": "91fd802dd28a597b99286f308d8289621f9225dd2f47284602dd34ac351cdabf",
+      "after": "408d74df71553b2baee0be27350573abb0d9af39600436b7eb54fe26df60b891"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts",
+      "before": "f53c0fbac3b3d3635094a719caf37b6c32bfc034d36de72f8a202db90142b778",
+      "after": "9d84eceaf8f5b401194352f1b43d193b8181221f7b1d0597c581f44e7938f65b"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts",
+      "before": "4bb67168ad5206602a575f695fd3a8a65c70365129537f08fea3e91ea909c97c",
+      "after": "d56326b1676a8b28c38158381b18ce6c34e5c46b361b189f2ff695788261905b"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts",
+      "before": "baceb882e752cf9f83f50f1af33baa812df568daf0e20ed4e25ab897b874cb9d",
+      "after": "f4bb6bafe2020e63d75b1ee70a236af00ac0cd4e6d25854a873c7de945c8e654"
+    },
+    {
+      "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+      "before": "109f97deed2a6a42ac731814fdf5123b2fae1f1fd302f1892121004be546309f",
+      "after": "3fde64eb0ef8f56f22048e893842479205abc824f5aeec6230d635d6290fd5e6"
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts",
+      "before": "cd1f02257bbb94f96f8800d2f80a04592d293b82653c2d55d293ba1d10023320",
+      "after": "ea9b86b43f0018bf76d8848fbcc7baa1af87c02bcff6e880f31736f5a61117ac"
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+      "before": "068ef42f06076e5c604babaca9d3aa0356391a4378d6ba3bbf632f740e553487",
+      "after": "5b0570a5d44c2d0af387d6c9b017fd212efb68f4d186a33d1de7754e555d6ecd"
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+      "before": "1a46e3d7d8635302444d49d0cc423daf10e65db8af66de745698e3976d4dbd88",
+      "after": "682df17c86874e262ccc31ea35600335f9c62b8a1db59bc73f1fd08286cb9f82"
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+      "before": "dff1fee2b17a1ab1cdd74855c0b95f21b32ed250130d205d6f200271740eca8b",
+      "after": "289769da9217733e6ad2c1aa2c720af04519c49fdeb17d8539a9622f83a49acb"
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+      "before": "15ad0ddc9c468e00e0465c3dc95aca551f58393f083f816aed642be32e24168b",
+      "after": "695ea6df22c706db1ab7598c7e75f75484758365634219dee50b041279c643c3"
+    },
+    {
+      "path": "autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts",
+      "before": "c57704f1b167be30733131db8b7520452f008bdbc63631d6aa2b7dbd0e904336",
+      "after": "449e93df8a0b71f72324b66452b55ec51bd2be7761f7ec7f3902ae888d13dad4"
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "before": "c9afd678049ae1bb3a409f6ee6a207666695417aad2ee34612dc0b4029353c15",
+      "after": "49f9683df1ef9a46f96b8346d14c329d1bbc19dad0ac98931e8cf85b5c9c5a28"
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "before": "f5c34549171b65b32bcf5642898e194426c6f06fe75d54839b7297af91aeeae3",
+      "after": "536c8c65c14d60d5856b1a08deb7819b08e39f9d507c6a1b2342dd08ae6eaf3c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md",
+      "before": "e46c416198ab07a93dc81169846d42c141992e06ad5ecb267c980f89770496eb",
+      "after": "427e7bd34d825f0e5f753e2c279829e11c5bcafc0e71b8505627114ece3d2f81"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md",
+      "before": "4414aa5f724825aa003f7d3e555ce0890a7d1442491aa05c63f6715f367c25c5",
+      "after": "b51404d9c1ab6d0b4115046ae78e5a7e3d3e4c5c81e4d6ac224f721316cb572a"
+    }
+  ],
+  "newSourcePaths": [
+    "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+    "autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts",
+    "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+    "autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts"
+  ],
+  "api12Unchanged": true,
+  "dr002BackupUnchanged": true,
+  "ir008PreemitBackupUnchanged": true,
+  "sourceSizeViolations": [],
+  "incomingSourceSizeViolations": []
+}

@@ -1,0 +1,78 @@
+{
+  "created": "2026-09-30T12:18:00.762532+00:00",
+  "cases": {
+    "API-C01": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/secret-management/live-e2e-harness.test.ts",
+      "tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "--no-watch"
+    ],
+    "API-C02": [
+      "pnpm",
+      "-C",
+      "autobyteus-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/memory",
+      "tests/unit/agent/compaction",
+      "tests/unit/agent/handlers/llm-complete-response-received-event-handler.test.ts",
+      "tests/unit/agent/streaming",
+      "--no-watch"
+    ],
+    "API-C04": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+      "tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+      "tests/unit/config/compaction-model-settings.test.ts",
+      "tests/unit/agent-execution/compaction/compaction-parent-credentials.test.ts",
+      "tests/unit/agent-execution/compaction/compaction-llm-factory.test.ts",
+      "tests/unit/services/server-settings-service.test.ts",
+      "tests/unit/agent-memory/agent-memory-service.test.ts",
+      "tests/unit/agent-memory/memory-file-store.test.ts",
+      "tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts",
+      "tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts",
+      "tests/unit/application-platform/application-platform-lifecycle.test.ts",
+      "tests/unit/context-files/context-file-access-containment.test.ts",
+      "--no-watch"
+    ],
+    "API-C05": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "tests/e2e/memory/memory-view-graphql.e2e.test.ts",
+      "tests/e2e/memory/memory-explorer-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "API-B01": [
+      "pnpm",
+      "--filter",
+      "autobyteus-server-ts",
+      "build"
+    ],
+    "API-C07": [
+      "pnpm",
+      "-C",
+      "autobyteus-agent-presentation-contracts",
+      "test"
+    ]
+  },
+  "scope": "IR003 structural; no provider generation in repository cases; known F005/F004 remain open",
+  "broader": "API-C11 actual owned server startup/restart HTTP settings/history; predeclare after repository score",
+  "new_user_permission": "LM Studio / DeepSeek v4 flash; private vault importer only if needed; no exhausted A/B diagnostics"
+}

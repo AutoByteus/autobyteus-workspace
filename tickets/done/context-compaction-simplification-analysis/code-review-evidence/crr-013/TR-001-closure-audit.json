@@ -1,0 +1,20 @@
+{
+  "comparedApiEntryPins": 2528,
+  "missing": [],
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/live-e2e-harness.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md"
+  ],
+  "unexpected": [],
+  "sourceReportUnchanged": true,
+  "crr012TestReviewUnchangedAtEntry": true,
+  "historicalFlowSha256": "66411303344b6c8ca6e894822df1a04a822952f20be6076297ed4b1f6e54f250",
+  "retiredFieldLine": 475,
+  "retiredFieldInterpretation": "unsupported; excluded, raw log unchanged",
+  "scope": "independent source/diff/pin inspection; no reviewer test execution"
+}

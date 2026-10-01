@@ -1,0 +1,5 @@
+{
+  "autobyteus-server-ts/src/agent-org-execution/domain/frozen-agent-org-termination-scope.ts": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+  "autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+  "autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts"
+}

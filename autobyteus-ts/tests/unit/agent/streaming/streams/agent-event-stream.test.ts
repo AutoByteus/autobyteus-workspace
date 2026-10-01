@@ -7,7 +7,8 @@ import {
   ErrorEventData,
   AgentStatusData,
   TurnLifecycleData,
-  SegmentEventData
+  SegmentEventData,
+  CompactionStatusData
 } from '../../../../../src/agent/streaming/events/stream-event-payloads.js';
 import { CompleteResponse } from '../../../../../src/llm/utils/response-types.js';
 import { AgentStatus } from '../../../../../src/agent/status/status-enum.js';
@@ -55,6 +56,30 @@ describe('AgentEventStream', () => {
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
     expect(results[0].content).toBe(finalMsg.content);
+  });
+
+  it('round-trips current direct-summary metadata without manufacturing retired live fields', async () => {
+    const { notifier, streamer } = makeStreamer();
+    const payload = {
+      phase: 'completed', turn_id: 'turn-1', compaction_operation_id: 'operation-1',
+      requested_turn_id: 'request-1', execution_turn_id: 'turn-1',
+      compaction_model_identifier: 'model-1', summarizer_provider: 'openai',
+      compaction_invocation_id: 'invocation-1', completion_status: 'unknown',
+      completion_reason: null, summary_char_count: 240, summary_token_count: 60,
+      selected_block_count: 3, compacted_block_count: 3, raw_trace_count: 6,
+    };
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
+    await delay(5);
+    notifier.notifyAgentCompactionStatus(payload);
+    const results = await consumer;
+    expect(results).toHaveLength(1);
+    expect(results[0].event_type).toBe(StreamEventType.COMPACTION_STATUS);
+    expect(results[0].data).toBeInstanceOf(CompactionStatusData);
+    expect(results[0].data).toMatchObject(payload);
+    for (const key of ['semantic_fact_count', 'compaction_agent_definition_id', 'compaction_agent_name',
+      'compaction_runtime_kind', 'compaction_run_id', 'compaction_task_id']) {
+      expect(Object.hasOwn(results[0].data, key)).toBe(false);
+    }
   });
 
   it('allEvents receives status changes', async () => {

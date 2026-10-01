@@ -43,16 +43,19 @@ export const projectAgentPresentationMessage = (event: AgentPresentationEvent): 
     case "SEGMENT_START": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata } });
     case "SEGMENT_CONTENT": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
     case "SEGMENT_END": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
-    case "AGENT_STATUS": return parse({ type, payload: { status: event.details.status, trigger: event.details.trigger, tool_name: event.details.toolName, error_message: event.details.errorMessage, error_details: event.details.errorDetails } });
+    case "AGENT_STATUS": return parse({ type, payload: { status: event.details.status, trigger: event.details.trigger, tool_name: event.details.toolName, error_message: event.details.errorMessage, error_details: event.details.errorDetails, recoverableBlock: event.details.recoverableBlock } });
+    case "AGENT_INPUT_STATE": return parse({ type, payload: event.details });
+    case "COMPACTION_BLOCKED": return parse({ type, payload: event.details });
+    case "COMPACTION_RESUMED": return parse({ type, payload: event.details });
     case "COMPACTION_STATUS": return parse({ type, payload: {
       phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
       compaction_operation_id: event.details.compactionOperationId, requested_turn_id: event.details.requestedTurnId,
       execution_turn_id: event.details.executionTurnId, selected_block_count: event.details.selectedBlockCount,
       compacted_block_count: event.details.compactedBlockCount, raw_trace_count: event.details.rawTraceCount,
-      semantic_fact_count: event.details.semanticFactCount, compaction_agent_definition_id: event.details.compactionAgentDefinitionId,
-      compaction_agent_name: event.details.compactionAgentName, compaction_runtime_kind: event.details.compactionRuntimeKind,
-      compaction_model_identifier: event.details.compactionModelIdentifier, compaction_run_id: event.details.compactionRunId,
-      compaction_task_id: event.details.compactionTaskId, error_message: event.details.errorMessage,
+      summary_char_count: event.details.summaryCharCount, compaction_invocation_id: event.details.compactionInvocationId,
+      summarizer_provider: event.details.summarizerProvider, completion_status: event.details.completionStatus,
+      compaction_model_identifier: event.details.compactionModelIdentifier, completion_reason: event.details.completionReason,
+      summary_token_count: event.details.summaryTokenCount, error_message: event.details.errorMessage,
       provider: event.details.provider, source_surface: event.details.sourceSurface, boundary_key: event.details.boundaryKey,
       provider_event_id: event.details.providerEventId, provider_session_id: event.details.providerSessionId,
       provider_thread_id: event.details.providerThreadId, provider_timestamp: event.details.providerTimestamp,

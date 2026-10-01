@@ -1,0 +1,69 @@
+{
+  "case": "API-C08",
+  "started": "2026-09-30T13:03:51.170Z",
+  "database": {
+    "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db",
+    "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db",
+    "rootKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db.secret.key"
+  },
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-004-deepseek",
+  "attempts": [
+    {
+      "phase": "preflight",
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+      "environment": {
+        "RUN_REAL_E2E": "1",
+        "AUTOBYTEUS_TEST_RUNTIME_ROOT": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-004-deepseek",
+        "AUTOBYTEUS_TEST_SERVER_URL": "http://127.0.0.1:62136",
+        "AUTOBYTEUS_TEST_DATABASE_URL": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db",
+        "AUTOBYTEUS_LIVE_E2E_SCENARIOS": "deepseek.compaction-agent-flow",
+        "AUTOBYTEUS_LIVE_E2E_PREFLIGHT_ONLY": "1"
+      },
+      "status": 0,
+      "signal": null,
+      "completed": "2026-09-30T13:03:57.569Z"
+    },
+    {
+      "phase": "flow",
+      "command": [
+        "/Users/normy/.hermes/node/bin/node",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-004/bounded-worker.mjs",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+        "--no-watch",
+        "--config",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-004/vitest-live.config.mts"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+      "environment": {
+        "RUN_REAL_E2E": "1",
+        "AUTOBYTEUS_TEST_RUNTIME_ROOT": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-004-deepseek",
+        "AUTOBYTEUS_TEST_SERVER_URL": "http://127.0.0.1:62136",
+        "AUTOBYTEUS_TEST_DATABASE_URL": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db",
+        "AUTOBYTEUS_LIVE_E2E_SCENARIOS": "deepseek.compaction-agent-flow"
+      },
+      "status": 1,
+      "signal": null,
+      "completed": "2026-09-30T13:04:19.655Z"
+    }
+  ],
+  "serverUrl": "http://127.0.0.1:62136",
+  "pid": 61241,
+  "stopReason": "flow_COMMAND_FAILED",
+  "cleanup": {
+    "runtimeRemoved": true,
+    "databaseRemoved": true,
+    "rootKeyRemoved": true
+  },
+  "finished": "2026-09-30T13:04:19.675Z"
+}

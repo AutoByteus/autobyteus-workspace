@@ -1,0 +1,172 @@
+{
+  "at": "2026-10-01T06:22:18.959033+00:00",
+  "checks": [
+    {
+      "name": "flow no provider/capture/guard error",
+      "pass": true
+    },
+    {
+      "name": "quality no provider/capture/guard error",
+      "pass": true
+    },
+    {
+      "name": "11 total <= approved13",
+      "pass": true
+    },
+    {
+      "name": "global sequence crosses two workers without reset",
+      "pass": true
+    },
+    {
+      "name": "8 parent + 3 summary",
+      "pass": true
+    },
+    {
+      "name": "all11 HTTP200",
+      "pass": true
+    },
+    {
+      "name": "model only requested deepseek-v4-flash",
+      "pass": true
+    },
+    {
+      "name": "one flow summary/two quality",
+      "pass": true
+    },
+    {
+      "name": "parent1 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "parent2 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "parent3 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "parent4 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "parent5 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "parent6 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "request7 exact approved v5",
+      "pass": true
+    },
+    {
+      "name": "request7 generation0.7/cap8192/no tools",
+      "pass": true
+    },
+    {
+      "name": "parent8 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "parent9 config0/1024/thinking disabled",
+      "pass": true
+    },
+    {
+      "name": "request10 exact approved v5",
+      "pass": true
+    },
+    {
+      "name": "request10 generation0.7/cap8192/no tools",
+      "pass": true
+    },
+    {
+      "name": "request11 exact approved v5",
+      "pass": true
+    },
+    {
+      "name": "request11 generation0.7/cap8192/no tools",
+      "pass": true
+    },
+    {
+      "name": "all planned phases exit0",
+      "pass": true
+    },
+    {
+      "name": "live campaign under12minutes",
+      "pass": true
+    },
+    {
+      "name": "normal 4 turns finished without error",
+      "pass": true
+    },
+    {
+      "name": "real threshold ratio5percent crossing",
+      "pass": true
+    },
+    {
+      "name": "one complete lifecycle",
+      "pass": true
+    },
+    {
+      "name": "persisted summary exactly next parent summary",
+      "pass": true
+    },
+    {
+      "name": "all eight retained anchors exact",
+      "pass": true
+    },
+    {
+      "name": "all projected anchors exact",
+      "pass": true
+    },
+    {
+      "name": "exact nine-field continuation artifact",
+      "pass": true
+    },
+    {
+      "name": "two distinct successful semantic invocations",
+      "pass": true
+    },
+    {
+      "name": "repeated uses actual first response once",
+      "pass": true
+    },
+    {
+      "name": "pair durable two-call assertion ran",
+      "pass": true
+    },
+    {
+      "name": "owned database/rootkey/runtime removed",
+      "pass": true
+    },
+    {
+      "name": "owned builtserver exited",
+      "pass": true
+    },
+    {
+      "name": "owned server port released",
+      "pass": true
+    },
+    {
+      "name": "source stat unchanged importer-only access",
+      "pass": true
+    },
+    {
+      "name": "normal harness-owned flow workspace removed",
+      "pass": true
+    }
+  ],
+  "passed": 39,
+  "liveSeconds": 42.732,
+  "sizesDescriptiveNotAcceptanceThreshold": {
+    "flowPreparedSourceChars": 9151,
+    "flowAcceptedSummaryChars": 4785,
+    "firstSourceChars": 793,
+    "firstSummaryChars": 2097,
+    "repeatedPreparedSourceChars": 2935,
+    "repeatedSummaryChars": 2698
+  },
+  "productionSummaryVsSmallSyntheticPair": "Manual review separate; no keyword/length-only acceptance."
+}

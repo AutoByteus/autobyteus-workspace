@@ -1,0 +1,40 @@
+{
+  "actionEvidence": "run-script returned authored label; exact payload not retained",
+  "hardRendererReloadProven": false,
+  "normalSavedRunHydrationProven": false,
+  "getRunProjectionResponseRetained": false,
+  "newCampaign": false,
+  "sourceOrTestEdits": false,
+  "captures": {
+    "ui-40-reload.json": "31e3800c23abb5416275b42c65e35a0024944d55cfeee18bf70da5a80e04cffd",
+    "ui-41-reconnected.json": "0a53927e42873ad6818e7602fd7dba8976982d3f36675a3ef1f9df1d17d564ce",
+    "ui-57-terminate.json": "a5e0eb73742d714c5eb0938e98381297df5d607cb53313a996a69065fb149dab",
+    "ui-58-terminated.json": "8e519f4f6b52237973abb9795d2fe945feffc1ef5016727739f5381d778a0656",
+    "ui-59-saved-reopen.json": "7b37efe2c0cacfb369e1bbc57ef32d2159c17f8c44cdd14ad69c0ee18e7fee8b",
+    "ui-60-saved-view.json": "fbf3d70a98ae094024b9d44f2e90289ba0d83cb65068f39f7eeb1af598e36b07",
+    "ui-62-I-response.json": "4d979fa08d4d515d7f56e8d84930d183f2e908cb19e8cf673646b97e81ef803b",
+    "isolated-app.log": "398e30adb0d24b8c48f27e1c362000a2e7ef1c72dfc891de36dd1244b03d1fb6",
+    "loopback-wire.jsonl": "3d477d57515d6da4f7a54a7ef14b75a8b17ee392f8840a589cac3df203091e15",
+    "lifecycle-assertions.json": "9bb8e58372d8dcead9507ae58a6bdb1361528f08c92a34423ee9a39a8f00dea2"
+  },
+  "rawTraceTypes": {
+    "terminated-files": {
+      "counts": {
+        "assistant": 11,
+        "user": 13,
+        "operation_boundary": 2,
+        "system_instruction": 1
+      },
+      "compactionTypedRecords": []
+    },
+    "final-run-files": {
+      "counts": {
+        "user": 14,
+        "operation_boundary": 2,
+        "assistant": 12,
+        "system_instruction": 2
+      },
+      "compactionTypedRecords": []
+    }
+  }
+}

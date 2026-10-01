@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-007/ui-continuation/verify-evidence.py", line 43, in <module>
+    ok(all(any(x['message_id']==firstA['message_id'] and x['turn_id']==firstA['turn_id'] for x in s['entries']) for s in recovering),scenario+' held A identity retained across retries')
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-007/ui-continuation/verify-evidence.py", line 5, in ok
+    assert value,label
+AssertionError: TEAM held A identity retained across retries

@@ -5,7 +5,6 @@ import type { BaseToolInvocationPreprocessor } from '../tool-invocation-preproce
 import type { BaseToolExecutionResultProcessor } from '../tool-execution-result-processor/base-processor.js';
 import type { BaseLLMResponseProcessor } from '../llm-response-processor/base-processor.js';
 import type { BaseLifecycleEventProcessor } from '../lifecycle/base-processor.js';
-import type { CompactionLineageScope } from '../../memory/lineage/compaction-lineage-scope.js';
 import {
   copyMemoryCompactionConfiguration,
   DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
@@ -42,7 +41,6 @@ export class AgentConfig {
   skills: string[];
   memoryDir?: string | null;
   memoryCompaction: MemoryCompactionConfiguration;
-  compactionLineageScope: CompactionLineageScope | null;
 
   constructor(
     name: string,
@@ -62,7 +60,6 @@ export class AgentConfig {
     skills: string[] | null = null,
     memoryDir: string | null = null,
     memoryCompaction: MemoryCompactionConfiguration = DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
-    compactionLineageScope: CompactionLineageScope | null = null,
   ) {
     this.name = name;
     this.role = role;
@@ -85,9 +82,7 @@ export class AgentConfig {
     this.skills = skills ?? [];
     this.memoryDir = memoryDir ?? undefined;
     this.memoryCompaction = memoryCompaction;
-    this.compactionLineageScope = compactionLineageScope
-      ? { ...compactionLineageScope }
-      : null;
+
 
     console.debug(`AgentConfig created for name='${this.name}', role='${this.role}'.`);
   }
@@ -111,7 +106,6 @@ export class AgentConfig {
       this.skills.slice(),
       this.memoryDir ?? null,
       copyMemoryCompactionConfiguration(this.memoryCompaction),
-      this.compactionLineageScope,
     );
   }
 

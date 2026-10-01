@@ -1,0 +1,12 @@
+{
+  "newLinksBroken": [],
+  "diffCheckExit": 0,
+  "paths": [
+    "autobyteus-ts/docs/agent_memory_design.md",
+    "autobyteus-server-ts/docs/modules/agent_memory.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-server-ts/docs/modules/agent_run_collaboration.md",
+    "autobyteus-web/docs/agent_execution_architecture.md"
+  ],
+  "kind": "static documentation checks; not executable product validation"
+}

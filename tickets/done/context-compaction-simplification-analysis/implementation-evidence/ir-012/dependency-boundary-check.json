@@ -1,0 +1,9 @@
+{
+  "workspace_config_and_test": true,
+  "web_imports_workspace_harness": [],
+  "web_manifest_unchanged": true,
+  "web_vitest_config_unchanged": true,
+  "guard_unchanged": true,
+  "new_core_alias": false,
+  "note": "Workspace test has explicit core imports. Its config only dedupes vitest, pinia, reflect-metadata and presentation contracts; no core re-export into web. Scan is bounded to listed web source/test/script folders, not a whole-repo dependency proof."
+}

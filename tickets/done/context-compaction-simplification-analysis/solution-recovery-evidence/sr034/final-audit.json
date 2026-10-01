@@ -1,0 +1,45 @@
+{
+  "scope": "Document consistency/preservation audit, not product tests or independent architecture review.",
+  "head_unchanged": true,
+  "requirements_and_supplements_byte_identical": {
+    "requirements-doc.md": true,
+    "proposed-compaction-prompt.md": true,
+    "output-format-and-coverage.md": true,
+    "input-hold-proposal.sr027.md": true,
+    "acceptance-disposition.sr020.md": true
+  },
+  "entry_pending_count": 1452,
+  "unchanged_entry_paths": 1448,
+  "owned_changes": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "before": "e4183533f751af3f3ddcd90a33506a43dab5cef1acf8a6bdb61dba2d8642ef40",
+      "after": "f2902c866f1995b41f3285a7538d5447c21a7a04dc6172660b0491c450e14f36"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "before": "3fb01e3e6a5aac0b5dc8297ea1589ae438a9b062ba694332fc0a3092ce55c3f9",
+      "after": "8f0ff923b3d800624d1ae4335635c54308bf3eb91f12b4ff39cd4c868cc2c8b4"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "before": "ec539d35d695c8576a1c89e5268e5800d1e6662f194f998405aa5fa51e4e9042",
+      "after": "f66084a6d938d1e4f7b86019c84527b4628cfc77e6509b50cc531bddd0f4da95"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "before": "3e2cce18c49cd1d8d8b88773e046e241558cb15578a9e1da9d0016b053567d28",
+      "after": "103ecdfb889a40bc3435e076e980e38a358f15314557724d7d8834837c9a9444"
+    }
+  ],
+  "concurrent_other_owner_changes": [],
+  "source_hash_changes_since_read": [],
+  "references": 1117,
+  "missing_references": [],
+  "no_source_or_tests_authored": true,
+  "tests_run": false,
+  "provider_calls": 0,
+  "reviewer_reported_baseline": "7 files / 85 Pass baseline only, not SR034 target proof",
+  "git_finalization": "No stage/commit/push/merge/release/fetch",
+  "handoff_confirmed": true
+}

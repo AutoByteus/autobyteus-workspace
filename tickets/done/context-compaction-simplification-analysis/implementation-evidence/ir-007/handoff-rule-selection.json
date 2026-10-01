@@ -1,0 +1,11 @@
+{
+  "outcome": "Completed approved-design implementation; source review ready with explicit local-validation limits",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "sole_recipient": "/code_reviewer",
+  "reason": "IR007 is ARCH-REV004 approved-design implementation, not a new CRR009 F007 Local Fix. IR006/CRR010/API006 already disposed that older request. Direct low-risk and unresolved-design rules do not match. No API/SD/Delivery duplicate outcome handoff."
+}

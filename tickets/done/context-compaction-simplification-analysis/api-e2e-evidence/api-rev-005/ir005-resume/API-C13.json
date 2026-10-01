@@ -1,0 +1,20 @@
+{
+  "case": "API-C13",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/memory/direct-llm-compression-strategy.test.ts",
+    "tests/unit/memory/pending-compaction-executor.test.ts",
+    "tests/unit/memory/memory-manager-compaction-coordinator.test.ts",
+    "tests/unit/memory/compaction-content-builder.test.ts",
+    "tests/unit/llm/api/compaction-single-attempt-transport.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T20:55:13.460325+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T20:55:14.609801+00:00"
+}

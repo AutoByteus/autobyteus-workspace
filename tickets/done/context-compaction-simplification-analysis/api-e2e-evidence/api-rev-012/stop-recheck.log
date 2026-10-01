@@ -1,0 +1,21 @@
+{
+  "result": "Pass",
+  "activeCompactionsStopped": 2,
+  "normalWholeHostStop": true,
+  "sameRendererStoppedCards": 2,
+  "priorCompletedCardsRetained": 2,
+  "coldRendererFabricatedCards": 0,
+  "coldDocumentTimeOrigin": 1790880198378.8,
+  "lateResponsesDiscarded": [
+    36,
+    38
+  ],
+  "existingRawRowsUnchanged": true,
+  "appendedNormalInterruptBoundaryPerChild": 1,
+  "historyDoesNotReactivate": true,
+  "requestsFinal": 38,
+  "parentFinal": 16,
+  "compactionFinal": 22,
+  "remote": 0,
+  "limitations": "No persistent native activity journal or backend-restart queue guarantee; cold renderer correctly has no invented native activity cards."
+}

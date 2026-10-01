@@ -1,0 +1,1 @@
+Initial postbuild metadata helper used hashlib.file_digest, unavailable in installed Python; health and renderer notes had already been written. Corrected with streaming SHA256. This helper error is not a build/test failure; no source or binary changed.

@@ -1,0 +1,15 @@
+{
+  "runId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb",
+  "agentDefinitionId": "autobyteus-daily-assistant",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/temp_workspace",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/memory/agents/daily_assistant_3fad328986b54a2282fff7e7e0b737cb",
+  "llmModelIdentifier": "api11-deterministic-32768:lmstudio@127.0.0.1:62749",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb",
+  "preparedAt": "2026-10-01T18:09:47.159Z",
+  "preparedExpiresAt": "2026-10-02T18:09:47.159Z",
+  "startedAt": "2026-10-01T18:09:47.272Z",
+  "applicationExecutionContext": null
+}

@@ -1,0 +1,39 @@
+{
+  "base": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "head": "9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "sources": {
+    "autobyteus-server-ts/docs/design/data_migration_guideline.md": "39e6e2a528824850f0dd185d5dd5bfa0ef8502015e36b9284d60ce5670a500f0",
+    "autobyteus-server-ts/AGENTS.md": "08ecaf5c8aea25d325630b2643cdcf48c9798ce93a0037ab9b8c4bf776b35731",
+    "TESTING.md": "3a5a2d4d3d6f7a689292cde97f4305c54c5e054aa3c287e1a76d8a4bc00c9450",
+    "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts": "fc7d0fcec15c57aad988bfe53ef764a9c003f0b667067fc0b30674de9c06c22d",
+    "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts": "7a239191fdf1570861a09603cd3423a17a4d507bc24726517f847a49da66318b",
+    "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts": "5ed7e9bdd51c070b5ac15fb2cbaeeba81629e6d93b3638ddaf0ae565aecc427b",
+    "autobyteus-ts/src/memory/store/run-memory-file-store.ts": "76672dfa70cedea367c18c675433e3ab14f9605c475d48860fd9a25931f0d7f9",
+    "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts": "7a82079781a2fadf95e2c89a2899a720b2cda9d7fd0cbb24b48ca331a82dba52",
+    "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-conversion.ts": "ad9130cfe61c3709b03837b1407df7ba1abc181f48220227ec8f5bc32457ea1b",
+    "autobyteus-ts/src/memory/working-context-provenance.ts": "556ffe7642490b2363b3798cc4cadccce603f5e066434901ff4a8e80a3a4fef2",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts": "46a79f87d7e5075ef1b18cc030aee2bada7ba020e6737df31bad2c29ff7128ed",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts": "2fe596116b99fd3840a54426df1776d54d4f529c9339bc2ebee7cb0c9ccf66fe",
+    "autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts": "9ba59eefe68f47310f738fa1218763957644461e4c336598782fb53bbbca1430",
+    "autobyteus-server-ts/src/app-data-migrations/legacy/released-run-package-shapes/team-run-execution-tree-v2.ts": "d55b0cc03fe9e931222da12b3bcce09d9d04e7ec32831a676e9f52bc2ad66f7d",
+    "autobyteus-server-ts/src/config/compaction-model-settings.ts": "7e7cbbc85dd672af92a6cb807a575a70862085c058eab2c615110327e4da1305",
+    "autobyteus-web/utils/compactionModelSettings.ts": "8fb48179e39bdbd10a27f4d8cb7cf886834abc97f3c93cedbc1ef643ca1d7b89",
+    "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts": "f7fcae8bb7c7ab34619506cb77c510579736f767900beee1d4d03684df5bdab2",
+    "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts": "bba63f11c0001ede3067e8a5da188f2b9d44674a527a08b1eff9c856f118a349",
+    "autobyteus-server-ts/src/agent-memory/services/agent-memory-service.ts": "5023c449768ad8132278c766b2e08cf36d6776e0a63c9ea68cbee2d20c7a3367",
+    "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts": "5c04f35c22df9aae8e57a236993eab3bf20feb4e947ea49b751c4eff91dd99e5",
+    "autobyteus-server-ts/src/startup/compaction-model-settings-migration.ts": "c03a51d1903d60ced8ce38519491778799883ccc283b2a453b50a56b3d4ad01c",
+    "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts": "bc4a549da70b3c6d319467fe5d4d1182014eb3738e07c56c0163eb9579d55b83"
+  },
+  "approved_prompt_sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "unapproved_candidate_sha256": "1f7f8eb5d82daced2d47f04ffb2485f2fd1b329e9c3a8700f0d21d1090b080a7",
+  "limits": [
+    "No target implementation edits",
+    "No provider calls",
+    "No installed/private dataset inspection",
+    "Rebase conflict resolutions only; pending API owner changes preserved",
+    "No push/merge/release"
+  ]
+}

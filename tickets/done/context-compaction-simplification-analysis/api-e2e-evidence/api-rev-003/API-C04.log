@@ -1,0 +1,310 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ✓ tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts (1 test) 324ms
+     ✓ keeps removed run-specific layout symbols out of source and tests  323ms
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:6387) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (22 tests) 144ms
+(node:6388) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts (5 tests) 61ms
+(node:6390) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stderr | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Built-in agent 'autobyteus-retrospective-skill-improver' was synced but did not resolve as a normal agent definition.
+
+stderr | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Built-in agent 'autobyteus-daily-assistant' was synced but did not resolve as a normal agent definition.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+AgentRunManager initialized.
+
+stderr | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Built-in agent 'autobyteus-retrospective-skill-improver' was synced but did not resolve as a normal agent definition.
+
+stderr | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > builds isolated services without starting an agent or team run
+Built-in agent 'autobyteus-daily-assistant' was synced but did not resolve as a normal agent definition.
+
+stdout | tests/unit/application-platform/application-platform-runtime-isolation.test.ts > application platform runtime isolation > aborts a completed scope when later platform assembly fails without closing process owners
+AgentRunManager initialized.
+
+ ✓ tests/unit/application-platform/application-platform-runtime-isolation.test.ts (2 tests) 34ms
+stdout | tests/unit/agent-memory/agent-memory-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > applies raw trace limits
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-8j5mh6/agents/agent-456/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-8j5mh6/agents/agent-456/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-8j5mh6/agents/agent-456/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > reads archive segments plus active traces as the complete corpus
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-wMPaqM/agents/agent-archive/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-wMPaqM/agents/agent-archive/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-wMPaqM/agents/agent-archive/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > lists raw trace files active first and reads only the selected segment filename
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-aNcTkK/agents/agent-segments/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-aNcTkK/agents/agent-segments/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-aNcTkK/agents/agent-segments/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > falls back to the default raw trace file for invalid selected filenames
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-vGqSke/agents/agent-invalid-file/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-vGqSke/agents/agent-invalid-file/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-vGqSke/agents/agent-invalid-file/semantic.jsonl
+
+stderr | tests/unit/agent-memory/agent-memory-service.test.ts > AgentMemoryService > does not create a missing run directory for includeArchive raw-trace reads
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-pdgDxG/agents/missing-run/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-pdgDxG/agents/missing-run/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-pdgDxG/agents/missing-run/semantic.jsonl
+
+ ✓ tests/unit/agent-memory/agent-memory-service.test.ts (7 tests) 15ms
+ ✓ tests/unit/context-files/context-file-access-containment.test.ts (9 tests) 52ms
+ ✓ tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts (7 tests) 11ms
+stdout | tests/unit/services/server-settings-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes and validates the live response update interval
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists the compound model/config with the durable setting writer
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_MODEL_SETTINGS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 22 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads a boolean setting as true, false, or null for the requested key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists a boolean setting as normalized strings for the requested key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > registers ENABLE_PROJECTS as an editable predefined setting
+Initialized server settings service with 22 predefined settings
+
+ ✓ tests/unit/services/server-settings-service.test.ts (31 tests) 10ms
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns null for missing or invalid JSON
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-Ip7AXo/missing.json
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-Ip7AXo/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > reads JSONL and skips malformed lines
+Skipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-PUEbGN/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stderr | tests/unit/agent-memory/memory-file-store.test.ts > MemoryFileStore > returns empty array for missing JSONL
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-SsZawl/missing.jsonl
+
+ ✓ tests/unit/agent-memory/memory-file-store.test.ts (8 tests) 11ms
+ ✓ tests/unit/agent-execution/compaction/compaction-llm-factory.test.ts (8 tests) 5ms
+ ✓ tests/unit/config/compaction-model-settings.test.ts (7 tests) 3ms
+ ✓ tests/unit/agent-execution/compaction/compaction-parent-credentials.test.ts (2 tests) 3ms
+
+ Test Files  12 passed (12)
+      Tests  109 passed (109)
+   Start at  14:20:05
+   Duration  8.57s (transform 2.92s, setup 51ms, import 6.51s, tests 671ms, environment 1ms)
+

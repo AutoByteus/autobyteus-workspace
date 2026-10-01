@@ -1,0 +1,4 @@
+{
+  "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+  "recipient_address": "/implementation_engineer"
+}

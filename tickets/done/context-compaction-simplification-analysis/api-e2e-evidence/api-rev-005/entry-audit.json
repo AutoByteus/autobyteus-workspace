@@ -1,0 +1,62 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "date": "2026-09-30T13:34:04.830736+00:00",
+  "trigger": "CRR007 Local Fix narrow boundary resolved; current direct user DeepSeek representative/no Qwen",
+  "durablePaths": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "matchesAPI004": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "matchesAPI004": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "matchesAPI004": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "matchesAPI004": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "matchesAPI004": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "matchesAPI004": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "matchesAPI004": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "matchesAPI004": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "matchesAPI004": true
+    }
+  ],
+  "authorities": {
+    "code-review-report.md": "8680973a2ec3a6dd8547c5a9d2cb9718448a1bf90a6adf2763e332ed636ca905",
+    "code-review-revision-record.md": "ade3e877acc078d972b40c8e9002cdcf6f393b00da3c668afa9419add9f1096f",
+    "requirements-doc.md": "3c8b538f93fe407a843263f00a4f103e6835b050aa9e42d6989b952c3f321d64",
+    "design-spec.md": "37420682b90ded65707ff8ec9465a963288a676cc8a15d9f3c421435d36e59d6",
+    "solution-revision-record.md": "7ffbf7e95190f4ad5b2f0ae8dcccd3d28fcba3f078391dae87f5fa5efa10b0f1",
+    "implementation-handoff.md": "081f078579c6fd372975c558f142120652cb5132d8fc2004655aab89136d5f19",
+    "acceptance-disposition.sr020.md": "c54399510910452dab5df08ec84cb9846a56c6352465f377179969fed9edb92e",
+    "proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "pnpm",
+    "test:native-input-history"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "start": "2026-10-01T17:39:57.901713+00:00",
+  "end": "2026-10-01T17:40:09.371615+00:00",
+  "exit": 0
+}

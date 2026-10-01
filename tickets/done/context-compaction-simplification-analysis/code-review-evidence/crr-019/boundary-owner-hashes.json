@@ -1,0 +1,27 @@
+[
+  {
+    "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+    "sha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+    "crr016_sha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+    "matches_crr016": true
+  },
+  {
+    "path": "autobyteus-web/package.json",
+    "sha256": "1938fa6facbd0014a0e817aa26050e338a015a2b5d4b269850252133d2414860",
+    "crr016_sha256": "1938fa6facbd0014a0e817aa26050e338a015a2b5d4b269850252133d2414860",
+    "matches_crr016": true
+  },
+  {
+    "path": "autobyteus-web/vitest.config.mts",
+    "sha256": "46e65a4b5b6b9223ddc9ed6d228dcfbe22d3ecab156dbce6ef419f2b2cc5913a",
+    "crr016_sha256": "46e65a4b5b6b9223ddc9ed6d228dcfbe22d3ecab156dbce6ef419f2b2cc5913a",
+    "matches_crr016": true
+  },
+  {
+    "path": "pnpm-lock.yaml",
+    "sha256": "e63464aa633222058d7a2b58175d302cf4afbb5b705d2b04d9a9fa22ce0fbe19",
+    "index_sha256": "e63464aa633222058d7a2b58175d302cf4afbb5b705d2b04d9a9fa22ce0fbe19",
+    "matches_index": true,
+    "prior_crr016_pin": "Not inventoried; no retroactive preservation claim."
+  }
+]

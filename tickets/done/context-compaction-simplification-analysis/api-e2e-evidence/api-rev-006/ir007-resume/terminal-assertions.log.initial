@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ir007-resume/derive-terminal-evidence.py", line 76, in <module>
+    check('in-memory saved selection consumed actual projection', bool(consumed(events('network-saved-selection'),'getRunProjection')), 'network-saved-selection.json')
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ir007-resume/derive-terminal-evidence.py", line 14, in events
+    return ui(name)['observer']['events']
+KeyError: 'observer'

@@ -1,0 +1,10 @@
+{
+  "ownedPortsReleased": {
+    "65100": true,
+    "65101": true,
+    "65300": true
+  },
+  "ownedDataRootRemoved": true,
+  "retainedSyntheticFixture": "fixture-workspace/context.txt",
+  "unrelatedAppsProvidersUntouched": true
+}

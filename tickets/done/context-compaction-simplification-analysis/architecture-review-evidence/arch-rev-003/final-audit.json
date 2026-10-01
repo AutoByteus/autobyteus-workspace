@@ -1,0 +1,47 @@
+{
+  "at": "2026-09-30T18:33:25.677372+00:00",
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "source_changes": [],
+  "changed_existing_ticket_files": [
+    "design-review-report.md",
+    "architecture-review-revision-record.md",
+    "solution-progress-result.md",
+    "output-format-and-coverage.md",
+    "investigation-notes.md",
+    "solution-revision-record.md",
+    "design-spec.md"
+  ],
+  "sd_owned_authority_changes_during_clarification": [
+    "solution-progress-result.md",
+    "output-format-and-coverage.md",
+    "investigation-notes.md",
+    "solution-revision-record.md",
+    "design-spec.md"
+  ],
+  "unexpected_nonowned_ticket_changes": [],
+  "api_paths_unchanged": true,
+  "requirements_unchanged": true,
+  "prompt_sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "reference_count": 395,
+  "missing_references": [],
+  "current_authority_hashes": {
+    "requirements-doc.md": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12",
+    "design-spec.md": "723325eda359fc007a413007eade69fd2ce26bf66b8bccfedbd1c31fc3835f28",
+    "investigation-notes.md": "34f063f3eb8c5adbd58b182687bd8989c21815c9c8bd1462d3784e9c923fc86f",
+    "solution-revision-record.md": "619655caedcaec6e054f3cd86192c85d73cb43cc877626b4878fd1b33da705a5",
+    "design-review-report.md": "2df83ee4f45e7ffbbe244afd692fecff4e1813c3935c6b64d01c43a20c01b81c",
+    "architecture-review-revision-record.md": "19a52021866457c1f2e034ea77f59305da606c3753226cc01b4077d37a0e4f46"
+  },
+  "fresh_tests": {
+    "core_files": 2,
+    "core_pass": 10,
+    "server_files": 2,
+    "server_pass": 45
+  },
+  "target_tests_executed": false,
+  "provider_calls": 0,
+  "review_result": "Pass ARCH-REV-003",
+  "handoff_confirmed": true,
+  "recipient": "/implementation_engineer",
+  "handoff_reference_count": 414
+}

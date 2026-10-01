@@ -1,0 +1,219 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "sha256": "653eb2186513752415ec7398083458e6dafcf7dc7525d3065e0af0fe273a7089",
+    "effectiveNonEmptyLines": 77,
+    "excerpts": [
+      {
+        "from": 15,
+        "to": 40,
+        "text": "15: export const projectAgentCollaborationView = (input: Readonly<{\n16:   hostRunId: string;\n17:   isActive: boolean;\n18:   snapshot: AgentRunCollaborationPackageSnapshot;\n19:   baseChangeSequence: number;\n20: }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({\n21:   root_subject_kind: \"agent\",\n22:   root_run_id: input.hostRunId,\n23:   root_agent: {\n24:     base_change_sequence: input.baseChangeSequence,\n25:     is_active: input.isActive,\n26:     execution_tree: input.snapshot.tree,\n27:     communication_messages: input.snapshot.messages,\n28:     agent_statuses: input.snapshot.statuses.map((status) => ({\n29:       member_address: status.execution.memberAddress,\n30:       agent_run_id: status.execution.agentRunId,\n31:       status: status.details.status,\n32:       trigger: status.details.trigger,\n33:       tool_name: null,\n34:       error_message: status.details.errorMessage,\n35:       error_details: null,\n36:     })),\n37:   },\n38: });\n39: \n40: const requireStartedExecution = (tree: AgentRunCollaborationTreeSnapshot, reference: TaskExecutionReference) => {"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+    "sha256": "fee2d9b1d1223b26259bd74277619633727a438936705f314ab9e5d370ccc89f",
+    "effectiveNonEmptyLines": 151,
+    "excerpts": [
+      {
+        "from": 131,
+        "to": 145,
+        "text": "131:   messageType: nonEmptyStringSchema, referenceFiles: z.array(nonEmptyStringSchema), createdAt: timestamp,\n132: }).strict();\n133: export const agentOrgCommunicationMessagesDtoSchema = z.object({\n134:   schemaVersion: z.literal(1), subjectKind: z.literal(\"agent_org\"), orgRunId: nonEmptyStringSchema,\n135:   messages: z.array(agentOrgCommunicationMessageDtoSchema),\n136: }).strict();\n137: \n138: export const agentOrgAgentStatusDtoSchema = z.object({\n139:   member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,\n140:   status: z.enum([\"offline\", \"initializing\", \"idle\", \"running\", \"error\"]),\n141:   trigger: nullableText, tool_name: nullableText, error_message: nullableText, error_details: nullableText,\n142:   recoverableBlock: compactionRecoveryBlockSchema.nullable(),\n143: }).strict();\n144: \n145: export const agentOrgExecutionViewDtoSchema = z.object({"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "sha256": "08fba85cdcce61abb45c4ef6f72b4b441c38918d2f9217711936a8cb2874f372",
+    "effectiveNonEmptyLines": 54,
+    "excerpts": [
+      {
+        "from": 40,
+        "to": 53,
+        "text": "40: export const agentRunCollaborationViewDtoSchema = z.object({\n41:   base_change_sequence: z.number().int().nonnegative(),\n42:   is_active: z.boolean(),\n43:   execution_tree: agentRunCollaborationTreeDtoSchema,\n44:   communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,\n45:   agent_statuses: z.array(agentOrgAgentStatusDtoSchema),\n46: }).strict();\n47: \n48: export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion(\"kind\", [\n49:   z.object({ kind: z.literal(\"agent_presentation\"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),\n50:   z.object({\n51:     kind: z.literal(\"task_execution_started\"),\n52:     host_kind: z.enum([\"root\", \"team\"]), host_run_id: nonEmptyStringSchema, execution: taskExecutionDtoSchema,\n53:   }).strict(),"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "sha256": "36340e214320d52b0ce814626f73a85bce11ab6865566533adf950861181a054",
+    "effectiveNonEmptyLines": 463,
+    "excerpts": [
+      {
+        "from": 57,
+        "to": 76,
+        "text": "57:  * The host run of an Agent root. The root never creates, restores or terminates it; waking a\n58:  * host whose runtime is not active goes through the standalone lifecycle (DS-009).\n59:  */\n60: export type AgentRunCollaborationHostPort = Readonly<{\n61:   getActiveRun(): AgentRun | null;\n62:   resolveCommandReadyRun(): Promise<AgentRun>;\n63: }>;\n64: \n65: export type AgentRunCollaborationPackageSnapshot = Readonly<{\n66:   tree: AgentRunCollaborationTreeSnapshot;\n67:   messages: AgentRunCollaborationMessagesFileV1;\n68:   statuses: readonly CollaborationAgentStatusSnapshot[];\n69: }>;\n70: \n71: /**\n72:  * The collaboration root of one standalone Agent run (root kind `agent`). It owns the tree,\n73:  * the communication log, the children registries and the operation gate; it does not own\n74:  * the host run. It lives while the host run is managed and ends only on an explicit Stop or\n75:  * server shutdown.\n76:  */"
+      },
+      {
+        "from": 180,
+        "to": 194,
+        "text": "180:   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {\n181:     // Root-level Teams: task Teams and collaborator Teams (each reports its members and nested children).\n182:     const teamRunIds = [\n183:       ...this.tree.taskExecutions.flatMap((task) => \"teamRunId\" in task ? [task.teamRunId] : []),\n184:       ...this.tree.collaborators.flatMap((entry) => entry.kind === \"agent_team\" ? [entry.teamRunId] : []),\n185:     ];\n186:     const live = [\n187:       ...this.options.rootAgents.getStatusSnapshots(),\n188:       ...teamRunIds.flatMap((teamRunId) => this.options.teams.get(teamRunId)?.getLeafAgentStatusSnapshots() ?? []),\n189:     ];\n190:     const reported = new Set(live.map((snapshot) => snapshot.execution.agentRunId));\n191:     const dormant = this.index.listChildAgents().filter((agent) => !reported.has(agent.agentRunId))\n192:       .map((agent) => createCollaborationAgentStatusSnapshot({ execution: this.identityFor(agent.agentRunId, agent.address), status: \"offline\" }));\n193:     return Object.freeze([...live, ...dormant]);\n194:   }"
+      },
+      {
+        "from": 309,
+        "to": 360,
+        "text": "309:     return this.options.publisher.subscribe(listener);\n310:   }\n311: \n312:   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<AgentRunCollaborationPackageSnapshot, AgentRunCollaborationRootEvent>> {\n313:     return this.options.publisher.openSnapshotConnection(() => Object.freeze({\n314:       tree: this.tree,\n315:       messages: this.messages,\n316:       statuses: this.getAgentStatusSnapshots(),\n317:     }));\n318:   }\n319: \n320:   enterPersistenceFailStop(): void { this.enterFailStop(); }\n321:   enterLifecycleFailStop(): void { this.enterFailStop(); }\n322: \n323:   /** Explicit Stop or server shutdown: fence and shut down every child, then unregister. */\n324:   terminate(): Promise<AgentOperationResult> {\n325:     if (this.lifecycle === \"terminated\") return Promise.resolve({ accepted: true });\n326:     if (this.termination) return this.termination;\n327:     this.lifecycle = \"terminating\";\n328:     this.communication.closeAdmission();\n329:     this.taskExecutions.closeExternalAdmission();\n330:     void this.operationGate.closeAndDrain();\n331:     const attempt = this.terminateOnce();\n332:     this.termination = attempt;\n333:     void attempt.then((result) => {\n334:       if (!result.accepted && this.termination === attempt) this.termination = null;\n335:     }, () => {\n336:       if (this.termination === attempt) this.termination = null;\n337:     });\n338:     return attempt;\n339:   }\n340: \n341:   private async terminateOnce(): Promise<AgentOperationResult> {\n342:     await this.operationGate.closeAndDrain();\n343:     this.frozenTerminationScope ??= createFrozenRootTerminationScope({\n344:       agentHandles: this.options.rootAgents.freezeForRootTermination(),\n345:       teamScopes: this.options.teams.freezeForRootTermination(),\n346:     });\n347:     const fenced = await this.frozenTerminationScope.fenceAgentRunsForRootShutdown();\n348:     if (!fenced.accepted) return fenced;\n349:     await this.taskExecutions.drain();\n350:     await this.options.persistence.drain();\n351:     const local = await this.frozenTerminationScope.finish();\n352:     this.lifecycle = \"terminated\";\n353:     this.options.publisher.publish({ kind: \"lifecycle\", isActive: false });\n354:     this.options.publisher.clear();\n355:     this.options.onTerminated?.();\n356:     return local.accepted\n357:       ? { accepted: true }\n358:       : { accepted: false, code: \"AGENT_ROOT_TERMINATION_FAILED\", message: local.message ?? local.code ?? \"Agent root termination failed.\" };\n359:   }\n360: "
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+    "sha256": "e2e2ffdbbf87d6b0bc6ff81fb5b39509e9e1e0612d4f27ea074925511506df41",
+    "effectiveNonEmptyLines": 280,
+    "excerpts": [
+      {
+        "from": 112,
+        "to": 140,
+        "text": "112:   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {\n113:     // Only an explicit Stop cascades: the Agent root fences and stops every child first,\n114:     // even when the host's own runtime already died.\n115:     const rootTerminated = await this.lifecycleService.terminateCollaborationRoot(runId);\n116:     const activeRun = this.agentRunManager.getActiveRun(runId);\n117:     if (!activeRun) {\n118:       if (rootTerminated) await this.historyCatalogService.recordRunTerminated({ runId });\n119:       return rootTerminated\n120:         ? { success: true, message: \"Agent run terminated successfully.\", route: \"runtime\", runtimeKind: null }\n121:         : this.notFound(null);\n122:     }\n123: \n124:     const route: AgentRunTerminationRoute =\n125:       activeRun.runtimeKind === RuntimeKind.AUTOBYTEUS ? \"native\" : \"runtime\";\n126:     const terminated = await this.agentRunManager.terminateAgentRun(runId);\n127:     if (!terminated) {\n128:       return this.notFound(activeRun.runtimeKind);\n129:     }\n130: \n131:     await this.historyCatalogService.recordRunTerminated({ runId });\n132:     return {\n133:       success: true,\n134:       message: \"Agent run terminated successfully.\",\n135:       route,\n136:       runtimeKind: activeRun.runtimeKind,\n137:     };\n138:   }\n139: \n140:   getAgentRun(runId: string): AgentRun | null {"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "sha256": "da9690a5ae6f3d21cc18f4c78c6e1dc84ce9e0662bf49cd4c97b0a7f79da0b7d",
+    "effectiveNonEmptyLines": 239,
+    "excerpts": [
+      {
+        "from": 176,
+        "to": 186,
+        "text": "176:   async terminateRoot(hostRunIdInput: string): Promise<boolean> {\n177:     const hostRunId = hostRunIdInput.trim();\n178:     await this.pending.get(hostRunId)?.catch(() => undefined);\n179:     const root = this.active.get(hostRunId);\n180:     if (!root) return false;\n181:     const result = await root.terminate();\n182:     if (!result.accepted) throw new Error(result.message ?? `Agent root '${hostRunId}' did not finish stopping.`);\n183:     this.unregister(root);\n184:     return true;\n185:   }\n186: "
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+    "sha256": "eaecb7133fedf6e6d3db1058fee8b10e2da3596cbf100ae52d726dda5c6a6a11",
+    "effectiveNonEmptyLines": 261,
+    "excerpts": [
+      {
+        "from": 63,
+        "to": 75,
+        "text": "63:   hasOpenExecutionWork(): boolean {\n64:     return [...this.active].some(([agentRunId, handle]) => this.taskAgentRunIds.has(agentRunId)\n65:       ? this.isTaskLive(agentRunId) && isRunningTaskExecutionStatus(handle.getStatusSnapshot().details.status)\n66:       : handle.hasOpenExecutionWork());\n67:   }\n68:   /** Status leaves of every registered Agent; a non-live task Agent always reports `offline`. */\n69:   getInputStateSnapshots() {\n70:     return [...this.active].flatMap(([id, handle]) => this.taskAgentRunIds.has(id) && !this.isTaskLive(id)\n71:       ? [] : handle.getInputStateSnapshots());\n72:   }\n73:   getStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {\n74:     return [...this.active].map(([agentRunId, handle]) => this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)\n75:       ? createCollaborationAgentStatusSnapshot({ execution: handle.identity, status: \"offline\" })"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "sha256": "f5c34549171b65b32bcf5642898e194426c6f06fe75d54839b7297af91aeeae3",
+    "effectiveNonEmptyLines": 450,
+    "excerpts": [
+      {
+        "from": 426,
+        "to": 493,
+        "text": "426:     async terminateRun(runId: string): Promise<boolean> {\n427:       const agentContextsStore = useAgentContextsStore();\n428:       const runHistoryStore = useRunHistoryStore();\n429:       const context = agentContextsStore.getRun(runId);\n430:       const state = context?.state;\n431:       const instance = state?.inputProjection?.runInstanceId;\n432:       const service = streamingServices.get(runId);\n433:       const binding = useWindowNodeContextStore().bindingRevision;\n434:       const activities = useAgentActivityStore();\n435:       const activityIds = activities.getNativeCompactionActivityIds(runId);\n436:       const ownsRequest = () => agentContextsStore.getRun(runId) === context\n437:         && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId) === service\n438:         && useWindowNodeContextStore().bindingRevision === binding\n439:         && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);\n440: \n441:       const teardownLocalRuntime = () => {\n442:         this.clearActivationPending(runId);\n443:         if (streamingServices.has(runId)) {\n444:           this.disconnectAgentStream(runId);\n445:         }\n446: \n447:         if (context) {\n448:           applyOfflineOrTerminalCleanup(context);\n449:         }\n450:       };\n451: \n452:       if (runId.startsWith('temp-')) {\n453:         teardownLocalRuntime();\n454:         runHistoryStore.markRunAsInactive(runId);\n455:         return true;\n456:       }\n457: \n458:       try {\n459:         const client = getApolloClient();\n460:         const { data, errors } = await client.mutate({\n461:           mutation: TerminateAgentRun,\n462:           variables: { agentRunId: runId },\n463:         });\n464: \n465:         if (errors && errors.length > 0) {\n466:           throw new Error(errors.map((e: { message: string }) => e.message).join(', '));\n467:         }\n468: \n469:         const result = (data as any)?.terminateAgentRun;\n470:         if (!result?.success) {\n471:           throw new Error(result?.message || `Failed to terminate run '${runId}'.`);\n472:         }\n473: \n474:         if (!ownsRequest()) return false;\n475:         if (context?.config.runtimeKind === 'autobyteus' && state) {\n476:           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,\n477:             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);\n478:         }\n479:         teardownLocalRuntime();\n480:         runHistoryStore.markRunAsInactive(runId);\n481:         runHistoryStore.refreshTreeQuietly();\n482:         return true;\n483:       } catch (error) {\n484:         console.error(`Error terminating run '${runId}':`, error);\n485:         return false;\n486:       }\n487:     },\n488: \n489:     /**\n490:      * @action closeAgent\n491:      * @description Closes an agent run in the workspace, disconnects WebSocket, and optionally terminates the backend run.\n492:      */\n493:     async closeAgent(runIdToClose: string, options: { terminate: boolean }) {"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "sha256": "c9afd678049ae1bb3a409f6ee6a207666695417aad2ee34612dc0b4029353c15",
+    "effectiveNonEmptyLines": 199,
+    "excerpts": [
+      {
+        "from": 59,
+        "to": 69,
+        "text": "59:   const publish = (hostRunId: string, context: AgentRunCollaborationContext, commitActivities: () => void) => {\n60:     const previous = contexts.value[hostRunId]\n61:     if (previous) context.adoptLocalContexts(previous)\n62:     commitActivities()\n63:     setContext(hostRunId, context)\n64:     errors[hostRunId] = null\n65:     openNewTaskTeams(hostRunId, context)\n66:     const selected = selection[hostRunId]\n67:     if (selected && !context.getChild(selected)) selection[hostRunId] = null\n68:   }\n69: "
+      },
+      {
+        "from": 112,
+        "to": 122,
+        "text": "112:    */\n113:   const syncHost = (hostRunId: string, hostRunning: boolean) => {\n114:     if (hostRunning) attach(hostRunId)\n115:     else {\n116:       detach(hostRunId)\n117:       void inspect(hostRunId)\n118:     }\n119:   }\n120: \n121:   const contextFor = (hostRunId: string): AgentRunCollaborationContext | null => contexts.value[hostRunId] ?? null\n122: "
+      },
+      {
+        "from": 157,
+        "to": 166,
+        "text": "157:       await service.whenReady()\n158:       if (attachments.some((file) => isDraftUploadedContextAttachment(file) || coerceDraftUploadedContextAttachment(file))) {\n159:         attachments = await useContextFileUploadStore().finalizeDraftAttachments({\n160:           draftOwner: buildAgentCollaborationMemberDraftContextFileOwner(hostRunId, agentRunId),\n161:           finalOwner: buildAgentCollaborationMemberFinalContextFileOwner(hostRunId, agentRunId),\n162:           attachments,\n163:         })\n164:         finalizeLocalSubmissionAttachments(submission, attachments)\n165:       }\n166:       await service.sendMessage({ agentRunId, content, attachments, messageId, dedupeKey,"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "sha256": "1a46e3d7d8635302444d49d0cc423daf10e65db8af66de745698e3976d4dbd88",
+    "effectiveNonEmptyLines": 262,
+    "excerpts": [
+      {
+        "from": 66,
+        "to": 78,
+        "text": "66:     for (const entry of input.entries) {\n67:       if (entry.agentRunId !== entry.context.state.runId || this.contexts.has(entry.agentRunId)\n68:         || this.index.requireAgent(entry.agentRunId).address !== entry.memberAddress) {\n69:         throw new Error(`Invalid or duplicate Agent collaboration context '${entry.agentRunId}'.`)\n70:       }\n71:       entry.context.state = reactive(entry.context.state)\n72:       this.contexts.set(entry.agentRunId, reactive(entry.context))\n73:     }\n74:     if (this.contexts.size !== this.index.agents.size) throw new Error('Agent collaboration context scope is incomplete.')\n75:     this.assertMessagesCorrelated(this.view.communication_messages.messages)\n76:     for (const status of input.view.agent_statuses) {\n77:       if (this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {\n78:         throw new Error(`Agent collaboration status '${status.agent_run_id}' has no exact child identity.`)"
+      },
+      {
+        "from": 145,
+        "to": 164,
+        "text": "145: \n146:   requireReopen(message: string): void {\n147:     this.error = message\n148:     this.phase = 'reopen_required'\n149:   }\n150: \n151:   /** Carries the local composer and runtime state of children that are still present. */\n152:   adoptLocalContexts(previous: AgentRunCollaborationContext): void {\n153:     for (const [agentRunId, context] of this.contexts) {\n154:       const old = previous.getAgentContext(agentRunId)\n155:       if (!old) continue\n156:       if (previous.index.requireAgent(agentRunId).address !== this.index.requireAgent(agentRunId).address) {\n157:         throw new Error('Agent collaboration retained address mismatch.')\n158:       }\n159:       old.config = context.config\n160:       old.state = context.state\n161:       this.contexts.set(agentRunId, old)\n162:     }\n163:   }\n164: "
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "sha256": "dff1fee2b17a1ab1cdd74855c0b95f21b32ed250130d205d6f200271740eca8b",
+    "effectiveNonEmptyLines": 110,
+    "excerpts": [
+      {
+        "from": 80,
+        "to": 117,
+        "text": "80:   const workspaceFor = (root: string | null) => {\n81:     if (!root) return Promise.resolve(null)\n82:     if (!workspaces.has(root)) workspaces.set(root, resolveWorkspace(root, input.view.is_active))\n83:     return workspaces.get(root)!\n84:   }\n85:   const staged = await Promise.all([...index.agents.values()].map(async (child) => {\n86:     const context = createChildContext(child, input.view.execution_tree.createdAt,\n87:       await workspaceFor(child.source.launchConfiguration.workspaceRootPath))\n88:     const projection = await fetchProjection(input.hostRunId, child)\n89:     resetRecentEventMonitorBaseline(context)\n90:     context.state.conversation = buildConversationFromProjection(child.agentRunId, projection.conversation, {\n91:       agentDefinitionId: child.source.agentDefinitionId,\n92:       agentName: nameAt(child.address),\n93:       llmModelIdentifier: child.source.launchConfiguration.llmModelIdentifier,\n94:     })\n95:     context.state.hasEarlierActiveTraceEvents = projection.hasEarlierActiveTraceEvents === true\n96:     primeRecentEventMonitorBaseline(context)\n97:     return {\n98:       entry: Object.freeze({ agentRunId: child.agentRunId, memberAddress: child.address, context }),\n99:       activities: Object.freeze({\n100:         runId: child.agentRunId,\n101:         expectedRevision: useAgentActivityStore().getActivityContentRevision(child.agentRunId),\n102:         activities: buildActivitiesFromProjection(projection.activities),\n103:       }),\n104:     }\n105:   }))\n106:   if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')\n107:   const context = new AgentRunCollaborationContext({ hostRunId: input.hostRunId, view: input.view, entries: staged.map((item) => item.entry) })\n108:   const replacements = staged.map((item) => item.activities)\n109:   return {\n110:     context,\n111:     commitActivities: () => {\n112:       if (replacements.length && useAgentActivityStore().replaceProjectionActivitiesIfRevisions(replacements) === 'conflict') {\n113:         throw new Error(`Agent collaboration activity changed before '${input.hostRunId}' hydration could commit.`)\n114:       }\n115:     },\n116:   }\n117: }"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "sha256": "15ad0ddc9c468e00e0465c3dc95aca551f58393f083f816aed642be32e24168b",
+    "effectiveNonEmptyLines": 246,
+    "excerpts": [
+      {
+        "from": 193,
+        "to": 215,
+        "text": "193:     }\n194:     if (!this.context || this.phase !== 'ready') throw new Error('Agent collaboration event arrived before the snapshot.')\n195:     if (message.type === 'AGENT_COMMAND_ACK') {\n196:       this.acknowledge(message)\n197:       return\n198:     }\n199:     if (message.type === 'ROOT_EXECUTION_EVENT') {\n200:       if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')\n201:       if (this.context.applyEvent(message.payload.change_sequence, message.payload.event) === 'checkpoint_required') {\n202:         // A new child: reconnect for a fresh snapshot that includes its context.\n203:         this.closeSocket('Agent collaboration reload')\n204:         this.connect()\n205:       } else if (message.payload.event.kind === 'collaborator_added') {\n206:         this.options.onCollaboratorAdded?.(this.context)\n207:       }\n208:       return\n209:     }\n210:     this.context.setActive(message.payload.is_active)\n211:     if (!message.payload.is_active) {\n212:       this.options.onInactive()\n213:       this.disconnect()\n214:     }\n215:   }"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "sha256": "109f97deed2a6a42ac731814fdf5123b2fae1f1fd302f1892121004be546309f",
+    "effectiveNonEmptyLines": 27,
+    "excerpts": [
+      {
+        "from": 18,
+        "to": 31,
+        "text": "18: \n19:   const host = computed(() => {\n20:     if (selection.selectedType !== 'agent') return null\n21:     const context = agents.activeRun\n22:     const runId = context?.state.runId\n23:     if (!context || !runId || runId.startsWith(TEMPORARY_RUN_ID_PREFIX)) return null\n24:     const status = context.state.currentStatus\n25:     return { runId, running: status !== AgentStatus.Offline && status !== AgentStatus.Error }\n26:   })\n27: \n28:   watch(() => host.value && `${host.value.runId}:${host.value.running}`, () => {\n29:     if (host.value) collaboration.syncHost(host.value.runId, host.value.running)\n30:   }, { immediate: true })\n31: }"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/services/runStatus/agentRuntimeStatusState.ts",
+    "sha256": "ee472d8cda0d29ae651a80c7fc1f146f4ce2295eb061278777247d0c96ace9ca",
+    "effectiveNonEmptyLines": 67,
+    "excerpts": [
+      {
+        "from": 25,
+        "to": 35,
+        "text": "25: export const applyLiveAgentStatusEvent = (\n26:   context: AgentContext,\n27:   payload: AgentStatusPayload,\n28: ): boolean => {\n29:   const block = context.state.inputProjection ? context.state.recoverableBlock : payload.recoverableBlock ?? null;\n30:   const nextStatus = block && block.state !== 'recovering' ? AgentStatus.Error : normalizeAgentRuntimeStatus(payload.status);\n31:   const changed = context.state.currentStatus !== nextStatus || context.submissionPending;\n32:   context.state.recoverableBlock = block;\n33:   context.state.currentStatus = nextStatus;\n34:   context.submissionPending = false;\n35:   return changed;"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+    "sha256": "701894c28c8a99989a557e0b6b48f4d4b738358e7d4473409558132264ddebbd",
+    "effectiveNonEmptyLines": 72,
+    "excerpts": [
+      {
+        "from": 15,
+        "to": 24,
+        "text": "15: // Root package hosting is test-owned; this is not a full root/API acceptance campaign.\n16: async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeof createRecoveryFixture>>) {\n17:  const root=kind==='agent_team'?createTeamRootExecutionIdentity('team-run-root'):createAgentOrgRootExecutionIdentity('org-run-1');\n18:  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});\n19:  const memberExecutionContext=new MemberExecutionContext({identity,\n20:   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),\n21:   tasks:{root,delegateTask:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});\n22:  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,\n23:   commitPublication:()=>f.run,abort:async()=>({kind:'aborted'})}));\n24:  const handle=new ConfiguredAgentExecutionHandle({identity,physicalScope:createRootExecutionPhysicalScope({root,ancestorTeamRunIds:[]}),"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/member-execution-context.ts",
+    "sha256": "7a10bb007dab0f011c7aa346da13bac29997996af78d62d084c14c52fc9cc2ff",
+    "effectiveNonEmptyLines": 88,
+    "excerpts": [
+      {
+        "from": 48,
+        "to": 70,
+        "text": "48: export class MemberExecutionContext {\n49:   readonly identity: CollaborationMemberExecutionIdentity;\n50:   /**\n51:    * Whether the member belongs to a Team: a member of a Team or Org root (configured or task)\n52:    * or of a task Team in any root. The Agent-root host and a task Agent directly under an\n53:    * Agent root are not; they get no `get_handoff_rules`.\n54:    */\n55:   readonly teamScoped: boolean;\n56:   readonly authoredEnclosingScopeInstruction: string | null;\n57:   readonly collaboration: MemberCollaborationContext;\n58:   readonly tasks: MemberTaskCommandCapability;\n59: \n60:   constructor(input: {\n61:     identity: CollaborationMemberExecutionIdentity;\n62:     teamScoped: boolean;\n63:     authoredEnclosingScopeInstruction?: string | null;\n64:     collaboration: MemberCollaborationContext;\n65:     tasks: MemberTaskCommandCapability;\n66:   }) {\n67:     if (typeof input.teamScoped !== \"boolean\") throw new Error(\"teamScoped is required.\");\n68:     this.identity = cloneCollaborationMemberExecutionIdentity(input.identity);\n69:     this.teamScoped = input.teamScoped;\n70:     this.authoredEnclosingScopeInstruction = optional(input.authoredEnclosingScopeInstruction);"
+      }
+    ]
+  }
+]

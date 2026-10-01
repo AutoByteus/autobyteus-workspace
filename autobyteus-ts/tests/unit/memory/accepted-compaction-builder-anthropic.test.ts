@@ -32,12 +32,12 @@ describe('AcceptedCompactionBuilder Anthropic retained tail', () => {
         assistant, result,
       ]);
       const store = new FileMemoryStore(dir, 'agent-1');
-      const builder = new AcceptedCompactionBuilder(store, { targetKind: 'agent_run', runId: 'agent-1', memberId: null });
+      const builder = new AcceptedCompactionBuilder();
       const accepted = builder.build({
-        compactionId: 'compact-1', expectedPreviousCompactionId: null, baseline,
+        compactionId: 'compact-1', baseline,
         proposal: {
           selectedNewRawTraceIds: ['raw-1'], retainedMessages: [assistant, result],
-          output: { episodes: [{ summary: 'Found x' }], semanticEntries: [] },
+          summary: 'Found x',
           execution: { runtimeKind: 'autobyteus', provider: 'anthropic', modelIdentifier: 'claude-opus-5-5' },
           budgetAssessment: { planningBudget: { postCompactionTargetTokens: 100_000 }, estimatedUntrackedOverheadTokens: 0 },
         } as any,

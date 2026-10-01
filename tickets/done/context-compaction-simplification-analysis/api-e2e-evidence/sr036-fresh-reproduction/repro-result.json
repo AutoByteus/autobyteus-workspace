@@ -1,0 +1,258 @@
+{
+  "at": "2026-10-01T14:54:00.612700+00:00",
+  "scope": "User-requested fresh reproduction of already reviewed API009-F001; no fix/post-fix acceptance/new full validation score",
+  "reproductionOutcome": "Reproduced",
+  "freshAttempts": 4,
+  "reproduced": 4,
+  "blocked": 0,
+  "notReproduced": 0,
+  "evidenceConsistencyAssertions": "Pass (offline capture checks, not product acceptance)",
+  "cases": [
+    {
+      "case": "R1A",
+      "outcome": "Reproduced",
+      "productExpectation": "Fail: one corresponding bubble expected, two observed",
+      "hostRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568",
+      "agentRunId": "sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311",
+      "memberAddress": "/sr036_reviewer",
+      "nativeInstance": "d41e22e0-79a4-43c0-989b-2f337e6d540a",
+      "revisionBeforeAndAfter": 16,
+      "heldEntry": {
+        "sequence": 3,
+        "message_id": "df6674d5-cb03-48d8-a496-d48a19f02d33",
+        "dedupe_key": "member_input:daily_assistant_f1b315041c244c00aac39dd26022c568:sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311:df6674d5-cb03-48d8-a496-d48a19f02d33",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R1A-HELD",
+        "sender_type": "user",
+        "file_attachments": []
+      },
+      "recovery": {
+        "operationId": "compaction_operation_mupn44od_1",
+        "failureEpoch": 2,
+        "position": {
+          "kind": "held_turn",
+          "turnId": "turn_0003"
+        },
+        "state": "awaiting_user",
+        "code": "SR036_SYNTHETIC_503",
+        "message": "Compaction failed \u2014 send a message to retry"
+      },
+      "backendPidBeforeAndAfter": 41971,
+      "timeOriginBefore": 1790865380902.8,
+      "timeOriginAfter": 1790865655515.9,
+      "sentinelBefore": "9fec5f87-a732-4882-90ae-ed4d3b36d9e0",
+      "sentinelAfter": null,
+      "userBubblesBefore": 1,
+      "userBubblesNoReloadControl": 1,
+      "correspondingUserBubblesAfter": 2,
+      "heldLabelsAfter": 1,
+      "outgoingHeldSends": 1,
+      "rawHeldUserRows": 1,
+      "savedHeldUserRows": 1,
+      "heldParentDispatches": 0,
+      "rawTraceId": "rt_1790865574061",
+      "rawSha256BeforeAndAfter": "093b9fe84bfb283156ebdafbb3ab7ada99a7c636512cf4ab2b798bfefd492172",
+      "rawAndHistoryAcceptedIdentityPresent": false,
+      "rawAndHistoryContentEqual": true,
+      "attachmentExpansionQualification": false,
+      "domEvidenceBefore": "r1a-before-dom-final.json",
+      "domEvidenceAfter": "r1a-after-dom.json"
+    },
+    {
+      "case": "R1T",
+      "outcome": "Reproduced",
+      "productExpectation": "Fail: one corresponding bubble expected, two observed",
+      "hostRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568",
+      "agentRunId": "sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f",
+      "memberAddress": "/sr036_team/lead",
+      "nativeInstance": "fa6e0cf8-c160-4d86-8256-9af81240e4dc",
+      "revisionBeforeAndAfter": 16,
+      "heldEntry": {
+        "sequence": 3,
+        "message_id": "941bd250-25fc-43b7-a8fd-583be4736a95",
+        "dedupe_key": "member_input:daily_assistant_f1b315041c244c00aac39dd26022c568:sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f:941bd250-25fc-43b7-a8fd-583be4736a95",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R1T-HELD",
+        "sender_type": "user",
+        "file_attachments": []
+      },
+      "recovery": {
+        "operationId": "compaction_operation_mupn7tm8_1",
+        "failureEpoch": 2,
+        "position": {
+          "kind": "held_turn",
+          "turnId": "turn_0003"
+        },
+        "state": "awaiting_user",
+        "code": "SR036_SYNTHETIC_503",
+        "message": "Compaction failed \u2014 send a message to retry"
+      },
+      "backendPidBeforeAndAfter": 41971,
+      "timeOriginBefore": 1790865655515.9,
+      "timeOriginAfter": 1790865764685.8,
+      "sentinelBefore": "d3aba155-56e2-4eb1-92a5-80cee37dd4b2",
+      "sentinelAfter": null,
+      "userBubblesBefore": 1,
+      "userBubblesNoReloadControl": 1,
+      "correspondingUserBubblesAfter": 2,
+      "heldLabelsAfter": 1,
+      "outgoingHeldSends": 1,
+      "rawHeldUserRows": 1,
+      "savedHeldUserRows": 1,
+      "heldParentDispatches": 0,
+      "rawTraceId": "rt_1790865734809",
+      "rawSha256BeforeAndAfter": "64cec1f8f5b127fdff9376a4b4b18de99740bd2b2e56fd2984d8476913e27f25",
+      "rawAndHistoryAcceptedIdentityPresent": false,
+      "rawAndHistoryContentEqual": true,
+      "attachmentExpansionQualification": false,
+      "domEvidenceBefore": "r1t-before-dom.json",
+      "domEvidenceAfter": "r1t-after-dom.json"
+    },
+    {
+      "case": "R2A",
+      "outcome": "Reproduced",
+      "productExpectation": "Fail: one corresponding bubble expected, two observed",
+      "hostRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4",
+      "agentRunId": "sr036_reviewer_c7e7eb6337504f05ab752ee60d864111",
+      "memberAddress": "/sr036_reviewer",
+      "nativeInstance": "c0d31567-72e6-43e5-a3c4-515a8da0036d",
+      "revisionBeforeAndAfter": 16,
+      "heldEntry": {
+        "sequence": 3,
+        "message_id": "4c013136-deb0-452d-aff4-5ba470bf84c4",
+        "dedupe_key": "member_input:daily_assistant_e663420272024bbcb4d566ddddd49fb4:sr036_reviewer_c7e7eb6337504f05ab752ee60d864111:4c013136-deb0-452d-aff4-5ba470bf84c4",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R2A-HELD",
+        "sender_type": "user",
+        "file_attachments": [
+          {
+            "uri": "/rest/agent-collaborations/daily_assistant_e663420272024bbcb4d566ddddd49fb4/agent-runs/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/context-files/ctx_29e0524390ff__attachment.txt",
+            "file_type": "text",
+            "file_name": "ctx_29e0524390ff__attachment.txt"
+          }
+        ]
+      },
+      "recovery": {
+        "operationId": "compaction_operation_mupnaauj_1",
+        "failureEpoch": 2,
+        "position": {
+          "kind": "held_turn",
+          "turnId": "turn_0003"
+        },
+        "state": "awaiting_user",
+        "code": "SR036_SYNTHETIC_503",
+        "message": "Compaction failed \u2014 send a message to retry"
+      },
+      "backendPidBeforeAndAfter": 41971,
+      "timeOriginBefore": 1790865764685.8,
+      "timeOriginAfter": 1790865931470.2,
+      "sentinelBefore": "dfcf4c5f-1960-4c48-9b36-fff99e249420",
+      "sentinelAfter": null,
+      "userBubblesBefore": 1,
+      "userBubblesNoReloadControl": 1,
+      "correspondingUserBubblesAfter": 2,
+      "heldLabelsAfter": 1,
+      "outgoingHeldSends": 1,
+      "rawHeldUserRows": 1,
+      "savedHeldUserRows": 1,
+      "heldParentDispatches": 0,
+      "rawTraceId": "rt_1790865895800",
+      "rawSha256BeforeAndAfter": "8e8178b1a6f6e44dd0aafef56fbb32a71f18e624f8e3d5d47175e48e300673d0",
+      "rawAndHistoryAcceptedIdentityPresent": false,
+      "rawAndHistoryContentEqual": true,
+      "attachmentExpansionQualification": true,
+      "domEvidenceBefore": "r2a-before-dom.json",
+      "domEvidenceAfter": "r2a-expanded-dom.json"
+    },
+    {
+      "case": "R2T",
+      "outcome": "Reproduced",
+      "productExpectation": "Fail: one corresponding bubble expected, two observed",
+      "hostRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4",
+      "agentRunId": "sr036_lead_6da9c91041b54d8e82937a24c2821592",
+      "memberAddress": "/sr036_team/lead",
+      "nativeInstance": "d49c2bf2-4ce2-4f0f-aab5-05218f3122a7",
+      "revisionBeforeAndAfter": 16,
+      "heldEntry": {
+        "sequence": 3,
+        "message_id": "9349928e-1e8b-4568-bd8e-7ae1777ba446",
+        "dedupe_key": "member_input:daily_assistant_e663420272024bbcb4d566ddddd49fb4:sr036_lead_6da9c91041b54d8e82937a24c2821592:9349928e-1e8b-4568-bd8e-7ae1777ba446",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R2T-HELD",
+        "sender_type": "user",
+        "file_attachments": []
+      },
+      "recovery": {
+        "operationId": "compaction_operation_mupnd09x_1",
+        "failureEpoch": 2,
+        "position": {
+          "kind": "held_turn",
+          "turnId": "turn_0003"
+        },
+        "state": "awaiting_user",
+        "code": "SR036_SYNTHETIC_503",
+        "message": "Compaction failed \u2014 send a message to retry"
+      },
+      "backendPidBeforeAndAfter": 41971,
+      "timeOriginBefore": 1790865931470.2,
+      "timeOriginAfter": 1790866022176,
+      "sentinelBefore": "447d5779-061d-46e3-a134-29a86dd1337d",
+      "sentinelAfter": null,
+      "userBubblesBefore": 1,
+      "userBubblesNoReloadControl": 1,
+      "correspondingUserBubblesAfter": 2,
+      "heldLabelsAfter": 1,
+      "outgoingHeldSends": 1,
+      "rawHeldUserRows": 1,
+      "savedHeldUserRows": 1,
+      "heldParentDispatches": 0,
+      "rawTraceId": "rt_1790865977662",
+      "rawSha256BeforeAndAfter": "1d179b1567fb77709ada6d8d5b86bb639ada285d49be9f4e970c674b0c77fd95",
+      "rawAndHistoryAcceptedIdentityPresent": false,
+      "rawAndHistoryContentEqual": true,
+      "attachmentExpansionQualification": false,
+      "domEvidenceBefore": "r2t-before-dom.json",
+      "domEvidenceAfter": "r2t-after-dom.json"
+    }
+  ],
+  "provider": {
+    "requests": 36,
+    "parent": 12,
+    "compaction": 24,
+    "synthetic503": 24,
+    "remoteInference": 0,
+    "note": "Controlled loopback dependency; two 3-attempt exhausted cycles per child (post-response seed and pre-parent held input)."
+  },
+  "cleanup": {
+    "at": "2026-10-01T14:48:18.928283+00:00",
+    "providerPid": 42052,
+    "providerSignal": "SIGTERM",
+    "appStop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-63334-9939",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "rootStillExists": false
+  },
+  "limits": [
+    "No frequency/statistical inference",
+    "No B/retry recovery after reload in this scope",
+    "No backend restart/power-loss proof",
+    "No provider quality claim",
+    "No new durable tests or production fix"
+  ]
+}

@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.83 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/progress/__tests__/CompactionActivityItem.spec.ts components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | components/progress/__tests__/CompactionActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/progress/__tests__/CompactionActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (20 tests) 8ms
+ ✓ services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts (34 tests) 7ms
+ ✓ components/progress/__tests__/CompactionActivityItem.spec.ts (2 tests) 12ms
+ ✓ components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts (5 tests) 32ms
+
+ Test Files  4 passed (4)
+      Tests  61 passed (61)
+   Start at  21:57:28
+   Duration  6.61s (transform 3.17s, setup 21.83s, collect 336ms, tests 59ms, environment 1.83s, prepare 726ms)
+

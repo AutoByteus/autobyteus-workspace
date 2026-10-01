@@ -1,0 +1,10 @@
+{
+  "result": "Implementation Complete / Local Fix",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected_rule": {
+    "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "reason": "CRR015 implementation-owned Local Fix completed after SR038/ARCH006 design recovery; more specific than generic Large/High completion. Sole /code_reviewer; no direct API or design-gap outcome."
+}

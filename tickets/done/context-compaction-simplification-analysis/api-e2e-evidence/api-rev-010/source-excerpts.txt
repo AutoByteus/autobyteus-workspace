@@ -1,0 +1,248 @@
+1: import 'reflect-metadata';
+2: import { describe, it, expect, vi } from 'vitest';
+3: import { createPinia, setActivePinia } from 'pinia';
+4: import { readFileSync, writeFileSync } from 'node:fs';
+5: import { AgentInputUserMessage } from '../../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';
+6: import { ContextFile } from '../../../../autobyteus-ts/dist/agent/message/context-file.js';
+7: import { ContextFileType } from '../../../../autobyteus-ts/dist/agent/message/context-file-type.js';
+8: import { SenderType } from '../../../../autobyteus-ts/dist/agent/sender-type.js';
+9: import path from 'node:path';
+10: import { createNativeRootFixture, HOST } from '../../../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture';
+11: import { eventually, summary } from '../../../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture';
+12: import { projectAgentCollaborationView } from '../../../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector';
+13: import { toMemoryTraceEvent } from '../../../../autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer';
+14: import { buildHistoricalReplayEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events';
+15: import { buildRunProjectionBundleFromEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-utils';
+16: import { dedupeRunProjectionConversationEntries } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
+17: import { AgentRootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts';
+18: import { stageAgentRunCollaborationContext } from '../agentRunCollaborationHydration';
+19: import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
+20: 
+21: const query = vi.hoisted(() => vi.fn());
+22: vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query }) }));
+23: vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({}) }));
+24: vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }));
+25: 
+
+GUARD
+#!/usr/bin/env node
+
+import fs from 'node:fs';
+import path from 'node:path';
+
+const appRoot = process.cwd();
+const packageJsonPath = path.join(appRoot, 'package.json');
+
+function fail(message) {
+  console.error(`[guard:web-boundary] ${message}`);
+  process.exit(1);
+}
+
+if (!fs.existsSync(packageJsonPath)) {
+  fail(`package.json not found at ${packageJsonPath}`);
+}
+
+const pkg = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+const dependencies = pkg.dependencies ?? {};
+const devDependencies = pkg.devDependencies ?? {};
+
+if (dependencies['autobyteus-ts']) {
+  fail(
+    "Invalid dependency: package.json dependencies must not include 'autobyteus-ts'. " +
+      'Use local frontend utilities instead of cross-workspace imports.',
+  );
+}
+
+if (dependencies['@autobyteus/team-stream-contracts']) {
+  fail(
+    "Invalid production dependency: '@autobyteus/team-stream-contracts' is a Nuxt build input, " +
+      'not an Electron main-process runtime dependency.',
+  );
+}
+
+if (devDependencies['@autobyteus/team-stream-contracts'] !== 'workspace:*') {
+  fail(
+    "Missing build dependency: devDependencies must include " +
+      "'@autobyteus/team-stream-contracts' as 'workspace:*'.",
+  );
+}
+
+const staleWorkspaceLink = path.join(appRoot, 'node_modules', 'autobyteus-ts');
+if (fs.existsSync(staleWorkspaceLink)) {
+  const stat = fs.lstatSync(staleWorkspaceLink);
+  if (stat.isSymbolicLink()) {
+    const targetPath = fs.realpathSync(staleWorkspaceLink);
+    if (!targetPath.startsWith(`${appRoot}${path.sep}`)) {
+      fs.unlinkSync(staleWorkspaceLink);
+      console.warn(
+        `[guard:web-boundary] Removed stale external symlink: ${staleWorkspaceLink} -> ${targetPath}`,
+      );
+    }
+  } else {
+    fail(
+      `Invalid local node_modules entry at ${staleWorkspaceLink}. ` +
+        "Run 'pnpm install' in autobyteus-web to reset dependencies.",
+    );
+  }
+}
+
+const includeDirs = [
+  'components',
+  'composables',
+  'electron',
+  'graphql',
+  'pages',
+  'plugins',
+  'services',
+  'stores',
+  'types',
+  'utils',
+];
+
+const fileExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.vue']);
+const scriptExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.sh']);
+const importPatterns = [
+  /from\s+['"]autobyteus-ts(?:\/[^'"]*)?['"]/,
+  /require\(\s*['"]autobyteus-ts(?:\/[^'"]*)?['"]\s*\)/,
+  /from\s+['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]/,
+  /require\(\s*['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]\s*\)/,
+];
+const contractRuntimeImportPatterns = [
+  /from\s+['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]/,
+  /require\(\s*['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]\s*\)/,
+  /import\(\s*['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]\s*\)/,
+];
+
+function walkDir(dirPath, collector, extensions = fileExtensions) {
+  if (!fs.existsSync(dirPath)) {
+    return;
+  }
+  for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+    const fullPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      walkDir(fullPath, collector, extensions);
+      continue;
+    }
+    if (entry.isFile() && extensions.has(path.extname(entry.name))) {
+      collector(fullPath);
+    }
+  }
+}
+
+const violations = [];
+const guardScriptRelativePath = path.join('scripts', 'guard-web-boundary.mjs');
+
+for (const dir of includeDirs) {
+  walkDir(path.join(appRoot, dir), (filePath) => {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const lines = content.split('\n');
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index];
+      if (importPatterns.some((pattern) => pattern.test(line))) {
+        violations.push(`${path.relative(appRoot, filePath)}:${index + 1}: ${line.trim()}`);
+      }
+    }
+  });
+}
+
+walkDir(path.join(appRoot, 'scripts'), (filePath) => {
+  const relativePath = path.relative(appRoot, filePath);
+  if (relativePath === guardScriptRelativePath) {
+    return;
+  }
+
+  if (!scriptExtensions.has(path.extname(filePath))) {
+    return;
+  }
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  const lines = content.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (line.includes('autobyteus-ts')) {
+      violations.push(`${relativePath}:${index + 1}: ${line.trim()}`);
+    }
+  }
+}, scriptExtensions);
+
+walkDir(path.join(appRoot, 'electron'), (filePath) => {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const lines = content.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (contractRuntimeImportPatterns.some((pattern) => pattern.test(line))) {
+      violations.push(
+        `${path.relative(appRoot, filePath)}:${index + 1}: Electron runtime must not import ` +
+          `@autobyteus/team-stream-contracts: ${line.trim()}`,
+      );
+    }
+  }
+});
+
+if (violations.length > 0) {
+  fail(
+    'Direct autobyteus-ts dependencies are not allowed in active autobyteus-web code:\n' +
+      violations.join('\n'),
+  );
+}
+
+console.log('[guard:web-boundary] Passed.');
+
+
+PACKAGE SCRIPTS
+{
+  "dev": "nuxt dev --host 0.0.0.0",
+  "build": "nuxt build",
+  "guard:web-boundary": "node ./scripts/guard-web-boundary.mjs",
+  "guard:localization-boundary": "node ./scripts/guard-localization-boundary.mjs",
+  "audit:localization-literals": "node ./scripts/audit-localization-literals.mjs",
+  "test": "pnpm test:nuxt && pnpm test:electron",
+  "test:nuxt": "cross-env NUXT_TEST=true vitest",
+  "test:electron": "vitest --config ./electron/vitest.config.ts",
+  "test:voice-input-real-release": "cross-env AUTOBYTEUS_VOICE_INPUT_REAL_E2E=1 vitest --config ./electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.realRelease.spec.ts",
+  "start": "electron .",
+  "generate": "nuxt generate",
+  "generate:electron": "cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate",
+  "build:mobile-web": "node ./scripts/build-mobile-web.mjs",
+  "generate:icons": "tsc -p build/tsconfig.json && node build/scripts/generateIcons.js",
+  "preview": "nuxt preview",
+  "codegen": "graphql-codegen --require dotenv/config --config codegen.ts",
+  "transpile-electron": "tsc -p electron/tsconfig.json",
+  "transpile-build": "tsc -p build/tsconfig.json",
+  "prepare-server": "node ./scripts/prepare-server-dispatch.mjs",
+  "prepare-server:legacy": "bash ./scripts/prepare-server.sh",
+  "prepare-server:windows": "node ./scripts/prepare-server.mjs",
+  "verify-packaged-terminal-runtime": "node ./scripts/verify-packaged-terminal-runtime.mjs",
+  "build:electron": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js",
+  "build:electron:linux": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux",
+  "build:electron:windows": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --windows",
+  "build:electron:mac": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac",
+  "build:electron:linux:x64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=x64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --x64",
+  "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64",
+  "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
+  "test:e2e:diagram-zoom-viewer": "node tests/e2e/diagram-zoom-viewer-probe.mjs",
+  "test:e2e:nested-team-aggregate-status": "node tests/e2e/nested-team-aggregate-status-probe.mjs",
+  "test:e2e:nested-team-hierarchy": "node tests/e2e/nested-team-hierarchy-probe.mjs",
+  "test:e2e:existing-run-model-config": "node tests/e2e/existing-run-model-config-probe.mjs",
+  "test:e2e:team-task-conversation": "node tests/e2e/team-task-conversation-probe.mjs",
+  "test:e2e:token-statistics-ui": "node tests/e2e/token-statistics-ui-probe.mjs",
+  "test:e2e:provider-api-key-save": "node tests/e2e/provider-api-key-save-probe.mjs",
+  "test:e2e:vnc-live": "node tests/e2e/vnc-live-probe.mjs",
+  "test:e2e:background-contention": "node tests/e2e/background-agent-renderer-contention-probe.mjs",
+  "test:e2e:task-agent-monitor-visibility": "node tests/e2e/task-agent-monitor-visibility-probe.mjs",
+  "test:e2e:agent-org-role-labels": "node tests/e2e/agent-org-role-labels-probe.mjs",
+  "test:e2e:agent-org-draft-retention": "node tests/e2e/agent-org-draft-retention-probe.mjs",
+  "test:e2e:agent-org-task-team-disclosure": "node tests/e2e/agent-org-task-team-disclosure-probe.mjs",
+  "test:e2e:system-instruction-activity": "node tests/e2e/system-instruction-activity-probe.mjs",
+  "test:e2e:background-tasks-panel": "node tests/e2e/background-tasks-panel-probe.mjs",
+  "test:e2e:codex-command-failure-detail": "node tests/e2e/codex-command-failure-detail-probe.mjs",
+  "test:e2e:standalone-agent-error-stop": "node tests/e2e/standalone-agent-error-stop-probe.mjs",
+  "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
+  "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",
+  "test:e2e:chat-composer-polish": "node tests/e2e/chat-composer-polish-probe.mjs",
+  "test:e2e:chat-composer-menus-open-upward": "node tests/e2e/chat-composer-menus-open-upward-probe.mjs",
+  "test:e2e:cross-scope-agent-mentions": "node tests/e2e/cross-scope-agent-mentions-live-probe.mjs",
+  "test:e2e:electron": "node scripts/run-electron-e2e.mjs",
+  "test:e2e:electron:isolation": "node tests/e2e/electron-launch-profile-probe.mjs",
+  "test:e2e:isolated-app": "node tests/e2e/isolated-app-lifecycle-probe.mjs"
+}

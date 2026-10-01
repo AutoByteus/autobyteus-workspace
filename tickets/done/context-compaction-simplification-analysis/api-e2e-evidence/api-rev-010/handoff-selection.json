@@ -1,0 +1,11 @@
+{
+  "result": "Fail",
+  "finding": "API010-F001",
+  "classification": "Preliminary Local Fix \u2014 implementation-owned test/build integration",
+  "selected_when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+  "recipient_address": "/code_reviewer",
+  "excluded": "Not Pass, not pre-execution Requirement Gap/Design Impact/Unclear, not Delivery. Single most-specific recipient only.",
+  "sent": true,
+  "receipt": "handoff-receipt.json",
+  "transport": "Complete archive plus direct authorities/API15 after rejected HTTP413 direct full-list attempt"
+}

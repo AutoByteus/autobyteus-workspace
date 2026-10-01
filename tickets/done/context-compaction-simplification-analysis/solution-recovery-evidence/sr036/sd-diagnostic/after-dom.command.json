@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T15:02:58.757476+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "B68A1F78F563D8373C1D1BBA624A120B",
+    "--script",
+    "()=>({timeOrigin:performance.timeOrigin,markers:[...document.querySelectorAll(\"*\")].filter(e=>e.children.length===0&&e.textContent.includes(\"SD036-HELD-A\")).map(e=>({tag:e.tagName,text:e.textContent})),heldLabels:[...document.querySelectorAll(\"*\")].filter(e=>e.children.length===0&&e.textContent.includes(\"Held \u2014 waiting\")).length})"
+  ],
+  "controlPort": 64587
+}

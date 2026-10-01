@@ -48,15 +48,14 @@ const currentContext = () => new WorkingContextFinalizer().finalize({
 });
 
 const payload = () => WorkingContextSnapshotSerializer.serialize(currentContext(), {
-  schema_version: 5,
   agent_id: 'agent-1',
 });
 
 describe('WorkingContextSnapshotSerializer', () => {
   it('reads old v5 messages without a native turn and round-trips signed and reset native turns', () => {
-    const old = WorkingContextSnapshotSerializer.deserialize(payload()).workingContext;
-    expect(old.buildMessages()[3]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).toBeUndefined();
-    const original = old.buildMessages()[3]!;
+    const old = WorkingContextSnapshotSerializer.deserialize({ schema_version: 5, ...payload() }).workingContext;
+    expect(old.buildMessages()[2]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).toBeUndefined();
+    const original = old.buildMessages()[2]!;
     const signed = new Message(MessageRole.ASSISTANT, {
       content: original.content,
       reasoning_content: original.reasoning_content,
@@ -68,23 +67,23 @@ describe('WorkingContextSnapshotSerializer', () => {
         ],
       } },
     });
-    old.replaceMessage(3, signed);
-    const saved = WorkingContextSnapshotSerializer.serialize(old, { schema_version: 5, agent_id: 'agent-1' });
+    old.replaceMessage(2, signed);
+    const saved = WorkingContextSnapshotSerializer.serialize(old, { agent_id: 'agent-1' });
     const restored = WorkingContextSnapshotSerializer.deserialize(saved).workingContext;
-    expect(parseAnthropicAssistantTurn(restored.buildMessages()[3]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks[0])
+    expect(parseAnthropicAssistantTurn(restored.buildMessages()[2]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks[0])
       .toEqual({ type: 'thinking', thinking: 'synthetic', signature: 'signed' });
-    restored.replaceMessage(3, withoutAnthropicThinkingInMessage(restored.buildMessages()[3]!));
+    restored.replaceMessage(2, withoutAnthropicThinkingInMessage(restored.buildMessages()[2]!));
     const reset = WorkingContextSnapshotSerializer.deserialize(WorkingContextSnapshotSerializer.serialize(restored, {
-      schema_version: 5, agent_id: 'agent-1',
+      agent_id: 'agent-1',
     })).workingContext;
-    expect(parseAnthropicAssistantTurn(reset.buildMessages()[3]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks)
+    expect(parseAnthropicAssistantTurn(reset.buildMessages()[2]!.metadata?.[ANTHROPIC_ASSISTANT_TURN_KEY]).blocks)
       .toEqual([{ type: 'tool_use', id: 'call-1', name: 'inspect', input: { nested: true } }]);
   });
-  it('round-trips finalized v5 messages, UTF-16 ranges, media, and native tool structures', () => {
+  it('round-trips current messages, UTF-16 ranges, media, and native tool structures', () => {
     const serialized = payload();
 
     expect(WorkingContextSnapshotSerializer.validate(serialized)).toBe(true);
-    expect(Object.keys(serialized)).toEqual(['schema_version', 'agent_id', 'messages']);
+    expect(Object.keys(serialized)).toEqual(['agent_id', 'messages']);
     expect(JSON.stringify(serialized)).not.toContain('compactionId');
     expect(JSON.stringify(serialized)).not.toContain('episodeIds');
     expect(JSON.stringify(serialized)).not.toContain('semanticIds');
@@ -92,7 +91,7 @@ describe('WorkingContextSnapshotSerializer', () => {
 
     const { workingContext, metadata } =
       WorkingContextSnapshotSerializer.deserialize(serialized);
-    expect(metadata).toEqual({ schema_version: 5, agent_id: 'agent-1' });
+    expect(metadata).toEqual({ agent_id: 'agent-1' });
     expect(workingContext.buildMessages().map((message) => message.toDict()))
       .toEqual(currentContext().buildMessages().map((message) => message.toDict()));
 
@@ -114,20 +113,14 @@ describe('WorkingContextSnapshotSerializer', () => {
     expect(provenance.constituents[0].textRange.end).toBe('M1 memory 🧠'.length);
   });
 
-  it('rejects pre-v5 roots and identity-bearing or unknown root fields', () => {
-    const current = payload();
-    expect(WorkingContextSnapshotSerializer.validate({
-      ...current,
-      schema_version: 4,
-    })).toBe(false);
-    expect(WorkingContextSnapshotSerializer.validate({
-      ...current,
-      compaction_id: 'c1',
-    })).toBe(false);
-    expect(WorkingContextSnapshotSerializer.validate({
-      ...current,
-      episode_ids: ['e1'],
-    })).toBe(false);
+  it('ignores root versions and extras without retaining them', () => {
+    for (const version of [undefined, null, 1, 4, 5, 999, 'irrelevant']) {
+      const source = { ...payload(), schema_version: version, compaction_id: 'c1', episode_ids: ['e1'] };
+      expect(WorkingContextSnapshotSerializer.validate(source)).toBe(true);
+      const { workingContext, metadata } = WorkingContextSnapshotSerializer.deserialize(source);
+      expect(metadata).toEqual({ agent_id: 'agent-1' });
+      expect(WorkingContextSnapshotSerializer.serialize(workingContext, metadata)).toEqual(payload());
+    }
   });
 
   it('rejects invalid, overlapping, or out-of-bounds constituent ranges', () => {
@@ -169,4 +162,48 @@ describe('WorkingContextSnapshotSerializer', () => {
     expect(WorkingContextSnapshotSerializer.validate(serialized)).toBe(true);
     expect(JSON.stringify(serialized)).toContain('[object Object]');
   });
+  it.each([
+    ['invalid entry', (p: any) => { p.messages[0] = null; }],
+    ['missing identity', (p: any) => { delete p.agent_id; }],
+    ['missing messages', (p: any) => { delete p.messages; }],
+    ['invalid role', (p: any) => { p.messages[0].role = 'unknown'; }],
+    ['invalid content', (p: any) => { p.messages[0].content = 42; }],
+    ['invalid media', (p: any) => { p.messages[0].image_urls = [42]; }],
+    ['invalid metadata', (p: any) => { p.messages[0].metadata = []; }],
+    ['missing provenance', (p: any) => { p.messages[0].metadata = {}; }],
+    ['bad provenance ids', (p: any) => { p.messages[0].metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY].rawTraceIds = [2]; }],
+    ['numeric call id', (p: any) => { p.messages[2].tool_payload.tool_calls[0].id = 42; }],
+    ['missing arguments', (p: any) => { delete p.messages[2].tool_payload.tool_calls[0].arguments; }],
+    ['invalid payload', (p: any) => { p.messages[2].tool_payload = false; }],
+    ['empty batch', (p: any) => { p.messages[2].tool_payload.tool_calls = []; }],
+    ['invalid native', (p: any) => { p.messages[2].tool_payload.tool_calls[0].nativeToolCallContext = { provider: 'unsupported' }; }],
+    ['numeric result id', (p: any) => { p.messages[3].tool_payload.tool_call_id = 42; }],
+  ])('rejects %s without filtering or coercion', (_name, mutate) => {
+    const source: any = structuredClone(payload());
+    mutate(source);
+    expect(WorkingContextSnapshotSerializer.validateEnvelope(source)).toBe(false);
+    expect(WorkingContextSnapshotSerializer.validate(source)).toBe(false);
+    expect(() => WorkingContextSnapshotSerializer.deserialize(source)).toThrow();
+  });
+
+  it('projects envelope/message/tool/provenance extras but preserves open semantic payload maps', () => {
+    const source: any = structuredClone(payload());
+    source.extra = 'root'; source.messages[2].extra = 'message';
+    source.messages[2].tool_payload.extra = 'payload';
+    source.messages[2].tool_payload.tool_calls[0].extra = 'call';
+    source.messages[2].tool_payload.tool_calls[0].arguments.extra = { needed: true };
+    source.messages[2].metadata.open = { needed: true };
+    source.messages[2].metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY].extra = 'obsolete';
+    source.messages[1].metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY].constituents[0].textRange.extra = true;
+    const decoded = WorkingContextSnapshotSerializer.deserialize(source);
+    const saved: any = WorkingContextSnapshotSerializer.serialize(decoded.workingContext, decoded.metadata);
+    expect(saved.extra).toBeUndefined(); expect(saved.messages[2].extra).toBeUndefined();
+    expect(saved.messages[2].tool_payload.extra).toBeUndefined();
+    expect(saved.messages[2].tool_payload.tool_calls[0].extra).toBeUndefined();
+    expect(saved.messages[2].tool_payload.tool_calls[0].arguments.extra).toEqual({ needed: true });
+    expect(saved.messages[2].metadata.open).toEqual({ needed: true });
+    expect(saved.messages[2].metadata[MEMORY_MESSAGE_PROVENANCE_METADATA_KEY].extra).toBeUndefined();
+    expect(WorkingContextSnapshotSerializer.validate(saved)).toBe(true);
+  });
+
 });

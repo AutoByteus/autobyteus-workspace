@@ -75,44 +75,6 @@ describe('FileMemoryStore', () => {
     expect(semanticItems[0].fact).toBe('Use pnpm exec vitest.');
   });
 
-  it('uses exact current output lookup and creates no compacted-memory manifest', () => {
-    const store = new FileMemoryStore(tempDir, 'agent-current-output');
-    const episode = new EpisodicItem({
-      id: 'ep_1',
-      ts: 99,
-      summary: 'Complete current episode.',
-    });
-    const semantics = [
-      new SemanticItem({
-        id: 'sem_1',
-        ts: 100,
-        category: 'critical_issue',
-        fact: 'Critical bug remains open.',
-        salience: 500,
-      }),
-      new SemanticItem({
-        id: 'sem_2',
-        ts: 101,
-        category: 'important_artifact',
-        fact: 'Implementation handoff saved at /tmp/implementation-handoff.md.',
-        salience: 100,
-      }),
-    ];
-    store.add([episode, ...semantics]);
-
-    expect(store.findEpisodicItemsByIds(['ep_1'])).toEqual([episode]);
-    expect(store.findSemanticItemsByIds(['sem_2', 'sem_1']).map(({ id }) => id))
-      .toEqual(['sem_2', 'sem_1']);
-    expect(() => store.findSemanticItemsByIds(['missing'])).toThrow(
-      "Expected exactly one semantic row 'missing', found 0",
-    );
-    expect(fs.existsSync(path.join(
-      tempDir,
-      'agents',
-      'agent-current-output',
-      'compacted_memory_manifest.json',
-    ))).toBe(false);
-  });
 
   it('respects list limits', () => {
     const store = new FileMemoryStore(tempDir, 'agent-limit');

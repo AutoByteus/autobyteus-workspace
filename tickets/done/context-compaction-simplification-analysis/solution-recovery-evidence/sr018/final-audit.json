@@ -1,0 +1,37 @@
+{
+  "authority_hashes": {
+    "requirements-doc.md": "da960c7aa5c5ef89ad87fe521f2fab10804519de4ac4d0713f536dfa59df9d4e",
+    "design-spec.md": "34c8c20d6e45499cc337d6bafb4b17ca66393ee52ada7ef2a8a40f6f7d557c30",
+    "proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+    "output-format-and-coverage.md": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5"
+  },
+  "changed_preexisting_paths": [
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "test-support/live-e2e/live-e2e-harness.ts",
+    "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md"
+  ],
+  "all_other_preexisting_paths_preserved": true,
+  "unmerged_paths": [],
+  "upstream_is_ancestor": true,
+  "tracked_uncommitted_production_changes": [],
+  "checks": {
+    "reader_characterization": "8 PASS; unchanged source only",
+    "server_unit_files": "42 PASS / 2 FAIL; 5 files, 3 passed / 2 failed",
+    "diff_check": "PASS",
+    "smoke_script_syntax": "PASS"
+  },
+  "no_provider_calls": true,
+  "no_push_merge_release": true,
+  "classification": "Architecture Design Complete; Large/High; not acceptance",
+  "unresolved": [
+    "API-F005",
+    "API-F004",
+    "SR018-OBS-001",
+    "candidate-v6 approval/evaluation (excluded from active design)",
+    "Applicable refreshed implementation/source/API and durable-test review"
+  ]
+}

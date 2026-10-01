@@ -1,0 +1,54 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts (0 test)
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-DZ0B6J/workspace.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+ ✓ tests/unit/secret-management/live-e2e-compaction-observation.test.ts (2 tests) 9ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts [ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts ]
+Error: Cannot find package 'autobyteus-ts/llm/transport/local-long-running-fetch.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts'
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts:17:1
+     15| });
+     16| 
+     17| import * as transport from 'autobyteus-ts/llm/transport/local-long-run…
+       | ^
+     18| import { LMStudioLLM } from 'autobyteus-ts/llm/api/lmstudio-llm.js';
+     19| import { LLMModel } from 'autobyteus-ts/llm/models.js';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 passed (2)
+   Start at  23:53:52
+   Duration  2.99s (transform 1.93s, setup 0ms, import 2.76s, tests 9ms, environment 0ms)
+

@@ -45,6 +45,10 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     memoryManager.ingestUserMessage(
       llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments,
       resolveInterAgentSenderId(original.metadata),
+      {
+        messageId: typeof original.metadata?.message_id === 'string' ? original.metadata.message_id : undefined,
+        dedupeKey: typeof original.metadata?.dedupe_key === 'string' ? original.metadata.dedupe_key : undefined,
+      },
     );
     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
     return message;

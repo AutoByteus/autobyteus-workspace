@@ -65,6 +65,17 @@ describe('LLMFactory config composition', () => {
     factoryAny.modelsByProvider = originalModelsByProvider;
   });
 
+  it('finalizes cloned model defaults before constructing the adapter, without merging back removed options', async () => {
+    const defaults = new LLMConfig({maxTokens:5000,extraParams:{tools:[{}],safe:true}});
+    const model = buildModel('finalized-config', defaults); LLMFactory.registerModel(model);
+    const llm = await LLMFactory.createLLM('finalized-config',(selected,config) => {
+      expect(selected).toBe(model); expect(config).not.toBe(defaults);
+      config.maxTokens=1000; config.extraParams={safe:true};return config;
+    },providerApiKeyResolver());
+    expect(llm.config.maxTokens).toBe(1000); expect(llm.config.extraParams).toEqual({safe:true});
+    expect(defaults.maxTokens).toBe(5000);expect(defaults.extraParams.tools).toEqual([{}]);
+  });
+
   it('preserves model default temperature when raw run config omits temperature', async () => {
     LLMFactory.registerModel(
       buildModel(

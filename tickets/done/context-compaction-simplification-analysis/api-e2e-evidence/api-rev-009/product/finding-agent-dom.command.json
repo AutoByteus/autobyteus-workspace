@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T13:12:04.445242+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "() => [...document.querySelectorAll(\"main *\")].filter(x=>x.children.length===0&&x.textContent.includes(\"API9-AGENT-RECONNECT-HELD-A\")).map(x=>({tag:x.tagName,text:x.textContent,parent:x.parentElement.outerHTML.slice(0,2000)}))"
+  ],
+  "controlPort": 56935
+}

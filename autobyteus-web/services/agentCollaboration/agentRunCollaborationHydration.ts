@@ -4,12 +4,7 @@ import {
   AgentRootExecutionViewDtoSchema,
   type AgentRunCollaborationViewDto,
 } from '@autobyteus/collaboration-stream-contracts'
-import { AgentContext } from '~/types/agent/AgentContext'
-import { AgentRunState } from '~/types/agent/AgentRunState'
-import { AgentStatus } from '~/types/agent/AgentStatus'
-import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
-import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
 import { buildConversationFromProjection, type RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation'
 import { buildActivitiesFromProjection, type RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration'
 import { primeRecentEventMonitorBaseline, resetRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator'
@@ -74,8 +69,12 @@ export const stageAgentRunCollaborationContext = async (input: Readonly<{
   hostRunId: string
   view: AgentRunCollaborationViewDto
   isCurrent?(): boolean
+  activityRevisions?: ReadonlyMap<string, number>
 }>): Promise<{ context: AgentRunCollaborationContext; commitActivities(): void }> => {
   const index = new AgentRunCollaborationIndex(input.view.execution_tree)
+  const activityStore = useAgentActivityStore()
+  const revisions = new Map([...index.agents.keys()].map(id => [id,
+    input.activityRevisions?.get(id) ?? activityStore.getActivityContentRevision(id)]))
   const workspaces = new Map<string, Promise<WorkspaceMetadata | null>>()
   const workspaceFor = (root: string | null) => {
     if (!root) return Promise.resolve(null)
@@ -98,7 +97,7 @@ export const stageAgentRunCollaborationContext = async (input: Readonly<{
       entry: Object.freeze({ agentRunId: child.agentRunId, memberAddress: child.address, context }),
       activities: Object.freeze({
         runId: child.agentRunId,
-        expectedRevision: useAgentActivityStore().getActivityContentRevision(child.agentRunId),
+        expectedRevision: revisions.get(child.agentRunId)!,
         activities: buildActivitiesFromProjection(projection.activities),
       }),
     }
@@ -109,6 +108,7 @@ export const stageAgentRunCollaborationContext = async (input: Readonly<{
   return {
     context,
     commitActivities: () => {
+      if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')
       if (replacements.length && useAgentActivityStore().replaceProjectionActivitiesIfRevisions(replacements) === 'conflict') {
         throw new Error(`Agent collaboration activity changed before '${input.hostRunId}' hydration could commit.`)
       }

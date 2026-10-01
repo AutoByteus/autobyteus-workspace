@@ -1,0 +1,309 @@
+<template>
+  <div class="flex flex-col bg-white">
+    <p v-if="targetContext?.state.recoverableBlock && targetContext.state.recoverableBlock.state !== 'recovering'" role="status" class="px-3 pt-2 text-xs text-amber-700">
+      {{ $t('agentInput.components.agentInput.AgentUserInputTextArea.compaction_retry') }}
+    </p>
+    <div ref="rootRef" class="relative flex-grow">
+      <textarea
+        :value="internalRequirement"
+        @input="handleInput"
+        ref="textarea"
+        class="w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[0.9375rem] leading-6"
+        :style="{
+          height: `${textareaHeight}px`,
+          minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
+          maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
+        }"
+        :placeholder="skillTagging?.placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
+        @keydown="handleKeyDown"
+        @click="skillMenu.detect"
+        :disabled="!target"
+        @dragover.prevent
+        @drop.prevent="handleDrop"
+        data-file-drop-target="true"
+      ></textarea>
+
+      <VoiceInputButton :target="target" class="absolute bottom-2 right-14" />
+
+      <MessagePrimaryActionButton
+        class="absolute bottom-2 right-2"
+        :kind="primaryAction.kind === 'interrupt' ? 'interrupt' : 'send'"
+        :disabled="isActionDisabled"
+        @activate="handlePrimaryAction"
+      />
+
+      <!-- `/` skill menu: standalone runs only (skillTagging). -->
+      <template v-if="skillTagging && skillMenu.open.value">
+        <div v-if="skillMenu.popover.narrow.value" class="fixed inset-0 z-40 bg-black/20" aria-hidden="true"></div>
+        <div
+          class="z-50"
+          :class="skillMenu.popover.narrow.value
+            ? 'fixed inset-x-2 bottom-2 [&>div]:w-auto'
+            : ['absolute left-2', skillMenu.popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+        >
+          <ChatSkillMenu
+            :list-id="skillMenuListId"
+            :query="skillMenu.query.value"
+            :skills="skillMenu.filteredSkills.value"
+            :has-any-skills="skillTagging.skills.length > 0"
+            :selected="targetContext?.requestedSkillNames ?? []"
+            :highlight="skillMenu.highlight.value"
+            :all-installed="skillTagging.allInstalled"
+            @highlight="skillMenu.highlight.value = $event"
+            @choose="skillMenu.choose"
+          />
+        </div>
+      </template>
+    </div>
+
+    <VoiceInputStatusRow class="mx-3 mb-2" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted, nextTick, watch, onUnmounted, toRef, useId } from 'vue';
+import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
+import { useComposerFilePathDrop } from '~/composables/agentInput/useComposerFilePathDrop';
+import type { AgentContext } from '~/types/agent/AgentContext';
+import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget';
+import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue';
+import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue';
+import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
+import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
+import { useSkillTagMenu, type SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
+import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction';
+
+const props = defineProps<{
+  target: ComposerTarget | null;
+  beforeSend?: () => void | Promise<void>;
+  /** `/` skill tags; supplied only for standalone agent runs. */
+  skillTagging?: SkillTaggingCapability | null;
+}>();
+
+const contextFileUploadStore = useContextFileUploadStore();
+const { resolveDroppedFilePaths } = useComposerFilePathDrop();
+const internalRequirement = ref('');
+
+const targetContext = computed<AgentContext | null>(() => props.target?.context ?? null);
+const submissionPending = computed(() => targetContext.value?.submissionPending ?? false);
+
+const primaryAction = computed(() => resolveAgentPrimaryAction({
+  hasContext: Boolean(targetContext.value),
+  status: targetContext.value?.state.currentStatus ?? AgentStatus.Offline,
+  submissionPending: submissionPending.value,
+  isUploading: contextFileUploadStore.isUploading,
+  // With skill tagging (a standalone run), a skill tag or a context file also makes a draft, as in Chat.
+  hasDraft: props.skillTagging && targetContext.value
+    ? Boolean(internalRequirement.value.trim()) || hasSendableDraft(targetContext.value, { attachmentsAreSendable: true })
+    : Boolean(internalRequirement.value.trim()),
+}));
+const isActionDisabled = computed(() => !primaryAction.value.enabled
+  || props.target?.access === 'read_only');
+
+// Local component state
+const textarea = ref<HTMLTextAreaElement | null>(null);
+const MIN_TEXTAREA_HEIGHT = 56;
+const MAX_TEXTAREA_HEIGHT = 220;
+const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
+const rootRef = ref<HTMLElement | null>(null);
+const skillMenuListId = `agent-skill-menu-${useId()}`;
+let pendingLocalAcknowledgementContext: AgentContext | null = null;
+
+const adjustTextareaHeight = () => {
+  if (textarea.value) {
+    textarea.value.style.height = 'auto';
+    const scrollHeight = textarea.value.scrollHeight;
+    const newHeight = Math.min(Math.max(scrollHeight, MIN_TEXTAREA_HEIGHT), MAX_TEXTAREA_HEIGHT);
+    textarea.value.style.height = `${newHeight}px`;
+    textarea.value.style.overflowY = scrollHeight > MAX_TEXTAREA_HEIGHT ? 'auto' : 'hidden';
+    textareaHeight.value = newHeight;
+  }
+};
+
+const syncInternalRequirement = (nextRequirement: string) => {
+  if (nextRequirement === internalRequirement.value) {
+    return;
+  }
+
+  internalRequirement.value = nextRequirement;
+  nextTick(adjustTextareaHeight);
+};
+
+watch(
+  targetContext,
+  (context) => {
+    syncInternalRequirement(context?.requirement ?? '');
+  },
+  { immediate: true },
+);
+
+watch(() => targetContext.value?.requirement ?? '', (requirement) => {
+  syncInternalRequirement(requirement);
+});
+
+const syncPendingLocalAcknowledgement = () => {
+  const context = targetContext.value;
+  if (
+    !pendingLocalAcknowledgementContext
+    || context !== pendingLocalAcknowledgementContext
+    || !submissionPending.value
+  ) {
+    return;
+  }
+
+  syncInternalRequirement(context.requirement);
+  pendingLocalAcknowledgementContext = null;
+};
+
+watch(submissionPending, (pending) => {
+  if (pending) {
+    syncPendingLocalAcknowledgement();
+  }
+}, { flush: 'sync' });
+
+const setRequirement = (text: string) => {
+  internalRequirement.value = text;
+  nextTick(adjustTextareaHeight);
+  // The exact AgentContext owns every unsent edit, including deliberate clearing.
+  // Do not buffer local-only state past submission or verified context replacement.
+  if (targetContext.value) {
+    targetContext.value.requirement = text;
+  }
+};
+
+const skillMenu = useSkillTagMenu({
+  rootRef,
+  textareaRef: textarea,
+  context: targetContext,
+  capability: toRef(props, 'skillTagging'),
+  setText: setRequirement,
+});
+
+const handleInput = (event: Event) => {
+  setRequirement((event.target as HTMLTextAreaElement).value);
+  nextTick(skillMenu.detect);
+};
+
+const handleSend = async () => {
+  const target = props.target;
+  if (!target) {
+    return;
+  }
+  let submittedContext: AgentContext | null = null;
+  try {
+    if (props.beforeSend) {
+      await props.beforeSend();
+    }
+    submittedContext = target.context;
+    pendingLocalAcknowledgementContext = submittedContext;
+    const sendPromise = target.send();
+    syncPendingLocalAcknowledgement();
+    await sendPromise;
+  } catch (error) {
+    console.error('Error sending requirement:', error);
+  } finally {
+    if (pendingLocalAcknowledgementContext === submittedContext) {
+      pendingLocalAcknowledgementContext = null;
+    }
+  }
+};
+
+const handleStop = () => {
+  try {
+    void props.target?.interrupt?.();
+  } catch (error) {
+    console.error('Error interrupting generation:', error);
+  }
+};
+
+const handlePrimaryAction = () => {
+  const action = primaryAction.value;
+  if (isActionDisabled.value) {
+    return;
+  }
+  if (action.kind === 'interrupt') {
+    handleStop();
+    return;
+  }
+  void handleSend();
+};
+
+const insertFilePaths = (
+  filePaths: string[],
+  insertionContext: AgentContext | null = targetContext.value,
+) => {
+  if (!insertionContext || filePaths.length === 0) return;
+
+  const textToInsert = filePaths.join(' ');
+  const isTargetStillActive = targetContext.value === insertionContext;
+  const baseRequirement = isTargetStillActive ? internalRequirement.value : insertionContext.requirement;
+  const start = isTargetStillActive && textarea.value ? textarea.value.selectionStart : baseRequirement.length;
+  const end = isTargetStillActive && textarea.value ? textarea.value.selectionEnd : baseRequirement.length;
+  const newText = baseRequirement.substring(0, start) + textToInsert + baseRequirement.substring(end);
+
+  insertionContext.requirement = newText;
+
+  if (!isTargetStillActive) {
+    return;
+  }
+
+  internalRequirement.value = newText;
+  nextTick(adjustTextareaHeight);
+
+  nextTick(() => {
+    if (textarea.value && targetContext.value === insertionContext) {
+      const newCursorPos = start + textToInsert.length;
+      textarea.value.focus();
+      textarea.value.setSelectionRange(newCursorPos, newCursorPos);
+    }
+  });
+};
+
+const handleDrop = async (event: DragEvent) => {
+  const dropContext = targetContext.value;
+  if (!dropContext) return;
+  insertFilePaths(await resolveDroppedFilePaths(event), dropContext);
+};
+
+const handleKeyDown = (event: KeyboardEvent) => {
+  if (skillMenu.onKeydown(event)) return;
+  if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+    event.preventDefault();
+    handlePrimaryAction();
+  }
+};
+
+const handleResize = () => {
+  adjustTextareaHeight();
+};
+
+onMounted(async () => {
+  await nextTick();
+  adjustTextareaHeight();
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+</script>
+
+<style scoped>
+textarea {
+  outline: none;
+  overflow-y: hidden;
+}
+textarea::-webkit-scrollbar {
+  width: 6px;
+}
+textarea::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.6);
+  border-radius: 9999px;
+}
+textarea {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.6) transparent;
+}
+</style>

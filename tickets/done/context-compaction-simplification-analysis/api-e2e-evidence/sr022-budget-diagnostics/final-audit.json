@@ -1,0 +1,142 @@
+{
+  "at": "2026-09-30T14:55:05.230787+00:00",
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "durableHashes": {
+    "test-support/live-e2e/live-e2e-harness.ts": {
+      "sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "unchanged": true
+    },
+    "test-support/live-e2e/run-live-e2e.mjs": {
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "unchanged": true
+    },
+    "test-support/live-e2e/compaction-quality-checks.ts": {
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "unchanged": true
+    },
+    "test-support/live-e2e/live-e2e-safe-error.ts": {
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "unchanged": true
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts": {
+      "sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "unchanged": true
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts": {
+      "sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "unchanged": true
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts": {
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "unchanged": true
+    },
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts": {
+      "sha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "unchanged": true
+    },
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts": {
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "unchanged": true
+    }
+  },
+  "authorityHashes": {
+    "requirements-doc.md": {
+      "sha256": "6de72be44c71ac9d5336c3db4a69bb8f9a14c52163a0a309a1beba467e35eff0",
+      "unchanged": true
+    },
+    "output-format-and-coverage.md": {
+      "sha256": "e369b728cbffcf7fc5413cca4b1cb50fd19dddcc403ad979f446be3027008e4b",
+      "unchanged": true
+    },
+    "design-spec.md": {
+      "sha256": "f60eeea958629764e54c0b8181d1377e741acc3e9f7e5bac300501c899c2589b",
+      "unchanged": true
+    },
+    "solution-revision-record.md": {
+      "sha256": "22c0c8e4919f7d73ac762ab92b394ffd823354ff311c34215503b91575ebb23a",
+      "unchanged": true
+    },
+    "solution-revision.sr022.md": {
+      "sha256": "928414398e27b55f6020d07713e92bf1296a7320bb8a9482af5c3c0882ddee79",
+      "unchanged": true
+    },
+    "summary-budget-removal-experiment.sr022.md": {
+      "sha256": "284abfb9cd68874589007c2a62702bb2589e63ee00795fa5d62fd936d871ff89",
+      "unchanged": true
+    },
+    "proposed-compaction-prompt.md": {
+      "sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+      "unchanged": true
+    }
+  },
+  "frozenFileUnchanged": true,
+  "productionDiff": [],
+  "outboundGenerations": 4,
+  "fixedOrderAndExactRequestsVerified": true,
+  "rawHiddenReasoningAndAuthHeadersAbsentFromWireAndArmJson": true,
+  "cleanup": {
+    "pidObservations": {
+      "50486": "",
+      "50514": "",
+      "46927": ""
+    },
+    "listeningPortObservations": {
+      "51617": "",
+      "51451": ""
+    },
+    "ownedPathsRemoved": {
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr022-budget": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr022-budget.db": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr022-budget.db.secret.key": true
+    },
+    "runnerCleanup": {
+      "runtimeRemoved": true,
+      "databaseRemoved": true,
+      "rootKeyRemoved": true
+    }
+  },
+  "evidenceHashes": {
+    "campaign.test.ts": "ff8ed78a8c76316a8d0ee1cb8753450e20fbbd0e64242ed71bae963e1291ab55",
+    "collection.log": "edfc98027ccdf993161a8d3bf2a2856611425e94a9134b4ac807e097b9c5b658",
+    "guard.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "run.mjs": "34796cc3370339d844395c19249dae73fb522e3c0097d0d349fc2014bd4d4e9e",
+    "preflight.log": "2948bbec66e74703a10d9f7a4285f0ab0e42b446e90327e8fc534b615bcd9f2e",
+    "runner.log": "13751ad1edc14e5f9307f905e136a057e9a8437d87cdbca944e3f45d3e049c77",
+    "wire.jsonl": "bc5da9bf88fe747ca4bd8e945f5e60879799408bac74cd8a53146a70cd44e91c",
+    "F-withoutTarget.json": "2a61c3d3523380287b8983246a322ef858d5ef20a9ef95609c27563bd3d58afb",
+    "guard.ts": "c5318f80482215c368528f4807f9c8311d1a99a86b8620af14feedd92c290f56",
+    "results.json": "f050473d14288b2d91fff3f61ee574138e55f7c115fb1e5790560aa2848b4d57",
+    "comparison.json": "bd425a800ff5bd01301a2fb674b8a84f5589f76201ad26302b44fad146aacf39",
+    "import-confirmed.log": "3b2cd27bcd59100e12c2a5ff1fe9909431137dd99d1e9c1a6081ecaa9a805dad",
+    "worker.json": "9125ceaba0cce4582f9e80e0575cad09e6a29b41bd36322e8e1f640e0f33913c",
+    "R-withoutTarget.json": "6b77055d0837145f6e195a38ad2337658957dbcf24ee7aa9b3ac8c85d8ffef90",
+    "guard.test.ts": "9d42324e438cb6871620cd2986fc1196cd26116d2ce25599f7d9d290878f492d",
+    "README.md": "8ccc601250d4eeef387bee11692069e9ba2c569b94f506dc0fc8999e66d42ff5",
+    "entry-audit.json": "753d6cfd27178241296ff6e1d8da162b6640b27e9d92b83f640fa0afd5b663ae",
+    "derive-evidence.py": "99f403a7aad121fc90de03b6acf3cb3608ac01d0bb968fdcbc94df64bda15be7",
+    "semantic-adjudication.md": "e928f283a615519c6cb1437c6d8df5ceecf59efbce7682ca6718d786d5f019dc",
+    "preflight-in-worker.json": "a7448f86c8f2088ce91521364dc64ae3b54e5a27681789a77122dd813bba4b8b",
+    "import-second-confirmed.log": "846f30fbcfcffc8644146fd1d4884899560e23ad641fc76d1398ef69d1635787",
+    "R-withTarget.json": "3d9db90bd135b3ff735fd1d79a1c7f8a809c9458e62a3e002fc0f8fc2af4a4b4",
+    "import-preview.log": "d65d2efaae3ff9082bce00053c0673c76d033e966952e6e4c75b207150c75714",
+    "manifest.json": "43c0839af056ecb95443a64853ff2b2bb774d1336c3eba90967428dd29b52357",
+    "guard.log": "719d05cc042bf91c42a9cbf57d0eb63c810b14593ad6a5475b8e1849b0b26ef9",
+    "runner.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "vitest-guard.config.mts": "8577b26610b5d4e5eac79f568336cb0a5ede102f62eab0e4a85cc4273df9d58a",
+    "F-withTarget.json": "ddefda4b660f0de371bda291e712b339a004d71f5ba734ec4d918334bc7e046d",
+    "diagnostic.log": "c129fa57089a54f0cad7a0fc455201485067f58f4a50522fc1cb17d4ceda96d2",
+    "vitest-live.config.mts": "71acb85750d0c2dcebc7e27231171294f4af41b14ffebfddfa651bf246fa6261",
+    "import-preview.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "server.log": "4a35d521de3f3e3a6f58f30cdfed6bca1ae6aeb35c1982d4e1760f0e5f06b46b",
+    "execution.json": "500ede7722eca1535e60a65c389b00b57477baab7fa3c0ebb540465563ac7e52",
+    "collection.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "bounded-worker.mjs": "17e5ade31b4d9182e1a12856a3d27a3302df00ad8085a8eebe8551c9339afae9"
+  },
+  "limits": [
+    "No production/durable edits",
+    "No API005 restart/new API006/confidence rescore",
+    "No model-wide reliability/causal claim",
+    "No planner/commit/UI/retry/resume proof",
+    "Qwen stopped; v6 excluded"
+  ]
+}

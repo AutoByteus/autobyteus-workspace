@@ -1,0 +1,48 @@
+{
+  "agent": {
+    "kind": "agent",
+    "address": "/sr036_reviewer",
+    "agentDefinitionId": "sr036-reviewer",
+    "agentRunId": "sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/temp_workspace"
+    },
+    "addedAt": "2026-10-01T14:39:06.267Z",
+    "addedViaAgentRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568"
+  },
+  "state": {
+    "run_instance_id": "d41e22e0-79a4-43c0-989b-2f337e6d540a",
+    "revision": 16,
+    "entries": [
+      {
+        "sequence": 3,
+        "message_id": "df6674d5-cb03-48d8-a496-d48a19f02d33",
+        "dedupe_key": "member_input:daily_assistant_f1b315041c244c00aac39dd26022c568:sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311:df6674d5-cb03-48d8-a496-d48a19f02d33",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R1A-HELD",
+        "sender_type": "user",
+        "file_attachments": []
+      }
+    ],
+    "recoverableBlock": {
+      "operationId": "compaction_operation_mupn44od_1",
+      "failureEpoch": 2,
+      "position": {
+        "kind": "held_turn",
+        "turnId": "turn_0003"
+      },
+      "state": "awaiting_user",
+      "code": "SR036_SYNTHETIC_503",
+      "message": "Compaction failed \u2014 send a message to retry"
+    }
+  },
+  "rawPaths": [
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/memory/agents/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311/raw_traces_active.jsonl"
+  ]
+}

@@ -283,7 +283,9 @@ export const hydrateContextAttachment = (input: {
     });
   }
 
-  return createWorkspaceContextAttachment(locator, type);
+  return { ...createWorkspaceContextAttachment(locator, type),
+    ...(input.displayName ? { displayName: input.displayName } : {}),
+  };
 };
 
 export const parseDraftUploadedContextAttachmentLocator = (

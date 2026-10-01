@@ -67,7 +67,7 @@ describe('LLMRequestAssembler', () => {
     const executor = { executeIfAuthorized: vi.fn(async () => true) };
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
     const request = await assembler.prepareRequest(null, {
-      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', turnOrigin: 'system', isToolContinuation: true,
+      turnId: 'turn_tool', requestId: 'turn_tool:llm:2', isToolContinuation: true,
     });
     expect(request.didCompact).toBe(false);
     expect(executor.executeIfAuthorized).not.toHaveBeenCalled();
@@ -79,7 +79,7 @@ describe('LLMRequestAssembler', () => {
 
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
-      { turnId: 'turn_0001', requestId: 'turn_0001:llm:1', turnOrigin: 'user' },
+      { turnId: 'turn_0001', requestId: 'turn_0001:llm:1' },
       'System prompt',
     );
 
@@ -111,7 +111,7 @@ describe('LLMRequestAssembler', () => {
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
     const request = await assembler.prepareRequest(
       new LLMUserMessage({ content: 'new input' }),
-      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1', turnOrigin: 'user' },
+      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
       'System prompt',
     );
 
@@ -122,7 +122,8 @@ describe('LLMRequestAssembler', () => {
     expect(executorCalls).toEqual([
       {
         turnId: 'turn_0002',
-        turnOrigin: 'user',
+
+        executionSite: 'before_parent_request', getParentModelIdentifier: undefined, signal: undefined,
       }
     ]);
     expect(request.canonicalMessages.map((message) => message.role)).toEqual([
@@ -167,7 +168,7 @@ describe('LLMRequestAssembler', () => {
 
     const request = await assembler.prepareRequest(
       null,
-      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2', turnOrigin: 'user' },
+      { turnId: 'turn_tool', requestId: 'turn_tool:llm:2' },
       'System prompt',
     );
 
@@ -225,7 +226,7 @@ describe('LLMRequestAssembler', () => {
         new OpenAIChatRenderer(),
       ).prepareRequest(
         new LLMUserMessage({ content: 'please continue there was a shutdown' }),
-        { turnId: 'turn_new', requestId: 'turn_new:llm:1', turnOrigin: 'user' },
+        { turnId: 'turn_new', requestId: 'turn_new:llm:1' },
         'System prompt',
       );
 
@@ -262,7 +263,7 @@ describe('LLMRequestAssembler', () => {
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'hello' }),
-      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1', turnOrigin: 'user' },
+      { turnId: 'turn_0002', requestId: 'turn_0002:llm:1' },
       'System prompt',
     )).rejects.toBeInstanceOf(
       CompactionPreparationError
@@ -291,7 +292,7 @@ describe('LLMRequestAssembler', () => {
 
     await expect(assembler.prepareRequest(
       new LLMUserMessage({ content: 'transient user input' }),
-      { turnId: 'turn_restore', requestId: 'turn_restore:llm:1', turnOrigin: 'user' },
+      { turnId: 'turn_restore', requestId: 'turn_restore:llm:1' },
       'System prompt',
     )).rejects.toThrow('renderer failed');
 

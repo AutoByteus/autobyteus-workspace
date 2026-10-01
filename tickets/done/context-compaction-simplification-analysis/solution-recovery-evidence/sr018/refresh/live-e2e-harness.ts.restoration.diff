@@ -1,0 +1,26 @@
+--- before/test-support/live-e2e/live-e2e-harness.ts
++++ after/test-support/live-e2e/live-e2e-harness.ts
+@@ -22,7 +22,6 @@
+ import { LLMProvider } from '../../autobyteus-ts/src/llm/providers.js';
+ import { MessageRole, type Message } from '../../autobyteus-ts/src/llm/utils/messages.js';
+ import type { CompleteResponse } from '../../autobyteus-ts/src/llm/utils/response-types.js';
+-import { SkillAccessMode } from '../../autobyteus-ts/src/agent/context/skill-access-mode.js';
+ import {
+   resolveCompactionTokenBudget,
+   resolveLlmRequestCapacity,
+@@ -350,7 +349,6 @@
+     llmModelIdentifier: input.scenario.model,
+     autoExecuteTools: false,
+     memoryDir: input.memoryDirectory,
+-    skillAccessMode: SkillAccessMode.NONE,
+     runtimeKind: RuntimeKind.AUTOBYTEUS,
+   }), runId);
+   let observedEventCount = 0;
+@@ -723,7 +721,6 @@
+           safety_margin_tokens: 256,
+           extra_params: providerExtraParams,
+         },
+-        skillAccessMode: SkillAccessMode.NONE,
+         runtimeKind: RuntimeKind.AUTOBYTEUS,
+       }), runId);
+ 

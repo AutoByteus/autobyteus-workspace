@@ -1,0 +1,23 @@
+[
+  {
+    "sourceDist": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.js",
+    "packaged": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.js",
+    "sha256": "1a703933b083e5cb4b04cefe84be776199980fd566a092a633f08515aedd1127",
+    "packagedSha256": "1a703933b083e5cb4b04cefe84be776199980fd566a092a633f08515aedd1127",
+    "equal": true
+  },
+  {
+    "sourceDist": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/dist/memory/models/raw-trace-item.js",
+    "packaged": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/memory/models/raw-trace-item.js",
+    "sha256": "2b82d5561bb1a06f86142fc72323be34b90ed8d4f57cf661098ee4cd078dbe49",
+    "packagedSha256": "2b82d5561bb1a06f86142fc72323be34b90ed8d4f57cf661098ee4cd078dbe49",
+    "equal": true
+  },
+  {
+    "sourceDist": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/dist/memory/raw-trace-ingestion.js",
+    "packaged": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/autobyteus-ts@file+autobyteus-ts_ws@8.19.0/node_modules/autobyteus-ts/dist/memory/raw-trace-ingestion.js",
+    "sha256": "6e250fb18bf36d4204f89165d01d232f5d9cfff3005b13c1404bb4244e68f481",
+    "packagedSha256": "6e250fb18bf36d4204f89165d01d232f5d9cfff3005b13c1404bb4244e68f481",
+    "equal": true
+  }
+]

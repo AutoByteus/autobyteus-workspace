@@ -34,6 +34,7 @@ try {
       'vitest',
       'run',
       'tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts',
+      'tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts',
       '--no-watch',
     ],
     cwd: serverRoot,

@@ -1,0 +1,23 @@
+{
+  "scope": [
+    "autobyteus-ts/",
+    "autobyteus-server-ts/",
+    "autobyteus-web/",
+    "autobyteus-agent-presentation-contracts/",
+    "autobyteus-team-stream-contracts/",
+    "autobyteus-collaboration-stream-contracts/",
+    "test-support/"
+  ],
+  "note": "Same seven package/path scopes as entry, plus known contract helper dist. Earlier broad-scope audit wrongly labeled preexisting unsampled packages new; retained separately, not a source-change claim.",
+  "new_paths": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/accepted-input-identity.d.ts.map",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/accepted-input-identity.js.map",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/src/accepted-input-identity.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/tests/accepted-input-identity.test.mjs",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runHydration/__tests__/acceptedInputIdentity.spec.ts"
+  ],
+  "unexpected": []
+}

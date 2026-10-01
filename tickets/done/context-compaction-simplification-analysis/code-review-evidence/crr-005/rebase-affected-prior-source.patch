@@ -1,0 +1,596 @@
+diff --git a/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts b/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts
+index fbb4dea7a..cdf829da7 100644
+--- a/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts
++++ b/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts
+@@ -22,6 +22,12 @@ const status = {
+ const executionIdentity = z.object({ agent_run_id: nonEmptyStringSchema, member_address: agentAddressSchema }).strict();
+ const contextPath = z.object({ path: nonEmptyStringSchema, type: nullableNonEmptyStringSchema }).strict();
+ 
++/** Runtime-neutral background-task vocabulary; runtime-specific task types are mapped by each server backend. */
++export const backgroundTaskKindSchema = z.enum(["shell", "subagent", "monitor", "workflow", "other"]);
++export const backgroundTaskStatusSchema = z.enum(["running", "completed", "failed", "stopped"]);
++export type BackgroundTaskKind = z.infer<typeof backgroundTaskKindSchema>;
++export type BackgroundTaskStatus = z.infer<typeof backgroundTaskStatusSchema>;
++
+ const token = {
+   usage_event_id: nonEmptyStringSchema, idempotency_key: nonEmptyStringSchema, observed_at: nonEmptyStringSchema,
+   turn_id: turnId, llm_call_id: nullableNonEmptyStringSchema, model_provider: nullableNonEmptyStringSchema,
+@@ -86,7 +92,7 @@ export const agentPresentationPayloadSchemas = {
+   TOOL_EXECUTION_FAILED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), error: nonEmptyStringSchema }).strict(),
+   TOOL_EXECUTION_INTERRUPTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema }).strict(),
+   TOOL_LOG: z.object({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId }).strict(),
+-  TODO_LIST_UPDATE: z.object({ todos: z.array(z.object({ todo_id: nonEmptyStringSchema, description: z.string(), status: z.enum(["pending", "in_progress", "done"]) }).strict()) }).strict(),
++  BACKGROUND_TASK_UPDATED: z.object({ task_id: nonEmptyStringSchema, kind: backgroundTaskKindSchema, description: z.string(), status: backgroundTaskStatusSchema, summary: z.string().nullable(), started_at: nonEmptyStringSchema }).strict(),
+   SYSTEM_TASK_NOTIFICATION: z.object({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), identity: executionIdentity }).strict()]), content: z.string() }).strict(),
+   ARTIFACT_PERSISTED: z.object({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
+   FILE_CHANGE: z.object({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts b/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts
+index 025545803..2c1ae478d 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts
+@@ -8,6 +8,7 @@ import type {
+   AgentRunFileChangeStatus,
+ } from "../../../agent-execution/domain/agent-run-file-change.js";
+ import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
++import type { AgentBackgroundTask } from "../../../agent-execution/domain/agent-background-task.js";
+ 
+ type Correlated<T extends string, D> = Readonly<{
+   eventType: T;
+@@ -121,7 +122,7 @@ export type AgentPresentationEvent =
+   | Correlated<"TOOL_EXECUTION_FAILED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; error: string }>
+   | Correlated<"TOOL_EXECUTION_INTERRUPTED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; reason: string }>
+   | Correlated<"TOOL_LOG", { logEntry: string; toolInvocationId: string; toolName: string; turnId: string | null }>
+-  | Correlated<"TODO_LIST_UPDATE", { todos: readonly Readonly<{ todoId: string; description: string; status: "pending" | "in_progress" | "done" }>[] }>
++  | Correlated<"BACKGROUND_TASK_UPDATED", AgentBackgroundTask>
+   | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; identity: CollaborationMemberExecutionIdentity }>; content: string }>
+   | Correlated<"ARTIFACT_PERSISTED", { artifactId: string; path: string; artifactType: string; status: "available"; description: string | null; revisionId: string; createdAt: string; updatedAt: string }>
+   | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: AgentRunFileChangeArtifactType; status: AgentRunFileChangeStatus; sourceTool: AgentRunFileChangeSourceTool; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts b/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts
+index e33abb366..96f31a7cd 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts
+@@ -68,7 +68,7 @@ export const projectAgentPresentationMessage = (event: AgentPresentationEvent):
+     case "TOOL_EXECUTION_FAILED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, error: event.details.error } });
+     case "TOOL_EXECUTION_INTERRUPTED": return parse({ type, payload: { invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason } });
+     case "TOOL_LOG": return parse({ type, payload: { log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId } });
+-    case "TODO_LIST_UPDATE": return parse({ type, payload: { todos: event.details.todos.map((todo) => ({ todo_id: todo.todoId, description: todo.description, status: todo.status })) } });
++    case "BACKGROUND_TASK_UPDATED": return parse({ type, payload: { task_id: event.details.taskId, kind: event.details.kind, description: event.details.description, status: event.details.status, summary: event.details.summary, started_at: event.details.startedAt } });
+     case "SYSTEM_TASK_NOTIFICATION": return parse({ type, payload: { sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: { agent_run_id: event.details.sender.identity.agentRunId, member_address: event.details.sender.identity.memberAddress } }, content: event.details.content } });
+     case "ARTIFACT_PERSISTED": return parse({ type, payload: { artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+     case "FILE_CHANGE": return parse({ type, payload: { file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts b/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
+index 7118f6550..d1da047f0 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
+@@ -20,6 +20,7 @@ import type {
+   AgentRunFileChangeStatus,
+ } from "../../../agent-execution/domain/agent-run-file-change.js";
+ import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
++import { parseBackgroundTaskUpdatedPayload } from "../../../agent-execution/domain/agent-background-task.js";
+ 
+ export type AgentRunPresentationAdaptationResult =
+   | Readonly<{ kind: "publish"; event: AgentPresentationEvent }>
+@@ -345,17 +346,8 @@ export class AgentRunPresentationAdapter {
+         return correlated({ eventType: "TOOL_EXECUTION_INTERRUPTED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), reason: required(p.reason, "reason") }, statusHint: hint });
+       case AgentRunEventType.TOOL_LOG:
+         return correlated({ eventType: "TOOL_LOG", details: { logEntry: stringValue(raw(p, "log_entry", "logEntry")), toolInvocationId: required(raw(p, "tool_invocation_id", "toolInvocationId"), "tool_invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")) }, statusHint: hint });
+-      case AgentRunEventType.TODO_LIST_UPDATE: {
+-        const entries = Array.isArray(p.todos) ? p.todos : [];
+-        const todos = entries.map((entry) => {
+-          if (!isRecord(entry)) throw new Error("todos contains an invalid entry");
+-          const item = entry;
+-          const status = item.status;
+-          if (status !== "pending" && status !== "in_progress" && status !== "done") throw new Error("todo status is invalid");
+-          return Object.freeze({ todoId: required(raw(item, "todo_id", "todoId"), "todo_id"), description: stringValue(item.description), status });
+-        });
+-        return correlated({ eventType: "TODO_LIST_UPDATE", details: { todos: Object.freeze(todos) }, statusHint: hint });
+-      }
++      case AgentRunEventType.BACKGROUND_TASK_UPDATED:
++        return correlated({ eventType: "BACKGROUND_TASK_UPDATED", details: parseBackgroundTaskUpdatedPayload(p), statusHint: hint });
+       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION: {
+         const senderRunId = text(raw(p, "sender_run_id", "senderRunId"));
+         const sender = senderRunId
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts b/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+index 2fbf27b33..58421f77a 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+@@ -25,7 +25,6 @@ import { AgentDefinitionService } from "../../../agent-definition/services/agent
+ import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
+ import { RuntimeKind, runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
+ import { SkillService } from "../../../skills/services/skill-service.js";
+-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+ import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
+ import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
+ import { AgentCreationError } from "../../errors.js";
+@@ -165,7 +164,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory
+       workspaceId: built.resolvedRunConfig.workspaceId,
+       memoryDir,
+       llmConfig: built.resolvedRunConfig.llmConfig,
+-      skillAccessMode: built.resolvedRunConfig.skillAccessMode,
+       runtimeKind: built.resolvedRunConfig.runtimeKind,
+       memberExecutionContext: built.resolvedRunConfig.memberExecutionContext,
+       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
+@@ -227,7 +225,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory
+           workspaceId: context.config.workspaceId,
+           memoryDir,
+           llmConfig: context.config.llmConfig,
+-          skillAccessMode: context.config.skillAccessMode,
+           runtimeKind: context.config.runtimeKind,
+           memberExecutionContext: context.config.memberExecutionContext,
+           applicationExecutionContext: context.config.applicationExecutionContext,
+@@ -248,7 +245,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory
+       autoExecuteTools,
+       workspaceId,
+       llmConfig,
+-      skillAccessMode,
+     } = options;
+ 
+     let agentDef: AgentDefinition | null = null;
+@@ -385,7 +381,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory
+     }
+ 
+     const skillPaths: string[] = [];
+-    if (agentDef.skillNames?.length) {
++    if (this.skillService.hasEffectiveSkills(agentDef)) {
+       for (const skill of this.skillService.resolveConfiguredSkillsForAgent(agentDef)) {
+         skillPaths.push(skill.rootPath);
+         logger.info(`Resolved skill '${skill.name}' to path: ${skill.rootPath}`);
+@@ -429,7 +425,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory
+         workspaceId: workspaceInstance?.workspaceId ?? null,
+         memoryDir: options.memoryDir ?? null,
+         llmConfig: llmConfig ?? null,
+-        skillAccessMode: skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
+         runtimeKind: effectiveRuntimeKind,
+         memberExecutionContext: options.memberExecutionContext ?? null,
+         applicationExecutionContext: options.applicationExecutionContext ?? null,
+@@ -451,7 +446,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory
+         initialCustomData,
+         skillPaths,
+         null,
+-        skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
+         memoryCompaction,
+       ),
+     };
+diff --git a/autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts b/autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+index c32737148..13e3ce7f9 100644
+--- a/autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
++++ b/autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+@@ -18,6 +18,8 @@ import type { CodexThreadManager } from "../backends/codex/thread/codex-thread-m
+ import type { WorkspaceSkillMaterializer } from "../backends/shared/workspace-skill-materializer.js";
+ import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
+ import { AgyAgentRunBackendFactory } from "../backends/antigravity/backend/agy-agent-run-backend-factory.js";
++import type { AcpAgentRunBackendFactory } from "../backends/acp/backend/acp-agent-run-backend-factory.js";
++import { createGrokBuildAgentRunBackendFactory } from "../backends/grok/grok-build-agent-run-backend-factory.js";
+ import { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
+ import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
+ import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
+@@ -54,6 +56,7 @@ export type AgentProviderFactorySet = Readonly<{
+   codex: CodexAgentRunBackendFactory;
+   claude: ClaudeAgentRunBackendFactory;
+   antigravity: AgyAgentRunBackendFactory;
++  grok: AcpAgentRunBackendFactory;
+ }>;
+ 
+ export interface AgentProviderFactoryBuilder {
+@@ -196,6 +199,11 @@ export const createAgentProviderFactoryBuilder = (
+           input.agentDefinitionService, process.skillService,
+           new ClaudeWorkspaceResolver(process.workspaceManager), input.agentToolMcpRunSessions,
+         ),
++        grok: createGrokBuildAgentRunBackendFactory({
++          definitions: input.agentDefinitionService, skills: process.skillService,
++          workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
++          mcpSessions: input.agentToolMcpRunSessions,
++        }),
+         claude: new ClaudeAgentRunBackendFactory(
+           claudeSessionManager,
+           new ClaudeSessionBootstrapper(
+diff --git a/autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts b/autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts
+index db5839b20..c664f2d88 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts
+@@ -9,6 +9,7 @@ import type {
+   AgentRunFileChangeStatus,
+ } from "../../agent-execution/domain/agent-run-file-change.js";
+ import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
++import type { AgentBackgroundTask } from "../../agent-execution/domain/agent-background-task.js";
+ 
+ type Correlated<T extends string, D> = Readonly<{
+   eventType: T;
+@@ -109,7 +110,7 @@ export type TeamAgentEvent =
+   | Correlated<"TOOL_EXECUTION_FAILED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; error: string }>
+   | Correlated<"TOOL_EXECUTION_INTERRUPTED", { invocationId: string; toolName: string; turnId: string | null; arguments: JsonValue | null; reason: string }>
+   | Correlated<"TOOL_LOG", { logEntry: string; toolInvocationId: string; toolName: string; turnId: string | null }>
+-  | Correlated<"TODO_LIST_UPDATE", { todos: readonly Readonly<{ todoId: string; description: string; status: "pending" | "in_progress" | "done" }>[] }>
++  | Correlated<"BACKGROUND_TASK_UPDATED", AgentBackgroundTask>
+   | Correlated<"SYSTEM_TASK_NOTIFICATION", { sender: Readonly<{ kind: "system" }> | Readonly<{ kind: "execution"; identity: CollaborationMemberExecutionIdentity }>; content: string }>
+   | Correlated<"ARTIFACT_PERSISTED", { artifactId: string; path: string; artifactType: string; status: "available"; description: string | null; revisionId: string; createdAt: string; updatedAt: string }>
+   | Correlated<"FILE_CHANGE", { fileChangeId: string; path: string; fileType: AgentRunFileChangeArtifactType; status: AgentRunFileChangeStatus; sourceTool: AgentRunFileChangeSourceTool; sourceInvocationId: string | null; content: string | null; createdAt: string; updatedAt: string }>
+diff --git a/autobyteus-server-ts/src/api/graphql/schema.ts b/autobyteus-server-ts/src/api/graphql/schema.ts
+index 822d979c4..8f602660b 100644
+--- a/autobyteus-server-ts/src/api/graphql/schema.ts
++++ b/autobyteus-server-ts/src/api/graphql/schema.ts
+@@ -24,7 +24,6 @@ import { MemorySyncResolver } from './types/memory-sync.js';
+ import { RunHistoryResolver } from './types/run-history.js';
+ import { RunFileChangesResolver } from './types/run-file-changes.js';
+ import { TeamCommunicationResolver } from './types/team-communication.js';
+-import { TaskDelegationResolver } from './types/task-delegation.js';
+ import { TeamRunHistoryResolver } from './types/team-run-history.js';
+ import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
+ import { AgentPackageResolver } from './types/agent-packages.js';
+@@ -35,6 +34,9 @@ import { DateTimeScalar } from './scalars/date-time.js';
+ import { SecretStorageResolver } from './types/secret-storage.js';
+ import { DefinitionAdmissionResolver } from './types/definition-admission.js';
+ import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
++import { ProjectResolver } from './types/projects.js';
++import { ProjectTaskResolver } from './types/project-tasks.js';
++import { ProjectsCapabilityResolver } from './types/projects-capability.js';
+ 
+ export async function buildGraphqlSchema() {
+   return buildSchema({
+@@ -64,7 +66,6 @@ export async function buildGraphqlSchema() {
+       RunHistoryResolver,
+       RunFileChangesResolver,
+       TeamCommunicationResolver,
+-      TaskDelegationResolver,
+       TeamRunHistoryResolver,
+       RuntimeAvailabilityResolver,
+       AgentPackageResolver,
+@@ -74,6 +75,9 @@ export async function buildGraphqlSchema() {
+       SecretStorageResolver,
+       DefinitionAdmissionResolver,
+       CollaborationRootHistoryResolver,
++      ProjectResolver,
++      ProjectTaskResolver,
++      ProjectsCapabilityResolver,
+     ],
+     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
+   });
+diff --git a/autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts b/autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+index 8fc49bb8e..d6516dcee 100644
+--- a/autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
++++ b/autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+@@ -3,11 +3,16 @@ import {
+ } from "../services/server-settings-service.js";
+ 
+ export const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
++export const DAILY_ASSISTANT_AGENT_DEFINITION_ID = "autobyteus-daily-assistant";
+ 
+ export type BuiltInAgentSettingDefault = {
+   key: typeof AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID;
+ };
+ 
++/**
++ * Built-in agents are platform-owned: startup replaces each agent's files from its
++ * shipped template, so edits made to a built-in agent do not survive a restart.
++ */
+ export type BuiltInAgentDefinition = {
+   id: string;
+   templateDirName: string;
+@@ -24,4 +29,9 @@ export const BUILT_IN_AGENT_DEFINITIONS = [
+       key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+     },
+   },
++  {
++    id: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
++    templateDirName: "daily-assistant",
++    displayName: "Daily Assistant",
++  },
+ ] as const satisfies readonly BuiltInAgentDefinition[];
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts b/autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts
+index 7405c506d..2a81cc4ce 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts
+@@ -101,7 +101,7 @@ export const projectTeamAgentEventMessage = (
+     case "TOOL_EXECUTION_FAILED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, error: event.details.error } });
+     case "TOOL_EXECUTION_INTERRUPTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, invocation_id: event.details.invocationId, tool_name: event.details.toolName, turn_id: event.details.turnId, arguments: event.details.arguments, reason: event.details.reason } });
+     case "TOOL_LOG": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, log_entry: event.details.logEntry, tool_invocation_id: event.details.toolInvocationId, tool_name: event.details.toolName, turn_id: event.details.turnId } });
+-    case "TODO_LIST_UPDATE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, todos: event.details.todos.map((todo) => ({ todo_id: todo.todoId, description: todo.description, status: todo.status })) } });
++    case "BACKGROUND_TASK_UPDATED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, task_id: event.details.taskId, kind: event.details.kind, description: event.details.description, status: event.details.status, summary: event.details.summary, started_at: event.details.startedAt } });
+     case "SYSTEM_TASK_NOTIFICATION": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, sender: event.details.sender.kind === "system" ? { kind: "system" } : { kind: "execution", identity: projectCollaborationMemberExecutionIdentityDto(event.details.sender.identity) }, content: event.details.content } });
+     case "ARTIFACT_PERSISTED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, artifact_id: event.details.artifactId, path: event.details.path, artifact_type: event.details.artifactType, status: event.details.status, description: event.details.description, revision_id: event.details.revisionId, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+     case "FILE_CHANGE": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, file_change_id: event.details.fileChangeId, path: event.details.path, file_type: event.details.fileType, status: event.details.status, source_tool: event.details.sourceTool, source_invocation_id: event.details.sourceInvocationId, content: event.details.content, created_at: event.details.createdAt, updated_at: event.details.updatedAt } });
+diff --git a/autobyteus-server-ts/src/services/server-settings-service.ts b/autobyteus-server-ts/src/services/server-settings-service.ts
+index 4b04724e8..833c952b6 100644
+--- a/autobyteus-server-ts/src/services/server-settings-service.ts
++++ b/autobyteus-server-ts/src/services/server-settings-service.ts
+@@ -4,6 +4,7 @@ import {
+   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+   SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
+ } from "../skill-improvement/domain/settings.js";
++import { PROJECTS_CAPABILITY_SETTING_KEY } from "../projects/domain/settings.js";
+ import {
+   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+   CODEX_SANDBOX_MODES,
+@@ -29,6 +30,10 @@ import {
+   resolveStreamingContentFlushIntervalMs,
+   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+ } from "../config/streaming-content-flush-interval-setting.js";
++import {
++  normalizeTaskExecutionIdleShutdownGraceForPersistence,
++  TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
++} from "../config/task-execution-idle-shutdown-setting.js";
+ import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+ 
+ export {
+@@ -145,6 +150,11 @@ export class ServerSettingsService {
+       "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
+     );
+ 
++    this.registerPredefinedSetting(
++      PROJECTS_CAPABILITY_SETTING_KEY,
++      "Controls whether the Projects module is available for this node at runtime. Defaults to disabled.",
++    );
++
+     this.registerPredefinedSetting(
+       AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+       "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
+@@ -169,6 +179,15 @@ export class ServerSettingsService {
+       },
+     );
+ 
++    this.registerPredefinedSetting(
++      TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
++      "Milliseconds a delegated agent or team may stay quiet before it is shut down. A message to its run ID restores it with its conversation. Default: 600000 (10 minutes); allowed range 60000 to 86400000.",
++      true,
++      {
++        normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
++      },
++    );
++
+     this.registerPredefinedSetting(
+       DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+       "Default image editing model identifier used by future media tool calls.",
+@@ -371,8 +390,8 @@ export class ServerSettingsService {
+     return true;
+   }
+ 
+-  getApplicationsEnabledSetting(): boolean | null {
+-    const rawValue = appConfigProvider.config.get(APPLICATIONS_CAPABILITY_SETTING_KEY)?.trim();
++  getBooleanSetting(key: string): boolean | null {
++    const rawValue = appConfigProvider.config.get(key)?.trim();
+     if (!rawValue) {
+       return null;
+     }
+@@ -380,27 +399,8 @@ export class ServerSettingsService {
+     return rawValue.toLowerCase() === "true";
+   }
+ 
+-  setApplicationsEnabledSetting(enabled: boolean): void {
+-    appConfigProvider.config.set(
+-      APPLICATIONS_CAPABILITY_SETTING_KEY,
+-      enabled ? "true" : "false",
+-    );
+-  }
+-
+-  getSkillImprovementEnabledSetting(): boolean | null {
+-    const rawValue = appConfigProvider.config.get(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY)?.trim();
+-    if (!rawValue) {
+-      return null;
+-    }
+-
+-    return rawValue.toLowerCase() === "true";
+-  }
+-
+-  setSkillImprovementEnabledSetting(enabled: boolean): void {
+-    appConfigProvider.config.set(
+-      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
+-      enabled ? "true" : "false",
+-    );
++  setBooleanSetting(key: string, enabled: boolean): void {
++    appConfigProvider.config.set(key, enabled ? "true" : "false");
+   }
+ 
+   getSettingValue(key: string): string | null {
+diff --git a/autobyteus-ts/src/agent/context/agent-config.ts b/autobyteus-ts/src/agent/context/agent-config.ts
+index 2874c689f..e19f115c2 100644
+--- a/autobyteus-ts/src/agent/context/agent-config.ts
++++ b/autobyteus-ts/src/agent/context/agent-config.ts
+@@ -1,5 +1,4 @@
+ import { BaseLLM } from '../../llm/base.js';
+-import { SkillAccessMode, resolveSkillAccessMode } from './skill-access-mode.js';
+ import type { BaseTool } from '../../tools/base-tool.js';
+ import type { BaseAgentUserInputMessageProcessor } from '../input-processor/base-user-input-processor.js';
+ import type { BaseToolInvocationPreprocessor } from '../tool-invocation-preprocessor/base-preprocessor.js';
+@@ -40,7 +39,6 @@ export class AgentConfig {
+   lifecycleProcessors: BaseLifecycleEventProcessor[];
+   initialCustomData?: Record<string, any> | null;
+   skills: string[];
+-  skillAccessMode: SkillAccessMode;
+   memoryDir?: string | null;
+   memoryCompaction: MemoryCompactionConfiguration;
+ 
+@@ -61,7 +59,6 @@ export class AgentConfig {
+     initialCustomData: Record<string, any> | null = null,
+     skills: string[] | null = null,
+     memoryDir: string | null = null,
+-    skillAccessMode: SkillAccessMode | null = null,
+     memoryCompaction: MemoryCompactionConfiguration = DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
+   ) {
+     this.name = name;
+@@ -83,7 +80,6 @@ export class AgentConfig {
+     this.lifecycleProcessors = lifecycleProcessors ?? [];
+     this.initialCustomData = initialCustomData ?? undefined;
+     this.skills = skills ?? [];
+-    this.skillAccessMode = resolveSkillAccessMode(skillAccessMode, this.skills.length);
+     this.memoryDir = memoryDir ?? undefined;
+     this.memoryCompaction = memoryCompaction;
+ 
+@@ -109,7 +105,6 @@ export class AgentConfig {
+       deepClone(this.initialCustomData ?? null),
+       this.skills.slice(),
+       this.memoryDir ?? null,
+-      this.skillAccessMode,
+       copyMemoryCompactionConfiguration(this.memoryCompaction),
+     );
+   }
+@@ -118,8 +113,7 @@ export class AgentConfig {
+     return (
+       `AgentConfig(name='${this.name}', role='${this.role}', ` +
+       `llmInstance='${this.llmInstance.constructor.name}', ` +
+-      `workspace_configured=${this.workspaceRootPath !== null}, skills=${JSON.stringify(this.skills)}, ` +
+-      `skillAccessMode='${this.skillAccessMode}')`
++      `workspace_configured=${this.workspaceRootPath !== null}, skills=${JSON.stringify(this.skills)})`
+     );
+   }
+ }
+diff --git a/autobyteus-web/localization/messages/en/settings.ts b/autobyteus-web/localization/messages/en/settings.ts
+index e13059098..9470c10d9 100644
+--- a/autobyteus-web/localization/messages/en/settings.ts
++++ b/autobyteus-web/localization/messages/en/settings.ts
+@@ -56,6 +56,15 @@ const settingsMessages = {
+   'settings.components.settings.ApplicationsFeatureToggleCard.source.initializedFromDiscoveredApplications': 'Seeded automatically because this node already discovered one or more applications.',
+   'settings.components.settings.ApplicationsFeatureToggleCard.source.initializedEmptyCatalog': 'Seeded automatically because this node currently has no discoverable applications.',
+   'settings.components.settings.ApplicationsFeatureToggleCard.source.serverSetting': 'Persisted as an explicit runtime setting for this node.',
++  'settings.components.settings.ProjectsFeatureToggleCard.title': 'Projects',
++  'settings.components.settings.ProjectsFeatureToggleCard.description': 'Control whether the Projects module is available on the currently bound node. Disabled by default.',
++  'settings.components.settings.ProjectsFeatureToggleCard.saving': 'Saving...',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.loading': 'Loading',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.error': 'Error',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.enabled': 'Enabled',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.disabled': 'Disabled',
++  'settings.components.settings.ProjectsFeatureToggleCard.source.initializedDisabled': 'Disabled by default. Enable it to show Projects in the navigation for this node.',
++  'settings.components.settings.ProjectsFeatureToggleCard.source.serverSetting': 'Persisted as an explicit runtime setting for this node.',
+   'settings.components.settings.FeaturedCatalogItemsCard.title': 'Featured catalog items',
+   'settings.components.settings.FeaturedCatalogItemsCard.description': 'Choose agents and teams to highlight at the top of their catalog pages.',
+   'settings.components.settings.FeaturedCatalogItemsCard.addAgent': 'Add agent',
+@@ -107,6 +116,7 @@ const settingsMessages = {
+   'settings.components.settings.AboutSettingsManager.status.noUpdate': 'Up to date',
+   'settings.components.settings.AboutSettingsManager.status.error': 'Error',
+   'settings.components.settings.AboutSettingsManager.status.idle': 'Idle',
++  'settings.components.settings.AboutSettingsManager.status.disabled': 'Disabled',
+   'settings.components.settings.AboutSettingsManager.message.electronOnly': 'Update checks are available in packaged Electron desktop builds.',
+   'settings.components.settings.AboutSettingsManager.message.checking': 'Checking for updates now.',
+   'settings.components.settings.AboutSettingsManager.message.available': 'A new version is ready to download.',
+@@ -124,8 +134,13 @@ const settingsMessages = {
+   'settings.components.settings.AboutSettingsManager.message.error.unavailable': 'Updates are available only in packaged desktop builds.',
+   'settings.components.settings.AboutSettingsManager.message.error.unknown': 'AutoByteus couldn’t complete the update check. Try again later.',
+   'settings.components.settings.AboutSettingsManager.message.idle': 'Check for updates manually at any time.',
++  'settings.components.settings.AboutSettingsManager.message.disabled': 'Updates are turned off for this isolated app instance.',
+   'settings.components.settings.AboutSettingsManager.lastChecked.never': 'Never',
+   'settings.components.settings.AboutSettingsManager.lastChecked.unknown': 'Unknown',
++  'settings.components.settings.AboutSettingsManager.betaBadge': 'Beta',
++  'settings.components.settings.AboutSettingsManager.betaChannel.label': 'Receive beta updates',
++  'settings.components.settings.AboutSettingsManager.betaChannel.description': 'Get early builds before they are released to everyone. Turning this off keeps your current version until a newer stable release is available.',
++  'settings.components.settings.AboutSettingsManager.betaChannel.downloadedHint': 'An update is downloaded. Install it or restart AutoByteus before changing the update channel.',
+   'settings.components.settings.CompactionConfigCard.title': 'Compaction configuration',
+   'settings.components.settings.CompactionConfigCard.retry': 'Retry',
+   'settings.components.settings.CompactionConfigCard.saveAccessibleName': 'Save compaction configuration',
+@@ -226,6 +241,7 @@ const settingsMessages = {
+   'settings.updates.store.restartInstallFailed': 'Failed to trigger app restart for update installation.',
+   'settings.updates.store.downloadedRestartToInstall': 'Update downloaded. Restart to install.',
+   'settings.updates.store.updateNotReadyToInstall': 'Update is not ready to install yet.',
++  'settings.updates.store.channelSaveFailed': 'Couldn’t save the update channel. It applies until AutoByteus restarts.',
+   'settings.updates.store.errors.network': 'Couldn’t reach the update server. Try again later.',
+   'settings.updates.store.errors.releasePreparing': 'The latest update is still being prepared on GitHub. Try again in a few minutes.',
+   'settings.updates.store.errors.metadata': 'Update information is incomplete right now. Try again in a few minutes.',
+diff --git a/autobyteus-web/localization/messages/zh-CN/settings.ts b/autobyteus-web/localization/messages/zh-CN/settings.ts
+index 5b0a9a958..d28ae3c0b 100644
+--- a/autobyteus-web/localization/messages/zh-CN/settings.ts
++++ b/autobyteus-web/localization/messages/zh-CN/settings.ts
+@@ -56,6 +56,15 @@ const settingsMessages = {
+   'settings.components.settings.ApplicationsFeatureToggleCard.source.initializedFromDiscoveredApplications': '由于当前节点已经发现一个或多个应用，系统已自动完成初始化。',
+   'settings.components.settings.ApplicationsFeatureToggleCard.source.initializedEmptyCatalog': '由于当前节点尚未发现任何应用，系统已自动将其初始化为空目录状态。',
+   'settings.components.settings.ApplicationsFeatureToggleCard.source.serverSetting': '已作为当前节点的显式运行时设置持久化。',
++  'settings.components.settings.ProjectsFeatureToggleCard.title': '项目',
++  'settings.components.settings.ProjectsFeatureToggleCard.description': '控制当前绑定节点是否开放项目模块。默认禁用。',
++  'settings.components.settings.ProjectsFeatureToggleCard.saving': '保存中...',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.loading': '加载中',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.error': '错误',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.enabled': '已启用',
++  'settings.components.settings.ProjectsFeatureToggleCard.status.disabled': '已禁用',
++  'settings.components.settings.ProjectsFeatureToggleCard.source.initializedDisabled': '默认禁用。启用后，当前节点的导航中将显示“项目”。',
++  'settings.components.settings.ProjectsFeatureToggleCard.source.serverSetting': '已作为当前节点的显式运行时设置持久化。',
+   'settings.components.settings.FeaturedCatalogItemsCard.title': '精选目录项目',
+   'settings.components.settings.FeaturedCatalogItemsCard.description': '选择要在对应目录页顶部突出显示的智能体和团队。',
+   'settings.components.settings.FeaturedCatalogItemsCard.addAgent': '添加智能体',
+@@ -107,6 +116,7 @@ const settingsMessages = {
+   'settings.components.settings.AboutSettingsManager.status.noUpdate': '已是最新',
+   'settings.components.settings.AboutSettingsManager.status.error': '错误',
+   'settings.components.settings.AboutSettingsManager.status.idle': '空闲',
++  'settings.components.settings.AboutSettingsManager.status.disabled': '已停用',
+   'settings.components.settings.AboutSettingsManager.message.electronOnly': '仅在打包后的 Electron 桌面版本中支持检查更新。',
+   'settings.components.settings.AboutSettingsManager.message.checking': '正在检查更新。',
+   'settings.components.settings.AboutSettingsManager.message.available': '有新版本可供下载。',
+@@ -124,8 +134,13 @@ const settingsMessages = {
+   'settings.components.settings.AboutSettingsManager.message.error.unavailable': '仅打包后的桌面版本支持应用更新。',
+   'settings.components.settings.AboutSettingsManager.message.error.unknown': 'AutoByteus 无法完成更新检查。请稍后重试。',
+   'settings.components.settings.AboutSettingsManager.message.idle': '你可以随时手动检查更新。',
++  'settings.components.settings.AboutSettingsManager.message.disabled': '此隔离应用实例已关闭更新。',
+   'settings.components.settings.AboutSettingsManager.lastChecked.never': '从未',
+   'settings.components.settings.AboutSettingsManager.lastChecked.unknown': '未知',
++  'settings.components.settings.AboutSettingsManager.betaBadge': 'Beta',
++  'settings.components.settings.AboutSettingsManager.betaChannel.label': '接收 Beta 更新',
++  'settings.components.settings.AboutSettingsManager.betaChannel.description': '在向所有用户发布之前抢先获取新版本。关闭后，将保持当前版本，直到有更新的稳定版可用。',
++  'settings.components.settings.AboutSettingsManager.betaChannel.downloadedHint': '已有更新下载完成。请先安装或重启 AutoByteus，再更改更新渠道。',
+   'settings.components.settings.CompactionConfigCard.title': '压缩配置',
+   'settings.components.settings.CompactionConfigCard.retry': '重试',
+   'settings.components.settings.CompactionConfigCard.saveAccessibleName': '保存压缩配置',
+@@ -226,6 +241,7 @@ const settingsMessages = {
+   'settings.updates.store.restartInstallFailed': '触发重启以安装更新失败。',
+   'settings.updates.store.downloadedRestartToInstall': '更新已下载，重启后即可安装。',
+   'settings.updates.store.updateNotReadyToInstall': '更新尚未准备好安装。',
++  'settings.updates.store.channelSaveFailed': '无法保存更新渠道。该设置将在 AutoByteus 重启前生效。',
+   'settings.updates.store.errors.network': '无法连接更新服务器。请稍后重试。',
+   'settings.updates.store.errors.releasePreparing': 'GitHub 上的最新更新仍在准备中。请几分钟后再试。',
+   'settings.updates.store.errors.metadata': '更新信息暂时不完整。请几分钟后再试。',
+diff --git a/autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts b/autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
+index 2e5b9aecb..c8592b9e6 100644
+--- a/autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
++++ b/autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
+@@ -76,7 +76,7 @@ export const toAgentPresentationProjectionMessage = (
+     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
+     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
+     case 'TOOL_LOG': return { type: message.type, payload: { ...message.payload } };
+-    case 'TODO_LIST_UPDATE': return { type: message.type, payload: { todos: message.payload.todos.map((todo) => ({ ...todo })) } };
++    case 'BACKGROUND_TASK_UPDATED': return { type: message.type, payload: { ...message.payload } };
+     case 'SYSTEM_TASK_NOTIFICATION': return { type: message.type, payload: { sender_id: message.payload.sender.kind === 'system' ? 'system' : message.payload.sender.identity.member_address, content: message.payload.content } };
+     case 'ARTIFACT_PERSISTED': return { type: message.type, payload: { id: message.payload.artifact_id, runId, path: message.payload.path, type: artifactType(message.payload.artifact_type), status: message.payload.status, description: message.payload.description, revisionId: message.payload.revision_id, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
+     case 'FILE_CHANGE': return { type: message.type, payload: { id: message.payload.file_change_id, runId, path: message.payload.path, type: artifactType(message.payload.file_type), status: fileStatus(message.payload.status), sourceTool: fileSourceTool(message.payload.source_tool), sourceInvocationId: message.payload.source_invocation_id, content: message.payload.content, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
+@@ -146,6 +146,6 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
+     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), error: message.payload.error } };
+     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), reason: message.payload.reason } };
+     case 'TOOL_LOG': return { type: message.type, payload: { log_entry: message.payload.log_entry, tool_invocation_id: message.payload.tool_invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id } };
+-    case 'TODO_LIST_UPDATE': return { type: message.type, payload: { todos: message.payload.todos.map((todo) => ({ todo_id: todo.todo_id, description: todo.description, status: todo.status })) } };
++    case 'BACKGROUND_TASK_UPDATED': return { type: message.type, payload: { task_id: message.payload.task_id, kind: message.payload.kind, description: message.payload.description, status: message.payload.status, summary: message.payload.summary, started_at: message.payload.started_at } };
+   }
+ };
+diff --git a/autobyteus-web/stores/serverSettings.ts b/autobyteus-web/stores/serverSettings.ts
+index 0968f5a52..2eeb2d9d3 100644
+--- a/autobyteus-web/stores/serverSettings.ts
++++ b/autobyteus-web/stores/serverSettings.ts
+@@ -8,6 +8,7 @@ import {
+   UPDATE_SERVER_SETTING,
+ } from '~/graphql/mutations/server_settings_mutations'
+ import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
++import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore'
+ import {
+   PROVIDER_SETTINGS_RUNTIME_KIND,
+   useLLMProviderConfigStore,
+@@ -53,7 +54,14 @@ const defaultSearchConfig = (): SearchConfigState => ({
+   vertexAiSearchServingConfig: null,
+ })
+ 
+-const APPLICATIONS_SETTING_KEY = 'ENABLE_APPLICATIONS'
++/**
++ * Capability stores to refresh after their backing setting is edited in the settings table.
++ * ENABLE_SKILL_IMPROVEMENT is intentionally absent: its capability is not refreshed from here.
++ */
++const CAPABILITY_STORE_BY_SETTING_KEY: Readonly<Record<string, () => { refresh(): Promise<unknown> }>> = {
++  ENABLE_APPLICATIONS: useApplicationsCapabilityStore,
++  ENABLE_PROJECTS: useProjectsCapabilityStore,
++}
+ const DISCOVERY_SETTING_CATALOG_TARGETS: Readonly<Record<string, DiscoverySettingCatalogTarget>> = {
+   AUTOBYTEUS_LLM_SERVER_HOSTS: {
+     ownerProviderId: 'AUTOBYTEUS',
+@@ -396,8 +404,9 @@ export const useServerSettingsStore = defineStore('serverSettings', {
+           convergeModelCatalogAfterSettingCommit(key)
+           // Reload settings from server to ensure state is consistent
+           await this.reloadServerSettings();
+-          if (key.trim().toUpperCase() === APPLICATIONS_SETTING_KEY) {
+-            await useApplicationsCapabilityStore().refresh()
++          const useCapabilityStore = CAPABILITY_STORE_BY_SETTING_KEY[key.trim().toUpperCase()]
++          if (useCapabilityStore) {
++            await useCapabilityStore().refresh()
+           }
+           return true
+         }

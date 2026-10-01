@@ -1,0 +1,22 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "guard:web-boundary"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T17:15:22.772076+00:00",
+  "finished": "2026-10-01T17:15:23.380406+00:00",
+  "exit": 1,
+  "precondition": {
+    "exists": false,
+    "is_symlink": false
+  },
+  "after": {
+    "exists": false,
+    "is_symlink": false
+  },
+  "script_reviewed_before_execution": true,
+  "full_build_rerun": false
+}

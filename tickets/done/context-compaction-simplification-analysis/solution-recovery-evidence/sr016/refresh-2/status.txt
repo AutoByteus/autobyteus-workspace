@@ -1,0 +1,30 @@
+ M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+ M autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+ M test-support/live-e2e/live-e2e-harness.ts
+ M test-support/live-e2e/run-live-e2e.mjs
+ M tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md
+ M tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md
+ M tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md
+ M tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md
+ M tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md
+ M tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md
+ M tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+?? autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+?? test-support/live-e2e/compaction-quality-checks.ts
+?? test-support/live-e2e/live-e2e-safe-error.ts
+?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md
+?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/
+?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md
+?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md
+?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/
+?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/
+?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/
+?? tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-v6-candidate.md
+?? tickets/in-progress/context-compaction-simplification-analysis/prompt-recovery-proposal.md
+?? tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md
+?? tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/

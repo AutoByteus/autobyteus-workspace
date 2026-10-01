@@ -1,3 +1,5 @@
+import type { PreparedCompactionArchive } from './base-store.js';
+import { collectMessageRawTraceIds } from '../working-context-provenance.js';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -11,8 +13,6 @@ import {
   type SystemInstructionCaptureResult,
   type SystemInstructionTraceRecord,
 } from '../models/system-instruction-trace.js';
-import { EpisodicItem } from '../models/episodic-item.js';
-import { SemanticItem } from '../models/semantic-item.js';
 import { WorkingContext } from '../working-context.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
 import type { SnapshotMetadata } from '../working-context-snapshot-serializer.js';
@@ -217,34 +217,6 @@ export class RunMemoryFileStore {
     return this.readMemoryDicts(MemoryType.RAW_TRACE);
   }
 
-  private readEpisodicRecords(): Record<string, unknown>[] {
-    return this.readMemoryDicts(MemoryType.EPISODIC);
-  }
-
-  private readSemanticRecords(): Record<string, unknown>[] {
-    return this.readMemoryDicts(MemoryType.SEMANTIC);
-  }
-
-  findEpisodicItemsByIds(ids: readonly string[]): EpisodicItem[] {
-    return this.findExactItemsByIds(ids, this.readEpisodicRecords(), (record) =>
-      EpisodicItem.fromDict(record), 'episode');
-  }
-
-  findSemanticItemsByIds(ids: readonly string[]): SemanticItem[] {
-    return this.findExactItemsByIds(ids, this.readSemanticRecords(), (record) =>
-      SemanticItem.fromDict(record), 'semantic');
-  }
-
-  hasMemoryArtifactIds(input: {
-    episodeIds: readonly string[];
-    semanticIds: readonly string[];
-  }): boolean {
-    const episodeIds = new Set(input.episodeIds);
-    const semanticIds = new Set(input.semanticIds);
-    return this.readEpisodicRecords().some((record) => episodeIds.has(String(record.id ?? '')))
-      || this.readSemanticRecords().some((record) => semanticIds.has(String(record.id ?? '')));
-  }
-
   readRawTraceArchiveManifest(): RawTraceArchiveManifest {
     return this.archiveManager.readManifest();
   }
@@ -345,9 +317,9 @@ export class RunMemoryFileStore {
     writeJsonl(this.getRawTracesPath(), keep);
   }
 
-  archiveCompactedRawTraces(selectedTurnTraceIds: readonly string[]): void {
-    const ids = selectedTurnTraceIds.map((id) => id.trim()).filter(Boolean);
-    if (!ids.length || new Set(ids).size !== ids.length) {
+  prepareCompactionArchive(selectedTurnTraceIds: readonly string[]): PreparedCompactionArchive {
+    const ids = selectedTurnTraceIds.map((id) => id.trim());
+    if (!ids.length || ids.some((id) => !id) || new Set(ids).size !== ids.length) {
       throw new Error('Exact raw-trace archive requires unique non-empty selected IDs.');
     }
     const active = this.listRawTraceDicts();
@@ -377,18 +349,28 @@ export class RunMemoryFileStore {
       ids.includes(traceId(record) ?? '')
       || index <= lastSelectedPhysicalIndex && record.trace_type === SYSTEM_INSTRUCTION_TRACE_TYPE,
     );
-    const selectedIds = new Set(selected.map((record) => traceId(record)).filter((id): id is string => Boolean(id)));
-    const result = this.archiveAndRewriteActive(
-      selected,
-      active.filter((record) => !selectedIds.has(traceId(record) ?? '')),
-      {
-        boundaryType: 'native_compaction',
-        boundaryKey: nativeCompactionSelectionBoundaryKey(ids),
-        runtimeKind: 'AUTOBYTEUS',
-        sourceEvent: 'native_compaction',
-      },
-    );
-    if (!result) throw new Error('Exact raw-trace archive did not create a completed file.');
+    const boundaryKey = nativeCompactionSelectionBoundaryKey(ids);
+    const result = this.archiveManager.archiveRecords(selected, {
+      boundaryType: 'native_compaction', boundaryKey,
+      runtimeKind: 'AUTOBYTEUS', sourceEvent: 'native_compaction',
+    });
+    if (!result) throw new Error('Compaction archive preparation failed.');
+    const archivedIds = this.archiveManager.readCompleteSegmentTraceIds(boundaryKey);
+    if (!archivedIds || archivedIds.size !== selected.length || selected.some((record) => !archivedIds.has(traceId(record) ?? ''))) {
+      throw new Error('Prepared archive does not contain every selected trace.');
+    }
+    return { boundaryKey, archivedIds: [...archivedIds] };
+  }
+
+  prunePreparedCompactionArchive(prepared: PreparedCompactionArchive, retainedIds: readonly string[]): void {
+    const archived = this.archiveManager.readCompleteSegmentTraceIds(prepared.boundaryKey);
+    if (!archived || prepared.archivedIds.some((id) => !archived.has(id))) {
+      throw new Error('Prepared archive membership no longer matches.');
+    }
+    const snapshot = this.readWorkingContextSnapshotState();
+    if (!snapshot) throw new Error('Archive pruning requires a committed snapshot.');
+    const retained = new Set([...retainedIds, ...collectMessageRawTraceIds(snapshot.workingContext.buildMessages())]);
+    this.rewriteActiveWithoutTraceIds(new Set(prepared.archivedIds.filter((id) => !retained.has(id))));
   }
 
   workingContextSnapshotExists(): boolean {
@@ -451,21 +433,4 @@ export class RunMemoryFileStore {
     );
   }
 
-  private findExactItemsByIds<T>(
-    ids: readonly string[],
-    records: Record<string, unknown>[],
-    deserialize: (record: Record<string, unknown>) => T,
-    label: string,
-  ): T[] {
-    const requested = ids.map((id) => id.trim());
-    const result: T[] = [];
-    for (const id of requested) {
-      const matches = records.filter((record) => record.id === id);
-      if (matches.length !== 1) {
-        throw new Error(`Expected exactly one ${label} row '${id}', found ${matches.length}.`);
-      }
-      result.push(deserialize(matches[0]!));
-    }
-    return result;
-  }
 }

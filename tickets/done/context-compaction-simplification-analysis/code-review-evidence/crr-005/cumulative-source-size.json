@@ -1,0 +1,723 @@
+[
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+    "added": 4,
+    "deleted": 4,
+    "nonempty": 127,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+    "added": 3,
+    "deleted": 3,
+    "nonempty": 123,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+    "added": 4,
+    "deleted": 4,
+    "nonempty": 96,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+    "added": 2,
+    "deleted": 2,
+    "nonempty": 361,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+    "added": 9,
+    "deleted": 60,
+    "nonempty": 444,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.ts",
+    "added": 1,
+    "deleted": 4,
+    "nonempty": 29,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts",
+    "added": 0,
+    "deleted": 23,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts",
+    "added": 42,
+    "deleted": 0,
+    "nonempty": 39,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts",
+    "added": 0,
+    "deleted": 257,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts",
+    "added": 0,
+    "deleted": 113,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts",
+    "added": 0,
+    "deleted": 204,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+    "added": 5,
+    "deleted": 5,
+    "nonempty": 210,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+    "added": 3,
+    "deleted": 3,
+    "nonempty": 112,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/schema.ts",
+    "added": 0,
+    "deleted": 2,
+    "nonempty": 83,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts",
+    "added": 0,
+    "deleted": 27,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts",
+    "added": 19,
+    "deleted": 4,
+    "nonempty": 259,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+    "added": 0,
+    "deleted": 6,
+    "nonempty": 33,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent-config.json",
+    "added": 0,
+    "deleted": 11,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts",
+    "added": 2,
+    "deleted": 4,
+    "nonempty": 61,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/config/compaction-model-settings.ts",
+    "added": 30,
+    "deleted": 0,
+    "nonempty": 27,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts",
+    "added": 0,
+    "deleted": 21,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+    "added": 3,
+    "deleted": 3,
+    "nonempty": 119,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+    "added": 8,
+    "deleted": 14,
+    "nonempty": 372,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+    "added": 7,
+    "deleted": 93,
+    "nonempty": 79,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/context/agent-config.ts",
+    "added": 1,
+    "deleted": 7,
+    "nonempty": 110,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+    "added": 0,
+    "deleted": 9,
+    "nonempty": 209,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/llm-request-assembler.ts",
+    "added": 4,
+    "deleted": 0,
+    "nonempty": 121,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/loop/llm-phase-compaction.ts",
+    "added": 0,
+    "deleted": 1,
+    "nonempty": 98,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+    "added": 4,
+    "deleted": 59,
+    "nonempty": 373,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+    "added": 12,
+    "deleted": 12,
+    "nonempty": 252,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/clients/autobyteus-client.ts",
+    "added": 2,
+    "deleted": 2,
+    "nonempty": 492,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/anthropic-llm.ts",
+    "added": 2,
+    "deleted": 0,
+    "nonempty": 306,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/autobyteus-llm.ts",
+    "added": 3,
+    "deleted": 2,
+    "nonempty": 141,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/completion-status.ts",
+    "added": 19,
+    "deleted": 0,
+    "nonempty": 17,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/gemini-llm.ts",
+    "added": 2,
+    "deleted": 0,
+    "nonempty": 263,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/mistral-llm.ts",
+    "added": 2,
+    "deleted": 0,
+    "nonempty": 128,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/ollama-llm.ts",
+    "added": 5,
+    "deleted": 0,
+    "nonempty": 178,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/openai-compatible-llm.ts",
+    "added": 2,
+    "deleted": 0,
+    "nonempty": 177,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/api/openai-responses-llm.ts",
+    "added": 2,
+    "deleted": 0,
+    "nonempty": 368,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/base.ts",
+    "added": 1,
+    "deleted": 1,
+    "nonempty": 173,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/llm-factory.ts",
+    "added": 3,
+    "deleted": 1,
+    "nonempty": 322,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/llm/utils/response-types.ts",
+    "added": 6,
+    "deleted": 0,
+    "nonempty": 70,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/accepted-compaction-builder.ts",
+    "added": 18,
+    "deleted": 115,
+    "nonempty": 31,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/accepted-compaction-committer.ts",
+    "added": 26,
+    "deleted": 34,
+    "nonempty": 32,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts",
+    "added": 0,
+    "deleted": 181,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts",
+    "added": 0,
+    "deleted": 61,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts",
+    "added": 3,
+    "deleted": 3,
+    "nonempty": 104,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-execution.ts",
+    "added": 19,
+    "deleted": 0,
+    "nonempty": 17,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-response-parser.ts",
+    "added": 0,
+    "deleted": 271,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-result-normalizer.ts",
+    "added": 0,
+    "deleted": 123,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-result.ts",
+    "added": 0,
+    "deleted": 34,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts",
+    "added": 0,
+    "deleted": 7,
+    "nonempty": 52,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+    "added": 36,
+    "deleted": 0,
+    "nonempty": 34,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts",
+    "added": 2,
+    "deleted": 0,
+    "nonempty": 2,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts",
+    "added": 0,
+    "deleted": 28,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts",
+    "added": 72,
+    "deleted": 0,
+    "nonempty": 69,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts",
+    "added": 7,
+    "deleted": 7,
+    "nonempty": 44,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+    "added": 64,
+    "deleted": 104,
+    "nonempty": 87,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts",
+    "added": 0,
+    "deleted": 77,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts",
+    "added": 40,
+    "deleted": 10,
+    "nonempty": 253,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts",
+    "added": 1,
+    "deleted": 14,
+    "nonempty": 59,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts",
+    "added": 3,
+    "deleted": 11,
+    "nonempty": 29,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts",
+    "added": 0,
+    "deleted": 52,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts",
+    "added": 0,
+    "deleted": 33,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts",
+    "added": 0,
+    "deleted": 9,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts",
+    "added": 0,
+    "deleted": 50,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/index.ts",
+    "added": 2,
+    "deleted": 22,
+    "nonempty": 71,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts",
+    "added": 0,
+    "deleted": 120,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/lineage/compaction-lineage-scope.ts",
+    "added": 0,
+    "deleted": 38,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/lineage/compaction-lineage-store.ts",
+    "added": 0,
+    "deleted": 10,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+    "added": 25,
+    "deleted": 95,
+    "nonempty": 318,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts",
+    "added": 5,
+    "deleted": 1,
+    "nonempty": 75,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager.ts",
+    "added": 2,
+    "deleted": 12,
+    "nonempty": 489,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-shapes.ts",
+    "added": 197,
+    "deleted": 0,
+    "nonempty": 190,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts",
+    "added": 3,
+    "deleted": 3,
+    "nonempty": 499,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts",
+    "added": 0,
+    "deleted": 45,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts",
+    "added": 0,
+    "deleted": 58,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/projection/compacted-memory-projection-bundle.ts",
+    "added": 0,
+    "deleted": 23,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/projection/current-compaction-output-loader.ts",
+    "added": 0,
+    "deleted": 41,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts",
+    "added": 6,
+    "deleted": 38,
+    "nonempty": 55,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/store/base-store.ts",
+    "added": 6,
+    "deleted": 17,
+    "nonempty": 23,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/store/file-compaction-lineage-store.ts",
+    "added": 0,
+    "deleted": 85,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-ts/src/memory/store/file-store.ts",
+    "added": 5,
+    "deleted": 16,
+    "nonempty": 72,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/store/run-memory-file-store.ts",
+    "added": 27,
+    "deleted": 62,
+    "nonempty": 386,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/working-context-provenance.ts",
+    "added": 11,
+    "deleted": 0,
+    "nonempty": 175,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts",
+    "added": 54,
+    "deleted": 90,
+    "nonempty": 133,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts",
+    "added": 1,
+    "deleted": 1,
+    "nonempty": 193,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/components/progress/CompactionActivityItem.vue",
+    "added": 5,
+    "deleted": 0,
+    "nonempty": 103,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/components/settings/CompactionConfigCard.vue",
+    "added": 24,
+    "deleted": 83,
+    "nonempty": 231,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/components/settings/CompactionModelSettings.vue",
+    "added": 50,
+    "deleted": 0,
+    "nonempty": 50,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/server_settings_queries.ts",
+    "added": 0,
+    "deleted": 1,
+    "nonempty": 27,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts",
+    "added": 0,
+    "deleted": 10,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-web/localization/messages/en/settings.ts",
+    "added": 12,
+    "deleted": 9,
+    "nonempty": 414,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/localization/messages/zh-CN/settings.ts",
+    "added": 12,
+    "deleted": 9,
+    "nonempty": 414,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+    "added": 13,
+    "deleted": 13,
+    "nonempty": 255,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+    "added": 6,
+    "deleted": 6,
+    "nonempty": 32,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+    "added": 1,
+    "deleted": 1,
+    "nonempty": 143,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/stores/serverSettings.ts",
+    "added": 0,
+    "deleted": 15,
+    "nonempty": 402,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts",
+    "added": 0,
+    "deleted": 149,
+    "nonempty": 0,
+    "removed": true
+  },
+  {
+    "path": "autobyteus-web/types/activity/RunActivity.ts",
+    "added": 7,
+    "deleted": 0,
+    "nonempty": 61,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/types/agent/AgentRunState.ts",
+    "added": 7,
+    "deleted": 0,
+    "nonempty": 77,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-web/utils/compactionModelSettings.ts",
+    "added": 12,
+    "deleted": 0,
+    "nonempty": 12,
+    "removed": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md => tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/autobyteus-original.md",
+    "added": 8,
+    "deleted": 0,
+    "nonempty": 0,
+    "removed": true
+  }
+]

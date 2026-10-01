@@ -1,0 +1,2 @@
+node <package-node_modules>/typescript/bin/tsc -p tsconfig.build.json; node --test tests/*.test.mjs
+Unchanged HEAD source and tests, separately compiled HEAD presentation dependency. No remote access.

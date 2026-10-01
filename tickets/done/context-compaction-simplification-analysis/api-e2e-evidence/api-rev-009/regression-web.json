@@ -1,0 +1,25 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "stores/__tests__/retainedActivityTermination.spec.ts",
+    "stores/__tests__/nativeCompactionTermination.spec.ts",
+    "stores/__tests__/nativeOrgCompactionTermination.spec.ts",
+    "stores/__tests__/nativeCompactionActivity.spec.ts",
+    "stores/__tests__/agentRunCollaborationStore.spec.ts",
+    "services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts",
+    "services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts",
+    "services/runSubmission/__tests__/localUserSubmission.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+    "services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts",
+    "components/conversation/segments/__tests__/InterAgentMessageSegment.spec.ts",
+    "components/conversation/__tests__/UserMessage.spec.ts",
+    "components/workspace/agent/__tests__/CompactionStatusRow.spec.ts",
+    "--run"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "exit": 0,
+  "finished": "2026-10-01T12:46:06.506563+00:00"
+}

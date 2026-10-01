@@ -1,0 +1,17 @@
+# API-REV-003 evidence — completed Fail82.9%
+
+Current bounded IR003 structural checks Pass; separately user-authorized DeepSeek pair scoped semantic Pass. Original supported local Qwen API-F005 actual semantic failure and API-F004 unisolated continuation remain Open. This is not Delivery or successful-test review.
+
+- Authority/source pins: entry-audit.json; final-audit.json; reference-index.json. Current canonical investigation/report/ledger/revision record at ticket root.
+- Investigation chronology: plan.json, investigation-checkpoints.md; entry-* files freeze prior owner authorities, not alternate canonical reports.
+- run-case.py executes exact per-case commands with allowed environment. Case JSONs/logs preserve times/cwd/exit/counts.
+- C01-baseline24Pass2Fail memoryDir, C01-final27Pass after dependency + real readiness fixture, enum typed cleanup. Earlier C01Pass retained; count only final27.
+- C02 core48files377Pass; C04 server12files109Pass; C05-corrected3files18Pass (initial authoring17Pass1Fail retained); C07 current contract3NodePass. **534 fresh final durable repository tests**, no fullsuite claim.
+- B01 standard shared/core/SDK/Prisma/server/sanitized startup buildPass.
+- structural-server.mjs / API-C11*: three actual built process lifetimes + HTTP settings/history, exact writer-cut preservation and normal bootstrap repair/reopen, direct historical v5 reader/current writes, no old preference import/default persistence. All owned resources removed. First unsupported fixture/root-index authoring mismatch preserved under c11-authoring-attempt1; not product failure.
+- deepseek/: exact user permission and declared max2 manifest; private importer value-free preview/confirmed log, execution metadata; inherited-standard-config observer3Pass; preflight1READY/Pass; registered quality1Pass/exact2requests; safe actual wire requests/responses and semantic-evidence/manual adjudication. Original .ts config-load error archived; fixed to .mts before providers. Requests current parent deepseek-v4-flash, temp0.7/cap8192/promptv5; actual returned model label deepseek-flash. Both complete/stop; pending checkpoint preserved. No causal conclusion or F005 closure, no repeat Qwen call/fullflow.
+- prior failures remain api-rev-002/semantic-review.md, semantic-final-observations.json, API-F005-replay.json, API-F004-triage.json plus sr014-diagnostics/*.jsonl and semantic-adjudication.md. No originals overwritten.
+- Cumulative nine owned durable paths/hash inventory and preserved current production23path check: final-audit.json. Only three durable files changed this round; cumulative patch relative to HEAD in durable-tests.patch, four untracked cumulative API files separately attached.
+- git diff --check / node --check runner Pass. No fullsuite, standalone web typecheck, current integrated browser/desktop, actual full archive crash or power-loss claim. Other14 inherited failures not waived.
+- Cleanup: structural API-C11.json; DeepSeek execution.json; final PID/file verification. Source env never printed/modified; importer-read only, ten recognized records in temporary vault deleted. Userdesktop/sharedLMStudio/unrelatedprocesses/externalWIP unchanged. GeneratedSDK artifacts left alone; no commit/push/merge/release.
+- Result routing: single most-specific executable-Fail rule→/code_reviewer for cumulative focused failure-origin disposition. Handoff receipt retained when confirmed. Proportional successful durable-test review remains required on eventual Pass.

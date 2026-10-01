@@ -1,0 +1,108 @@
+{
+  "at": "2026-10-01T15:01:56.443081+00:00",
+  "endpoint": "http://127.0.0.1:64588/graphql",
+  "request": {
+    "query": "query{agentRunCollaboration(runId:\"daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9\")}",
+    "variables": {}
+  },
+  "response": {
+    "data": {
+      "agentRunCollaboration": {
+        "root_subject_kind": "agent",
+        "root_run_id": "daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9",
+        "root_agent": {
+          "base_change_sequence": 129,
+          "is_active": true,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-01T15:00:38.480Z",
+            "host": {
+              "address": "/daily_assistant",
+              "agentRunId": "daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9",
+              "agentDefinitionId": "autobyteus-daily-assistant"
+            },
+            "collaborators": [
+              {
+                "kind": "agent",
+                "address": "/sd036_reviewer",
+                "agentDefinitionId": "sd036-reviewer",
+                "agentRunId": "sd036_reviewer_a870e816a17441b8b7454ae92cefeafe",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sd036-deterministic-32768:lmstudio@127.0.0.1:64571",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-it1YTo/server-data/temp_workspace"
+                },
+                "addedAt": "2026-10-01T15:00:52.137Z",
+                "addedViaAgentRunId": "daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9"
+              }
+            ],
+            "taskExecutions": []
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9",
+            "messages": []
+          },
+          "agent_statuses": [
+            {
+              "member_address": "/sd036_reviewer",
+              "agent_run_id": "sd036_reviewer_a870e816a17441b8b7454ae92cefeafe",
+              "status": "error",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null,
+              "recoverableBlock": {
+                "operationId": "compaction_operation_mupnwbsn_1",
+                "failureEpoch": 2,
+                "position": {
+                  "kind": "held_turn",
+                  "turnId": "turn_0003"
+                },
+                "state": "awaiting_user",
+                "code": "SD036_SYNTHETIC_503",
+                "message": "Compaction failed \u2014 send a message to retry"
+              }
+            }
+          ],
+          "agent_input_states": [
+            {
+              "agent_run_id": "sd036_reviewer_a870e816a17441b8b7454ae92cefeafe",
+              "state": {
+                "run_instance_id": "a50eef09-3f0f-4000-a907-be7ac1838e0b",
+                "revision": 16,
+                "entries": [
+                  {
+                    "sequence": 3,
+                    "message_id": "b093f789-dcbc-4a56-9fa9-5d92512e7715",
+                    "dedupe_key": "member_input:daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9:sd036_reviewer_a870e816a17441b8b7454ae92cefeafe:b093f789-dcbc-4a56-9fa9-5d92512e7715",
+                    "turn_id": "turn_0003",
+                    "state": "held",
+                    "content": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+                    "sender_type": "user",
+                    "file_attachments": []
+                  }
+                ],
+                "recoverableBlock": {
+                  "operationId": "compaction_operation_mupnwbsn_1",
+                  "failureEpoch": 2,
+                  "position": {
+                    "kind": "held_turn",
+                    "turnId": "turn_0003"
+                  },
+                  "state": "awaiting_user",
+                  "code": "SD036_SYNTHETIC_503",
+                  "message": "Compaction failed \u2014 send a message to retry"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

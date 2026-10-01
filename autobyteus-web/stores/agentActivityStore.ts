@@ -1,3 +1,6 @@
+import type { AgentCompactionStatus } from '~/types/agent/AgentRunState';
+import { isNativeCompactionActivity, isNativeCompactionIdentity, stopNativeCompactionActivity, retainTerminalNativeActivities } from '~/services/activity/nativeCompactionActivityReconciliation';
+import { isActiveCompactionPhase } from '~/types/activity/compactionPhase';
 import { defineStore } from 'pinia';
 import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
@@ -76,6 +79,10 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       const activities = state.activitiesByRunId.get(runId)?.activities ?? [];
       return activities.filter(isCompactionActivity);
     },
+
+    getNativeCompactionActivityIds: (state) => (runId: string): string[] =>
+      (state.activitiesByRunId.get(runId)?.activities ?? [])
+        .filter(isNativeCompactionActivity).map((activity) => activity.activityId),
 
     hasAwaitingApproval: (state) => (runId: string): boolean => {
       return state.activitiesByRunId.get(runId)?.hasAwaitingApproval ?? false;
@@ -325,6 +332,28 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       state.highlightedActivityId = activityId;
     },
 
+    applyConfirmedNativeTermination(
+      runId: string, activityIds: readonly string[], currentStatus: AgentCompactionStatus | null, at = new Date(),
+    ): AgentCompactionStatus | null {
+      const ids = new Set(activityIds);
+      const state = this.activitiesByRunId.get(runId);
+      if (!state) return currentStatus;
+      let matching: CompactionActivity | undefined;
+      let changed = false;
+      state.activities = state.activities.map((activity) => {
+        if (!ids.has(activity.activityId) || !isNativeCompactionActivity(activity)) return activity;
+        const next = stopNativeCompactionActivity(activity, at);
+        changed ||= next !== activity;
+        if (next.activityId === currentStatus?.activityId) matching = next;
+        return next;
+      });
+      if (changed) { this._enforceRecentWindow(state); this._incrementContentRevision(runId); }
+      if (!matching || !currentStatus || !isNativeCompactionIdentity(currentStatus)
+        || !isActiveCompactionPhase(currentStatus.phase)) return currentStatus;
+      return { ...currentStatus, phase: matching.phase, message: matching.message,
+        centerTimelineTimestamp: matching.centerTimelineTimestamp };
+    },
+
     replaceProjectionActivitiesIfRevisions(
       replacements: readonly ActivityProjectionReplacement[],
     ): ActivityProjectionReplacementResult {
@@ -352,7 +381,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
           return true;
         });
         const next: AgentActivities = {
-          activities: [...activities],
+          activities: retainTerminalNativeActivities(activities, current?.activities ?? []),
           hasAwaitingApproval: false,
           highlightedActivityId: current?.highlightedActivityId ?? null,
         };

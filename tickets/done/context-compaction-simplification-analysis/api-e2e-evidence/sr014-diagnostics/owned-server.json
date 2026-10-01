@@ -1,0 +1,10 @@
+{
+  "serverUrl": "http://127.0.0.1:57025",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned",
+  "database": {
+    "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db",
+    "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db",
+    "rootKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db.secret.key"
+  },
+  "pid": 64555
+}

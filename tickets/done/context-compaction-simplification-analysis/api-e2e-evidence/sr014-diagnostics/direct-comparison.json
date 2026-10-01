@@ -1,0 +1,121 @@
+{
+  "scope": "SR014 diagnostic evidence only; no confidence rescore",
+  "order": [
+    "A",
+    "B",
+    "B",
+    "A"
+  ],
+  "actualDirectGenerations": 4,
+  "newFirstSummaries": 0,
+  "wireMessagesEqualFrozen": true,
+  "nonTemperatureSerializedFieldsMatch": true,
+  "discoveryMatched": true,
+  "unknownRemoteControls": [
+    "sampling defaults beyond explicit temperature",
+    "chat template",
+    "thinking mode",
+    "backend version",
+    "historical failed request"
+  ],
+  "samples": [
+    {
+      "id": "D01-A",
+      "arm": "A",
+      "diagnosticFidelity": "Fail: fabricated plan/checkpoint completion",
+      "falseCompletionQuote": "- Updated plan structure to include the owner-review checkpoint `APPROVAL-73`.",
+      "invocationId": "compaction_f4854380-d199-49eb-9ea1-10d13ef54eb8",
+      "completionStatus": "complete",
+      "completionReason": "stop",
+      "inputTokens": 1203,
+      "outputTokens": 3028,
+      "reasoningTokenCountOnly": 2509,
+      "wireCalls": 1,
+      "wireKeys": [
+        "max_completion_tokens",
+        "messages",
+        "model",
+        "temperature"
+      ],
+      "temperature": 0.7,
+      "outputCap": 8192,
+      "wireSha256": "d4e00fdade6b5bf77f5bc40f43bb1e3f66709ba25c34e364a745c2e79b6d3951",
+      "messagesSha256": "ff2f5ff35b8adae82f89b5e82aedce450278edbf3c9ffe1a39bb583138feea57",
+      "summarySha256": "e8c0d9108565da31b0251f70732b6271d009dd5560fe11c01d943bf866e5adc6"
+    },
+    {
+      "id": "D02-B",
+      "arm": "B",
+      "diagnosticFidelity": "Fail: fabricated plan/checkpoint completion",
+      "falseCompletionQuote": "- Owner-review checkpoint `APPROVAL-73` has been added to the plan.",
+      "invocationId": "compaction_dce623da-8327-4bbd-9d18-b33bf1686ede",
+      "completionStatus": "complete",
+      "completionReason": "stop",
+      "inputTokens": 1203,
+      "outputTokens": 2804,
+      "reasoningTokenCountOnly": 2299,
+      "wireCalls": 1,
+      "wireKeys": [
+        "max_completion_tokens",
+        "messages",
+        "model",
+        "temperature"
+      ],
+      "temperature": 0,
+      "outputCap": 8192,
+      "wireSha256": "ac4d3873002e6fceeabcdf93fab57a5ebaebcd5ccafa9a0f75729d11c85fa18e",
+      "messagesSha256": "ff2f5ff35b8adae82f89b5e82aedce450278edbf3c9ffe1a39bb583138feea57",
+      "summarySha256": "01124291a2c99ce858c0dfcf600dddc09e0754dc9d3515ab77185a961a32e792"
+    },
+    {
+      "id": "D03-B",
+      "arm": "B",
+      "diagnosticFidelity": "Fail: fabricated plan/checkpoint completion",
+      "falseCompletionQuote": "- Owner-review checkpoint `APPROVAL-73` has been added to the plan.",
+      "invocationId": "compaction_8b8dd487-16d5-4109-b5ea-bf6912e487f3",
+      "completionStatus": "complete",
+      "completionReason": "stop",
+      "inputTokens": 1203,
+      "outputTokens": 2804,
+      "reasoningTokenCountOnly": 2299,
+      "wireCalls": 1,
+      "wireKeys": [
+        "max_completion_tokens",
+        "messages",
+        "model",
+        "temperature"
+      ],
+      "temperature": 0,
+      "outputCap": 8192,
+      "wireSha256": "ac4d3873002e6fceeabcdf93fab57a5ebaebcd5ccafa9a0f75729d11c85fa18e",
+      "messagesSha256": "ff2f5ff35b8adae82f89b5e82aedce450278edbf3c9ffe1a39bb583138feea57",
+      "summarySha256": "01124291a2c99ce858c0dfcf600dddc09e0754dc9d3515ab77185a961a32e792"
+    },
+    {
+      "id": "D04-A",
+      "arm": "A",
+      "diagnosticFidelity": "Fail: fabricated plan/checkpoint completion",
+      "falseCompletionQuote": "- Added the owner-review checkpoint `APPROVAL-73` to the plan.",
+      "invocationId": "compaction_9b2b5446-1aac-41c8-91e3-96deee5393ee",
+      "completionStatus": "complete",
+      "completionReason": "stop",
+      "inputTokens": 1203,
+      "outputTokens": 2207,
+      "reasoningTokenCountOnly": 1697,
+      "wireCalls": 1,
+      "wireKeys": [
+        "max_completion_tokens",
+        "messages",
+        "model",
+        "temperature"
+      ],
+      "temperature": 0.7,
+      "outputCap": 8192,
+      "wireSha256": "d4e00fdade6b5bf77f5bc40f43bb1e3f66709ba25c34e364a745c2e79b6d3951",
+      "messagesSha256": "ff2f5ff35b8adae82f89b5e82aedce450278edbf3c9ffe1a39bb583138feea57",
+      "summarySha256": "5c3f4a90b5a707d2b4948fb2c7df0449389cd1619e95f4f9b3dbb5e017622f8a"
+    }
+  ],
+  "inference": "Temperature0 did not eliminate this error in either bounded observation. No general cause, deterministic/reliability or fix claim.",
+  "originalFailures": "API-F005/API-F004 Open; API-REV-002 Fail82.9 unchanged"
+}

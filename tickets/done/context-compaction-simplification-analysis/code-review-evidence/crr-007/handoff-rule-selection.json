@@ -1,0 +1,13 @@
+{
+  "classification": "Local Fix \u2014 API/E2E-owned invalid assertion, correction independently verified; remaining affected validation required",
+  "selected": {
+    "when": "When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.",
+    "recipient_address": "/api_e2e_engineer"
+  },
+  "matchingLessSpecific": {
+    "when": "When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.",
+    "recipient_address": "/api_e2e_engineer"
+  },
+  "reason": "Completed user-directed two-path fix verified offline; rerun/complete remaining valid evidence. More specific than generic API-owner origin rule. Not source pass/successful test review/unclear remedy. SR020 removes F005 remedy routing; F004 retained historically without Qwen re-investigation.",
+  "singleRecipient": true
+}

@@ -1,0 +1,8 @@
+{
+  "outcome": "Selected approved real-provider campaign Pass; cumulative API round Incomplete92.9/BroaderRequired",
+  "matchedRule": null,
+  "reason": "OverallPass threshold95 unmet; no new executableFail or upstream requirement/design finding. Partial scoped campaign success is not overall validation Pass. No permission/credential blocker; no Blocked route manufactured.",
+  "recipient": null,
+  "messageSent": false,
+  "reviewDecision": "Large/High cumulative11path independent successful test review pending eventual overallPass; noDelivery"
+}

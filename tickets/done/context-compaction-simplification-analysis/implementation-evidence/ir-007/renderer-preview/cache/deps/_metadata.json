@@ -1,0 +1,25 @@
+{
+  "hash": "aeaba4eb",
+  "configHash": "6fe069c8",
+  "lockfileHash": "e63464aa",
+  "browserHash": "aa55d1b6",
+  "optimized": {
+    "@iconify/vue": {
+      "src": "../../../../../../../../node_modules/.pnpm/@iconify+vue@5.0.0_vue@3.5.28_typescript@5.9.3_/node_modules/@iconify/vue/dist/iconify.js",
+      "file": "@iconify_vue.js",
+      "fileHash": "ff62efc2",
+      "needsInterop": true
+    },
+    "vue": {
+      "src": "../../../../../../../../node_modules/.pnpm/vue@3.5.28_typescript@5.9.3/node_modules/vue/dist/vue.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "28869fa8",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-BBOSCBD2": {
+      "file": "chunk-BBOSCBD2.js"
+    }
+  }
+}

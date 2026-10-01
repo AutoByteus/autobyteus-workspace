@@ -1,0 +1,3 @@
+# SD independent diagnostic — SR036
+User requested personal reproduction and cause investigation. No implementation or acceptance work.
+Run unchanged isolated desktop with a new loopback-only synthetic provider; no external model requests. Enter held-input state through public UI. Capture raw history/public conversation/live snapshot/DOM, actual native View → Reload, unchanged backend and native instance, changed renderer document. Compare no-reload control and repeated reload. No queue injection or saved-data edits. Preserve old evidence. Stop only owned processes after capture. Proposed repair remains parked.

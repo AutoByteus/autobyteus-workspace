@@ -1,0 +1,16 @@
+{
+  "workspace-native": [
+    "pnpm",
+    "test:native-input-history"
+  ],
+  "web-boundary": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "tests/integration/web-boundary-guard.integration.test.ts",
+    "services/runHydration/__tests__/acceptedInputIdentity.spec.ts",
+    "tests/integration/electron-package-boundary.integration.test.ts",
+    "--run"
+  ]
+}

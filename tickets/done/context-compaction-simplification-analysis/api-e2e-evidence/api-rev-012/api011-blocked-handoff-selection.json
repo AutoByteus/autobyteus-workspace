@@ -1,0 +1,7 @@
+{
+  "result": "Blocked",
+  "selectedRule": null,
+  "recipient": null,
+  "reason": "External native UI control unavailable; no matching Pass/Fail/upstream requirement rule. Skill Blocked requires user missing dependency, no team handoff.",
+  "messageSent": false
+}

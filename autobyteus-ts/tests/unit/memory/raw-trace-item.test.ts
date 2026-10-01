@@ -57,3 +57,21 @@ describe('RawTraceItem outcome presence', () => {
     expect(trace.toDict()).not.toHaveProperty('tool_error');
   });
 });
+
+
+describe('optional native accepted-input identity codec', () => {
+  it('round trips only recognized user identity without overloading trace or sender identity', () => {
+    const item = new RawTraceItem({ ...base, traceType: 'user', messageId: ' A ', dedupeKey: ' token ', senderId: 'sender', correlationId: 'correlation' });
+    const row = item.toDict();
+    expect(row).toMatchObject({ message_id: 'A', dedupe_key: 'token', id: 'rt_1', turn_id: 'turn_1', sender_id: 'sender', correlation_id: 'correlation' });
+    expect(RawTraceItem.fromDict(JSON.parse(JSON.stringify(row))).toDict()).toEqual(row);
+  });
+  it.each([undefined, null, '', '  ', 42, {}, []])('treats malformed/absent optional keys %j as unknown', key => {
+    const row = { ...new RawTraceItem({ ...base, traceType: 'user' }).toDict(), message_id: key, dedupe_key: key };
+    const parsed = RawTraceItem.fromDict(row).toDict();
+    expect(parsed).not.toHaveProperty('message_id'); expect(parsed).not.toHaveProperty('dedupe_key');
+  });
+  it.each(['assistant', 'tool_call', 'reasoning'])('does not introduce input keys to %s', traceType => {
+    expect(new RawTraceItem({ ...base, traceType, messageId: 'A', dedupeKey: 'token' }).toDict()).not.toHaveProperty('message_id');
+  });
+});

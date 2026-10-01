@@ -95,3 +95,63 @@ describe('AgentRunCollaborationContext', () => {
     expect(parseAgentTeamAddress(context.index.hostAddress)).toBe('/research_assistant')
   })
 })
+
+const recovery = { operationId: 'native-op', failureEpoch: 1,
+  position: { kind: 'held_turn' as const, turnId: 'A' }, state: 'awaiting_user' as const, code: 'failed', message: 'Retry on user input' }
+const inputState = (revision = 3) => ({ run_instance_id: 'runtime-1', revision, recoverableBlock: recovery,
+  entries: ['A', 'B'].map((text, index) => ({ sequence: index + 1, message_id: text, dedupe_key: `input:${text}`, turn_id: index ? null : 'A',
+    state: index ? 'queued' as const : 'held' as const, content: text, sender_type: 'user' as const, file_attachments: [] })) })
+
+it('hydrates hosted Agent and Team held/queued identities and applies same-instance live revisions without resending', () => {
+  const view = agentRootView()
+  view.agent_input_states = ['cua-run', 'pp-run'].map(id => ({ agent_run_id: id, state: inputState() }))
+  view.agent_statuses[0]!.status = 'error'; view.agent_statuses[0]!.recoverableBlock = recovery
+  const root = build(view)
+  for (const id of ['cua-run', 'pp-run']) {
+    const ctx = root.getAgentContext(id)!
+    expect(ctx.state.inputProjection).toEqual({ runInstanceId: 'runtime-1', revision: 3 })
+    expect(ctx.state.recoverableBlock).toEqual(recovery)
+    expect(ctx.state.currentStatus).toBe('error')
+    expect(ctx.conversation.messages).toMatchObject([
+      { type: 'user', messageId: 'A', pendingInput: { state: 'held' } },
+      { type: 'user', messageId: 'B', pendingInput: { state: 'queued' } },
+    ])
+  }
+  const ctx = root.getAgentContext('cua-run')!
+  expect(root.applyEvent(5, { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent',
+    message: { type: 'AGENT_INPUT_STATE', payload: inputState(2) } } as any)).toBe('applied')
+  expect(ctx.state.inputProjection?.revision).toBe(3)
+  const fresh = inputState(4); fresh.entries = [fresh.entries[1]!]
+  root.applyEvent(6, { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent',
+    message: { type: 'AGENT_INPUT_STATE', payload: fresh } } as any)
+  expect(ctx.conversation.messages).toHaveLength(2)
+  expect(ctx.conversation.messages[0]).not.toHaveProperty('pendingInput')
+  expect(ctx.state.inputProjection?.revision).toBe(4)
+})
+
+it('post-response recovery projects no held A and cold dormant contexts invent no input projection', () => {
+  const view = agentRootView()
+  view.agent_statuses[0]!.status = 'error'
+  view.agent_statuses[0]!.recoverableBlock = { ...recovery, position: { kind: 'next_turn', failedTurnId: 'consumed-A' } }
+  view.agent_input_states = [{ agent_run_id: 'cua-run', state: { ...inputState(), entries: [],
+    recoverableBlock: view.agent_statuses[0]!.recoverableBlock } }]
+  const live = build(view).getAgentContext('cua-run')!
+  expect(live.conversation.messages).toEqual([]); expect(live.state.recoverableBlock?.position.kind).toBe('next_turn')
+  const cold = agentRootView(); cold.is_active = false; cold.agent_statuses.forEach(s => { s.status = 'offline' })
+  const saved = build(cold).getAgentContext('cua-run')!
+  expect(saved.state.inputProjection).toBeNull(); expect(saved.state.recoverableBlock).toBeNull()
+})
+
+it.each(['host-input', 'unknown-input', 'duplicate-input', 'duplicate-status', 'wrong-address'])(
+  'rejects %s rather than applying a partial snapshot', kind => {
+    const view = agentRootView()
+    const value = { agent_run_id: 'cua-run', state: inputState() }
+    view.agent_input_states = [value]
+    if (kind === 'host-input') value.agent_run_id = 'host-run'
+    if (kind === 'unknown-input') value.agent_run_id = 'unknown'
+    if (kind === 'duplicate-input') view.agent_input_states.push(value)
+    if (kind === 'duplicate-status') view.agent_statuses.push(view.agent_statuses[0]!)
+    if (kind === 'wrong-address') view.agent_statuses[0]!.member_address = '/wrong'
+    expect(() => build(view)).toThrow(/identity/)
+  },
+)

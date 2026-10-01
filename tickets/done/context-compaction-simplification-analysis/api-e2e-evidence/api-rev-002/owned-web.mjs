@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import {createSanitizedTestEnvironment,reserveLoopbackPort} from '../../../../../test-support/live-e2e/test-runtime-bootstrap.mjs';
+const here=path.dirname(fileURLToPath(import.meta.url));
+const root=path.resolve(here,'../../../../..');
+const server=JSON.parse(fs.readFileSync(path.join(here,'owned-server.json'),'utf8'));
+const port=await reserveLoopbackPort();
+const args=['-C','autobyteus-web','exec','nuxt','dev','--host','127.0.0.1','--port',String(port)];
+const env=createSanitizedTestEnvironment({NODE_ENV:'development',BACKEND_NODE_BASE_URL:server.serverUrl,NUXT_TELEMETRY_DISABLED:'1'});
+let output='';
+const child=spawn('pnpm',args,{cwd:root,env,stdio:'pipe',detached:true});
+child.stdout.on('data',c=>{output+=c;fs.writeFileSync(path.join(here,'owned-web.log'),output);});child.stderr.on('data',c=>{output+=c;fs.writeFileSync(path.join(here,'owned-web.log'),output);});
+fs.writeFileSync(path.join(here,'owned-web.json'),JSON.stringify({pid:child.pid,url:`http://127.0.0.1:${port}`,backend:server.serverUrl,args},null,2));
+console.log('OWNED_WEB_STARTED',port,child.pid);
+const timer=setInterval(()=>{if(fs.existsSync(path.join(here,'stop-owned-web'))){clearInterval(timer);process.kill(-child.pid,'SIGTERM');}},1000);
+child.on('exit',(code,signal)=>{clearInterval(timer);fs.writeFileSync(path.join(here,'owned-web-cleanup.json'),JSON.stringify({stopped:true,code,signal}));fs.rmSync(path.join(here,'stop-owned-web'),{force:true});console.log('OWNED_WEB_STOPPED',code,signal);});

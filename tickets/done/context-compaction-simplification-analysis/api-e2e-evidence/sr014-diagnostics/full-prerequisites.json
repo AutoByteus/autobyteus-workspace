@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-09-26T21:59:43.242951+00:00",
+  "instrumentation": "2files7Pass",
+  "initialTuple": {
+    "modelIdentifier": null,
+    "llmConfig": null
+  },
+  "fullAttemptLimit": 1,
+  "priorDirectWireCount": 4
+}

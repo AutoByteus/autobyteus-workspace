@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-01T06:59:16.032032+00:00",
+  "result": "Pass",
+  "confidence": 95.0,
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "additionalRecipients": [],
+  "reason": "Completed API validation; cumulative11API durablepaths need successful proportional review; no directDelivery."
+}

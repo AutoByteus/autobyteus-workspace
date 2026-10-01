@@ -1,0 +1,13 @@
+{
+  "autobyteus-server-ts/docs/design/data_migration_guideline.md": "39e6e2a528824850f0dd185d5dd5bfa0ef8502015e36b9284d60ce5670a500f0",
+  "autobyteus-ts/src/llm/base.ts": "60313a3409dd05e791e45193d1946bbe8f8e080b43ddb76cfca177040a3d0dce",
+  "autobyteus-ts/src/utils/gemini-helper.ts": "18f269143d0a9398c0a8fb3e8791523fda9a914444d75e70918dba5be78998fd",
+  "autobyteus-ts/node_modules/@google/genai/dist/node/index.mjs": "25738f71a9fecaeba6c154f965e6e6fdd62a7ab41fc1afcb46dcc45263d2f176",
+  "autobyteus-ts/node_modules/@google/genai/dist/genai.d.ts": "52bf102c4cfab42c6461bb8f9c723a4b5d7c06c7667791c4c136f5f9de1b2756",
+  "autobyteus-ts/node_modules/@anthropic-ai/sdk/src/client.ts": "3c40bda2c0d2f6941edbe73f66b8435e8d427625319461184110a7d6fd7fb5b6",
+  "autobyteus-ts/node_modules/openai/src/client.ts": "7b576673d297bea10edfb07fe632c9f5f59cba2e4fd37965fcd8a7656c6aac94",
+  "autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/sdks.ts": "49c039e72ea241c0bd563ce7b1254c5e5fbf993b9823090109f2b376c3bc6962",
+  "autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/retries.ts": "79296a51fdebb9cfe63296ace1d3ab915817d4833a5ec6e224afe6df9ebc1234",
+  "autobyteus-ts/node_modules/@mistralai/mistralai/src/funcs/chatComplete.ts": "adccc2cc293c722a2152d43dc29b4b42c5d19838e01da05a22230be00c2b28c2",
+  "autobyteus-ts/node_modules/ollama/dist/browser.mjs": "ac772da40001337326488efffa6c871c9fd90302c8e709b06ce4b258f9846791"
+}

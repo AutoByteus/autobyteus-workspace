@@ -1,0 +1,20 @@
+{
+  "case": "API-C05",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "tests/unit/services/server-settings-service.test.ts",
+    "tests/integration/services/server-settings-service.integration.test.ts",
+    "tests/unit/config/app-config.test.ts",
+    "tests/unit/api/graphql/types/server-settings.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T21:51:48.789694+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T21:51:56.344989+00:00"
+}

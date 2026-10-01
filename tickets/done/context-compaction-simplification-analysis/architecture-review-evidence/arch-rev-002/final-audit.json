@@ -1,0 +1,65 @@
+{
+  "review": "ARCH-REV-002 final SR018+SR019 evidence",
+  "head": "9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e",
+  "authority_changes_during_review": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md",
+      "before": "1bcc3759941693c839ebf05a107d4cd0987889277b167a5366b7d943b467b9d7",
+      "after": "976c814c4b580048eb82eb2aeba7cb65dbde24ca8b3d252d9b8b12407f54c34a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md",
+      "before": "a165b4064a6c5b3ce5412dac2e0b182db43e6902041c3f820f1c920b9ffdc0a2",
+      "after": "51e976655d33bc7e0c14908afd55567c51bd97113866ecdb085c70481e1974cb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "before": "34c8c20d6e45499cc337d6bafb4b17ca66393ee52ada7ef2a8a40f6f7d557c30",
+      "after": "a28dfbfd2a14eba28ccd235cbb15f29e06db19493110f415d24081e51300307d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "before": "2e0e2b6750a7000ffe2f233cc9edcb08d1e6c24c1aeb507f9b9a9913fdaff286",
+      "after": "c720d1f808a09d6167d978fbdd416c826b3a6a81a915617db70557edacef93ea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "before": "ced1be25381c79df872870da46b2adda9dab41edc183922498673a165a738ef6",
+      "after": "053c11da7fa505c8e63f8976938033ab471715d184a0b8d3601005a98c5f2ad2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "before": "67cc3fa83ed5bd182ddd763140d845cb14dd5538d67617f92f9264f9080fc9c8",
+      "after": "584cc74300c2697803e18372c8542a5f7b38db95132b623544c2439ac9071546"
+    }
+  ],
+  "changed_reviewed_source_paths": [],
+  "added_reviewed_references": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr019.md": "06521f32113cd01b19e05db3f0ae7bf3496f36881658c920405c6d3d46abcb5e",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr019/README.md": "1f90e0d290040b57070bd32349a7cf8d3000d3e6020f9cb370cacd0ebe5ad2fa",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr019/unfinished-tool-investigation.cjs": "9214fc18e7c3409418b7b9af671a558e4d3d2eb1875b2853a829ee233aa6b8dc",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr019/unfinished-tool-investigation.json": "a1feb2815ef2f3dda8a79ad903b0fce1bc1c18d06a59e7be15d185d1c3e61215",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr019/source-audit.json": "12cb7034f9e8857989b50971d509fa62e1aa5ec0cd59f029658d4b0ce9f4ecf5",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr019.md": "34c8c20d6e45499cc337d6bafb4b17ca66393ee52ada7ef2a8a40f6f7d557c30"
+  },
+  "current_authorities": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md": "da960c7aa5c5ef89ad87fe521f2fab10804519de4ac4d0713f536dfa59df9d4e",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md": "a28dfbfd2a14eba28ccd235cbb15f29e06db19493110f415d24081e51300307d",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md": "c720d1f808a09d6167d978fbdd416c826b3a6a81a915617db70557edacef93ea",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md": "584cc74300c2697803e18372c8542a5f7b38db95132b623544c2439ac9071546",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md": "053c11da7fa505c8e63f8976938033ab471715d184a0b8d3601005a98c5f2ad2",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5"
+  },
+  "counts": {
+    "normal_core_files": 4,
+    "normal_core_tests_pass": 24,
+    "reader_assertions_pass": 8,
+    "independent_unfinished_assertions_pass": 4,
+    "sr019_writer_cut_rerun_pass": 4
+  },
+  "completed_review_artifacts": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md": "dc8a596f8eeefd62e18dac28512dec78895d50728d9344e891f7e8485a928891",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md": "0432a98dcf223041c76920faca508187ad4a058edc39d4c04aee378c3d0df582"
+  }
+}

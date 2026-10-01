@@ -1,0 +1,24 @@
+{
+  "result": "Pass",
+  "results": [
+    {
+      "mode": "before",
+      "exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "strictV5": true,
+      "observed": "old"
+    },
+    {
+      "mode": "after",
+      "exit": {
+        "code": null,
+        "signal": "SIGKILL"
+      },
+      "strictV5": true,
+      "observed": "new"
+    }
+  ],
+  "limit": "actual snapshot store primitive only; not power loss/fsync or entire archive transaction"
+}

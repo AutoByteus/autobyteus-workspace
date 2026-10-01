@@ -1,0 +1,97 @@
+{
+  "scope": "Unchanged-production characterization; no target implementation, model call, app startup, private dataset or acceptance claim.",
+  "sources": {
+    "autobyteus-ts/src/llm/utils/messages.ts": "115df613ce4d0fdd13c62962ccae8af11e3d13a82e501796bb70f0704cc381f6",
+    "autobyteus-ts/src/memory/working-context-finalizer.ts": "2b457268c9c2c8f641e67455d8a594fdfca10a38786c86052ee3a0b27e7dd314",
+    "autobyteus-ts/src/memory/working-context.ts": "1723dc053bc5cea13a1dacb6ff685dd5ac21923a9f529c40dbaf1fcd302b5b0c",
+    "autobyteus-ts/src/memory/working-context-finalization-validation.ts": "a321de4193db96fd7eb3f573eca0c0406e1d9fcecfb9007792398fa2ef1d3c93",
+    "autobyteus-ts/src/memory/working-context-provenance.ts": "556ffe7642490b2363b3798cc4cadccce603f5e066434901ff4a8e80a3a4fef2",
+    "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts": "fc7d0fcec15c57aad988bfe53ef764a9c003f0b667067fc0b30674de9c06c22d",
+    "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts": "20c0d3092a14adc19e5664118257cd9538d66e09fd57fb38691ce21452485e01",
+    "autobyteus-ts/src/memory/compaction/working-context-message-unit-builder.ts": "47c865a51e5fe337e462d34029de9901f8ceffb4e3933c5906031bdce8323f56",
+    "autobyteus-ts/src/llm/utils/provider-native-assistant-turn.ts": "e023c082119eb7a5df020bc683940d1ce8e7002f864a1c518068d3197df78733",
+    "autobyteus-ts/src/llm/utils/tool-call-delta.ts": "c90ab306eef2a8f3267df30e77651a86c35dac0a8e4b7764b0c8a786ab412dcf",
+    "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts": "7a82079781a2fadf95e2c89a2899a720b2cda9d7fd0cbb24b48ca331a82dba52",
+    "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-omissions.ts": "bbf0268cd911d9848ce66df279270c6e7757695044d84b812585c588712ed031",
+    "autobyteus-server-ts/src/config/compaction-model-settings.ts": "7e7cbbc85dd672af92a6cb807a575a70862085c058eab2c615110327e4da1305"
+  },
+  "results": [
+    {
+      "name": "Existing current-shape v5 summary is readable without consulting category files",
+      "status": "PASS"
+    },
+    {
+      "name": "Removing only obsolete root version currently rejects otherwise identical content",
+      "status": "PASS"
+    },
+    {
+      "name": "Adding an irrelevant root attribute currently rejects otherwise identical content",
+      "status": "PASS"
+    },
+    {
+      "name": "Wrong known-field type remains an actual structural failure",
+      "status": "PASS"
+    },
+    {
+      "name": "Missing current provenance is not repaired by a tolerant-root proposal",
+      "status": "PASS"
+    },
+    {
+      "name": "Released converter treats a versionless payload as unsupported and produces no summary",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing settings codec rejects unknown root fields rather than projecting them",
+      "status": "PASS"
+    },
+    {
+      "name": "Existing settings null/null default is valid without legacy input",
+      "status": "PASS"
+    }
+  ],
+  "fixture": {
+    "schema_version": 5,
+    "agent_id": "synthetic-sr018",
+    "messages": [
+      {
+        "role": "system",
+        "content": "System",
+        "reasoning_content": null,
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": [],
+        "tool_payload": null,
+        "metadata": {
+          "autobyteus_memory_provenance": {
+            "kind": "single",
+            "rawTraceIds": [],
+            "turnId": null
+          }
+        }
+      },
+      {
+        "role": "user",
+        "content": "## Episodic memory\nVerified existing work.\n## Semantic memory\nApproval remains pending.",
+        "reasoning_content": null,
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": [],
+        "tool_payload": null,
+        "metadata": {
+          "autobyteus_memory_provenance": {
+            "kind": "composed_user",
+            "constituents": [
+              {
+                "kind": "compacted_memory",
+                "textRange": {
+                  "start": 0,
+                  "end": 87
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T14:47:23.581076+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "E49F3ED021EC540F9469E04FDED02067",
+    "--script",
+    "async()=>await __abDemo.click({text:\"lead\",nth:0})"
+  ],
+  "controlPort": 63334
+}

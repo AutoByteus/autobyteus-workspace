@@ -1,0 +1,14 @@
+{
+  "case": "C06-F-before",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web",
+  "argv": [
+    "pnpm",
+    "test:nuxt",
+    "stores/__tests__/retainedActivityTermination.spec.ts",
+    "--run"
+  ],
+  "started": "2026-10-01T05:06:49.924654+00:00",
+  "mode": "repository; no real-provider flags",
+  "exitCode": 1,
+  "finished": "2026-10-01T05:07:00.190316+00:00"
+}

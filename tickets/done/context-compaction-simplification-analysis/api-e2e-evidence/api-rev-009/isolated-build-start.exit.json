@@ -1,0 +1,11 @@
+{
+  "command": [
+    "pnpm",
+    "--silent",
+    "isolated-app",
+    "start",
+    "--build"
+  ],
+  "exit": 0,
+  "finished": "2026-10-01T12:53:32.401858+00:00"
+}

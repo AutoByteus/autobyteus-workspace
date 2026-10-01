@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "handoffs": [
+      {
+        "when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval.",
+        "recipient_address": "/architecture_reviewer"
+      },
+      {
+        "when": "When Solution Designer classifies the completed architecture package as Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low. Include the approved requirements, investigation notes, design spec, solution revision record, classification rationale and selected direct implementation route.",
+        "recipient_address": "/implementation_engineer"
+      },
+      {
+        "when": "When Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence. Send only the specific receipt gap and cumulative package for correction; do not claim Terminal, reopen unchanged requirements or redo delivery work.",
+        "recipient_address": "/delivery_engineer"
+      }
+    ]
+  },
+  "outcome": "Evidence-only SR022 diagnostic incorporation; unchanged bounded user-approved REQ011/AC016; cumulative SR021 requirements Draft and design Needs Revision",
+  "selectedRule": null,
+  "reason": "No Architecture Design Complete package or Delivery Completed receipt. Routine requirements conversation, no formal route.",
+  "sentMessages": 0,
+  "next": "Return bounded result to user; settle remaining SR021 decisions before consolidated design/review; no more provider calls."
+}

@@ -1,0 +1,10 @@
+--- before/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
++++ after/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+@@ -102,7 +102,6 @@
+         autoExecuteTools: false,
+         workspaceId: null,
+         llmConfig: null,
+-        skillAccessMode: null,
+       }),
+       runtimeContext: null,
+     });

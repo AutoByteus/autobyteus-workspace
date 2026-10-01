@@ -1,0 +1,52 @@
+{
+  "event": "semantic_first",
+  "scenarioId": "deepseek.compaction-agent-flow",
+  "source": [
+    "Prepare an audit-only migration plan for incident INC-042. Constraints: no deployment, no push, and no customer-data export. Approval is for planning only, not implementation. Owner is Mira Chen. Retention is 7 days. Preserve /workspace/helios/plan.md and command pnpm verify:helios exactly. Work in two phases: inventory, then risk assessment. A cloud export was proposed but is not approved.",
+    "Inventory phase completed: read /workspace/helios/inventory.json; found 12 tables. Risk assessment is active, not finished. Command pnpm verify:helios has NOT RUN. No code or database was changed. The permission decision for implementation remains pending.",
+    "Keep all constraints. In the plan explain the duplicate-key risk. Ask me before any implementation. Do not execute the verification command yet."
+  ],
+  "summary": "## Goal and constraints\n- Prepare an audit-only migration plan for incident INC-042 for /workspace/helios/plan.md.\n- Approval is for planning only, not implementation; no deployment, no push, and no customer-data export.\n- A cloud export was proposed but is not approved.\n- Work in two phases: inventory, then risk assessment.\n- Owner is Mira Chen. Retention is 7 days.\n- Preserve /workspace/helios/plan.md and the command pnpm verify:helios exactly.\n- The plan must explain the duplicate-key risk.\n- Ask the user before any implementation.\n- Do not execute the verification command yet.\n\n## Decisions and findings\n- Inventory phase completed; read /workspace/helios/inventory.json and found 12 tables.\n- Risk assessment is active but not finished.\n- pnpm verify:helios has NOT RUN.\n- No code or database was changed.\n- The permission decision for implementation remains pending.\n- The cloud export remains unapproved.\n\n## Completed work\n- Read /workspace/helios/inventory.json.\n- Completed the inventory phase and recorded 12 tables.\n- Confirmed no code/database changes were made.\n- Did not execute pnpm verify:helios.\n\n## Current state\n- Risk assessment phase is in progress/incomplete.\n- The migration plan is not finalized.\n- Implementation is not approved; no deployment, push, customer-data export, or verification command execution has occurred.\n- User instruction stands to ask before any implementation and not to run the verification command yet.\n\n## Open work and next steps\n- Finish the risk assessment phase.\n- Ensure /workspace/helios/plan.md explains the duplicate-key risk.\n- Keep /workspace/helios/plan.md and pnpm verify:helios exact.\n- Ask the user before any implementation.\n- Do not execute pnpm verify:helios until the user explicitly allows it.\n\n## Essential references\n- Incident: INC-042\n- Owner: Mira Chen\n- Retention: 7 days\n- Plan artifact: /workspace/helios/plan.md\n- Inventory artifact: /workspace/helios/inventory.json (12 tables)\n- Verification command (not run yet): pnpm verify:helios\n- Phases: inventory, then risk assessment\n- Unapproved proposal: cloud export",
+  "execution": {
+    "modelIdentifier": "deepseek-v4-flash",
+    "provider": "DEEPSEEK",
+    "invocationId": "compaction_c20e662e-db42-4e1a-937d-3c2a9de8d0aa",
+    "completionStatus": "complete",
+    "completionReason": "stop",
+    "usage": {
+      "input_tokens": 872,
+      "output_tokens": 1690,
+      "total_tokens": 2562,
+      "usage_scope": "per_call",
+      "model_provider": "DEEPSEEK",
+      "provider_name": "DeepSeek",
+      "model_identifier": "deepseek-v4-flash",
+      "model_value": "deepseek-v4-flash",
+      "input_token_semantic": "gross_includes_cache",
+      "cache_state": "positive",
+      "standard_input_tokens": null,
+      "cache_miss_input_tokens": 360,
+      "cache_read_input_tokens": 512,
+      "cache_creation_input_tokens": null,
+      "cache_creation_5m_input_tokens": null,
+      "cache_creation_1h_input_tokens": null,
+      "reasoning_output_tokens": 1190,
+      "billable_input_tokens": null,
+      "billable_output_tokens": null,
+      "raw_usage_json": {
+        "prompt_tokens": 872,
+        "completion_tokens": 1690,
+        "total_tokens": 2562,
+        "prompt_tokens_details": {
+          "cached_tokens": 512
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 1190
+        },
+        "prompt_cache_hit_tokens": 512,
+        "prompt_cache_miss_tokens": 360
+      },
+      "quality_flags": []
+    }
+  }
+}

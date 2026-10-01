@@ -1,0 +1,127 @@
+{
+  "exactTwoChildInputStateEquality": true,
+  "before": [
+    {
+      "agent_run_id": "api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d",
+      "state": {
+        "run_instance_id": "94e7a2fb-ea81-402a-8d78-e057e3f47d6d",
+        "revision": 12,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "482afc18-2a66-440a-8f83-2b4d5c089e40",
+            "dedupe_key": "member_input:daily_assistant_c885a1076e524ac493bf01d1ac03a4c5:api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d:482afc18-2a66-440a-8f83-2b4d5c089e40",
+            "turn_id": "turn_0002",
+            "state": "held",
+            "content": "API9-AGENT-RECONNECT-HELD-A\n",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupju2jj_1",
+          "failureEpoch": 2,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0002"
+          },
+          "state": "awaiting_user",
+          "code": "API9_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      }
+    },
+    {
+      "agent_run_id": "api9_lead_3a6a5e7b787943b594a6461899fe6043",
+      "state": {
+        "run_instance_id": "0e8c27fd-a6fb-4695-a5a4-a9a2da1be54f",
+        "revision": 12,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "9e504a42-e7bb-4491-ad1b-a712727162b5",
+            "dedupe_key": "member_input:daily_assistant_c885a1076e524ac493bf01d1ac03a4c5:api9_lead_3a6a5e7b787943b594a6461899fe6043:9e504a42-e7bb-4491-ad1b-a712727162b5",
+            "turn_id": "turn_0002",
+            "state": "held",
+            "content": "API9-TEAM-RECONNECT-HELD-A\n",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupjtk2s_1",
+          "failureEpoch": 2,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0002"
+          },
+          "state": "awaiting_user",
+          "code": "API9_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      }
+    }
+  ],
+  "after": [
+    {
+      "agent_run_id": "api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d",
+      "state": {
+        "run_instance_id": "94e7a2fb-ea81-402a-8d78-e057e3f47d6d",
+        "revision": 12,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "482afc18-2a66-440a-8f83-2b4d5c089e40",
+            "dedupe_key": "member_input:daily_assistant_c885a1076e524ac493bf01d1ac03a4c5:api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d:482afc18-2a66-440a-8f83-2b4d5c089e40",
+            "turn_id": "turn_0002",
+            "state": "held",
+            "content": "API9-AGENT-RECONNECT-HELD-A\n",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupju2jj_1",
+          "failureEpoch": 2,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0002"
+          },
+          "state": "awaiting_user",
+          "code": "API9_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      }
+    },
+    {
+      "agent_run_id": "api9_lead_3a6a5e7b787943b594a6461899fe6043",
+      "state": {
+        "run_instance_id": "0e8c27fd-a6fb-4695-a5a4-a9a2da1be54f",
+        "revision": 12,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "9e504a42-e7bb-4491-ad1b-a712727162b5",
+            "dedupe_key": "member_input:daily_assistant_c885a1076e524ac493bf01d1ac03a4c5:api9_lead_3a6a5e7b787943b594a6461899fe6043:9e504a42-e7bb-4491-ad1b-a712727162b5",
+            "turn_id": "turn_0002",
+            "state": "held",
+            "content": "API9-TEAM-RECONNECT-HELD-A\n",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupjtk2s_1",
+          "failureEpoch": 2,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0002"
+          },
+          "state": "awaiting_user",
+          "code": "API9_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      }
+    }
+  ]
+}

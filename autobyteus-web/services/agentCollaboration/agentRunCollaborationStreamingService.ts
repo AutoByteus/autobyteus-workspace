@@ -47,6 +47,7 @@ export class AgentRunCollaborationStreamingService {
 
   constructor(private readonly options: Readonly<{
     hostRunId: string
+    isCurrent(): boolean
     publish(context: AgentRunCollaborationContext, commitActivities: () => void): void
     onInactive(): void
     reportError(message: string): void
@@ -55,7 +56,7 @@ export class AgentRunCollaborationStreamingService {
   }>) {}
 
   connect(): void {
-    if (this.released || this.socket) return
+    if (this.released || !this.options.isCurrent() || this.socket) return
     const endpoint = `${useWindowNodeContextStore().getBoundEndpoints().agentCollaborationWs}/${encodeURIComponent(this.options.hostRunId)}`
     const socket = new WebSocket(buildAuthenticatedWebSocketUrl(endpoint, getActiveRemoteAccessCredential() ?? ''))
     this.socket = socket
@@ -66,7 +67,7 @@ export class AgentRunCollaborationStreamingService {
     }
     socket.onerror = () => undefined
     socket.onclose = (event) => {
-      if (this.socket !== socket) return
+      if (this.socket !== socket || !this.options.isCurrent()) return
       this.socket = null
       this.phase = 'disconnected'
       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
@@ -77,7 +78,7 @@ export class AgentRunCollaborationStreamingService {
   }
 
   isReady(): boolean {
-    return !this.released && this.phase === 'ready' && this.context?.phase === 'live'
+    return !this.released && this.options.isCurrent() && this.phase === 'ready' && this.context?.phase === 'live'
       && this.socket?.readyState === WebSocket.OPEN
   }
 
@@ -147,11 +148,11 @@ export class AgentRunCollaborationStreamingService {
   }
 
   private async processFrame(socket: WebSocket, raw: string): Promise<void> {
-    if (this.socket !== socket) return
+    if (this.socket !== socket || !this.options.isCurrent()) return
     try {
       await this.handleMessage(socket, raw)
     } catch (cause) {
-      if (this.socket !== socket) return
+      if (this.socket !== socket || !this.options.isCurrent()) return
       const detail = cause instanceof Error ? cause.message : String(cause)
       this.context?.requireReopen(detail)
       this.closeSocket('Invalid Agent collaboration stream')
@@ -179,9 +180,9 @@ export class AgentRunCollaborationStreamingService {
         throw new Error('Agent collaboration snapshot arrived out of order.')
       }
       const staged = await stageAgentRunCollaborationContext({
-        hostRunId: this.options.hostRunId, view: message.payload.root_agent, isCurrent: () => this.socket === socket,
+        hostRunId: this.options.hostRunId, view: message.payload.root_agent, isCurrent: () => this.socket === socket && this.options.isCurrent(),
       })
-      if (this.socket !== socket) return
+      if (this.socket !== socket || !this.options.isCurrent()) return
       const candidate = shallowReactive(staged.context)
       this.options.publish(candidate, staged.commitActivities)
       this.context = candidate
@@ -228,7 +229,7 @@ export class AgentRunCollaborationStreamingService {
   }
 
   private scheduleRecovery(detail: string): void {
-    if (this.released || this.recoveryTimer || this.socket) return
+    if (this.released || !this.options.isCurrent() || this.recoveryTimer || this.socket) return
     if (this.recoveryAttempts >= MAX_RECOVERY_ATTEMPTS) {
       this.options.reportError(detail)
       this.settleReadiness(new Error(detail))

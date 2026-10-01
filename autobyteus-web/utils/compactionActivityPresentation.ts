@@ -1,7 +1,7 @@
-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
 
-export type CompactionTone = 'amber' | 'blue' | 'emerald' | 'red';
+export type CompactionTone = 'amber' | 'blue' | 'emerald' | 'red' | 'gray';
 
 export interface CompactionPhasePresentation {
   label: string;
@@ -14,6 +14,8 @@ export const getCompactionPhasePresentation = (
   phase: CompactionStatusPhase,
 ): CompactionPhasePresentation => {
   switch (phase) {
+    case 'stopped':
+      return { label: 'Stopped', icon: 'heroicons:stop-circle-solid', tone: 'gray', isCompacting: false };
     case 'failed':
       return { label: 'Failed', icon: 'heroicons:x-circle-solid', tone: 'red', isCompacting: false };
     case 'completed':
@@ -40,6 +42,7 @@ export const getCompactionMessage = (input: {
   errorMessage?: string | null;
   isProviderBoundary?: boolean;
 }): string => {
+  if (input.phase === 'stopped') return 'Stopped';
   if (input.isProviderBoundary) {
     switch (input.phase) {
       case 'failed':

@@ -70,11 +70,12 @@ const view = (): AgentOrgExecutionViewDto => ({
     },
   },
   communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
+  agent_input_states: [],
   agent_statuses: [
-    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
-    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
-    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
-    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
+    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
   ],
 })
 const agentContext = (runId: string, name: string) => new AgentContext({
@@ -145,7 +146,7 @@ describe('AgentOrgExecutionContext', () => {
       kind: 'agent_presentation', member_address: '/direct', agent_run_id: 'agent-direct',
       message: { type: 'AGENT_STATUS', payload: {
         status: 'running', trigger: 'user', tool_name: null,
-        error_message: null, error_details: null,
+        error_message: null, error_details: null, recoverableBlock: null,
       } },
     })
     expect(context.getAgentContext('agent-direct')?.state.currentStatus).toBe(AgentStatus.Running)
@@ -303,13 +304,13 @@ describe('AgentOrgExecutionContext', () => {
     })
     snapshot.agent_statuses.push({
       member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null,
+      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
     }, {
       member_address: '/team/member', agent_run_id: 'agent-task-team-member', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null,
+      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
     }, {
       member_address: '/team/coordinator', agent_run_id: 'agent-task-team-coordinator', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null,
+      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
     })
     snapshot.communication_messages.messages.push({
       messageId: 'message-to-task', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-fresh',
@@ -386,7 +387,9 @@ describe('AgentOrgExecutionContext', () => {
     })
     expect(() => build(corrupt, entries)).toThrow("AgentRun 'missing-run' is not a retained Org execution.")
     const unknownDelegator = structuredClone(snapshot)
-    unknownDelegator.execution_tree.rootOrg.taskExecutions[0]!.delegatorAgentRunId = 'missing-delegator'
+    unknownDelegator.execution_tree.rootOrg.taskExecutions[0] = {
+      ...unknownDelegator.execution_tree.rootOrg.taskExecutions[0]!, delegatorAgentRunId: 'missing-delegator',
+    }
     expect(() => build(unknownDelegator, entries)).toThrow("Delegated execution 'agent-task-fresh' delegator is not in this AgentOrg.")
   })
 
@@ -407,7 +410,7 @@ describe('AgentOrgExecutionContext', () => {
     })
     snapshot.agent_statuses.push({
       member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
-      trigger: null, tool_name: null, error_message: null, error_details: null,
+      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
     })
     const { context } = build(snapshot, [{
       agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),

@@ -1,3 +1,4 @@
+import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler'
 import { reactive, shallowReactive } from 'vue'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type {
@@ -73,11 +74,27 @@ export class AgentRunCollaborationContext {
     }
     if (this.contexts.size !== this.index.agents.size) throw new Error('Agent collaboration context scope is incomplete.')
     this.assertMessagesCorrelated(this.view.communication_messages.messages)
+    const statuses = new Set<string>()
+    const inputs = new Set<string>()
     for (const status of input.view.agent_statuses) {
-      if (this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {
-        throw new Error(`Agent collaboration status '${status.agent_run_id}' has no exact child identity.`)
+      if (statuses.has(status.agent_run_id) || this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {
+        throw new Error(`Agent collaboration status '${status.agent_run_id}' has no unique exact child identity.`)
       }
-      this.contexts.get(status.agent_run_id)!.state.currentStatus = status.status as AgentStatus
+      statuses.add(status.agent_run_id)
+    }
+    for (const inputState of input.view.agent_input_states) {
+      if (inputs.has(inputState.agent_run_id) || !this.index.agents.has(inputState.agent_run_id)) {
+        throw new Error(`Agent collaboration input '${inputState.agent_run_id}' has no unique child identity.`)
+      }
+      inputs.add(inputState.agent_run_id)
+    }
+    for (const status of input.view.agent_statuses) {
+      const state = this.contexts.get(status.agent_run_id)!.state
+      state.currentStatus = status.status as AgentStatus
+      state.recoverableBlock = status.recoverableBlock
+    }
+    for (const inputState of input.view.agent_input_states) {
+      handleAgentInputState(inputState.state, this.contexts.get(inputState.agent_run_id)!)
     }
     this.phase = input.view.is_active ? 'live' : 'historical'
   }
@@ -148,17 +165,37 @@ export class AgentRunCollaborationContext {
     this.phase = 'reopen_required'
   }
 
-  /** Carries the local composer and runtime state of children that are still present. */
-  adoptLocalContexts(previous: AgentRunCollaborationContext): void {
-    for (const [agentRunId, context] of this.contexts) {
+  listAgentContextEntries(): readonly AgentRunCollaborationContextEntry[] {
+    return [...this.contexts].map(([agentRunId, context]) => Object.freeze({
+      agentRunId, memberAddress: this.index.requireAgent(agentRunId).address, context,
+    }))
+  }
+
+  /** Preflight every retained identity before the caller commits any activities. */
+  prepareLocalContextAdoption(previous: AgentRunCollaborationContext): () => void {
+    if (previous.hostRunId !== this.hostRunId) throw new Error('Agent collaboration retained host mismatch.')
+    const pairs: { agentRunId: string; old: AgentContext; next: AgentContext }[] = []
+    for (const [agentRunId, next] of this.contexts) {
       const old = previous.getAgentContext(agentRunId)
       if (!old) continue
-      if (previous.index.requireAgent(agentRunId).address !== this.index.requireAgent(agentRunId).address) {
-        throw new Error('Agent collaboration retained address mismatch.')
+      if (old.state.runId !== agentRunId || next.state.runId !== agentRunId
+        || previous.index.requireAgent(agentRunId).address !== this.index.requireAgent(agentRunId).address) {
+        throw new Error('Agent collaboration retained identity mismatch.')
       }
-      old.config = context.config
-      old.state = context.state
-      this.contexts.set(agentRunId, old)
+      const before = old.state.inputProjection
+      const after = next.state.inputProjection
+      if (before && after && before.runInstanceId === after.runInstanceId && after.revision < before.revision) {
+        throw new Error('Agent collaboration input snapshot revision is stale.')
+      }
+      pairs.push({ agentRunId, old, next })
+    }
+    // Synchronous assignment only: all validation precedes the activity transaction.
+    return () => {
+      for (const { agentRunId, old, next } of pairs) {
+        old.config = next.config
+        old.state = next.state
+        this.contexts.set(agentRunId, old)
+      }
     }
   }
 

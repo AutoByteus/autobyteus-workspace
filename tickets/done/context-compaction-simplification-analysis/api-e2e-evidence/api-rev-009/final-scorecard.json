@@ -1,0 +1,42 @@
+{
+  "result": "Fail",
+  "finding": "API009-F001",
+  "preliminaryClassification": "Local Fix — implementation integration, pending focused failure-origin review",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "categories": [
+    [
+      "requirement/AC",
+      50
+    ],
+    [
+      "execution directness",
+      95
+    ],
+    [
+      "integration realism/mock gap",
+      90
+    ],
+    [
+      "environment/config/identity/fixture",
+      95
+    ],
+    [
+      "failure/lifecycle/recovery",
+      75
+    ],
+    [
+      "user surface/desktop",
+      50
+    ],
+    [
+      "durable regression",
+      90
+    ]
+  ],
+  "overall": 77.9,
+  "method": "unweighted mean545/7",
+  "broader": "Required — executed; blocking failure, reroute",
+  "priorApi008": "95.0 unchanged, PRE-INTEGRATION ONLY",
+  "remoteInferenceRequests": 0
+}

@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-09-26T22:05:31.697000+00:00",
+  "head": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "authorityHashesUnchanged": {
+    "requirements-doc.md": true,
+    "design-spec.md": true,
+    "proposed-compaction-prompt.md": true,
+    "recovery-investigation-plan.md": true,
+    "solution-progress-result.md": true,
+    "solution-recovery-evidence/sr014/frozen-repeated-input.json": true
+  },
+  "priorOtherSixDurablePathsUnchanged": [
+    "test-support/live-e2e/run-live-e2e.mjs",
+    "test-support/live-e2e/compaction-quality-checks.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts"
+  ],
+  "diagnosticOwnerChanges": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "977467f6c2dfde7e3e2f2e28671cd169ff1ef5f5bc8c3ef344798d8955cd4a43",
+      "lines": 1352
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "lines": 15
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "lines": 41
+    }
+  ],
+  "productionDelta": "",
+  "noCommitPushMergeRelease": true,
+  "evidenceScripts": {
+    "vitest-instrumentation.config.ts": "20625045f2d4e804821fa93cecdb18ded76d4687aba94a841a5eb69cfd443581",
+    "direct-diagnostics.test.ts": "955db9b5c8413f531bb2515e6f20c3057816b5d809a73064a7d12608c20284b6",
+    "extract-full-observation.py": "045cfc811ee6d53b6336f7d4234ecf119e199b0b62a48c0d62d64c2a3f2f1f5c",
+    "full-wire-observer.ts": "4785561002a111b803288e970962492fd7b95342fa60dea87a5f1da0e5509bb2",
+    "owned-server.mjs": "684846ea5ad870e4441b971326e90b29b7c31409d20776c0bc7a141b2fe4cbb1",
+    "run-diagnostic.mjs": "ac93e95d63e04c9b1987963ccfecc678c3c05796647afa29d479133757278687",
+    "vitest-full.config.ts": "2745426d2ca162239a080703b006e01e3e7b0ebbdb502251c678ba39db46d577",
+    "wire-observer.ts": "4b0a0508268cc656cd376a0e4a3a5f60b70cf7369cedfa541185fddfdba54796",
+    "instrumentation.test.ts": "005360ecd4b86e0d1d2747a574a0734c7259a835cdf6a656da99b62375ba6548",
+    "vitest-direct.config.ts": "342344195f5ee58faa9dc937f687441195e59d8f3abb78bee6356925d9c22445",
+    "full-observation-setup.ts": "af240eb258b65a389e799e7aeba1318d31a93c0aeb761d3d1cbe67e8dda472a8"
+  },
+  "cleanup": {
+    "ownedServerPort": 57025,
+    "closed": true,
+    "processStopped": true,
+    "ownedDataAbsent": {
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db.secret.key": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db-wal": true,
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/sr014-diagnostic-owned.db-shm": true
+    },
+    "flowRootsAbsent": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-YbUKUU"
+    ],
+    "userDesktopPid": 46779,
+    "userDesktopPreserved": true,
+    "sharedLMStudioNotStoppedOrReconfigured": true
+  },
+  "rawReasoningPersisted": false,
+  "gitDiffCheck": "Pass"
+}

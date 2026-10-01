@@ -1,0 +1,12 @@
+{
+  "id": "API-C07",
+  "name": "Strict current presentation contract",
+  "criteria": "AC-010",
+  "command": "pnpm -C autobyteus-agent-presentation-contracts test",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-09-26T20:26:16.863969+00:00",
+  "completed": "2026-09-26T20:26:18.217993+00:00",
+  "exitCode": 0,
+  "result": "Pass",
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C07.log"
+}

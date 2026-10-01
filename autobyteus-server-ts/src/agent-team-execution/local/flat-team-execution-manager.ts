@@ -158,6 +158,13 @@ export class FlatTeamExecutionManager {
   isActive(): boolean { return this.lifecycle === "active" || this.lifecycle === "quiescing"; }
   isTerminated(): boolean { return this.lifecycle === "terminated"; }
 
+  getInputStateSnapshots() {
+    if (!this.isActive()) return [];
+    return [...this.configured.listHandles().flatMap(handle => handle.getInputStateSnapshots()),
+      ...this.taskAgents.getInputStateSnapshots(),
+      ...this.taskTeams.listTeamRuns().flatMap(run => run.getInputStateSnapshots()),
+      ...this.collaboratorTeams.list().flatMap(run => run.getInputStateSnapshots())];
+  }
   getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[] {
     if (!this.isActive()) return [];
     const handles = new Map(this.configured.listHandles().map((handle) => [handle.context.address, handle]));

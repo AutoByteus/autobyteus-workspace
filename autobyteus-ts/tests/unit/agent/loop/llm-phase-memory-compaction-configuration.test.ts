@@ -20,7 +20,6 @@ import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { buildLlmTokenUsageObservation } from '../../../../src/llm/utils/llm-token-usage-observation.js';
 import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/response-types.js';
-import { defaultWorkingContextCompactionStrategyRegistry } from '../../../../src/memory/compaction/default-working-context-compaction-strategy-registry.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
@@ -60,7 +59,6 @@ describe('LlmPhase disabled automatic compaction', () => {
   ): Promise<void> => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'disabled-memory-compaction-phase-'));
     const classifyPressure = vi.spyOn(CompactionPolicy.prototype, 'classifyPressure');
-    const resolveStrategy = vi.spyOn(defaultWorkingContextCompactionStrategyRegistry, 'get');
     try {
       const llm = new ObservedUsageLeafLLM(
         new LLMModel({
@@ -141,7 +139,6 @@ describe('LlmPhase disabled automatic compaction', () => {
       expect(memoryManager.getAutomaticCompactionConfiguration()).toEqual({ kind: 'disabled' });
       expect(classifyPressure).not.toHaveBeenCalled();
       expect(evaluateObservation).not.toHaveBeenCalled();
-      expect(resolveStrategy).not.toHaveBeenCalled();
       expect(beginPendingAttempt).not.toHaveBeenCalled();
       expect(captureCompactionBaseline).not.toHaveBeenCalled();
       expect(memoryManager.hasPendingCompaction()).toBe(false);
@@ -155,7 +152,6 @@ describe('LlmPhase disabled automatic compaction', () => {
       }));
     } finally {
       classifyPressure.mockRestore();
-      resolveStrategy.mockRestore();
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   };

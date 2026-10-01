@@ -1,0 +1,26 @@
+{
+  "round": "API-REV-005",
+  "priorResult": "API004 Fail90.7 historical",
+  "classification": {
+    "task_size": "Large",
+    "architectural_risk": "High"
+  },
+  "cases": [
+    {
+      "id": "API-C01",
+      "scope": "First recheck corrected facade/boundary/all-exit unit coverage with no network"
+    },
+    {
+      "id": "API-C09",
+      "scope": "Build isolated worktree desktop, inspect current settings and run UI; determine minimal valid status/retry/resume journey before any provider calls"
+    },
+    {
+      "id": "API-C08",
+      "scope": "Assess completing full valid persisted compaction flow after C09 setup; no old campaign reused"
+    }
+  ],
+  "broader": "Required",
+  "initialOutboundGenerationBudget": 0,
+  "providerPolicy": "DeepSeek only if separately predeclared manifest under existing user permission; no Qwen, v6 or adaptive repetition",
+  "cleanup": "Only newly returned isolated instanceId/data root/ports, plus owned temporary services/files. No user desktop/vault touch."
+}

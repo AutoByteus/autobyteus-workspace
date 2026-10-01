@@ -1,0 +1,15 @@
+{
+  "head": "026476691c62bda309ce7f2a9342ebb444959f98",
+  "mergeHead": "d057801c89f26bc69a97331b59631c00519aec98",
+  "refreshedRemote": "84224a58d8975d0b016af340e6b48e51d715af78",
+  "fetchExit": 0,
+  "newBaseCommitsSinceMergeHead": 7,
+  "reviewerPins": 11213,
+  "expectedReviewerChanges": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md"
+  ],
+  "unexpectedChanges": [],
+  "backupFiles": 6140,
+  "backupSha256": "b6c505cfb1e28125467ba18f5b7822917d8acc659078164c42e09a5dc2d86901"
+}

@@ -1,0 +1,27 @@
+Auto-merging autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts left in tree.
+Auto-merging autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+Auto-merging autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Auto-merging autobyteus-ts/src/agent/context/agent-config.ts
+CONFLICT (modify/delete): autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts deleted in b54590e9a (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts left in tree.
+Auto-merging autobyteus-ts/tests/unit/agent/context/agent-config.test.ts
+Auto-merging autobyteus-web/generated/graphql.ts
+Rebasing (1/4)error: could not apply b54590e9a... refactor: simplify context compaction to one direct summary
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Could not apply b54590e9a... # refactor: simplify context compaction to one direct summary
