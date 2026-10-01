@@ -250,7 +250,9 @@ the launch target and is unchanged.
   sender with `InterAgentMessageSegment` ("From <Sender>:") inside the receiving
   agent's message block, live (`memberInputMessageHandler` for
   `inter_agent_delivery`) and after reopen (`inter_agent_message` replay items).
-  Older stored deliveries without a recorded sender stay user-style.
+  Older stored deliveries without a recorded sender stay user-style. Known
+  limit: the Event Monitor's "earlier events" page (active-trace paging) still
+  shows deliveries user-style.
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
   ⚙ and ＋ header controls and a "Message <name>…" box, F-04), the run row
@@ -289,3 +291,9 @@ the launch target and is unchanged.
   `services/runSubmission/__tests__/localUserSubmission.spec.ts`,
   `components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts`,
   `utils/collaboration/__tests__/memberDisplayName.spec.ts`
+- Browser probe: `pnpm test:e2e:cross-scope-agent-mentions`
+  (`tests/e2e/cross-scope-agent-mentions-live-probe.mjs`): `@` in standalone,
+  Team and Org runs, briefing with `send_message_to`, "From <Sender>:" live and
+  on replay, the add-failure notice and the Agent-root lifecycle. It runs in an
+  owned temp data root on a real runtime. It needs Chrome, a logged-in runtime
+  CLI and a prior `pnpm -C autobyteus-server-ts build`; case F01 needs LM Studio.

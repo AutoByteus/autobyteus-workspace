@@ -1,0 +1,325 @@
+{
+  "startedAt": "2026-09-30T23:58:39.543Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips, send, task Agent + Team tab (VIS-012), child open (VIS-013), direct chat, run-row return, task Team, exclusion",
+      "result": "Pass",
+      "ms": 41076,
+      "details": {
+        "runId": "research_assistant_0c4fafef6b3f4f4d9c6487db933dcb0a",
+        "packageBeforeMention": false,
+        "options": [
+          "code-reviewer",
+          "flaky-agent",
+          "researcher",
+          "writer",
+          "analyst",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team",
+          "review-team"
+        ],
+        "groups": "Bring into this run @ · ↑↓ to move, Enter to choose\n\nAgents\nCR\nCode Reviewer\nReviews text and code.\nFA\nFlaky Agent\nAn agent that will not be available.\nR\nResearcher\nTeam researcher.\nW\nWriter\nTeam writer.\nA\nAnalyst\nOrg analyst.\nPP\nProduct Prototyper\nBuilds UI prototypes.\nPB\nPrototype Bootstrapper\nSets up prototype repositories.\nAgent teams\nPT\nProduct Team\n2 members · coordinator product_prototyper\nRT\nReview Team\n2 members · coordinator researcher\nResearch Assistant gets your message and brings them into this run",
+        "footer": "Research Assistant gets your message and brings them into this run",
+        "aria": {
+          "role": "combobox",
+          "expanded": "true",
+          "controls": "agent-mention-menu-v-0-2",
+          "active": "agent-mention-menu-v-0-2-option-0"
+        },
+        "listbox": "Agents and teams you can bring into this run",
+        "geometry": {
+          "menuBottom": 855,
+          "textareaTop": 861,
+          "width": 368,
+          "above": true
+        },
+        "activeAfterDown": "agent-mention-menu-v-0-2-option-1",
+        "emptyText": "No agents or teams match\nAgent Orgs can’t be mentioned.",
+        "textAfterChoose": "please ask @Code Reviewer ",
+        "textAfterRemove": "please ask Code Reviewer ",
+        "inlineMention": "@Code Reviewer",
+        "collaborator": {
+          "kind": "agent",
+          "address": "/code_reviewer",
+          "agentDefinitionId": "code-reviewer",
+          "launchConfiguration": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-D3O03x/server-data/temp_workspace"
+          },
+          "addedAt": "2026-09-30T23:58:58.797Z",
+          "addedViaAgentRunId": "research_assistant_0c4fafef6b3f4f4d9c6487db933dcb0a"
+        },
+        "report": "\"hello world\" is a canonical, simple greeting phrase with clear meaning, proper lowercase formatting, and idiomatic significance in programming culture.",
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "tabs": [
+          "Files",
+          "Team",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ],
+        "teamTabRows": [
+          "Message Oct 1, 01:59 AM from code reviewer \"hello world\" is a canonical, simple greeting phrase with clear meaning, proper lowercase formatting, and idiomatic significance in programming culture."
+        ],
+        "childTitle": "code reviewer",
+        "runRowHighlighted": false,
+        "childConversationHasNotice": true,
+        "directChat": "CHILD-OK received",
+        "backTitle": "Say hello in one short sentence.",
+        "rowsAfterTeam": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, running, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "optionsAfter": [
+          "flaky-agent",
+          "researcher",
+          "writer",
+          "analyst",
+          "review-team"
+        ],
+        "small": {
+          "top": 243,
+          "bottom": 543,
+          "vh": 640
+        }
+      }
+    },
+    "A02": {
+      "title": "AC-006 Stop → reopen → send to a child: the host is restored and the child wakes",
+      "result": "Pass",
+      "ms": 9870,
+      "details": {
+        "storedStatuses": [],
+        "rowsAfterReopen": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "hostActiveAfterWake": true,
+        "rootActive": true
+      }
+    },
+    "A03": {
+      "title": "AC-006 server restart: children stored, rows shown, a send to a child restores the host",
+      "result": "Pass",
+      "ms": 11491,
+      "details": {
+        "hostActive": false,
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "hostActiveAfter": true
+      }
+    },
+    "P01": {
+      "title": "Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`",
+      "result": "Pass",
+      "ms": 38110,
+      "details": {
+        "teamRunId": "review_team_4d7992efae824b539163d8499e9ed017",
+        "teamHadCollaboratorsKey": true,
+        "orgRunId": "launch_org_8dec67eaffb8490187af9f6cb0c610f8",
+        "orgHadCollaboratorsKey": true,
+        "teamMenu": [
+          "analyst",
+          "code-reviewer",
+          "flaky-agent",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "product-team"
+        ],
+        "orgCollaboratorsAfterContinue": []
+      }
+    },
+    "N01": {
+      "title": "AC-013 New chat `@` is still the launch-target picker",
+      "result": "Pass",
+      "ms": 1186,
+      "details": {
+        "targets": [
+          "analyst",
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "flaky-agent",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 29864
+    },
+    {
+      "label": "frontend",
+      "pid": 29887
+    },
+    {
+      "label": "backend-restart",
+      "pid": 30245
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 29864,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 30245,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 29887,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 29864,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-D3O03x"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-D3O03x",
+  "backendUrl": "http://127.0.0.1:58878",
+  "frontUrl": "http://127.0.0.1:58879",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "flaky": "flaky-agent",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-01T00:00:30.305Z"
+}

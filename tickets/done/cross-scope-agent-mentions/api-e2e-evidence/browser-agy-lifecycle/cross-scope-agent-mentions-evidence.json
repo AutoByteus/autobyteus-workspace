@@ -1,0 +1,74 @@
+{
+  "startedAt": "2026-09-30T23:32:29.440Z",
+  "runtime": "antigravity_cli",
+  "cases": {
+    "L01": {
+      "title": "Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Pass",
+      "ms": 58204,
+      "details": {
+        "runId": "research_assistant_3d7b87e3e3b54175be47f5659e19b0b5",
+        "hostPids": [
+          10065
+        ],
+        "childRunId": "code_reviewer_27e6cd659f84450486670a9055e8c187",
+        "childPids": [
+          10151
+        ],
+        "rootActiveAfterCrash": true,
+        "childStatusAfterCrash": "idle",
+        "hostActiveAfterChildSend": true,
+        "hostActiveAfterWake": true,
+        "wokenHostPids": [
+          10272
+        ],
+        "rootActiveBeforeDelete": true,
+        "viewAfterDelete": null,
+        "runDirAfterDelete": false,
+        "childAliveAfterDelete": false
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 9853
+    },
+    {
+      "label": "frontend",
+      "pid": 9878
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 9878,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 9853,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-rwrmL2"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-rwrmL2",
+  "backendUrl": "http://127.0.0.1:56635",
+  "frontUrl": "http://127.0.0.1:56636",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "flaky": "flaky-agent",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-09-30T23:33:36.420Z"
+}

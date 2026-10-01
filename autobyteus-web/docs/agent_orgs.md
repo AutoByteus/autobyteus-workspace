@@ -241,11 +241,11 @@ is released. Live updates, history, and Restore retain the same root-owned
 identity; there is no second Team ledger or configured-only presentation gate.
 References stay on the AgentOrg-rooted message route.
 
-Delegated children appear in the Workspaces Org rows under their plain name
-with a secondary "Started by <delegator>" line (also in the aria-label) on
-direct task-Agent and task-Team rows; there is no visible `Task:` label.
-Children without a recorded delegator (created before the resource lifecycle)
-show no starter line, and task-Team members show none. Shut-down children use
+Delegated children appear in the Workspaces Org rows under their plain name;
+there is no visible `Task:` label and no visible "Started by" line. The starter
+("Started by <delegator>") of direct task-Agent and task-Team rows is kept in
+the aria-label. Children without a recorded delegator (created before the
+resource lifecycle) have no starter, and task-Team members have none. Shut-down children use
 the standard `offline` status. Participant links open the exact AgentRun,
 never the configured source at the same address.
 
@@ -373,10 +373,15 @@ does not own polling, lifecycle, focus, readiness, or command authority.
 Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.
 A task Agent row shows the member marker (solid status dot and initials); the
-starter is kept in the accessible label, not as a visible line. Task rows at a
-collaborator address resolve their source through `rootOrg.collaborators`
-(`AgentOrgExecutionViewIndex`), and the Org context applies `collaborator_added`
-and invalidates the `@` candidates.
+starter is kept in the accessible label, not as a visible line. Collaborators
+(shared Agents and Agent Teams brought in with `@`) are one hosted instance per
+entry in `rootOrg.collaborators`. `AgentOrgExecutionViewIndex` lists them with
+the task-row look (`collaboratorExecutionNodes`), Offline until their first
+message, ahead of the delegated children, and resolves their source from the
+entry. The Org context applies `collaborator_added` in place (no checkpoint
+reload, so the pending mention send keeps its acknowledgement), adds the new
+contexts and invalidates the `@` candidates. An extra copy that `delegate_task`
+starts at a collaborator address is an ordinary task row.
 Status projection walks each structural Team root once and lets that Team own
 recursive descendants; the flat Team directory is not reused as recursive
 status roots, so nested task-Team Agent statuses remain unique.
@@ -532,7 +537,8 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgCommunicationPerspective.ts`: root-owned
   Messages facet.
 - `utils/agentOrgHistoryRows.ts`: Org Workspaces rows, including delegated rows
-  with their "Started by" line and per-`teamRunId` task-Team disclosure
+  with their delegator (for the accessible label), collaborator rows, and
+  per-`teamRunId` task-Team disclosure
   (`hasChildren`/`expanded`; descendants are emitted only while expanded).
 - `composables/useWorkspaceHistoryTreeState.ts`: local Org run, mounted-Team
   (by address) and delegated task-Team (by `teamRunId`) expansion state.

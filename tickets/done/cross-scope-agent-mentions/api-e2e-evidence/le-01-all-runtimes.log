@@ -1,0 +1,1503 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:58250) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-30T22:40:40.976Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mAgent definition cache populated with 50 items.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mPopulating agent definition cache for the first time...
+[2026-09-30T22:40:41.461Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39m[2026-09-30T22:40:41.467Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes
+[22m[39mAgent definition cache populated with 50 items.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mDiscovering LM Studio models from host: http://127.0.0.1:1234
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-7cf7cf.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-host-7cf7cf
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-7cf7cf.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-helper-7cf7cf
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1t02a6
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1t02a6.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_0bb4254056bd3af9c4688ac41201bc0b690bb1a6cd0a3f7961f9a8c6f21f4934
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1t02a6
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1t02a6.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_0bb4254056bd3af9c4688ac41201bc0b690bb1a6cd0a3f7961f9a8c6f21f4934
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/media
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentRuntimeState initialized for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' with config: 'Mention Host 7cf7cf'.
+AgentWorker initialized for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'.
+Registered AgentContext for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Context registered.
+Agent facade initialized for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' created and stored successfully.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' requesting runtime to start.
+AgentRuntime for 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Starting worker.
+AgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Starting...
+AgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' asyncRun(): Starting.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Runtime init completed (event store initialized).
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Runtime init completed (status deriver initialized).
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Runtime init completed (AgentEventInbox initialized).
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' to become idle (timeout: 30s)...
+AgentEventStream (ID: b95d13b4-bedc-44d5-88fa-d15b1dfc8334) initialized for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Subscribed to notifier.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Bootstrapper starting direct lifecycle execution.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Executing SystemPromptProcessingStep.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': No configured skills. Skipping skill catalog.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Final processed system prompt configured and captured. Trace ID: rt_1790808041628_da209ef9-b6b0-4362-9392-ba2afba7d5b9. Final length: 3714.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: b95d13b4-bedc-44d5-88fa-d15b1dfc8334) for 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: b8f88cb5-8b80-4c1a-abfa-689bd625a086) initialized for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished autobyteus agent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4
+Created agent session 0a67773a-e665-4f5f-ab52-d0a3de9fee4b for run mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4
+Agent WebSocket connected: session=0a67773a-e665-4f5f-ab52-d0a3de9fee4b, run=mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 204
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m3528[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 51
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m3628[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 455
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m3778[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1t02a6
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1t02a6.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_0bb4254056bd3af9c4688ac41201bc0b690bb1a6cd0a3f7961f9a8c6f21f4934
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/media
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentRuntimeState initialized for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' with config: 'Mention Helper 7cf7cf'.
+AgentWorker initialized for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'.
+Registered AgentContext for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Context registered.
+Agent facade initialized for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' created and stored successfully.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' requesting runtime to start.
+AgentRuntime for 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Starting worker.
+AgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Starting...
+AgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' asyncRun(): Starting.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Runtime init completed (event store initialized).
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Runtime init completed (status deriver initialized).
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Runtime init completed (AgentEventInbox initialized).
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' to become idle (timeout: 30s)...
+AgentEventStream (ID: 45d1ddf1-90b3-4b6d-b5b3-d9ce2007b9ec) initialized for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Subscribed to notifier.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Bootstrapper starting direct lifecycle execution.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Executing SystemPromptProcessingStep.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': No configured skills. Skipping skill catalog.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Final processed system prompt configured and captured. Trace ID: rt_1790808112694_2326ccfd-6203-4f90-ab43-c41b73042148. Final length: 3831.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: 45d1ddf1-90b3-4b6d-b5b3-d9ce2007b9ec) for 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: 0d8ae324-3f42-4a87-8e3c-6295807e1692) initialized for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished autobyteus agent run 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 51
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': UserInputContextBuildingProcessor completed. Final content length: 304
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m3936[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'[39m,
+  prompt_tokens: [33m3626[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 154
+Agent run 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'[39m,
+  prompt_tokens: [33m3786[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m4087[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 210
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m4168[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': UserInputContextBuildingProcessor completed. Final content length: 53
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: 0d8ae324-3f42-4a87-8e3c-6295807e1692) for 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'. Attempting graceful shutdown.
+Agent 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 1f2e7755-dd83-480e-9f7e-527247fc9b79, AgentID: mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' asyncRun() loop has finished.
+AgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Shutdown resource cleanup completed successfully.
+AgentWorker 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mUnregistered AgentContext for agent_id 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef'.
+AgentRuntime for 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentRuntime for 'mention_helper_7cf7cf_67fc072d3434441ba4782f677ea88eef' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'[39m,
+  prompt_tokens: [33m4302[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: b8f88cb5-8b80-4c1a-abfa-689bd625a086) for 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'. Attempting graceful shutdown.
+Agent 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: 5c8d4d63-e182-4c5d-ba8a-f500201e5dde, AgentID: mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' asyncRun() loop has finished.
+AgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Shutdown resource cleanup completed successfully.
+AgentWorker 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mUnregistered AgentContext for agent_id 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4'.
+AgentRuntime for 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentRuntime for 'mention_host_7cf7cf_51a9a3dea24e49ce8d34a9731233bdf4' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-HvIcrz
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-HvIcrz.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_ac94e352cf75ae2aa52a680e8b8528e327ca25b594fb9dbb5de9b85856a85ae7
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-HvIcrz
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-HvIcrz.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_ac94e352cf75ae2aa52a680e8b8528e327ca25b594fb9dbb5de9b85856a85ae7
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mMediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-appdata-F4Nwub/media
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentRuntimeState initialized for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' with config: 'Mention Host 7cf7cf'.
+AgentWorker initialized for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'.
+Registered AgentContext for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Context registered.
+Agent facade initialized for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' created and stored successfully.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' requesting runtime to start.
+AgentRuntime for 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Starting worker.
+AgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Starting...
+AgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' asyncRun(): Starting.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Runtime init completed (event store initialized).
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Runtime init completed (status deriver initialized).
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Runtime init completed (AgentEventInbox initialized).
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' to become idle (timeout: 30s)...
+AgentEventStream (ID: 13017e0c-52ed-404d-a3f2-9f2c98598cbd) initialized for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Subscribed to notifier.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Starting direct runtime bootstrap lifecycle.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Bootstrapper starting direct lifecycle execution.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Executing McpServerPrewarmingStep.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Executing SystemPromptProcessingStep.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': No configured skills. Skipping skill catalog.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Final processed system prompt configured and captured. Trace ID: rt_1790808316780_48041e31-06ef-4a84-9a6b-5acc7b7e2f0e. Final length: 3714.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' initialized successfully. Entering main event scheduler loop.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' has become idle.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: 13017e0c-52ed-404d-a3f2-9f2c98598cbd) for 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': close() called. Unsubscribing all listeners and signaling.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: cb9ac551-b722-4f0c-8550-72ae660c4a52) initialized for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Subscribed to notifier.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished autobyteus agent run 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36
+Created agent session 69b88912-0b86-4e31-8b22-5a619b9776f7 for run mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36
+Agent WebSocket connected: session=69b88912-0b86-4e31-8b22-5a619b9776f7, run=mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': UserInputContextBuildingProcessor completed. Final content length: 211
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mLlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'[39m,
+  prompt_tokens: [33m3531[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': UserInputContextBuildingProcessor completed. Final content length: 51
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 69b88912-0b86-4e31-8b22-5a619b9776f7
+Agent WebSocket disconnected: 69b88912-0b86-4e31-8b22-5a619b9776f7
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 0a67773a-e665-4f5f-ab52-d0a3de9fee4b
+Agent WebSocket disconnected: 0a67773a-e665-4f5f-ab52-d0a3de9fee4b
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: [32m'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'[39m,
+  prompt_tokens: [33m3636[39m,
+  effective_total_context_tokens: [33m262144[39m,
+  context_derived_input_cap_tokens: [33m262144[39m,
+  provider_input_cap_tokens: [1mnull[22m,
+  effective_input_cap_tokens: [33m262144[39m,
+  reserved_output_tokens: [33m0[39m,
+  safety_margin_tokens: [33m256[39m,
+  input_budget_tokens: [33m261888[39m,
+  compaction_ratio: [33m0.8[39m,
+  trigger_threshold_tokens: [33m209510[39m,
+  trigger_headroom_tokens: [33m20951[39m,
+  quality_retention_cap_tokens: [33m91660[39m,
+  post_compaction_target_tokens: [33m91660[39m,
+  budget_key: [32m'261888:209510:91660:20951:91660'[39m,
+  override_active: [33mfalse[39m,
+  compaction_required: [33mfalse[39m,
+  threshold_episode_decision: [32m'none'[39m
+}
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent run 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentEventStream (ID: cb9ac551-b722-4f0c-8550-72ae660c4a52) for 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'. Attempting graceful shutdown.
+Agent 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' requesting runtime to stop (timeout: 10s).
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Stop requested.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentExternalEventNotifier (NotifierID: c034bcdc-2449-4521-9a76-a37c1261bbb9, AgentID: mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' asyncRun() loop has finished.
+AgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Running shutdown sequence on worker loop.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Shutdown resource cleanup completed successfully.
+AgentWorker 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Shutdown sequence completed.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mUnregistered AgentContext for agent_id 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36'.
+AgentRuntime for 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36': Context unregistered.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgentRuntime for 'mention_host_7cf7cf_cc7c220e96014b238aa0f645c2c53a36' stop() method completed.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-7cf7cf.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-host-7cf7cf deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-7cf7cf.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mautobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-helper-7cf7cf deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-30T22:46:19.140678Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-4ac0e7.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-host-4ac0e7
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-4ac0e7.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-helper-4ac0e7
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-VdPqHv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-VdPqHv.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_ee5274a7249c9a51b7a0a8d59a515315a9e91f9e34317f73b4c232c5f285fa52
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-VdPqHv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-VdPqHv.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_ee5274a7249c9a51b7a0a8d59a515315a9e91f9e34317f73b4c232c5f285fa52
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-30T22:46:19.926627Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished codex_app_server agent run 'mention_host_4ac0e7_779de380821b49d3a288e2ae4c8c91b5'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_4ac0e7_779de380821b49d3a288e2ae4c8c91b5
+Created agent session cf8a1839-dbd2-4f77-91d1-dcdc75b44210 for run mention_host_4ac0e7_779de380821b49d3a288e2ae4c8c91b5
+Agent WebSocket connected: session=cf8a1839-dbd2-4f77-91d1-dcdc75b44210, run=mention_host_4ac0e7_779de380821b49d3a288e2ae4c8c91b5
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-VdPqHv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-VdPqHv.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_ee5274a7249c9a51b7a0a8d59a515315a9e91f9e34317f73b4c232c5f285fa52
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished codex_app_server agent run 'mention_helper_4ac0e7_65f8c4599e37474c8ce1d3640c144147'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-BMy1iv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-BMy1iv.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_d0c65f21be1d1999daf6c89e5f7ae606e656b5ad9a381eda6d7ca69795245ef5
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-BMy1iv
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-BMy1iv.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_d0c65f21be1d1999daf6c89e5f7ae606e656b5ad9a381eda6d7ca69795245ef5
+
+[90mstderr[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-30T22:46:58.837689Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished codex_app_server agent run 'mention_host_4ac0e7_5ca4a2ac00624e158ef74729f21611ef'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_4ac0e7_5ca4a2ac00624e158ef74729f21611ef
+Created agent session 146ddc76-84a2-48d9-bc86-8a5964941e96 for run mention_host_4ac0e7_5ca4a2ac00624e158ef74729f21611ef
+Agent WebSocket connected: session=146ddc76-84a2-48d9-bc86-8a5964941e96, run=mention_host_4ac0e7_5ca4a2ac00624e158ef74729f21611ef
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session cf8a1839-dbd2-4f77-91d1-dcdc75b44210
+Agent WebSocket disconnected: cf8a1839-dbd2-4f77-91d1-dcdc75b44210
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 146ddc76-84a2-48d9-bc86-8a5964941e96
+Agent WebSocket disconnected: 146ddc76-84a2-48d9-bc86-8a5964941e96
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-4ac0e7.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-host-4ac0e7 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-4ac0e7.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mcodex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-helper-4ac0e7 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-ff88fb.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-host-ff88fb
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-ff88fb.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-helper-ff88fb
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-NWrnR5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-NWrnR5.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_28b2b6311e9430f99bb42a71bd51c5abe228904b7321da979d97c4b8db72dc33
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-NWrnR5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-NWrnR5.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_28b2b6311e9430f99bb42a71bd51c5abe228904b7321da979d97c4b8db72dc33
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished claude_agent_sdk agent run 'mention_host_ff88fb_ff366ffa35db4570b7a02781a5b0ead4'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_ff88fb_ff366ffa35db4570b7a02781a5b0ead4
+Created agent session 580ec3da-9e8c-4557-bb46-7f6d4220b523 for run mention_host_ff88fb_ff366ffa35db4570b7a02781a5b0ead4
+Agent WebSocket connected: session=580ec3da-9e8c-4557-bb46-7f6d4220b523, run=mention_host_ff88fb_ff366ffa35db4570b7a02781a5b0ead4
+
+(node:58250) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-NWrnR5
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-NWrnR5.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_28b2b6311e9430f99bb42a71bd51c5abe228904b7321da979d97c4b8db72dc33
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished claude_agent_sdk agent run 'mention_helper_ff88fb_918b381acaf042679902a06cdd497270'.
+
+(node:58250) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-3Wa6ah
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-3Wa6ah.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_2fb70d02a62e9144c838c8b5166029ea1bb3517f5f964cfed1789d842fa6af77
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-3Wa6ah
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-3Wa6ah.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_2fb70d02a62e9144c838c8b5166029ea1bb3517f5f964cfed1789d842fa6af77
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished claude_agent_sdk agent run 'mention_host_ff88fb_41b993d7e4fe460399b5f10fe0881fbe'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_ff88fb_41b993d7e4fe460399b5f10fe0881fbe
+Created agent session 0ec00755-a917-42fc-9b90-60ac874b619a for run mention_host_ff88fb_41b993d7e4fe460399b5f10fe0881fbe
+Agent WebSocket connected: session=0ec00755-a917-42fc-9b90-60ac874b619a, run=mention_host_ff88fb_41b993d7e4fe460399b5f10fe0881fbe
+
+(node:58250) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 0ec00755-a917-42fc-9b90-60ac874b619a
+Agent WebSocket disconnected: 0ec00755-a917-42fc-9b90-60ac874b619a
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 580ec3da-9e8c-4557-bb46-7f6d4220b523
+Agent WebSocket disconnected: 580ec3da-9e8c-4557-bb46-7f6d4220b523
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-ff88fb.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-host-ff88fb deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-ff88fb.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mclaude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-helper-ff88fb deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-e2953e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-host-e2953e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-e2953e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-helper-e2953e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-dUGDce
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-dUGDce.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_b13a1f6ab999254e90760f62e7091df803dd2ded738b8cc6c9a5aeb0e91fc066
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-dUGDce
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-dUGDce.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_b13a1f6ab999254e90760f62e7091df803dd2ded738b8cc6c9a5aeb0e91fc066
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished antigravity_cli agent run 'mention_host_e2953e_ec85c2847f58485f8892f0c4605c0064'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_e2953e_ec85c2847f58485f8892f0c4605c0064
+Created agent session 4bcedb6f-d505-4111-af2a-5050e417420a for run mention_host_e2953e_ec85c2847f58485f8892f0c4605c0064
+Agent WebSocket connected: session=4bcedb6f-d505-4111-af2a-5050e417420a, run=mention_host_e2953e_ec85c2847f58485f8892f0c4605c0064
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-dUGDce
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-dUGDce.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_b13a1f6ab999254e90760f62e7091df803dd2ded738b8cc6c9a5aeb0e91fc066
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished antigravity_cli agent run 'mention_helper_e2953e_bae21a85e04345ccb7060e99abc7e0c9'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4WzCs3
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4WzCs3.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_af7d98efacd4157d9cad94ad9c4de14b97aa9447e46096f038c14495868a36da
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4WzCs3
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-4WzCs3.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_af7d98efacd4157d9cad94ad9c4de14b97aa9447e46096f038c14495868a36da
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished antigravity_cli agent run 'mention_host_e2953e_a22afff40b6c452c97711108914b438f'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_e2953e_a22afff40b6c452c97711108914b438f
+Created agent session 67bacbe9-6821-4e9e-84f4-ff62448093bc for run mention_host_e2953e_a22afff40b6c452c97711108914b438f
+Agent WebSocket connected: session=67bacbe9-6821-4e9e-84f4-ff62448093bc, run=mention_host_e2953e_a22afff40b6c452c97711108914b438f
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 67bacbe9-6821-4e9e-84f4-ff62448093bc
+Agent WebSocket disconnected: 67bacbe9-6821-4e9e-84f4-ff62448093bc
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 4bcedb6f-d505-4111-af2a-5050e417420a
+Agent WebSocket disconnected: 4bcedb6f-d505-4111-af2a-5050e417420a
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-e2953e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-host-e2953e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-e2953e.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mantigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-helper-e2953e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-host-3401ee.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-host-3401ee
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Added new agent definition with ID mention-helper-3401ee.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition created successfully with ID: mention-helper-3401ee
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1ss1Ga
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1ss1Ga.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_7f50621209c26e4a04a069146cb01831fa48432368a5b93782a8a78faa029687
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1ss1Ga
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1ss1Ga.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_7f50621209c26e4a04a069146cb01831fa48432368a5b93782a8a78faa029687
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished grok_build agent run 'mention_host_3401ee_7c6874393b584f62be50987e9df53b33'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_3401ee_7c6874393b584f62be50987e9df53b33
+Created agent session 61e60c15-d151-44e8-9320-01a6c8ac1d27 for run mention_host_3401ee_7c6874393b584f62be50987e9df53b33
+Agent WebSocket connected: session=61e60c15-d151-44e8-9320-01a6c8ac1d27, run=mention_host_3401ee_7c6874393b584f62be50987e9df53b33
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1ss1Ga
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-1ss1Ga.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_7f50621209c26e4a04a069146cb01831fa48432368a5b93782a8a78faa029687
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished grok_build agent run 'mention_helper_3401ee_ec212e3ba3ce4834a8a2b750c855f079'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-vEePLf
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-vEePLf.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreated and registered workspace ID: agent_ws_f4a5152c0c8d190106ca7c38d4dbac44919092b5debb24217ebf0cfa59db726d
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-vEePLf
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/collaborator-mention-e2e-ws-vEePLf.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mReusing registered workspace ID: agent_ws_f4a5152c0c8d190106ca7c38d4dbac44919092b5debb24217ebf0cfa59db726d
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mPublished grok_build agent run 'mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e'.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent websocket attached for run mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e
+Created agent session ab167089-d676-4cad-92b6-d0a6e0062036 for run mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e
+Agent WebSocket connected: session=ab167089-d676-4cad-92b6-d0a6e0062036, run=mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session 61e60c15-d151-44e8-9320-01a6c8ac1d27
+Agent WebSocket disconnected: 61e60c15-d151-44e8-9320-01a6c8ac1d27
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mClosed agent session ab167089-d676-4cad-92b6-d0a6e0062036
+Agent WebSocket disconnected: ab167089-d676-4cad-92b6-d0a6e0062036
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-host-3401ee.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-host-3401ee deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mIn-memory cache: Removed agent definition with ID mention-helper-3401ee.
+
+[90mstdout[2m | tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22m[2mStandalone Agent collaborator mentions on real runtimes[2m > [22m[2mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[22m[39mAgent Definition with ID mention-helper-3401ee deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 861027[2mms[22m[39m
+     [33m[2m✓[22m[39m autobyteus: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization [33m 337485[2mms[22m[39m
+     [33m[2m✓[22m[39m codex_app_server: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization [33m 53099[2mms[22m[39m
+     [33m[2m✓[22m[39m claude_agent_sdk: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization [33m 25657[2mms[22m[39m
+     [33m[2m✓[22m[39m antigravity_cli: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization [33m 35885[2mms[22m[39m
+[31m     [31m×[31m grok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization[39m[33m 408342[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts[2m > [22mStandalone Agent collaborator mentions on real runtimes[2m > [22mgrok_build: first-turn tools, mention → delegate → report, hint, Stop, per-run authorization
+[31m[1mError[22m: Timed out waiting for other-run delegate_task result. Recent: CONNECTED:{"agent_id":"mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e","session_id":"ab167089-d676-4cad-92b6-d0a6e0062036"} | AGENT_STATUS:{"status":"idle","agent_id":"mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e"} | AGENT_STATUS:{"status":"initializing","agent_id":"mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e"} | AGENT_COMMAND_ACK:{"command_type":"SEND_MESSAGE","run_id":"mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e","message_id":"e2e-a1ec30b0-b34c-4098-a9d2-2428fb8a70da","dedupe_key":"agent_run_input:e2e:e2e-a1ec30b0-b3 | SYSTEM_INSTRUCTIONS_SUPPLIED:{"trace_id":"rt_1790808540845_bf388999-c593-4bf5-b1d1-a9c6ad29c845","content":"## Agent Identity\n\n- Name: Mention Host 3401ee\n- Description: Standalone collaborator mention e2e agent.\n\n### Respon | AGENT_STATUS:{"status":"running","agent_id":"mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e"} | TURN_STARTED:{"turn_id":"6d1c3e95-9d62-469e-b805-fa6f9c08963c"} | ERROR:{"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Us | AGENT_STATUS:{"status":"error","agent_id":"mention_host_3401ee_75c4e35451e54d8c9c4a8f4b7d4f452e"}[39m
+[36m [2m❯[22m waitFor tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts:[2m232:11[22m[39m
+    [90m230| [39m    }
+    [90m231| [39m    const tail = messages.slice(-25).map((message) => `${message.type}…
+    [90m232| [39m    [35mthrow[39m [35mnew[39m [33mError[39m([32m`Timed out waiting for [39m[36m${[39mlabel[36m}[39m[32m. Recent: [39m[36m${[39mtail[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m          [31m^[39m
+    [90m233| [39m  }[33m;[39m
+    [90m234| [39m
+[90m [2m❯[22m tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts:[2m384:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 00:40:33
+[2m   Duration [22m 868.52s[2m (transform 4.56s, setup 14ms, import 6.88s, tests 861.03s, environment 0ms)[22m
+

@@ -145,7 +145,8 @@ starting providers. Green/Idle is not evidence of model reasoning. Do not copy
 Org container-status expectations onto a Team or start workers to reconcile status.
 
 Task delegation is a pure spawn. A delegated task Agent or task Team is shown
-as a transient execution row with a "Started by <delegator>" line; there is no
+as a transient execution row whose starter ("Started by <delegator>") is in the
+accessible label only (see below); there is no
 Tasks surface, task status, submission, review, or task reference file. The
 right-side Team tab shows Messages only. The child's single execution-tree
 write becomes durable, and `TASK_EXECUTION_STARTED` is published, before its
@@ -183,11 +184,19 @@ No-context history still shows configured members only. This does not add
 nested configured-Team authoring or change Agent Orgs, delegation, identity, or
 persisted data.
 
-Task rows at a collaborator address (a shared Agent or Agent Team brought into
-the run with `@`) are ordinary task rows. Their contexts take the definition and
-launch settings from the collaborator entry in `root_team.collaborators`
-(`services/collaborators/agentSourceSelectors.ts`), and the Team view applies
-`COLLABORATOR_ADDED` before the first `TASK_EXECUTION_STARTED` at that address.
+A collaborator (a shared Agent or Agent Team brought into the run with `@`) is
+one hosted instance per entry in `root_team.collaborators`. The views show it
+with the task-row look, Offline until its first message, ahead of the root's
+delegated children: `teamExecutionTreeSelectors.withCollaboratorExecutions`
+projects each entry (and a collaborator Team's members and own
+`task_executions`) into the view tree only and never persists it. The Team
+view applies `COLLABORATOR_ADDED` by adding the entry, its locations and its
+member contexts at once, and a collaborator Team row opens once when it
+appears (`opensOnAppear`). Contexts take the definition and launch settings
+from the entry (`services/collaborators/agentSourceSelectors.ts`). Rows and
+tab labels use `utils/collaboration/memberDisplayName.ts`. An extra copy that
+`delegate_task` starts at a collaborator address is an ordinary task row.
+See [Chat](./chat.md#-in-a-live-run-collaborators).
 
 ## History, Restore, Stop, And Delete
 

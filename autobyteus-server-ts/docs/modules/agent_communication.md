@@ -323,6 +323,17 @@ builder, address allocator and source projection live in
 [Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
 and [Agent Run Collaboration](./agent_run_collaboration.md)).
 
+Known limits:
+
+- An address reaches a collaborator only inside its own run. Its run ID follows
+  the existing [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route):
+  a sender in another root reaches it only through the global live-only path
+  (while it is active, without a Team/Org tab row). An Offline collaborator is
+  never woken from another root (`TARGET_AGENT_RUN_NOT_ACTIVE`).
+- A build older than this collaborator model rejects execution trees whose
+  collaborator entries carry run IDs (downgrade). There is no migration, and none
+  is needed, because the earlier entry shape was never released.
+
 ### Sender Of An Agent-To-Agent Message (RD-004)
 
 A `send_message_to` delivery reaches the receiver as input with

@@ -1,0 +1,743 @@
+{
+  "startedAt": "2026-10-01T09:07:45.145Z",
+  "controlPort": "65265",
+  "backend": "http://127.0.0.1:65267",
+  "model": "haiku",
+  "phases": {
+    "D1c": {
+      "startedAt": "2026-10-01T09:07:45.215Z",
+      "checks": [
+        {
+          "ok": true,
+          "label": "solution designer conversation starts with \"From Daily Assistant:\" (no task notice)",
+          "details": [
+            "From Daily Assistant:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "direct chat with the collaborator answered",
+          "details": null
+        }
+      ],
+      "shots": [
+        "D1-05-solution-designer-view.png"
+      ],
+      "result": "Pass"
+    },
+    "D2b": {
+      "startedAt": "2026-10-01T09:12:30.741Z",
+      "checks": [
+        {
+          "ok": true,
+          "label": "Product Prototyper row live after its first message",
+          "details": "Temporary task agent, product prototyper, level 1, idle, Started by solution_designer, /product_prototyper"
+        },
+        {
+          "ok": true,
+          "label": "Product Prototyper view starts \"From Solution Designer:\" (no task notice)",
+          "details": [
+            "From Solution Designer:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "the second @ send from solution designer was accepted (CR-003)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "Product Team added under the run, opened with its members",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_agent:PP product prototyper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:offline",
+            "task_team_child:PB prototype bootstrapper:offline"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Product Team coordinator started on the briefing",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_agent:PP product prototyper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:offline",
+            "task_team_child:PB prototype bootstrapper:offline"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Team tab shows both briefings (Product Prototyper and the Product Team coordinator)",
+          "details": [
+            "Message 1. Okt., 11:12 to product prototyper Give a two-sentence plan for a settings page prototype. Reply with text only—no files.",
+            "Message 1. Okt., 11:08 to product prototyper Describe in two sentences how you would prototype a settings page with a dark-mode toggle. Reply with text only—no files."
+          ]
+        },
+        {
+          "ok": true,
+          "label": "a collaborator reported back to solution designer",
+          "details": [
+            "From Solution Designer:"
+          ]
+        }
+      ],
+      "shots": [
+        "D2-03-product-prototyper-view.png",
+        "D2-04-product-team-added.png",
+        "D2-05-solution-designer-collaborators.png"
+      ],
+      "result": "Pass"
+    },
+    "D3": {
+      "startedAt": "2026-10-01T09:13:41.999Z",
+      "checks": [
+        {
+          "ok": true,
+          "label": "delivery engineer @ menu offers Marketing Team; Product Team and Product Prototyper (already added) are not offered",
+          "details": [
+            "marketing-team"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "footer names delivery engineer",
+          "details": "delivery engineer gets your message and brings them into this run"
+        },
+        {
+          "ok": true,
+          "label": "Marketing Team added with its members",
+          "details": [
+            "task_team:software engineering team",
+            "task_team_child:SD solution designer",
+            "task_team_child:AR architecture reviewer",
+            "task_team_child:IE implementation engineer",
+            "task_team_child:CR code reviewer",
+            "task_team_child:AE api e2e engineer",
+            "task_team_child:DE delivery engineer",
+            "task_agent:PP product prototyper",
+            "task_team:product team",
+            "task_team_child:PP product prototyper",
+            "task_team_child:PB prototype bootstrapper",
+            "task_team:marketing team",
+            "task_team_child:MC marketing content creator",
+            "task_team_child:CU computer use operator"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Marketing Team coordinator started on the briefing",
+          "details": null
+        },
+        {
+          "ok": false,
+          "label": "Team tab shows the briefing to marketing content creator",
+          "details": [
+            "Message 1. Okt., 11:13 from delivery engineer Please review the following two-sentence release announcement for a dark-mode toggle feature: \"We're excited to introduce a new dark-mode toggle to our platform, giving you the flexibility to switch between light and dark themes based on your preference. Enjoy a more comfortable viewing experience and reduce eye strain, especially during late-night work sessions.\" Please provide feedback or any revisions needed."
+          ]
+        }
+      ],
+      "shots": [
+        "D3-01-delivery-engineer-at-menu.png",
+        "D3-02-marketing-team-added.png",
+        "D3-03-delivery-engineer-collaborator.png"
+      ],
+      "result": "Fail"
+    },
+    "BI": {
+      "startedAt": "2026-10-01T09:21:42.835Z",
+      "checks": [
+        {
+          "ok": true,
+          "label": "BI-1: collaborator opened, not running (Idle)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "BI-1: host received ACK-PROTOTYPER-1 as an inter-agent message",
+          "details": {
+            "senderAddress": "/product_prototyper",
+            "senderAgentRunId": "product_prototyper_be07106aeffd48daa659854214d59260"
+          }
+        },
+        {
+          "ok": true,
+          "label": "BI-1: host view shows \"From Product Prototyper:\" with ACK-PROTOTYPER-1",
+          "details": [
+            "From Product Prototyper:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "BI-2: collaborator opened, not running (Idle)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "BI-2: host received ACK-PRODUCT-TEAM-2 as an inter-agent message",
+          "details": {
+            "senderAddress": "/product_team/product_prototyper",
+            "senderAgentRunId": "product_prototyper_1d0b8396d12c4354afa2d9e505b94671"
+          }
+        },
+        {
+          "ok": true,
+          "label": "BI-2: host view shows \"From Product Prototyper:\" with ACK-PRODUCT-TEAM-2",
+          "details": [
+            "From Product Prototyper:",
+            "From Product Prototyper:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "BI-3: collaborator opened, not running (Idle)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "BI-3: host received ACK-MARKETING-3 as an inter-agent message",
+          "details": {
+            "senderAddress": "/marketing_team/marketing_content_creator",
+            "senderAgentRunId": "marketing_content_creator_509c505bbec4435a913e14a39fb9d94e"
+          }
+        },
+        {
+          "ok": true,
+          "label": "BI-3: host view shows \"From Marketing Content Creator:\" with ACK-MARKETING-3",
+          "details": [
+            "From Marketing Content Creator:",
+            "From Marketing Content Creator:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "BI-4: collaborator opened, not running (Idle)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "BI-4: host received ACK-SE-TEAM-4 as an inter-agent message",
+          "details": {
+            "senderAddress": null,
+            "senderAgentRunId": "solution_designer_e0867ab6443d49d09d40c0f3476621ad"
+          }
+        },
+        {
+          "ok": true,
+          "label": "BI-4: host view shows \"From Solution Designer:\" with ACK-SE-TEAM-4",
+          "details": [
+            "From Solution Designer:"
+          ]
+        }
+      ],
+      "shots": [
+        "BI-1-01-collaborator-opened.png",
+        "BI-1-02-collaborator-sent.png",
+        "BI-1-03-host-received.png",
+        "BI-2-01-collaborator-opened.png",
+        "BI-2-02-collaborator-sent.png",
+        "BI-2-03-host-received.png",
+        "BI-3-01-collaborator-opened.png",
+        "BI-3-02-collaborator-sent.png",
+        "BI-3-03-host-received.png",
+        "BI-4-01-collaborator-opened.png",
+        "BI-4-02-collaborator-sent.png",
+        "BI-4-03-host-received.png"
+      ],
+      "result": "Pass"
+    },
+    "SNAP": {
+      "startedAt": "2026-10-01T09:25:53.178Z",
+      "shots": [
+        "RESTORE-00-before-tree.png"
+      ],
+      "result": "Pass"
+    },
+    "RESTORE": {
+      "startedAt": "2026-10-01T09:28:18.188Z",
+      "shots": [
+        "RESTORE-01-after-tree.png",
+        "RS-1-01-collaborator-opened.png",
+        "RS-1-02-collaborator-sent.png",
+        "RS-1-03-host-received.png",
+        "RS-1-04-host-to-collaborator.png",
+        "RS-2-01-collaborator-opened.png",
+        "RS-2-02-collaborator-sent.png",
+        "RS-2-03-host-received.png",
+        "RS-2-04-host-to-collaborator.png",
+        "RS-3-01-collaborator-opened.png",
+        "RS-3-02-collaborator-sent.png",
+        "RS-3-03-host-received.png",
+        "RS-3-04-host-to-collaborator.png",
+        "RS-4-01-collaborator-opened.png",
+        "RS-4-02-collaborator-sent.png",
+        "RS-4-03-host-received.png",
+        "RS-4-04-host-to-collaborator.png"
+      ],
+      "after": {
+        "rows": [
+          "task_team:software engineering team",
+          "task_team_child:SD solution designer",
+          "task_team_child:AR architecture reviewer",
+          "task_team_child:IE implementation engineer",
+          "task_team_child:CR code reviewer",
+          "task_team_child:AE api e2e engineer",
+          "task_team_child:DE delivery engineer",
+          "task_agent:PP product prototyper",
+          "task_team:product team",
+          "task_team_child:PP product prototyper",
+          "task_team_child:PB prototype bootstrapper",
+          "task_team:marketing team",
+          "task_team_child:MC marketing content creator",
+          "task_team_child:CU computer use operator"
+        ],
+        "live": [],
+        "views": {
+          "host:solution designer": {
+            "labels": [
+              "From Product Prototyper:",
+              "From Product Prototyper:"
+            ],
+            "tail": "From Product Prototyper:\n\nACK-PRODUCT-TEAM-2"
+          },
+          "host:delivery engineer": {
+            "labels": [
+              "From Marketing Content Creator:",
+              "From Marketing Content Creator:"
+            ],
+            "tail": "From Marketing Content Creator:\n\nACK-MARKETING-3"
+          },
+          "host:daily assistant": {
+            "labels": [
+              "From Solution Designer:"
+            ],
+            "tail": "From Solution Designer:\n\nACK-SE-TEAM-4"
+          },
+          "collaborator:BI-1": {
+            "labels": [
+              "From Solution Designer:"
+            ],
+            "tail": "From Solution Designer:\n\nDescribe in two sentences how you would prototype a settings page with a dark-mode toggle. Reply with text only—no files."
+          },
+          "collaborator:BI-2": {
+            "labels": [
+              "From Solution Designer:"
+            ],
+            "tail": "From Solution Designer:\n\nGive a two-sentence plan for a settings page prototype. Reply with text only—no files."
+          },
+          "collaborator:BI-3": {
+            "labels": [
+              "From Delivery Engineer:"
+            ],
+            "tail": "oduce a new dark-mode toggle to our platform, giving you the flexibility to switch between light and dark themes based on your preference. Enjoy a more comfortable viewing experience and reduce eye strain, especially during late-night work sessions.”\n\nPlease provide feedback or any revisions needed."
+          },
+          "collaborator:BI-4": {
+            "labels": [
+              "From Daily Assistant:"
+            ],
+            "tail": "From Daily Assistant:\n\nHi Software Engineering Team! Could you please ask your solution designer to provide a three-sentence outline of how you would add a dark-mode toggle to a settings page? I’m looking for text-only output (no files), and I’ll report back the response. Thanks!"
+          }
+        }
+      },
+      "checks": [
+        {
+          "ok": true,
+          "label": "after restart the same collaborators are under the runs (same tree)",
+          "details": {
+            "before": [
+              "task_team:software engineering team",
+              "task_team_child:SD solution designer",
+              "task_team_child:AR architecture reviewer",
+              "task_team_child:IE implementation engineer",
+              "task_team_child:CR code reviewer",
+              "task_team_child:AE api e2e engineer",
+              "task_team_child:DE delivery engineer",
+              "task_agent:PP product prototyper",
+              "task_team:product team",
+              "task_team_child:PP product prototyper",
+              "task_team_child:PB prototype bootstrapper",
+              "task_team:marketing team",
+              "task_team_child:MC marketing content creator",
+              "task_team_child:CU computer use operator"
+            ],
+            "after": [
+              "task_team:software engineering team",
+              "task_team_child:SD solution designer",
+              "task_team_child:AR architecture reviewer",
+              "task_team_child:IE implementation engineer",
+              "task_team_child:CR code reviewer",
+              "task_team_child:AE api e2e engineer",
+              "task_team_child:DE delivery engineer",
+              "task_agent:PP product prototyper",
+              "task_team:product team",
+              "task_team_child:PP product prototyper",
+              "task_team_child:PB prototype bootstrapper",
+              "task_team:marketing team",
+              "task_team_child:MC marketing content creator",
+              "task_team_child:CU computer use operator"
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "after restart every collaborator shows not running (Offline)",
+          "details": []
+        },
+        {
+          "ok": true,
+          "label": "host:solution designer: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Product Prototyper:",
+                "From Product Prototyper:"
+              ],
+              "tail": "From Product Prototyper:\n\nACK-PRODUCT-TEAM-2"
+            },
+            "after": {
+              "labels": [
+                "From Product Prototyper:",
+                "From Product Prototyper:"
+              ],
+              "tail": "From Product Prototyper:\n\nACK-PRODUCT-TEAM-2"
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "host:delivery engineer: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Marketing Content Creator:",
+                "From Marketing Content Creator:"
+              ],
+              "tail": "From Marketing Content Creator:\n\nACK-MARKETING-3"
+            },
+            "after": {
+              "labels": [
+                "From Marketing Content Creator:",
+                "From Marketing Content Creator:"
+              ],
+              "tail": "From Marketing Content Creator:\n\nACK-MARKETING-3"
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "host:daily assistant: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Solution Designer:"
+              ],
+              "tail": "From Solution Designer:\n\nACK-SE-TEAM-4"
+            },
+            "after": {
+              "labels": [
+                "From Solution Designer:"
+              ],
+              "tail": "From Solution Designer:\n\nACK-SE-TEAM-4"
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "collaborator:BI-1: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Solution Designer:"
+              ],
+              "tail": "rototype a settings page with a dark-mode toggle. Reply with text only—no files."
+            },
+            "after": {
+              "labels": [
+                "From Solution Designer:"
+              ],
+              "tail": "From Solution Designer:\n\nDescribe in two sentences how you would prototype a settings page with a dark-mode toggle. Reply with text only—no files."
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "collaborator:BI-2: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Solution Designer:"
+              ],
+              "tail": " two-sentence plan for a settings page prototype. Reply with text only—no files."
+            },
+            "after": {
+              "labels": [
+                "From Solution Designer:"
+              ],
+              "tail": "From Solution Designer:\n\nGive a two-sentence plan for a settings page prototype. Reply with text only—no files."
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "collaborator:BI-3: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Delivery Engineer:"
+              ],
+              "tail": "ing late-night work sessions.”\n\nPlease provide feedback or any revisions needed."
+            },
+            "after": {
+              "labels": [
+                "From Delivery Engineer:"
+              ],
+              "tail": "oduce a new dark-mode toggle to our platform, giving you the flexibility to switch between light and dark themes based on your preference. Enjoy a more comfortable viewing experience and reduce eye strain, especially during late-night work sessions.”\n\nPlease provide feedback or any revisions needed."
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "collaborator:BI-4: same conversation as before the restart",
+          "details": {
+            "before": {
+              "labels": [
+                "From Daily Assistant:"
+              ],
+              "tail": "king for text-only output (no files), and I’ll report back the response. Thanks!"
+            },
+            "after": {
+              "labels": [
+                "From Daily Assistant:"
+              ],
+              "tail": "From Daily Assistant:\n\nHi Software Engineering Team! Could you please ask your solution designer to provide a three-sentence outline of how you would add a dark-mode toggle to a settings page? I’m looking for text-only output (no files), and I’ll report back the response. Thanks!"
+            }
+          }
+        },
+        {
+          "ok": true,
+          "label": "RS-1: collaborator opened, not running (Offline)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "RS-1: host received RS-PROTOTYPER-1 as an inter-agent message",
+          "details": {
+            "senderAddress": "/product_prototyper",
+            "senderAgentRunId": "product_prototyper_be07106aeffd48daa659854214d59260"
+          }
+        },
+        {
+          "ok": true,
+          "label": "RS-1: host view shows \"From Product Prototyper:\" with RS-PROTOTYPER-1",
+          "details": [
+            "From Product Prototyper:",
+            "From Product Prototyper:",
+            "From Product Prototyper:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-1: collaborator received PING-RS-1 \"From Solution Designer:\" from its host after the restart",
+          "details": [
+            "From Solution Designer:",
+            "From Solution Designer:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-2: collaborator opened, not running (Offline)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "RS-2: host received RS-PRODUCT-TEAM-2 as an inter-agent message",
+          "details": {
+            "senderAddress": "/product_team/product_prototyper",
+            "senderAgentRunId": "product_prototyper_1d0b8396d12c4354afa2d9e505b94671"
+          }
+        },
+        {
+          "ok": true,
+          "label": "RS-2: host view shows \"From Product Prototyper:\" with RS-PRODUCT-TEAM-2",
+          "details": [
+            "From Product Prototyper:",
+            "From Product Prototyper:",
+            "From Product Prototyper:",
+            "From Product Prototyper:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-2: collaborator received PING-RS-2 \"From Solution Designer:\" from its host after the restart",
+          "details": [
+            "From Solution Designer:",
+            "From Solution Designer:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-3: collaborator opened, not running (Offline)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "RS-3: host received RS-MARKETING-3 as an inter-agent message",
+          "details": {
+            "senderAddress": "/marketing_team/marketing_content_creator",
+            "senderAgentRunId": "marketing_content_creator_509c505bbec4435a913e14a39fb9d94e"
+          }
+        },
+        {
+          "ok": true,
+          "label": "RS-3: host view shows \"From Marketing Content Creator:\" with RS-MARKETING-3",
+          "details": [
+            "From Marketing Content Creator:",
+            "From Marketing Content Creator:",
+            "From Marketing Content Creator:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-3: collaborator received PING-RS-3 \"From Delivery Engineer:\" from its host after the restart",
+          "details": [
+            "From Delivery Engineer:",
+            "From Delivery Engineer:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-4: collaborator opened, not running (Offline)",
+          "details": null
+        },
+        {
+          "ok": true,
+          "label": "RS-4: host received RS-SE-TEAM-4 as an inter-agent message",
+          "details": {
+            "senderAddress": null,
+            "senderAgentRunId": "solution_designer_e0867ab6443d49d09d40c0f3476621ad"
+          }
+        },
+        {
+          "ok": true,
+          "label": "RS-4: host view shows \"From Solution Designer:\" with RS-SE-TEAM-4",
+          "details": [
+            "From Solution Designer:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "RS-4: collaborator received PING-RS-4 \"From Daily Assistant:\" from its host after the restart",
+          "details": [
+            "From Daily Assistant:",
+            "From Daily Assistant:"
+          ]
+        }
+      ],
+      "result": "Pass"
+    }
+  },
+  "observations": [
+    {
+      "t": "D3: no report back to delivery engineer within 90 s (soft observation)",
+      "d": null
+    },
+    {
+      "t": "baseline: 14 collaborator rows, 7 views",
+      "d": null
+    }
+  ],
+  "state_teamRunId": "software_engineering_team_693a428be3c84c3da678ae3dc6932677",
+  "restoreBaseline": {
+    "rows": [
+      "task_team:software engineering team",
+      "task_team_child:SD solution designer",
+      "task_team_child:AR architecture reviewer",
+      "task_team_child:IE implementation engineer",
+      "task_team_child:CR code reviewer",
+      "task_team_child:AE api e2e engineer",
+      "task_team_child:DE delivery engineer",
+      "task_agent:PP product prototyper",
+      "task_team:product team",
+      "task_team_child:PP product prototyper",
+      "task_team_child:PB prototype bootstrapper",
+      "task_team:marketing team",
+      "task_team_child:MC marketing content creator",
+      "task_team_child:CU computer use operator"
+    ],
+    "live": [
+      "SD solution designer",
+      "PP product prototyper",
+      "PP product prototyper",
+      "MC marketing content creator"
+    ],
+    "views": {
+      "host:solution designer": {
+        "labels": [
+          "From Product Prototyper:",
+          "From Product Prototyper:"
+        ],
+        "tail": "From Product Prototyper:\n\nACK-PRODUCT-TEAM-2"
+      },
+      "host:delivery engineer": {
+        "labels": [
+          "From Marketing Content Creator:",
+          "From Marketing Content Creator:"
+        ],
+        "tail": "From Marketing Content Creator:\n\nACK-MARKETING-3"
+      },
+      "host:daily assistant": {
+        "labels": [
+          "From Solution Designer:"
+        ],
+        "tail": "From Solution Designer:\n\nACK-SE-TEAM-4"
+      },
+      "collaborator:BI-1": {
+        "labels": [
+          "From Solution Designer:"
+        ],
+        "tail": "rototype a settings page with a dark-mode toggle. Reply with text only—no files."
+      },
+      "collaborator:BI-2": {
+        "labels": [
+          "From Solution Designer:"
+        ],
+        "tail": " two-sentence plan for a settings page prototype. Reply with text only—no files."
+      },
+      "collaborator:BI-3": {
+        "labels": [
+          "From Delivery Engineer:"
+        ],
+        "tail": "ing late-night work sessions.”\n\nPlease provide feedback or any revisions needed."
+      },
+      "collaborator:BI-4": {
+        "labels": [
+          "From Daily Assistant:"
+        ],
+        "tail": "king for text-only output (no files), and I’ll report back the response. Thanks!"
+      }
+    },
+    "note": "reconstructed from the SNAP console output (tails = last 80 chars); screenshot RESTORE-00-before-tree.png"
+  },
+  "definitions": {
+    "productPrototyper": "product-prototyper",
+    "seTeam": "software-engineering-team",
+    "productTeam": "product-team",
+    "marketingTeam": "marketing-team",
+    "researchEngineer": "research-engineer"
+  },
+  "state_dailyRunId": "daily_assistant_f5141c0805c94e3386e4ef2e29cf8ba7",
+  "pageErrors": []
+}

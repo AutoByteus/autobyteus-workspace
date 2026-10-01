@@ -1,0 +1,125 @@
+{
+  "startedAt": "2026-09-30T23:23:46.418Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "T01": {
+      "title": "UXJ-001 Team run: member-focused menu (VIS-001), send (VIS-004), task Team + task Agent rows (VIS-006), Team tab, C-02 observation",
+      "result": "Fail",
+      "ms": 369112,
+      "error": "Timed out waiting for focused agent idle",
+      "details": null
+    },
+    "T02": {
+      "title": "UXJ-002 Team run: open a task Team member (system task notice, VIS-005) and chat with it directly",
+      "result": "Fail",
+      "ms": 344286,
+      "error": "Timed out waiting for focused agent idle",
+      "details": null
+    },
+    "T03": {
+      "title": "UXJ-003 / VIS-007: a collaborator that cannot be started → red notice, no row, card not failed; dismiss; replaced by next send",
+      "result": "Fail",
+      "ms": 312493,
+      "error": "Timed out waiting for focused agent idle",
+      "details": null
+    },
+    "O01": {
+      "title": "UXJ-004 Org run: menu excludes the Org, members and teams (VIS-008); task Agent + task Team rows and Org tab (VIS-009)",
+      "result": "Pass",
+      "ms": 24576,
+      "details": {
+        "orgRunId": "launch_org_6298ebe854774b9ca72345da9530a156",
+        "options": [
+          "research-assistant",
+          "code-reviewer",
+          "flaky-agent",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team"
+        ],
+        "footer": "analyst gets your message and brings them into this run",
+        "chips": 2,
+        "taskAgentRows": [
+          {
+            "text": "CR\ncode reviewer",
+            "label": "code reviewer, running, Started by analyst, /code_reviewer, code_reviewer_2bd5f761867b45fb95db6208b29af394",
+            "avatar": true
+          },
+          {
+            "text": "PP\nproduct prototyper",
+            "label": "product prototyper, running, /product_team/product_prototyper, product_prototyper_ba7ab941358343cdbc9aab132d145780",
+            "avatar": true
+          },
+          {
+            "text": "PB\nprototype bootstrapper",
+            "label": "prototype bootstrapper, idle, /product_team/prototype_bootstrapper, prototype_bootstrapper_c43b80033f004a3198b3c42ed31ceeff",
+            "avatar": true
+          }
+        ],
+        "orgTabRows": [
+          "Message Oct 1, 01:41 AM from product_prototyper Launch page plan complete: hero section with clear value prop, problem/solution, feature highlights, social proof, pricing, FAQs, and CTAs—recommend mobile-first design with video demo and email signup flow."
+        ],
+        "tabs": [
+          "Files",
+          "Org",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ]
+      }
+    },
+    "O02": {
+      "title": "UXJ-004 Org run: open the task Agent (VIS-010) and chat with it",
+      "result": "Pass",
+      "ms": 10625,
+      "details": {
+        "hasNotice": true,
+        "directChat": "ORG-CHILD-OK received"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 2754
+    },
+    {
+      "label": "frontend",
+      "pid": 3116
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 3116,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 2754,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-7GWYQF"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-7GWYQF",
+  "backendUrl": "http://127.0.0.1:55896",
+  "frontUrl": "http://127.0.0.1:55897",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "flaky": "flaky-agent",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-09-30T23:41:37.937Z"
+}
