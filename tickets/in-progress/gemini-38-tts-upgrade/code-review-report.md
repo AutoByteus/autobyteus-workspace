@@ -2,133 +2,38 @@
 
 ## Review Round Meta
 
-- Review Entry Point: Implementation Review; round 1; latest authoritative round 1 (`CRR-001`).
-- Trigger: `IR-001` Implementation Complete, commit `87011bba9`.
-- Reviewed as context: `requirements-doc.md` (`SR-004` approval), `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md` (`SR-006`), `design-review-report.md` (`ARCH-REV-002` Pass), `architecture-review-revision-record.md`, `solution-handoff-sr006.md`, `implementation-handoff.md`, and `implementation-revision-record.md` (`IR-001`), all in this ticket directory.
-- Supplemental behavior-defining artifacts: N/A — none. Prior code-review, API/E2E, and delivery artifacts: N/A — initial source review.
-- Code review revision record: `code-review-revision-record.md`; current ID `CRR-001`.
+- Review Entry Point: **API/E2E Failure-Origin Review**, round 5 (`CRR-005`); latest authoritative code-review result. This is not successful-test-code review.
+- Trigger: `/api_e2e_engineer`, `API-REV-004` Fail / 82.1%, `API-06 / SCN-004 / AC-007`, with successful live-audio proof for `AC-004/009` absent. User authorized **one** current Vertex Express call and directed stop/wait if the same error returned.
+- Context: approved requirements `SR-004`, investigation and solution history through evidence-only `SR-009`, reviewed design `SR-006` / `ARCH-REV-002`, implementation `IR-002`, source review `CRR-002` Pass, prior failure-origin `CRR-003/004`, `solution-blocker-sr007.md`, `solution-access-update-sr008.md`, `solution-vertex-recheck-sr009.md`, and current API/E2E investigation, ledger, execution coverage report and revision record (`API-REV-001–004`). All are in this ticket directory. Behavior-defining Product supplement and delivery record: N/A. Task size **Large**, architectural risk **High** unchanged.
+- Exact live command: `node test-support/live-e2e/run-live-e2e.mjs --scenarios=gemini.vertex-express.audio` once from the task worktree after explicit dry-run and direct-TTY import to a fresh isolated `autobyteus-server-ts/db/test.db`. Preflight READY/configured; operation failed with value-safe HTTP **404/model-unavailable** category, auth=false and quota=false; no audio. Evidence: latest execution report, ledger events 40–45, and cumulative API revision record. Temporary category diagnostic was reverted; source private `.env` metadata unchanged, owned vault/runtime cleaned.
 
-## Routing Classification Review
+## Bounded Scope And Supported Scenario Gate
 
-- Task size: **Large**; architectural risk: **High**; selected route: independent Implementation Review, required.
-- Basis: shared Google SDK major upgrade, 3.8 request/output change, one-key private `.env` transition, and LLM/image/video regression surface. Classification confirmed.
-
-## Review Scope
-
-- Reviewed the changed implementation source, dependency declarations/locks, and relevant tests against the normal Settings, speech-tool, startup, Google modality, and isolated live-validation paths. Traced unchanged media service/resolver, AppConfig writer, and SDK-owned serialization where needed.
-- Exclusions: no owner-private `.env` read, secret import, real provider call, or API/E2E sign-off. Rendered Settings remains downstream validation work, not an assumed pass. Catalog documentation sync belongs to delivery.
-
-## Upstream Behavior And Production-Path Basis Confirmation
-
-- Approved intended behavior: `REQ-001–008`, `AC-001–010`; existing speech file/tool contract and other Gemini modalities are preserved. The `SR-006` production-path map and `ARCH-REV-002` Pass were checked against current code, not treated as proof of source correctness.
-- Behavior-basis status: **Confirmed**. No new supported behavior or intended-behavior ambiguity found. A runtime conformance defect under `BEH-002` is recorded below, without changing its approved basis.
-
-| Behavior | Status | Current forward path / lifecycle evidence | Contradiction to basis |
+| Scenario / contract | Independent trigger and forward path | Expected outcome / authority | Disposition |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Settings/catalog → `AudioClientFactory`; `AppConfig.initialize()` → migration/writer before resolver; server/web blank Flash fallback. | None. |
-| `BEH-002` | Confirmed | `generate_speech` → media service → factory → `GeminiAudioClient.generateSpeech` → SDK → WAV file → requested output. Structured turns/voices are implemented; WAV validity is incomplete (finding `CR-001`). | None to scenario basis. |
-| `BEH-003` | Confirmed | Explicit importer/test vault → live runner fixture now names Flash; execution remains API/E2E-owned. | None. |
-| `BEH-004` | Confirmed | Existing LLM/image/video adapters use installed shared SDK 2.24.0; both locks updated; LLM catalog unchanged. | None. |
+| `SCN-002`, `BEH-002`, `REQ-004`, `AC-004/006` | Speech user/agent invokes `generate_speech` → media service → current model resolver/factory → Gemini audio adapter → SDK/provider → validated WAV → requested path. | Playable audio if served; explicit provider error without fallback. Approved requirements/design and current source establish this normal path. | Supported Normal Scenario / Use. |
+| `SCN-004`, `BEH-003`, `REQ-005/006`, `AC-007/008` | Test operator explicitly imports to isolated vault, activates Vertex Express, and runs the scoped live scenario → same production audio factory/adapter → Google SDK/provider. | Genuine audio pass or truthful failure/skip with no secret leakage. User's `SR-009` instruction authorized **one** route recheck only. | Supported Explicit Edge Scenario / Use. |
+| Vertex Express model access | Configured `VERTEX_AI_API_KEY` and selected `gemini-3.8-flash-tts` are independent of the failure path; the provider returned 404 in API-REV-001 and again on 2026-09-26. | Google’s [Gemini API speech guide](https://ai.google.dev/gemini-api/docs/generate-content/speech-generation) documents the model; the current [Google Cloud Gemini-TTS model list](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts) does not list 3.8 on that Cloud TTS page. This supports caution but does not prove universal Vertex support/absence or this key’s exact entitlement. `SR-004/006` do not guarantee Vertex access. | Observed route/key rejection; exact external cause **Unclear**. |
 
-## Supported Product Scenario And Reachability Gate
+## Candidate Finding And Failure-Origin Gate
 
-| Scenario | Behavior / contract | Initiator, goal, entry | Shape and forward lifecycle | Outcome / evidence | Validity / use |
-| --- | --- | --- | --- | --- | --- |
-| `SCN-001` | `BEH-001`, `REQ-001–003` | Administrator uses existing Settings selector; server starts with a saved setting. | Settings/service/AppConfig/catalog, then resolver/factory on speech call. | New choices, Flash fallback, retired saved ID migration; approved requirements and current source. | Supported Normal Scenario / Use. |
-| `SCN-002/003` | `BEH-002`, `REQ-004`, `AC-004–006` | Speech user/agent invokes existing `generate_speech` with transcript, optional style/voice/dialogue. | Tool → media service → Gemini adapter → Google response → validated file → requested path. | Playable WAV or explicit malformed-output error; approved AC and [Google TTS contract](https://ai.google.dev/gemini-api/docs/generate-content/speech-generation). | Supported Normal Scenario; malformed-response handling is an explicit contract edge / Use. |
-| `SCN-004` | `BEH-003`, `REQ-005/006` | Test operator explicitly imports into isolated vault to validate 3.8. | Import preflight/TTY → vault → live runner. | Genuine pass/skip/failure, no credential disclosure; approved requirements. | Supported Explicit Edge Scenario / Use only for readiness. |
-| `SCN-005/006` | `BEH-004`, `REQ-007/008` | Existing Gemini user request and product-maintainer assessment. | LLM/image/video adapter → shared SDK → result; assessment-only LLM catalog. | Preserved modalities; source and approved requirements. | Supported Normal / Explicit Edge, respectively / Use. |
-
-### Candidate Finding And Mechanism Gate
-
-| Candidate | Observation | Scenario / independent trigger | Forward path, lifecycle, consequence | Evidence | Disposition / response |
-| --- | --- | --- | --- | --- | --- |
-| `CAND-001` | WAV validator tests only chunk presence/length, not `fmt ` audio fields or data alignment. | `SCN-002/003`, `AC-004` playable-output and malformed-audio-error contract; a Google speech response on the approved tool path. | Provider inline WAV → `validateWav` → `saveWav` → media service output. A RIFF/WAVE with zero channels/rate and nonempty `data` is returned as a successful audio URL despite being unplayable. | `gemini-audio-client.ts:53–72,200–213`; one-off current-built-code probe returned a 46-byte WAV/audio URL for `fmt` channels=0, rate=0. | **Promote**. Validate playable supported PCM `fmt` fields and data length/alignment before writing; add focused malformed-WAV regression. |
-| `CAND-002` | Directory fsync after config rename is absent. | No approved crash-consistency/power-loss contract; `SCN-001` does not establish that lifecycle. | Hypothetical crash after rename only. Existing writer and design already specify idempotent restart. | `environment-assignment-file.ts`; `design-review-report.md` residual risk. | **Reject** — unsupported extra machinery, no deduction. |
-| `CAND-003` | Settings renderer was blank without backend. | `SCN-001`, but no working backend/event established for a visual defect. | Dev proxy `/rest/health` ECONNREFUSED prevents observing selector. | `implementation-handoff.md`; component checks pass. | **Reject as source finding**; carry unverified rendered check to API/E2E, not a score deduction. |
-
-## Structural / Design Checks
-
-| Check | Result | Evidence / required action |
+| Candidate | Forward path, lifecycle and consequence | Disposition |
 | --- | --- | --- |
-| Task design health; supplemental alignment; spine inventory | Pass | Narrow audio/config refactor follows `DS-001–008`; no supplements. |
-| Ownership and authoritative boundary; off-spine concerns; capability reuse | Pass | Settings uses AppConfig; media service uses factory/client; migration stays config-owned; SDK remains within adapters. No mixed-level bypass. |
-| Reusable structures, model tightness, repeated coordination, empty indirection | Pass | Audio-owned voice vocabulary reused; local `SpeechTurn`; no new generic facade or parallel old/new identity. |
-| SoC, dependency direction, file placement, layout, interfaces, naming | Pass | Audio adapter owns provider wire/file validation, config migration owns history, server/web project defaults; current public speech API unchanged. |
-| Duplication, patch-on-patch, obsolete cleanup | Pass | Retired TTS runtime entries/mappings and style-prefix/implicit-PCM branch removed; historical IDs confined to migration/tests. |
-| Test scenarios/assertions, fixture reuse, stale-test cleanup | Pass | Focused catalog, migration, adapter wire, LLM/image/video, web component tests are coherent. Missing invalid-`fmt` regression follows `CR-001`. |
-| API/E2E readiness | **Fail** | Source can return unplayable WAV as success (`CAND-001`). Correct before integrated/provider validation; live tests remain required afterward. |
+| `FO-006` — new production or harness defect | The supported operator path reached the configured Vertex Express provider: value-free dry-run READY/CREATE 10 → TTY `IMPORT` CONFIGURED 10 → preflight READY → exact `gemini-3.8-flash-tts` via existing audio adapter/SDK → provider-stage 404 before response/WAV handling. No source or durable test change in API-REV-004; installed-SDK wire and deterministic suites, plus `CRR-002` source Pass, remain applicable. Prior real `gemini-3.8-flash` Vertex LLM succeeded through the same route but does not establish TTS entitlement. | **Reject as demonstrated code/test defect.** A 404 alone does not prove model/request serialization is correct, but no contrary implementation/fixture evidence or source-review gap is shown. Do not prescribe a fallback or alias. |
+| `FO-007` — this Vertex Express route/key lacks current 3.8 TTS model access | Independently initiated `SCN-004` recheck returned HTTP 404/model-unavailable once today, matching API-REV-001’s two Vertex Express calls. No audio produced; AI Studio was not called this round and its separate 429/quota history cannot establish this 404’s cause. Cloud-side model list currently omits 3.8 but is not a global Vertex verdict. | **Promote observed route-specific provider rejection; Hold for Evidence on exact rollout/endpoint/entitlement cause.** Provider or operator confirmation is needed before any claim of route availability. |
+| `FO-008` — another immediate paid retry | User explicitly directed stop and wait if the same error returned. The same category did return and no changed external state was established. | **Reject as unsupported next action.** No further provider call, blind retry, or machinery is justified. |
 
-## Source File Size And Structure Audit
+## Focused Failure-Origin Conclusion
 
-Changed implementation-source files only; effective nonempty line counts. No file exceeds 500. `gemini-audio-client.ts` has 296 changed lines in the patch, crossing the >220 delta signal, but remains a cohesive provider adapter; its defect is local correctness, not a file-splitting reason.
-
-| Source file / area | Nonempty lines | >500 / >220 delta | SoC / placement | Action |
-| --- | ---: | --- | --- | --- |
-| `autobyteus-ts/src/multimedia/audio/api/gemini-audio-client.ts` | 200 | Pass / Signal | Cohesive audio adapter | Fix `CR-001` locally. |
-| `autobyteus-ts/src/multimedia/audio/audio-client-factory.ts` | 228 | Pass / Pass | Catalog/schema owner | None. |
-| `autobyteus-ts/src/multimedia/audio/gemini-tts-voices.ts` | 36 | Pass / Pass | Audio vocabulary owner | None. |
-| `autobyteus-ts/src/utils/gemini-model-mapping.ts` | 57 | Pass / Pass | Existing runtime map | None. |
-| `autobyteus-server-ts/src/config/app-config.ts` | 500 | Pass / Pass | Existing config owner at limit; patch small | Monitor future growth, no current split. |
-| `autobyteus-server-ts/src/config/migrations/retired-speech-model-selection.ts` | 30 | Pass / Pass | Startup-only migration | None. |
-| Server config/tool and web Settings projection files | 47 / 109 / 50 | Pass / Pass | Existing owners | None. |
-
-## Legacy / Backward-Compatibility Verdict
-
-| Check | Result | Notes |
-| --- | --- | --- |
-| No runtime compatibility, old-behavior retention, or dead changed-scope code | Pass | Historical IDs only in one-time migration and tests; current resolver/catalog current-only. |
-| Transition decision, no unnecessary migration/dual read/write, mechanics | Pass | Exactly three saved file IDs migrate through existing one-key writer; inherited retired override fails safely; unrelated settings preserved. |
-
-## Dead / Obsolete / Legacy Items Requiring Removal
-
-None identified in changed scope. Catalog documentation still names old IDs; assigned delivery-stage docs sync, not dead implementation code.
-
-## Docs-Impact Verdict
-
-**Yes** — `autobyteus-ts/docs/provider_model_catalogs.md` still lists retired TTS rows; delivery must sync it with current IDs and truthful live validation.
-
-## Additional Material Premise Validation
-
-Upstream architecture review recorded none beyond the approved scenarios. No new or reclassified premise is promoted. `CAND-002/003` are rejected above; no speculative lifecycle mechanism is required.
-
-## Review Scorecard
-
-- Overall: **9.2/10; 92/100** (mean of categories, rounded). The category gaps, not the mean, determine failure.
-
-| Priority | Category | Score | Why / weakness / improvement |
-| --- | --- | ---: | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.4 | `DS-001–008` survive implementation; no material weakness; retain. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | Boundaries retained; no bypass; retain. |
-| 3 | API / Interface / Query / Command Clarity | 9.4 | Public speech/settings shape stable; no material weakness; retain. |
-| 4 | Separation of Concerns and File Placement | 9.2 | Focused audio/config owners; 500-line AppConfig warrants future monitoring, not current split. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | Voice list extracted and `SpeechTurn` local; no material weakness; retain. |
-| 6 | Naming Quality and Local Readability | 9.2 | Names are concrete; compact WAV validation could expose invariants more clearly in `CR-001` fix. |
-| 7 | API/E2E Readiness | **8.7** | `CAND-001`: invalid WAV can pass to tool output; correct validator/regression before API/E2E. |
-| 8 | Runtime Correctness And Behavioral Fidelity | **8.2** | `CAND-001`: malformed `fmt` violates `AC-004` playable/error outcome; validate format and alignment. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Runtime is current-only; migration history isolated; retain. |
-| 10 | Cleanup Completeness | 9.4 | Old paths removed; docs deliberately deferred to delivery; retain. |
-
-## Findings
-
-### `CR-001` — Invalid WAV format is returned as successful speech
-
-- Classification: **Local Fix**, implementation-owned. Related `BEH-002`, `REQ-004`, `AC-004/006`, `SCN-002/003`, promoted `CAND-001`.
-- `validateWav` accepts any `fmt ` chunk of at least 16 bytes and any nonempty `data` chunk. It never checks format code, positive channels/sample rate/bit depth/block alignment, or that the data length is frame-aligned. A current-built-code probe supplied a structurally sized RIFF/WAVE with channels and sample rate both zero; `generateSpeech` returned an audio URL and wrote the 46-byte file instead of the required explicit malformed-audio error.
-- Proportionate fix: enforce the WAV format invariants needed for the supported playable output (and frame-aligned nonempty data), reject malformed/unsupported format before `saveWav`, and add a deterministic adapter test. Do not add unrelated recovery or old-model fallback.
-
-## Classification And Recommended Recipient
-
-**Fail / Local Fix → `/implementation_engineer`**. This is a bounded adapter validation defect; no requirements or design revision is needed. Source review and API/E2E must recur after the fix.
-
-## Residual Risks
-
-Real 3.8 entitlement/response and existing Gemini LLM provider regression remain unverified; API/E2E must attempt scoped isolated-vault calls and report pass/skip/failure. Rendered Settings selector remains unverified without a backend. No secret values were accessed here.
+- `API-06` remains **Fail**, not pass or skip: one current Vertex Express attempt to exact 3.8 Flash TTS returned provider-stage 404/model-unavailable and no WAV/audio URL. `AC-007` and successful live-audio portions of `AC-004/009` remain unmet. Prior rendered Settings, deterministic speech, and real Vertex Express LLM evidence remain valid but cannot substitute for live TTS.
+- Final bounded origin: **route/key-specific provider model lookup rejection** is observed; exact Vertex Express rollout, endpoint support, entitlement, or other provider-side lookup reason remains **Unclear**. No new implementation or test-harness defect is demonstrated, and this external-state failure was not reasonably detectable in source review. `CRR-002` source Pass and resolved `CR-001` remain intact. Separate AI Studio 429/quota history remains separate.
+- User instruction controls the next action: **stop and wait**. Do not make another paid provider call, route-switch silently, lower the acceptance bar, or finalize a live-audio pass. The next meaningful prerequisite would be provider/operator confirmation of 3.8 TTS availability for this exact Vertex Express route/key (or another explicitly authorized changed access path) **and new user direction** before any retest. A changed default/fallback/acceptance criterion would require renewed approval through Solution Designer.
+- Classification: **Unclear** for exact external availability/access cause and upstream product disposition; route to `/solution_designer` with the explicit wait instruction. No source finding or score change; no implementation/test-code review reopening. Successful-test-code review remains pending until API/E2E passes.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**.
-- Review Entry Point: Implementation Review, round 1, `CRR-001`.
-- Supported Product Scenario Gate: Pass. Material-Premise Gate: Pass; only `CAND-001` promoted.
-- Score Summary: 9.2/10 overall; API/E2E readiness 8.7 and runtime correctness 8.2 block pass.
-- Recommended Recipient: `/implementation_engineer` (`Local Fix`).
+- Review Decision: **Fail / Unclear**, focused API/E2E failure-origin review `CRR-005`.
+- Supported scenario gate: Pass for `SCN-002/004`; material-premise gate: observed Vertex provider 404, exact access cause held for evidence. No unsupported premise drives a defect attribution or required machinery.
+- Failure origin: configured Vertex Express route/key rejected exact 3.8 TTS with HTTP 404/model-unavailable; no demonstrated source or harness defect. User-directed **stop/wait** is binding for next testing.
+- Score summary: N/A — failure-origin-only result; prior source Pass `CRR-002` unchanged.
+- Recommended recipient: `/solution_designer`.

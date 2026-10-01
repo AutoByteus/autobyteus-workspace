@@ -80,6 +80,13 @@ export const liveE2eScenarios = Object.freeze({
     geminiMode: 'AI_STUDIO',
     model: 'gemini-3.8-flash',
   }),
+  'gemini.ai-studio.audio': Object.freeze({
+    operation: 'audio',
+    providerId: 'GEMINI',
+    requiredSecretId: 'provider.google.ai-studio.api-key',
+    geminiMode: 'AI_STUDIO',
+    model: 'gemini-3.8-flash-tts',
+  }),
   'anthropic.llm': Object.freeze({
     operation: 'llm',
     providerId: 'ANTHROPIC',

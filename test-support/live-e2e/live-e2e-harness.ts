@@ -50,6 +50,7 @@ import { AutoByteusAgentRunBackendFactory } from '../../autobyteus-server-ts/src
 import { resolveAutoByteusRuntimeAgentToolExposure } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.js';
 import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
 import { AgentRun } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run.js';
+import { AgentRunProviderInputNormalizer } from '../../autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
 import {
   AgentRunEventType,
@@ -92,6 +93,8 @@ export const wrapProductAgentBackendForLiveE2e = (
 ): LiveE2eAgentBackend => new AgentRun({
   context: backend.getContext(),
   backend,
+  // The scoped live agent flows carry no context files; preserve any URI unchanged.
+  providerInputNormalizer: new AgentRunProviderInputNormalizer({ resolve: () => null }),
 });
 
 export type LiveE2eAgentFlowResult = {
@@ -629,12 +632,14 @@ export class LiveE2eScenarioExecution {
     await executeGraphql(this.serverUrl, `
       mutation UseGeminiMode($mode: GeminiSetupMode!) {
         useGeminiMode(mode: $mode) {
-          activeMode
-          aiStudioConfigured
-          vertexExpressConfigured
-          vertexProject {
-            project
-            location
+          setup {
+            activeMode
+            aiStudioConfigured
+            vertexExpressConfigured
+            vertexProject {
+              project
+              location
+            }
           }
         }
       }
