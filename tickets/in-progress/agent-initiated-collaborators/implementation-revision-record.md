@@ -18,7 +18,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Triggering finding IDs: N/A
 - Classification: `Initial Baseline`
 - Prior authoritative result: N/A
-- Current authoritative result: implementation of SR-005 complete; local checks green against the base baseline (see
+- Current authoritative result: implementation of SR-005 complete at commit `549510977`; local checks green against the base baseline (see
   the handoff); handed to code review.
 - Related solution revision IDs: SR-005
 - Related architecture-review revision IDs: ARCH-REV-003

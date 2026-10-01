@@ -26,7 +26,7 @@
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
-- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; commit: see the revision record.
+- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; implementation commit `549510977`.
 
 What the change does:
 - **`list_available_agents`** (opt-in, REQ-001/002): a registry tool (Agent Communication category, so it shows in
