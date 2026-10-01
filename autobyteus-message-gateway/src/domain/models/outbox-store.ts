@@ -1,6 +1,6 @@
-import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import type { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
+import type { ExternalChannelProvider } from "../../external-channel/provider.js";
+import type { ExternalChannelTransport } from "../../external-channel/channel-transport.js";
+import type { ExternalOutboundEnvelope } from "../../external-channel/external-outbound-envelope.js";
 
 export type OutboundOutboxStatus =
   | "PENDING"

@@ -52,6 +52,7 @@ export const useWorkspaceHistoryTreeState = (params: {
   const expandedAgentOrgDefinitions = ref<Record<string, boolean>>({});
   const expandedAgentOrgRuns = ref<Record<string, boolean>>({});
   const expandedAgentOrgTeams = ref<Record<string, boolean>>({});
+  const expandedAgentOrgTaskTeams = ref<Record<string, boolean>>({});
   const observedSelectionKey = ref<string | null>(null);
   const revealAppliedForObservedKey = ref(false);
 
@@ -150,6 +151,9 @@ export const useWorkspaceHistoryTreeState = (params: {
     `${workspaceKey(workspaceId)}::agent-org-definition::${definitionId.trim()}`;
   const agentOrgTeamKey = (rootRunId: string, address: string): string =>
     `${rootRunId.trim()}::agent-org-team::${address.trim()}`;
+  // Delegated Teams key by execution: one Team can be mounted and delegated (repeatedly) under the same address.
+  const agentOrgTaskTeamKey = (rootRunId: string, teamRunId: string): string =>
+    `${rootRunId.trim()}::agent-org-task-team::${teamRunId.trim()}`;
 
   const isWorkspaceExpanded = (workspaceId: string): boolean => {
     const key = workspaceKey(workspaceId);
@@ -252,13 +256,15 @@ export const useWorkspaceHistoryTreeState = (params: {
     setTeamExpanded(teamRunId, !isTeamExpanded(teamRunId));
   };
 
+  /** `openByDefault`: a row that opens once when it appears (F-02) until the user collapses it. */
   const isTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
     rowKey: string,
+    openByDefault = false,
   ): boolean => {
     const key = teamMemberKey(workspaceId, teamRunId, rowKey);
-    return key ? expandedTeamMembers.value[key] ?? false : false;
+    return key ? expandedTeamMembers.value[key] ?? openByDefault : false;
   };
 
   const setTeamMemberExpanded = (
@@ -282,12 +288,13 @@ export const useWorkspaceHistoryTreeState = (params: {
     workspaceId: string,
     teamRunId: string,
     rowKey: string,
+    openByDefault = false,
   ): void => {
     setTeamMemberExpanded(
       workspaceId,
       teamRunId,
       rowKey,
-      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey),
+      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey, openByDefault),
     );
   };
 
@@ -344,6 +351,14 @@ export const useWorkspaceHistoryTreeState = (params: {
     expandedAgentOrgTeams.value = {
       ...expandedAgentOrgTeams.value,
       [key]: !isAgentOrgTeamExpanded(rootRunId, address),
+    };
+  };
+  const isAgentOrgTaskTeamExpanded = (rootRunId: string, teamRunId: string): boolean =>
+    expandedAgentOrgTaskTeams.value[agentOrgTaskTeamKey(rootRunId, teamRunId)] ?? true;
+  const toggleAgentOrgTaskTeam = (rootRunId: string, teamRunId: string): void => {
+    expandedAgentOrgTaskTeams.value = {
+      ...expandedAgentOrgTaskTeams.value,
+      [agentOrgTaskTeamKey(rootRunId, teamRunId)]: !isAgentOrgTaskTeamExpanded(rootRunId, teamRunId),
     };
   };
   const isAgentOrgRunSelected = (rootRunId: string): boolean => {
@@ -478,6 +493,8 @@ export const useWorkspaceHistoryTreeState = (params: {
     toggleAgentOrgRun,
     isAgentOrgTeamExpanded,
     toggleAgentOrgTeam,
+    isAgentOrgTaskTeamExpanded,
+    toggleAgentOrgTaskTeam,
     isAgentOrgRunSelected,
     isAgentOrgMemberSelected,
     expandedWorkspaceIds,

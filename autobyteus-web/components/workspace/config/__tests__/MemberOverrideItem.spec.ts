@@ -5,6 +5,7 @@ import { nextTick } from 'vue'
 import MemberOverrideItem from '../MemberOverrideItem.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
+import { getApolloClient } from '~/utils/apolloClient'
 import type { AgentConfigOverride, ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
 import type { EditableTeamFormAgentNode } from '~/types/agent/EditableTeamRunFormModel'
 import type { ExistingTeamFormAgentNode } from '~/types/agent/ExistingTeamRunFormModel'
@@ -16,6 +17,7 @@ const flushPromises = async () => {
 
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: vi.fn() }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: vi.fn() }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }))
 
 const model = (
   modelIdentifier: string,
@@ -73,7 +75,6 @@ const resolved = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): ResolvedT
   llmModelIdentifier: 'gpt-5.4',
   llmConfig: { thinking_level: 5 },
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   workspaceId: null,
   workspaceMetadata: null,
   workspaceRootPath: null,
@@ -87,6 +88,7 @@ const editableNode = (input: {
   const baseline = resolved(input.baseline)
   return {
     mode: 'editable',
+    seedModelIdentifier: baseline.llmModelIdentifier,
     kind: 'agent',
     address: '/reviewer',
     displayName: 'Reviewer',
@@ -108,12 +110,13 @@ const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): Existin
   isCustomized: true,
   directlyEdited: false,
   effectiveConfig: resolved(changes),
-  storedWorkspace: {
-    workspaceId: null,
-    displayName: '/history/reviewer',
-    rootPath: '/history/reviewer',
-    availability: 'historical-only',
-  },
+  modelOptions: { status: 'ready', options: { currentModelIdentifier: resolved(changes).llmModelIdentifier,
+    currentModel: resolved(changes).runtimeKind === 'removed-runtime' ? null : {
+      llmModelIdentifier: resolved(changes).llmModelIdentifier, providerName: 'OpenAI',
+      displayName: resolved(changes).llmModelIdentifier, canonicalName: resolved(changes).llmModelIdentifier,
+      description: null, configSchema: codexSchema, recommended: false,
+    }, replacements: [], unavailableReason: null } },
+  workspacePresentation: { kind: 'fixed-path' },
 })
 const mountItem = (node: EditableTeamFormAgentNode | ExistingTeamFormAgentNode, disabled = false) =>
   mount(MemberOverrideItem, { props: { node, memberBreadcrumb: 'reviewer', disabled } })
@@ -125,11 +128,38 @@ const ready = async () => {
 }
 
 describe('MemberOverrideItem', () => {
+  it('shows a saved Team member path once and a missing path neutrally', async () => {
+    const member = mountItem(storedNode({ workspaceRootPath: '/saved/member' }), true)
+    await ready()
+    expect(member.get('[data-test="fixed-workspace-value"]').text()).toBe('/saved/member')
+    expect(member.get('[data-test="fixed-workspace-value"]').attributes('aria-readonly')).toBe('true')
+    expect(member.find('[role="tablist"]').exists()).toBe(false)
+    expect(member.find('[data-test="stored-workspace-unavailable"]').exists()).toBe(false)
+    const missing = mountItem(storedNode(), true)
+    await ready()
+    expect(missing.get('[data-test="fixed-workspace-value"]').text()).toBe('—')
+  })
+
+  it('keeps saved Agent Org members on the selector variant', async () => {
+    const node = { ...storedNode({ workspaceRootPath: '/org/member' }), workspacePresentation: {
+      kind: 'selector' as const, model: { mode: 'stored' as const, workspace: {
+        workspaceId: null, displayName: '/org/member', rootPath: '/org/member', availability: 'historical-only' as const,
+      } },
+    } }
+    const wrapper = mountItem(node, true)
+    await ready()
+    expect(wrapper.find('[data-test="fixed-workspace-path"]').exists()).toBe(false)
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(true)
+  })
+
   let llmStore: any
   let runtimeAvailabilityStore: any
 
   beforeEach(() => {
     setActivePinia(createPinia())
+    ;(getApolloClient as any).mockReturnValue({ query: vi.fn(async ({ variables }: any) => ({ data: {
+      runtimeCurrentModelDescriptors: variables.identifiers.map((identifier: string) => ({ identifier, model: null })),
+    } })) })
     llmStore = {
       providersWithModels: [],
       providerSnapshots: vi.fn(() => []),
@@ -397,7 +427,9 @@ describe('MemberOverrideItem', () => {
     await ready()
     expect((wrapper.get('#existing--reviewer-runtime-kind').element as HTMLSelectElement).value).toBe('removed-runtime')
     expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-agent-model')
-    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value).toBe('/history/reviewer')
+    expect(wrapper.get('[data-test="fixed-workspace-value"]').text()).toBe('/history/reviewer')
+    expect(wrapper.find('[data-test="stored-workspace-unavailable"]').exists()).toBe(false)
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false)
     expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
     expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
     expect(wrapper.findAll('[data-test="historical-model-config-residual"]')

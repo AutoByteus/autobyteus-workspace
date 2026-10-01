@@ -268,7 +268,7 @@ export class CodexThread {
     await this.awaitStartupReady();
     if (this.activeTurnId !== expectedTurnId) {
       throw new CodexInputSubmissionError(
-        "CODEX_TURN_STEER_ID_MISMATCH",
+        "CODEX_TURN_STEER_TURN_NOT_ACTIVE",
         `Codex turn/steer expected active turn '${expectedTurnId}' but '${this.activeTurnId ?? "none"}' is current.`,
       );
     }

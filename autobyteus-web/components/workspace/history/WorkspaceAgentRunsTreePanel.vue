@@ -143,12 +143,12 @@ import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceH
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions';
 import { useLocalization } from '~/composables/useLocalization';
+import { useChatDraftStore } from '~/stores/chatDraftStore';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'agent'; runId: string }): void;
   (e: 'run-selected', payload: { type: 'team'; runId: string }): void;
-  (e: 'run-created', payload: { type: 'agent'; definitionId: string }): void;
 }>();
 
 const HISTORY_REFRESH_INTERVAL_MS = 5000;
@@ -310,7 +310,10 @@ const {
     }
     emit('run-selected', { type: 'team', runId: payload.runId });
   },
-  emitRunCreated: (payload) => emit('run-created', payload),
+  startPresetChat: async (preset) => {
+    useChatDraftStore().startNewChat(preset);
+    await router.push('/chat');
+  },
   presentTeamStreamRecoveryFeedback: (feedback) => {
     const key = feedback === 'wait'
       ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
@@ -360,6 +363,11 @@ const removeWorkspaceConfirmationMessage = computed(() => {
 
 const sectionState: WorkspaceHistorySectionState = {
   get selectedRunId() {
+    // On Chat, the highlighted row is the displayed chat (none on New chat).
+    if (route?.path?.startsWith('/chat')) {
+      const id = route.query.id;
+      return typeof id === 'string' && id ? id : null;
+    }
     return treeState.selectedRunId.value;
   },
   isTeamRunSelected: (teamRunId: string) =>
@@ -389,6 +397,8 @@ const sectionState: WorkspaceHistorySectionState = {
   toggleAgentOrgRun: treeState.toggleAgentOrgRun,
   isAgentOrgTeamExpanded: treeState.isAgentOrgTeamExpanded,
   toggleAgentOrgTeam: treeState.toggleAgentOrgTeam,
+  isAgentOrgTaskTeamExpanded: treeState.isAgentOrgTaskTeamExpanded,
+  toggleAgentOrgTaskTeam: treeState.toggleAgentOrgTaskTeam,
   isAgentOrgRunSelected: treeState.isAgentOrgRunSelected,
   isAgentOrgMemberSelected: treeState.isAgentOrgMemberSelected,
   isAgentOrgTerminating: (rootRunId: string) => Boolean(agentOrgContextsStore.operations[rootRunId]) || agentOrgRunStore.terminatingRunIds.has(rootRunId),

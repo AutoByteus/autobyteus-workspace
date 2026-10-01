@@ -1,0 +1,64 @@
+{
+  "startedAt": "2026-09-26T05:10:19.715Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/fixtures/task-agent-peer-sidebar.page.vue",
+  "scenarios": {
+    "PEER-001": {
+      "result": "Fail",
+      "description": "Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "startedAt": "2026-09-26T05:10:27.628Z",
+      "failure": {
+        "id": "PEER-001",
+        "description": "Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry",
+        "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Review launch notes/ }) to be visible\u001b[22m\n",
+        "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Review launch notes/ }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:247:17\n    at scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:66:27)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:246:9"
+      }
+    }
+  },
+  "projectionRequests": [],
+  "browserEvents": [
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 8369,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "PEER-001",
+      "description": "Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Review launch notes/ }) to be visible\u001b[22m\n",
+      "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Review launch notes/ }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:247:17\n    at scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:66:27)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:246:9"
+    }
+  ],
+  "port": 52679,
+  "baseUrl": "http://127.0.0.1:52679",
+  "browserVersion": "153.0.8010.54",
+  "failureDom": "Task Agent peer history sidebar probe\nR\nReviewer\nIdle\nContext Files (0)\n(drag, paste, or upload)",
+  "result": "Fail",
+  "finishedAt": "2026-09-26T05:11:11.124Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser"
+  }
+}

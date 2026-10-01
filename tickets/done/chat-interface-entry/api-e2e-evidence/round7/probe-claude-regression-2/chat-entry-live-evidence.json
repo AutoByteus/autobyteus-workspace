@@ -1,0 +1,101 @@
+{
+  "startedAt": "2026-09-29T15:25:30.627Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 5981,
+      "details": {
+        "model": "haiku",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 0
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 12483,
+      "details": {
+        "runId": "daily_assistant_4513a79601d449bf9b29ec0f11d91281",
+        "exposure": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "claude-haiku-4-5-20251001 · Claude SDK",
+        "triggerFirstSeen": "haiku",
+        "triggerSettledAfterMs": 1865
+      }
+    },
+    "C12": {
+      "title": "Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in",
+      "result": "Pass",
+      "ms": 4139,
+      "details": {
+        "sheet": {
+          "x": 8,
+          "y": 757.5,
+          "width": 374,
+          "height": 78.5
+        },
+        "runOverflow": 0
+      }
+    },
+    "C19": {
+      "title": "CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat",
+      "result": "Fail",
+      "ms": 133973,
+      "error": "locator.waitFor: Timeout 120000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"agent-workspace-surface\"]') to be visible\n",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 79528
+    },
+    {
+      "label": "frontend",
+      "pid": 79550
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 79550,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 79528,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c",
+  "backendUrl": "http://127.0.0.1:62729",
+  "frontUrl": "http://127.0.0.1:62730",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T15:28:15.857Z"
+}

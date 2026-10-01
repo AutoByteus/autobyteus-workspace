@@ -1,4 +1,5 @@
-import { agentIdsInTaskTeam } from '~/utils/teamDelegatedTaskEntries';
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
+import { findContainingTaskExecutionRunId } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import type { TeamCommunicationMessageDto } from '@autobyteus/team-stream-contracts';
 import type { TeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import type {
@@ -6,7 +7,6 @@ import type {
   CollaborationMessageMemberIdentity,
   CollaborationMessagesPerspective,
 } from '~/types/workspace/collaborationMessagesContextView';
-import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
 
 const compareDesc = (left: CollaborationMessagePerspectiveRow, right: CollaborationMessagePerspectiveRow): number =>
   right.createdAt.localeCompare(left.createdAt) || left.messageId.localeCompare(right.messageId);
@@ -52,11 +52,11 @@ export const projectTeamCommunicationMemberIdentity = (
 ): CollaborationMessageMemberIdentity => {
   const address = view.getMemberAddress(agentRunId);
   if (!address) throw new Error(`Team communication participant '${agentRunId}' is unavailable.`);
-  const assigned = view.listTaskHistoryRows().find((task) => task.targetAgentRunId === agentRunId
-    || (task.targetTeamRunId && agentIdsInTaskTeam(view.getExecutionTree(), task.targetTeamRunId).has(agentRunId)));
-  const common = { address, label: memberAddressBasename(address) };
-  return assigned ? { ...common, kind: 'task', taskId: assigned.task.task_id,
+  const executionRunId = findContainingTaskExecutionRunId(view.getExecutionTree(), agentRunId);
+  // F-03: one display-name rule for tab senders in every root.
+  const common = { address, label: memberDisplayName(address) };
+  return executionRunId ? { ...common, kind: 'delegated',
     hostRunId: view.getAgentExecutionLocation(agentRunId)!.containingTeamRunId,
-    executionRunId: (assigned.targetAgentRunId ?? assigned.targetTeamRunId)! }
+    executionRunId }
     : { ...common, kind: 'configured' };
 };

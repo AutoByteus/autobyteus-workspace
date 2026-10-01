@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import { ExternalChannelParseError } from "autobyteus-ts/external-channel/errors.js";
-import { parseExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
+import { ExternalChannelParseError } from "../../external-channel/errors.js";
+import { parseExternalOutboundEnvelope } from "../../external-channel/external-outbound-envelope.js";
 import type { OutboundOutboxService } from "../../application/services/outbound-outbox-service.js";
 import { verifyServerCallbackSignature } from "../middleware/verify-server-callback-signature.js";
 

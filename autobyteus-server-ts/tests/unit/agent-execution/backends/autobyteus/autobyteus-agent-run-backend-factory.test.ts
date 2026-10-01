@@ -2,7 +2,6 @@ import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collab
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -144,7 +143,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
     const rawLlmConfig = {
@@ -158,7 +158,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
         llmConfig: rawLlmConfig,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "run-professor",
@@ -232,7 +231,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           getBasePath: () => path.join("/tmp", "workspace-1"),
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
     });
     const applicationExecutionContext = {
       applicationId: "app-a",
@@ -245,7 +244,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         applicationExecutionContext,
       }),
@@ -332,7 +330,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -341,7 +340,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(TeamBackendKind.MIXED),
       }),
@@ -406,7 +404,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -415,7 +414,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
@@ -484,7 +482,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -493,7 +492,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "run-professor",
@@ -546,7 +544,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -555,7 +554,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
@@ -617,7 +615,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -626,7 +625,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
@@ -662,12 +660,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     const taskCommands = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
       delegateTask: vi.fn(async () => ({
-        task_id: "task_0008",
-        status: "active" as const,
         target_agent_run_id: "run-reviewer",
       })),
-      submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
-      reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
     });
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
@@ -685,8 +679,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             description: "Coordinates work.",
             toolNames: [
               "send_message_to",
-              "submit_task_result",
-              "review_task_result",
+              "delegate_task",
             ],
           }),
         ),
@@ -711,7 +704,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -720,7 +714,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext,
       }),
@@ -799,7 +792,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
       compactionAgentRunnerFactory,
     });
@@ -809,7 +803,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "run-professor",
@@ -856,7 +849,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           getBasePath: () => path.join("/tmp", "workspace-1"),
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
       compactionAgentRunnerFactory,
     });
 
@@ -898,7 +891,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           getBasePath: () => path.join("/tmp", "workspace-1"),
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
       compactionAgentRunnerFactory: runnerFactory,
     });
 

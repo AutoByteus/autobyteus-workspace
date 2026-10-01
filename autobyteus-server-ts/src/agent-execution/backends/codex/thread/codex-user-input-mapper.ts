@@ -1,5 +1,3 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import {
   appendContextFileReferenceSection,
   collectContextFileReferencePaths,
@@ -8,49 +6,18 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import type { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { type JsonObject } from "../codex-app-server-json.js";
-
-const HTTP_URL_PATTERN = /^https?:\/\//i;
-const IMAGE_DATA_URL_PATTERN = /^data:image\//i;
-
-const resolveLocalPathUri = (uri: string): string | null => {
-  const normalizedUri = uri.trim();
-  if (!normalizedUri) {
-    return null;
-  }
-
-  if (normalizedUri.startsWith("file://")) {
-    try {
-      return fileURLToPath(normalizedUri);
-    } catch {
-      return null;
-    }
-  }
-
-  return path.isAbsolute(normalizedUri) ? normalizedUri : null;
-};
+import { resolveContextImageSource } from "../../../shared/context-image-source.js";
 
 const toCodexImageInput = (
   rawUri: string,
 ): JsonObject | null => {
-  const uri = rawUri.trim();
-  if (!uri) {
+  const source = resolveContextImageSource(rawUri);
+  if (!source) {
     return null;
   }
-
-  if (IMAGE_DATA_URL_PATTERN.test(uri)) {
-    return { type: "image", url: uri };
-  }
-
-  const localPath = resolveLocalPathUri(uri);
-  if (localPath) {
-    return { type: "localImage", path: localPath };
-  }
-
-  if (HTTP_URL_PATTERN.test(uri)) {
-    return { type: "image", url: uri };
-  }
-
-  return { type: "localImage", path: uri };
+  return source.kind === "local_path"
+    ? { type: "localImage", path: source.path }
+    : { type: "image", url: source.url };
 };
 
 const isEligibleReferenceFile = (

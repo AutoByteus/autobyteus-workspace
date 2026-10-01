@@ -1,0 +1,20 @@
+{
+  "case": "multi_only_exposure_high",
+  "configured_tools": [
+    "view_file",
+    "multi_replace_file_content"
+  ],
+  "model": "gemini-3.8-flash-high",
+  "exit": 0,
+  "timed_out": false,
+  "seconds": 8.2,
+  "init_agent_match": true,
+  "status": "SUCCESS",
+  "response_length": 12,
+  "response_has_expected_marker": false,
+  "tool_steps": [],
+  "unknown_names": [],
+  "workspace_files": {
+    "multi.txt": "AA-OLD\nBB-OLD\n"
+  }
+}

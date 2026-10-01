@@ -11,7 +11,6 @@ import { AgentRunService } from "../../../src/agent-execution/services/agent-run
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -105,6 +104,7 @@ describe("AgentRunService real memory layout integration", () => {
       } as any,
       skillService: {
         getSkill: () => null,
+        hasEffectiveSkills: () => false,
       } as any,
     });
     const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
@@ -115,6 +115,8 @@ describe("AgentRunService real memory layout integration", () => {
       autoByteusBackendFactory,
       codexBackendFactory: unavailableBackendFactory,
       claudeBackendFactory: unavailableBackendFactory,
+      agyBackendFactory: unavailableBackendFactory,
+      grokBackendFactory: unavailableBackendFactory,
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
@@ -172,7 +174,6 @@ describe("AgentRunService real memory layout integration", () => {
       workspaceRootPath: workspaceDir,
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       llmConfig: null,
     });
 

@@ -21,7 +21,6 @@ const messages = {
   'shell.components.layout.WorkspaceMobileLayout.running_list': '运行列表',
   'shell.components.layout.WorkspaceMobileLayout.select_or_run_an_agent_team': '选择或运行一个智能体/团队以开始。',
   'shell.layouts.default.open_menu': '打开菜单',
-  'shell.pages.index.redirecting_to_agent_management': '正在重定向至智能体管理...',
 } satisfies TranslationCatalog;
 
 export default messages;

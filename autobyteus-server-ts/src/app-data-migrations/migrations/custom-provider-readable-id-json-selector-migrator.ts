@@ -19,7 +19,6 @@ export type ReadableIdSelectorMigrationDetail = {
 type JsonSelectorKind =
   | 'AGENT_CONFIG'
   | 'TEAM_CONFIG'
-  | 'BINDINGS'
   | 'AGENT_RUN_METADATA'
   | 'TEAM_RUN_METADATA'
   | 'IMPROVER_SESSION';
@@ -68,24 +67,6 @@ const rewriteDefaultLaunchConfig = (
   return rewriteField(launchConfig, 'llmModelIdentifier', mappings);
 };
 
-const rewriteBindings = (
-  value: unknown,
-  mappings: readonly CustomProviderReadableIdMapping[],
-): number => {
-  const rows = Array.isArray(value)
-    ? value
-    : isRecord(value) && Array.isArray(value.bindings) ? value.bindings : null;
-  if (!rows) throw new Error('CUSTOM_PROVIDER_READABLE_ID_SELECTOR_INVALID');
-  let rewritten = 0;
-  for (const row of rows) {
-    if (!isRecord(row)) throw new Error('CUSTOM_PROVIDER_READABLE_ID_SELECTOR_INVALID');
-    if (row.launchPreset === undefined || row.launchPreset === null) continue;
-    if (!isRecord(row.launchPreset)) throw new Error('CUSTOM_PROVIDER_READABLE_ID_SELECTOR_INVALID');
-    rewritten += rewriteField(row.launchPreset, 'llmModelIdentifier', mappings);
-  }
-  return rewritten;
-};
-
 const rewriteTeamMemberTree = (
   value: unknown,
   mappings: readonly CustomProviderReadableIdMapping[],
@@ -113,7 +94,6 @@ const rewriteCandidate = (
   if (candidate.kind === 'AGENT_CONFIG' || candidate.kind === 'TEAM_CONFIG') {
     return rewriteDefaultLaunchConfig(value, mappings);
   }
-  if (candidate.kind === 'BINDINGS') return rewriteBindings(value, mappings);
   if (!isRecord(value)) throw new Error('CUSTOM_PROVIDER_READABLE_ID_SELECTOR_INVALID');
   if (candidate.kind === 'TEAM_RUN_METADATA') {
     return rewriteTeamMemberTree(value.memberTree, mappings);
@@ -207,7 +187,6 @@ const sanitizeFailure = (error: unknown): string =>
 export class CustomProviderReadableIdJsonSelectorMigrator {
   constructor(private readonly paths: {
     configRoots: readonly string[];
-    bindingsPath: string;
     agentRunsRoot: string;
     teamRunsRoot: string;
     memoryRoot: string;
@@ -249,16 +228,6 @@ export class CustomProviderReadableIdJsonSelectorMigrator {
         : null,
       recordInventoryFailure,
     )) candidates.set(candidate.filePath, candidate);
-    try {
-      const bindingStat = await fs.lstat(this.paths.bindingsPath);
-      if (bindingStat.isFile() || bindingStat.isSymbolicLink()) {
-        candidates.set(this.paths.bindingsPath, { kind: 'BINDINGS', filePath: this.paths.bindingsPath });
-      }
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        recordInventoryFailure(this.paths.bindingsPath);
-      }
-    }
 
     for (const candidate of Array.from(candidates.values()).sort(
       (left, right) => left.filePath.localeCompare(right.filePath),

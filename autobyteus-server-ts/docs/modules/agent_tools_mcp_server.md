@@ -10,6 +10,11 @@ Claude Agent SDK and Codex App Server are the first production runtime
 materializers: configured Claude runs consume this endpoint through the SDK
 `mcpServers` query option, and configured Codex runs consume it through
 thread-scoped app-server `config.mcp_servers`.
+AGY runs also receive the run-scoped descriptor in their own durable capsule
+MCP configuration; see [Antigravity CLI Runtime](./antigravity_cli_runtime.md).
+Grok Build runs receive it as an HTTP `mcpServers` entry on ACP
+`session/new`/`session/load`, gated on Grok reporting the server ready; see
+[Grok Build Runtime](./grok_build_runtime.md).
 
 This module is distinct from both [MCP Server Management](./mcp_server_management.md)
 and the [General MCP Gateway](./mcp_gateway.md): MCP Server Management consumes
@@ -242,7 +247,7 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - `get_handoff_rules`
 - browser tools from `src/agent-tools/browser`
 - media tools from `src/agent-tools/media`
-- task-delegation tools from `src/agent-tools/task-delegation`
+- `delegate_task` from `src/agent-tools/task-delegation`
 - `publish_artifacts`
 
 The catalog filters by the session's resolved effective tool names. That set is
@@ -264,7 +269,9 @@ manifests:
 - `send_message_to` delegates to the shared `SendMessageToDispatcher`.
   `recipient_address` requires an active `MemberTeamContext` and one canonical
   absolute non-root `/...` logical Agent-or-AgentTeam address;
-  `target_agent_run_id` is a live-only exact active-run selector.
+  `target_agent_run_id` is an exact run-ID selector: same-root targets go
+  through the root (waking a shut-down delegated child), other targets must be
+  active.
 - `get_handoff_rules` delegates to the shared read-only service, takes no
   arguments, and is available only when the sender has active member
   collaboration context. It returns only ordered `{ when, recipient_address }`
@@ -280,11 +287,10 @@ manifests:
 - Media tools reuse the media manifest, parsers, media-local path policy, and
   `MediaGenerationService`. The MCP session execution context supplies the run
   workspace root, run id, and sender identity used by media execution.
-- Task-delegation tools reuse the task-delegation manifest and
-  `TaskDelegationToolService`. They are available only for sessions with an
-  active `MemberTeamContext`; review feedback uses the canonical
-  `review_task_result.comment` field rather than the ordinary-message
-  `message` field.
+- `delegate_task` reuses the task-delegation manifest and
+  `TaskDelegationToolService`. It is available only for sessions with an active
+  `MemberTeamContext`. It is the only task-delegation tool; the retired
+  `submit_task_result` / `review_task_result` tools are not registered.
 - `publish_artifacts` reuses the published-artifact contract and
   `PublishedArtifactPublicationService`. It publishes against the owning active
   run id and uses session execution context as fallback runtime context for
@@ -295,9 +301,10 @@ serialize it once, parse that serialization into object `structuredContent`, and
 return the same JSON in MCP text. `send_message_to` exposes
 `{accepted,code,message,target_agent_run_id}`: success contains the exact
 existing AgentRun receiver, while rejection uses `target_agent_run_id:null` and
-sets `isError:true`. `delegate_task` exposes either the active
-`{task_id,status,target_agent_run_id}` branch for the fresh task ingress or the
-`{task_id,status:"not_started",message}` branch with no target identity.
+sets `isError:true`. `delegate_task` exposes a strict `anyOf` union: either
+`{target_agent_run_id}` naming the fresh child ingress, or
+`{target_agent_run_id:null,message}` when nothing was started. Input and
+admission failures are tool errors with `{error:{code,message}}`.
 `get_handoff_rules` retains its own `{handoffs}` object. The removed generic
 communication-result envelope/mapper is not retained as a compatibility path,
 and exact operation codes are not collapsed into provider-specific prose.

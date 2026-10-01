@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -45,7 +44,6 @@ const createRun = (input: {
     autoExecuteTools: false,
     workspaceId: "workspace-1",
     memoryDir: input.memoryDir,
-    skillAccessMode: SkillAccessMode.NONE,
   });
   const context = new AgentRunContext({ runId: "run-1", config, runtimeContext: null });
   const backend: AgentRunBackend = {

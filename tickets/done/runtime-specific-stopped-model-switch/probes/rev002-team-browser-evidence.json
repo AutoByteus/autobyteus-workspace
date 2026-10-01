@@ -1,0 +1,31 @@
+{
+  "created": {
+    "data": {
+      "createAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "classroom_simulation_team_0338b491a9924abcbbfa6f3a692f8a10"
+      }
+    }
+  },
+  "id": "classroom_simulation_team_0338b491a9924abcbbfa6f3a692f8a10",
+  "current": "default",
+  "choices": [
+    "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+    "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+    "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks",
+    "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+    "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+    "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+    "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+    "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+    "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+    "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks"
+  ],
+  "models": [
+    "opus",
+    "opus",
+    "opus"
+  ],
+  "status": "Pass"
+}

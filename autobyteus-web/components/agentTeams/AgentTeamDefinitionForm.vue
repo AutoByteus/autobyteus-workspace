@@ -219,6 +219,7 @@
       <DefinitionLaunchPreferencesSection
         :runtime-kind="launchPreferences.runtimeKind"
         :llm-model-identifier="launchPreferences.llmModelIdentifier"
+      :seed-model-identifier="initialData?.defaultLaunchConfig?.llmModelIdentifier"
         :llm-config="launchPreferences.llmConfig"
         id-prefix="team-definition"
         @update:runtime-kind="launchPreferences.runtimeKind = $event"

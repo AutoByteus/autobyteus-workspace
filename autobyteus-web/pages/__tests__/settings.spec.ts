@@ -15,7 +15,6 @@ const translationMap: Record<string, string> = {
   'settings.page.empty.description': 'Select a category to configure settings.',
   'settings.page.sections.apiKeys': 'API Keys',
   'settings.page.sections.tokenUsage': 'Token Statistics',
-  'settings.page.sections.messaging': 'Messaging',
   'settings.page.sections.display': 'Display',
   'settings.page.sections.language': 'Language',
   'settings.page.sections.localTools': 'Local Tools',
@@ -70,7 +69,6 @@ const mountSettings = () =>
         ProviderAPIKeyManager: { template: '<div data-testid="section-api-keys" />' },
         TokenUsageStatistics: { template: '<div data-testid="section-token-usage" />' },
         ConversationHistoryManager: { template: '<div data-testid="section-conversation-logs" />' },
-        MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
         DisplaySettingsManager: { template: '<div data-testid="section-display" />' },
         LanguageSettingsManager: { template: '<div data-testid="section-language" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
@@ -110,7 +108,6 @@ describe('settings page', () => {
 
     expect(wrapper.text()).toContain('API Keys')
     expect(wrapper.text()).not.toContain('Nodes')
-    expect(wrapper.text()).toContain('Messaging')
     expect(wrapper.text()).toContain('Display')
     expect(wrapper.text()).toContain('Language')
     expect(wrapper.text()).toContain('Updates')
@@ -339,13 +336,14 @@ describe('settings page', () => {
     expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=migrations')
   })
 
-  it('supports messaging section query and activates messaging section', async () => {
-    routeMock.query = { section: 'messaging' }
+  it('keeps the default section for an unknown section query', async () => {
+    routeMock.query = { section: 'retired-section' }
     const wrapper = mountSettings()
     await nextTick()
     const setupState = (wrapper.vm as any).$?.setupState
 
-    expect(setupState.activeSection).toBe('messaging')
+    expect(setupState.activeSection).toBe('api-keys')
+    expect(wrapper.find('[data-testid="section-api-keys"]').exists()).toBe(true)
   })
 
   it('supports language section query and activates language section', async () => {

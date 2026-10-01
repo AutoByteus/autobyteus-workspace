@@ -3,11 +3,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { appendConfiguredSkillsCatalog } from '../../../../src/agent/system-prompt/append-configured-skills-catalog.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { Skill } from '../../../../src/skills/model.js';
-import { SkillAccessMode } from '../../../../src/agent/context/skill-access-mode.js';
 
 const makeContext = () => ({
   agentId: 'test_agent',
-  config: { skills: [] as string[], skillAccessMode: undefined as SkillAccessMode | undefined }
+  config: { skills: [] as string[] }
 });
 
 const expectedSkillsBlock = (catalogEntries: string): string => `\n\n## Skills
@@ -42,19 +41,6 @@ describe('appendConfiguredSkillsCatalog', () => {
     );
 
     expect(appendConfiguredSkillsCatalog('Original', makeContext())).toBe('Original');
-  });
-
-  it('returns the original prompt unchanged when skill access mode is NONE', () => {
-    const registry = new SkillRegistry();
-    (registry as any).skills.set(
-      'configured',
-      new Skill('configured', 'Configured skill', 'CONFIGURED_BODY', '/configured')
-    );
-    const context = makeContext();
-    context.config.skills = ['configured'];
-    context.config.skillAccessMode = SkillAccessMode.NONE;
-
-    expect(appendConfiguredSkillsCatalog('Original', context)).toBe('Original');
   });
 
   it('returns the original prompt unchanged when configured names do not resolve', () => {
@@ -96,7 +82,6 @@ describe('appendConfiguredSkillsCatalog', () => {
     );
     const context = makeContext();
     context.config.skills = ['skill-b', 'skill-a'];
-    context.config.skillAccessMode = SkillAccessMode.PRELOADED_ONLY;
     const catalogEntries = [
       '- **skill-b**: Second configured skill.',
       `  - **SKILL.md:** \`${path.resolve(absoluteRoot, 'SKILL.md')}\``,

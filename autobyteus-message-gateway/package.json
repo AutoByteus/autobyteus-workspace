@@ -1,17 +1,14 @@
 {
   "name": "autobyteus-message-gateway",
-  "version": "1.4.78",
+  "version": "1.4.79",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prebuild": "pnpm -C .. -r --filter autobyteus-ts build",
     "build": "tsc -p tsconfig.build.json",
     "build:runtime-package": "node ./scripts/build-runtime-package.mjs",
-    "pretypecheck": "pnpm -C .. -r --filter autobyteus-ts build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "pretest": "pnpm -C .. -r --filter autobyteus-ts build",
     "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {
@@ -22,7 +19,6 @@
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@whiskeysockets/baileys": "6.7.21",
-    "autobyteus-ts": "workspace:*",
     "fastify": "^4.29.1"
   },
   "license": "Apache-2.0"

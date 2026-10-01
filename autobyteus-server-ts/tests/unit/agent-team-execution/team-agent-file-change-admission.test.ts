@@ -1,6 +1,5 @@
 import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -29,7 +28,6 @@ describe("Team FILE_CHANGE admission", () => {
         llmModelIdentifier: "test-model",
         autoExecuteTools: true,
         workspaceId: "workspace-1",
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       runtimeContext: null,

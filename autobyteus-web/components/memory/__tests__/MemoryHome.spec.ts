@@ -45,4 +45,47 @@ describe('MemoryHome', () => {
     expect(wrapper.text()).not.toMatch(/agent teams with memory/i);
     expect(store.setHomeTab).toHaveBeenCalledWith('teams');
   });
+
+  it('renders Agent Orgs cards, searches orgs and emits org selection', async () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const store = useMemoryExplorerStore();
+    store.homeTab = 'orgs';
+    store.orgs.entries = [{
+      orgDefinitionId: 'org-a',
+      orgDefinitionName: 'Alpha Org',
+      orgRunCount: 5,
+      memberMemoryCount: 16,
+      latestMemoryAt: '2026-09-01T01:00:00.000Z',
+      memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: true, hasRawTraces: false, hasRawArchive: false },
+    }];
+
+    const wrapper = mount(MemoryHome, { global: { plugins: [pinia] } });
+
+    expect(wrapper.findAll('button').slice(0, 3).map((button) => button.text())[2]).toMatch(/agent orgs/i);
+    expect(wrapper.find('input').attributes('placeholder')).toMatch(/search agent orgs/i);
+    expect(wrapper.text()).toContain('Alpha Org');
+    expect(wrapper.text()).toContain('org-a');
+    expect(wrapper.text()).toContain('5 runs');
+    expect(wrapper.text()).toContain('16');
+
+    await wrapper.find('input').setValue(' alpha ');
+    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    expect(store.setOrgsSearch).toHaveBeenCalledWith('alpha');
+
+    await wrapper.findAll('button').find((button) => button.text().includes('Alpha Org'))!.trigger('click');
+    expect(wrapper.emitted('selectOrg')?.[0]?.[0]).toMatchObject({ orgDefinitionId: 'org-a' });
+  });
+
+  it('shows the Agent Orgs empty state and retries the active org tab', async () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const store = useMemoryExplorerStore();
+    store.homeTab = 'orgs';
+    const empty = mount(MemoryHome, { global: { plugins: [pinia] } });
+    expect(empty.text()).toMatch(/no org memories yet/i);
+
+    store.orgs.error = 'boom';
+    await empty.vm.$nextTick();
+    await empty.findAll('button').find((button) => button.text() === 'Retry')!.trigger('click');
+    expect(store.fetchHomeTab).toHaveBeenCalledWith('orgs');
+  });
 });

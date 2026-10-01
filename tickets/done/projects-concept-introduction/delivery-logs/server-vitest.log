@@ -1,0 +1,445 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.17                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+stdout | tests/unit/projects/project-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-service.test.ts (23 tests) 368ms
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:82223) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-001: projects capability defaults to disabled, persists, toggles, and leaves Applications/SI settings untouched
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-w1EfSC
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-w1EfSC/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-001: projects capability defaults to disabled, persists, toggles, and leaves Applications/SI settings untouched
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-002: creates, lists, edits and rejects invalid or duplicate Project names
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-sqSwxa
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-sqSwxa/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Created and registered workspace ID: agent_ws_0913a8e818d090023e7dcc85f4742d76d565bedd0a8b0152dc3100374ac40fbc
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/roots/autobyteus-marketing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/roots/autobyteus-marketing.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Created and registered workspace ID: agent_ws_bcd180c6dd9af2f95306b38bb855322edf146329f56d24ec923b892cd7d16498
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/roots/new-root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-KjqMkW/roots/new-root.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Created and registered workspace ID: agent_ws_c7217dbf1b24992334cb55a9ccfe33be95f4c14176c9bc7c6eddf25d647af23a
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Closing FileSystemWorkspace agent_ws_0913a8e818d090023e7dcc85f4742d76d565bedd0a8b0152dc3100374ac40fbc
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Closing FileSystemWorkspace agent_ws_bcd180c6dd9af2f95306b38bb855322edf146329f56d24ec923b892cd7d16498
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-003: links registered workspaces through the real registry and rejects temp, unregistered and duplicate links
+Closing FileSystemWorkspace agent_ws_c7217dbf1b24992334cb55a9ccfe33be95f4c14176c9bc7c6eddf25d647af23a
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Created and registered workspace ID: agent_ws_69115b2fe935c9a0304661bb1fcd0982fa8e59d1659caf57f60c69b9a0409e75
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/roots/autobyteus-marketing
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/roots/autobyteus-marketing.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Created and registered workspace ID: agent_ws_d974a0180be078626eeed2176f39769d5b5e1cfe38094c54c4cf58f0b4cb0852
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Closing FileSystemWorkspace agent_ws_69115b2fe935c9a0304661bb1fcd0982fa8e59d1659caf57f60c69b9a0409e75
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-0OMejz/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Created and registered workspace ID: agent_ws_69115b2fe935c9a0304661bb1fcd0982fa8e59d1659caf57f60c69b9a0409e75
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Closing FileSystemWorkspace agent_ws_d974a0180be078626eeed2176f39769d5b5e1cfe38094c54c4cf58f0b4cb0852
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-004: keeps a link as UNREGISTERED after real workspace removal and restores it on re-registration
+Closing FileSystemWorkspace agent_ws_69115b2fe935c9a0304661bb1fcd0982fa8e59d1659caf57f60c69b9a0409e75
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Created and registered workspace ID: agent_ws_e8a66248f50243ab597ae0d9b8bd22b9d7898426bf437b2fc9efa84c32f02988
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/roots/autobyteus-superrepo
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/roots/autobyteus-superrepo.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Created and registered workspace ID: agent_ws_db6fbcfc04c450e404deac0f8563ebd4d540316ad351a3455be4260a9ccf16f4
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-04bai1/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Closing FileSystemWorkspace agent_ws_e8a66248f50243ab597ae0d9b8bd22b9d7898426bf437b2fc9efa84c32f02988
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Closing FileSystemWorkspace agent_ws_db6fbcfc04c450e404deac0f8563ebd4d540316ad351a3455be4260a9ccf16f4
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-005: deleting a Project removes only its record and leaves workspaces.json and other Projects unchanged
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects and capability
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-XnwYj5
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-XnwYj5/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects and capability
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-XnwYj5/roots/autobyteus-web-prototype
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-XnwYj5/roots/autobyteus-web-prototype.
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects and capability
+Created and registered workspace ID: agent_ws_725a0ce9d2af9f50a59429e896eb99f4cf10e8af74efc029384452178f938d92
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects and capability
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-XnwYj5
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-XnwYj5/.env
+
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-006: a restarted Projects subsystem reads the same persisted Projects and capability
+Closing FileSystemWorkspace agent_ws_725a0ce9d2af9f50a59429e896eb99f4cf10e8af74efc029384452178f938d92
+
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (6 tests) 296ms
+stdout | tests/unit/api/graphql/projects-schema.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:82226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/api/graphql/projects-schema.test.ts (3 tests) 48ms
+stdout | tests/unit/services/server-settings-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes and validates the live response update interval
+Initialized server settings service with 21 predefined settings
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 21 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes a registered working-context compaction strategy before persistence
+Initialized server settings service with 21 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects an unknown working-context compaction strategy before persistence
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value read-only
+Initialized server settings service with 21 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value workspace-write
+Initialized server settings service with 21 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value danger-full-access
+Initialized server settings service with 21 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 21 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 21 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 21 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 21 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 21 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 21 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 21 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 21 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 21 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 21 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads a boolean setting as true, false, or null for the requested key
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists a boolean setting as normalized strings for the requested key
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > registers ENABLE_PROJECTS as an editable predefined setting
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy undefined as structured-json without persisting
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "" as structured-json without persisting
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "   " as structured-json without persisting
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " structured-json " as structured-json without persisting
+Initialized server settings service with 21 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " removed-strategy " as removed-strategy without persisting
+Initialized server settings service with 21 predefined settings
+
+ ✓ tests/unit/services/server-settings-service.test.ts (40 tests) 10ms
+ ✓ tests/architecture/projects-boundaries.test.ts (3 tests) 7ms
+ ✓ tests/unit/api/graphql/types/projects.test.ts (7 tests) 4ms
+stdout | tests/unit/application-capability/application-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/application-capability/application-capability-service.test.ts (4 tests) 4ms
+stdout | tests/unit/projects/projects-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/projects-capability-service.test.ts (3 tests) 3ms
+
+ Test Files  8 passed (8)
+      Tests  89 passed (89)
+   Start at  16:24:06
+   Duration  8.62s (transform 2.73s, setup 34ms, import 6.87s, tests 739ms, environment 1ms)

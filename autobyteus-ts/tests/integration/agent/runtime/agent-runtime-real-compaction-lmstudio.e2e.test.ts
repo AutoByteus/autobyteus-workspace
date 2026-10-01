@@ -361,7 +361,6 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
         null,
         null,
         memoryDir,
-        null,
         createEnabledMemoryCompactionConfiguration(new CompactionPolicy(), runner),
       );
       agent = new AgentFactory().createAgent(config);

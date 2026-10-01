@@ -41,7 +41,6 @@ const normalizeMetadata = (
   llmModelIdentifier: metadata.llmModelIdentifier.trim(),
   llmConfig: metadata.llmConfig ?? null,
   autoExecuteTools: Boolean(metadata.autoExecuteTools),
-  skillAccessMode: metadata.skillAccessMode ?? null,
   runtimeKind: metadata.runtimeKind,
   platformAgentRunId:
     typeof metadata.platformAgentRunId === "string" && metadata.platformAgentRunId.trim().length > 0
@@ -53,6 +52,7 @@ const normalizeMetadata = (
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
+  ...(metadata.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
 });
 
 export type AgentRunMetadataReadState =

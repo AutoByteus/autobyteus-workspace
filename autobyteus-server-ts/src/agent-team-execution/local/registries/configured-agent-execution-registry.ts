@@ -51,7 +51,9 @@ export class ConfiguredAgentExecutionRegistry implements ConfiguredMemberRegistr
       teamContext: this.options.teamContext,
       context,
       config: node,
-      activationMode: this.options.teamContext.runtimeContext.configuredMemberActivationMode,
+      // A collaborator keeps the mode it was added with; configured members use the TeamRun's.
+      activationMode: this.options.configResolver.activationModeFor(context)
+        ?? this.options.teamContext.runtimeContext.configuredMemberActivationMode,
       agentRunManager: this.options.agentRunManager,
       memoryLocator: this.options.memoryLocator,
       activityInspector: this.options.activityInspector,

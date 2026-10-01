@@ -1,4 +1,5 @@
 import agentInputMessages from './agentInput.generated';
+import chatMessages from './chat';
 import agentOrgMessages from './agentOrgs';
 import agentTeamGeneratedMessages from './agentTeams.generated';
 import agentTeamMessages from './agentTeams';
@@ -17,6 +18,7 @@ import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
 import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
+import projectMessages from './projects';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
 import generatedSkillsMessages from './skills.generated';
@@ -29,6 +31,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const enMessages: TranslationCatalog = {
   ...agentInputMessages,
+  ...chatMessages,
   ...agentOrgMessages,
   ...agentTeamGeneratedMessages,
   ...agentTeamMessages,
@@ -47,6 +50,7 @@ const enMessages: TranslationCatalog = {
   ...packageMigrationSettingsMessages,
   ...tokenUsageSettingsMessages,
   ...memorySyncSettingsMessages,
+  ...projectMessages,
   ...generatedShellMessages,
   ...shellMessages,
   ...generatedSkillsMessages,

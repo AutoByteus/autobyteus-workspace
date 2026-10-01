@@ -1,0 +1,9 @@
+AgentFactory (Singleton) initialized.
+(node:40360) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-25T19:28:52.936Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-25T19:28:52.936Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-25T19:28:52.937Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/applications/brief-studio/dist/importable-package/applications/brief-studio

@@ -1,0 +1,78 @@
+[
+  {
+    "deliveryKey": "external-output:eyJiaW5kaW5nSWQiOiIxIiwicm91dGUiOnsicHJvdmlkZXIiOiJURUxFR1JBTSIsInRyYW5zcG9ydCI6IkJVU0lORVNTX0FQSSIsImFjY291bnRJZCI6ImUyZS1ib3QiLCJwZWVySWQiOiJlMmUtcGVlci0xMDAxIiwidGhyZWFkSWQiOm51bGx9LCJ0YXJnZXQiOnsidGFyZ2V0VHlwZSI6IkFHRU5UIiwiYWdlbnRSdW5JZCI6InRlbGVncmFtX2hlbHBlcl9jZWFkY2ZhYzUwZGE0ZDkyYjAwMzBkZDMxMzU2NzUwYSJ9LCJ0dXJuSWQiOiJ0dXJuXzAwMDEifQ",
+    "bindingId": "1",
+    "provider": "TELEGRAM",
+    "transport": "BUSINESS_API",
+    "accountId": "e2e-bot",
+    "peerId": "e2e-peer-1001",
+    "threadId": "",
+    "target": {
+      "targetType": "AGENT",
+      "agentRunId": "telegram_helper_ceadcfac50da4d92b0030dd31356750a"
+    },
+    "turnId": "turn_0001",
+    "correlationMessageId": "tg-e2e-msg-1",
+    "callbackIdempotencyKey": "external-output:eyJiaW5kaW5nSWQiOiIxIiwicm91dGUiOnsicHJvdmlkZXIiOiJURUxFR1JBTSIsInRyYW5zcG9ydCI6IkJVU0lORVNTX0FQSSIsImFjY291bnRJZCI6ImUyZS1ib3QiLCJwZWVySWQiOiJlMmUtcGVlci0xMDAxIiwidGhyZWFkSWQiOm51bGx9LCJ0YXJnZXQiOnsidGFyZ2V0VHlwZSI6IkFHRU5UIiwiYWdlbnRSdW5JZCI6InRlbGVncmFtX2hlbHBlcl9jZWFkY2ZhYzUwZGE0ZDkyYjAwMzBkZDMxMzU2NzUwYSJ9LCJ0dXJuSWQiOiJ0dXJuXzAwMDEifQ",
+    "status": "FAILED",
+    "replyTextFinal": "2+2 equals 4.",
+    "lastError": "CALLBACK_NOT_CONFIGURED",
+    "observedAt": "2026-09-24T14:51:56.480Z",
+    "finalizedAt": "2026-09-24T14:52:01.904Z",
+    "publishRequestedAt": "2026-09-24T14:52:01.911Z",
+    "publishedAt": null,
+    "createdAt": "2026-09-24T14:51:56.480Z",
+    "updatedAt": "2026-09-24T14:52:01.920Z"
+  },
+  {
+    "deliveryKey": "external-output:eyJiaW5kaW5nSWQiOiIxIiwicm91dGUiOnsicHJvdmlkZXIiOiJURUxFR1JBTSIsInRyYW5zcG9ydCI6IkJVU0lORVNTX0FQSSIsImFjY291bnRJZCI6ImUyZS1ib3QiLCJwZWVySWQiOiJlMmUtcGVlci0xMDAxIiwidGhyZWFkSWQiOm51bGx9LCJ0YXJnZXQiOnsidGFyZ2V0VHlwZSI6IkFHRU5UIiwiYWdlbnRSdW5JZCI6InRlbGVncmFtX2hlbHBlcl9jZWFkY2ZhYzUwZGE0ZDkyYjAwMzBkZDMxMzU2NzUwYSJ9LCJ0dXJuSWQiOiJ0dXJuXzAwMDIifQ",
+    "bindingId": "1",
+    "provider": "TELEGRAM",
+    "transport": "BUSINESS_API",
+    "accountId": "e2e-bot",
+    "peerId": "e2e-peer-1001",
+    "threadId": "",
+    "target": {
+      "targetType": "AGENT",
+      "agentRunId": "telegram_helper_ceadcfac50da4d92b0030dd31356750a"
+    },
+    "turnId": "turn_0002",
+    "correlationMessageId": "tg-e2e-msg-2",
+    "callbackIdempotencyKey": "external-output:eyJiaW5kaW5nSWQiOiIxIiwicm91dGUiOnsicHJvdmlkZXIiOiJURUxFR1JBTSIsInRyYW5zcG9ydCI6IkJVU0lORVNTX0FQSSIsImFjY291bnRJZCI6ImUyZS1ib3QiLCJwZWVySWQiOiJlMmUtcGVlci0xMDAxIiwidGhyZWFkSWQiOm51bGx9LCJ0YXJnZXQiOnsidGFyZ2V0VHlwZSI6IkFHRU5UIiwiYWdlbnRSdW5JZCI6InRlbGVncmFtX2hlbHBlcl9jZWFkY2ZhYzUwZGE0ZDkyYjAwMzBkZDMxMzU2NzUwYSJ9LCJ0dXJuSWQiOiJ0dXJuXzAwMDIifQ",
+    "status": "FAILED",
+    "replyTextFinal": "3+3 equals 6.",
+    "lastError": "CALLBACK_NOT_CONFIGURED",
+    "observedAt": "2026-09-24T14:52:43.797Z",
+    "finalizedAt": "2026-09-24T14:52:46.235Z",
+    "publishRequestedAt": "2026-09-24T14:52:46.242Z",
+    "publishedAt": null,
+    "createdAt": "2026-09-24T14:52:43.797Z",
+    "updatedAt": "2026-09-24T14:52:46.250Z"
+  },
+  {
+    "deliveryKey": "external-output:eyJiaW5kaW5nSWQiOiIyIiwicm91dGUiOnsicHJvdmlkZXIiOiJURUxFR1JBTSIsInRyYW5zcG9ydCI6IkJVU0lORVNTX0FQSSIsImFjY291bnRJZCI6ImUyZS1ib3QiLCJwZWVySWQiOiJlMmUtZ3JvdXAtMjAwMiIsInRocmVhZElkIjpudWxsfSwidGFyZ2V0Ijp7InRhcmdldFR5cGUiOiJURUFNIiwidGVhbVJ1bklkIjoiY2xhc3Nyb29tX3JlbGF5Xzk5OTU0NTY3MmVmMDQxODdiM2VjYTA2NzEzZWUyYTM5IiwiZW50cnlBZ2VudFJ1bklkIjoidGVsZWdyYW1faGVscGVyXzJlYjQyMmY0MjEwZTQ4MjhiNjU2NDNhNTE2MTU5MzdlIn0sInR1cm5JZCI6InR1cm5fMDAwMSJ9",
+    "bindingId": "2",
+    "provider": "TELEGRAM",
+    "transport": "BUSINESS_API",
+    "accountId": "e2e-bot",
+    "peerId": "e2e-group-2002",
+    "threadId": "",
+    "target": {
+      "targetType": "TEAM",
+      "teamRunId": "classroom_relay_999545672ef04187b3eca06713ee2a39",
+      "entryAgentRunId": "telegram_helper_2eb422f4210e4828b65643a51615937e"
+    },
+    "turnId": "turn_0001",
+    "correlationMessageId": "tg-e2e-team-msg-1",
+    "callbackIdempotencyKey": "external-output:eyJiaW5kaW5nSWQiOiIyIiwicm91dGUiOnsicHJvdmlkZXIiOiJURUxFR1JBTSIsInRyYW5zcG9ydCI6IkJVU0lORVNTX0FQSSIsImFjY291bnRJZCI6ImUyZS1ib3QiLCJwZWVySWQiOiJlMmUtZ3JvdXAtMjAwMiIsInRocmVhZElkIjpudWxsfSwidGFyZ2V0Ijp7InRhcmdldFR5cGUiOiJURUFNIiwidGVhbVJ1bklkIjoiY2xhc3Nyb29tX3JlbGF5Xzk5OTU0NTY3MmVmMDQxODdiM2VjYTA2NzEzZWUyYTM5IiwiZW50cnlBZ2VudFJ1bklkIjoidGVsZWdyYW1faGVscGVyXzJlYjQyMmY0MjEwZTQ4MjhiNjU2NDNhNTE2MTU5MzdlIn0sInR1cm5JZCI6InR1cm5fMDAwMSJ9",
+    "status": "FAILED",
+    "replyTextFinal": "Seven.",
+    "lastError": "CALLBACK_NOT_CONFIGURED",
+    "observedAt": "2026-09-24T14:53:04.586Z",
+    "finalizedAt": "2026-09-24T14:53:06.644Z",
+    "publishRequestedAt": "2026-09-24T14:53:06.662Z",
+    "publishedAt": null,
+    "createdAt": "2026-09-24T14:53:04.586Z",
+    "updatedAt": "2026-09-24T14:53:06.677Z"
+  }
+]

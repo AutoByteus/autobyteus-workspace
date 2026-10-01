@@ -4,11 +4,18 @@ import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
+import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
 
 const routerHarness = vi.hoisted(() => ({
   route: { query: {} as Record<string, string> },
   push: vi.fn().mockResolvedValue(undefined),
   replace: vi.fn().mockResolvedValue(undefined),
+}));
+
+const chatDraftStoreMock = vi.hoisted(() => ({ startNewChat: vi.fn() }));
+vi.mock('~/stores/chatDraftStore', () => ({
+  useChatDraftStore: () => chatDraftStoreMock,
 }));
 
 vi.mock('vue-router', () => ({
@@ -283,7 +290,6 @@ const {
       }),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
-      createDraftRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
       createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),
@@ -1081,7 +1087,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('creates draft run from agent row plus button and emits run-created', async () => {
+  it('starts a New chat preset to the agent and workspace from the agent row plus button', async () => {
     const wrapper = mountComponent();
     await flushPromises();
     await expandWorkspace(wrapper);
@@ -1092,14 +1098,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await createButtons[0]!.trigger('click');
     await flushPromises();
 
-    expect(runHistoryStoreMock.createDraftRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(chatDraftStoreMock.startNewChat).toHaveBeenCalledWith({
       workspaceRootPath: '/ws/a',
       agentDefinitionId: 'agent-def-1',
-      selectionIntent: expect.any(Object),
-    }));
-    expect(wrapper.emitted('run-created')).toEqual([
-      [{ type: 'agent', definitionId: 'agent-def-1' }],
-    ]);
+    });
+    expect(routerHarness.push).toHaveBeenCalledWith('/chat');
+    expect(wrapper.emitted('run-selected')).toBeUndefined();
   });
 
   it('does not render run-row configuration button', async () => {
@@ -2285,12 +2289,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   });
   it("archives and confirms deletion of stopped AgentOrg roots with exact selected-route cleanup", async () => {
     const launch = { runtimeKind: "codex_app_server", llmModelIdentifier: "model", llmConfig: null,
-      autoExecuteTools: false, skillAccessMode: "PRELOADED_ONLY", workspaceRootPath: "/ws/a" };
+      autoExecuteTools: false, workspaceRootPath: "/ws/a" };
     const orgRun = {
       stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
-      executionTree: { schemaVersion: 1, subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
-        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
+      executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: "/", orgDefinitionId: "org-def",
           orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun] }];
@@ -2326,12 +2330,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('renders the real AgentOrg Delete confirmation action and dialog name in zh-CN', async () => {
     await localizationRuntime.setPreference('zh-CN');
     const launch = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model', llmConfig: null,
-      autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/ws/a' };
+      autoExecuteTools: false, workspaceRootPath: '/ws/a' };
     const orgRun = {
       stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
       createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
-      executionTree: { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
-        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def',
+      executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: '/', orgDefinitionId: 'org-def',
           orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{
@@ -2361,6 +2365,68 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       wrapper.unmount();
       host.remove();
       await localizationRuntime.setPreference('en');
+    }
+  });
+
+  /** API-TTRC-003 (REQ-006 / AC-004, design §2): the real panel binds delegated-Team disclosure and inspects the coordinator. */
+  it('toggles a delegated Team row through the panel tree state and inspects its exact coordinator', async () => {
+    const tree = structuredClone(taskBearingView().execution_tree) as any;
+    const orgRun = {
+      stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
+      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree,
+    };
+    runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: 'org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [orgRun] }];
+    (runHistoryStoreMock as any).agentOrgHistory = [orgRun];
+    (runHistoryStoreMock as any).historyFamilyErrors = {};
+    (selectionStoreMock as any).clearSelection = vi.fn();
+    const orgContexts = useAgentOrgContextsStore();
+    let opened = false;
+    const inspected = {
+      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, selectedAddress: null, selection: null,
+      index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>() },
+    };
+    const openForInspection = vi.spyOn(orgContexts, 'openForInspection').mockImplementation(async () => { opened = true; });
+    vi.spyOn(orgContexts, 'contextFor').mockImplementation(((id: string) => opened && id === 'org-run' ? inspected : null) as never);
+    const select = vi.spyOn(orgContexts, 'select').mockImplementation(() => undefined);
+    const wrapper = mountComponent();
+    try {
+      await flushPromises();
+      await expandWorkspace(wrapper);
+      const definition = wrapper.get('[data-test="agent-org-definition-org-definition"]');
+      if (definition.attributes('aria-expanded') !== 'true') await definition.trigger('click');
+      await nextTick();
+      const run = wrapper.get('[data-test="agent-org-run-open-org-run"]');
+      if (run.attributes('aria-expanded') !== 'true') await run.trigger('click');
+      await flushPromises();
+      openForInspection.mockClear(); select.mockClear(); routerHarness.push.mockClear();
+      opened = false;
+
+      const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
+      const member = () => wrapper.find('[data-test="agent-org-task-agent-row-agent-task-worker"]');
+      expect(row().attributes('aria-expanded')).toBe('true');
+      expect(row().find('[data-test="agent-org-task-team-disclosure-team-task"]').exists()).toBe(true);
+      expect(member().exists()).toBe(true);
+
+      await row().trigger('click');
+      await flushPromises();
+      expect(row().attributes('aria-expanded')).toBe('false');
+      expect(member().exists()).toBe(false);
+      expect(openForInspection).toHaveBeenCalledWith('org-run', expect.anything());
+      expect(select).toHaveBeenCalledWith('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' });
+      expect(routerHarness.push).toHaveBeenCalledWith({ path: '/workspace', query: expect.objectContaining({
+        rootSubjectKind: 'agent_org', orgRunId: 'org-run', memberAddress: '/team/lead', agentRunId: 'agent-task-lead',
+      }) });
+
+      await row().trigger('click');
+      await flushPromises();
+      expect(row().attributes('aria-expanded')).toBe('true');
+      expect(member().exists()).toBe(true);
+      expect(select).toHaveBeenCalledTimes(2);
+    } finally {
+      wrapper.unmount();
+      delete (runHistoryStoreMock as any).agentOrgHistory;
+      delete (runHistoryStoreMock as any).historyFamilyErrors;
+      delete (selectionStoreMock as any).clearSelection;
     }
   });
 

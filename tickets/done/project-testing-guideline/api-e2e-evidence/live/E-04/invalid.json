@@ -1,0 +1,1 @@
+{"schema_version":"1","ok":false,"command":"run-script","error":{"code":"INVALID_ARGUMENT","message":"prompt_text requires dialog=accept.","retryable":false}}

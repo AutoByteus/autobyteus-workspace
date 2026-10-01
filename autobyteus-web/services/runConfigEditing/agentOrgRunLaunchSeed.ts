@@ -9,9 +9,6 @@ import { canonicalizeAgentOrgPlacementLaunchPatch, agentOrgPlacementLaunchPatche
 import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 
 type Launch = AgentOrgExecutionTreeDto['rootOrg']['defaultLaunchConfiguration']
-const assertAuthorable = (config: Launch, address: string) => {
-  if (config.skillAccessMode !== 'PRELOADED_ONLY') throw new Error(`Unsupported source skill policy at ${address}.`)
-}
 const relativePatch = (config: Launch, parent: Launch): AgentConfigOverride => {
   const patch: AgentConfigOverride = {}
   if (config.runtimeKind !== parent.runtimeKind) patch.runtimeKind = config.runtimeKind
@@ -39,7 +36,6 @@ export const buildEditableAgentOrgRunSeed = (
       : { mode: 'new', existingWorkspaceId: null, newWorkspacePath: path ?? '' }
   }
   const config = root.defaultLaunchConfiguration
-  assertAuthorable(config, '/')
   const seed: AgentOrgRunLaunchSeed = {
     definitionId: definition.id, runtimeKind: config.runtimeKind, llmModelIdentifier: config.llmModelIdentifier,
     llmConfig: config.llmConfig, autoExecuteTools: config.autoExecuteTools,
@@ -50,7 +46,6 @@ export const buildEditableAgentOrgRunSeed = (
     if (!('agentRunId' in source) || source.address !== address || source.agentDefinitionId !== id || !references.agents[id]) mismatch(address)
     if (!('agentRunId' in source)) return
     const launch = source.launchConfiguration
-    assertAuthorable(launch, address)
     if (launch.workspaceRootPath !== parent.workspaceRootPath) throw new Error(`Unsupported per-Agent source workspace at ${address}.`)
     const patch = relativePatch(launch, parent)
     if (Object.keys(patch).length) seed.agentOverrides[address] = patch
@@ -65,7 +60,6 @@ export const buildEditableAgentOrgRunSeed = (
     if (!('teamRunId' in source)) continue
     if (source.members.length !== team.nodes.length || source.coordinatorAddress !== `${address}/${team.coordinatorMemberName}`) mismatch(address)
     const launch = source.defaultLaunchConfiguration
-    assertAuthorable(launch, address)
     const patch = relativePatch(launch, config)
     if (launch.workspaceRootPath !== config.workspaceRootPath) {
       const workspace = selection(launch.workspaceRootPath)

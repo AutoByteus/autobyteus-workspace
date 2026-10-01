@@ -14,12 +14,15 @@ import type {
   ApplicationCurrentModelSelectionPolicy,
 } from "./application-current-model-selection-policy.js";
 import { ApplicationModelAvailabilityError } from "./application-current-model-selection-policy.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { toAgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
+import { toGrokBuildDiagnostic } from "../../runtime-management/grok/grok-build-capability.js";
 
 type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
   "getRuntimeAvailability"
 >;
-type ModelCatalogReader = Pick<ModelCatalogService, "listLlmModels">;
+type ModelCatalogReader = Pick<ModelCatalogService, "resolveExactCurrentLlmModel">;
 type EffectiveLaunchSubject =
   | ApplicationEffectiveTeamLaunchProfile
   | ApplicationEffectiveLeafLaunchProfile;
@@ -69,7 +72,7 @@ export class ApplicationLaunchHostCapabilityValidator {
         ));
         continue;
       }
-      const availability = this.dependencies.runtimeAvailabilityService
+      const availability = await this.dependencies.runtimeAvailabilityService
         .getRuntimeAvailability(runtimeKind);
       if (!availability.enabled) {
         issues.push(issue(
@@ -107,20 +110,21 @@ export class ApplicationLaunchHostCapabilityValidator {
 
       let models;
       try {
-        models = await this.dependencies.modelCatalogService.listLlmModels(runtimeKind);
+        models = await this.dependencies.modelCatalogService.resolveExactCurrentLlmModel(runtimeKind, leaf.llmModelIdentifier);
       } catch (error) {
         const failure = error instanceof Error ? error : new Error(String(error));
         issues.push(issue(
           configuration,
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${failure.message}`,
+          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
+            ? toAgyDiscoveryDiagnostic(error).message
+            : runtimeKind === RuntimeKind.GROK_BUILD ? toGrokBuildDiagnostic(error).message : failure.message}`,
         ));
         continue;
       }
       const modelIdentifier = leaf.llmModelIdentifier.trim();
-      const model = models.find((candidate) =>
-        candidate.model_identifier === modelIdentifier);
+      const model = models?.model_identifier === modelIdentifier ? models : null;
       if (!model) {
         issues.push(issue(
           configuration,

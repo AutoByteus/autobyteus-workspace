@@ -1,0 +1,264 @@
+{
+  "startedAt": "2026-09-29T04:01:12.639Z",
+  "platform": "darwin-arm64",
+  "scenarios": {
+    "LC-001": {
+      "id": "LC-001",
+      "title": "Start from an agent-like shell: JSON, readiness, loopback-only, isolated server env, no production files",
+      "startedAt": "2026-09-29T04:01:12.861Z",
+      "details": {
+        "instance": {
+          "instanceId": "iso-57564-0248",
+          "pid": 52343,
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:57566",
+          "graphqlUrl": "http://127.0.0.1:57566/graphql",
+          "controlEndpoint": "http://127.0.0.1:57564",
+          "controlPort": 57564,
+          "serverPort": 57566,
+          "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ/server-data/db/production.db",
+          "logPath": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-app/iso-57564-0248.log"
+        },
+        "readySeconds": 3.102,
+        "isolation": {
+          "processCount": 5,
+          "listeners": [
+            "127.0.0.1:57564",
+            "127.0.0.1:57570",
+            "127.0.0.1:57590",
+            "*:57566"
+          ],
+          "droppedChecked": [
+            "AUTOBYTEUS_DATA_DIR",
+            "AUTOBYTEUS_MEMORY_DIR",
+            "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+            "AUTOBYTEUS_SKILLS_PATHS",
+            "AUTOBYTEUS_SERVER_HOST",
+            "DB_NAME",
+            "DATABASE_URL",
+            "APP_ENV",
+            "OPENAI_API_KEY",
+            "AUTOBYTEUS_PROBE_CALLER_SENTINEL"
+          ],
+          "openFileCount": 224,
+          "productionOpen": []
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T04:01:16.333Z"
+    },
+    "LC-002": {
+      "id": "LC-002",
+      "title": "Second concurrent instance, list, and control-port conflict",
+      "startedAt": "2026-09-29T04:01:16.333Z",
+      "details": {
+        "instanceB": {
+          "instanceId": "iso-57565-b529",
+          "pid": 53512,
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:57605",
+          "graphqlUrl": "http://127.0.0.1:57605/graphql",
+          "controlEndpoint": "http://127.0.0.1:57565",
+          "controlPort": 57565,
+          "serverPort": 57605,
+          "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-VFeSAc",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-VFeSAc/server-data/db/production.db",
+          "logPath": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-app/iso-57565-b529.log"
+        },
+        "listed": {
+          "instances": [
+            {
+              "instanceId": "iso-57564-0248",
+              "pid": 52343,
+              "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+              "backendUrl": "http://127.0.0.1:57566",
+              "graphqlUrl": "http://127.0.0.1:57566/graphql",
+              "controlEndpoint": "http://127.0.0.1:57564",
+              "controlPort": 57564,
+              "serverPort": 57566,
+              "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ",
+              "ownsDataRoot": true,
+              "keepDataRoot": false,
+              "databaseUrl": "file:/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ/server-data/db/production.db",
+              "logPath": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-app/iso-57564-0248.log",
+              "startedAt": "2026-09-29T04:01:12.913Z",
+              "running": true
+            },
+            {
+              "instanceId": "iso-57565-b529",
+              "pid": 53512,
+              "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+              "backendUrl": "http://127.0.0.1:57605",
+              "graphqlUrl": "http://127.0.0.1:57605/graphql",
+              "controlEndpoint": "http://127.0.0.1:57565",
+              "controlPort": 57565,
+              "serverPort": 57605,
+              "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-VFeSAc",
+              "ownsDataRoot": true,
+              "keepDataRoot": false,
+              "databaseUrl": "file:/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-VFeSAc/server-data/db/production.db",
+              "logPath": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-app/iso-57565-b529.log",
+              "startedAt": "2026-09-29T04:01:16.385Z",
+              "running": true
+            }
+          ]
+        },
+        "conflict": {
+          "code": "CONTROL_PORT_IN_USE",
+          "message": "Control port 57564 is used by isolated instance iso-57564-0248; stop it or pass --control-port",
+          "details": {
+            "instanceId": "iso-57564-0248"
+          }
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T04:01:20.203Z"
+    },
+    "LC-003": {
+      "id": "LC-003",
+      "title": "Restart keeps id, ports, root and flags; new tab id; still isolated",
+      "startedAt": "2026-09-29T04:01:20.203Z",
+      "details": {
+        "tabBefore": "B2278281DC389F0AEB612330366BDA49",
+        "tabAfter": "252D7341EF0F038477DAA06BCC2D62FB",
+        "restarted": {
+          "instanceId": "iso-57564-0248",
+          "pid": 54645,
+          "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:57566",
+          "graphqlUrl": "http://127.0.0.1:57566/graphql",
+          "controlEndpoint": "http://127.0.0.1:57564",
+          "controlPort": 57564,
+          "serverPort": 57566,
+          "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ/server-data/db/production.db",
+          "logPath": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-app/iso-57564-0248.log"
+        },
+        "isolation": {
+          "processCount": 5,
+          "listeners": [
+            "127.0.0.1:57564",
+            "127.0.0.1:57650",
+            "127.0.0.1:57668",
+            "*:57566"
+          ],
+          "droppedChecked": [
+            "AUTOBYTEUS_DATA_DIR",
+            "AUTOBYTEUS_MEMORY_DIR",
+            "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+            "AUTOBYTEUS_SKILLS_PATHS",
+            "AUTOBYTEUS_SERVER_HOST",
+            "DB_NAME",
+            "DATABASE_URL",
+            "APP_ENV",
+            "OPENAI_API_KEY",
+            "AUTOBYTEUS_PROBE_CALLER_SENTINEL"
+          ],
+          "openFileCount": 217,
+          "productionOpen": []
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T04:01:24.423Z"
+    },
+    "LC-004": {
+      "id": "LC-004",
+      "title": "Stop ends the whole group, frees ports, removes the owned root; others keep running",
+      "startedAt": "2026-09-29T04:01:24.423Z",
+      "details": {
+        "stopped": {
+          "instanceId": "iso-57565-b529",
+          "wasRunning": true,
+          "forced": false,
+          "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-VFeSAc",
+          "dataRootRemoved": true,
+          "controlPortReleased": true,
+          "serverPortReleased": true,
+          "logPath": null
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T04:01:25.206Z"
+    },
+    "LC-005": {
+      "id": "LC-005",
+      "title": "Dead-process stop after the app was ended outside the lifecycle",
+      "startedAt": "2026-09-29T04:01:25.206Z",
+      "details": {
+        "listed": {
+          "instances": [
+            {
+              "instanceId": "iso-57564-0248",
+              "pid": 54645,
+              "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+              "backendUrl": "http://127.0.0.1:57566",
+              "graphqlUrl": "http://127.0.0.1:57566/graphql",
+              "controlEndpoint": "http://127.0.0.1:57564",
+              "controlPort": 57564,
+              "serverPort": 57566,
+              "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ",
+              "ownsDataRoot": true,
+              "keepDataRoot": false,
+              "databaseUrl": "file:/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ/server-data/db/production.db",
+              "logPath": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-app/iso-57564-0248.log",
+              "startedAt": "2026-09-29T04:01:20.966Z",
+              "running": false
+            }
+          ]
+        },
+        "stopped": {
+          "instanceId": "iso-57564-0248",
+          "wasRunning": false,
+          "forced": false,
+          "dataRoot": "/private/tmp/abiso-3jLVeX/autobyteus-isolated-root-EBvnaJ",
+          "dataRootRemoved": true,
+          "controlPortReleased": true,
+          "serverPortReleased": true,
+          "logPath": null
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T04:01:25.615Z"
+    },
+    "LC-006": {
+      "id": "LC-006",
+      "title": "Refusals launch nothing: unknown id, missing marker, packed AppImage, invalid data root",
+      "startedAt": "2026-09-29T04:01:25.615Z",
+      "details": {
+        "notFound": {
+          "code": "INSTANCE_NOT_FOUND",
+          "message": "No isolated instance with id iso-1-dead"
+        },
+        "unsupported": {
+          "code": "APP_ISOLATION_UNSUPPORTED",
+          "message": "/private/tmp/abiso-3jLVeX/fake-apps/Unmarked.app/Contents/MacOS/AutoByteus does not support isolated launches (no isolated-launch.json in /private/tmp/abiso-3jLVeX/fake-apps/Unmarked.app/Contents/Resources). Builds before isolated-launch support would pass your production settings to the instance. Use --from-worktree or --build, or update the installed app to a release with isolated-launch support.",
+          "details": {
+            "executablePath": "/private/tmp/abiso-3jLVeX/fake-apps/Unmarked.app/Contents/MacOS/AutoByteus"
+          }
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T04:01:26.402Z"
+    }
+  },
+  "failures": [],
+  "runRoot": "/private/tmp/abiso-3jLVeX",
+  "productionBefore": {
+    "productionListenerPids": [
+      "60384"
+    ]
+  },
+  "productionAfter": {
+    "productionListenerPids": [
+      "60384"
+    ]
+  },
+  "completedAt": "2026-09-29T04:01:26.616Z"
+}

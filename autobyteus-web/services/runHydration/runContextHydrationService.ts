@@ -7,7 +7,6 @@ import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRunConfig,
   type AgentRuntimeKind,
-  type SkillAccessMode,
 } from '~/types/agent/AgentRunConfig';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection, type RunProjectionConversationEntry } from './runProjectionConversation';
@@ -158,9 +157,6 @@ export const loadRunContextHydrationCandidate = async (
     workspaceId: workspaceMetadata.workspaceId,
     workspaceMetadata,
     autoExecuteTools: resumeConfig.metadataConfig.autoExecuteTools,
-    skillAccessMode:
-      (resumeConfig.metadataConfig.skillAccessMode as SkillAccessMode | null) ||
-      'PRELOADED_ONLY',
     llmConfig: resumeConfig.metadataConfig.llmConfig ?? null,
     isLocked: resumeConfig.isActive,
   };

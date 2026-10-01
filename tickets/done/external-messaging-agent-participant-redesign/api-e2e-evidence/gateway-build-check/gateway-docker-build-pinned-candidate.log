@@ -1,0 +1,80 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.gateway.X
+#1 transferring dockerfile: 1.19kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-bookworm
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 282B done
+#3 DONE 0.0s
+
+#4 [ 1/13] FROM docker.io/library/node:20-bookworm@sha256:65b74d0fb42134c49530a8c34e9f3e4a2fb8e1f99ac4a0eb4e6f314b426183a2
+#4 resolve docker.io/library/node:20-bookworm@sha256:65b74d0fb42134c49530a8c34e9f3e4a2fb8e1f99ac4a0eb4e6f314b426183a2 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 125.02kB 0.1s done
+#5 DONE 0.1s
+
+#6 [ 2/13] WORKDIR /app
+#6 CACHED
+
+#7 [ 3/13] RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
+#7 CACHED
+
+#8 [ 4/13] RUN apt-get update   && apt-get install -y --no-install-recommends python3 make g++   && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [ 5/13] COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+#9 DONE 0.0s
+
+#10 [ 6/13] COPY autobyteus-ts/package.json autobyteus-ts/package.json
+#10 DONE 0.0s
+
+#11 [ 7/13] COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/package.json
+#11 DONE 0.0s
+
+#12 [ 8/13] RUN printf "\nonlyBuiltDependencies:\n  - '@whiskeysockets/baileys'\n  - esbuild\n  - node-pty\n  - protobufjs\n  - sharp\n" >> pnpm-workspace.yaml
+#12 DONE 0.2s
+
+#13 [ 9/13] RUN pnpm install --frozen-lockfile --filter autobyteus-message-gateway...
+#13 0.696 No projects matched the filters in "/app"
+#13 DONE 0.7s
+
+#14 [10/13] COPY autobyteus-ts autobyteus-ts
+#14 DONE 0.2s
+
+#15 [11/13] COPY autobyteus-message-gateway autobyteus-message-gateway
+#15 DONE 0.7s
+
+#16 [12/13] RUN pnpm -C autobyteus-message-gateway build
+#16 0.468 
+#16 0.468 > autobyteus-message-gateway@1.4.78 build /app/autobyteus-message-gateway
+#16 0.468 > tsc -p tsconfig.build.json
+#16 0.468 
+#16 0.470 sh: 1: tsc: not found
+#16 0.482  ELIFECYCLE  Command failed.
+#16 0.483  WARN   Local package.json exists, but node_modules missing, did you mean to install?
+#16 ERROR: process "/bin/sh -c pnpm -C autobyteus-message-gateway build" did not complete successfully: exit code: 1
+------
+ > [12/13] RUN pnpm -C autobyteus-message-gateway build:
+0.468 
+0.468 > autobyteus-message-gateway@1.4.78 build /app/autobyteus-message-gateway
+0.468 > tsc -p tsconfig.build.json
+0.468 
+0.470 sh: 1: tsc: not found
+0.482  ELIFECYCLE  Command failed.
+0.483  WARN   Local package.json exists, but node_modules missing, did you mean to install?
+------
+Dockerfile.gateway.X:24
+--------------------
+  22 |     COPY autobyteus-message-gateway autobyteus-message-gateway
+  23 |     
+  24 | >>> RUN pnpm -C autobyteus-message-gateway build
+  25 |     
+  26 |     WORKDIR /app/autobyteus-message-gateway
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm -C autobyteus-message-gateway build" did not complete successfully: exit code: 1

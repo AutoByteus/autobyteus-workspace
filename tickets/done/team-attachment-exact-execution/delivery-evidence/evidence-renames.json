@@ -1,0 +1,12 @@
+[
+  {
+    "old": "converts-a-copied-retained-duplicate-address-package-before-admission-and-preserves-bytes-history-and-original-backups-across-restart.log",
+    "new": "copied-data-migration.log",
+    "sha256": "12d193a7e1cd439373d19a7709cb45bb6f223683a80a7c083614c3d869a1c932"
+  },
+  {
+    "old": "blocks-both-real-startup-entrypoints-on-unresolved-attachment-proof-and-admits-standalone-after-the-fixture-is-repaired.log",
+    "new": "startup-proof-gates.log",
+    "sha256": "1de42020a0612eae2cb0c7c5b0ee3089056ed4c47a7d0be89681f2e31edec851"
+  }
+]

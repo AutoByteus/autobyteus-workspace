@@ -5,7 +5,6 @@ import {
   handleSegmentStart,
   handleSegmentContent,
   handleSegmentEnd,
-  handleExternalUserMessage,
   handleMemberInputMessage,
   handleToolApprovalRequested,
   handleToolApproved,
@@ -21,7 +20,7 @@ import {
   handleAssistantComplete,
   handleTurnCompleted,
   handleTurnInterrupted,
-  handleTodoListUpdate,
+  handleBackgroundTaskUpdated,
   handleError,
   handleInterAgentMessage,
   handleFileChange,
@@ -53,6 +52,14 @@ export type AgentStreamProjectionTarget =
       kind: 'agent_org_member';
       context: AgentContext;
       orgRunId: string;
+      agentRunId: string;
+      memberAddress: AgentTeamAddress;
+    }
+  | {
+      /** A task child of a standalone run's collaboration root. */
+      kind: 'agent_collaboration_member';
+      context: AgentContext;
+      hostRunId: string;
       agentRunId: string;
       memberAddress: AgentTeamAddress;
     };
@@ -88,8 +95,6 @@ const dispatchToHandler = (
       const effect = handleSegmentEnd(message.payload, context);
       return conversationResult(effect !== 'NONE', effect);
     }
-    case 'EXTERNAL_USER_MESSAGE':
-      return conversationResult(handleExternalUserMessage(message.payload, context), 'STRUCTURAL');
     case 'MEMBER_INPUT_MESSAGE':
       return conversationResult(handleMemberInputMessage(message.payload, context), 'STRUCTURAL');
     case 'TOOL_APPROVAL_REQUESTED':
@@ -141,7 +146,8 @@ const dispatchToHandler = (
           conversationResult(result.conversationEffect !== 'NONE', result.conversationEffect),
         );
       }
-      if (!message.payload.accepted) {
+      // A rejected add posted nothing: the notice above the composer reports it, not the conversation.
+      if (!message.payload.accepted && message.payload.code !== 'COLLABORATOR_ADD_FAILED') {
         const eventMonitor = handleError({
           code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
           message: message.payload.message ?? 'Agent command was not accepted.',
@@ -189,8 +195,8 @@ const dispatchToHandler = (
       return conversationResult(handleInterAgentMessage(message.payload, context), 'STRUCTURAL');
     case 'SYSTEM_TASK_NOTIFICATION':
       return conversationResult(handleSystemTaskNotification(message.payload, context), 'STRUCTURAL');
-    case 'TODO_LIST_UPDATE':
-      handleTodoListUpdate(message.payload, context);
+    case 'BACKGROUND_TASK_UPDATED':
+      handleBackgroundTaskUpdated(message.payload, context);
       return NO_AGENT_STREAM_MUTATION;
     case 'FILE_CHANGE':
       handleFileChange(message.payload, context);
@@ -219,7 +225,8 @@ export const dispatchAgentStreamMessage = (
   commitRecentEventMonitorEffect(target.context, effects.eventMonitor);
   if (effects.navigation.kind !== 'NONE') {
     const currentStatus = target.context.state.currentStatus;
-    if (target.kind === 'agent_org_member') return effects;
+    // Root views (Org, Agent collaboration) own their own tree rows.
+    if (target.kind === 'agent_org_member' || target.kind === 'agent_collaboration_member') return effects;
     useRunHistoryStore().applyRunNavigationEffect(
       target.kind === 'standalone'
         ? { kind: 'standalone', runId: target.runId, currentStatus }

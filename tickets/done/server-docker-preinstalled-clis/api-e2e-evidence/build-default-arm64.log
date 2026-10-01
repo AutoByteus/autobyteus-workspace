@@ -1,0 +1,812 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 7.92kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 2.9s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 0.6s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 DONE 0.6s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+
+#10 [builder  1/28] FROM docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
+#10 resolve docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7 0.0s done
+#10 DONE 0.0s
+
+#11 [runtime  1/32] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#11 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4 0.0s done
+#11 DONE 0.0s
+
+#12 [runtime  2/32] WORKDIR /app
+#12 CACHED
+
+#13 [internal] load build context
+#13 transferring context: 620.54kB 0.3s done
+#13 DONE 0.3s
+
+#14 [builder  7/28] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#14 CACHED
+
+#15 [builder  3/28] RUN corepack enable
+#15 CACHED
+
+#16 [builder  9/28] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+#16 CACHED
+
+#17 [builder 10/28] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+#17 CACHED
+
+#18 [builder  8/28] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#18 CACHED
+
+#19 [builder  2/28] WORKDIR /app
+#19 CACHED
+
+#20 [builder  5/28] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#20 CACHED
+
+#21 [builder 12/28] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#21 CACHED
+
+#22 [builder  6/28] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#22 CACHED
+
+#23 [builder 11/28] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#23 CACHED
+
+#24 [builder  4/28] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#24 CACHED
+
+#25 [builder 13/28] COPY autobyteus-web/package.json ./autobyteus-web/
+#25 CACHED
+
+#26 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#26 0.142 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#26 1.888 Scope: all 9 workspace projects
+#26 2.233 Progress: resolved 0, reused 0, downloaded 1, added 0
+#26 2.679
+#26 2.679    ╭──────────────────────────────────────────────╮
+#26 2.679    │                                              │
+#26 2.679    │     Update available! 10.28.2 → 12.6.0.      │
+#26 2.679    │     Changelog: https://pnpm.io/v/12.6.0      │
+#26 2.679    │   To update, run: corepack use pnpm@12.6.0   │
+#26 2.679    │                                              │
+#26 2.679    ╰──────────────────────────────────────────────╯
+#26 2.679
+#26 3.235 Progress: resolved 32, reused 0, downloaded 31, added 0
+#26 4.237 Progress: resolved 65, reused 0, downloaded 64, added 0
+#26 5.238 Progress: resolved 79, reused 0, downloaded 78, added 0
+#26 5.433  WARN  Tarball download average speed 1 KiB/s (size 2 KiB) is below 50 KiB/s: https://registry.npmjs.org/to-ico/-/to-ico-1.1.5.tgz (GET)
+#26 6.242 Progress: resolved 96, reused 0, downloaded 95, added 0
+#26 7.248 Progress: resolved 102, reused 0, downloaded 101, added 0
+#26 8.250 Progress: resolved 103, reused 0, downloaded 102, added 0
+#26 ...
+
+#27 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#27 0.341 Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#27 0.348 Get:2 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+#27 0.410 Get:3 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+#27 0.416 Get:4 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.4 kB]
+#27 0.471 Get:5 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main arm64 Packages [52.1 kB]
+#27 0.530 Get:6 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]
+#27 0.571 Get:7 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main arm64 Packages [59.6 kB]
+#27 1.345 Get:8 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+#27 1.512 Get:9 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+#27 1.752 Get:10 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+#27 1.866 Get:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1,776 kB]
+#27 2.296 Get:12 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Components [658 kB]
+#27 2.446 Get:13 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]
+#27 7.020 Get:14 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Components [5,467 kB]
+#27 8.354 Get:15 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]
+#27 8.382 Get:16 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]
+#27 8.448 Get:17 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Components [37.7 kB]
+#27 8.459 Get:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1,692 kB]
+#27 8.857 Get:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Components [239 kB]
+#27 8.920 Get:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2,198 kB]
+#27 9.433 Get:21 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Components [532 kB]
+#27 ...
+
+#26 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#26 9.251 Progress: resolved 104, reused 0, downloaded 103, added 0
+#26 10.25 Progress: resolved 105, reused 0, downloaded 104, added 0
+#26 11.25 Progress: resolved 106, reused 0, downloaded 106, added 0
+#26 12.25 Progress: resolved 108, reused 0, downloaded 108, added 0
+#26 13.25 Progress: resolved 110, reused 0, downloaded 110, added 0
+#26 14.25 Progress: resolved 162, reused 0, downloaded 136, added 0
+#26 15.26 Progress: resolved 377, reused 0, downloaded 350, added 0
+#26 ...
+
+#27 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#27 9.623 Get:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [2,996 kB]
+#27 10.33 Get:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Components [159 B]
+#27 10.33 Get:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [94.8 kB]
+#27 10.36 Get:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Components [159 B]
+#27 10.36 Get:26 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]
+#27 10.37 Get:27 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Components [3,712 B]
+#27 10.37 Get:28 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]
+#27 10.38 Get:29 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Components [13.6 kB]
+#27 10.38 Get:30 http://ports.ubuntu.com/ubuntu-ports noble-backports/restricted arm64 Components [160 B]
+#27 10.38 Get:31 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [671 B]
+#27 10.45 Get:32 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Components [161 B]
+#27 10.45 Get:33 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1,357 kB]
+#27 10.76 Get:34 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Components [56.2 kB]
+#27 10.78 Get:35 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1,637 kB]
+#27 11.20 Get:36 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Components [97.7 kB]
+#27 11.21 Get:37 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [2,811 kB]
+#27 11.86 Get:38 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Components [156 B]
+#27 11.86 Get:39 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [89.7 kB]
+#27 11.89 Get:40 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Components [157 B]
+#27 13.22 Fetched 42.1 MB in 12s (3,568 kB/s)
+#27 13.22 Reading package lists...
+#27 14.57 Reading package lists...
+#27 15.81 Building dependency tree...
+#27 16.09 Reading state information...
+#27 ...
+
+#26 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#26 16.26 Progress: resolved 470, reused 0, downloaded 443, added 0
+#26 ...
+
+#27 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#27 16.49 git is already the newest version (1:2.43.0-1ubuntu7.3).
+#27 16.49 ripgrep is already the newest version (14.1.0-1).
+#27 16.49 curl is already the newest version (8.5.0-2ubuntu10.15).
+#27 16.49 ca-certificates is already the newest version (20260601~24.04.1).
+#27 16.49 The following packages were automatically installed and are no longer required:
+#27 16.49   geocode-glib-common gnome-keyring-pkcs11 libabsl20220623t64
+#27 16.49   libebackend-1.2-11t64 libebook-1.2-21t64 libebook-contacts-1.2-4t64
+#27 16.49   libedata-book-1.2-27t64 libedata-cal-2.0-2t64 libedataserverui-1.2-4t64
+#27 16.49   libgeocode-glib-2-0 libgweather-4-0t64 libgweather-4-common libphonenumber8
+#27 16.49   libprotobuf32t64 p11-kit p11-kit-modules
+#27 16.49 Use 'apt autoremove' to remove them.
+#27 16.58 0 upgraded, 0 newly installed, 0 to remove and 8 not upgraded.
+#27 DONE 17.1s
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 0.129 CLI install cache buster: api001-a
+#28 ...
+
+#26 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#26 17.13  WARN  Tarball download average speed 46 KiB/s (size 54 KiB) is below 50 KiB/s: https://registry.npmjs.org/@iconify/utils/-/utils-3.1.0.tgz (GET)
+#26 17.26 Progress: resolved 565, reused 0, downloaded 538, added 0
+#26 18.26 Progress: resolved 671, reused 0, downloaded 645, added 0
+#26 19.26 Progress: resolved 788, reused 0, downloaded 759, added 0
+#26 20.26 Progress: resolved 841, reused 0, downloaded 774, added 0
+#26 21.26 Progress: resolved 1021, reused 0, downloaded 937, added 0
+#26 22.26 Progress: resolved 1112, reused 0, downloaded 1030, added 0
+#26 23.27 Progress: resolved 1228, reused 0, downloaded 1149, added 0
+#26 24.27 Progress: resolved 1319, reused 0, downloaded 1240, added 0
+#26 25.27 Progress: resolved 1415, reused 0, downloaded 1323, added 0
+#26 26.27 Progress: resolved 1501, reused 0, downloaded 1348, added 0
+#26 27.27 Progress: resolved 1587, reused 0, downloaded 1436, added 0
+#26 28.27 Progress: resolved 1693, reused 0, downloaded 1543, added 0
+#26 29.40 Progress: resolved 1794, reused 0, downloaded 1635, added 0
+#26 30.40 Progress: resolved 1822, reused 0, downloaded 1664, added 0
+#26 31.40 Progress: resolved 1823, reused 0, downloaded 1665, added 0
+#26 33.27 Progress: resolved 1823, reused 0, downloaded 1666, added 0
+#26 40.33 Progress: resolved 1823, reused 0, downloaded 1667, added 0
+#26 48.99 Progress: resolved 1823, reused 0, downloaded 1668, added 0
+#26 49.99 Progress: resolved 1829, reused 0, downloaded 1672, added 0
+#26 50.99 Progress: resolved 1842, reused 0, downloaded 1686, added 0
+#26 51.99 Progress: resolved 1844, reused 0, downloaded 1686, added 0
+#26 52.99 Progress: resolved 1844, reused 0, downloaded 1688, added 0
+#26 53.63  WARN  23 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, @xmldom/xmldom@0.8.11, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+#26 53.67 Packages: +1680
+#26 53.67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#26 53.99 Progress: resolved 1844, reused 0, downloaded 1688, added 82
+#26 54.99 Progress: resolved 1844, reused 0, downloaded 1688, added 1679
+#26 60.88 Progress: resolved 1844, reused 0, downloaded 1689, added 1679
+#26 60.88 Progress: resolved 1844, reused 0, downloaded 1689, added 1680, done
+#26 61.61 .../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+#26 61.61 .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+#26 61.61 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#26 61.61 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+#26 61.73 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#26 61.76 .../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+#26 61.76 .../node-pty@1.1.0/node_modules/node-pty install: [33m> Rebuilding because directory /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/linux-arm64 does not exist[0m
+#26 61.76 .../node_modules/@parcel/watcher install: Done
+#26 61.76 .../node_modules/protobufjs postinstall: Done
+#26 61.78 .../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+#26 61.80 .../node-pty@1.1.0/node_modules/node-pty install: gyp info it worked if it ends with ok
+#26 61.80 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node-gyp@11.5.0
+#26 61.80 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node@22.23.3 | linux | arm64
+#26 61.80 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#26 61.81 .../sharp@0.33.5/node_modules/sharp install$ node install/check
+#26 61.85 .../node_modules/vue-demi postinstall: Done
+#26 61.86 .../node-pty@1.1.0/node_modules/node-pty install: gyp info find Python using Python version 3.11.2 found at "/usr/bin/python3"
+#26 61.89 .../sharp@0.33.5/node_modules/sharp install: Done
+#26 61.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.23.3/node-v22.23.3-headers.tar.gz
+#26 62.10 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.23.3/node-v22.23.3-headers.tar.gz
+#26 66.19 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.23.3/SHASUMS256.txt
+#26 66.22 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.23.3/SHASUMS256.txt
+#26 66.25 .../node_modules/@prisma/engines postinstall: Done
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn /usr/bin/python3
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/gyp/gyp_main.py',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'binding.gyp',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-f',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'make',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/config.gypi',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/addon.gypi',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node-gyp/22.23.3/include/node/common.gypi',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dlibrary=shared_library',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dvisibility=default',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_root_dir=/root/.cache/node-gyp/22.23.3',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_gyp_dir=/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_lib_file=/root/.cache/node-gyp/22.23.3/<(target_arch)/node.lib',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dmodule_root_dir=/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_engine=v8',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--depth=.',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--no-parallel',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--generator-output',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'build',
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Goutput_dir=.'
+#26 66.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args ]
+#26 67.13 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn make
+#26 67.13 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+#26 67.13 .../node-pty@1.1.0/node_modules/node-pty install: make: Entering directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#26 67.14 .../node-pty@1.1.0/node_modules/node-pty install:   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+#26 67.14 .../node-pty@1.1.0/node_modules/node-pty install:   CXX(target) Release/obj.target/pty/src/unix/pty.o
+#26 ...
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 50.33
+#28 50.33 added 4 packages in 50s
+#28 ...
+
+#26 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#26 68.26 .../node-pty@1.1.0/node_modules/node-pty install:   SOLINK_MODULE(target) Release/obj.target/pty.node
+#26 68.31 .../node-pty@1.1.0/node_modules/node-pty install:   COPY Release/pty.node
+#26 68.31 .../node-pty@1.1.0/node_modules/node-pty install: make: Leaving directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#26 68.31 .../node-pty@1.1.0/node_modules/node-pty install: gyp info ok
+#26 68.32 .../node-pty@1.1.0/node_modules/node-pty install: Done
+#26 68.33 .../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+#26 68.37 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+#26 68.38 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+#26 68.38 .../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+#26 68.38 .../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+#26 68.58 .../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+#26 68.63 .../prisma@5.22.0/node_modules/prisma preinstall: Done
+#26 68.68 .../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+#26 69.09 .../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+#26 69.09 .../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+#26 69.09 .../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+#26 69.09 .../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+#26 69.11 .../node_modules/@prisma/client postinstall: Done
+#26 70.04 autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+#26 70.09 autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+#26 70.09 autobyteus-ts postinstall: Done
+#26 70.14  WARN  Issues with peer dependencies found
+#26 70.14 autobyteus-web
+#26 70.14 └─┬ nuxt 3.21.1
+#26 70.14   └─┬ @nuxt/cli 3.33.1
+#26 70.14     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+#26 70.14     └─┬ @bomb.sh/tab 0.0.12
+#26 70.14       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+#26 70.14
+#26 70.17 Done in 1m 8.5s using pnpm v10.28.2
+#26 DONE 70.5s
+
+#29 [builder 15/28] COPY autobyteus-ts ./autobyteus-ts
+#29 DONE 0.7s
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 ...
+
+#30 [builder 16/28] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#30 DONE 0.0s
+
+#31 [builder 17/28] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#31 DONE 0.0s
+
+#32 [builder 18/28] COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+#32 DONE 0.0s
+
+#33 [builder 19/28] COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+#33 DONE 0.0s
+
+#34 [builder 20/28] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#34 DONE 0.0s
+
+#35 [builder 21/28] COPY autobyteus-server-ts ./autobyteus-server-ts
+#35 DONE 0.4s
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 ...
+
+#36 [builder 22/28] COPY autobyteus-web ./autobyteus-web
+#36 DONE 0.3s
+
+#37 [builder 23/28] RUN pnpm -C autobyteus-agent-presentation-contracts build
+#37 0.788
+#37 0.788 > @autobyteus/agent-presentation-contracts@0.1.0 build /app/autobyteus-agent-presentation-contracts
+#37 0.788 > tsc -p tsconfig.build.json
+#37 0.788
+#37 DONE 2.9s
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 58.15
+#28 58.15 added 3 packages in 8s
+#28 58.47 ⠋ Detecting system environment...
+#28 58.47 ✓ Platform detected: linux_arm64
+#28 58.47 ⠋ Querying release repository...
+#28 58.74 ✓ Latest available version: 1.2.12
+#28 58.74 ⠋ Downloading release package...
+#28 ...
+
+#38 [builder 24/28] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#38 0.373
+#38 0.373 > @autobyteus/collaboration-stream-contracts@0.1.0 build /app/autobyteus-collaboration-stream-contracts
+#38 0.373 > tsc -p tsconfig.build.json
+#38 0.373
+#38 DONE 2.1s
+
+#39 [builder 25/28] RUN pnpm -C autobyteus-team-stream-contracts build
+#39 0.375
+#39 0.375 > @autobyteus/team-stream-contracts@0.1.0 build /app/autobyteus-team-stream-contracts
+#39 0.375 > tsc -p tsconfig.build.json
+#39 0.375
+#39 DONE 2.2s
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 ...
+
+#40 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#40 0.665 Prisma schema loaded from prisma/schema.prisma
+#40 5.502
+#40 5.502 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 205ms
+#40 5.502
+#40 5.502 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#40 5.502
+#40 5.502 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+#40 5.502
+#40 ...
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 66.56 ✓ Download complete and checksum verified.
+#28 66.56 ⠋ Extracting binary from archive...
+#28 67.99 ⠋ Configuring shell environment...
+#28 68.15
+#28 68.15 ✅ Antigravity CLI binary placed successfully at /tmp/tmp.cJ1YDm7PPM/home/.local/bin/agy
+#28 68.15 Note: The binary is installed, but it is not in your active PATH. Please follow the instructions above to add it, then restart your terminal session.
+#28 68.15 ERROR: logging before google.Init: I0928 04:41:39.047703       1 installer.go:27] Running Antigravity CLI setup...
+#28 68.15
+#28 68.15 Warning: /tmp/tmp.cJ1YDm7PPM/agy-bin is not present in your active PATH.
+#28 68.15 To use the 'agy' CLI globally, please manually add it to your shell profile:
+#28 68.15
+#28 68.15   echo 'export PATH="/tmp/tmp.cJ1YDm7PPM/agy-bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+#28 68.15
+#28 68.38 1.2.12
+#28 ...
+
+#40 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#40 DONE 6.1s
+
+#28 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#28 68.69 Installed agy: 1.2.12
+#28 68.69 1.2.12
+#28 68.69 Installed grok: grok 1.0.41 (4220f3b224a6)
+#28 68.69 grok 1.0.41 (4220f3b224a6)
+#28 DONE 68.8s
+
+#41 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#41 ...
+
+#42 [runtime  5/32] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#42 DONE 0.2s
+
+#41 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#41 0.591
+#41 0.591 > autobyteus-server-ts@0.1.1 prebuild /app/autobyteus-server-ts
+#41 0.591 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+#41 0.591
+#41 0.816
+#41 0.816 > autobyteus-server-ts@0.1.1 prepare:shared /app/autobyteus-server-ts
+#41 0.816 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+#41 0.816
+#41 1.044 Scope: 3 of 9 workspace projects
+#41 1.050 autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+#41 1.050 autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+#41 2.158 autobyteus-application-sdk-contracts build: Done
+#41 7.555 autobyteus-ts build: [verify:runtime-deps] OK
+#41 7.557 autobyteus-ts build: Done
+#41 7.558 autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+#41 8.224 autobyteus-application-backend-sdk build: Done
+#41 8.777 Prisma schema loaded from prisma/schema.prisma
+#41 9.279
+#41 9.279 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 191ms
+#41 9.279
+#41 9.279 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#41 9.279
+#41 9.279 Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+#41 9.279
+#41 9.501
+#41 9.501 > autobyteus-server-ts@0.1.1 build /app/autobyteus-server-ts
+#41 9.501 > pnpm run build:full
+#41 9.501
+#41 9.814
+#41 9.814 > autobyteus-server-ts@0.1.1 build:full /app/autobyteus-server-ts
+#41 9.814 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+#41 9.814
+#41 24.70 AgentFactory (Singleton) initialized.
+#41 24.78 Built-in agents bootstrap smoke check passed.
+#41 24.79 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+#41 DONE 24.9s
+
+#43 [builder 28/28] RUN pnpm -C autobyteus-web build:mobile-web
+#43 0.347
+#43 0.347 > autobyteus@1.4.91-beta.1 build:mobile-web /app/autobyteus-web
+#43 0.347 > node ./scripts/build-mobile-web.mjs
+#43 0.347
+#43 0.407 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+#43 1.908
+#43 1.908 > autobyteus@1.4.91-beta.1 generate /app/autobyteus-web
+#43 1.908 > nuxt generate
+#43 1.908
+#43 2.193 ┌  Building Nuxt for production...
+#43 2.423 │
+#43 2.423 ●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+#43 2.937 isElectronBuild false
+#43 2.964 [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+#43 3.562 │
+#43 3.562 ●  Nitro preset: static
+#43 4.513
+#43 4.513  WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+#43 4.513   npx update-browserslist-db@latest
+#43 4.513   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+#43 4.513
+#43 4.744 ℹ Building client...
+#43 4.755 ℹ vite v7.3.1 building client environment for production...
+#43 4.802 ℹ transforming...
+#43 28.23 ℹ ✓ 3838 modules transformed.
+#43 29.49 ℹ rendering chunks...
+#43 30.17 ℹ computing gzip size...
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.CTq5MqoE.woff                    4.42 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.Dl5lxZxV.woff2                   4.93 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.Dy4dx90m.woff2                   5.21 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.mCD8mA8B.woff2                   5.47 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.BF-4gkZK.woff                    5.98 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.oD1tc_U0.woff                    6.19 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.C195tn64.woff                    6.50 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.Di6jR-x-.woff2             6.91 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.Dq_IR9rO.woff2                6.91 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size3-Regular.DgpXs0kz.ttf                     7.59 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.CTRA-rTL.woff              7.66 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.BEiXGLvX.woff                 7.72 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D3wIWfF6.woff2                  9.64 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.DDBCnlJ7.woff2              10.34 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size4-Regular.DWFBv043.ttf                    10.36 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.D5yQViql.woff                  10.59 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CTYiF6lA.woff2                11.32 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.CL6g_b3V.woff2                   11.35 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size2-Regular.B7gKUWhC.ttf                    11.51 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.C3H0VqGB.woff2               12.03 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.D1sUS0GD.woff2                 12.22 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Size1-Regular.Dbsnue_I.ttf                    12.23 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.CS6fqUqJ.woff               12.32 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Regular.wX97UBjC.ttf              12.34 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Caligraphic-Bold.ATXxdsX0.ttf                 12.37 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.Dxdc4cR9.woff                 13.21 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BsDP51OF.woff                    13.30 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.CO6r4hn1.woff2             13.57 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.DN2j7dab.woff                14.11 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.DbIhKOiC.woff                  14.41 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.C0xS9mPB.woff              16.03 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.CZnvNsCZ.woff2                16.40 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.t53AETM-.woff2                    16.44 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Script-Regular.C5JkGWo-.ttf                   16.65 kB
+#43 30.30 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DxDJ3AOS.woff2                16.78 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.NWA7e6Wa.woff2                    16.99 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.iY-2wyZ7.woff                 18.67 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.DA0__PXp.woff                     18.75 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.SpSLRI95.woff                 19.41 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Regular.BNo7hRIc.ttf                19.44 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Regular.CB_wures.ttf                  19.57 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Fraktur-Bold.BdnERNNW.ttf                     19.58 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.BMLOBm91.woff                     19.68 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Italic.YYjJ1zSn.ttf                 22.36 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_SansSerif-Bold.CFMepnvq.ttf                   24.50 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Cx986IdX.woff2                      25.32 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.B22Nviop.woff2                   26.27 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Typewriter-Regular.D3Ib7_Hf.ttf               27.56 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.BQhdFMY1.woff2                    28.08 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.Jm3AIy58.woff                       29.91 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.Dr94JaBh.woff                    30.77 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-BoldItalic.B3XSjfu4.ttf                  31.20 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Math-Italic.flOr_0UB.ttf                      31.31 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-BoldItalic.DzxPMmG6.ttf                  32.97 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DMm9YOAa.woff                     33.52 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Italic.3WenGoN9.ttf                      33.58 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Bold.waoOVXN0.ttf                        51.34 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_Main-Regular.ypZvNtVU.ttf                     53.58 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/KaTeX_AMS-Regular.DRggAlZN.ttf                      63.63 kB
+#43 30.31 ℹ .nuxt/dist/client/manifest.json                                             70.71 kB │ gzip:     6.57 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/ConfirmationModal.DtxxR2Ew.css                       0.20 kB │ gzip:     0.12 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/media.yjOJmL4q.css                                   0.23 kB │ gzip:     0.13 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/DefinitionLaunchPreferencesSection.B4uhkLvJ.css      0.28 kB │ gzip:     0.15 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/FullScreenImageModal.aod6xn15.css                    0.35 kB │ gzip:     0.17 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/FileExplorerTabs.DydjJNvi.css                        3.20 kB │ gzip:     1.02 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/useTeamRunRuntimeCatalogSync.CYR_-KzE.css            3.51 kB │ gzip:     1.19 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/default.DGKk1sh-.css                                 4.07 kB │ gzip:     0.97 kB
+#43 30.31 ℹ .nuxt/dist/client/_nuxt/settings.CK7L0IRc.css                                4.29 kB │ gzip:     1.32 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/workspace.lV0hRxHZ.css                              10.54 kB │ gzip:     2.64 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/skills.hZg4z6X7.css                                 14.02 kB │ gzip:     3.04 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/useWorkspaceFileExplorer.Kr8OOoy4.css               50.71 kB │ gzip:    13.07 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/entry.Bhmz8mbx.css                                 123.15 kB │ gzip:    19.39 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/FFW60Lhd.js                                          0.09 kB │ gzip:     0.10 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/1393bmxM.js                                          0.10 kB │ gzip:     0.11 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/Gi6I4Gst.js                                          0.15 kB │ gzip:     0.13 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/p1y9vz1V.js                                          0.18 kB │ gzip:     0.15 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CL2_Fob3.js                                          0.21 kB │ gzip:     0.16 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/HTFcDxBC.js                                          0.22 kB │ gzip:     0.20 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/F9WGl9h-.js                                          0.23 kB │ gzip:     0.20 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/BpCIHeTR.js                                          0.26 kB │ gzip:     0.21 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/W5hhZo3U.js                                          0.35 kB │ gzip:     0.25 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/BZOw1WWj.js                                          0.35 kB │ gzip:     0.26 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/B_apqZ9T.js                                          0.43 kB │ gzip:     0.28 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/Cch5Eaap.js                                          0.45 kB │ gzip:     0.29 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CeayRDWA.js                                          0.45 kB │ gzip:     0.29 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/Cn7L6HaX.js                                          0.48 kB │ gzip:     0.23 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/BQ8ysngU.js                                          0.49 kB │ gzip:     0.35 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/BHJzm-In.js                                          0.51 kB │ gzip:     0.34 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/B-0N9D7g.js                                          0.73 kB │ gzip:     0.45 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CE1G-McA.js                                          0.76 kB │ gzip:     0.40 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/BAciy5DQ.js                                          0.90 kB │ gzip:     0.55 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CdO_Pz-e.js                                          0.94 kB │ gzip:     0.45 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CmMhJU5D.js                                          1.06 kB │ gzip:     0.57 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CmKTTxBW.js                                          1.18 kB │ gzip:     0.57 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CG0fIS80.js                                          1.42 kB │ gzip:     0.63 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CHrqUj3F.js                                          1.49 kB │ gzip:     0.77 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/B1mrW11U.js                                          1.82 kB │ gzip:     0.83 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CMzFA1_q.js                                          2.31 kB │ gzip:     1.07 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/Bv4L8bhO.js                                          2.39 kB │ gzip:     1.01 kB
+#43 30.32 ℹ .nuxt/dist/client/_nuxt/CO2yiZYl.js                                          2.56 kB │ gzip:     1.27 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DNoa1PUo.js                                          2.80 kB │ gzip:     0.69 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/tNTdtED6.js                                          3.42 kB │ gzip:     1.47 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/_eoeSAQt.js                                          3.56 kB │ gzip:     1.28 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/CQkWWC_E.js                                          3.61 kB │ gzip:     1.44 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DkwUtHxF.js                                          3.83 kB │ gzip:     1.49 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/BWs-yKUh.js                                          4.12 kB │ gzip:     1.41 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/Bw6MUS4E.js                                          4.33 kB │ gzip:     1.87 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DX6XiGOO.js                                          4.69 kB │ gzip:     2.18 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/Ds7_eWa2.js                                          4.74 kB │ gzip:     1.88 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/v8rNSFAw.js                                          4.95 kB │ gzip:     2.03 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DZ6e0DsM.js                                          4.98 kB │ gzip:     1.88 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/OFJA--pr.js                                          5.25 kB │ gzip:     2.30 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/Xo3-xMrZ.js                                          5.63 kB │ gzip:     2.29 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/BJH_BwIa.js                                          5.86 kB │ gzip:     2.35 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DjsDGOlD.js                                          5.90 kB │ gzip:     1.85 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/BeQo4CmC.js                                          5.93 kB │ gzip:     2.48 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/JFlXKZlC.js                                          6.63 kB │ gzip:     2.39 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/CnIRam0Z.js                                          7.48 kB │ gzip:     2.93 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/iscfwWqc.js                                          7.79 kB │ gzip:     2.95 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DV0hnYSA.js                                          7.81 kB │ gzip:     3.12 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/B2IctqJp.js                                          8.12 kB │ gzip:     2.14 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/CRuE54pA.js                                          8.63 kB │ gzip:     1.79 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DlTgIeIJ.js                                          8.64 kB │ gzip:     2.82 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/BadTkOLw.js                                          8.75 kB │ gzip:     2.90 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/nmsJccC1.js                                          9.24 kB │ gzip:     1.90 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DAiQSQsL.js                                         10.39 kB │ gzip:     3.61 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/BlY0HT9G.js                                         10.64 kB │ gzip:     3.87 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/DzhoifjL.js                                         11.05 kB │ gzip:     4.11 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/C4AL0vB4.js                                         11.88 kB │ gzip:     4.64 kB
+#43 30.33 ℹ .nuxt/dist/client/_nuxt/Ez1uds7I.js                                         12.43 kB │ gzip:     2.97 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CDdSrDsv.js                                         13.22 kB │ gzip:     4.45 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/DbtH4RiS.js                                         15.85 kB │ gzip:     5.63 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/3VvhqWlf.js                                         15.92 kB │ gzip:     4.43 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/hDfY1_sI.js                                         16.80 kB │ gzip:     4.61 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CHlr9Bpa.js                                         17.67 kB │ gzip:     5.18 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CsM2WeJs.js                                         18.47 kB │ gzip:     7.21 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CaUtGQze.js                                         19.11 kB │ gzip:     5.49 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/BBI4KyEv.js                                         20.09 kB │ gzip:     6.91 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/D8yBhG9c.js                                         20.27 kB │ gzip:     7.19 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/DHenyUiV.js                                         22.19 kB │ gzip:     8.15 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/DIMKGMMM.js                                         23.59 kB │ gzip:     8.33 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/BNj4FIZn.js                                         23.67 kB │ gzip:     8.25 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/DSLKti28.js                                         24.14 kB │ gzip:     7.41 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/uDWKbixo.js                                         25.29 kB │ gzip:     8.83 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/1MuB2CJI.js                                         27.35 kB │ gzip:     9.70 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/yg5d93AH.js                                         29.55 kB │ gzip:     8.35 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/qn3hyisy.js                                         30.14 kB │ gzip:     9.43 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CVhCjkIB.js                                         32.21 kB │ gzip:    10.12 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/JdtJ4Ru9.js                                         33.90 kB │ gzip:     9.95 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/BU5EncJP.js                                         36.30 kB │ gzip:    11.80 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CxoaYmoa.js                                         38.33 kB │ gzip:     9.53 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/BTlVtAbq.js                                         40.23 kB │ gzip:    11.35 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/B9DGRg0d.js                                         45.25 kB │ gzip:    14.64 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CahhuQgk.js                                         50.61 kB │ gzip:    13.50 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/Ta20T7n5.js                                         50.68 kB │ gzip:    12.93 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/CZC2pqpF.js                                         54.96 kB │ gzip:    14.00 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/D5r-GaRV.js                                         57.01 kB │ gzip:    12.65 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/DdMjT7uM.js                                         60.48 kB │ gzip:    19.41 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/C7Ba82_k.js                                         68.37 kB │ gzip:    23.16 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/Cre0wg2U.js                                         70.20 kB │ gzip:    19.70 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/fo0vv0OB.js                                         71.82 kB │ gzip:    20.50 kB
+#43 30.34 ℹ .nuxt/dist/client/_nuxt/Fff1IbbJ.js                                         81.77 kB │ gzip:    22.50 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/dDCwVtKm.js                                         85.97 kB │ gzip:    25.07 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/C-ilS7zv.js                                         91.07 kB │ gzip:    22.23 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/CHGy5Z2T.js                                         91.69 kB │ gzip:    20.88 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/oBkDgr3m.js                                         97.86 kB │ gzip:    26.86 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/CrL26XUL.js                                        100.48 kB │ gzip:    27.99 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/CloRFH2q.js                                        114.75 kB │ gzip:    30.87 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/rQcW46IE.js                                        148.65 kB │ gzip:    42.02 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/BpoF_on2.js                                        291.55 kB │ gzip:    64.40 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/5J0xJHOV.js                                        441.64 kB │ gzip:   141.47 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/2XRBEQAu.js                                        452.84 kB │ gzip:   107.01 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/DpRaBnsu.js                                        519.02 kB │ gzip:   135.24 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/CJqZ1Fua.js                                        765.49 kB │ gzip:   201.46 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/CPux5rCk.js                                      1,033.13 kB │ gzip:   277.39 kB
+#43 30.35 ℹ .nuxt/dist/client/_nuxt/DvWd14UX.js                                      3,764.38 kB │ gzip: 1,211.57 kB
+#43 30.35
+#43 30.35  WARN
+#43 30.35 (!) Some chunks are larger than 500 kB after minification. Consider:
+#43 30.35 - Using dynamic import() to code-split the application
+#43 30.35 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+#43 30.35 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+#43 30.35
+#43 30.35 ℹ ✓ built in 25.59s
+#43 30.35 ✔ Client built in 25606ms
+#43 30.35 ℹ Building server...
+#43 30.36 ℹ vite v7.3.1 building ssr environment for production...
+#43 30.36 ℹ transforming...
+#43 30.36 ℹ ✓ 1 modules transformed.
+#43 30.37 ℹ rendering chunks...
+#43 30.37 ℹ ✓ built in 13ms
+#43 30.47 ✔ Server built in 115ms
+#43 30.48 [nitro] ℹ Initializing prerenderer
+#43 31.58 [nitro] ℹ Prerendering 17 initial routes with crawler
+#43 31.63 [nitro]   ├─ /media (35ms)
+#43 31.63 [nitro]   ├─ /nodes (35ms)
+#43 31.63 [nitro]   ├─ /tools (36ms)
+#43 31.63 [nitro]   ├─ /agents (36ms)
+#43 31.63 [nitro]   ├─ /memory (36ms)
+#43 31.63 [nitro]   ├─ /skills (37ms)
+#43 31.63 [nitro]   ├─ /settings (37ms)
+#43 31.63 [nitro]   ├─ /workspace (38ms)
+#43 31.63 [nitro]   ├─ /agent-teams (38ms)
+#43 31.63 [nitro]   ├─ /projects (38ms)
+#43 31.63 [nitro]   ├─ /agent-orgs (38ms)
+#43 31.63 [nitro]   ├─ /applications (38ms)
+#43 31.63 [nitro]   ├─ /mobile (36ms)
+#43 31.63 [nitro]   ├─ / (36ms)
+#43 31.63 [nitro]   ├─ /200.html (38ms)
+#43 31.63 [nitro]   ├─ /404.html (39ms)
+#43 31.63 [nitro]   ├─ /index.html (39ms)
+#43 31.63 [nitro] ℹ Prerendered 17 routes in 1.114 seconds
+#43 31.71 [nitro] ✔ Generated public dist/public
+#43 31.73 [nitro] ✔ You can preview this build using npx serve dist/public
+#43 31.73 │
+#43 31.73 ▲  HTML content not prerendered because ssr: false was set.
+#43 31.73 │
+#43 31.73 ●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+#43 31.73 │
+#43 31.73 └  ✨ You can now deploy dist/public to any static hosting!
+#43 32.08 Mobile web assets written to /app/autobyteus-web/dist-mobile/public
+#43 DONE 32.2s
+
+#44 [runtime  6/32] COPY --from=builder /app/node_modules ./node_modules
+#44 DONE 7.0s
+
+#45 [runtime  7/32] COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
+#45 DONE 0.4s
+
+#46 [runtime  8/32] COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
+#46 DONE 0.1s
+
+#47 [runtime  9/32] COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
+#47 DONE 0.0s
+
+#48 [runtime 10/32] COPY --from=builder /app/autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+#48 DONE 0.0s
+
+#49 [runtime 11/32] COPY --from=builder /app/autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
+#49 DONE 0.0s
+
+#50 [runtime 12/32] COPY --from=builder /app/autobyteus-agent-presentation-contracts/node_modules ./autobyteus-agent-presentation-contracts/node_modules
+#50 DONE 0.0s
+
+#51 [runtime 13/32] COPY --from=builder /app/autobyteus-agent-presentation-contracts/dist ./autobyteus-agent-presentation-contracts/dist
+#51 DONE 0.0s
+
+#52 [runtime 14/32] COPY --from=builder /app/autobyteus-agent-presentation-contracts/package.json ./autobyteus-agent-presentation-contracts/package.json
+#52 DONE 0.0s
+
+#53 [runtime 15/32] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/node_modules ./autobyteus-collaboration-stream-contracts/node_modules
+#53 DONE 0.0s
+
+#54 [runtime 16/32] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/dist ./autobyteus-collaboration-stream-contracts/dist
+#54 DONE 0.0s
+
+#55 [runtime 17/32] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/package.json ./autobyteus-collaboration-stream-contracts/package.json
+#55 DONE 0.0s
+
+#56 [runtime 18/32] COPY --from=builder /app/autobyteus-team-stream-contracts/node_modules ./autobyteus-team-stream-contracts/node_modules
+#56 DONE 0.0s
+
+#57 [runtime 19/32] COPY --from=builder /app/autobyteus-team-stream-contracts/dist ./autobyteus-team-stream-contracts/dist
+#57 DONE 0.0s
+
+#58 [runtime 20/32] COPY --from=builder /app/autobyteus-team-stream-contracts/package.json ./autobyteus-team-stream-contracts/package.json
+#58 DONE 0.0s
+
+#59 [runtime 21/32] COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
+#59 DONE 0.0s
+
+#60 [runtime 22/32] COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+#60 DONE 0.3s
+
+#61 [runtime 23/32] COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+#61 DONE 0.0s
+
+#62 [runtime 24/32] COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+#62 DONE 0.0s
+
+#63 [runtime 25/32] COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+#63 DONE 0.1s
+
+#64 [runtime 26/32] COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
+#64 DONE 0.0s
+
+#65 [runtime 27/32] COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
+#65 DONE 0.0s
+
+#66 [runtime 28/32] COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#66 DONE 0.0s
+
+#67 [runtime 29/32] COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+#67 DONE 0.0s
+
+#68 [runtime 30/32] COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+#68 DONE 0.0s
+
+#69 [runtime 31/32] COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+#69 DONE 0.0s
+
+#70 [runtime 32/32] RUN chmod +x   /usr/local/bin/autobyteus-bootstrap.sh   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+#70 DONE 0.1s
+
+#71 exporting to image
+#71 exporting layers
+#71 exporting layers 38.4s done
+#71 exporting manifest sha256:c37a7e44ce3135fb3c03d255f591b90d6736ce743fd699cc1e9089dca366d7f7 done
+#71 exporting config sha256:0c369e843db73d4843916437136df8db4cfab5ed0641856f3573a04a8dd07ddb done
+#71 exporting attestation manifest sha256:4cb2f73fbc6b26b5d03e1dd4c833470fa863f8ffd61e6ddf7a3494b15ae4996c done
+#71 exporting manifest list sha256:4c0c11c1df531872a0111e92b333dd496ea190b24052ebeda3f41d043a71e1a1 done
+#71 naming to docker.io/library/autobyteus-cli-api001:default-arm64 done
+#71 unpacking to docker.io/library/autobyteus-cli-api001:default-arm64
+#71 unpacking to docker.io/library/autobyteus-cli-api001:default-arm64 17.3s done
+#71 DONE 55.9s
+BUILD_EXIT=0

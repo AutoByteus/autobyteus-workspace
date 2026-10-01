@@ -1,5 +1,6 @@
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import {
+  APPLICATIONS_CAPABILITY_SETTING_KEY,
   buildApplicationsCapability,
   type ApplicationsCapability,
 } from "../domain/models.js";
@@ -7,7 +8,7 @@ import { getServerSettingsService, type ServerSettingsService } from "../../serv
 
 type ApplicationsSettingsAccess = Pick<
   ServerSettingsService,
-  "getApplicationsEnabledSetting" | "setApplicationsEnabledSetting"
+  "getBooleanSetting" | "setBooleanSetting"
 >;
 
 type ApplicationCapabilityDependencies = {
@@ -34,12 +35,12 @@ export class ApplicationCapabilityService {
 
   async setEnabled(enabled: boolean): Promise<ApplicationsCapability> {
     await this.ensureInitialized();
-    this.serverSettingsService.setApplicationsEnabledSetting(enabled);
+    this.serverSettingsService.setBooleanSetting(APPLICATIONS_CAPABILITY_SETTING_KEY, enabled);
     return buildApplicationsCapability(enabled, "SERVER_SETTING");
   }
 
   private async ensureInitialized(): Promise<ApplicationsCapability> {
-    const existing = this.serverSettingsService.getApplicationsEnabledSetting();
+    const existing = this.serverSettingsService.getBooleanSetting(APPLICATIONS_CAPABILITY_SETTING_KEY);
     if (existing !== null) {
       return buildApplicationsCapability(existing, "SERVER_SETTING");
     }
@@ -58,14 +59,14 @@ export class ApplicationCapabilityService {
   }
 
   private async initializeCapability(): Promise<ApplicationsCapability> {
-    const existing = this.serverSettingsService.getApplicationsEnabledSetting();
+    const existing = this.serverSettingsService.getBooleanSetting(APPLICATIONS_CAPABILITY_SETTING_KEY);
     if (existing !== null) {
       return buildApplicationsCapability(existing, "SERVER_SETTING");
     }
 
     const hasDiscoverableApplications =
       await this.applicationBundleService.hasDiscoverableApplications();
-    this.serverSettingsService.setApplicationsEnabledSetting(hasDiscoverableApplications);
+    this.serverSettingsService.setBooleanSetting(APPLICATIONS_CAPABILITY_SETTING_KEY, hasDiscoverableApplications);
 
     return buildApplicationsCapability(
       hasDiscoverableApplications,

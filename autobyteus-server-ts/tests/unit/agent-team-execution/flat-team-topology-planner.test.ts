@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { FlatTeamTopologyPlanner } from "../../../src/agent-team-execution/services/flat-team-topology-planner.js";
@@ -32,7 +31,6 @@ const buildPlanner = (value: unknown = definition()) => {
 const launch = {
   llmModelIdentifier: "gpt-test",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   workspaceRootPath: "/tmp/workspace",
   llmConfig: null,
@@ -89,7 +87,6 @@ describe("FlatTeamTopologyPlanner", () => {
     { name: "missing Agent", teamConfigs: [rootConfig()], members: [memberConfig("/Lead")] },
     { name: "unknown Agent", teamConfigs: [rootConfig()], members: [memberConfig("/Lead"), memberConfig("/Reviewer"), memberConfig("/Unknown")] },
     { name: "wrong definition", teamConfigs: [rootConfig()], members: [memberConfig("/Lead", { agentDefinitionId: "wrong" }), memberConfig("/Reviewer")] },
-    { name: "divergent skill policy", teamConfigs: [rootConfig()], members: [memberConfig("/Lead"), memberConfig("/Reviewer", { skillAccessMode: SkillAccessMode.NONE })] },
   ])("rejects $name before allocation", async ({ teamConfigs, members }) => {
     const { planner, teamAllocator, agentAllocator } = buildPlanner();
     await expect(planner.buildPlan({ teamDefinitionId: "root-team", teamConfigs, memberConfigs: members })).rejects.toThrow();

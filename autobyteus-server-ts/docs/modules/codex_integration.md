@@ -112,7 +112,8 @@ Family semantics still come from the shared server-owned services:
   `src/agent-communication` dispatcher: `recipient_address` requires a team member
   context, while `target_agent_run_id` can be used by an explicitly configured
   standalone or automatically enabled team-member Codex run to reach an exact
-  currently active `AgentRun.runId`. Its canonical result returns the exact
+  `AgentRun.runId` (any AgentRun in the sender's root, including a shut-down
+  delegated child, or a currently active AgentRun elsewhere). Its canonical result returns the exact
   existing receiver as flat `target_agent_run_id`, or null identity on
   rejection.
 - Task-delegation tools call `TaskDelegationToolService` with the current
@@ -566,16 +567,17 @@ conversation is being applied.
 - `codex-raw-vs-backend-cadence.probe.test.ts` compares native raw `item/agentMessage/delta` cadence with backend `SEGMENT_CONTENT` cadence in the same run.
 - `codex-long-turn-cadence.probe.test.ts` records backend long-turn event cadence over time.
 - `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` is the gated live
-  mixed-runtime task-delegation proof. The default command
-  `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`
-  should skip when live flags are absent. To exercise the live path, run with a
-  working LMStudio Qwen model and Codex `gpt-5.5`; use exact `LMSTUDIO_MODEL_ID`
-  pinning for deterministic provider-native tool calls, or omit it to use the
-  `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment fallback. This proof also
-  protects task-centered `SYSTEM_TASK_NOTIFICATION` display content, uniform
-  member/team activation copy, no duplicate member-input echo, and the canonical
-  `review_task_result.comment` review field. Example:
-  `RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_CODEX_E2E=1 APP_ENV=test LMSTUDIO_TARGET_TEXT_MODEL=qwen3.6-27b CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --reporter=dot`.
+  delegated-child resource-lifecycle proof across AutoByteus (LMStudio), Codex,
+  and Claude: `delegate_task` spawn, run-ID conversation, idle shutdown after
+  the grace period, and wake-on-message with restored context. It skips without
+  its live flags. Enable runtimes with `RUN_LMSTUDIO_E2E=1`, `RUN_CODEX_E2E=1`,
+  and/or `RUN_CLAUDE_E2E=1` (model pins: `LMSTUDIO_MODEL_ID` /
+  `LMSTUDIO_TARGET_TEXT_MODEL`, `CODEX_E2E_TOOL_MODEL`, `CLAUDE_E2E_TOOL_MODEL`)
+  and shorten the grace period with
+  `AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000`. Run it from a
+  sanitized environment that does not inherit a real `DATABASE_URL` or
+  `AUTOBYTEUS_MEMORY_DIR`. Example:
+  `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts --no-file-parallelism`.
 - These live probes are intentionally opt-in and require the matching local
   runtime prerequisites; they must not become default CI prerequisites.
 

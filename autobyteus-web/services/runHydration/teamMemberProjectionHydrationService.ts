@@ -8,7 +8,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
 import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService';
-import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
+import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 import {
   primeRecentEventMonitorBaseline,
   resetRecentEventMonitorBaseline,
@@ -56,9 +56,9 @@ const attemptHydration = async (
   }
   const rootTeamRunId = team.view.getRootTeamRunId();
   const location = team.view.getAgentExecutionLocation(agentRunId)!;
-  const configured = findConfiguredAgentByAddress(team.view.getExecutionTree(), location.memberAddress);
+  const configured = teamAgentSourceAt(team.view.getExecutionTree(), location.memberAddress);
   if (!configured) {
-    throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
+    throw new Error(`AgentRun '${agentRunId}' has no configured or collaborator Team placement.`);
   }
   const liveToolAuthority = hasLiveToolAuthority(team, agent);
   const expectedPresentationRevision = agent.state.eventMonitorPresentationRevision;

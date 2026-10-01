@@ -1,0 +1,31 @@
+{
+  "case": "LIVE-TEAM-D4",
+  "model": "gemini-3.8-flash-high",
+  "teamRunId": "agy_recovery_pair_2ab39f9a_2b2e_4d8b_b12a_621022_ab19bc00a6404c57b951c789b6a9f2af",
+  "alpha": "agy_recovery_alpha_2ab39f9a_2b2e_4d8b_b12a_62102_d4bfd7261fd441e2a211502fc7113c19",
+  "beta": "agy_recovery_beta_2ab39f9a_2b2e_4d8b_b12a_621022_1b7f359fe07b4cfcaac70a48b9aaad12",
+  "port": 60616,
+  "betaAgy": [
+    {
+      "pid": 84062,
+      "command": "agy --new-project --agent autobyteus-5de11f7ef54cf4d4 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "crashed": {
+    "pid": 83720,
+    "command": "agy --new-project --agent autobyteus-7db0ebf5d11406de --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+  },
+  "teamActiveAfterCrash": true,
+  "terminate": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "daemonClosedAfterTeamTerminateMs": 0,
+  "teamActiveAfterTerminate": false,
+  "secondTerminate": {
+    "success": false,
+    "message": "Agent team run not found."
+  },
+  "result": "Fail",
+  "error": "AssertionError: Agent team run not found.: expected false to be true // Object.is equality"
+}

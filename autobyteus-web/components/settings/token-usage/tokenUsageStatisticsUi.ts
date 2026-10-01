@@ -7,6 +7,7 @@ const runtimeLabels: Record<string, string> = {
   autobyteus: 'Autobyteus',
   codex_app_server: 'Codex',
   claude_agent_sdk: 'Claude SDK',
+  grok_build: 'Grok Build',
 };
 
 export const shortId = (value: string | null | undefined): string => {

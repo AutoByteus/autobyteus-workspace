@@ -8,7 +8,8 @@ import {
   type RightPanelResizeIntent,
 } from '~/utils/layout/responsiveLayoutPolicy'
 
-// Global user preference for right panel visibility and width shared across workspace surfaces.
+// Global user preference for right panel visibility and width shared across workspace surfaces
+// (the chat run view, Team and Org views alike).
 const isRightPanelVisible = ref(true)
 
 export const DEFAULT_RIGHT_PANEL_WIDTH = RIGHT_PANEL_DEFAULT_WIDTH_PX

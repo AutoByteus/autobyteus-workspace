@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunMetadataStore } from "../../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
@@ -17,7 +16,6 @@ const buildMetadata = (
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "thread-1",
   preparedAt: "2026-05-01T09:00:00.000Z",
@@ -99,7 +97,6 @@ describe("AgentRunMetadataStore", () => {
         llmModelIdentifier: "model-1",
         llmConfig: null,
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         platformAgentRunId: "thread-legacy",
         lastKnownStatus: "TERMINATED",

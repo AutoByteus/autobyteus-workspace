@@ -19,6 +19,40 @@ git tag v1.2.0
 git push origin v1.2.0
 ```
 
+## Release Channels (Stable And Beta)
+
+The tag decides who is offered a desktop build:
+
+| Tag | GitHub release | Release notes | Offered in-app to |
+| --- | --- | --- | --- |
+| `vX.Y.Z` | Normal release, marked Latest | Curated `.github/release-notes/release-notes.md` | Every install |
+| `vX.Y.Z-beta.N` | **Pre-release** | Generated GitHub notes | Only installs with "Receive beta updates" on |
+
+- Any tag containing `-` is published as a GitHub pre-release. A manual
+  dispatch with such a tag is also forced to pre-release, whatever the
+  `prerelease` input says. GitHub's `/releases/latest` (the Stable update feed)
+  therefore always points to the newest stable release.
+- Pre-release tags always use generated notes. The curated notes file stays in
+  the repository after each stable release, so reusing it would publish the
+  previous stable's notes on a beta. The Android workflow, which writes the same
+  GitHub release, follows the same rule.
+- Beta builds use the same signing, notarization and verification gates as
+  stable builds. electron-builder still writes `latest*.yml` updater metadata
+  for `-beta.N` versions with the GitHub provider, so no metadata step differs.
+- Create a beta with `scripts/desktop-release.sh beta` (next unused
+  `-beta.N`, default base = next patch after the highest stable tag, `N`
+  capped at 98 by the Android versionCode). Promote to stable with
+  `scripts/desktop-release.sh release <X.Y.Z> --release-notes <file>`.
+- The server Docker workflow publishes `:<version>` for every tag and `:latest`
+  only for stable tags. After the version image is pushed, it moves `:beta` to
+  that image only if the tag is the newest recognized release tag
+  (`scripts/release_versions.py is-newest`), so `:beta` never moves backward.
+  If a newer tag's Docker build fails, `:beta` stays one build behind until
+  that run is re-run (`workflow_dispatch` with its `release_tag`).
+- On the first real beta run, confirm the release is marked Pre-release, that
+  GitHub "Latest" still points to the previous stable, and that the
+  `latest*.yml` assets are present.
+
 ## Current Targets
 
 This workflow currently builds and publishes:
@@ -34,8 +68,6 @@ CI build behavior:
 - `AUTOBYTEUS_BUILD_FLAVOR=personal` is set in release build jobs.
 - Release preparation validates:
   - desktop package version matches the pushed tag
-  - messaging gateway package version matches the pushed tag
-  - bundled managed messaging release manifest matches the pushed tag
 - macOS builds run with `--arm64` and `--x64` explicitly.
 - macOS builds validate the packaged Terminal runtime for both architectures. The validator checks staged `autobyteus-web/resources/server` and final `.app/Contents/Resources/server` `node-pty` helpers, and runs a real spawn probe when the runner architecture matches the target.
 - macOS builds run `scripts/verify-macos-signing-policy.mjs` for both ARM64 and x64 before artifact upload. The verifier requires Squirrel, ShipIt, frameworks, `.dylib` files, `.node` native modules, and bundled server native binaries to carry no entitlement keys, while the root app and Electron helper app executables keep their role-specific entitlements.
@@ -94,7 +126,7 @@ Release.
 
 ### Cross-Workflow Release Timing
 
-The desktop, Android, messaging-gateway, and server Docker workflows are all
+The desktop, Android, and server Docker workflows are all
 triggered by the same `v*` tag. The GitHub Release is shared across asset
 families, so another publish job can make the release visible before
 `release-desktop.yml` has uploaded the desktop updater metadata and binaries.

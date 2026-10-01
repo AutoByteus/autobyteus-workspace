@@ -570,6 +570,7 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
 
 ### Runtime Behavior
 
+- `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'` (see [Updates in isolated launches](#updates-in-isolated-launches)).
 - Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
 - Renderer windows receive normalized updater state via IPC channel `app-update-state`.
 - Manual check entrypoint is exposed in `Settings > Updates` (canonical UI location).
@@ -577,6 +578,45 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
   - `app-update:check`
   - `app-update:download`
   - `app-update:install`
+  - `app-update:set-channel`
+
+### Update Channel (Stable / Beta)
+
+- `Settings > Updates` has a "Receive beta updates" switch, off by default.
+  The value is saved locally in `userData/app-update-channel.v1.json`
+  (`{ "channel": "stable" | "beta" }`) by `electron/updater/appUpdateChannelStore.ts`.
+  A missing, unreadable or invalid file means `stable`. The value is never sent
+  to a server.
+- `AppUpdater` applies the channel before **every** check:
+  `autoUpdater.allowPrerelease = channel === 'beta'` and
+  `autoUpdater.allowDowngrade = false`. Never set `autoUpdater.channel`: its
+  setter forces `allowDowngrade = true`.
+- Stable installs read only GitHub `/releases/latest`, which excludes
+  pre-releases. This also protects older installs that predate the switch.
+  Beta installs take the newest entry in the releases feed, beta or stable.
+- `app-update:set-channel` returns `{ accepted, persisted, state }`:
+  - It is refused (`accepted: false`) for an invalid value, or when
+    `isAppUpdateChannelLocked(state)` (in `shared/appUpdateTypes.ts`) is
+    true. That means the status is `checking`, `downloading` or
+    `installing`, or `updateStaged` is true.
+  - `updateStaged` becomes `true` on `update-downloaded` and stays true
+    until the app restarts. A staged update installs on quit, and a later
+    manual or failed check does not unstage it, so the lock cannot key on
+    the transient `downloaded` status.
+  - The About switch is disabled on the same rule. While `updateStaged` is
+    true, whatever the status, a hint asks the user to install or restart
+    first.
+  - Accepted limitation: if a replacement download fails after an earlier
+    update was staged, the switch stays locked until restart.
+  - Otherwise the value is saved and applied. If the save fails, the channel
+    still applies for this session, `persisted` is `false`, and the renderer
+    shows a save-failed toast.
+  - Packaged apps then re-check when idle, `no-update`, `available` or
+    `error`, so an offer from the previous channel is replaced.
+- Turning Beta off never downgrades. The install stays on its current version
+  until a newer stable release exists.
+- `AppUpdateState.currentVersionIsPrerelease` drives the Beta badge next to
+  the version in the About card.
 
 ### Updater Error Safety
 
@@ -831,11 +871,74 @@ pnpm test:e2e:electron:isolation \
 artifact, chooses or validates a non-default port, and creates a unique safe
 temporary root when the caller does not provide one. It returns one single-use
 prepared resource consumed unchanged by either the direct or Playwright adapter.
-The launch environment starts with the caller environment (plus caller-supplied
-extras) and forces only the three isolation keys. Existing pnpm/import,
-application, internal-server, API-key, provider, search, and Codex provisioning
-remain unchanged; this isolation boundary adds no credential filtering,
-allowlist/denylist, secret seeding, or `CODEX_HOME` policy.
+The desktop launch environment starts with the caller environment (plus
+caller-supplied extras), removes an inherited `ELECTRON_RUN_AS_NODE` (which
+would make the binary run as plain Node), and forces the three isolation keys.
+The shared launch mechanics (environment overlay, ports, executable resolution,
+process-group control) live in `scripts/electron-launch/` and are used by both
+this harness and the `isolated-app` lifecycle.
+
+#### Isolated server environment
+
+`buildServerProcessEnv` (`electron/server/serverRuntimeEnv.ts`) is the only
+place that composes the embedded server's environment. `ElectronApplication`
+maps the launch profile to a policy:
+
+- `production` → `inherit-caller`: the complete caller environment, exactly as
+  before, plus the Electron-owned values below.
+- `e2e` → `isolated-baseline`: only the variables in
+  `ISOLATED_SERVER_BASELINE_ENV_NAMES` plus every `LC_*`. These are OS/user
+  identity, locale, terminal, temp directories, proxies and certificates,
+  display/session buses, `CODEX_HOME`, and Windows system paths, matched
+  case-insensitively.
+
+Both add the Electron-owned values: login-shell `PATH` when available,
+`ELECTRON_RUN_AS_NODE=1`, `PORT`/`SERVER_PORT`, `DATABASE_URL` and
+`AUTOBYTEUS_DATA_DIR` under the data root, `AUTOBYTEUS_SERVER_HOST`, `DB_TYPE`,
+and the browser-bridge runtime overrides. In `e2e` mode, production
+`AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
+inherited (for example an agent shell inside AutoByteus) therefore never reach
+the isolated server. Its settings come from its own data root's `.env`.
+Credentials for an isolated instance are provisioned with
+`pnpm secrets:import` against its database. If a server feature needs another
+system variable in isolated mode, add it to the baseline list; never spread
+`process.env` in a platform manager.
+
+#### Updates in isolated launches
+
+Every launch registers one `AppUpdateController` for the `app-update:*` IPC
+contract. Production uses `AppUpdater`. The `e2e` profile uses
+`DisabledAppUpdater`, which answers with `status: 'disabled'`, refuses download,
+install and channel changes, and never checks. The renderer store keeps the
+update notice hidden and shows no toast. Settings → Updates shows a neutral
+"turned off" line without update controls.
+
+#### Agent lifecycle (`pnpm isolated-app`) and the control port
+
+`scripts/isolated-app/` provides the long-lived agent lifecycle
+(`start|list|stop|restart`, JSON output) on top of the same launch mechanics.
+It launches the app detached as its own process group with
+`--remote-debugging-port=<control port>` (a free port unless `--control-port`
+is given; Chromium binds it to `127.0.0.1`), `--disable-backgrounding-occluded-windows`,
+`--disable-renderer-backgrounding` and an identity marker switch. It records
+the instance under `<OS temp dir>/autobyteus-isolated-app/`, verifies identity
+before signalling, and deletes only the data roots it created. The control
+port exists only for instances started this way; production launches never
+open one. See [isolated app instances](../../docs/isolated-app-instances.md).
+
+Every desktop build ships the isolated-launch capability marker
+`build/isolated-launch/isolated-launch.json` (`{"isolatedLaunchContract": 1}`)
+via `extraResources` to `<resources>/isolated-launch.json`. That is
+`Contents/Resources/` on macOS and `resources/` in Linux unpacked output and
+inside the AppImage. `start` and `restart` read it before any port, data-root or
+spawn work and refuse builds without a contract of at least 1
+(`APP_ISOLATION_UNSUPPORTED`). A packed AppImage is detected by suffix or its
+type-2 magic without being executed and must be extracted first
+(`APPIMAGE_EXTRACTION_REQUIRED`). Bump the contract only when the isolated
+server-environment or updates-disabled contract changes incompatibly
+(`build/scripts/isolatedLaunchMarker.ts`,
+`scripts/electron-launch/appExecutable.mjs`). The E2E harness does not check
+the marker.
 
 Cleanup is process-identity based. The adapter first requests graceful shutdown,
 then confirms the entire owned process group/tree and may target only that same

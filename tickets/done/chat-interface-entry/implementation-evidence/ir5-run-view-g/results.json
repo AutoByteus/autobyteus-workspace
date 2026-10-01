@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-09-29T09:26:49.297Z",
+  "checks": {
+    "D0": {
+      "title": "Open the chat under test (when run with --run-id)",
+      "details": {
+        "tab": "progress"
+      }
+    },
+    "G": {
+      "title": "Offline: collapsed stored chat (VIS-019); ⚙ editable (VIS-017); Save → resume uses the new model (AC-009)",
+      "details": {
+        "stoppedNote": true,
+        "chosenLabel": "GPT-6-Astra (default reasoning: medium)",
+        "savedModel": "gpt-6-astra",
+        "resumedActive": true,
+        "resumedModel": "gpt-6-astra"
+      }
+    }
+  },
+  "pageErrors": [],
+  "completedAt": "2026-09-29T09:27:23.928Z"
+}

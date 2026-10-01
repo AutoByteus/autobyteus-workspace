@@ -1,0 +1,53 @@
+{
+  "environment": "pnpm dev; AGY CLI 1.2.10; Chrome 127.0.0.1:3000/workspace; final reviewed source 575520264",
+  "ui_observations": {
+    "denied": "Fresh explicit-off run: live Activity 1 Events run_command DENIED, gray/non-green; after browser reload and reopening same run Activity remains DENIED with Arguments, Result, Error; chat says Tool execution denied. No actionable approval card.",
+    "done_controls": "Fresh default-on run: exit 0, exit 8 and command-not-found each rendered green run_command and SUCCESS in live Activity; after browser reload and reopening same run Activity shows three SUCCESS cards; command-not-found text remains in assistant response. No AGENT_SEGMENT_LIFECYCLE_INVALID banner observed."
+  },
+  "runs": {
+    "denied": {
+      "agent_run_id": "daily_assistant_a3279e4f5e1247ffb181647c5891eeb7",
+      "raw_trace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/.autobyteus/development/server-data/memory/agents/daily_assistant_a3279e4f5e1247ffb181647c5891eeb7/raw_traces_active.jsonl",
+      "tool_results": [
+        {
+          "source_event": "TOOL_DENIED",
+          "tool_name": "run_command",
+          "provider_state": "ERROR",
+          "output": null,
+          "status": "denied",
+          "has_exit_code": false
+        }
+      ]
+    },
+    "done_controls": {
+      "agent_run_id": "daily_assistant_9e802a3c056845b88c4a882b88f7494e",
+      "raw_trace_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/.autobyteus/development/server-data/memory/agents/daily_assistant_9e802a3c056845b88c4a882b88f7494e/raw_traces_active.jsonl",
+      "tool_results": [
+        {
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_command",
+          "provider_state": "DONE",
+          "output": "AGY-API-EXIT0-924",
+          "status": null,
+          "has_exit_code": false
+        },
+        {
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_command",
+          "provider_state": "DONE",
+          "output": null,
+          "status": null,
+          "has_exit_code": false
+        },
+        {
+          "source_event": "TOOL_EXECUTION_SUCCEEDED",
+          "tool_name": "run_command",
+          "provider_state": "DONE",
+          "output": "zsh:1: command not found: agy_api_command_that_does_not_exist_924\r\n",
+          "status": null,
+          "has_exit_code": false
+        }
+      ]
+    }
+  }
+}

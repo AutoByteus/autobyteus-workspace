@@ -4,13 +4,15 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 
 ## Route Ownership
 
-- `pages/workspace.vue` mounts `components/layout/WorkspaceAdaptiveLayout.vue` for every standard workspace size.
+- `pages/workspace.vue` mounts `components/layout/WorkspaceAdaptiveLayout.vue` for every standard workspace size. `pages/chat.vue` mounts the same layout for `/chat?id=<runId>`, the standalone agent run view (see `chat.md`).
 - The route no longer switches between separate desktop and mobile workspace layout components. Avoid reintroducing route-level desktop/mobile branches for `/workspace`; responsive behavior belongs in the shared shell/layout policy.
-- `layouts/default.vue` renders the shared left panel/strip/transient-drawer shell for every non-immersive default-layout route, including `/agents`, `/agent-teams`, and `/tools`. Its strip keeps route-aware active state and existing navigation meaning; only `/workspace` renders the right panel/strip/transient-drawer tools surface.
+- `layouts/default.vue` renders the shared left panel/strip/transient-drawer shell for every non-immersive default-layout route, including `/agents`, `/agent-teams`, and `/tools`. Its strip keeps route-aware active state and existing navigation meaning; only `/workspace` and a `/chat?id=<runId>` run view render the right panel/strip/transient-drawer tools surface. Both mount `WorkspaceAdaptiveLayout` and its `components/layout/WorkspaceToolShell.vue`. `useRightPanel()` keeps one shared visibility preference (open by default) and width.
 - The default layout has no black responsive header, hamburger, breadcrumb trigger, or ordinary `showHeader` compatibility path. Route-owned page headers remain page concerns, not shell navigation fallbacks.
 - The true phone/PWA route remains `/mobile`, which renders `MobileRemoteAccessShell` through `pages/mobile.vue` with its own phone-first journey and feature gates.
 
 ## App Shell Left Navigation
+
+The first left-panel item is **Chat** (`/chat`), with a pencil action that starts a New chat. `/` redirects to `/chat`.
 
 `layouts/default.vue` owns the outer app shell. It provides the shared `useResponsiveWorkspaceShell()` state, which composes viewport capacity, left/right panel preferences, preferred widths, effective presentations, and presentation sources through the single `resolveResponsiveWorkspaceShellState()` policy boundary:
 

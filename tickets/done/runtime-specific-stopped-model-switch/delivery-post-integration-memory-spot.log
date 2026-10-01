@@ -1,0 +1,28 @@
+# Post-integration base-feature regression spot check
+Sat Sep 26 02:49:52 UTC 2026
+
+> autobyteus@1.4.81 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/memory/__tests__/CollaborationMemoryDetail.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+
+stderr | components/memory/__tests__/CollaborationMemoryDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/memory/__tests__/CollaborationMemoryDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/memory/__tests__/CollaborationMemoryDetail.spec.ts (5 tests) 42ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  04:49:55
+   Duration  5.32s (transform 3.09s, setup 4.61s, collect 94ms, tests 42ms, environment 174ms, prepare 193ms)
+

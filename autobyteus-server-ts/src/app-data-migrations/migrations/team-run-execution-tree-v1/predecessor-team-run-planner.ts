@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
-import { TeamRunConfig } from "../../../agent-team-execution/domain/team-run-config.js";
+import { ReleasedTeamRunConfig } from "../../legacy/released-team-run-config.js";
 import type {
-  AgentLaunchConfiguration,
-  TeamRunApplicationBinding,
-  TeamRunAgentNode,
-  TeamRunAgentTeamNode,
-  TeamRunNode,
-} from "../../../agent-team-execution/domain/team-run-config.js";
+  ReleasedAgentLaunchConfiguration,
+  ReleasedTeamRunApplicationBinding,
+  ReleasedTeamRunAgentNode,
+  ReleasedTeamRunAgentTeamNode,
+  ReleasedTeamRunNode,
+} from "../../legacy/released-team-run-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
 import { buildInitialTeamRunExecutionTree } from "./team-run-execution-tree-v1-builder.js";
 import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
@@ -36,8 +36,8 @@ const readJson = async (filePath: string, optional = false): Promise<unknown | n
 /** Derive one package binding from the validated predecessor Agent hierarchy. */
 export const applicationBindingFromMetadata = (
   rootTeam: TeamRunSubTeamMemberMetadata,
-): TeamRunApplicationBinding | null => {
-  const pairs = new Map<string, TeamRunApplicationBinding>();
+): ReleasedTeamRunApplicationBinding | null => {
+  const pairs = new Map<string, ReleasedTeamRunApplicationBinding>();
   const visit = (member: TeamRunMemberMetadata): void => {
     if (member.kind === "agent_team") {
       member.children.forEach(visit);
@@ -62,8 +62,8 @@ export const applicationBindingFromMetadata = (
 };
 
 const launchConfigurationFromAgent = (
-  agent: TeamRunAgentNode,
-): AgentLaunchConfiguration => ({
+  agent: ReleasedTeamRunAgentNode,
+): ReleasedAgentLaunchConfiguration => ({
   runtimeKind: agent.runtimeKind,
   llmModelIdentifier: agent.llmModelIdentifier,
   llmConfig: agent.llmConfig,
@@ -74,13 +74,13 @@ const launchConfigurationFromAgent = (
 
 const materializeMigrationTeam = (
   team: TeamRunSubTeamMemberMetadata,
-): TeamRunAgentTeamNode => {
-  const children: TeamRunNode[] = team.children.map((child) => {
+): ReleasedTeamRunAgentTeamNode => {
+  const children: ReleasedTeamRunNode[] = team.children.map((child) => {
     if (child.kind === "agent_team") return materializeMigrationTeam(child);
     const { applicationExecutionContext: _ignored, ...agent } = child;
     return agent;
   });
-  const coordinator = children.find((child): child is TeamRunAgentNode =>
+  const coordinator = children.find((child): child is ReleasedTeamRunAgentNode =>
     child.kind === "agent" && child.address === team.coordinatorAddress);
   if (!coordinator) throw new Error(`Historical Team '${team.address}' has no direct coordinator.`);
   return {
@@ -92,7 +92,7 @@ const materializeMigrationTeam = (
 
 export type PlannedTeamRunV1Package = Readonly<{
   executionTree: import("./team-run-execution-tree-v1-types.js").TeamRunExecutionTreeSnapshot;
-  taskRecords: import("../../../agent-team-execution/task-delegation/task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
+  taskRecords: import("../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
   communicationMessages: import("../../../services/team-communication/team-communication-v1-types.js").TeamCommunicationMessagesSnapshot;
 }>;
 
@@ -106,7 +106,7 @@ export const planPredecessorTeamRunV1Package = async (input: {
 }): Promise<PlannedTeamRunV1Package> => {
   const rawMetadata = await readJson(input.metadataPath);
   const metadata = convertLegacyTeamRunMetadata(rawMetadata, input.rootTeamRunId);
-  const config = new TeamRunConfig({
+  const config = new ReleasedTeamRunConfig({
     teamBackendKind: TeamBackendKind.MIXED,
     rootTeam: materializeMigrationTeam(metadata.rootTeam),
     handoffs: metadata.handoffs,

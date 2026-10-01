@@ -1,0 +1,33 @@
+{
+  "runtimeKind": "codex_app_server",
+  "model": "gpt-5.5",
+  "runId": "mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229",
+  "nonce": "N-codex_app_server-57e0a524",
+  "eventTypes": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 3,
+    "TOKEN_USAGE_UPDATED": 3,
+    "SEGMENT_CONTENT": 2,
+    "SEGMENT_END": 3,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "snippet": "{\"item\":{\"type\":\"mcpToolCall\",\"id\":\"call_ULVXTXTngEUW5E5SKF8gdQM7\",\"tool\":\"verify_e2e_token\",\"status\":\"inProgress\",\"arguments\":{\"nonce\":\"N-codex_app_server-57e0a524\"},\"appContext\":null,\"mcpAppUi\":null,\"pluginId\":null,\"readOnlyHint\":null,\"result\":null,\"error\":null,\"durationMs\":null},\"threadId\":\"01a0d"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "snippet": "{\"item\":{\"type\":\"mcpToolCall\",\"id\":\"call_ULVXTXTngEUW5E5SKF8gdQM7\",\"tool\":\"verify_e2e_token\",\"status\":\"completed\",\"arguments\":{\"nonce\":\"N-codex_app_server-57e0a524\"},\"appContext\":null,\"mcpAppUi\":null,\"pluginId\":null,\"readOnlyHint\":null,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"TOKEN_PRESENT=true T"
+    }
+  ],
+  "assistantTextContainsNonce": true,
+  "anyEventContainsToolResult": true,
+  "errors": []
+}

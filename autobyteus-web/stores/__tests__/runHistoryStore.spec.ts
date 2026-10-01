@@ -68,7 +68,6 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
               llm_model_identifier: 'model-x',
               llm_config: null,
               auto_execute_tools: false,
-              skill_access_mode: 'NONE',
               workspace_root_path: member.workspaceRootPath ?? teamRun.workspaceRootPath ?? null,
             },
           })),
@@ -119,7 +118,6 @@ const buildTeamResumeMetadata = (input: {
       agentDefinitionId: member.agentDefinitionId,
       llmModelIdentifier: member.llmModelIdentifier ?? 'model-x',
       autoExecuteTools: member.autoExecuteTools ?? false,
-      skillAccessMode: member.skillAccessMode ?? 'PRELOADED_ONLY',
       llmConfig: member.llmConfig ?? null,
       workspaceRootPath: member.workspaceRootPath ?? '/ws/a',
       applicationExecutionContext: null,
@@ -141,7 +139,6 @@ const buildAgentOrgHistoryRow = (input: {
     llmModelIdentifier: 'gpt-5.6-sol',
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     workspaceRootPath: input.workspaceRootPath ?? null,
   };
   return {
@@ -152,13 +149,13 @@ const buildAgentOrgHistoryRow = (input: {
     is_active: false,
     summary: input.summary ?? 'Agent Org run',
     org: {
-      schemaVersion: 1,
       subjectKind: 'agent_org',
       createdAt: '2026-09-03T00:00:00.000Z',
       archivedAt: null,
       applicationBinding: null,
       handoffs: [],
       rootOrg: {
+        collaborators: [],
         address: '/',
         orgDefinitionId: input.definitionId ?? 'org-definition',
         orgDefinitionName: input.definitionName ?? 'Delivery Org',
@@ -332,6 +329,8 @@ const {
       connectToAgentStream: vi.fn(),
       disconnectAgentStream: vi.fn(),
       isAgentStreamReady: vi.fn().mockReturnValue(false),
+      isActivationPending: vi.fn().mockReturnValue(false),
+      clearActivationPending: vi.fn(),
     },
     agentTeamRunStoreMock: {
       connectToTeamStream: vi.fn(),
@@ -1387,7 +1386,6 @@ describe('runHistoryStore', () => {
                 llmModelIdentifier: 'model-x',
                 llmConfig: { temperature: 0.3 },
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
                 runtimeKind: 'codex_app_server',
                 runtimeReference: {
                   runtimeKind: 'codex_app_server',
@@ -1502,7 +1500,6 @@ describe('runHistoryStore', () => {
                 llmModelIdentifier: 'model-x',
                 llmConfig: { temperature: 0.3 },
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
               },
               modelConfigEditability: { editable: true, reason: null },
             },
@@ -1618,7 +1615,6 @@ describe('runHistoryStore', () => {
                 llmModelIdentifier: 'model-x',
                 llmConfig: null,
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
                 runtimeKind: 'codex_app_server',
                 runtimeReference: null,
               },
@@ -1700,7 +1696,6 @@ describe('runHistoryStore', () => {
                 llmModelIdentifier: 'model-x',
                 llmConfig: { temperature: 0.3 },
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
               },
               modelConfigEditability: { editable: true, reason: null },
             },
@@ -1736,7 +1731,6 @@ describe('runHistoryStore', () => {
         llmModelIdentifier: 'model-old',
         workspaceId: 'ws-1',
         autoExecuteTools: true,
-        skillAccessMode: 'ALL',
         llmConfig: null,
         isLocked: false,
       },
@@ -1767,186 +1761,6 @@ describe('runHistoryStore', () => {
     const context = agentContextsStoreMock.runs.get('run-1');
     expect(context.state.currentStatus).toBe('idle');
     expect(context.state.conversation.messages[0]?.text).toBe('existing');
-  });
-
-  it('creates draft run for selected workspace and agent', async () => {
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
-    ];
-    workspaceStoreMock.workspacesFetched = true;
-
-    const store = useRunHistoryStore();
-    await store.createDraftRun({
-      workspaceRootPath: '/ws/a',
-      agentDefinitionId: 'agent-def-1',
-    });
-
-    expect(agentRunConfigStoreMock.setTemplate).toHaveBeenCalled();
-    expect(agentRunConfigStoreMock.updateAgentConfig).toHaveBeenCalledWith(expect.objectContaining({
-      workspaceId: 'ws-1',
-      llmModelIdentifier: 'model-default',
-      workspaceMetadata: expect.objectContaining({
-        workspaceRootPath: '/ws/a',
-      }),
-    }));
-    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
-    expect(selectionStoreMock.clearSelection).toHaveBeenCalled();
-    expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
-    expect(store.selectedRunId).toBeNull();
-  });
-
-  it('reuses model from existing context when creating draft run', async () => {
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
-    ];
-    workspaceStoreMock.workspacesFetched = true;
-
-    agentContextsStoreMock.runs.set('run-previous', {
-      config: {
-        agentDefinitionId: 'agent-def-1',
-        agentDefinitionName: 'SuperAgent',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-previous',
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: true,
-      },
-      state: {
-        conversation: {
-          updatedAt: '2026-01-02T00:00:00.000Z',
-        },
-      },
-    });
-
-    const store = useRunHistoryStore();
-    await store.createDraftRun({
-      workspaceRootPath: '/ws/a',
-      agentDefinitionId: 'agent-def-1',
-    });
-
-    expect(agentRunConfigStoreMock.setAgentConfig).toHaveBeenCalledWith(
-      expect.objectContaining({
-        llmModelIdentifier: 'model-previous',
-        workspaceId: 'ws-1',
-        isLocked: false,
-      }),
-    );
-    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
-    expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
-  });
-
-  it('prefers the selected same-definition context and deep-clones its llmConfig when creating a draft run', async () => {
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
-    ];
-    workspaceStoreMock.workspacesFetched = true;
-    selectionStoreMock.selectedType = 'agent';
-    selectionStoreMock.selectedRunId = 'run-selected';
-
-    agentContextsStoreMock.runs.set('run-newer', {
-      config: {
-        agentDefinitionId: 'agent-def-1',
-        agentDefinitionName: 'SuperAgent',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-newer',
-        runtimeKind: 'codex_app_server',
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: true,
-        llmConfig: { reasoning_effort: 'low' },
-      },
-      state: {
-        conversation: {
-          updatedAt: '2026-01-02T00:00:00.000Z',
-        },
-      },
-    });
-    agentContextsStoreMock.runs.set('run-selected', {
-      config: {
-        agentDefinitionId: 'agent-def-1',
-        agentDefinitionName: 'SuperAgent',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: 'model-selected',
-        runtimeKind: 'codex_app_server',
-        autoExecuteTools: true,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: true,
-        llmConfig: {
-          reasoning_effort: 'xhigh',
-          nested: { values: ['xhigh'] },
-        },
-      },
-      state: {
-        conversation: {
-          updatedAt: '2026-01-01T00:00:00.000Z',
-        },
-      },
-    });
-
-    const store = useRunHistoryStore();
-    await store.createDraftRun({
-      workspaceRootPath: '/ws/a',
-      agentDefinitionId: 'agent-def-1',
-    });
-
-    const seed = agentRunConfigStoreMock.setAgentConfig.mock.calls.at(-1)?.[0];
-    expect(seed).toEqual(expect.objectContaining({
-      llmModelIdentifier: 'model-selected',
-      autoExecuteTools: true,
-      skillAccessMode: 'PRELOADED_ONLY',
-      isLocked: false,
-      llmConfig: {
-        reasoning_effort: 'xhigh',
-        nested: { values: ['xhigh'] },
-      },
-    }));
-
-    (seed.llmConfig.nested.values as string[]).push('mutated');
-    expect(
-      agentContextsStoreMock.runs.get('run-selected')?.config.llmConfig.nested.values,
-    ).toEqual(['xhigh']);
-  });
-
-  it('clears copied llmConfig when model resolution changes the source model for a draft run', async () => {
-    workspaceStoreMock.allWorkspaces = [
-      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
-    ];
-    workspaceStoreMock.workspacesFetched = true;
-    selectionStoreMock.selectedType = 'agent';
-    selectionStoreMock.selectedRunId = 'run-selected';
-    llmProviderConfigStoreMock.models.mockReturnValue(['model-default']);
-
-    agentContextsStoreMock.runs.set('run-selected', {
-      config: {
-        agentDefinitionId: 'agent-def-1',
-        agentDefinitionName: 'SuperAgent',
-        workspaceId: 'ws-1',
-        llmModelIdentifier: '',
-        runtimeKind: 'codex_app_server',
-        autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: true,
-        llmConfig: { reasoning_effort: 'xhigh' },
-      },
-      state: {
-        conversation: {
-          updatedAt: '2026-01-01T00:00:00.000Z',
-        },
-      },
-    });
-
-    const store = useRunHistoryStore();
-    await store.createDraftRun({
-      workspaceRootPath: '/ws/a',
-      agentDefinitionId: 'agent-def-1',
-    });
-
-    expect(agentRunConfigStoreMock.setAgentConfig).toHaveBeenCalledWith(
-      expect.objectContaining({
-        llmModelIdentifier: 'model-default',
-        llmConfig: null,
-      }),
-    );
   });
 
   it('reuses an existing workspace id when local cache has matching root path', async () => {
@@ -2328,7 +2142,6 @@ describe('runHistoryStore', () => {
           llmModelIdentifier: 'model-x',
           llmConfig: null,
           autoExecuteTools: false,
-          skillAccessMode: null,
         },
         modelConfigEditability: { editable: true, reason: null },
       },
@@ -2448,7 +2261,6 @@ describe('runHistoryStore', () => {
           llmModelIdentifier: 'model-x',
           llmConfig: null,
           autoExecuteTools: false,
-          skillAccessMode: null,
         },
         modelConfigEditability: { editable: true, reason: null },
       },

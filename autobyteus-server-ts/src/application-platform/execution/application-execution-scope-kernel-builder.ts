@@ -10,7 +10,6 @@ import { AgentRunProviderInputNormalizer } from "../../agent-execution/input/age
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
-import { TaskDelegationRecordsV1Store } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
@@ -71,6 +70,7 @@ export const buildApplicationExecutionScopeKernel = (
     const storedTeamLocations =
       createStoredTeamRunExecutionTreeLocationService(input.memoryDir);
     const contextFileOwnerResolver = new ContextFileOwnerResolver({
+      memoryDir: input.memoryDir,
       locations: storedTeamLocations,
     });
     const providerInputNormalizer = new AgentRunProviderInputNormalizer(
@@ -128,6 +128,8 @@ export const buildApplicationExecutionScopeKernel = (
       autoByteusBackendFactory: providerFactories.autoByteus,
       codexBackendFactory: providerFactories.codex,
       claudeBackendFactory: providerFactories.claude,
+      agyBackendFactory: providerFactories.antigravity,
+      grokBackendFactory: providerFactories.grok,
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer,
@@ -168,7 +170,6 @@ export const buildApplicationExecutionScopeKernel = (
       }),
       memberExecutionContextBuilder,
       executionTreeStore: new TeamRunExecutionTreeStore(),
-      taskRecordsStore: new TaskDelegationRecordsV1Store(),
       communicationStore: new TeamCommunicationV1Store(),
     });
     const { agentRunService, teamRunService } = buildRunServices(input, {

@@ -1,0 +1,1365 @@
+
+> autobyteus-workspace@ dev /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode
+> pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 131ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../.autobyteus/development/server-data/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/db/development.db"
+
+SQLite database development.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/db/development.db
+
+26 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:31272) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-30T09:38:09.558Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-30T09:38:10.018Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T09:38:10.024Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1790761090033,"pid":31272,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58412"}
+{"level":30,"time":1790761090059,"pid":31272,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8000"}
+[2026-09-30T09:38:10.059Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8000
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+> autobyteus@1.4.92-beta.3 dev /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3000
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3000/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 39ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 691ms
+[nitro] ✔ Nuxt Nitro server built in 597ms
+ℹ Vite client warmed up in 1ms
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data
+In-memory cache: Added new agent definition with ID rsam-skilled-rsamb1790761111692.
+Agent Definition created successfully with ID: rsam-skilled-rsamb1790761111692
+In-memory cache: Added new agent definition with ID rsam-plain-rsamb1790761111692.
+Agent Definition created successfully with ID: rsam-plain-rsamb1790761111692
+[2026-09-30T09:38:31.875Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID rsam-team-rsamb1790761111692.
+Agent Team Definition created successfully with ID: rsam-team-rsamb1790761111692
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Created and registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+AgentRuntimeState initialized for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': LLM instance 'OpenAICompatibleEndpointLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' with config: 'rsam-plain-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'.
+Registered AgentContext for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Context registered.
+Agent facade initialized for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' created and stored successfully.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' requesting runtime to start.
+AgentRuntime for 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Starting worker.
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Starting...
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' asyncRun(): Starting.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Runtime init completed (event store initialized).
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Runtime init completed (status deriver initialized).
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' to become idle (timeout: 30s)...
+AgentEventStream (ID: 0aa11d8e-7874-4079-886f-5a7a52227133) initialized for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Subscribed to notifier.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Executing McpServerPrewarmingStep.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Executing SystemPromptProcessingStep.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': No configured skills. Skipping skill catalog.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Final processed system prompt configured and captured. Trace ID: rt_1790761111930_ccc51022-578e-43ca-a1ef-d2f76d0399a4. Final length: 2658.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' has become idle.
+AgentEventStream (ID: 0aa11d8e-7874-4079-886f-5a7a52227133) for 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 619c4c40-ba6b-4d9f-89a0-894d99020ec4) initialized for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'.
+Agent websocket attached for run rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14
+Created agent session 7b3441e8-161d-4c75-882c-350cb06d5271 for run rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14
+Agent WebSocket connected: session=7b3441e8-161d-4c75-882c-350cb06d5271, run=rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': UserInputContextBuildingProcessor completed. Final content length: 10
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 619c4c40-ba6b-4d9f-89a0-894d99020ec4) for 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'. Attempting graceful shutdown.
+Agent 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Stop requested.
+AgentExternalEventNotifier (NotifierID: 75cc92f9-32cf-400f-93e2-427d77fb0679, AgentID: rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 7b3441e8-161d-4c75-882c-350cb06d5271
+Agent WebSocket disconnected: 7b3441e8-161d-4c75-882c-350cb06d5271
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' asyncRun() loop has finished.
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14'.
+AgentRuntime for 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14': Context unregistered.
+AgentRuntime for 'rsam_plain_rsamb1790761111692_d44a3c4053054de281e99262780dbe14' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': LLM instance 'OpenAICompatibleEndpointLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' created and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' to become idle (timeout: 30s)...
+AgentEventStream (ID: 70256c77-582a-4951-a52c-f599e36068d9) initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Final processed system prompt configured and captured. Trace ID: rt_1790761115369_bace5404-a16c-4663-815e-36ceeee56371. Final length: 3460.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' has become idle.
+AgentEventStream (ID: 70256c77-582a-4951-a52c-f599e36068d9) for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: abf18df3-fac0-46c9-9df6-d267f158e6f3) initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+Agent websocket attached for run rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34
+Created agent session c7e83b3a-9c08-446d-8d1d-46bb8ad7a454 for run rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34
+Agent WebSocket connected: session=c7e83b3a-9c08-446d-8d1d-46bb8ad7a454, run=rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': UserInputContextBuildingProcessor completed. Final content length: 14
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session c7e83b3a-9c08-446d-8d1d-46bb8ad7a454
+Agent WebSocket disconnected: c7e83b3a-9c08-446d-8d1d-46bb8ad7a454
+AgentEventStream (ID: abf18df3-fac0-46c9-9df6-d267f158e6f3) for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Stop requested.
+AgentExternalEventNotifier (NotifierID: 591727e2-c103-4f2e-8256-c4d00da0c52c, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': LLM instance 'OpenAICompatibleEndpointLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' restored and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' to become idle (timeout: 30s)...
+AgentEventStream (ID: 1ea4cf65-1a60-4887-826a-5d05f2cdec7c) initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Final processed system prompt configured and captured. Trace ID: rt_1790761115369_bace5404-a16c-4663-815e-36ceeee56371. Final length: 3460.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' has become idle.
+AgentEventStream (ID: 1ea4cf65-1a60-4887-826a-5d05f2cdec7c) for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: ae30757a-aad8-49e7-aa75-b569286e52c1) initialized for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+Agent websocket attached for run rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34
+Created agent session d0571893-1080-4223-aa45-40f0f8e897e8 for run rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34
+Agent WebSocket connected: session=d0571893-1080-4223-aa45-40f0f8e897e8, run=rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': UserInputContextBuildingProcessor completed. Final content length: 29
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session d0571893-1080-4223-aa45-40f0f8e897e8
+Agent WebSocket disconnected: d0571893-1080-4223-aa45-40f0f8e897e8
+AgentEventStream (ID: ae30757a-aad8-49e7-aa75-b569286e52c1) for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Stop requested.
+AgentExternalEventNotifier (NotifierID: c88e860f-4d4a-4dc2-9113-3a596ca05e50, AgentID: rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Agent team websocket attached for team run rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269
+Created agent session 9a4fad29-13ca-40f9-a5c5-a8998973cd0d for run rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269
+Agent Team WebSocket connected: session=9a4fad29-13ca-40f9-a5c5-a8998973cd0d, run=rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' created and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' to become idle (timeout: 30s)...
+AgentEventStream (ID: e0c3e764-e699-4afd-856c-c5c3b2241cd6) initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Final processed system prompt configured and captured. Trace ID: rt_1790761124020_06e99bfb-ddd0-4a5b-b167-559356ebfb9f. Final length: 7399.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' has become idle.
+AgentEventStream (ID: e0c3e764-e699-4afd-856c-c5c3b2241cd6) for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: f2e22428-3d6d-44a6-a287-33e2e439699c) initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': UserInputContextBuildingProcessor completed. Final content length: 19
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 9a4fad29-13ca-40f9-a5c5-a8998973cd0d
+AgentEventStream (ID: f2e22428-3d6d-44a6-a287-33e2e439699c) for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Stop requested.
+AgentExternalEventNotifier (NotifierID: 9271633f-00fb-401d-917c-a509c7d2351b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' stop() method completed.
+Agent team websocket attached for team run rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269
+Created agent session 53380d2e-2d2b-4c32-a688-ef73768adac8 for run rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269
+Agent Team WebSocket connected: session=53380d2e-2d2b-4c32-a688-ef73768adac8, run=rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' restored and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' to become idle (timeout: 30s)...
+AgentEventStream (ID: 89f31cbf-ae6f-4eef-aeda-3f2489eb9960) initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Final processed system prompt configured and captured. Trace ID: rt_1790761124020_06e99bfb-ddd0-4a5b-b167-559356ebfb9f. Final length: 7399.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' has become idle.
+AgentEventStream (ID: 89f31cbf-ae6f-4eef-aeda-3f2489eb9960) for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 17e7ce5f-9037-487c-89d4-778f149d713e) initialized for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': UserInputContextBuildingProcessor completed. Final content length: 34
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 53380d2e-2d2b-4c32-a688-ef73768adac8
+AgentEventStream (ID: 17e7ce5f-9037-487c-89d4-778f149d713e) for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Stop requested.
+AgentExternalEventNotifier (NotifierID: b66412ca-34d0-41d3-be85-256646c0447b, AgentID: rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_ba9515618e6b48a2978a87f6ac108418' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' created and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' to become idle (timeout: 30s)...
+AgentEventStream (ID: 55c54ed1-5f0c-4298-8453-645b6d3d1b09) initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Final processed system prompt configured and captured. Trace ID: rt_1790761131007_9993d30c-7ada-4f64-8a4d-ade3aeb543a7. Final length: 7392.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' has become idle.
+AgentEventStream (ID: 55c54ed1-5f0c-4298-8453-645b6d3d1b09) for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 417003bc-33d7-45dd-aedf-e5ecde2a2a8b) initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': UserInputContextBuildingProcessor completed. Final content length: 18
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 417003bc-33d7-45dd-aedf-e5ecde2a2a8b) for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Stop requested.
+AgentExternalEventNotifier (NotifierID: 28368928-37e7-407e-8532-06ba7b55a934, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' restored and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' to become idle (timeout: 30s)...
+AgentEventStream (ID: 9e59d8ad-c437-4f3d-88fa-5afe46d8b74f) initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Final processed system prompt configured and captured. Trace ID: rt_1790761134340_e38cdfcd-51c0-4bf4-aab6-78c94549ade1. Final length: 7353.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' has become idle.
+AgentEventStream (ID: 9e59d8ad-c437-4f3d-88fa-5afe46d8b74f) for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 1d7da75f-1601-4881-b7d6-d9caecc40a30) initialized for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': UserInputContextBuildingProcessor completed. Final content length: 33
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 1d7da75f-1601-4881-b7d6-d9caecc40a30) for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Stop requested.
+AgentExternalEventNotifier (NotifierID: 9bcfaa08-c2b2-459a-a167-c174f85b54c1, AgentID: rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_c153f6cd749d46e69515f6c45f9e1fb7' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': LLM instance 'OpenAICompatibleEndpointLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' created and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' to become idle (timeout: 30s)...
+AgentEventStream (ID: f30342cf-22ee-41d0-9de4-a384607fede1) initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Final processed system prompt configured and captured. Trace ID: rt_1790761136179_573ba076-2cc0-43e6-a4c4-018f519eb9ef. Final length: 3460.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' has become idle.
+AgentEventStream (ID: f30342cf-22ee-41d0-9de4-a384607fede1) for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: e61a41b1-581e-4341-98fd-bfb2e03e911d) initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+Agent websocket attached for run rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe
+Created agent session 7808a5e6-d410-4b3e-ba2d-dfe50ba1677a for run rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe
+Agent WebSocket connected: session=7808a5e6-d410-4b3e-ba2d-dfe50ba1677a, run=rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': UserInputContextBuildingProcessor completed. Final content length: 14
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 7808a5e6-d410-4b3e-ba2d-dfe50ba1677a
+Agent WebSocket disconnected: 7808a5e6-d410-4b3e-ba2d-dfe50ba1677a
+AgentEventStream (ID: e61a41b1-581e-4341-98fd-bfb2e03e911d) for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Stop requested.
+AgentExternalEventNotifier (NotifierID: fbb86dbd-4b04-4fe7-b5af-45b04155ac5e, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': LLM instance 'OpenAICompatibleEndpointLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' restored and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' to become idle (timeout: 30s)...
+AgentEventStream (ID: b2cc25a1-0a5f-459f-8943-6a229b5757ef) initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Final processed system prompt configured and captured. Trace ID: rt_1790761136179_573ba076-2cc0-43e6-a4c4-018f519eb9ef. Final length: 3460.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' has become idle.
+AgentEventStream (ID: b2cc25a1-0a5f-459f-8943-6a229b5757ef) for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: d8897be6-1cad-48d6-a90e-fc55c7598066) initialized for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+Agent websocket attached for run rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe
+Created agent session 6d753811-4bc8-43c4-97ce-3aab9f285a5b for run rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe
+Agent WebSocket connected: session=6d753811-4bc8-43c4-97ce-3aab9f285a5b, run=rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': UserInputContextBuildingProcessor completed. Final content length: 29
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: d8897be6-1cad-48d6-a90e-fc55c7598066) for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Stop requested.
+AgentExternalEventNotifier (NotifierID: b47ca572-2033-4b1f-a37a-2042ad07f42a, AgentID: rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 6d753811-4bc8-43c4-97ce-3aab9f285a5b
+Agent WebSocket disconnected: 6d753811-4bc8-43c4-97ce-3aab9f285a5b
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Agent team websocket attached for team run rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7
+Created agent session 31ee4779-7b3b-46b7-86c9-750dec7e6de8 for run rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7
+Agent Team WebSocket connected: session=31ee4779-7b3b-46b7-86c9-750dec7e6de8, run=rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' created and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' to become idle (timeout: 30s)...
+AgentEventStream (ID: 05039ef3-8305-428a-bc61-dbe475671824) initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Final processed system prompt configured and captured. Trace ID: rt_1790761144808_13e7ce32-07ac-4bc3-8c71-c9d874082d49. Final length: 7399.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' has become idle.
+AgentEventStream (ID: 05039ef3-8305-428a-bc61-dbe475671824) for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: c5819f74-2086-4d9f-b146-e21f4e82b200) initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': UserInputContextBuildingProcessor completed. Final content length: 19
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 31ee4779-7b3b-46b7-86c9-750dec7e6de8
+AgentEventStream (ID: c5819f74-2086-4d9f-b146-e21f4e82b200) for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Stop requested.
+AgentExternalEventNotifier (NotifierID: 00ce7cbf-87a4-4680-ab69-ebcd106837c4, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' stop() method completed.
+Agent team websocket attached for team run rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7
+Created agent session ec1021d8-75f8-44e9-b9bd-c969352c5a88 for run rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7
+Agent Team WebSocket connected: session=ec1021d8-75f8-44e9-b9bd-c969352c5a88, run=rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' restored and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' to become idle (timeout: 30s)...
+AgentEventStream (ID: 32b2cb5f-e340-42b4-b812-6b974a021b0e) initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Final processed system prompt configured and captured. Trace ID: rt_1790761144808_13e7ce32-07ac-4bc3-8c71-c9d874082d49. Final length: 7399.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' has become idle.
+AgentEventStream (ID: 32b2cb5f-e340-42b4-b812-6b974a021b0e) for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 4ffac8a2-2c97-4c22-bbe8-bbb8c15ed3ab) initialized for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': UserInputContextBuildingProcessor completed. Final content length: 34
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session ec1021d8-75f8-44e9-b9bd-c969352c5a88
+AgentEventStream (ID: 4ffac8a2-2c97-4c22-bbe8-bbb8c15ed3ab) for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Stop requested.
+AgentExternalEventNotifier (NotifierID: cbd0795a-784d-4d53-abf8-a8b3af8b560e, AgentID: rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_6f40890abb554f7fac97bf0939df15b6' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' created and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' to become idle (timeout: 30s)...
+AgentEventStream (ID: c838a9b7-3615-4456-a217-1498bd432473) initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Final processed system prompt configured and captured. Trace ID: rt_1790761151846_78df1b72-97ae-4ca2-b8af-e3932d7f1fbe. Final length: 7392.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' has become idle.
+AgentEventStream (ID: c838a9b7-3615-4456-a217-1498bd432473) for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 1b5efe24-0384-416d-b074-ae7e838744ef) initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': UserInputContextBuildingProcessor completed. Final content length: 18
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 1b5efe24-0384-416d-b074-ae7e838744ef) for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Stop requested.
+AgentExternalEventNotifier (NotifierID: e249311e-c141-4fe2-a8ba-c06b0f2054e0, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692.
+Reusing registered workspace ID: agent_ws_2bc16e2866203ac873cdbf42d4c07f0b1354f5cf781bb579ce9fe11c3dedeb02
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'rsam_skill_rsamb1790761111692' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/skills/rsam_skill_rsamb1790761111692
+AgentRuntimeState initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': LLM instance 'OpenAICompatibleEndpointLLM' and 7 tools prepared and stored in state.
+AgentContext composed for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' with config: 'rsam-skilled-rsamb1790761111692'.
+AgentWorker initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+Registered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Context registered.
+Agent facade initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' restored and stored successfully.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' requesting runtime to start.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Starting worker.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Starting...
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' asyncRun(): Starting.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (event store initialized).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (status deriver initialized).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (AgentEventInbox initialized).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' to become idle (timeout: 30s)...
+AgentEventStream (ID: 9bb9bda9-7777-42cf-b4a1-2580d1ac9bae) initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Subscribed to notifier.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Bootstrapper starting direct lifecycle execution.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Executing McpServerPrewarmingStep.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Executing SystemPromptProcessingStep.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Added 1 configured skill catalog entries with paths.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Final processed system prompt configured and captured. Trace ID: rt_1790761155122_52705485-1ff7-40a9-b898-e1641a74c7a8. Final length: 7353.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' initialized successfully. Entering main event scheduler loop.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' has become idle.
+AgentEventStream (ID: 9bb9bda9-7777-42cf-b4a1-2580d1ac9bae) for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 2dafc055-e281-40cd-9109-8077d7545037) initialized for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Subscribed to notifier.
+Published autobyteus agent run 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': UserInputContextBuildingProcessor completed. Final content length: 33
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: 2dafc055-e281-40cd-9109-8077d7545037) for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'. Attempting graceful shutdown.
+Agent 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Stop requested.
+AgentExternalEventNotifier (NotifierID: a82dde31-2830-48ca-af86-46d662c7c4f7, AgentID: rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' asyncRun() loop has finished.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Running shutdown sequence on worker loop.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Shutdown resource cleanup completed successfully.
+AgentWorker 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4'.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4': Context unregistered.
+AgentRuntime for 'rsam_skilled_rsamb1790761111692_bf5baba80255491cb6fde79c9d6443b4' stop() method completed.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/daily
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/daily.
+Created and registered workspace ID: agent_ws_0272b2889612c801092b4ac42e4e35a30af8cd5dc0311b762236caee42ab456d
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/daily
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/daily.
+Reusing registered workspace ID: agent_ws_0272b2889612c801092b4ac42e4e35a30af8cd5dc0311b762236caee42ab456d
+MediaStorageService initialized. Media root: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/media
+Resolved skill 'agent-package-creation' to path: /Users/normy/autobyteus_org/autobyteus-agents/agents/agent-package-creator/skills/agent-package-creation
+Resolved skill 'api-e2e-engineer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/api-e2e-engineer/skills/api-e2e-engineer
+Resolved skill 'application-specialist' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/job-search-application-team/agents/application-specialist/skills/application-specialist
+Resolved skill 'architecture-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/architecture-reviewer/skills/architecture-reviewer
+Resolved skill 'article-polisher-verifier' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/agents/article-polisher-verifier/skills/article-polisher-verifier
+Resolved skill 'article-researcher' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team/agents/article-writer/skills/article-researcher
+Resolved skill 'article-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team/agents/article-reviewer/skills/article-reviewer
+Resolved skill 'article-writing' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/article-writing-team/agents/article-writer/skills/article-writing
+Resolved skill 'audio-transcriber' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agents/audio-transcriber/skills/audio-transcriber
+Resolved skill 'autobyteus-isolated-app' to path: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/skills/autobyteus-isolated-app
+Resolved skill 'bilingual-author-style-writer' to path: /Users/normy/autobyteus_org/autobyteus-skills/bilingual-author-style-writer
+Resolved skill 'book-production-editor' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/agents/book-production-editor/skills/book-production-editor
+Resolved skill 'browser-automation' to path: /Users/normy/autobyteus_org/autobyteus-skills/browser-automation
+Resolved skill 'career-profile-strategist' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/job-search-application-team/agents/career-profile-strategist/skills/career-profile-strategist
+Resolved skill 'careful-reader' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/bible-study-group/agents/careful-reader/skills/careful-reader
+Resolved skill 'child-experience-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/agents/child-experience-reviewer/skills/child-experience-reviewer
+Resolved skill 'cited-article-writer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/agents/cited-article-writer/skills/cited-article-writer
+Resolved skill 'code-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/code-reviewer/skills/code-reviewer
+Resolved skill 'coloring-page-illustrator' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/agents/coloring-page-illustrator/skills/coloring-page-illustrator
+Resolved skill 'computer-use-operation' to path: /Users/normy/autobyteus_org/autobyteus-agents/agents/computer-use-operator/skills/computer-use-operation
+Resolved skill 'context-guide' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/bible-study-group/agents/context-guide/skills/context-guide
+Resolved skill 'deck-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team/agents/deck-reviewer/skills/deck-reviewer
+Resolved skill 'deep-research-article' to path: /Users/normy/autobyteus_org/autobyteus-skills/deep-research-article
+Resolved skill 'deep-researcher' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team/agents/deep-researcher/skills/deep-researcher
+Resolved skill 'delivery-engineer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/delivery-engineer/skills/delivery-engineer
+Resolved skill 'dictionary-word-audio' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agents/dictionary-word-audio/skills/dictionary-word-audio
+Resolved skill 'emotion-metaphor-image-prompting' to path: /Users/normy/autobyteus_org/autobyteus-skills/emotion-metaphor-image-prompting
+Resolved skill 'expert-interviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/agents/expert-interviewer/skills/expert-interviewer
+Resolved skill 'exploratory-requirements-visualizer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/product-team/agents/product-prototyper/skills/exploratory-requirements-visualizer
+Resolved skill 'implementation-engineer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/implementation-engineer/skills/implementation-engineer
+Resolved skill 'implementer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/evidence-driven-delivery-team/agents/implementer/skills/implementer
+Resolved skill 'infographic-powerpoint-deck' to path: /Users/normy/autobyteus_org/autobyteus-skills/infographic-powerpoint-deck
+Resolved skill 'infographic-powerpoint-designer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/research-to-deck-team/agents/infographic-powerpoint-designer/skills/infographic-powerpoint-designer
+Resolved skill 'investigator' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/evidence-driven-delivery-team/agents/investigator/skills/investigator
+Resolved skill 'job-opportunity-scout' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/job-search-application-team/agents/job-opportunity-scout/skills/job-opportunity-scout
+Resolved skill 'llm-fine-tuning-skill' to path: /Users/normy/autobyteus_org/autobyteus-skills/llm-fine-tuning-skill
+Resolved skill 'manga-illustrator' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/agents/manga-illustrator/skills/manga-illustrator
+Resolved skill 'manga-showrunner' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/agents/manga-showrunner/skills/manga-showrunner
+Resolved skill 'marketing-content-creation' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/marketing-team/agents/marketing-content-creator/skills/marketing-content-creation
+Resolved skill 'narration-script-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team/agents/narration-script-reviewer/skills/narration-script-reviewer
+Resolved skill 'outline-architect' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/agents/outline-architect/skills/outline-architect
+Resolved skill 'perspective-miner' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/agents/perspective-miner/skills/perspective-miner
+Resolved skill 'picture-book-illustrator' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/agents/picture-book-illustrator/skills/picture-book-illustrator
+Resolved skill 'picture-book-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/agents/picture-book-reviewer/skills/picture-book-reviewer
+Resolved skill 'planner' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/evidence-driven-delivery-team/agents/planner/skills/planner
+Resolved skill 'ppt-designer' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agents/ppt-designer/skills/ppt-designer
+Resolved skill 'presentation-director' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team/agents/presentation-director/skills/presentation-director
+Resolved skill 'printable-pack-producer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/agents/printable-pack-producer/skills/printable-pack-producer
+Resolved skill 'product-experience-prototyper' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/product-team/agents/product-prototyper/skills/product-experience-prototyper
+Resolved skill 'product-prototype-repository-management' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/product-team/agents/product-prototyper/skills/product-prototype-repository-management
+Resolved skill 'product-prototyping' to path: /Users/normy/autobyteus_org/autobyteus-skills/product-prototyping
+Resolved skill 'product-ui-prototyping' to path: /Users/normy/autobyteus_org/autobyteus-skills/product-ui-prototyping
+Resolved skill 'promo-director' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/agents/promo-director/skills/promo-director
+Resolved skill 'promo-video-producer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/agents/promo-video-producer/skills/promo-video-producer
+Resolved skill 'prototype-bootstrapper' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/product-team/agents/prototype-bootstrapper/skills/prototype-bootstrapper
+Resolved skill 'research-engineer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agents/research-engineer/skills/research-engineer
+Resolved skill 'resume-designer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agents/resume-designer/skills/resume-designer
+Resolved skill 'retrospective-skill-improver' to path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver
+Resolved skill 'shell-first-operating-practice' to path: /Users/normy/autobyteus_org/autobyteus-skills/shell-first-operating-practice
+Resolved skill 'skill-optimizer' to path: /Users/normy/autobyteus_org/autobyteus-skills/skill-optimizer
+Resolved skill 'slide-video-producer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/narrated-presentation-video-team/agents/slide-video-producer/skills/slide-video-producer
+Resolved skill 'software-engineering-workflow-skill' to path: /Users/normy/autobyteus_org/autobyteus-skills/software-engineering-workflow-skill
+Resolved skill 'software-tutorial-video-maker' to path: /Users/normy/autobyteus_org/autobyteus-agents/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker
+Resolved skill 'solution-designer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer
+Resolved skill 'story-activity-designer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-coloring-story-team/agents/story-activity-designer/skills/story-activity-designer
+Resolved skill 'story-picture-book-author' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/kids-picture-story-team/agents/story-picture-book-author/skills/story-picture-book-author
+Resolved skill 'storyboard-director' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/agents/storyboard-director/skills/storyboard-director
+Resolved skill 'study-leader' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/bible-study-group/agents/study-leader/skills/study-leader
+Resolved skill 'topic-research-coordinator' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/storm-team/agents/topic-research-coordinator/skills/topic-research-coordinator
+Resolved skill 'tutorial-video-assembler' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/agents/tutorial-video-assembler/skills/tutorial-video-assembler
+Resolved skill 'tutorial-video-producer' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/agents/tutorial-video-producer/skills/tutorial-video-producer
+Resolved skill 'tutorial-voiceover-writer' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agent-teams/video-tutorial-creation-team/agents/tutorial-voiceover-writer/skills/tutorial-voiceover-writer
+Resolved skill 'ux-journey-definition' to path: /Users/normy/autobyteus_org/autobyteus-skills/ux-journey-definition
+Resolved skill 'validator' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/evidence-driven-delivery-team/agents/validator/skills/validator
+Resolved skill 'video-audio-editing' to path: /Users/normy/autobyteus_org/autobyteus-skills/video-audio-editing
+Resolved skill 'video-subtitle-burn-in' to path: /Users/normy/autobyteus_org/autobyteus-private-agents/agents/video-subtitle-burn-in/skills/video-subtitle-burn-in
+Resolved skill 'visual-director' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/agents/visual-director/skills/visual-director
+Resolved skill 'visual-reviewer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-product-promo-video-team/agents/visual-reviewer/skills/visual-reviewer
+Resolved skill 'voice-video-producer' to path: /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/manga-video-studio-team/agents/voice-video-producer/skills/voice-video-producer
+Resolved skill 'web-ui-automation' to path: /Users/normy/autobyteus_org/autobyteus-skills/web-ui-automation
+AgentRuntimeState initialized for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': LLM instance 'OpenAICompatibleEndpointLLM' and 21 tools prepared and stored in state.
+AgentContext composed for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' with config: 'Daily Assistant'.
+AgentWorker initialized for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'.
+Registered AgentContext for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Context registered.
+Agent facade initialized for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' created and stored successfully.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' requesting runtime to start.
+AgentRuntime for 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Starting worker.
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Starting...
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' asyncRun(): Starting.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Runtime init completed (event store initialized).
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Runtime init completed (status deriver initialized).
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Runtime init completed (AgentEventInbox initialized).
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' to become idle (timeout: 30s)...
+AgentEventStream (ID: 0a0ca4f1-3e2e-4059-a865-10703e77babd) initialized for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Subscribed to notifier.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Bootstrapper starting direct lifecycle execution.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Executing McpServerPrewarmingStep.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Executing SystemPromptProcessingStep.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Added 80 configured skill catalog entries with paths.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Final processed system prompt configured and captured. Trace ID: rt_1790761167696_65811d8c-b364-4cb8-ac72-be4b33519685. Final length: 35446.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' initialized successfully. Entering main event scheduler loop.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' has become idle.
+AgentEventStream (ID: 0a0ca4f1-3e2e-4059-a865-10703e77babd) for 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: bf1477ef-7b1f-4d0f-a414-e06a37670044) initialized for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Subscribed to notifier.
+Published autobyteus agent run 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'.
+Agent websocket attached for run daily_assistant_d8712d3343de44bfb7ea450e8f226cd4
+Created agent session 6887c196-8e13-4723-957a-96530948fa84 for run daily_assistant_d8712d3343de44bfb7ea450e8f226cd4
+Agent WebSocket connected: session=6887c196-8e13-4723-957a-96530948fa84, run=daily_assistant_d8712d3343de44bfb7ea450e8f226cd4
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': UserInputContextBuildingProcessor completed. Final content length: 6
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentEventStream (ID: bf1477ef-7b1f-4d0f-a414-e06a37670044) for 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'. Attempting graceful shutdown.
+Agent 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Stop requested.
+AgentExternalEventNotifier (NotifierID: af1bf37e-6884-441d-ac39-1412d90958fe, AgentID: daily_assistant_d8712d3343de44bfb7ea450e8f226cd4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 6887c196-8e13-4723-957a-96530948fa84
+Agent WebSocket disconnected: 6887c196-8e13-4723-957a-96530948fa84
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' asyncRun() loop has finished.
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Running shutdown sequence on worker loop.
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Shutdown resource cleanup completed successfully.
+AgentWorker 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4'.
+AgentRuntime for 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4': Context unregistered.
+AgentRuntime for 'daily_assistant_d8712d3343de44bfb7ea450e8f226cd4' stop() method completed.
+In-memory cache: Added new agent definition with ID rsam-live-c035d50c8a.
+Agent Definition created successfully with ID: rsam-live-c035d50c8a
+[CodexAppServerClient] stderr: [2m2026-09-30T09:39:31.267962Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-c035d50c8a
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-c035d50c8a.
+Created and registered workspace ID: agent_ws_4b0de995b4b112f4f84ef427213390cd5acd7477a5a9c83086a0ee45bf38ce66
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-c035d50c8a
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-c035d50c8a.
+Reusing registered workspace ID: agent_ws_4b0de995b4b112f4f84ef427213390cd5acd7477a5a9c83086a0ee45bf38ce66
+[CodexAppServerClient] stderr: [2m2026-09-30T09:39:31.442238Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T09:39:31.548789Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'rsam_live_c035d50c8a_d98fb47ec3b044e8affd234dda244e27'.
+Agent websocket attached for run rsam_live_c035d50c8a_d98fb47ec3b044e8affd234dda244e27
+Created agent session 95370f8e-3775-4684-a73b-27d4276fee43 for run rsam_live_c035d50c8a_d98fb47ec3b044e8affd234dda244e27
+Agent WebSocket connected: session=95370f8e-3775-4684-a73b-27d4276fee43, run=rsam_live_c035d50c8a_d98fb47ec3b044e8affd234dda244e27
+Closed agent session 95370f8e-3775-4684-a73b-27d4276fee43
+Agent WebSocket disconnected: 95370f8e-3775-4684-a73b-27d4276fee43
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-c035d50c8a
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-c035d50c8a.
+Created and registered workspace ID: agent_ws_dc69fac92d6dc9607a9460f5cef5814b04040f4c3f4100adf3c4cf72ab3c8a80
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-c035d50c8a
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-c035d50c8a.
+Reusing registered workspace ID: agent_ws_dc69fac92d6dc9607a9460f5cef5814b04040f4c3f4100adf3c4cf72ab3c8a80
+Published claude_agent_sdk agent run 'rsam_live_c035d50c8a_8e685b1316384b3483bbfad858f8e756'.
+Agent websocket attached for run rsam_live_c035d50c8a_8e685b1316384b3483bbfad858f8e756
+Created agent session 273c6386-5da8-45c0-b351-b9c1db390e04 for run rsam_live_c035d50c8a_8e685b1316384b3483bbfad858f8e756
+Agent WebSocket connected: session=273c6386-5da8-45c0-b351-b9c1db390e04, run=rsam_live_c035d50c8a_8e685b1316384b3483bbfad858f8e756
+(node:31272) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Closed agent session 273c6386-5da8-45c0-b351-b9c1db390e04
+Agent WebSocket disconnected: 273c6386-5da8-45c0-b351-b9c1db390e04
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-c035d50c8a
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-c035d50c8a.
+Created and registered workspace ID: agent_ws_e5e01adc8fd901401679704f6cae7c70f3095cd39ba1fce9f1d99a6adf4de03c
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-c035d50c8a
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-c035d50c8a.
+Reusing registered workspace ID: agent_ws_e5e01adc8fd901401679704f6cae7c70f3095cd39ba1fce9f1d99a6adf4de03c
+Published antigravity_cli agent run 'rsam_live_c035d50c8a_5883fc61dd09453f9ea24e8e5bfbeea1'.
+Agent websocket attached for run rsam_live_c035d50c8a_5883fc61dd09453f9ea24e8e5bfbeea1
+Created agent session a3da815a-dfc3-461a-9357-4ba64d1624d6 for run rsam_live_c035d50c8a_5883fc61dd09453f9ea24e8e5bfbeea1
+Agent WebSocket connected: session=a3da815a-dfc3-461a-9357-4ba64d1624d6, run=rsam_live_c035d50c8a_5883fc61dd09453f9ea24e8e5bfbeea1
+Closed agent session a3da815a-dfc3-461a-9357-4ba64d1624d6
+Agent WebSocket disconnected: a3da815a-dfc3-461a-9357-4ba64d1624d6
+In-memory cache: Added new agent definition with ID rsam-bg-84a558af.
+Agent Definition created successfully with ID: rsam-bg-84a558af
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/bg-claude_agent_sdk-84a558af
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/bg-claude_agent_sdk-84a558af.
+Created and registered workspace ID: agent_ws_0c9480e9149537ca912f2e9054d565e1377f7d798d7d1c3625037266a18ac307
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/bg-claude_agent_sdk-84a558af
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/bg-claude_agent_sdk-84a558af.
+Reusing registered workspace ID: agent_ws_0c9480e9149537ca912f2e9054d565e1377f7d798d7d1c3625037266a18ac307
+Published claude_agent_sdk agent run 'rsam_bg_84a558af_b0e37c5e15d846a69ad10f3520db6205'.
+Agent websocket attached for run rsam_bg_84a558af_b0e37c5e15d846a69ad10f3520db6205
+Created agent session 439deef6-1a9d-4c76-a040-b824f394aaee for run rsam_bg_84a558af_b0e37c5e15d846a69ad10f3520db6205
+Agent WebSocket connected: session=439deef6-1a9d-4c76-a040-b824f394aaee, run=rsam_bg_84a558af_b0e37c5e15d846a69ad10f3520db6205
+Closed agent session 439deef6-1a9d-4c76-a040-b824f394aaee
+Agent WebSocket disconnected: 439deef6-1a9d-4c76-a040-b824f394aaee
+[2026-09-30T09:41:25.248Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-30T09:41:25.259Z] [INFO] [server.runtime] Server closed cleanly.

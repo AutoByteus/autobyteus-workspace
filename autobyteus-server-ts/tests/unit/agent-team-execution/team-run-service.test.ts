@@ -1,6 +1,5 @@
 import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -29,7 +28,6 @@ const launchConfig = (
   memberAddress,
   llmModelIdentifier: "gpt-test",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   workspaceRootPath,
   llmConfig: null,
@@ -42,7 +40,6 @@ const teamLaunchConfig = (
   teamAddress: "/",
   llmModelIdentifier: "gpt-test",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   workspaceRootPath,
   llmConfig: null,
@@ -138,23 +135,32 @@ describe("TeamRunService current root lifecycle", () => {
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
   });
 
-  it("rejects a managed offline run before consulting pre-existing-run readiness", async () => {
+  it("lets the manager restore a managed-but-stopped run (self-heal) and records the restore", async () => {
     const managedRun = { teamRunId: "team-offline-1" };
-    const tokenUsageReadiness = {
-      assertCurrentSchemaReady: vi.fn(),
-      assertExistingRunRestoreReady: vi.fn(() => {
-        throw new Error("TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED");
-      }),
-    };
+    const tokenUsageReadiness = { assertCurrentSchemaReady: vi.fn(), assertExistingRunRestoreReady: vi.fn() };
     const { service, mocks } = createSubject(null, undefined, tokenUsageReadiness, managedRun);
+    const tree = { schemaVersion: 2, rootTeam: { teamRunId: "team-offline-1" } };
+    const restored = { teamRunId: "team-offline-1", getExecutionTreeSnapshot: vi.fn(() => tree) };
+    mocks.agentTeamRunManager.restoreTeamRun.mockResolvedValue(restored);
 
-    await expect(service.restoreTeamRun("team-offline-1")).rejects.toThrow(
-      "Team run 'team-offline-1' is already managed and cannot be restored.",
-    );
+    await expect(service.restoreTeamRun("team-offline-1")).resolves.toBe(restored);
 
-    expect(mocks.agentTeamRunManager.hasManagedTeamRun).toHaveBeenCalledWith("team-offline-1");
-    expect(tokenUsageReadiness.assertExistingRunRestoreReady).not.toHaveBeenCalled();
-    expect(mocks.agentTeamRunManager.restoreTeamRun).not.toHaveBeenCalled();
+    expect(tokenUsageReadiness.assertExistingRunRestoreReady).toHaveBeenCalledOnce();
+    expect(mocks.agentTeamRunManager.restoreTeamRun).toHaveBeenCalledWith("team-offline-1");
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunRestored).toHaveBeenCalledWith({ tree });
+  });
+
+  it("consults pre-existing-run readiness first and surfaces the manager's still-active rejection", async () => {
+    const managedRun = { teamRunId: "team-active-1" };
+    const tokenUsageReadiness = { assertCurrentSchemaReady: vi.fn(), assertExistingRunRestoreReady: vi.fn() };
+    const { service, mocks } = createSubject(managedRun, undefined, tokenUsageReadiness, managedRun);
+    mocks.agentTeamRunManager.restoreTeamRun.mockRejectedValue(new Error("RootTeamRun 'team-active-1' is already managed."));
+
+    await expect(service.restoreTeamRun("team-active-1")).rejects.toThrow("RootTeamRun 'team-active-1' is already managed.");
+
+    expect(tokenUsageReadiness.assertExistingRunRestoreReady).toHaveBeenCalledOnce();
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunRestored).not.toHaveBeenCalled();
+    expect(mocks.agentTeamRunManager.terminateTeamRun).not.toHaveBeenCalled();
   });
 
   it("blocks root, nested, delegated, and task-team restoration before the team backend constructs providers", async () => {
@@ -332,7 +338,6 @@ describe("TeamRunService current root lifecycle", () => {
           workspaceRootPath: "/tmp/root-only-invalid",
           llmModelIdentifier: "gpt-test",
           autoExecuteTools: false,
-          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           llmConfig: null,
         },

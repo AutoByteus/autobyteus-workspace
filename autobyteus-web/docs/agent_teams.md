@@ -93,11 +93,18 @@ leaves configured members Offline until actual work reaches them, even when they
 have prior history. Sending after a server restart restores the complete scope
 but readies only the required recipient; later peer or human input can start
 another member. Saved conversations, attachments and identities are preserved.
-Assigned task execution retains its separate durable preparation/release journey.
+Delegated children likewise start shut down (`offline`) after a restart and
+wake only when a same-root message reaches them.
 
 The effective standalone configuration is resolved for each direct Agent from
 the Team root plus any exact Agent override. Definition defaults seed the new
 draft but are not persisted merely because a schema default is displayed.
+For a root or member seeded with an exact saved model ID absent from the
+backend's offered choices, launch controls request an exact-current descriptor
+and retain the ID/schema as a current-only value. In particular, a stored
+Claude `default` is not silently changed to its recommended offered sibling.
+Each configured scope still needs valid catalog/schema evidence before launch;
+the descriptor lookup does not make an arbitrary new ID selectable.
 
 ## Execution Identity And Commands
 
@@ -131,44 +138,81 @@ the exact execution.
 
 Root Team lifecycle is a binary manager-owned fact. Each Agent owns its own
 `offline | initializing | idle | running | error` status. Connection state,
-root lifecycle, Agent status, task lifecycle, and command overlays are not
+root lifecycle, Agent status, delegated-child liveness, and command overlays are not
 interchangeable. A restored standalone Team scope can be Active while every
 configured Agent remains Offline: the Team stream can reopen scope without
 starting providers. Green/Idle is not evidence of model reasoning. Do not copy
 Org container-status expectations onto a Team or start workers to reconcile status.
 
-Task delegation remains supported. A task Agent or task Team is shown as a
-transient execution row while the Tasks surface retains the durable record,
-submissions, reviews, and reference files. Task activation becomes durable
-before its Agent frames are released, allowing an early-selected task monitor
-to advance without reload or refocus.
+Task delegation is a pure spawn. A delegated task Agent or task Team is shown
+as a transient execution row whose starter ("Started by <delegator>") is in the
+accessible label only (see below); there is no
+Tasks surface, task status, submission, review, or task reference file. The
+right-side Team tab shows Messages only. The child's single execution-tree
+write becomes durable, and `TASK_EXECUTION_STARTED` is published, before its
+Agent frames are released, allowing an early-selected child monitor to advance
+without reload or refocus. A child that stays quiet is shut down after the
+server grace period and keeps its row with the standard `offline` status;
+sending to it from the composer (or a peer `send_message_to` by run ID) wakes
+it with its conversation. Nothing distinguishes a shut-down child from a
+configured member that has not started other than the row kind.
+
+## Workspace History Sidebar Task Peers
+
+In an expanded Team run, available task Agents appear immediately after their
+corresponding recipient Agent at the same indentation level. They do not require
+opening that Agent, and an Agent has no disclosure solely for delegated task
+Agents. Task rows retain their distinct dashed treatment, runtime status, and
+exact-execution selection by mouse, Enter or Space. A task Agent shows the member
+marker (solid status dot and initials) centered on its name line; the starter is
+in the accessible label only, not a visible "Started by" line; branch lines run
+straight through member and task rows.
+Repeated tasks at the same address remain separate conversations. Loading,
+failed inspection and retry retain the existing focus-commit behavior.
+
+This is a sidebar projection, not runtime reparenting.
+`stores/runHistoryTeamExecutionRows.ts` derives effective parent/depth for
+`task_agent` leaves whose source parent is `configured_agent` or
+`task_team_agent`, then recomputes child membership. The history navigation
+index and renderer consume that same topology, so peer selection does not need
+to expand the recipient Agent. Shared Team navigation stays unchanged.
+
+Actual Team/task-Team containers still contain their descendants; collapsing
+the outer Team run hides its contents. Source-owned live/retained availability
+is unchanged: peer placement does not fabricate unavailable history.
+No-context history still shows configured members only. This does not add
+nested configured-Team authoring or change Agent Orgs, delegation, identity, or
+persisted data.
+
+A collaborator (a shared Agent or Agent Team brought into the run with `@`) is
+one hosted instance per entry in `root_team.collaborators`. The views show it
+with the task-row look, Offline until its first message, ahead of the root's
+delegated children: `teamExecutionTreeSelectors.withCollaboratorExecutions`
+projects each entry (and a collaborator Team's members and own
+`task_executions`) into the view tree only and never persists it. The Team
+view applies `COLLABORATOR_ADDED` by adding the entry, its locations and its
+member contexts at once, and a collaborator Team row opens once when it
+appears (`opensOnAppear`). Contexts take the definition and launch settings
+from the entry (`services/collaborators/agentSourceSelectors.ts`). Rows and
+tab labels use `utils/collaboration/memberDisplayName.ts`. An extra copy that
+`delegate_task` starts at a collaborator address is an ordinary task row.
+See [Chat](./chat.md#-in-a-live-run-collaborators).
 
 ## History, Restore, Stop, And Delete
 
-Team history is backed by the strict native Team V2 package under
+Team history is backed by the native Team package under
 `memory/agent_teams/<team-run-id>/`. The root contains direct configured
-Agents plus task-execution snapshots; it has no configured child Team.
+Agents plus delegated child executions; it has no configured child Team.
 
 Opening a current or historical run hydrates its stored execution tree and exact
 member projection. Current definitions are not used to reinterpret the stored
 topology. External provider IDs remain provider bindings, not local AgentRun
 identity.
 
-The normal Tasks detail can deliberately inspect an accepted/settled task Agent
-while the containing Team is active or inactive. Admission uses exact retained
-AgentRun/placement and authoritative projection hydration, not presence in the
-live navigation roster. Focus commits only after successful hydration; repeated
-same-address assignments remain distinct. The retained monitor exposes actual
-conversation and Activity as read-only, without composer, commands, writes or
-reactivation. Deliberate inspection survives later task activation and existing
-verified stream-replacement snapshots. Ordinary live-task selection still repairs
-to an eligible live member when that task settles; it does not silently become
-retained-inspection intent.
-
-Shared Tasks keeps participant links in the familiar direction line rather than
-an extra name/ID strip. Exact Agent names navigate directly; a Team name or
-identity disclosure reveals all exact participant links, including non-coordinator
-members. Identity details are on demand and reset with the selected item/scope.
+Every delegated child recorded in the tree stays selectable in active and
+historical views. Selection uses the exact AgentRun and authoritative
+projection hydration; focus commits only after successful hydration, and
+repeated same-address delegations remain distinct conversations.
 
 A stopped Team can restore for supported follow-up. Stop ends runtime ownership
 but retains history. Archive and permanent Delete remain separate later user
@@ -222,8 +266,14 @@ The existing-run form permits a stopped standalone Team root or exact direct
 Agent to edit its model/settings pair while runtime, workspace, approval policy,
 addresses, and execution/provider identities remain locked. Model options are
 advisory: Save revalidates every affected scope against its original saved model
-and requires verified target context capacity at least that baseline. Same-model
-settings still require a current model/schema, but no replacement-capacity check.
+and validates current catalog membership and target schema. External runtime
+models are not capacity-gated; AutoByteus still requires verified positive
+non-decreasing context capacity. Same-model settings require a current
+model/schema, but no replacement-capacity check.
+Stopped options carry backend current/replacement descriptors. A proven
+redundant Claude `default` is omitted from new offers, while an exact saved
+`default` remains a current-only descriptor for same-model settings and is not
+rewritten during an unrelated Team edit.
 
 Root pair changes propagate only to Agents linked by draft-start
 runtime/model/settings equality. Divergent or directly edited Agents remain

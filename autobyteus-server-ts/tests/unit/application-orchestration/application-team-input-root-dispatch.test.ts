@@ -67,11 +67,6 @@ const buildRootTeamRuntime = () => {
     } as never,
     config,
     tree,
-    tasks: Object.freeze({
-      schemaVersion: 1,
-      rootTeamRunId: teamRunId,
-      records: Object.freeze([]),
-    }),
     messages: Object.freeze({
       schemaVersion: 1,
       rootTeamRunId: teamRunId,

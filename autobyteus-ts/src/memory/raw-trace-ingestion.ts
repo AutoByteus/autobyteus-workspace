@@ -141,13 +141,14 @@ export const buildNativeToolResultTrace = (
 /** Native media and processed text remain LLM-owned; non-media references are captured from original input. */
 export function buildNativeUserMessageTrace(
   llmUserMessage: LLMUserMessage,
-  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[] },
+  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[]; senderId?: string | null },
 ): RawTraceItem {
   return new RawTraceItem({
     id: `rt_${Date.now()}`, ts: Date.now() / 1000,
     turnId: input.turnId, seq: input.seq, sourceEvent: input.sourceEvent,
     traceType: 'user', content: llmUserMessage.content,
     fileAttachments: input.fileAttachments,
+    senderId: input.senderId ?? null,
     media: {
       images: llmUserMessage.image_urls ?? [],
       audio: llmUserMessage.audio_urls ?? [],

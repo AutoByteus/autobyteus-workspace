@@ -85,13 +85,25 @@ Those values are used in two places:
 - application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
 
 Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
+Model pickers show the backend's offered choices. For an exact model ID seeded
+from a persisted definition but absent from offered rows (such as a proven
+redundant Claude `default`), the editor and direct Run setup request a separate
+exact-current descriptor for its label and schema. Displaying or reselecting
+that current-only value keeps the saved ID; only choosing an offered row changes
+it. An unknown current ID remains visibly unavailable rather than becoming a
+new choice.
 
 Direct run-config forms do not expose a launch-time skill-access selector.
-Runtime skill exposure is defined by the agent definition's configured
-`skillNames`: configured skills are available to the run, and an agent with no
-configured skills exposes no AutoByteus-managed skills by default. The former
-legacy all-installed-skill launch option is not available in the UI or generated
-GraphQL enum.
+Runtime skill exposure is defined by the agent definition's `skillScope`:
+
+- `CONFIGURED` (default): the configured `skillNames` are available to the run,
+  and an agent with no configured skills exposes no AutoByteus-managed skills.
+- `ALL_INSTALLED`: every enabled installed skill is available at run start. The
+  form's **Use all installed skills** checkbox sets it and disables the skill
+  picker; cards and detail views show "All installed skills".
+
+The former launch-time all-installed-skill option is not available in the run
+config UI or generated GraphQL enum; the scope belongs to the definition.
 
 
 Skill Improvement is explicitly excluded from persisted agent definition defaults
@@ -132,7 +144,8 @@ definitions between nodes.
 `AgentList.vue` joins the loaded agent catalog with `AUTOBYTEUS_FEATURED_CATALOG_ITEMS` entries whose `resourceKind` is `AGENT`.
 
 - Featured placement is user/operator-selected through Settings; fresh server startup does not auto-feature Daily Assistant or any other agent.
-- Daily Assistant can be loaded as a normal private/shared agent from an agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/`, then added to Featured agents through Settings if desired.
+- Daily Assistant (`autobyteus-daily-assistant`) is a platform-owned server built-in: its files in the shared agents folder are replaced from the shipped template on every server startup, so edits saved to it in the agent editor revert at the next restart. It is the default Chat agent and can be added to Featured agents through Settings if desired.
+- An agent card's Run action still opens the unchanged `RunConfigPanel` launch form on `/workspace`; once the run is created its selection opens the run in Chat (`/chat?id=<runId>`).
 - Featured agents render with the same `AgentCard` component and the same view-details and run actions as the origin-grouped browse sections.
 - When the featured section is visible, the same agent is removed from later origin sections to avoid duplicate cards.
 - Search mode hides featured and origin grouping and searches the discoverable agent catalog, excluding team-local definitions.

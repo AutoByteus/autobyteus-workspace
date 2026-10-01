@@ -1,0 +1,51 @@
+# L-08 container probe (2026-09-24T15:26:09Z) image emr-api-e2e-allinone:candidate-temp-patched
+== supervisorctl status:
+autobyteus_server                RUNNING   pid 27, uptime 0:00:28
+autobyteus_web                   RUNNING   pid 28, uptime 0:00:28
+chrome                           FATAL     Exited too quickly (process log may have details)
+copyq                            RUNNING   pid 36, uptime 0:00:28
+dbus                             RUNNING   pid 29, uptime 0:00:28
+disable_screensaver              EXITED    Sep 24 03:25 PM
+fcitx                            RUNNING   pid 32, uptime 0:00:28
+socat                            RUNNING   pid 38, uptime 0:00:28
+tigervnc                         RUNNING   pid 30, uptime 0:00:28
+websockify                       RUNNING   pid 39, uptime 0:00:28
+xfce                             RUNNING   pid 31, uptime 0:00:28
+== supervisor conf programs:
+[program:dbus]
+[program:tigervnc]
+[program:xfce]
+[program:fcitx]
+[program:disable_screensaver]
+[program:copyq]
+[program:chrome]
+[program:socat]
+[program:websockify]
+[program:autobyteus_server]
+[program:autobyteus_web]
+== gateway files/processes in image:
+ls: cannot access '/app/autobyteus-message-gateway': No such file or directory
+ls: cannot access '/usr/local/bin/allinone-start-gateway.sh': No such file or directory
+ls: cannot access '/app/memory': No such file or directory
+no gateway/messaging process
+== listening ports in container:
+tcp        0      0 0.0.0.0:3000            0.0.0.0:*               LISTEN      523/node            
+tcp        0      0 0.0.0.0:8000            0.0.0.0:*               LISTEN      27/node             
+== host checks:
+server /rest/health: {"status":"ok","message":"Server is running"}
+web :3000 -> HTTP 200
+old ingress POST -> HTTP 404
+== data dir after start:
+agent-orgs
+agents
+agent-teams
+application-packages
+db
+download
+llm
+logs
+memory
+skills
+temp_workspace
+20260731_remove_external_runtime_working_context_snapshots-2026-09-24T15-25-44-188Z.log
+20260924_remove_external_messaging_data-2026-09-24T15-25-44-280Z.log

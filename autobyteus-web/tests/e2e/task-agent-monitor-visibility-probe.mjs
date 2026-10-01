@@ -41,8 +41,6 @@ const ROOT = 'task-monitor-root-run';
 const TEACHER = 'task-monitor-teacher-run';
 const CONFIGURED_STUDENT = 'task-monitor-configured-student-run';
 const TASK = 'task-monitor-task-agent-run';
-const TASK_DESCRIPTION = 'Retained task monitor exact identity proof';
-
 const taskProjection = {
   agentRunId: TASK,
   summary: 'Retained exact task projection',
@@ -178,8 +176,7 @@ await fs.mkdir(outputDir, { recursive: true });
 const evidencePath = path.join(outputDir, 'evidence.json');
 const nuxtLogPath = path.join(outputDir, 'nuxt.log');
 const taskScreenshotPath = path.join(outputDir, 'task-selected.png');
-const settlementLoadingScreenshotPath = path.join(outputDir, 'settlement-fallback-loading.png');
-const settlementCompleteScreenshotPath = path.join(outputDir, 'settlement-fallback-complete.png');
+const shutdownScreenshotPath = path.join(outputDir, 'idle-shutdown-offline.png');
 let fixtureInstalled = false;
 let nuxtProcess;
 let nuxtLog;
@@ -269,8 +266,9 @@ try {
   evidence.browserEvents = [];
 
   const teacherRow = page.getByRole('treeitem', { name: /Teacher.*\/Teacher/i });
-  const configuredStudentRow = page.getByRole('treeitem', { name: /^Student.*\/Student/i });
-  const taskRow = page.getByRole('treeitem', { name: new RegExp(TASK_DESCRIPTION, 'i') });
+  const configuredStudentRow = page.getByRole('treeitem', { name: 'Student, /Student', exact: true });
+  // The delegated Student shares the configured display name; its row is identified by its delegator line.
+  const taskRow = page.getByRole('treeitem', { name: /^Student, Started by Teacher, \/Student$/ });
 
   await scenario('API-E2E-TMV-001', 'Mounted exact task selection hydrates retained conversation and Activity before focus commit', async () => {
     await teacherRow.waitFor({ state: 'visible' });
@@ -296,8 +294,8 @@ try {
     assert(await configuredStudentRow.getAttribute('aria-selected') === 'false', 'Configured Student inherited task selection');
     await page.getByText('TASK_RETAINED_COMPLETION finished ordinary handoff without lifecycle inference.').waitFor();
     await page.locator('[data-test="activity-feed-scroll-container"]').getByText('task_probe_tool').waitFor();
-    await page.getByText('Task', { exact: true }).first().waitFor();
-    await page.locator('[data-test="team-workspace-task-status"]').filter({ hasText: 'In progress · Idle' }).waitFor();
+    assert(await page.locator('[data-test="team-workspace-task-status"]').count() === 0, 'Removed task lifecycle status is still rendered');
+    assert((await taskRow.getAttribute('aria-label')).includes('Started by'), 'Delegated row lost its delegator line');
     const requestsAfterSelection = [...evidence.projectionRequests];
     const taskRequests = requestsAfterSelection.filter((entry) => entry.agentRunId === TASK);
     assert(requestsAfterSelection.length === 1, 'Task selection issued an unexpected projection request', requestsAfterSelection);
@@ -314,7 +312,7 @@ try {
     };
   });
 
-  await scenario('API-E2E-TMV-002', 'Snapshot invalidation and focused task settlement reconcile the repaired fallback projection', async () => {
+  await scenario('API-E2E-TMV-002', 'Snapshot invalidation reconciles the focused delegated Agent; idle shutdown keeps it visible and offline', async () => {
     await page.evaluate(() => window.__taskAgentMonitorVisibilityProbe.admitSnapshot());
     await waitFor('snapshot task reconciliation loading', async () => (await state(page)).taskAttempt?.state === 'loading');
     const snapshotLoading = await state(page);
@@ -328,45 +326,25 @@ try {
     const taskRequestsBeforeSettlement = evidence.projectionRequests.filter((entry) => entry.agentRunId === TASK);
     assert(taskRequestsBeforeSettlement.length === 2, 'Snapshot did not reconcile the exact focused task once', taskRequestsBeforeSettlement);
 
-    await page.evaluate(() => window.__taskAgentMonitorVisibilityProbe.settleFocusedTask());
-    await waitFor('fallback loading after settlement focus repair', async () => {
-      const current = await state(page);
-      return current.focusedAgentRunId === TEACHER && current.teacherAttempt?.state === 'loading';
-    });
-    const settlementLoading = await state(page);
-    assert(settlementLoading.taskVisible === false, 'Settled task remained in the live execution rows', settlementLoading);
-    assert(settlementLoading.teacherAuthoritative === false, 'Fallback was incorrectly treated as authoritative before its fetch', settlementLoading);
-    assert(await teacherRow.getAttribute('aria-selected') === 'true', 'Focus repair did not select the visible Teacher fallback', settlementLoading);
-    assert(await teacherRow.getAttribute('aria-busy') === 'true', 'Fallback row did not expose its projection loading state', settlementLoading);
-    assert(await taskRow.count() === 0, 'Settled task row remained rendered as live');
-    await page.screenshot({ path: settlementLoadingScreenshotPath, fullPage: true });
-
-    await waitFor('authoritative fallback projection', async () => {
-      const current = await state(page);
-      return current.teacherAuthoritative === true && current.teacherAttempt === null
-        && current.teacherConversationCount === 2 && current.teacherActivityCount === 1;
-    });
-    await page.getByText('FALLBACK_RETAINED_COORDINATOR_CONTENT').waitFor();
-    await page.locator('[data-test="activity-feed-scroll-container"]').getByText('teacher_probe_tool').waitFor();
-    assert(await page.getByText('TASK_RETAINED_COMPLETION finished ordinary handoff without lifecycle inference.').count() === 0,
-      'Task conversation leaked into the repaired fallback monitor');
-    const teacherRequests = evidence.projectionRequests.filter((entry) => entry.agentRunId === TEACHER);
-    assert(teacherRequests.length === 1, 'Settlement did not issue exactly one exact fallback projection request', teacherRequests);
-    assert(teacherRequests[0].teamRunId === ROOT, 'Fallback projection request used the wrong root identity', teacherRequests[0]);
-    const exactRequestSequence = evidence.projectionRequests.map((entry) => `${entry.teamRunId}:${entry.agentRunId}`);
-    assert(exactRequestSequence.join('|') === [
-      `${ROOT}:${TASK}`,
-      `${ROOT}:${TASK}`,
-      `${ROOT}:${TEACHER}`,
-    ].join('|'), 'Projection reconciliation emitted an unexpected root/run request sequence', exactRequestSequence);
-    assert(await page.locator('[role="treeitem"][aria-selected="true"]').count() === 1, 'More than one Team member row was selected after focus repair');
-    await page.screenshot({ path: settlementCompleteScreenshotPath, fullPage: true });
+    await page.evaluate(() => window.__taskAgentMonitorVisibilityProbe.shutDownFocusedTask());
+    await waitFor('focused delegated Agent reports offline after idle shutdown', async () => (await state(page)).taskStatus === 'offline');
+    const shutdownState = await state(page);
+    assert(shutdownState.taskVisible === true, 'Shut-down delegated Agent disappeared from the execution rows', shutdownState);
+    assert(shutdownState.focusedAgentRunId === TASK, 'Idle shutdown moved focus away from the delegated Agent', shutdownState);
+    assert(await taskRow.count() === 1, 'Shut-down delegated row is no longer rendered');
+    assert(await taskRow.getAttribute('aria-selected') === 'true', 'Shut-down delegated row lost its selection');
+    assert(/\boffline\b/i.test(await taskRow.innerText()), 'Shut-down delegated row does not show the offline status', { text: await taskRow.innerText() });
+    await page.getByText('TASK_RETAINED_COMPLETION finished ordinary handoff without lifecycle inference.').waitFor();
+    const requestSequence = evidence.projectionRequests.map((entry) => `${entry.teamRunId}:${entry.agentRunId}`);
+    assert(requestSequence.join('|') === [`${ROOT}:${TASK}`, `${ROOT}:${TASK}`].join('|'),
+      'Idle shutdown triggered an unexpected projection request', requestSequence);
+    assert(await page.locator('[role="treeitem"][aria-selected="true"]').count() === 1, 'More than one Team member row was selected after shutdown');
+    await page.waitForTimeout(500); // let the 300 ms status-dot colour transition settle before capturing
+    await page.screenshot({ path: shutdownScreenshotPath, fullPage: true });
     return {
       snapshotLoading,
-      settlementLoading,
-      finalState: await state(page),
+      shutdownState,
       taskProjectionRequests: taskRequestsBeforeSettlement,
-      fallbackProjectionRequest: teacherRequests[0],
     };
   });
 
@@ -398,7 +376,7 @@ try {
   evidence.finishedAt = new Date().toISOString();
   evidence.artifacts = {
     evidencePath, nuxtLogPath, taskScreenshotPath,
-    settlementLoadingScreenshotPath, settlementCompleteScreenshotPath,
+    shutdownScreenshotPath,
   };
   await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8');
 }

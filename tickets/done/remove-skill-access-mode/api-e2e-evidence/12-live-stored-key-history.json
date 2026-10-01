@@ -1,0 +1,230 @@
+{
+  "log": [
+    {
+      "check": "history list responses carry no skill field",
+      "ok": true,
+      "detail": {
+        "agents": 11,
+        "teams": 7,
+        "orgs": 7
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] records on disk hold the stored key before use",
+      "ok": true
+    },
+    {
+      "check": "[PRELOADED_ONLY] agent, team and org runs are listed",
+      "ok": true
+    },
+    {
+      "check": "[PRELOADED_ONLY] agent resume config opens without the field",
+      "ok": true,
+      "detail": {
+        "agentDefinitionId": "rsam-skilled-rsamb1790755410615",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790755410615",
+        "llmModelIdentifier": "openai-compatible:provider_rsam_fake:rsam-fake-model",
+        "llmConfig": null,
+        "autoExecuteTools": false,
+        "runtimeKind": "autobyteus",
+        "runtimeReference": {
+          "runtimeKind": "autobyteus",
+          "sessionId": null,
+          "threadId": null,
+          "metadata": null
+        }
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] agent conversation projection opens",
+      "ok": true
+    },
+    {
+      "check": "[PRELOADED_ONLY] agent restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "rsam_skilled_rsamb1790755410615_701d78158936411ea116a891bd3d0ab2"
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] agent replies after restore; catalog still in the prompt (stored value ignored)",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_29",
+        "errors": []
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] team resume config opens without the field",
+      "ok": true
+    },
+    {
+      "check": "[PRELOADED_ONLY] team restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "rsam_team_rsamb1790755410615_1f2acccac201420f8cc56380e3732d21"
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] team lead replies after restore; catalog in the prompt; stream has no field",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_30",
+        "errors": []
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] org run config opens without the field",
+      "ok": true
+    },
+    {
+      "check": "[PRELOADED_ONLY] org inspection opens without the field",
+      "ok": true
+    },
+    {
+      "check": "[PRELOADED_ONLY] org restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run restored successfully.",
+        "agentOrgRunId": "rsam_org_rsamb1790755410615_dac9ebd09b01419aac6aa9ed780049a1"
+      }
+    },
+    {
+      "check": "[PRELOADED_ONLY] org director replies after restore; catalog in the prompt; stream has no field",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_31",
+        "errors": []
+      }
+    },
+    {
+      "afterUse": "PRELOADED_ONLY",
+      "agent": {
+        "count": 0,
+        "none": false
+      },
+      "team": {
+        "count": 3,
+        "none": false
+      },
+      "org": {
+        "count": 5,
+        "none": false
+      }
+    },
+    {
+      "check": "[NONE] records on disk hold the stored key before use",
+      "ok": true
+    },
+    {
+      "check": "[NONE] agent, team and org runs are listed",
+      "ok": true
+    },
+    {
+      "check": "[NONE] agent resume config opens without the field",
+      "ok": true,
+      "detail": {
+        "agentDefinitionId": "rsam-skilled-rsamb1790755410615",
+        "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790755410615",
+        "llmModelIdentifier": "openai-compatible:provider_rsam_fake:rsam-fake-model",
+        "llmConfig": null,
+        "autoExecuteTools": false,
+        "runtimeKind": "autobyteus",
+        "runtimeReference": {
+          "runtimeKind": "autobyteus",
+          "sessionId": null,
+          "threadId": null,
+          "metadata": null
+        }
+      }
+    },
+    {
+      "check": "[NONE] agent conversation projection opens",
+      "ok": true
+    },
+    {
+      "check": "[NONE] agent restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "rsam_skilled_rsamb1790755410615_57d9fa4d66bd40269edd434fca572720"
+      }
+    },
+    {
+      "check": "[NONE] agent replies after restore; catalog still in the prompt (stored value ignored)",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_32",
+        "errors": []
+      }
+    },
+    {
+      "check": "[NONE] team resume config opens without the field",
+      "ok": true
+    },
+    {
+      "check": "[NONE] team restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "rsam_team_rsamb1790755410615_f6044566e64040649da51ecabfa399d5"
+      }
+    },
+    {
+      "check": "[NONE] team lead replies after restore; catalog in the prompt; stream has no field",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_33",
+        "errors": []
+      }
+    },
+    {
+      "check": "[NONE] org run config opens without the field",
+      "ok": true
+    },
+    {
+      "check": "[NONE] org inspection opens without the field",
+      "ok": true
+    },
+    {
+      "check": "[NONE] org restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run restored successfully.",
+        "agentOrgRunId": "rsam_org_rsamb1790755410615_fa8690f4570b4eb09ad73c6c6bb4e292"
+      }
+    },
+    {
+      "check": "[NONE] org director replies after restore; catalog in the prompt; stream has no field",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_34",
+        "errors": []
+      }
+    },
+    {
+      "afterUse": "NONE",
+      "agent": {
+        "count": 0,
+        "none": false
+      },
+      "team": {
+        "count": 3,
+        "none": true
+      },
+      "org": {
+        "count": 5,
+        "none": true
+      }
+    }
+  ],
+  "fail": []
+}

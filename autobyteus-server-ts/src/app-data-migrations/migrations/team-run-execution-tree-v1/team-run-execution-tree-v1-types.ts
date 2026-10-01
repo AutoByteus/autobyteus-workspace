@@ -1,4 +1,4 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ReleasedSkillAccessMode } from "../../legacy/released-skill-access-mode.js";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
@@ -18,6 +18,10 @@ export const toTeamRunRuntimeKind = (
       return "CLAUDE";
     case RuntimeKind.CODEX_APP_SERVER:
       return "CODEX";
+    case RuntimeKind.ANTIGRAVITY_CLI:
+      throw new Error("AGY has no historical TeamRun V1 records to migrate.");
+    case RuntimeKind.GROK_BUILD:
+      throw new Error("Grok Build has no historical TeamRun V1 records to migrate.");
   }
 };
 
@@ -39,7 +43,7 @@ export type AgentLaunchConfiguration = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
+  skillAccessMode: ReleasedSkillAccessMode;
   workspaceRootPath: string | null;
 }>;
 

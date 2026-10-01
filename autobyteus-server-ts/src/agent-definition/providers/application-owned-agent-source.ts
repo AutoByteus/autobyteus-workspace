@@ -81,6 +81,7 @@ export const readApplicationOwnedAgentDefinitionFromSource = async (
       avatarUrl: normalizedConfig.avatarUrl ?? null,
       toolNames: normalizedConfig.toolNames ?? [],
       skillNames: normalizedConfig.skillNames ?? [],
+      skillScope: normalizedConfig.skillScope,
       inputProcessorNames: normalizedConfig.inputProcessorNames ?? [],
       llmResponseProcessorNames: normalizedConfig.llmResponseProcessorNames ?? [],
       toolExecutionResultProcessorNames: normalizedConfig.toolExecutionResultProcessorNames ?? [],

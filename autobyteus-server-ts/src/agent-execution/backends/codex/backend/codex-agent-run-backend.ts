@@ -125,11 +125,15 @@ export class CodexAgentRunBackend implements AgentRunBackend {
       };
     } catch (error) {
       const result = buildCommandFailure("send user input", error);
+      const undelivered = dispatch.kind === "append_to_active_turn" &&
+        error instanceof CodexInputSubmissionError &&
+        error.code === "CODEX_TURN_STEER_TURN_NOT_ACTIVE";
       return {
         forwarded: false,
         code: result.code,
         message: result.message,
         turnId: null,
+        ...(undelivered ? { undeliveredRetryAsStart: true as const } : {}),
       };
     }
   }

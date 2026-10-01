@@ -2,6 +2,10 @@ import "reflect-metadata";
 import { describe, expect, it } from "vitest";
 import {
   AgentMemoryAttribution,
+  AgentOrgRunMemoryPage,
+  AgentOrgRunMemorySummary,
+  AgentOrgWithMemoryPage,
+  AgentOrgWithMemorySummary,
   AgentRunMemoryPage,
   AgentRunMemorySummary,
   AgentTeamRunMemoryPage,
@@ -10,8 +14,8 @@ import {
   AgentTeamWithMemorySummary,
   AgentWithMemoryPage,
   AgentWithMemorySummary,
+  CollaborationMemberMemoryTargetSummary,
   MemoryAvailabilitySummary,
-  TeamMemberMemoryTargetSummary,
 } from "../../../../../src/api/graphql/types/memory-explorer-schema.js";
 
 describe("memory explorer graphql types", () => {
@@ -73,10 +77,10 @@ describe("memory explorer graphql types", () => {
     teamsPage.pageSize = 25;
     teamsPage.totalPages = 1;
 
-    const member = new TeamMemberMemoryTargetSummary();
-    member.memberRouteKey = "solution_designer";
-    member.memberName = "solution_designer";
-    member.memberRunId = "solution_designer_1";
+    const member = new CollaborationMemberMemoryTargetSummary();
+    member.memberAddress = "/solution_designer";
+    member.displayName = "solution_designer";
+    member.agentRunId = "solution_designer_1";
     member.memory = memory();
 
     const run = new AgentTeamRunMemorySummary();
@@ -94,6 +98,45 @@ describe("memory explorer graphql types", () => {
     runsPage.totalPages = 1;
 
     expect(teamsPage.entries[0]?.teamRunCount).toBe(3);
-    expect(runsPage.entries[0]?.memberTargets[0]?.memberRunId).toBe("solution_designer_1");
+    expect(runsPage.entries[0]?.memberTargets[0]?.agentRunId).toBe("solution_designer_1");
+  });
+
+  it("supports assigning org home, org run, and shared member target fields", () => {
+    const org = new AgentOrgWithMemorySummary();
+    org.orgDefinitionId = "software-development-department";
+    org.orgDefinitionName = "Software Development Department";
+    org.orgRunCount = 2;
+    org.memberMemoryCount = 9;
+    org.memory = memory();
+
+    const orgsPage = new AgentOrgWithMemoryPage();
+    orgsPage.entries = [org];
+    orgsPage.total = 1;
+    orgsPage.page = 1;
+    orgsPage.pageSize = 25;
+    orgsPage.totalPages = 1;
+
+    const member = new CollaborationMemberMemoryTargetSummary();
+    member.memberAddress = "/software_engineering_team/solution_designer";
+    member.displayName = "software_engineering_team/solution_designer";
+    member.agentRunId = "solution_designer_org_1";
+    member.memory = memory();
+
+    const run = new AgentOrgRunMemorySummary();
+    run.orgRunId = "org-run-1";
+    run.orgDefinitionId = "software-development-department";
+    run.orgDefinitionName = "Software Development Department";
+    run.memory = memory();
+    run.memberTargets = [member];
+
+    const runsPage = new AgentOrgRunMemoryPage();
+    runsPage.entries = [run];
+    runsPage.total = 1;
+    runsPage.page = 1;
+    runsPage.pageSize = 25;
+    runsPage.totalPages = 1;
+
+    expect(orgsPage.entries[0]?.orgRunCount).toBe(2);
+    expect(runsPage.entries[0]?.memberTargets[0]?.displayName).toBe("software_engineering_team/solution_designer");
   });
 });

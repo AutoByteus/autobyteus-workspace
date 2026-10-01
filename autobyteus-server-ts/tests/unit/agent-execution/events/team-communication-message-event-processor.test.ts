@@ -4,7 +4,6 @@ import { AgentRunContext } from "../../../../src/agent-execution/domain/agent-ru
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
 import { TeamCommunicationMessageProcessor } from "../../../../src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 
 const runContext = new AgentRunContext({
   runId: "receiver-run-1",
@@ -14,7 +13,6 @@ const runContext = new AgentRunContext({
     autoExecuteTools: false,
     workspaceId: null,
     memoryDir: null,
-    skillAccessMode: SkillAccessMode.NONE,
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   }),
   runtimeContext: null,

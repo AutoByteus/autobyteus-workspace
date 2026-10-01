@@ -84,16 +84,12 @@ const AGENT_RUN_TESTS = [
   "autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/inter-agent-message-router-claude-input-admission.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/mixed-agent-member-handle-task-notification-projection.test.ts",
-  "autobyteus-server-ts/tests/unit/external-channel/runtime/channel-agent-run-facade.test.ts",
   "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-handler.test.ts",
 ];
 const ROOT_TEAM_RUN_TESTS = [
   "autobyteus-server-ts/tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts",
   "autobyteus-server-ts/tests/unit/agent-team-execution/root-team-run-termination.test.ts",
   "autobyteus-server-ts/tests/unit/application-orchestration/application-team-input-root-dispatch.test.ts",
-];
-const TASK_DELEGATION_SERVICE_TESTS = [
-  "autobyteus-server-ts/tests/unit/agent-team-execution/task-delegation-current-invariants.test.ts",
 ];
 const AGENT_MANAGER_FIELDS = [
   "autoByteusBackendFactory",
@@ -642,7 +638,8 @@ describe("agent provider composition boundaries", () => {
       "agent-execution/backends/claude/session/claude-session-state-input.ts",
       "agent-execution/backends/claude/session/claude-session.ts",
       "agent-execution/domain/agent-run.ts",
-      "agent-team-execution/task-delegation/task-delegation-service.ts",
+      "agent-team-execution/task-delegation/team-task-execution-service.ts",
+      "agent-team-execution/task-delegation/team-task-execution-adapter.ts",
       "agent-team-execution/task-delegation/task-team-run-identity-factory.ts",
     ];
     for (const relativePath of forbiddenProviderOwners) {

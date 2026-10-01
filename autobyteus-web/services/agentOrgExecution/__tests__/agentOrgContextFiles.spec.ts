@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue'
@@ -67,7 +68,7 @@ async function open(id = 'agent-director', isActive = false) {
   await store.openForInspection('org-run')
   if (isActive) await ready()
   store.select('org-run', { kind: 'agent_execution', agentRunId: id })
-  files = mount(ContextFilePathInputArea)
+  files = mount(withActiveComposerTarget(ContextFilePathInputArea))
   mounted.push(files)
   await flushPromises()
   return useActiveContextStore().activeAgentContext!
@@ -75,7 +76,7 @@ async function open(id = 'agent-director', isActive = false) {
 async function ready() {
   const socket = Socket.instances.at(-1)!
   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'session' } })
-  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: { ...activeView, is_active: true, agent_statuses: taskBearingView().agent_statuses } } })
+  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...activeView, is_active: true, agent_statuses: taskBearingView().agent_statuses } } })
   await vi.waitFor(() => expect(store.contextFor('org-run')?.phase).toBe('live'))
   return socket
 }
@@ -86,7 +87,7 @@ beforeEach(() => {
   activeView = taskBearingView()
   mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
   mocks.query.mockImplementation(async ({ variables }: any) => !variables.agentRunId
-    ? { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: activeView } } }
+    ? { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: activeView } } }
     : { data: { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } })
   mocks.post.mockImplementation(async (url: string, body: any) => {
     if (url === '/context-files/upload') {
@@ -135,7 +136,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
   it.each(['agent-director', 'agent-team-worker-configured'])('finalizes captured %s attachments only on deliberate continuation and opens the canonical sent file', async (id) => {
     const context = await open(id); await choose()
     const address = store.contextFor('org-run')!.index.requireAgent(id).address
-    const composer = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } }); mounted.push(composer)
+    const composer = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } }); mounted.push(composer)
     await composer.find('textarea').setValue('Use this file')
     await composer.find('button[title="Send message"]').trigger('click'); await flushPromises()
     expect(mocks.mutate).toHaveBeenCalledOnce(); expect(context.contextFilePaths).toEqual([]); expect(context.submissionPending).toBe(true)
@@ -182,6 +183,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
     expect(original.contextFilePaths).toHaveLength(1); expect(next.contextFilePaths).toEqual([]); expect(next.requirement).toBe('new draft')
     store.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-worker' })
     expect(useActiveContextStore().activeWorkspaceTarget?.access).toBe('read_only')
+    await flushPromises() // the composer re-renders with the newly focused target before the next user action
     await choose(); expect(mocks.post).toHaveBeenCalledOnce(); expect(mocks.mutate).not.toHaveBeenCalled()
   })
   it.each(['upload', 'finalize'])('reports %s failure without replay and preserves a newer real textarea draft', async (failure) => {
@@ -192,7 +194,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
       expect(Socket.instances[0]!.sent).toEqual([]); expect(mocks.mutate).not.toHaveBeenCalled(); return
     }
     await choose()
-    const composer = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } }); mounted.push(composer)
+    const composer = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } }); mounted.push(composer)
     let reject!: (cause: Error) => void
     mocks.post.mockImplementationOnce(() => new Promise((_resolve, fail) => { reject = fail }))
     await composer.find('textarea').setValue('submitted with file')
@@ -205,7 +207,7 @@ describe('actual shared Org file input -> active target -> attachment upload own
   })
   it('restores a finalized attachment after rejected Send and opens/removes it without deleting the retained file', async () => {
     const context = await open('agent-director', true); await choose()
-    const composer = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } }); mounted.push(composer)
+    const composer = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } }); mounted.push(composer)
     await composer.find('textarea').setValue('keep on rejection')
     await composer.find('button[title="Send message"]').trigger('click'); await flushPromises()
     const socket = Socket.instances[0]!, command = socket.sent[0].payload

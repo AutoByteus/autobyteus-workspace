@@ -1,0 +1,9 @@
+Scope: all 13 workspace projects
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-application-devkit/dist/cli.js'
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+../autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+Done in 1.2s using pnpm v10.28.2

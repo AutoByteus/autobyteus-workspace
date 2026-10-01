@@ -1,0 +1,86 @@
+{
+  "case": "LIVE-ORG-R7",
+  "model": "gemini-3.8-flash-high",
+  "orgRunId": "agy_recovery_org_2ab39f9a_2b2e_4d8b_b12a_621022dd494a_c23b1047be7e46fbbdcabcd46dd110ce",
+  "directorRunId": "agy_recovery_director_2ab39f9a_2b2e_4d8b_b12a_62_3f03ffe7992e4096a989077f348d588e",
+  "workerRunId": "agy_recovery_worker_2ab39f9a_2b2e_4d8b_b12a_6210_f7903503798b4510a2f7d0ebbf6ace5f",
+  "directorStop": {
+    "toolStarted": true,
+    "agyBeforeStop": [
+      {
+        "pid": 83480,
+        "command": "agy --new-project --agent autobyteus-94c6d466e7043b15 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ],
+    "stopAck": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_2ab39f9a_2b2e_4d8b_b12a_621022dd494a_c23b1047be7e46fbbdcabcd46dd110ce",
+      "command_id": "61a650cc-0b0c-4021-af91-11925d8f72c2",
+      "command_type": "INTERRUPT_GENERATION",
+      "target_agent_run_id": "agy_recovery_director_2ab39f9a_2b2e_4d8b_b12a_62_3f03ffe7992e4096a989077f348d588e",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_INTERRUPTED",
+    "agyGone": true
+  },
+  "stateAfterDirectorStop": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "directorRecall": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_2ab39f9a_2b2e_4d8b_b12a_621022dd494a_c23b1047be7e46fbbdcabcd46dd110ce",
+      "command_id": "19ef57a8-f8a1-4e11-85ac-4a058c2cc816",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_director_2ab39f9a_2b2e_4d8b_b12a_62_3f03ffe7992e4096a989077f348d588e",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "CODE-SD-1038fcd0",
+    "start": 48
+  },
+  "workerStop": {
+    "toolStarted": true,
+    "agyBeforeStop": [
+      {
+        "pid": 83506,
+        "command": "agy --new-project --agent autobyteus-2f49e4249c8c5171 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ],
+    "stopAck": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_2ab39f9a_2b2e_4d8b_b12a_621022dd494a_c23b1047be7e46fbbdcabcd46dd110ce",
+      "command_id": "ae87277b-ce57-4287-abf3-f3aa6df52e14",
+      "command_type": "INTERRUPT_GENERATION",
+      "target_agent_run_id": "agy_recovery_worker_2ab39f9a_2b2e_4d8b_b12a_6210_f7903503798b4510a2f7d0ebbf6ace5f",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_INTERRUPTED",
+    "agyGone": true
+  },
+  "stateAfterWorkerStop": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent organization run terminated successfully."
+  },
+  "stateAfterTerminate": {
+    "configIsActive": false,
+    "inspectionIsActive": false
+  },
+  "secondTerminate": {
+    "success": false,
+    "message": "Agent organization run not found."
+  },
+  "result": "Fail",
+  "error": "AssertionError: Agent organization run not found.: expected false to be true // Object.is equality"
+}

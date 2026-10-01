@@ -64,12 +64,95 @@ The actual artifact/output files remain where the runtime wrote them.
 - Draft uploaded context files are served from `/rest/drafts/.../context-files/:storedFilename` until send-time finalization.
 - Finalized uploaded context files are served from
   `/rest/runs/:runId/context-files/:storedFilename` or
-  `/rest/team-runs/:teamRunId/members/:memberAddress/context-files/:storedFilename`.
-  The team-member route requires one encoded canonical rooted address and
+  `/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename`.
+  The team-member route requires the exact canonical AgentRun ID plus containing TeamRun ID and
   resolves the exact memory location from active runtime context or persisted
   V2 Team execution tree; there is no suffix or route-key fallback.
 - The finalize request accepts `attachments[{ storedFilename, displayName }]` so the user-visible filename survives any storage-safe `storedFilename` normalization.
 - Artifacts-tab previews do not require copied media URLs; they stream current bytes from `/runs/:runId/file-change-content?path=...` using run-scoped indexed path resolution.
+
+## Exact Team attachment cutover and operations
+
+Final Team owners are `{ kind: 'team_member_final', teamRunId, agentRunId }`.
+`teamRunId` is the immediate containing TeamRun and `agentRunId` is the canonical
+application execution ID, not a provider thread, definition ID, or member address.
+Repeated member addresses do not select files. Missing/wrong-team IDs fail; no
+address fallback, redirect, newest/configured preference, or mixed-version shim
+exists. Draft owners retain their separate temporary scope and member address.
+Org and standalone contracts and the existing physical execution directories are
+unchanged. Both HTTP GET and provider local-path resolution use exact ownership.
+
+### Same-ID migration and startup admission
+
+`20260926_team_context_file_execution_locators_v1` remains the **same existing
+startup-only migration**, after Team V2, Org-family and trace-layout prerequisites.
+No new migration or successful-ledger replay is added. The ordinary runner skips
+`SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` installations; normal eligible pending or
+failed attempts use the corrected converter.
+
+The converter discovers structural owners, then reads and semantically transforms
+each typed record source once. It replaces only changed files using the existing
+atomic writer. Historical Team references require indexed execution ownership and
+physical-file proof; source-trace provenance may disambiguate a matching physical
+candidate, otherwise one unique owner is required. It never guesses by member name.
+An unavailable reference preserves that entire source and produces a warning;
+independent sources continue. True IO/commit failures remain FAILED. Retry reads
+the current live old/current records, so previously converted files and newer
+current content are not overwritten from old copies. Per-file atomic replacement
+is not a multi-file transaction. Prose, attachment blobs and unrelated values stay
+unchanged; unchanged JSONL lines/terminators retain their bytes.
+
+The former bespoke journal, hashes, retained whole-file backup creation, preflight
+and repeated transforms are removed. A temporary file for atomic replacement is
+not a retained backup. Any originals/manifests already under
+`<app-data-dir>/app-data-migration-backups/20260926_team_context_file_execution_locators_v1/`
+remain inert and untouched: the corrected migration does not read, reconcile,
+restore, update or delete them. Runner attempt records/logs remain authoritative.
+
+Studio and standalone retain structural current-package validation at startup and
+new-run admission, but do not read all historical traces to audit attachments.
+There is no reference dependency closure, persistent audit cache or background
+replacement scan. Missing-tree/invalid structural packages remain preserved and
+excluded; a broken historical attachment no longer excludes an otherwise valid
+conversation or its dependants. Exact ownership and contained regular-file checks
+happen on the requested attachment read/provider path; only that operation fails
+when unavailable. Runtime never decodes historical address locators.
+
+### Coordinated upgrade checklist
+
+This is an operational procedure, not proof of an installed upgrade.
+
+1. Identify the authorized node, versions, configured origin, data/ledger roots
+   and all writers. Stop writers before a pending migration and preserve a
+   consistent recoverable installation snapshot through the normal operator
+   procedure; this converter no longer creates backup copies for you.
+2. Rehearse pending and eligible partial retry against an isolated faithful copy,
+   preserving configured-origin semantics and isolating credentials/side effects.
+   Do not reset the real ledger to construct a test. Already-terminal installations
+   need no replay: verify normal reopen and unchanged terminal record/attempt count.
+3. Verify typed-reference-only changes, unchanged attachment bytes, unavailable
+   whole-source preservation, existing inert residue and new-work availability.
+   Comparison hashes are external test evidence, not migration-runtime work.
+   Report true failed attempts honestly; do not delete roots or fabricate success.
+4. Deploy matching server/web or Electron together. Verify startup, history and
+   exact attachment access; missing requested attachments must fail locally.
+   Keep the first-upgrade/backend-process timing distinct from actual Electron
+   terminal-startup timing. A browser health result is not shell-startup proof.
+
+### Existing released history and rollback
+
+Retained roots without execution trees are not evidence that all current data is
+unusable. Preserve them and existing originals/manifests. Do not move roots out of
+discovery, reset completed ledger records, force replay or delete history to make
+startup look successful. See the [Data Migration Guideline](design/data_migration_guideline.md)
+for predecessor dispositions and the recurring full-history-audit anti-pattern.
+
+Do not blindly restore released backup records over newer live writes. If recovery
+is required, stop writers, preserve the current state and use an explicitly approved
+coherent snapshot/forward-fix procedure with matching binaries and ledger. Unknown
+ownership needs investigation, not address-based reassignment. Candidate test apps
+may share the published version label until finalization: use build identity and
+checksum, not that label alone, to distinguish them.
 
 ## Request Flows
 

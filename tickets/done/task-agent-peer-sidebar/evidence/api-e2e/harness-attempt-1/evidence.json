@@ -1,0 +1,514 @@
+{
+  "startedAt": "2026-09-26T05:08:21.733Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/fixtures/task-agent-peer-sidebar.page.vue",
+  "scenarios": {},
+  "projectionRequests": [],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/katex.js?v=841e770f net::ERR_ABORTED"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue Router warn]: uncaught error during route navigation:"
+    },
+    {
+      "type": "console:error",
+      "text": "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:52542/_nuxt/pages/api-e2e-task-agent-peer-sidebar.vue"
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:52542/_nuxt/pages/api-e2e-task-agent-peer-sidebar.vue"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue Router warn]: Unexpected error when starting the router: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:52542/_nuxt/pages/api-e2e-task-agent-peer-sidebar.vue"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:52542/_nuxt/pages/api-e2e-task-agent-peer-sidebar.vue"
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/chunk-RZ55PUNP.js?v=cc4347e1 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/chunk-US53JEWZ.js?v=cc4347e1 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/conversation/segments/renderer/MermaidDiagram.vue?vue&type=style&index=0&lang.css net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/pages/index.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/chunk-V226WHAP.js?v=cc4347e1 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/chunk-LQBIKZ6L.js?v=cc4347e1 net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/contextFiles/contextAttachmentModel.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/types/collaboration/agentOrgExecution.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/toolCardPresentation.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/skillImprovementCapabilityStore.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/handlers/index.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/graphql/queries/collaborationRootHistoryQueries.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentOrgExecution/agentOrgRunInspection.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/fileExplorerTreeActions.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/graphql/mutations/agentMutations.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/graphql/mutations/runHistoryMutations.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/eventMonitor/recentEventMonitorUsagePresentation.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/node_modules/.pnpm/graphql-tag@2.12.6_graphql@16.12.0/node_modules/graphql-tag/lib/index.js?v=899f3d26 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runOpen/teamRunOpenCoordinator.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/token-usage-run-summary-dto.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/eventMonitor/recentEventMonitorSelection.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/fileExplorerMutationActions.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runOpen/teamMemberInspectionCoordinator.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/teamExecution/teamExecutionTreeMutations.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/teamLocalDefinitionId.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/fileExplorerContentActions.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-collaboration-message-dtos.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/history/WorkspaceTransientExecutionRow.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/composables/useStatusVisuals.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/skillImprovementStore.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/eventMonitor/eventMonitorActiveTraceBrowse.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/workspaceStatusDotPresentation.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/history/TeamAggregateStatusDot.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/handlers/toolActivityProjection.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/transport/index.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/teamExecution/taskDelegationPresentation.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/handlers/segmentIdentity.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/api.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/graphql/mutations/agentTeamDefinitionMutations.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runHydration/runContextHydrationService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/toolInvocationStatus.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runHydration/teamCommunicationHydrationService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/fileExplorerState.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/layout/workspaceSurfaceOrder.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-control-message-dtos.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/toolUtils.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-stream-server-message.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/types/launch/defaultLaunchConfig.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentOrgExecution/agentOrgRunConfigAdoption.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/TeamStreamingService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/runHistoryTeamExecutionRows.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-task-message-dtos.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/history/WorkspaceStableExecutionRow.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/agentOrgRunStore.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/teamRunConfigUtils.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue?vue&type=style&index=0&scoped=c3addd28&lang.css net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentOrgExecution/agentOrgContextHydration.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/common/WorkspaceHeaderActions.vue?vue&type=style&index=0&scoped=e5fb01c8&lang.css net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/runHistoryNavigationPatches.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=899f3d26 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runHydration/taskDelegationHydrationService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/eventMonitor/recentEventMonitorCompletion.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/handlers/userMessageProjection.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/fileExplorerSearchActions.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/history/workspaceHistoryTeamBranchStatus.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/runLaunchPolicy.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/fileExplorerStreaming/FileExplorerStreamingService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/contextFiles/contextAttachmentPresentation.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-stream-client-message.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/node_modules/.cache/vite/client/deps/@iconify_vue.js?v=899f3d26 net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/activity/runActivityWindowPolicy.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/agent/AgentConversationFeed.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/runHistoryTeamRows.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/toolNamePlaceholders.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/agentInput/AgentUserInputForm.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentOrgExecution/agentOrgStreamingService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/components/workspace/history/WorkspaceHierarchyBranches.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/agentOrgHistoryRows.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/stores/llmProviderConfig.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/compactionActivityPresentation.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/graphql/mutations/agentOrgRunMutations.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runConfigEditing/agentOrgRunConfigClient.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/utils/fileExplorer/openFolderRefresh.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/schema-helpers.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/agentStreaming/AgentStreamingService.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/services/runOpen/agentRunOpenCoordinator.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-team-stream-contracts/dist/team-reference-file-dto.js net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:52542/_nuxt/graphql/queries/agentTeamDefinitionQueries.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue Router warn]: uncaught error during route navigation:"
+    },
+    {
+      "type": "console:error",
+      "text": "SyntaxError: The requested module '/_nuxt/test-support/currentTeamTestFixtures.ts' does not provide an export named 'testTeamNode'"
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: The requested module '/_nuxt/test-support/currentTeamTestFixtures.ts' does not provide an export named 'testTeamNode'"
+    },
+    {
+      "type": "console:warning",
+      "text": "[Vue Router warn]: Unexpected error when starting the router: SyntaxError: The requested module '/_nuxt/test-support/currentTeamTestFixtures.ts' does not provide an export named 'testTeamNode'"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:error",
+      "text": "[nuxt] error caught during app initialization H3Error: The requested module '/_nuxt/test-support/currentTeamTestFixtures.ts' does not provide an export named 'testTeamNode'"
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] hot updated: /app.vue?vue&type=style&index=0&lang.css"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] hot updated: /pages/api-e2e-task-agent-peer-sidebar.vue?macro=true"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] hot updated: /@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Ftask-agent-peer-sidebar%2Fautobyteus-web%2F.nuxt%2Froutes.mjs"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 1367,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "HARNESS",
+      "description": "Run task Agent peer sidebar browser probe",
+      "message": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"peer-sidebar-probe\"]') to be visible\u001b[22m\n\u001b[2m    2 × waiting for\" http://127.0.0.1:52542/api-e2e-task-agent-peer-sidebar\" navigation to finish...\u001b[22m\n\u001b[2m      - navigated to \"http://127.0.0.1:52542/api-e2e-task-agent-peer-sidebar\"\u001b[22m\n",
+      "stack": "locator.waitFor: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-test=\"peer-sidebar-probe\"]') to be visible\u001b[22m\n\u001b[2m    2 × waiting for\" http://127.0.0.1:52542/api-e2e-task-agent-peer-sidebar\" navigation to finish...\u001b[22m\n\u001b[2m      - navigated to \"http://127.0.0.1:52542/api-e2e-task-agent-peer-sidebar\"\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:228:58"
+    }
+  ],
+  "port": 52542,
+  "baseUrl": "http://127.0.0.1:52542",
+  "result": "Fail",
+  "finishedAt": "2026-09-26T05:10:04.590Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser"
+  }
+}

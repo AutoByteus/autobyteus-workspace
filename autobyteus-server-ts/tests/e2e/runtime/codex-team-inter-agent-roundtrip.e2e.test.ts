@@ -10,9 +10,6 @@ import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
@@ -93,15 +90,12 @@ describeCodexRuntime(
     let testDataDir: string | null = null;
     let runtimeServerApp: FastifyInstance | null = null;
     let runtimeServerUrl: URL;
-    let originalInternalServerBaseUrl: string | undefined;
     const createdAgentDefinitionIds = new Set<string>();
     const createdTeamDefinitionIds = new Set<string>();
     const createdTeamRunIds = new Set<string>();
     const createdWorkspaceRoots = new Set<string>();
 
     beforeAll(async () => {
-      originalInternalServerBaseUrl =
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
       // Keep a restrictive saved approval policy in this fixture while relying on
       // autoExecuteTools=true to provide Codex high-trust access. Team routing safety
       // comes from thread-scoped Agent Tools MCP exposure for send_message_to, not
@@ -136,12 +130,6 @@ describeCodexRuntime(
           originalCodexApprovalPolicy;
       } else {
         delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-      }
-      if (originalInternalServerBaseUrl) {
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
-          originalInternalServerBaseUrl;
-      } else {
-        delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
       }
       if (runtimeServerApp) {
         await runtimeServerApp.close();
@@ -422,7 +410,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -434,7 +421,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -444,7 +430,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -940,7 +925,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -949,7 +933,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -961,7 +944,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -971,7 +953,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "ultra" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1259,7 +1240,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "high" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1271,7 +1251,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "high" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1281,7 +1260,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: { reasoning_effort: "high" },
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1540,7 +1518,6 @@ Rules:
               teamAddress: "/",
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1551,7 +1528,6 @@ Rules:
               agentDefinitionId: professorAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1891,7 +1867,6 @@ Rules:
               teamAddress: "/",
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1902,7 +1877,6 @@ Rules:
               agentDefinitionId: professorAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },
@@ -1911,7 +1885,6 @@ Rules:
               agentDefinitionId: studentAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "codex_app_server",
               workspaceRootPath,
             },

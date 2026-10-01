@@ -1,0 +1,104 @@
+{
+  "scenario": "stale",
+  "startedAt": "2026-09-28T23:04:02.801Z",
+  "runtime": "codex_app_server",
+  "iterations": [
+    {
+      "model": "gpt-5.5",
+      "preparedRunId": "daily_assistant_da77c64596d64cf499d292e7d24bb696",
+      "routeRunId": "daily_assistant_da77c64596d64cf499d292e7d24bb696",
+      "staleServedAt": 1790636655560,
+      "staleSnapshotHadPInactive": true,
+      "replied": true,
+      "error": null,
+      "preparedSockets": [
+        {
+          "url": "ws://127.0.0.1:54412/ws/agent/daily_assistant_da77c64596d64cf499d292e7d24bb696",
+          "createdAt": 1790636655553,
+          "openedAt": 1790636655555,
+          "closedAt": null,
+          "code": null,
+          "frames": [
+            {
+              "at": 1790636655558,
+              "data": "{\"type\":\"CONNECTED\",\"payload\":{\"agent_id\":\"daily_assistant_da77c64596d64cf499d292e7d24bb696\",\"session_id\":\"220a9211-c33c-403a-99ea-0d378dbb2ef6\"}}"
+            },
+            {
+              "at": 1790636655558,
+              "data": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"status\":\"offline\",\"agent_id\":\"daily_assistant_da77c64596d64cf499d292e7d24bb696\"}}"
+            },
+            {
+              "at": 1790636655619,
+              "data": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"status\":\"initializing\",\"agent_id\":\"daily_assistant_da77c64596d64cf499d292e7d24bb696\"}}"
+            },
+            {
+              "at": 1790636655891,
+              "data": "{\"type\":\"AGENT_COMMAND_ACK\",\"payload\":{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"daily_assistant_da77c64596d64cf499d292e7d24bb696\",\"message_id\":\"client_ba994a7d-0b7b-4d30-88f9-b126ac6a36ba\",\"dedupe_key\":\"agent_run_input:daily_assistant_da77c64596d64cf499d292e7d24bb696:client_ba994a7d-0b7b-4d30-88f9-b1"
+            },
+            {
+              "at": 1790636655891,
+              "data": "{\"type\":\"SYSTEM_INSTRUCTIONS_SUPPLIED\",\"payload\":{\"trace_id\":\"rt_1790636655720_cc6639cc-f1fe-495d-ae5d-f9d8f8cedfe8\",\"content\":\"## Agent Identity\\n\\n- Name: Daily Assistant\\n- Description: General-purpose assistant for everyday tasks, with access to all installed skills.\\n\\n### Responsibilities and "
+            },
+            {
+              "at": 1790636655902,
+              "data": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"status\":\"running\",\"agent_id\":\"daily_assistant_da77c64596d64cf499d292e7d24bb696\"}}"
+            },
+            {
+              "at": 1790636655908,
+              "data": "{\"type\":\"TURN_STARTED\",\"payload\":{\"turnId\":\"01a0ea43-0515-7921-91b3-0a8ef6783861\",\"turn_id\":\"01a0ea43-0515-7921-91b3-0a8ef6783861\"}}"
+            },
+            {
+              "at": 1790636658827,
+              "data": "{\"type\":\"SEGMENT_START\",\"payload\":{\"id\":\"msg_0f2d70ef5511789b016abaf272e06487d2b238abcd1f8cc306\",\"turn_id\":\"01a0ea43-0515-7921-91b3-0a8ef6783861\",\"segment_type\":\"text\",\"metadata\":null}}"
+            },
+            {
+              "at": 1790636658973,
+              "data": "{\"type\":\"SEGMENT_CONTENT\",\"payload\":{\"id\":\"msg_0f2d70ef5511789b016abaf272e06487d2b238abcd1f8cc306\",\"turn_id\":\"01a0ea43-0515-7921-91b3-0a8ef6783861\",\"segment_type\":\"text\",\"delta\":\"D14-STALE-1\"}}"
+            },
+            {
+              "at": 1790636658982,
+              "data": "{\"type\":\"SEGMENT_END\",\"payload\":{\"id\":\"msg_0f2d70ef5511789b016abaf272e06487d2b238abcd1f8cc306\",\"turn_id\":\"01a0ea43-0515-7921-91b3-0a8ef6783861\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}}"
+            }
+          ]
+        }
+      ],
+      "closesOfP": [],
+      "status": "Running",
+      "iteration": 1,
+      "ms": 8667,
+      "passed": true
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 94589
+    },
+    {
+      "label": "frontend",
+      "pid": 94613
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 94613,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 94589,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-XuxESi"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-XuxESi",
+  "backendUrl": "http://127.0.0.1:54412",
+  "frontUrl": "http://127.0.0.1:54413",
+  "summary": {
+    "iterations": 1,
+    "losses": 0,
+    "failures": 0
+  },
+  "completedAt": "2026-09-28T23:04:19.141Z"
+}

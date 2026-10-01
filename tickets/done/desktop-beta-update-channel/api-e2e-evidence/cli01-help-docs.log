@@ -1,0 +1,51 @@
+## bash launcher help (Release tracks)
+Release tracks:
+  latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.
+  beta               Newest build, beta or stable. Switch once with: upgrade --all --tag beta
+                     Later plain upgrade --all runs then follow each newer build.
+  Back to stable:    upgrade --all --tag latest
+                     Caution: only switch back once a stable release at least as new as your beta
+                     is available. Otherwise an older server runs on data a newer version may have migrated.
+
+State:
+## PowerShell help source
+52:Release tracks:
+53-  latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.
+54-  beta               Newest build, beta or stable. Switch once with: upgrade --all --tag beta
+55-                     Later plain upgrade --all runs then follow each newer build.
+56-  Back to stable:    upgrade --all --tag latest
+57-                     Caution: only switch back once a stable release at least as new as your beta
+58-                     is available. Otherwise an older server runs on data a newer version may have migrated.
+59-
+## server docker README
+104:**Release tracks: `latest` and `beta`**
+106:- `latest` is the newest **stable** release. This is the default, and nodes on
+107:  `latest` never receive beta images.
+108:- `beta` always points to the **newest build**, beta or stable. It moves forward
+111:To follow betas, switch every managed node once. Later plain upgrades then
+115:autobyteus-docker upgrade --all --tag beta   # once
+125:> **Caution:** only return to `latest` once a stable release **at least as new
+126:> as the beta you are running** is available. While `latest` is older than
+127:> your beta, switching back runs an older server on data that the newer
+128:> version may already have migrated.
+438:- Default prereleases such as `v1.2.3-beta.1` publish:
+439:  - `<image>:1.2.3-beta.1`
+440:- Default releases, stable or beta, then move the forward-only `<image>:beta`
+442:  newest recognized release tag (`vX.Y.Z` or `vX.Y.Z-beta.N`, checked with
+444:  - A manual re-publish of an older tag leaves `:beta` on the newer build.
+445:  - If a newer tag's build fails, `:beta` stays one build behind until that
+447:  - The `zh` variant has no `beta` tag.
+453:  - `<image>:1.2.3-beta.1-zh`
+## desktop-release.sh help
+Usage:
+  scripts/desktop-release.sh release <version> --release-notes <file> [--branch <branch>] [--no-push]
+  scripts/desktop-release.sh beta [--base <X.Y.Z>] [--branch <branch>] [--no-push]
+  scripts/desktop-release.sh test [--ref <git-ref>]
+  scripts/desktop-release.sh manual-dispatch <tag> [--ref <git-ref>] [--prerelease]
+
+Commands:
+  release   Bump autobyteus-web/package.json version, sync curated release notes,
+            commit, and create matching tag.
+            Defaults: --branch personal, push enabled. Pushing the tag starts the real release workflow.
+  beta      Release the next beta (vX.Y.Z-beta.N) without curated notes. The tag is published
+            as a GitHub pre-release with generated notes and is offered only to desktop installs

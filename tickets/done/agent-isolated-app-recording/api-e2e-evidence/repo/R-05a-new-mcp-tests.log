@@ -1,0 +1,6 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_recording_survives_concurrent_calls_and_stops_from_another_process
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_attach_only_reports_unavailable_and_never_launches_a_browser
+2 passed, 3 deselected in 9.73s

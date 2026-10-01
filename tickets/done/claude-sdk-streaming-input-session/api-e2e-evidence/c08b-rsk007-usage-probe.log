@@ -1,0 +1,356 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mAgent websocket attached for run claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0
+Created agent session b2760c0a-570b-4d78-a453-e9d80baa52ba for run claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0
+Agent WebSocket connected: session=b2760c0a-570b-4d78-a453-e9d80baa52ba, run=claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstderr[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mClaude process for run 'claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mClosed agent session b2760c0a-570b-4d78-a453-e9d80baa52ba
+Agent WebSocket disconnected: b2760c0a-570b-4d78-a453-e9d80baa52ba
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mAgent websocket attached for run claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0
+Created agent session cd1b1201-2c78-4dda-b474-92ef27f67f71 for run claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0
+Agent WebSocket connected: session=cd1b1201-2c78-4dda-b474-92ef27f67f71, run=claude-live-rsk007-af5c0921-b2c3-4d69-afdf-e58f21b127f0
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mClosed agent session cd1b1201-2c78-4dda-b474-92ef27f67f71
+Agent WebSocket disconnected: cd1b1201-2c78-4dda-b474-92ef27f67f71
+
+[90mstdout[2m | tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts[2m > [22m[2mtmp RSK-007 probe[2m > [22m[2mrecords raw and persisted usage across same-process, crash-reopen and restore
+[22m[39mRSK007_ROWS [
+ {
+  "label": "A",
+  "turn": "b02044c7",
+  "kind": "create",
+  "usage": [
+   {
+    "rawModelId": "claude-haiku-4-5-20251001",
+    "canonicalModel": "claude-haiku-4-5",
+    "provider": "firstParty",
+    "inputTokens": 906,
+    "outputTokens": 58,
+    "cacheReadInputTokens": 0,
+    "cacheCreationInputTokens": 10924
+   }
+  ],
+  "main": {
+   "inputTokens": 10,
+   "outputTokens": 49,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 10924,
+   "cacheCreation5mInputTokens": 0,
+   "cacheCreation1hInputTokens": 10924
+  }
+ },
+ {
+  "label": "A:persisted",
+  "turn": "b02044c7",
+  "accounting_total": 11888,
+  "flags": [
+   "reported_input_tokens_missing",
+   "reported_output_tokens_missing",
+   "reported_total_tokens_missing",
+   "input_token_semantic_unknown",
+   "claude_sdk_cache_write_1h_assumed"
+  ]
+ },
+ {
+  "label": "A",
+  "turn": "1ed7a120",
+  "kind": "create",
+  "usage": [
+   {
+    "rawModelId": "claude-haiku-4-5-20251001",
+    "canonicalModel": "claude-haiku-4-5",
+    "provider": "firstParty",
+    "inputTokens": 916,
+    "outputTokens": 107,
+    "cacheReadInputTokens": 9603,
+    "cacheCreationInputTokens": 14626
+   }
+  ],
+  "main": {
+   "inputTokens": 10,
+   "outputTokens": 49,
+   "cacheReadInputTokens": 9603,
+   "cacheCreationInputTokens": 3702,
+   "cacheCreation5mInputTokens": 0,
+   "cacheCreation1hInputTokens": 3702
+  }
+ },
+ {
+  "label": "A:persisted",
+  "turn": "1ed7a120",
+  "accounting_total": 13364,
+  "flags": [
+   "reported_input_tokens_missing",
+   "reported_output_tokens_missing",
+   "reported_total_tokens_missing",
+   "input_token_semantic_unknown"
+  ]
+ },
+ {
+  "label": "A",
+  "turn": "7646fb14",
+  "kind": "resume",
+  "usage": [
+   {
+    "rawModelId": "claude-haiku-4-5-20251001",
+    "canonicalModel": "claude-haiku-4-5",
+    "provider": "firstParty",
+    "inputTokens": 10,
+    "outputTokens": 56,
+    "cacheReadInputTokens": 13408,
+    "cacheCreationInputTokens": 288
+   }
+  ],
+  "main": {
+   "inputTokens": 10,
+   "outputTokens": 56,
+   "cacheReadInputTokens": 13408,
+   "cacheCreationInputTokens": 288,
+   "cacheCreation5mInputTokens": 0,
+   "cacheCreation1hInputTokens": 288
+  }
+ },
+ {
+  "label": "A:persisted",
+  "turn": "7646fb14",
+  "accounting_total": null,
+  "flags": [
+   "reported_input_tokens_missing",
+   "reported_output_tokens_missing",
+   "reported_total_tokens_missing",
+   "input_token_semantic_unknown",
+   "claude_sdk_selected_regressed"
+  ]
+ },
+ {
+  "label": "A",
+  "turn": "9ac83be7",
+  "kind": "resume",
+  "usage": [
+   {
+    "rawModelId": "claude-haiku-4-5-20251001",
+    "canonicalModel": "claude-haiku-4-5",
+    "provider": "firstParty",
+    "inputTokens": 20,
+    "outputTokens": 96,
+    "cacheReadInputTokens": 27104,
+    "cacheCreationInputTokens": 391
+   }
+  ],
+  "main": {
+   "inputTokens": 10,
+   "outputTokens": 40,
+   "cacheReadInputTokens": 13696,
+   "cacheCreationInputTokens": 103,
+   "cacheCreation5mInputTokens": 0,
+   "cacheCreation1hInputTokens": 103
+  }
+ },
+ {
+  "label": "A:persisted",
+  "turn": "9ac83be7",
+  "accounting_total": 13849,
+  "flags": [
+   "reported_input_tokens_missing",
+   "reported_output_tokens_missing",
+   "reported_total_tokens_missing",
+   "input_token_semantic_unknown"
+  ]
+ },
+ {
+  "label": "B-restored",
+  "turn": "e78724a3",
+  "kind": "resume",
+  "usage": [
+   {
+    "rawModelId": "claude-haiku-4-5-20251001",
+    "canonicalModel": "claude-haiku-4-5",
+    "provider": "firstParty",
+    "inputTokens": 30,
+    "outputTokens": 132,
+    "cacheReadInputTokens": 40903,
+    "cacheCreationInputTokens": 476
+   }
+  ],
+  "main": {
+   "inputTokens": 10,
+   "outputTokens": 36,
+   "cacheReadInputTokens": 13799,
+   "cacheCreationInputTokens": 85,
+   "cacheCreation5mInputTokens": 0,
+   "cacheCreation1hInputTokens": 85
+  }
+ },
+ {
+  "label": "B-restored:persisted",
+  "turn": "e78724a3",
+  "accounting_total": 13930,
+  "flags": [
+   "reported_input_tokens_missing",
+   "reported_output_tokens_missing",
+   "reported_total_tokens_missing",
+   "input_token_semantic_unknown"
+  ]
+ },
+ {
+  "label": "B-restored",
+  "turn": "82dac049",
+  "kind": "resume",
+  "usage": [
+   {
+    "rawModelId": "claude-haiku-4-5-20251001",
+    "canonicalModel": "claude-haiku-4-5",
+    "provider": "firstParty",
+    "inputTokens": 40,
+    "outputTokens": 170,
+    "cacheReadInputTokens": 54787,
+    "cacheCreationInputTokens": 559
+   }
+  ],
+  "main": {
+   "inputTokens": 10,
+   "outputTokens": 38,
+   "cacheReadInputTokens": 13884,
+   "cacheCreationInputTokens": 83,
+   "cacheCreation5mInputTokens": 0,
+   "cacheCreation1hInputTokens": 83
+  }
+ },
+ {
+  "label": "B-restored:persisted",
+  "turn": "82dac049",
+  "accounting_total": 14015,
+  "flags": [
+   "reported_input_tokens_missing",
+   "reported_output_tokens_missing",
+   "reported_total_tokens_missing",
+   "input_token_semantic_unknown"
+  ]
+ }
+]
+
+ [32m✓[39m tests/e2e/runtime/tmp-rsk007-usage-probe.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 21396[2mms[22m[39m
+     [33m[2m✓[22m[39m records raw and persisted usage across same-process, crash-reopen and restore [33m 21395[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m   Start at [22m 05:55:37
+[2m   Duration [22m 25.42s[2m (transform 2.34s, setup 14ms, import 3.53s, tests 21.40s, environment 0ms)[22m
+

@@ -8,7 +8,12 @@ import { AgentOrgTokenAttributionRepository } from "../../src/app-data-migration
 import { AgentOrgTokenAttributionTransition } from "../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.js";
 import { AtomicRunPackageFileCommitWriter } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { createCurrentTokenUsageTestHarness } from "./token-usage-run-record-fixtures.js";
-import { testExecutionTree, testAgentNode } from "../fixtures/current-team-run-fixtures.js";
+import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../fixtures/current-team-run-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../fixtures/released-run-tree-fixtures.js";
+
+// Flat-family migration inputs are pre-delegator data: seed released Team tree V2 shapes.
+const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
+  toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 import { testOrgTeamNode, testOrgAgentNode } from "../fixtures/current-agent-org-run-fixtures.js";
 
 export const putOrgFixture = async (file: string, data: unknown, raw = false): Promise<void> => {
@@ -18,7 +23,7 @@ export const putOrgFixture = async (file: string, data: unknown, raw = false): P
 export const nestedTree = (id: string) => {
   const tree = testExecutionTree({ rootTeamRunId: id, children: [testAgentNode("/direct", { agentRunId: `${id}-direct` })], coordinatorAddress: "/direct" });
   return { ...tree, rootTeam: { ...tree.rootTeam, members: [...tree.rootTeam.members,
-    testOrgTeamNode({ address: "/team", teamRunId: `${id}-team`, coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", `${id}-lead`)] })] } };
+    toReleasedConfiguredNode(testOrgTeamNode({ address: "/team", teamRunId: `${id}-team`, coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", `${id}-lead`)] }))] } };
 };
 export const writeNestedRoot = async (memory: string, id = "org") => {
   const source = path.join(memory, "agent_teams", id), target = path.join(memory, "agent_orgs", id);
@@ -31,7 +36,7 @@ export const writeNestedRoot = async (memory: string, id = "org") => {
 export const createOrgMigrationFixture = async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "org-token-implementation-")), memory = path.join(root, "memory");
   const client = new PrismaClient({ datasources: { db: { url: `file:${path.join(root, "tokens.sqlite")}` } } });
-  for (const name of ["20260819090000_add_token_usage_run_records", "20260822090000_add_token_usage_analytics"]) {
+  for (const name of ["20260819090000_add_token_usage_run_records", "20260822090000_add_token_usage_analytics", "20260923130000_add_claude_sdk_usage_state"]) {
     const ddl = await fs.readFile(path.resolve("prisma/migrations", name, "migration.sql"), "utf8");
     for (const statement of ddl.split(";").filter((part) => part.trim())) await client.$executeRawUnsafe(statement);
   }

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { mount, flushPromises } from '@vue/test-utils'
 import { reactive } from 'vue'
 import AgentOrgWorkspaceView from '~/components/workspace/org/AgentOrgWorkspaceView.vue'
@@ -91,13 +92,13 @@ async function open(agentRunId = 'agent-director') {
   sequence = view.base_change_sequence
   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'session' } })
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
-    root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: view,
+    root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view,
   } })
   await vi.waitFor(() => expect(store.contextFor('org-run')?.phase).toBe('live'))
   const org = store.contextFor('org-run')!
   org.select({ kind: 'agent_execution', agentRunId })
   const active = useActiveContextStore()
-  wrapper = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } })
+  wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
   return { org, active, context: active.activeAgentContext! }
 }
@@ -110,7 +111,7 @@ beforeEach(() => {
   mocks.mutate.mockReset()
   vi.stubGlobal('WebSocket', Socket)
   mocks.query.mockImplementation(async ({ variables }: any) => !variables.agentRunId
-    ? { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } } }
+    ? { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } } }
     : ({ data: { getAgentOrgMemberRunProjection: {
     agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
     conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
@@ -273,7 +274,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     active.activeAgentContext!.requirement = 'mounted draft'
     mocks.query.mockImplementation(async ({ query, variables }: any) => ({ data:
       query.definitions[0].name.value === 'GetAgentOrgRunInspection'
-        ? { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } }
+        ? { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } }
         : query.definitions[0].name.value === 'GetAgentOrgExecutionCheckpoint'
         ? { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: sequence, hasOpenExecutionWork: false } }
         : { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
@@ -285,7 +286,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     socket = Socket.instances[1]!
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'recovery' } })
     socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView(),
+      root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView(),
     } })
     await vi.waitFor(() => expect(useAgentOrgContextsStore().contextFor('org-run')).not.toBe(org))
     const replacement = useAgentOrgContextsStore().contextFor('org-run')!
@@ -310,7 +311,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
       if (query.definitions[0].name.value === 'GetAgentOrgExecutionCheckpoint') {
         return { data: { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: sequence, hasOpenExecutionWork: false } } }
       }
-      if (query.definitions[0].name.value === 'GetAgentOrgRunInspection') return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } } }
+      if (query.definitions[0].name.value === 'GetAgentOrgRunInspection') return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } } }
       projectionStarted = true
       await heldProjection
       return { data: { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
@@ -321,7 +322,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     socket = Socket.instances[1]!
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'held-recovery' } })
     socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView(),
+      root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView(),
     } })
     await vi.waitFor(() => expect(projectionStarted).toBe(true))
     expect(active.activeAgentContext).toBe(context)
@@ -372,7 +373,7 @@ const projectionResult = (variables: any) => ({ data: { getAgentOrgMemberRunProj
 const inspectionResult = (active = false) => {
   const view = taskBearingView(); view.is_active = active
   if (!active) view.agent_statuses = []
-  return { data: { getAgentOrgRunInspection: { schema_version: 1,
+  return { data: { getAgentOrgRunInspection: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
 async function inactive(id = 'agent-director') {
@@ -383,7 +384,7 @@ async function inactive(id = 'agent-director') {
   await store.openForInspection('org-run')
   store.select('org-run', { kind: 'agent_execution', agentRunId: id })
   const active = useActiveContextStore()
-  wrapper = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } })
+  wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
   return { store, active, context: active.activeAgentContext! }
 }
@@ -392,7 +393,7 @@ async function readyRestored() {
   socket = Socket.instances[0]!
   const view = taskBearingView(); sequence = view.base_change_sequence
   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'restore' } })
-  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: view } })
+  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } })
   await vi.waitFor(() => expect(socket.sent).toHaveLength(1))
 }
 
@@ -493,7 +494,7 @@ describe('observational Org history, exact deliberate continuation and retained 
     expect(store.activeTargetFor('org-run')?.access).toBe('continuable')
     expect(store.errorFor('org-run')).toBe('final read unavailable')
     expect(socket.readyState).toBe(3); expect(socket.sent).toEqual([])
-    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView() } })
+    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } })
     await flushPromises(); expect(org.phase).toBe('historical')
   })
 
@@ -511,7 +512,7 @@ describe('observational Org history, exact deliberate continuation and retained 
     expect(store.activeTargetFor('org-run')?.access).toBe('read_only')
     const replacement = Socket.instances[1]!
     replacement.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'after-stop-rejection' } })
-    replacement.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView() } })
+    replacement.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView() } })
     await vi.waitFor(() => expect(store.activeTargetFor('org-run')?.access).toBe('live'))
     expect(store.activeTargetFor('org-run')?.context).toBe(context)
   })

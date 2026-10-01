@@ -1,0 +1,215 @@
+{
+  "state": {
+    "tag": "rsam1790755092811",
+    "model": "claude-fable-5",
+    "skillName": "rsam_skill_rsam1790755092811",
+    "agentId": "rsam-agent-rsam1790755092811",
+    "teamDefId": "rsam-team-rsam1790755092811",
+    "orgDefId": "rsam-org-rsam1790755092811",
+    "ws": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsam1790755092811",
+    "agentRuns": [
+      "rsam_agent_rsam1790755092811_101179605d8a42ad8324330d0caca058",
+      "rsam_agent_rsam1790755092811_f3328f025ad24191beefd20d109cacfd"
+    ],
+    "teamRuns": [
+      "rsam_team_rsam1790755092811_3e7b51ac8bfe40bbac538e840cf45d37",
+      "rsam_team_rsam1790755092811_18547596a29444b59f2f95ea9bdef4c4"
+    ],
+    "orgRuns": [
+      "rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461",
+      "rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062"
+    ],
+    "recordFiles": [
+      "memory/agent_orgs/rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062/agent_org_run_execution_tree.json",
+      "memory/agent_orgs/rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461/agent_org_run_execution_tree.json",
+      "memory/agent_teams/rsam_team_rsam1790755092811_18547596a29444b59f2f95ea9bdef4c4/team_run_execution_tree.json",
+      "memory/agent_teams/rsam_team_rsam1790755092811_3e7b51ac8bfe40bbac538e840cf45d37/team_run_execution_tree.json",
+      "memory/agents/rsam_agent_rsam1790755092811_101179605d8a42ad8324330d0caca058/run_metadata.json",
+      "memory/agents/rsam_agent_rsam1790755092811_f3328f025ad24191beefd20d109cacfd/run_metadata.json"
+    ]
+  },
+  "log": [
+    {
+      "check": "agent[0] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "rsam_agent_rsam1790755092811_101179605d8a42ad8324330d0caca058"
+      }
+    },
+    {
+      "check": "agent[0] terminate",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    {
+      "check": "agent[0] restore",
+      "ok": false,
+      "detail": {
+        "success": false,
+        "message": "AgentCreationError: Failed to prepare agent run 'rsam_agent_rsam1790755092811_101179605d8a42ad8324330d0caca058'.",
+        "runId": null
+      }
+    },
+    {
+      "check": "team[0] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "rsam_team_rsam1790755092811_3e7b51ac8bfe40bbac538e840cf45d37"
+      }
+    },
+    {
+      "check": "team[0] terminate",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    {
+      "check": "team[0] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "rsam_team_rsam1790755092811_3e7b51ac8bfe40bbac538e840cf45d37"
+      }
+    },
+    {
+      "check": "org[0] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run created successfully.",
+        "agentOrgRunId": "rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461"
+      }
+    },
+    {
+      "check": "org[0] terminate",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run terminated successfully.",
+        "agentOrgRunId": "rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461"
+      }
+    },
+    {
+      "check": "org[0] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run restored successfully.",
+        "agentOrgRunId": "rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461"
+      }
+    },
+    {
+      "check": "agent[1] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "rsam_agent_rsam1790755092811_f3328f025ad24191beefd20d109cacfd"
+      }
+    },
+    {
+      "check": "agent[1] terminate",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    },
+    {
+      "check": "agent[1] restore",
+      "ok": false,
+      "detail": {
+        "success": false,
+        "message": "AgentCreationError: Failed to prepare agent run 'rsam_agent_rsam1790755092811_f3328f025ad24191beefd20d109cacfd'.",
+        "runId": null
+      }
+    },
+    {
+      "check": "team[1] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "rsam_team_rsam1790755092811_18547596a29444b59f2f95ea9bdef4c4"
+      }
+    },
+    {
+      "check": "team[1] terminate",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    },
+    {
+      "check": "team[1] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "rsam_team_rsam1790755092811_18547596a29444b59f2f95ea9bdef4c4"
+      }
+    },
+    {
+      "check": "org[1] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run created successfully.",
+        "agentOrgRunId": "rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062"
+      }
+    },
+    {
+      "check": "org[1] terminate",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run terminated successfully.",
+        "agentOrgRunId": "rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062"
+      }
+    },
+    {
+      "check": "org[1] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run restored successfully.",
+        "agentOrgRunId": "rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062"
+      }
+    },
+    {
+      "check": "no written record contains the field",
+      "ok": true,
+      "detail": {
+        "files": 15,
+        "carrying": []
+      }
+    },
+    {
+      "check": "record files exist for all three kinds",
+      "ok": true,
+      "detail": [
+        "memory/agent_orgs/rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062/agent_org_run_execution_tree.json",
+        "memory/agent_orgs/rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461/agent_org_run_execution_tree.json",
+        "memory/agent_teams/rsam_team_rsam1790755092811_18547596a29444b59f2f95ea9bdef4c4/team_run_execution_tree.json",
+        "memory/agent_teams/rsam_team_rsam1790755092811_3e7b51ac8bfe40bbac538e840cf45d37/team_run_execution_tree.json",
+        "memory/agents/rsam_agent_rsam1790755092811_101179605d8a42ad8324330d0caca058/run_metadata.json",
+        "memory/agents/rsam_agent_rsam1790755092811_f3328f025ad24191beefd20d109cacfd/run_metadata.json"
+      ]
+    }
+  ],
+  "fail": [
+    "agent[0] restore",
+    "agent[1] restore"
+  ]
+}

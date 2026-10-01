@@ -250,47 +250,10 @@ export const readJsonlFile = async <T>(filePath: string): Promise<T[]> => {
   }
 };
 
-export const nextNumericStringId = (
-  rows: Array<{ id?: string | null }>,
-): string => {
-  let maxId = 0;
-  for (const row of rows) {
-    if (!row.id) {
-      continue;
-    }
-    const parsed = Number(row.id);
-    if (Number.isInteger(parsed) && parsed > maxId) {
-      maxId = parsed;
-    }
-  }
-  return String(maxId + 1);
-};
-
-export const normalizeNullableString = (value: string | null | undefined): string | null => {
-  if (value == null) {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
 export const normalizeRequiredString = (value: string, field: string): string => {
   const normalized = value.trim();
   if (!normalized) {
     throw new Error(`${field} must be a non-empty string.`);
   }
   return normalized;
-};
-
-export const parseDate = (value: string | Date | null | undefined): Date => {
-  if (value instanceof Date) {
-    return value;
-  }
-  if (typeof value === "string") {
-    const parsed = new Date(value);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed;
-    }
-  }
-  return new Date();
 };

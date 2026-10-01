@@ -1,3 +1,4 @@
+import { autoExecuteForNewRuntimeSelection } from '~/utils/agentRunRuntimeDraftPolicy'
 import type { AgentDefinition } from '~/stores/agentDefinitionStore'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
@@ -107,7 +108,6 @@ const editableSeedFromConfigurationView = (view: Readonly<TeamRunConfigurationVi
       llmModelIdentifier: view.root.effectiveConfig.llmModelIdentifier,
       llmConfig: normalizeModelConfig(view.root.effectiveConfig.llmConfig),
       autoExecuteTools: view.root.effectiveConfig.autoExecuteTools,
-      skillAccessMode: view.root.effectiveConfig.skillAccessMode,
     },
     teamOverrides,
     agentOverrides,
@@ -132,8 +132,7 @@ export const buildAgentRunTemplate = (
     runtimeKind: normalizeRuntimeKind(defaults?.runtimeKind),
     workspaceId: null,
     workspaceMetadata: null,
-    autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
+    autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
     isLocked: false,
     llmConfig: normalizeModelConfig(defaults?.llmConfig),
   }
@@ -150,8 +149,7 @@ export const buildTeamRunTemplate = (
       workspace: { workspaceId: null, workspaceMetadata: null },
       llmModelIdentifier: normalizeModelIdentifier(defaults?.llmModelIdentifier),
       llmConfig: normalizeModelConfig(defaults?.llmConfig),
-      autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
+      autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
     },
     teamOverrides: {},
     agentOverrides: {},

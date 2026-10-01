@@ -1,0 +1,46 @@
+{
+ "sessionId": "01a0de93-f5bd-71b2-aa48-7ef969666a03",
+ "stopReason": "end_turn",
+ "usage": [
+  {
+   "input_tokens": 14057,
+   "output_tokens": 24,
+   "cache_read_input_tokens": 1152,
+   "cache_creation_input_tokens": 0,
+   "reasoning_tokens": 23
+  },
+  {
+   "turn": 288340000
+  }
+ ],
+ "toolCount": 24,
+ "tools": [
+  "run_terminal_command",
+  "read_file",
+  "search_replace",
+  "list_dir",
+  "grep",
+  "kill_command_or_subagent",
+  "todo_write",
+  "get_command_or_subagent_output",
+  "scheduler_create",
+  "scheduler_delete",
+  "scheduler_list",
+  "monitor",
+  "search_tool",
+  "use_tool",
+  "update_goal",
+  "enter_plan_mode",
+  "exit_plan_mode",
+  "send_feedback",
+  "web_fetch",
+  "image_gen",
+  "image_edit",
+  "image_to_video",
+  "reference_to_video",
+  "write"
+ ],
+ "forbiddenPresent": []
+}
+write schema: {"type":"function","function":{"name":"write","description":"Create or overwrite a file.\n\n- Writing to an existing path replaces the file — read it first with the read_file tool.\n- Parent directories are created for you.","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","required":["file_path","content"],"properties":{"file_path":{"description":"The absolute path to the file to write.","type":"string"},"content":{"description":"The full file content to write.","type":"string"}},"type":"object"}}}
+search_replace schema: {"type":"function","function":{"name":"search_replace","description":"Replace an exact string in a file.\n\n- `read_file` prefixes each line with \"LINE_NUMBER→\". That prefix is not part of the file: match only what comes after the →, with its exact indentation.\n- `old_string` must match exactly one place in the file. If it appears more than once, add surrounding lines to make it unique, or set `replace_all` to change every occurrence (handy for renaming an identifier).\n- To create a new file, set `old_string` to an empty string.","parameters":{"$schema":"http://json-schema.org/draft-07/schema#","required":["file_path","old_string","new_string"],"properties":{"file_path":{"description":"The path to the file to modify. You can use either a relative path in the workspace or an absolute path.","type":"string"},"old_string":{"description":"The text to replace","type":"string"},"new_string":{"description":"The text to replace it with (must be different from old_string)","type":"string"},"replace_all":{"description":"Replace all occurrences of old_string (default false)","type":"boolean","default":false}},"type":"object"}}}

@@ -1,5 +1,5 @@
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
+import type { ExternalMessageEnvelope } from "../../external-channel/external-message-envelope.js";
+import { ExternalPeerType } from "../../external-channel/peer-type.js";
 
 export type MentionPolicyDecision = {
   allowed: boolean;

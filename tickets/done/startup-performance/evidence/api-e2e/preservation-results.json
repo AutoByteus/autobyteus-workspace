@@ -1,0 +1,50 @@
+[
+  {
+    "label": "candidate-first",
+    "memoryFilesChecked": 14412,
+    "contextFilesByteChecked": 1204,
+    "allowedTypedLocatorOnlyChangedFiles": 363,
+    "releasedResidueFilesUntouched": 0,
+    "missingTreeRootsRetained": 8,
+    "sameIdStatus": [
+      [
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    ],
+    "newRunIndexDeltaVerified": null,
+    "laterCurrentWritePreserved": null,
+    "errors": []
+  },
+  {
+    "label": "candidate-retry",
+    "memoryFilesChecked": 14412,
+    "contextFilesByteChecked": 1204,
+    "allowedTypedLocatorOnlyChangedFiles": 181,
+    "releasedResidueFilesUntouched": 364,
+    "missingTreeRootsRetained": 8,
+    "sameIdStatus": [
+      [
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    ],
+    "newRunIndexDeltaVerified": null,
+    "laterCurrentWritePreserved": true,
+    "errors": []
+  },
+  {
+    "label": "candidate-terminal",
+    "memoryFilesChecked": 14412,
+    "contextFilesByteChecked": 1204,
+    "allowedTypedLocatorOnlyChangedFiles": 0,
+    "releasedResidueFilesUntouched": 364,
+    "missingTreeRootsRetained": 8,
+    "sameIdStatus": [
+      [
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    ],
+    "newRunIndexDeltaVerified": true,
+    "laterCurrentWritePreserved": null,
+    "errors": []
+  }
+]

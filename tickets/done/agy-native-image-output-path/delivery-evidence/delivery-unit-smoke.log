@@ -1,0 +1,20 @@
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-provider-diagnostic-sink.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-native-tool-policy.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (11)[39m
+[2m      Tests [22m [1m[32m91 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (96)[39m
+[2m   Start at [22m 15:55:39
+[2m   Duration [22m 6.51s[2m (transform 2.90s, setup 59ms, import 4.49s, tests 502ms, environment 1ms)[22m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m15 passed[39m[22m[90m (15)[39m
+[2m   Start at [22m 15:55:56
+[2m   Duration [22m 3.79s[2m (transform 2.24s, setup 15ms, import 3.27s, tests 13ms, environment 0ms)[22m
+

@@ -4,22 +4,17 @@ import type {
   ConfiguredMemberExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
-import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRuntimeKind } from '~/types/agent/AgentRunConfig'
 import type {
   ExistingTeamFormMemberNode,
   ExistingTeamRunFormModel,
   ExistingTeamScopeFormModel,
-  ExistingWorkspaceDisplay,
 } from '~/types/agent/ExistingTeamRunFormModel'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
 import type { ExistingTeamModelConfigDraft } from './existingTeamModelConfigDraft'
 
 const nameAt = (address: string): string => address.split('/').filter(Boolean).at(-1) ?? address
-const workspace = (launch: AgentLaunchConfigurationDto): ExistingWorkspaceDisplay | null => {
-  const rootPath = launch.workspace_root_path?.trim() ?? ''
-  return rootPath ? { workspaceId: null, displayName: rootPath, rootPath, availability: 'historical-only' } : null
-}
 const resolved = (
   launch: AgentLaunchConfigurationDto,
   selection: ExistingRunModelSelection,
@@ -30,7 +25,6 @@ const resolved = (
   workspaceRootPath: launch.workspace_root_path,
   ...selection,
   autoExecuteTools: launch.auto_execute_tools,
-  skillAccessMode: launch.skill_access_mode as SkillAccessMode,
 })
 
 export const projectExistingTeamRunFormModel = (input: {
@@ -58,7 +52,7 @@ export const projectExistingTeamRunFormModel = (input: {
       directlyEdited: draft.directlyEdited,
       originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
       modelOptions: input.modelOptionsByAddress?.[address],
-      workspaceControl: { mode: 'stored', workspace: workspace(launch) },
+      workspacePresentation: { kind: 'fixed-path' },
     }
   }
   const visit = (
@@ -78,7 +72,7 @@ export const projectExistingTeamRunFormModel = (input: {
       effectiveConfig: resolved(member.launch_configuration, draft.draftSelection),
       originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
       modelOptions: input.modelOptionsByAddress?.[member.address],
-      storedWorkspace: workspace(member.launch_configuration),
+      workspacePresentation: { kind: 'fixed-path' },
     }
   })
 

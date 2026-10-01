@@ -1,0 +1,78 @@
+{
+  "scenario": "stale",
+  "startedAt": "2026-09-28T22:20:20.874Z",
+  "runtime": "codex_app_server",
+  "iterations": [
+    {
+      "model": "gpt-5.5",
+      "preparedRunId": "daily_assistant_d16b9e90042443d19411f4899f892958",
+      "routeRunId": "daily_assistant_d16b9e90042443d19411f4899f892958",
+      "staleServedAt": 1790634033416,
+      "staleSnapshotHadPInactive": true,
+      "replied": false,
+      "error": "page.waitForFunction: Timeout 120000ms exceeded.",
+      "preparedSockets": [
+        {
+          "url": "ws://127.0.0.1:52684/ws/agent/daily_assistant_d16b9e90042443d19411f4899f892958",
+          "createdAt": 1790634033410,
+          "openedAt": 1790634033412,
+          "closedAt": 1790634033423,
+          "code": 1005,
+          "frames": [
+            {
+              "at": 1790634033415,
+              "data": "{\"type\":\"CONNECTED\",\"payload\":{\"agent_id\":\"daily_assistant_d16b9e90042443d19411f4899f892958\",\"session_id\":\"a91aa0aa-2ae8-4640-bc02-2d43fd4aab4a\"}}"
+            },
+            {
+              "at": 1790634033416,
+              "data": "{\"type\":\"AGENT_STATUS\",\"payload\":{\"status\":\"offline\",\"agent_id\":\"daily_assistant_d16b9e90042443d19411f4899f892958\"}}"
+            }
+          ]
+        }
+      ],
+      "closesOfP": [
+        {
+          "url": "ws://127.0.0.1:52684/ws/agent/daily_assistant_d16b9e90042443d19411f4899f892958",
+          "at": 1790634033420,
+          "submissionPending": false,
+          "status": "offline",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:17:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:52685/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:52685/_nuxt/services/agentStreaming/AgentStreamingService.ts:82:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:52685/_nuxt/stores/agentRunStore.ts:250:15)\n    at Proxy.wrappedAction (http://127.0.0.1:52685/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:52685/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:52685/_nuxt/stores/runHistoryLoadActions.ts:171:21)\n    at http://127.0.0.1:52685/_nuxt/stores/runHistoryLoadActions.ts:78:15\n    at async Promise.all (index 0)\n    at async fetchRunHistoryTree (http://127.0.0.1:52685/_nuxt/stores/runHistoryLoadActions.ts:99:5)"
+        }
+      ],
+      "status": "Error",
+      "iteration": 1,
+      "ms": 124010
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 22358
+    },
+    {
+      "label": "frontend",
+      "pid": 22384
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 22384,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 22358,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-wqNM6T"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-wqNM6T",
+  "backendUrl": "http://127.0.0.1:52684",
+  "frontUrl": "http://127.0.0.1:52685",
+  "summary": {
+    "iterations": 1,
+    "losses": 1
+  },
+  "completedAt": "2026-09-28T22:22:33.547Z"
+}

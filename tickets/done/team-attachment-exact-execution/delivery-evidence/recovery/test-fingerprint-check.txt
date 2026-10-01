@@ -1,0 +1,7 @@
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/fixtures/current-attachment-package-fixtures.ts: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/agent-memory/user-attachment-history.integration.test.ts: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts: OK
+/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts: OK

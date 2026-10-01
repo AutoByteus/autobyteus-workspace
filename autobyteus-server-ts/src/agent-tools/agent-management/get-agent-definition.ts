@@ -39,6 +39,7 @@ const serializeDefinition = (definition: AgentDefinition): Record<string, unknow
   tool_invocation_preprocessor_names: definition.toolInvocationPreprocessorNames,
   lifecycle_processor_names: definition.lifecycleProcessorNames,
   skill_names: definition.skillNames,
+  skill_scope: definition.skillScope,
 });
 
 export async function getAgentDefinition(

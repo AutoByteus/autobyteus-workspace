@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-09-27T05:42:09.199013+00:00",
+  "mode": "Read-only archived evidence and live backup manifest/stat metadata; no writes/restart/hash recomputation on live data",
+  "migrationDurationSeconds": 154.845,
+  "migrationLedgerSource": "/Users/normy/autobyteus_org/delivery-records/team-attachment-exact-execution/delivery-evidence/recovery/user-verification.json",
+  "backupDirectory": "/Users/normy/.autobyteus/server-data/app-data-migration-backups/20260926_team_context_file_execution_locators_v1",
+  "plans": 363,
+  "committed": 363,
+  "complete": true,
+  "originalFiles": 363,
+  "originalBytes": 757312942,
+  "manifestBytes": 719204,
+  "copiedCorpusFirstStartupMs": 195140,
+  "copiedCorpusRepeatStartupMs": 36491,
+  "installedReleaseRepeatStartupSeconds": 33.846,
+  "perPhaseTiming": "Not available; do not attribute exact CPU/I/O shares"
+}

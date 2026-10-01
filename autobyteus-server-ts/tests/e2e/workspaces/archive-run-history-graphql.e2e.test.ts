@@ -5,7 +5,6 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
@@ -14,6 +13,7 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
@@ -28,6 +28,10 @@ const harness = vi.hoisted(() => ({
   teamRunManager: {
     getManagedTeamRun: vi.fn<(teamRunId: string) => unknown | null>(),
     hasManagedTeamRun: vi.fn<(teamRunId: string) => boolean>(),
+    withInactiveHistoryMutation: vi.fn(async (teamRunId: string, operation: () => Promise<unknown>) =>
+      teamRunId === "team-active" || teamRunId === "team-archived-active"
+        ? { kind: "managed" as const }
+        : { kind: "completed" as const, value: await operation() }),
     getLifecycleSnapshot: vi.fn<(teamRunId: string) => {
       teamRunId: string;
       isActive: boolean;
@@ -110,7 +114,6 @@ const buildAgentMetadata = (
   llmModelIdentifier: "model-e2e",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
   applicationExecutionContext: null,
@@ -134,7 +137,6 @@ const buildTeamExecutionTree = (
       agentDefinitionId: "agent-def-e2e",
       llmModelIdentifier: "model-e2e",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       llmConfig: null,
       workspaceRootPath: WORKSPACE_ROOT,
       applicationExecutionContext: null,
@@ -419,6 +421,9 @@ describe("Archive run history GraphQL e2e", () => {
         teamRun.summary,
       );
       expect((await teamExecutionTreeStore.write(teamDir, tree)).outcome).toBe("committed");
+      await new TeamCommunicationV1Store().write(teamDir, {
+        schemaVersion: 1, rootTeamRunId: teamRun.teamRunId, messages: [],
+      });
     }
 
     await new TeamRunHistoryIndexStore(memoryDir).writeIndex(

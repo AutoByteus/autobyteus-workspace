@@ -1,0 +1,142 @@
+######## cq bin
+   0.0s >>> SEND dc925f19 Reply only READY.
+   0.3s FRAME command_lifecycle {"command_uuid":"dc925f19-abd0-46fe-b011-3d960e98174f","state":"queued","uuid":"0c9d09ce-ed6e-4631-a379-bb0b9e27c18f"}
+   0.3s FRAME command_lifecycle {"command_uuid":"dc925f19-abd0-46fe-b011-3d960e98174f","state":"started","uuid":"06e3eb68-fa3b-425b-b662-eedecafd1898"}
+   0.3s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   1.8s FRAME assistant ["thinking"] echo=dc925f19
+   1.9s FRAME assistant ["READY."] echo=-
+   2.0s FRAME result/success success answers=[dc925f19] origin=undefined terminal=completed
+   2.0s FRAME command_lifecycle {"command_uuid":"dc925f19-abd0-46fe-b011-3d960e98174f","state":"completed","uuid":"825fde0a-2549-47da-822e-36c4f9336f14"}
+   3.5s ==== mode cq cli /Users/normy/.local/bin/claude
+   3.5s >>> SEND 70f0d746 Use Bash in the foreground to run: python3 -c 'import time; 
+   3.5s FRAME command_lifecycle {"command_uuid":"70f0d746-4e20-4be6-b6fe-a1c48e97ba76","state":"queued","uuid":"2651d0c1-afd8-43da-8000-46fbc791b779"}
+   3.5s FRAME command_lifecycle {"command_uuid":"70f0d746-4e20-4be6-b6fe-a1c48e97ba76","state":"started","uuid":"5ee1ffd0-6e88-4720-9783-44f0c1aa3af8"}
+   3.5s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   5.1s FRAME assistant ["thinking"] echo=70f0d746
+   5.6s FRAME assistant ["tool_use:Bash"] echo=-
+   9.3s FRAME system/task_started  type=local_bash
+  10.5s >>> SEND eeb38cca Reply only B-SHOULD-NOT-RUN.
+  10.5s FRAME command_lifecycle {"command_uuid":"eeb38cca-65dd-4ff0-b6be-fcd444020aa7","state":"queued","uuid":"c814f1d1-c028-456b-852d-5411d22f1b29"}
+  12.0s FRAME command_lifecycle {"command_uuid":"eeb38cca-65dd-4ff0-b6be-fcd444020aa7","state":"cancelled","uuid":"2771725b-f84f-4220-ba91-ec2d5a17b2dc"}
+  12.0s interrupt(cancelQueued) -> {"still_queued":[],"cancelled":["eeb38cca-65dd-4ff0-b6be-fcd444020aa7"]}
+  12.0s FRAME system/task_notification stopped type=
+  12.0s FRAME user uuid=b3ef339f
+  12.0s FRAME user uuid=5d9d7503
+  12.0s FRAME result/error_during_execution error_during_execution answers=[70f0d746] origin=undefined terminal=aborted_tools
+  12.0s FRAME command_lifecycle {"command_uuid":"70f0d746-4e20-4be6-b6fe-a1c48e97ba76","state":"cancelled","uuid":"f261a054-2f57-4503-90fa-b89ff3216e0e"}
+  24.0s >>> SEND de387d7d Reply only AFTER.
+  24.0s FRAME command_lifecycle {"command_uuid":"de387d7d-8853-4395-87f8-7914f638fab0","state":"queued","uuid":"b731b348-a343-4541-b8d7-ce0053b1294a"}
+  24.0s FRAME command_lifecycle {"command_uuid":"de387d7d-8853-4395-87f8-7914f638fab0","state":"started","uuid":"8b31a4e4-99c6-45b6-a804-47c645106efd"}
+  24.0s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+  25.1s FRAME assistant ["thinking"] echo=de387d7d
+  25.1s FRAME assistant ["AFTER."] echo=-
+  25.1s FRAME result/success success answers=[de387d7d] origin=undefined terminal=completed
+  25.1s FRAME command_lifecycle {"command_uuid":"de387d7d-8853-4395-87f8-7914f638fab0","state":"completed","uuid":"dbff4f41-1faf-4752-8b14-65c081cc2571"}
+  26.1s ==== answered uuid lists: [["dc925f19"],["70f0d746"],["de387d7d"]]
+######## cam bin
+   0.0s >>> SEND 38fcbae5 Reply only READY.
+   0.3s FRAME command_lifecycle {"command_uuid":"38fcbae5-49e9-4203-8679-e78fa2328136","state":"queued","uuid":"37daeac9-f66c-4c3a-8f34-1cf5cc3154a1"}
+   0.3s FRAME command_lifecycle {"command_uuid":"38fcbae5-49e9-4203-8679-e78fa2328136","state":"started","uuid":"4033094c-3853-475c-94c9-bc3a166c758d"}
+   0.3s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   1.4s FRAME assistant ["thinking"] echo=38fcbae5
+   1.5s FRAME assistant ["READY."] echo=-
+   1.5s FRAME result/success success answers=[38fcbae5] origin=undefined terminal=completed
+   1.5s FRAME command_lifecycle {"command_uuid":"38fcbae5-49e9-4203-8679-e78fa2328136","state":"completed","uuid":"5cdeb8c2-0d5e-42f5-b756-ccbd04a477b7"}
+   3.0s ==== mode cam cli /Users/normy/.local/bin/claude
+   3.0s >>> SEND daed115e Use Bash in the foreground to run: python3 -c 'import time; 
+   3.0s FRAME command_lifecycle {"command_uuid":"daed115e-5e95-4da4-bb2d-9d799d52221a","state":"queued","uuid":"60cc6272-bf19-41e3-9966-6977063a554e"}
+   3.0s FRAME command_lifecycle {"command_uuid":"daed115e-5e95-4da4-bb2d-9d799d52221a","state":"started","uuid":"7b9ce68b-bace-4703-83dd-6427179f08e6"}
+   3.0s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   5.0s FRAME assistant ["thinking"] echo=daed115e
+   5.5s FRAME assistant ["tool_use:Bash"] echo=-
+   9.2s FRAME system/task_started  type=local_bash
+  10.0s >>> SEND 35ce6af0 Reply only B-SHOULD-NOT-RUN.
+  10.0s FRAME command_lifecycle {"command_uuid":"35ce6af0-73e8-480f-8b12-40fdaad590d8","state":"queued","uuid":"15a53343-ba92-4e95-8f47-91d870a05c0b"}
+  11.5s interrupt() -> {"still_queued":["35ce6af0-73e8-480f-8b12-40fdaad590d8"]}
+  11.5s FRAME command_lifecycle {"command_uuid":"35ce6af0-73e8-480f-8b12-40fdaad590d8","state":"cancelled","uuid":"7f0e34ed-f725-4901-a484-a91b6a21e535"}
+  11.5s cancelAsyncMessage 35ce6af0 -> true
+  11.5s FRAME system/task_notification stopped type=
+  11.5s FRAME user uuid=c5f176eb
+  11.5s FRAME user uuid=59f98cc7
+  11.5s FRAME result/error_during_execution error_during_execution answers=[daed115e] origin=undefined terminal=aborted_tools
+  11.5s FRAME command_lifecycle {"command_uuid":"daed115e-5e95-4da4-bb2d-9d799d52221a","state":"cancelled","uuid":"55a3b420-877c-4d60-8a33-7d2c7dc241e8"}
+  23.5s >>> SEND 9f418b3f Reply only AFTER.
+  23.5s FRAME command_lifecycle {"command_uuid":"9f418b3f-f24f-4a0d-b2c5-785f39706c14","state":"queued","uuid":"263dc326-e802-4736-84c5-c392a41c56da"}
+  23.5s FRAME command_lifecycle {"command_uuid":"9f418b3f-f24f-4a0d-b2c5-785f39706c14","state":"started","uuid":"3d995ca9-9841-4713-862d-82cdfe0f5f5e"}
+  23.5s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+  24.5s FRAME assistant ["thinking"] echo=9f418b3f
+  24.5s FRAME assistant ["AFTER."] echo=-
+  24.5s FRAME result/success success answers=[9f418b3f] origin=undefined terminal=completed
+  24.5s FRAME command_lifecycle {"command_uuid":"9f418b3f-f24f-4a0d-b2c5-785f39706c14","state":"completed","uuid":"a015c45a-9f4d-4620-82a4-4832c4f00262"}
+  25.5s ==== answered uuid lists: [["38fcbae5"],["daed115e"],["9f418b3f"]]
+######## cq package
+   0.0s >>> SEND 5e041aac Reply only READY.
+   0.4s FRAME command_lifecycle {"command_uuid":"5e041aac-f45e-4a9f-87c0-873741c845ed","state":"queued","uuid":"80e882e8-5c48-4547-8f9e-a9f6577e9912"}
+   0.4s FRAME command_lifecycle {"command_uuid":"5e041aac-f45e-4a9f-87c0-873741c845ed","state":"started","uuid":"c61db43a-6f54-4050-8375-9eee6e1ad3f3"}
+   0.4s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   1.9s FRAME assistant ["thinking"] echo=5e041aac
+   1.9s FRAME assistant ["READY."] echo=-
+   1.9s FRAME result/success success answers=[5e041aac] origin=undefined terminal=completed
+   1.9s FRAME command_lifecycle {"command_uuid":"5e041aac-f45e-4a9f-87c0-873741c845ed","state":"completed","uuid":"fc475371-66a0-45df-aa58-b4360b143444"}
+   3.4s ==== mode cq cli /tmp/cli0280/package/claude
+   3.4s >>> SEND bc5b6012 Use Bash in the foreground to run: python3 -c 'import time; 
+   3.5s FRAME command_lifecycle {"command_uuid":"bc5b6012-001f-4b13-92f1-4a71f723833e","state":"queued","uuid":"d040e52f-e074-4023-b510-a5c01b08f8c7"}
+   3.5s FRAME command_lifecycle {"command_uuid":"bc5b6012-001f-4b13-92f1-4a71f723833e","state":"started","uuid":"5c3c34d5-2289-44ad-be0b-6fc32bd772a9"}
+   3.5s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   5.1s FRAME assistant ["thinking"] echo=bc5b6012
+   5.5s FRAME assistant ["tool_use:Bash"] echo=-
+   9.2s FRAME system/task_started  type=local_bash
+  10.4s >>> SEND 8528e8db Reply only B-SHOULD-NOT-RUN.
+  10.4s FRAME command_lifecycle {"command_uuid":"8528e8db-1dfe-4064-aacc-b27e8af71f92","state":"queued","uuid":"85e4b3d9-137c-4060-a8b0-68b33e6697e7"}
+  12.0s FRAME command_lifecycle {"command_uuid":"8528e8db-1dfe-4064-aacc-b27e8af71f92","state":"cancelled","uuid":"ca650d22-8252-4211-82d9-cd456bca48d6"}
+  12.0s interrupt(cancelQueued) -> {"still_queued":[],"cancelled":["8528e8db-1dfe-4064-aacc-b27e8af71f92"]}
+  12.0s FRAME system/task_notification stopped type=
+  12.0s FRAME user uuid=09e2bf04
+  12.0s FRAME user uuid=bf108f18
+  12.0s FRAME result/error_during_execution error_during_execution answers=[bc5b6012] origin=undefined terminal=aborted_tools
+  12.0s FRAME command_lifecycle {"command_uuid":"bc5b6012-001f-4b13-92f1-4a71f723833e","state":"cancelled","uuid":"f48d242d-2721-4895-b3dc-c86ebce5196e"}
+  24.0s >>> SEND a0d5754e Reply only AFTER.
+  24.0s FRAME command_lifecycle {"command_uuid":"a0d5754e-0b56-4d3d-b231-fcfa258764b4","state":"queued","uuid":"601efa4f-d615-44bf-8087-83718f38e78d"}
+  24.0s FRAME command_lifecycle {"command_uuid":"a0d5754e-0b56-4d3d-b231-fcfa258764b4","state":"started","uuid":"2828bf21-e2d1-49b7-ae96-ee8113e07651"}
+  24.0s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+  25.1s FRAME assistant ["thinking"] echo=a0d5754e
+  25.2s FRAME assistant ["AFTER."] echo=-
+  25.2s FRAME result/success success answers=[a0d5754e] origin=undefined terminal=completed
+  25.2s FRAME command_lifecycle {"command_uuid":"a0d5754e-0b56-4d3d-b231-fcfa258764b4","state":"completed","uuid":"6d81b1b5-9833-41fd-a673-3d1e924c09af"}
+  26.2s ==== answered uuid lists: [["5e041aac"],["bc5b6012"],["a0d5754e"]]
+######## cam package
+   0.0s >>> SEND 381d5575 Reply only READY.
+   0.3s FRAME command_lifecycle {"command_uuid":"381d5575-ca23-406a-919a-fc0f09053c3c","state":"queued","uuid":"3676df87-4441-4018-b714-22e8d0522819"}
+   0.3s FRAME command_lifecycle {"command_uuid":"381d5575-ca23-406a-919a-fc0f09053c3c","state":"started","uuid":"a96b6bbf-535e-405e-9348-faace8cb1455"}
+   0.3s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   1.6s FRAME assistant ["thinking"] echo=381d5575
+   1.7s FRAME assistant ["READY."] echo=-
+   1.7s FRAME result/success success answers=[381d5575] origin=undefined terminal=completed
+   1.7s FRAME command_lifecycle {"command_uuid":"381d5575-ca23-406a-919a-fc0f09053c3c","state":"completed","uuid":"e270fa67-33be-472e-b9d6-aa2daaba5bb2"}
+   3.2s ==== mode cam cli /tmp/cli0280/package/claude
+   3.2s >>> SEND c65224ff Use Bash in the foreground to run: python3 -c 'import time; 
+   3.2s FRAME command_lifecycle {"command_uuid":"c65224ff-5311-45d9-8b57-0ec9fe3b2489","state":"queued","uuid":"1744d001-cab0-4fa0-9ab2-cd44ba670f21"}
+   3.2s FRAME command_lifecycle {"command_uuid":"c65224ff-5311-45d9-8b57-0ec9fe3b2489","state":"started","uuid":"50098508-80c2-413f-9666-61a7adabe3fe"}
+   3.2s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   4.5s FRAME assistant ["thinking"] echo=c65224ff
+   5.0s FRAME assistant ["tool_use:Bash"] echo=-
+   8.7s FRAME system/task_started  type=local_bash
+  10.2s >>> SEND 59787716 Reply only B-SHOULD-NOT-RUN.
+  10.2s FRAME command_lifecycle {"command_uuid":"59787716-73b5-4450-ba5a-ed70d8f6b2e5","state":"queued","uuid":"400d1dd0-1ecc-4518-876c-c304c8e038d8"}
+  11.7s interrupt() -> {"still_queued":["59787716-73b5-4450-ba5a-ed70d8f6b2e5"]}
+  11.7s FRAME command_lifecycle {"command_uuid":"59787716-73b5-4450-ba5a-ed70d8f6b2e5","state":"cancelled","uuid":"d3d71bf7-a94c-43fa-99b5-a1bff0bfb472"}
+  11.7s cancelAsyncMessage 59787716 -> true
+  11.7s FRAME system/task_notification stopped type=
+  11.7s FRAME user uuid=55a55bee
+  11.7s FRAME user uuid=ace5601f
+  11.7s FRAME result/error_during_execution error_during_execution answers=[c65224ff] origin=undefined terminal=aborted_tools
+  11.7s FRAME command_lifecycle {"command_uuid":"c65224ff-5311-45d9-8b57-0ec9fe3b2489","state":"cancelled","uuid":"553f2598-15bf-4aed-ba7c-476ccdd7934b"}
+  23.7s >>> SEND 68d516d9 Reply only AFTER.
+  23.7s FRAME command_lifecycle {"command_uuid":"68d516d9-5bff-487c-b830-a5a1436dac83","state":"queued","uuid":"6db04917-ea1f-49c5-a5c5-89633fb5caff"}
+  23.7s FRAME command_lifecycle {"command_uuid":"68d516d9-5bff-487c-b830-a5a1436dac83","state":"started","uuid":"dda04bb4-ce2b-4e23-93da-a288296434e3"}
+  23.7s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+  24.9s FRAME assistant ["thinking"] echo=68d516d9
+  24.9s FRAME assistant ["AFTER."] echo=-
+  24.9s FRAME result/success success answers=[68d516d9] origin=undefined terminal=completed
+  24.9s FRAME command_lifecycle {"command_uuid":"68d516d9-5bff-487c-b830-a5a1436dac83","state":"completed","uuid":"49a73136-e0bc-4427-b731-2b0091b3660d"}
+  25.9s ==== answered uuid lists: [["381d5575"],["c65224ff"],["68d516d9"]]

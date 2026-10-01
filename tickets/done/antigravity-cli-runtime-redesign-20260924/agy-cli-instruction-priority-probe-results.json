@@ -1,0 +1,35 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "userMessageIdentity": {
+    "exit": 0,
+    "initId": "5442284e-fbbc-481c-af6c-6b573f94024c",
+    "agent": null,
+    "results": [
+      {
+        "status": "SUCCESS",
+        "response": "READY\n",
+        "conversationId": "5442284e-fbbc-481c-af6c-6b573f94024c"
+      },
+      {
+        "status": "SUCCESS",
+        "response": "USER-RED\n",
+        "conversationId": "5442284e-fbbc-481c-af6c-6b573f94024c"
+      }
+    ],
+    "stderrTail": ""
+  },
+  "customAgentIdentity": {
+    "exit": 0,
+    "initId": "d12b487d-077d-4d77-a7f3-5d34d85c5307",
+    "agent": "identity-priority-sentinel",
+    "results": [
+      {
+        "status": "SUCCESS",
+        "response": "SYSTEM-CYAN\n",
+        "conversationId": "d12b487d-077d-4d77-a7f3-5d34d85c5307"
+      }
+    ],
+    "stderrTail": ""
+  },
+  "caveat": "Single deterministic-looking short sample; not a security or long-context guarantee."
+}

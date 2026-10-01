@@ -1,0 +1,46 @@
+import fs from 'node:fs/promises';
+import { createRequire } from 'node:module';
+const require = createRequire(new URL('../../../../autobyteus-web/package.json', import.meta.url));
+const { chromium } = require('playwright-core');
+const dir = new URL('.', import.meta.url).pathname;
+const info = JSON.parse(await fs.readFile(dir + 'live-stack-info.json'));
+const ev = { startedAt: new Date().toISOString(), errors: [], requests: [], responses: [] };
+const browser = await chromium.launch({ headless: true, executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, locale: 'en-US' });
+page.on('pageerror', e => ev.errors.push(e.message));
+page.on('response', async r => { if(r.url().includes('execution-resource-configurations')) ev.responses.push({url:r.url(),status:r.status(),body:(await r.text().catch(()=>'' )).slice(0,3500)}); });
+page.on('request', r => { if (r.url().includes('execution-resource-configurations') || r.url().includes('RuntimeCurrentModelDescriptors')) ev.requests.push({url:r.url(),method:r.method(),body:r.postData()?.slice(0,1000)}); });
+try {
+  await page.goto(info.frontendUrl + '/applications', { waitUntil: 'domcontentloaded' });
+  await page.getByText('REV003 Model Setup', { exact: true }).first().click();
+  const panel = page.locator('[data-testid="application-launch-setup-panel"]');
+  await panel.locator('[data-testid="application-launch-setup-slot-header"]').first().waitFor({ timeout: 30000 });
+  const agent = panel.locator('article').filter({hasText:'Optional Agent'});
+  const team = panel.locator('article').filter({hasText:'Optional Team'});
+  await agent.locator('select').first().selectOption('shared:AGENT:rev003-saved-default-agent');
+  await page.waitForTimeout(1800);
+  ev.agentDraftText = (await agent.innerText()).slice(0,7000);
+  ev.agentSelects = await agent.locator('select').evaluateAll(ns=>ns.map(n=>({value:n.value,options:[...n.options].map(x=>x.textContent)})));
+  ev.agentButtons = await agent.locator('button').allTextContents();
+  ev.agentSaveEnabled = await page.getByTestId('application-launch-setup-save-agentSlot').isEnabled();
+  await page.screenshot({path:dir+'rev003-application-agent-draft.png',fullPage:true});
+  await team.locator('select').first().selectOption('shared:AGENT_TEAM:rev003-saved-default-team');
+  await page.waitForTimeout(1800);
+  ev.teamDraftText = (await team.innerText()).slice(0,11000);
+  ev.teamSelects = await team.locator('select').evaluateAll(ns=>ns.map(n=>({value:n.value,options:[...n.options].map(x=>x.textContent)})));
+  ev.teamButtons = await team.locator('button').allTextContents();
+  ev.teamSaveEnabled = await page.getByTestId('application-launch-setup-save-draftingTeam').isEnabled();
+  await page.screenshot({path:dir+'rev003-application-agent-team-drafts.png',fullPage:true});
+  if (!ev.agentSaveEnabled || !ev.teamSaveEnabled) throw Error('exact default inherited setup save disabled');
+  await page.getByTestId('application-launch-setup-save-agentSlot').click();
+  await page.waitForTimeout(1700);
+  ev.agentSavedText=(await agent.innerText()).slice(-1800);
+  await page.getByTestId('application-launch-setup-save-draftingTeam').click();
+  await page.waitForTimeout(1700);
+  ev.teamSavedText=(await team.innerText()).slice(-2200);
+  await page.screenshot({path:dir+'rev003-application-saved.png',fullPage:true});
+  ev.savedView=await page.evaluate(async()=>{const app=document.querySelector('#__nuxt')?.__vue_app__;const base=app?.config?.globalProperties?.$pinia?._s?.get('windowNodeContext')?.getBoundEndpoints()?.rest;const id=location.pathname.split('/').at(-1);const r=await fetch(base+'/applications/'+encodeURIComponent(id)+'/execution-resource-configurations');return {status:r.status,body:await r.json()}});
+  ev.status=ev.savedView.status===200?'Pass':'Fail';
+} catch(e) { ev.status='Fail';ev.error=e.message;ev.body=(await page.locator('body').innerText().catch(()=>'' )).slice(-10000);await page.screenshot({path:dir+'rev003-application-setup-failure.png',fullPage:true}).catch(()=>{}); }
+finally {await browser.close();await fs.writeFile(dir+'rev003-application-setup-browser-evidence.json',JSON.stringify(ev,null,2));}
+console.log(ev.status,ev.error||'',ev.agentSaveEnabled,ev.teamSaveEnabled);

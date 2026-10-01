@@ -152,7 +152,6 @@ export class CustomProviderReadableIdAppDataMigration implements AppDataMigratio
         ...appConfigProvider.config.getAdditionalAgentPackageRoots(),
         ...appConfigProvider.config.getAdditionalApplicationPackageRoots(),
       ],
-      bindingsPath: path.join(appDataDir, 'external-channel', 'bindings.json'),
       agentRunsRoot: path.join(memoryRoot, 'agents'),
       teamRunsRoot: path.join(memoryRoot, 'agent_teams'),
       memoryRoot,

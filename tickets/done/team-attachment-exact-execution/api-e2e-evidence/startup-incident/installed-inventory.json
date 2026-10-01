@@ -1,0 +1,92 @@
+{
+  "agent_teams": {
+    "roots": 553,
+    "missing_tree": [
+      {
+        "id": "team_classroomsimulation_1ad20b5a",
+        "files": 0,
+        "bytes": 0,
+        "paths": []
+      },
+      {
+        "id": "team_classroomsimulation_3629e668",
+        "files": 0,
+        "bytes": 0,
+        "paths": []
+      },
+      {
+        "id": "team_classroomsimulation_77474497",
+        "files": 0,
+        "bytes": 0,
+        "paths": []
+      },
+      {
+        "id": "team_classroomsimulation_7ebcecc4",
+        "files": 0,
+        "bytes": 0,
+        "paths": []
+      },
+      {
+        "id": "team_classroomsimulation_8661ebcb",
+        "files": 0,
+        "bytes": 0,
+        "paths": []
+      },
+      {
+        "id": "team_northstar-operating-company_6af4b5ba",
+        "files": 19,
+        "bytes": 433673,
+        "paths": [
+          "team_communication_messages.json",
+          "team_run_metadata.json",
+          "team_communication_messages.json.backup-2026-07-01T16-45-14-714Z",
+          "finance_people_org_people_ops_lead_cf69091790df6bf2/raw_traces_active.jsonl",
+          "finance_people_org_people_ops_lead_cf69091790df6bf2/working_context_snapshot.json",
+          "finance_people_org_people_ops_lead_cf69091790df6bf2/file_changes.json",
+          "ceo_e62dd2ebee38e5be/raw_traces_active.jsonl",
+          "ceo_e62dd2ebee38e5be/working_context_snapshot.json",
+          "finance_people_org_controller_b3a9062bef3ce1ea/raw_traces_active.jsonl",
+          "finance_people_org_controller_b3a9062bef3ce1ea/working_context_snapshot.json",
+          "finance_people_org_controller_b3a9062bef3ce1ea/file_changes.json",
+          "finance_people_org_vp_finance_bf4f937a76c71427/raw_traces_active.jsonl",
+          "finance_people_org_vp_finance_bf4f937a76c71427/working_context_snapshot.json",
+          "finance_people_org_vp_finance_bf4f937a76c71427/file_changes.json",
+          "cfo_06ca78952c6281cb/raw_traces_active.jsonl",
+          "cfo_06ca78952c6281cb/working_context_snapshot.json",
+          "cfo_06ca78952c6281cb/file_changes.json",
+          "cro_934a5faa276c1bf6/raw_traces_active.jsonl",
+          "cro_934a5faa276c1bf6/working_context_snapshot.json"
+        ]
+      },
+      {
+        "id": "team_software-engineering-team_359ede01",
+        "files": 2,
+        "bytes": 129681,
+        "paths": [
+          "solution_designer_72f34680755163ef/raw_traces_active.jsonl",
+          "solution_designer_72f34680755163ef/working_context_snapshot.json"
+        ]
+      },
+      {
+        "id": "team_video-tutorial-creation-team_48955b3c",
+        "files": 9,
+        "bytes": 993334,
+        "paths": [
+          "team_communication_messages.json.backup-2026-07-01T16-45-15-067Z",
+          "team_communication_messages.json",
+          "team_run_metadata.json",
+          "tutorialvideoassembler_a6401cbc2379c3ad/raw_traces_active.jsonl",
+          "tutorialvideoassembler_a6401cbc2379c3ad/file_changes.json",
+          "tutorialvideoassembler_a6401cbc2379c3ad/context_files/ctx_224284766ac4__image.png",
+          "tutorialvoiceoverwriter_908288232bbc59eb/raw_traces_active.jsonl",
+          "tutorialvoiceoverwriter_908288232bbc59eb/working_context_snapshot.json",
+          "tutorialvoiceoverwriter_908288232bbc59eb/file_changes.json"
+        ]
+      }
+    ]
+  },
+  "agent_orgs": {
+    "roots": 24,
+    "missing_tree": []
+  }
+}

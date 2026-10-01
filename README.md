@@ -7,7 +7,6 @@ Monorepo workspace for the AutoByteus TypeScript platform.
 - `autobyteus-web`
 - `autobyteus-server-ts`
 - `autobyteus-ts`
-- `autobyteus-message-gateway`
 - `autobyteus-android` native wrapper for the existing `/mobile` shell
 - `autobyteus-ios` native wrapper for the existing `/mobile` shell
 - `autobyteus-application-sdk-contracts`
@@ -324,10 +323,33 @@ Full guide:
 ```bash
 pnpm --filter autobyteus-web build
 pnpm --filter autobyteus-server-ts build
-pnpm --filter autobyteus-message-gateway build
 ```
 
+## Isolated app instances (agents, tutorials, screenshots, video)
+
+Agents and developers can start a disposable AutoByteus desktop instance beside
+the main app. It has its own ports and data, never touches production data, and
+has no update checks. They can drive it like a person with a visible cursor,
+take screenshots and record MP4 video:
+
+```bash
+pnpm isolated-app start            # installed app; --from-worktree / --build for this worktree
+pnpm isolated-app list
+pnpm isolated-app stop <instanceId>
+```
+
+`start` picks free ports and reports `instanceId` and `controlPort`; pass that
+`controlPort` to browser-automation and that `instanceId` to `stop`/`restart`,
+so several worktrees can run instances in parallel.
+
+For when to use an isolated instance in validation, see [TESTING.md](TESTING.md).
+See the [isolated app instances guide](docs/isolated-app-instances.md) and the
+agent skill [`skills/autobyteus-isolated-app`](skills/autobyteus-isolated-app/SKILL.md).
+
 ## Packaged Electron API/E2E testing
+
+How this workspace is tested, and which path to choose for a change, is summarized in
+[TESTING.md](TESTING.md).
 
 After the root [`Setup`](#setup), run packaged Electron checks from the frontend
 project. The thin launcher builds the current host package by default, selects a
@@ -363,12 +385,13 @@ pnpm test:e2e:electron:isolation \
 ```
 
 Do not insert a standalone `--` after either package-script name; these thin
-CLIs receive their options directly. If a macOS/Linux automation shell has
-inherited `ELECTRON_RUN_AS_NODE=1`, clear it for the real GUI launch, for
-example `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter direct`.
-The launcher preserves the rest of the caller environment and overlays only
-the three documented isolation variables; it does not introduce API-key,
-provider, search, Codex, or other credential assumptions.
+CLIs receive their options directly. The launcher removes an inherited
+`ELECTRON_RUN_AS_NODE`, preserves the rest of the caller environment for the
+desktop process and overlays the three documented isolation variables. The
+isolated app's embedded server receives only a system-baseline environment, so
+production AutoByteus, database and provider settings from the caller never
+reach it. Provision credentials into the isolated database with
+`pnpm secrets:import`.
 
 See the frontend [packaged Electron E2E guide](autobyteus-web/README.md#packaged-electron-e2e-launches)
 and the [canonical launch/ownership contract](autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)
@@ -434,6 +457,8 @@ capabilities explicitly; they must not be represented as passed. See the
 server README for server-specific test and credential details.
 
 ## Testing (Codex Runtime)
+
+See [TESTING.md](TESTING.md) for the complete testing guideline.
 
 For Codex-related tickets, run backend tests with Codex live transport enabled.
 Without this env var, Codex live E2E suites are skipped.
@@ -528,7 +553,6 @@ pnpm android:server:stop
   - `.github/workflows/release-desktop.yml`
   - `.github/workflows/release-android.yml`
   - `.github/workflows/release-ios.yml`
-  - `.github/workflows/release-messaging-gateway.yml`
   - `.github/workflows/release-server-docker.yml`
 - Triggers:
   - push tag `v*` (for example: `v1.1.8`)
@@ -540,16 +564,20 @@ pnpm android:server:stop
   - Linux ARM64 AppImage + `latest-linux-arm64.yml` metadata with embedded AppImage `blockMapSize`
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
-  - managed messaging runtime package assets on the same GitHub Release
   - Docker Hub server image for `linux/amd64,linux/arm64`
 - Release notes:
-  - GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
+  - Stable GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
   - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
+  - Pre-release tags (any tag containing `-`, such as `vX.Y.Z-beta.N`) always use GitHub generated notes in both the desktop and Android jobs.
+- Release channels (stable and beta):
+  - Any tag containing `-` is published as a GitHub **pre-release**, including a manual dispatch of such a tag. GitHub "Latest" therefore stays on the newest stable release.
+  - Desktop installs are offered pre-releases only when **Settings > Updates > Receive beta updates** is on (off by default). Turning it off never downgrades; the install waits for the next newer stable.
+  - See `autobyteus-web/docs/github-actions-tag-build.md` (Release Channels) and `autobyteus-web/docs/electron_packaging.md` (Update Channel).
 - Version/tag sync is mandatory:
-  - `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` versions must both match the release tag version (`vX.Y.Z`).
-  - The release helper synchronizes both package versions and the bundled managed messaging manifest before tagging.
-  - The desktop, Android, and messaging-gateway release workflows enforce those checks and fail on mismatch.
+  - `autobyteus-web/package.json` version must match the release tag version (`vX.Y.Z`).
+  - The release helper synchronizes that package version before tagging.
+  - The desktop and Android release workflows enforce that check and fail on mismatch.
 - Desktop Electron runtime baseline validation is mandatory:
   - `autobyteus-web/package.json` pins the reviewed Electron runtime exactly, and the root `pnpm-lock.yaml` is the canonical workspace lockfile.
   - Electron baseline changes must be validated with native-module rebuild evidence, focused Electron tests, and a desktop package smoke build because Chromium, Node.js, native-module ABI, packaging, and updater behavior change together.
@@ -579,7 +607,9 @@ pnpm android:server:stop
   - the workflow uploads to App Store Connect/TestFlight only; final public App Store review, listing, privacy, and release approval remain external
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
-  - prerelease tags such as `v1.2.7-rc1` publish only `autobyteus/autobyteus-server:1.2.7-rc1`
+  - prerelease tags such as `v1.2.7-beta.1` publish `autobyteus/autobyteus-server:1.2.7-beta.1` and never move `:latest`
+  - `autobyteus/autobyteus-server:beta` (default variant only) moves forward only: after the version image is pushed, it points at that image when the tag is the newest recognized release tag, stable or beta (`scripts/release_versions.py is-newest`); re-publishing an older tag leaves it unchanged
+  - public launcher users follow the beta track with `autobyteus-docker upgrade --all --tag beta` and return with `--tag latest` only once a stable release at least as new as their beta exists (see `autobyteus-server-ts/docker/README.md`)
 - Required GitHub repository secrets for Android APK publish:
   - `ANDROID_KEYSTORE_B64`
   - `ANDROID_KEYSTORE_PASSWORD`
@@ -616,9 +646,15 @@ Use the release helper script from repo root:
 # Normal new personal release:
 # 1) Write short functional release notes in the ticket, for example:
 #    tickets/done/<ticket-name>/release-notes.md
-# 2) Prepare the release (bump desktop + gateway package versions, sync curated notes and managed messaging manifest, commit, create tag, push branch+tag)
-#    This starts the desktop, Android APK, iOS, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
+# 2) Prepare the release (bump desktop package version, sync curated notes, commit, create tag, push branch+tag)
+#    This starts the desktop, Android APK, iOS, and server Docker release workflows because the pushed tag matches v*.
 pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
+
+# Beta release (no curated notes; published as a GitHub pre-release with generated notes):
+# computes the next unused vX.Y.Z-beta.N (default base = next patch after the highest stable tag,
+# N capped at 98), bumps the package version, commits, tags and pushes. Starts the same tag-push workflows.
+bash scripts/desktop-release.sh beta
+bash scripts/desktop-release.sh beta --base 1.5.0
 
 # Optional manual build-only validation (no GitHub release publish)
 pnpm release:test --ref personal
@@ -631,7 +667,7 @@ pnpm release:manual-dispatch v1.2.7 --ref personal
 Important:
 
 - Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
-- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-ios.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
+- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-ios.yml`, and `.github/workflows/release-server-docker.yml`.
 - `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
 - Curated release notes should stay user-facing and functional only; use `.github/release-notes/template.md` as the repo-level format reference.
 

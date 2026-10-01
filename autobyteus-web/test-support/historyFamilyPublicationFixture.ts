@@ -20,7 +20,6 @@ export const buildAgentOrgHistoryRow = (input: {
     llmModelIdentifier: 'gpt-5.6-sol',
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     workspaceRootPath: input.workspaceRootPath ?? null,
   };
   return {
@@ -31,13 +30,13 @@ export const buildAgentOrgHistoryRow = (input: {
     is_active: false,
     summary: input.summary ?? 'Agent Org run',
     org: {
-      schemaVersion: 1,
       subjectKind: 'agent_org',
       createdAt: '2026-09-03T00:00:00.000Z',
       archivedAt: null,
       applicationBinding: null,
       handoffs: [],
       rootOrg: {
+        collaborators: [],
         address: '/',
         orgDefinitionId: input.definitionId ?? 'org-definition',
         orgDefinitionName: input.definitionName ?? 'Delivery Org',

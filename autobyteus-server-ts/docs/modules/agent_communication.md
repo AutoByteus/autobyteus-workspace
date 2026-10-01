@@ -15,7 +15,9 @@ owning provider-specific selector or result semantics.
 
 - `recipient_address`: a canonical absolute non-root logical Agent-or-Team
   address beginning with `/` in the caller's collaboration root.
-- `target_agent_run_id`: an exact, currently active `AgentRun.runId`.
+- `target_agent_run_id`: an exact `AgentRun.runId` — any AgentRun in the
+  sender's own collaboration root (including a shut-down delegated child), or a
+  currently active AgentRun elsewhere.
 
 Callers must not provide both selectors, omit both selectors, or use selector
 aliases such as `recipient`, `recipientName`, or `targetAgentRunId`. `content`
@@ -141,14 +143,26 @@ that same object; it is not wrapped in an operation result.
 
 ## `target_agent_run_id` Global Direct Route
 
-`target_agent_run_id` is a live-only global direct route. The value must be the
-canonical server-side `AgentRun.runId` of a run that is active at delivery time.
+`target_agent_run_id` has two paths, chosen by `GlobalAgentRunMessageRouter`.
+
+**Same-root path.** When the sender has a member collaboration context and the
+target AgentRun is recorded in the sender's own active root
+(`hasAgentExecution`), delivery goes through that root's
+`deliverExactAgentMessage`. The root takes a live lease on the target's chain,
+wakes a shut-down delegated child in `restore` mode (rejecting with
+`TASK_EXECUTION_CONTEXT_UNAVAILABLE` or `TASK_EXECUTION_RESTORE_FAILED` when
+that is impossible), and delivers as ordinary root communication. An unknown
+run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never
+use this path.
+
+**Global live-only path.** Every other target must be the canonical
+server-side `AgentRun.runId` of a run that is active at delivery time.
 Dispatch flows through:
 
 `SendMessageToDispatcher -> GlobalAgentRunMessageRouter -> AgentRunManager.getActiveRun(...) -> AgentRun.postUserMessage(...)`
 
 If `AgentRunManager.getActiveRun(targetAgentRunId)` returns no active run, the
-delivery fails closed with `TARGET_AGENT_RUN_NOT_ACTIVE`. The route must not
+delivery fails closed with `TARGET_AGENT_RUN_NOT_ACTIVE`. This path must not
 search team rosters, scan `AgentTeamRunManager`, consult task-agent recovery
 caches, use metadata-only lookup, resurrect inactive runs, or lazy-start
 preallocated members.
@@ -233,19 +247,101 @@ context.
 
 ## Communication Versus Task Execution
 
-`send_message_to` communicates with an already existing execution. It creates
-no task, Agent, AgentTeam, or task lifecycle transition. `delegate_task` instead
-spawns one fresh independently tracked task Agent or task AgentTeam execution
-and delivers the complete work packet during that same call. The original
+`send_message_to` communicates with an existing execution. It creates no Agent
+or AgentTeam. `delegate_task` instead spawns one fresh delegated task Agent or
+task AgentTeam and delivers the complete work packet during that same call. The original
 logical `recipient_address` continues to identify the mounted definition; it is
 not an alias for the spawned task execution, and callers must not repeat one
 assignment through both operations.
 
-After successful delegation, genuinely new clarification may be sent to the
-fresh task ingress using the returned exact `target_agent_run_id` while that run
-is active. Formal task submission and review still use `submit_task_result` and
-`review_task_result`; message wording never submits, accepts, revises, or
-finalizes a task.
+After delegation, parent and child communicate only through `send_message_to`
+with exact run IDs, in both directions. There is no task submission, review, or
+acceptance. A run-ID target in the sender's own collaboration root is routed
+through that root, which wakes a shut-down delegated child (restoring its
+conversation) before delivery; a target outside the sender's root must be
+active. See
+[Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
+
+## Collaborators
+
+A collaborator is a shared Agent or Agent Team definition that the user brought
+into a live run with `@` (Team runs, Org runs, and standalone Agent runs). The
+run hosts **one instance per collaborator**, recorded as a root-level entry in
+the run's execution tree (`collaborators`), at its own root-level address
+(`/code_reviewer`, `/product_team`, allocated from the definition name with
+`_2`, `_3`, … on collisions). An entry snapshots the run's root launch settings,
+and for a Team, its member layout and Team-local handoffs. Its runs are recorded
+in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
+`agentRunId` per member and the Team's own `taskExecutions` for a Team.
+
+- **Admission (DS-001).** A user message with `mentions` (`{kind,
+  definition_id}[]`, at most 8) is admitted by the root, inside its operation
+  gate, before it is posted:
+  1. every mention is re-validated by the shared candidate policy (shared, not
+     an Org, not a built-in, not already in the run); a definition that already
+     has an entry reuses it;
+  2. each new placement (an Agent, or every member of a Team) is checked with
+     `RunModelSelectionValidator.validateMany` against the run's runtime, model,
+     model settings and workspace;
+  3. run IDs are allocated (`agentRunId`, `teamRunId`, member run IDs);
+  4. the root prepares the hosted executions, commits all new entries in one
+     tree write, publishes the executions (Offline) and emits
+     `collaborator_added`;
+  5. a `[Mentioned collaborators]` note with each name, kind and address is
+     appended to the message, which is then posted.
+
+  Admission is all-or-nothing. Any failure returns `COLLABORATOR_ADD_FAILED`
+  with the collaborator's name and the reason: nothing is written or posted and
+  the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`, Team-stream
+  `ERROR`, collaboration-stream ack; each carries `collaborator_name`). The note
+  wording is owned by `@autobyteus/agent-presentation-contracts`
+  (`collaboratorMentionNote`).
+- **Reaching a collaborator.** A collaborator and the members of a collaborator
+  Team are reachable with `send_message_to` by address, like configured members:
+  a collaborator Agent, a collaborator Team (its coordinator), or a member of a
+  collaborator Team. The first message starts it (`fresh` on first activation,
+  `restore` after the run is reopened); teammates inside a collaborator Team
+  resolve to their own instance (DI-001). `send_message_to` never allocates.
+- **Extra copies (REQ-013).** `delegate_task` to a collaborator address (or a
+  collaborator Team member address) starts an extra, separate copy: an ordinary
+  task execution with the system task notice and its own run IDs, projected from
+  the entry by the root's task source resolver. It is hosted by the delegator's
+  host (the root for a root-level Agent, the collaborator TeamRun for its
+  members).
+- **In the run.** Every entry, and every member Agent of a collaborator Team,
+  counts as in the run, so it is not offered again. A failed add writes no
+  entry, so the definition stays offerable.
+- **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
+  rootRunId)` lists the `@` options of an active or stored root from the same
+  policy: shared Agents (minus built-ins such as the Daily Assistant), then
+  shared Agent Teams, in catalog order, minus what is in the run.
+
+The shared policy, admission, runnability validator, identity allocator, entry
+builder, address allocator and source projection live in
+`src/agent-collaboration/collaborators/`; each root implements
+`CollaboratorRootPort` and hosts its collaborators in its existing backends (see
+[Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
+and [Agent Run Collaboration](./agent_run_collaboration.md)).
+
+Known limits:
+
+- An address reaches a collaborator only inside its own run. Its run ID follows
+  the existing [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route):
+  a sender in another root reaches it only through the global live-only path
+  (while it is active, without a Team/Org tab row). An Offline collaborator is
+  never woken from another root (`TARGET_AGENT_RUN_NOT_ACTIVE`).
+- A build older than this collaborator model rejects execution trees whose
+  collaborator entries carry run IDs (downgrade). There is no migration, and none
+  is needed, because the earlier entry shape was never released.
+
+### Sender Of An Agent-To-Agent Message (RD-004)
+
+A `send_message_to` delivery reaches the receiver as input with
+`input_origin: inter_agent_delivery` and `sender_agent_id`. Memory recording
+(native AutoByteus and the external-runtime recorder) stores that sender as the
+user trace's `senderId`; replay projects such a trace as an
+`inter_agent_message` conversation item, and the web shows it as
+"From <Sender>:". See [Run History](./run_history.md).
 
 ## Out Of Scope
 

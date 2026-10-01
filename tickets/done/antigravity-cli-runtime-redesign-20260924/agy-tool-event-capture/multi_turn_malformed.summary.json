@@ -1,0 +1,33 @@
+{
+  "input_messages": [
+    {
+      "event": "user",
+      "message": "Run the shell command printf FIRST-TURN-TOOL exactly once. Report its output."
+    },
+    {
+      "event": "user",
+      "message": "Run the shell command printf SECOND-TURN-TOOL exactly once. Report its output."
+    }
+  ],
+  "exit_code": 1,
+  "event_count": 2,
+  "result_count": 1,
+  "tools": [],
+  "results": [
+    {
+      "conversation_id": "365d5bf0-72af-421c-8d7d-f98718371692",
+      "status": "ERROR",
+      "response": "",
+      "error": "failed to decode stream input: json: cannot unmarshal string into Go struct field streamInputMessage.message of type printmode.streamInputUserMessage",
+      "duration_seconds": 0,
+      "num_turns": 0,
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  ]
+}

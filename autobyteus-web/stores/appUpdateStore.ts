@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
-import type { AppUpdateState, AppUpdateStatus } from '~/shared/appUpdateTypes';
+import type { AppUpdateChannel, AppUpdateState, AppUpdateStatus } from '~/shared/appUpdateTypes';
 import {
   buildAppUpdateErrorToastSignature,
   getAppUpdateErrorToastMessageKey,
@@ -39,6 +39,9 @@ interface AppUpdateStoreState extends AppUpdateStatePayload {
 const DEFAULT_STATE: AppUpdateStatePayload = {
   status: 'idle',
   currentVersion: '',
+  currentVersionIsPrerelease: false,
+  updateChannel: 'stable',
+  updateStaged: false,
   availableVersion: null,
   downloadPercent: null,
   downloadTransferredBytes: null,
@@ -66,7 +69,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         return false;
       }
 
-      if (!state.visible) {
+      if (!state.visible || state.status === 'disabled') {
         return false;
       }
 
@@ -124,7 +127,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async checkForUpdates(): Promise<void> {
-      if (!window.electronAPI?.checkForAppUpdates) {
+      if (this.status === 'disabled' || !window.electronAPI?.checkForAppUpdates) {
         return;
       }
 
@@ -136,6 +139,10 @@ export const useAppUpdateStore = defineStore('appUpdate', {
           ...DEFAULT_STATE,
           status: 'error',
           currentVersion: this.currentVersion,
+          // A failed IPC call says nothing about the main-process channel facts; keep them.
+          currentVersionIsPrerelease: this.currentVersionIsPrerelease,
+          updateChannel: this.updateChannel,
+          updateStaged: this.updateStaged,
           message: t('settings.updates.store.errors.unknown'),
           errorKind: 'unknown',
           errorOperation: 'manual-check',
@@ -145,7 +152,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async downloadUpdate(): Promise<void> {
-      if (!window.electronAPI?.downloadAppUpdate) {
+      if (this.status === 'disabled' || !window.electronAPI?.downloadAppUpdate) {
         return;
       }
 
@@ -164,7 +171,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async installUpdateAndRestart(): Promise<void> {
-      if (!window.electronAPI?.installAppUpdateAndRestart) {
+      if (this.status === 'disabled' || !window.electronAPI?.installAppUpdateAndRestart) {
         return;
       }
 
@@ -199,6 +206,27 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       }
     },
 
+    async setUpdateChannel(channel: AppUpdateChannel): Promise<void> {
+      if (this.status === 'disabled' || !window.electronAPI?.setAppUpdateChannel) {
+        return;
+      }
+
+      const { addToast } = useToasts();
+      try {
+        const result = await window.electronAPI.setAppUpdateChannel(channel);
+        if (!result.accepted) {
+          // Refused while an update is busy or staged; the main process keeps its channel.
+          return;
+        }
+        this.applyRemoteState(result.state);
+        if (!result.persisted) {
+          addToast(t('settings.updates.store.channelSaveFailed'), 'error');
+        }
+      } catch {
+        addToast(t('settings.updates.store.errors.unknown'), 'error');
+      }
+    },
+
     dismissNotice(): void {
       clearNoUpdateHideTimer();
       this.visible = false;
@@ -210,6 +238,9 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     applyRemoteState(payload: Partial<AppUpdateStatePayload>): void {
       this.status = (payload.status ?? this.status) as AppUpdateStatus;
       this.currentVersion = payload.currentVersion ?? this.currentVersion;
+      this.currentVersionIsPrerelease = payload.currentVersionIsPrerelease ?? this.currentVersionIsPrerelease;
+      this.updateChannel = payload.updateChannel ?? this.updateChannel;
+      this.updateStaged = payload.updateStaged ?? this.updateStaged;
       this.availableVersion = payload.availableVersion !== undefined ? payload.availableVersion : this.availableVersion;
       this.downloadPercent = payload.downloadPercent !== undefined ? payload.downloadPercent : this.downloadPercent;
       this.downloadTransferredBytes = payload.downloadTransferredBytes !== undefined
@@ -231,7 +262,10 @@ export const useAppUpdateStore = defineStore('appUpdate', {
 
       const isQuietError = isQuietStartupAppUpdateError(this);
 
-      if (this.status === 'available') {
+      if (this.status === 'disabled') {
+        // Updates are off for this launch (isolated instance): never show a notice.
+        this.visible = false;
+      } else if (this.status === 'available') {
         if (!this.availableVersion || this.availableVersion !== this.dismissedVersion) {
           this.visible = true;
         }

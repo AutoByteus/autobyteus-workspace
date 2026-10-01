@@ -1,0 +1,157 @@
+{
+  "startedAt": "2026-09-25T05:47:06.183Z",
+  "commit": "678bece5f8567acb74305d8458d084a96d209ab9",
+  "runtime": {
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-ie9dBY/server-data",
+    "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r5-process-browser-ie9dBY/workspace",
+    "backendUrl": "http://127.0.0.1:52283",
+    "frontendUrl": "http://127.0.0.1:52284",
+    "model": "gemini-3.8-flash-low",
+    "browserErrors": []
+  },
+  "identities": {
+    "team": {
+      "rootRunId": "agy_r5_team_40588b0f_8f10_4fdc_87ce_c723e2b8cc4d_15a1e585c387406489ce39bf2d66ea7b",
+      "members": [
+        {
+          "address": "/first",
+          "agentRunId": "agy_r5_team_a_40588b0f_8f10_4fdc_87ce_c723e2b8cc_5833c0a10fec4133950690a0e6147810",
+          "platformAgentRunId": null
+        },
+        {
+          "address": "/second",
+          "agentRunId": "agy_r5_team_b_40588b0f_8f10_4fdc_87ce_c723e2b8cc_06ea8dc422e048cabd1047f10a6a56c8",
+          "platformAgentRunId": null
+        }
+      ],
+      "selected": {
+        "address": "/second",
+        "agentRunId": "agy_r5_team_b_40588b0f_8f10_4fdc_87ce_c723e2b8cc_06ea8dc422e048cabd1047f10a6a56c8",
+        "platformAgentRunId": null
+      },
+      "membersBeforeStop": [
+        {
+          "address": "/first",
+          "agentRunId": "agy_r5_team_a_40588b0f_8f10_4fdc_87ce_c723e2b8cc_5833c0a10fec4133950690a0e6147810",
+          "platformAgentRunId": null
+        },
+        {
+          "address": "/second",
+          "agentRunId": "agy_r5_team_b_40588b0f_8f10_4fdc_87ce_c723e2b8cc_06ea8dc422e048cabd1047f10a6a56c8",
+          "platformAgentRunId": "93545699-aabf-4000-8583-1091d0c4ab94"
+        }
+      ]
+    },
+    "org": {
+      "rootRunId": "agy_r5_org_40588b0f_8f10_4fdc_87ce_c723e2b8cc4d_b5d90da749834f69b6b82b5991eded19",
+      "direct": {
+        "address": "/director",
+        "agentRunId": "agy_r5_director_40588b0f_8f10_4fdc_87ce_c723e2b8_07c6efadc19543e2b70eb70dd32e9778",
+        "platformAgentRunId": null
+      },
+      "worker": {
+        "address": "/team/worker",
+        "agentRunId": "agy_r5_worker_40588b0f_8f10_4fdc_87ce_c723e2b8cc_97f9fe6f918746e29a291dc06b591aa4",
+        "platformAgentRunId": null
+      },
+      "directBeforeStop": {
+        "agentRunId": "agy_r5_director_40588b0f_8f10_4fdc_87ce_c723e2b8_07c6efadc19543e2b70eb70dd32e9778",
+        "platformAgentRunId": "436144b8-411a-4dcb-9b56-68f9eaeebe62"
+      },
+      "workerBeforeStop": {
+        "agentRunId": "agy_r5_worker_40588b0f_8f10_4fdc_87ce_c723e2b8cc_97f9fe6f918746e29a291dc06b591aa4",
+        "platformAgentRunId": "00ad20d4-f31b-4b3d-874f-72e158e799db"
+      }
+    }
+  },
+  "cases": {
+    "beforeRestart": {
+      "result": "Pass",
+      "teamMarker": "BEFORE-TEAM-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d",
+      "orgMarker": "BEFORE-ORG-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d",
+      "workerMarker": "BEFORE-WORKER-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d",
+      "teamFrameCount": 21,
+      "orgFrameCount": 24,
+      "workerFrameCount": 24
+    },
+    "processRestart": {
+      "result": "Pass",
+      "oldPid": 88563,
+      "newPid": 88768,
+      "sameDataRoot": true,
+      "teamIdentityStable": true,
+      "orgIdentityStable": true
+    },
+    "teamBrowser": {
+      "result": "Pass",
+      "selectedMemberRunId": "agy_r5_team_b_40588b0f_8f10_4fdc_87ce_c723e2b8cc_06ea8dc422e048cabd1047f10a6a56c8",
+      "selectedAddress": "/second",
+      "url": "http://127.0.0.1:52284/workspace",
+      "oldReplyCountBeforeSend": 2,
+      "oldReplyCountAfterSend": 2,
+      "newReplyCountAfterSend": 2,
+      "surfaceText": "S\nsecond\nIdle\nYou\nReply with exactly BEFORE-TEAM-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d.\nS\nsecond\n\nBEFORE-TEAM-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d\n\nYou\nReply with exactly AFTER-TEAM-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d.\nS\nsecond\n\nAFTER-TEAM-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d\n\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    "teamPersistence": {
+      "result": "Pass",
+      "oldAndNewMarkers": true
+    },
+    "orgBrowser": {
+      "result": "Pass",
+      "selectedMemberRunId": "agy_r5_director_40588b0f_8f10_4fdc_87ce_c723e2b8_07c6efadc19543e2b70eb70dd32e9778",
+      "selectedAddress": "/director",
+      "url": "http://127.0.0.1:52284/workspace?rootSubjectKind=agent_org&definitionId=agy-r5-org-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d&orgRunId=agy_r5_org_40588b0f_8f10_4fdc_87ce_c723e2b8cc4d_b5d90da749834f69b6b82b5991eded19&mode=active&memberAddress=/director",
+      "oldReplyCountBeforeSend": 2,
+      "oldReplyCountAfterSend": 2,
+      "newReplyCountAfterSend": 2,
+      "surfaceText": "D\ndirector - 9778\nIdle\nYou\nReply with exactly BEFORE-ORG-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d.\nD\ndirector\n\nBEFORE-ORG-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d\n\nYou\nReply with exactly AFTER-ORG-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d.\nD\ndirector\n\nAFTER-ORG-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d\n\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    "orgNestedBrowser": {
+      "result": "Pass",
+      "selectedMemberRunId": "agy_r5_worker_40588b0f_8f10_4fdc_87ce_c723e2b8cc_97f9fe6f918746e29a291dc06b591aa4",
+      "selectedAddress": "/team/worker",
+      "url": "http://127.0.0.1:52284/workspace?rootSubjectKind=agent_org&definitionId=agy-r5-org-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d&orgRunId=agy_r5_org_40588b0f_8f10_4fdc_87ce_c723e2b8cc4d_b5d90da749834f69b6b82b5991eded19&mode=active&memberAddress=/team/worker",
+      "oldReplyCountBeforeSend": 2,
+      "oldReplyCountAfterSend": 2,
+      "newReplyCountAfterSend": 2,
+      "surfaceText": "W\nworker\nIdle\nYou\nReply with exactly BEFORE-WORKER-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d.\nW\nworker\n\nBEFORE-WORKER-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d\n\nYou\nReply with exactly AFTER-WORKER-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d.\nW\nworker\n\nAFTER-WORKER-40588b0f-8f10-4fdc-87ce-c723e2b8cc4d\n\nContext Files (0)\n(drag, paste, or upload)"
+    },
+    "orgPersistence": {
+      "result": "Pass",
+      "directAndNestedOldAndNewMarkers": true
+    }
+  },
+  "processes": [
+    {
+      "label": "backend-A",
+      "pid": 88563,
+      "readyAt": "2026-09-25T05:47:09.054Z",
+      "stopped": {
+        "pid": 88563,
+        "exitCode": 0,
+        "signalCode": null
+      }
+    },
+    {
+      "label": "backend-B",
+      "pid": 88768,
+      "readyAt": "2026-09-25T05:47:37.014Z"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "frontend": {
+      "pid": 88781,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "backend": {
+      "pid": 88768,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "ownedDataRootRemoved": true
+  },
+  "result": "Pass",
+  "finishedAt": "2026-09-25T05:48:28.826Z"
+}

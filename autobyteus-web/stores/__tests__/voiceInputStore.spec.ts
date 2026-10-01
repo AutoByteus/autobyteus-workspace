@@ -38,10 +38,6 @@ const enumerateDevicesMock = vi.fn()
 const getUserMediaMock = vi.fn()
 const permissionsQueryMock = vi.fn()
 
-vi.mock('~/stores/activeContextStore', () => ({
-  useActiveContextStore: () => activeContextStoreMock,
-}))
-
 vi.mock('~/stores/extensionsStore', () => ({
   useExtensionsStore: () => extensionsStoreMock,
 }))
@@ -129,12 +125,12 @@ describe('voiceInputStore', () => {
     }))
     const store = useVoiceInputStore()
 
-    const startup = store.startRecording('composer')
+    const startup = store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
     expect(store.isStarting).toBe(true)
     expect(store.isRecording).toBe(false)
     expect(store.recordingSource).toBe('composer')
 
-    await store.startRecording('composer')
+    await store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
     expect(extensionsStoreMock.initialize).toHaveBeenCalledOnce()
 
     await store.cancelOperationForSource('settings-test')
@@ -157,7 +153,7 @@ describe('voiceInputStore', () => {
       resolveMedia = resolve
     }))
     const store = useVoiceInputStore()
-    const startup = store.startRecording('settings-test')
+    const startup = store.startRecording({ source: 'settings-test' })
     await vi.waitFor(() => expect(getUserMediaMock).toHaveBeenCalledOnce())
 
     await store.cancelOperationForSource('settings-test')
@@ -174,7 +170,7 @@ describe('voiceInputStore', () => {
     permissionsQueryMock.mockResolvedValue({ state: 'denied' })
     const store = useVoiceInputStore()
 
-    await store.startRecording('composer')
+    await store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
 
     expect(getUserMediaMock).not.toHaveBeenCalled()
     expect(store.isStarting).toBe(false)
@@ -206,7 +202,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
 
-    await store.startRecording('settings-test')
+    await store.startRecording({ source: 'settings-test' })
 
     expect(addModuleMock).toHaveBeenCalledOnce()
     expect(stopMock).toHaveBeenCalledOnce()
@@ -281,10 +277,7 @@ describe('voiceInputStore', () => {
     await store.stopRecording()
 
     expect(window.electronAPI.transcribeVoiceInput).toHaveBeenCalledOnce()
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      activeContextStoreMock.activeAgentContext,
-      'hello world',
-    )
+    expect(activeContextStoreMock.activeAgentContext.requirement).toBe('hello world')
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
     expect(store.latestResult?.outcome).toBe('transcript-ready')
     expect(store.latestResult?.diagnostics?.wavSampleRate).toBe(48000)
@@ -459,7 +452,7 @@ describe('voiceInputStore', () => {
     } as any)
 
     const store = useVoiceInputStore()
-    await store.startRecording('composer')
+    await store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
     expect((store.composerTargetContext as unknown as MockAgentContext)?.contextId).toBe('ctx-architecture')
     expect(store.composerTargetContext?.requirement).toBe('please review')
 
@@ -490,10 +483,7 @@ describe('voiceInputStore', () => {
 
     await store.stopRecording()
 
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      architectureContext,
-      'please review world',
-    )
+    expect(activeContextStoreMock.updateRequirementForContext).not.toHaveBeenCalled()
     expect(architectureContext.requirement).toBe('please review world')
     expect(apiE2eContext.requirement).toBe('')
 
@@ -528,7 +518,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
 
-    await store.startRecording('settings-test')
+    await store.startRecording({ source: 'settings-test' })
 
     expect(getUserMediaMock).toHaveBeenCalledWith({
       audio: {
@@ -568,7 +558,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
 
-    await store.startRecording('settings-test')
+    await store.startRecording({ source: 'settings-test' })
 
     expect(resumeMock).toHaveBeenCalledOnce()
     expect(store.isRecording).toBe(true)
@@ -600,7 +590,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
 
-    await store.startRecording('settings-test')
+    await store.startRecording({ source: 'settings-test' })
 
     expect(resumeMock).toHaveBeenCalledOnce()
     expect(store.isRecording).toBe(false)
@@ -640,7 +630,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
 
-    await store.startRecording('settings-test')
+    await store.startRecording({ source: 'settings-test' })
     expect(store.isRecording).toBe(true)
 
     await vi.advanceTimersByTimeAsync(2500)
@@ -699,7 +689,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
 
-    await store.startRecording('settings-test')
+    await store.startRecording({ source: 'settings-test' })
 
     expect(store.latestResult?.outcome).toBe('error')
     expect(store.latestResult?.error).toContain('No audio input devices found')

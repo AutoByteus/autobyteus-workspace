@@ -1,0 +1,16 @@
+240 effective non-empty lines: autobyteus-server-ts/src/api/rest/context-files.ts
+122 effective non-empty lines: autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+99 effective non-empty lines: autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts
+170 effective non-empty lines: autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts
+81 effective non-empty lines: autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts
+264 effective non-empty lines: autobyteus-server-ts/src/server-runtime.ts
+373 effective non-empty lines: autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+435 effective non-empty lines: autobyteus-web/stores/agentTeamRunStore.ts
+430 effective non-empty lines: autobyteus-web/stores/teamRunConfigStore.ts
+292 effective non-empty lines: autobyteus-web/utils/contextFiles/contextAttachmentModel.ts
+68 effective non-empty lines: autobyteus-web/utils/contextFiles/contextFileOwner.ts
+79 effective non-empty lines: autobyteus-web/utils/teamRunLaunchConfigEdit.ts
+38 effective non-empty lines: autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts
+110 effective non-empty lines: autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts
+87 effective non-empty lines: autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts
+All changed source files under 500; each source delta under 220.

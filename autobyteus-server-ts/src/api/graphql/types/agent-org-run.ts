@@ -1,5 +1,4 @@
 import { RunModelConfigEditabilityObject, RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { getStudioAgentOrgRunService } from "../studio-application-api-services.js";
@@ -14,7 +13,6 @@ export class AgentOrgRootLaunchConfigurationInput {
   @Field(() => String) llmModelIdentifier!: string;
   @Field(() => GraphQLJSON, { nullable: true }) llmConfig?: Record<string, unknown> | null;
   @Field(() => Boolean) autoExecuteTools!: boolean;
-  @Field(() => SkillAccessMode) skillAccessMode!: SkillAccessMode;
   @Field(() => String, { nullable: true }) workspaceRootPath?: string | null;
 }
 
@@ -24,7 +22,6 @@ export class AgentOrgPlacementLaunchConfigurationInput {
   @Field(() => String, { nullable: true }) llmModelIdentifier?: string;
   @Field(() => GraphQLJSON, { nullable: true }) llmConfig?: Record<string, unknown> | null;
   @Field(() => Boolean, { nullable: true }) autoExecuteTools?: boolean;
-  @Field(() => SkillAccessMode, { nullable: true }) skillAccessMode?: SkillAccessMode;
   @Field(() => String, { nullable: true }) workspaceRootPath?: string | null;
 }
 

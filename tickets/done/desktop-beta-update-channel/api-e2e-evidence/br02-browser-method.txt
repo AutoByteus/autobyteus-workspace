@@ -1,0 +1,1 @@
+Browser: nuxt dev http://127.0.0.1:3291/settings -> Updates; live appUpdate store patched to isElectron + status downloaded (channel beta, 1.4.91-beta.1). electronAPI.checkForAppUpdates / setAppUpdateChannel stubbed with the responses the real main process returned in harness-results/E2E-07b-downloaded-then-check-then-opt-out.json.

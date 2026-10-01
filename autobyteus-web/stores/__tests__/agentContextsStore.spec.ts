@@ -6,6 +6,8 @@ import { useAgentSelectionStore } from '../agentSelectionStore';
 import type { AgentDefinition } from '../agentDefinitionStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
 
 // Mock AgentDefinition
 const mockAgentDef: AgentDefinition = {
@@ -35,6 +37,31 @@ describe('agentContextsStore', () => {
         expect(store.activeRun).toBeUndefined();
     });
 
+    describe('registerDraftRun', () => {
+        const buildDraft = (runId: string) => new AgentContext({
+            agentDefinitionId: 'def-1', agentDefinitionName: 'TestAgent', llmModelIdentifier: 'm', runtimeKind: 'autobyteus',
+            workspaceId: 'ws-1', workspaceMetadata: null, autoExecuteTools: true, isLocked: false,
+        }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'def-1' }));
+
+        it('registers a prepared temp context and selects it', () => {
+            const store = useAgentContextsStore();
+            const context = buildDraft('temp-chat-1');
+
+            expect(store.registerDraftRun(context)).toBe('temp-chat-1');
+
+            expect(store.getRun('temp-chat-1')?.state.runId).toBe('temp-chat-1');
+            expect(useAgentSelectionStore().selectedType).toBe('agent');
+            expect(useAgentSelectionStore().selectedRunId).toBe('temp-chat-1');
+        });
+
+        it('rejects permanent ids and duplicate registration', () => {
+            const store = useAgentContextsStore();
+            expect(() => store.registerDraftRun(buildDraft('run-1'))).toThrow();
+            store.registerDraftRun(buildDraft('temp-chat-2'));
+            expect(() => store.registerDraftRun(buildDraft('temp-chat-2'))).toThrow();
+        });
+    });
+
     describe('createRunFromTemplate', () => {
         it('copies every edited existing-run launch field into an independent temporary context', () => {
             const store = useAgentContextsStore();
@@ -55,7 +82,6 @@ describe('agentContextsStore', () => {
                     kind: 'filesystem',
                 },
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
                 llmConfig: { reasoning_effort: 'low' },
                 isLocked: true,
             };
@@ -72,7 +98,6 @@ describe('agentContextsStore', () => {
                     kind: 'filesystem',
                 },
                 autoExecuteTools: true,
-                skillAccessMode: 'NONE',
                 llmConfig: { reasoning: { effort: 'xhigh' } },
             });
 
@@ -98,7 +123,6 @@ describe('agentContextsStore', () => {
                 kind: 'filesystem',
             });
             expect(runContext?.config.autoExecuteTools).toBe(true);
-            expect(runContext?.config.skillAccessMode).toBe('NONE');
             expect(runContext?.config.llmConfig).toEqual({ reasoning: { effort: 'xhigh' } });
             expect(runContext?.config.isLocked).toBe(false);
             expect(sourceConfig).toEqual(sourceSnapshot);
@@ -223,7 +247,6 @@ describe('agentContextsStore', () => {
                 runtimeKind: 'codex_app_server',
                 workspaceId: 'ws-1',
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
                 llmConfig: null,
                 isLocked: true,
             } as any;

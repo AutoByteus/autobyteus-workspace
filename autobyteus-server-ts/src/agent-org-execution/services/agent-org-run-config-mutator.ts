@@ -4,7 +4,7 @@ import type {
   ConfiguredExecutionNode,
   ConfiguredTeamExecutionNode,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { AgentOrgRunExecutionTreeFileV1 } from "../domain/agent-org-run-execution-tree.js";
+import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
 import type {
   AgentOrgRunModelConfigPatch,
   TeamWorkspacePatch,
@@ -21,7 +21,7 @@ export class AgentOrgWorkspacePatchError extends Error {
   constructor(readonly path: string, message: string) { super(message); }
 }
 
-const configuredScope = (tree: AgentOrgRunExecutionTreeFileV1, address: string): Readonly<{
+const configuredScope = (tree: AgentOrgRunExecutionTreeFile, address: string): Readonly<{
   kind: AgentOrgRunModelConfigScopeKind;
   launchConfiguration: AgentLaunchConfiguration;
 }> | null => {
@@ -38,7 +38,7 @@ const configuredScope = (tree: AgentOrgRunExecutionTreeFileV1, address: string):
   return null;
 };
 
-export const listAgentOrgRunModelConfigScopes = (tree: AgentOrgRunExecutionTreeFileV1): readonly Readonly<{
+export const listAgentOrgRunModelConfigScopes = (tree: AgentOrgRunExecutionTreeFile): readonly Readonly<{
   scopeKind: AgentOrgRunModelConfigScopeKind;
   scopeAddress: string;
   launchConfiguration: AgentLaunchConfiguration;
@@ -54,7 +54,7 @@ export const listAgentOrgRunModelConfigScopes = (tree: AgentOrgRunExecutionTreeF
 ]);
 
 export const resolveAgentOrgRunModelConfigTargets = (
-  tree: AgentOrgRunExecutionTreeFileV1,
+  tree: AgentOrgRunExecutionTreeFile,
   patches: readonly AgentOrgRunModelConfigPatch[],
 ): readonly AgentOrgRunModelConfigTarget[] => {
   const seen = new Set<string>();
@@ -107,9 +107,9 @@ const patchMember = (
 };
 
 export const applyAgentOrgRunModelConfigPatches = (
-  tree: AgentOrgRunExecutionTreeFileV1,
+  tree: AgentOrgRunExecutionTreeFile,
   targets: readonly AgentOrgRunModelConfigTarget[],
-): AgentOrgRunExecutionTreeFileV1 => {
+): AgentOrgRunExecutionTreeFile => {
   const patches = new Map(targets.map(({ patch }) => [patch.scopeAddress, patch]));
   const rootPatch = patches.get("/");
   return {
@@ -124,7 +124,7 @@ export const applyAgentOrgRunModelConfigPatches = (
 
 /** Resolves only configured mounted Teams; never execution snapshots or direct Agents. */
 export const resolveAgentOrgTeamWorkspacePatches = (
-  tree: AgentOrgRunExecutionTreeFileV1,
+  tree: AgentOrgRunExecutionTreeFile,
   patches: readonly TeamWorkspacePatch[],
 ): readonly TeamWorkspacePatch[] => {
   const seen = new Set<string>();
@@ -142,9 +142,9 @@ export const resolveAgentOrgTeamWorkspacePatches = (
 };
 
 export const applyAgentOrgTeamWorkspacePatches = (
-  tree: AgentOrgRunExecutionTreeFileV1,
+  tree: AgentOrgRunExecutionTreeFile,
   patches: readonly TeamWorkspacePatch[],
-): AgentOrgRunExecutionTreeFileV1 => {
+): AgentOrgRunExecutionTreeFile => {
   const byAddress = new Map(patches.map((patch) => [patch.teamAddress, patch.workspaceRootPath]));
   return { ...tree, rootOrg: { ...tree.rootOrg, members: tree.rootOrg.members.map((member) => {
     const workspaceRootPath = byAddress.get(member.address);

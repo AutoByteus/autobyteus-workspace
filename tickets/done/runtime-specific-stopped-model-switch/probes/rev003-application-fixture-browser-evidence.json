@@ -1,0 +1,193 @@
+{
+  "startedAt": "2026-09-25T19:07:18.149Z",
+  "errors": [],
+  "graphql": [
+    {
+      "name": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "ListApplications",
+      "variables": {}
+    },
+    {
+      "name": "GetApplicationById",
+      "variables": {
+        "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d36363338342d313739303336323439353633302532467265763030332d6170706c69636174696f6e2d7061636b616765__7265763030332d6d6f64656c2d7365747570"
+      }
+    }
+  ],
+  "listUrl": "http://127.0.0.1:52364/applications",
+  "listText": "Agents\nAgent Teams\nAgent Orgs\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude-default\nagent-codex\nagent-native\norg-claude-default\nteam-claude-default\nTemp Workspace\nSettings\nApplications\n\nBrowse bundled applications and open their iframe hosts. Runtime orchestration now belongs to each application.\n\nRefresh catalog\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nOpen app →\nREV003 Model Setup\n\nTest-owned Application Setup fixture for current exact model.\n\nOpen app →",
+  "setupUrl": "http://127.0.0.1:52364/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d36363338342d313739303336323439353633302532467265763030332d6170706c69636174696f6e2d7061636b616765__7265763030332d6d6f64656c2d7365747570",
+  "setupText": "Agents\nAgent Teams\nAgent Orgs\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude-default\nagent-codex\nagent-native\norg-claude-default\nteam-claude-default\nTemp Workspace\nSettings\n← Back to applications\nLaunch setup\nREV003 Model Setup\n\nTest-owned Application Setup fixture for current exact model.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\nOptional Agent\nOptional\n\nTest-owned saved exact default Agent selection\n\nCURRENT SELECTION\n\nNot configured\n\nUsing manifest defaults only\n\nExecution resource\nNo resource selected\nMemory Compactor · Shared · Single agent\nRetrospective Skill Improver · Shared · Single agent\nREV003 Saved Default Agent · Shared · Single agent\nAgent Team Architect · Shared · Single agent\nCodex · Shared · Single agent\nDaily Assistant · Shared · Single agent\nProduct Prototyper · Shared · Single agent\nresearch engineer · Shared · Single agent\nResume Designer · Shared · Single agent\nSkill Optimizer · Shared · Single agent\nSoftware Tutorial Video Maker · Shared · Single agent\nSave setup\nCancel draft changes\nOptional Team\nOptional\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nNot configured\n\nUsing manifest defaults only\n\nExecution resource\nNo resource selected\nBrief Studio Team · Bundled · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nEvidence-Driven Delivery Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nProduct Design & Prototyping Team · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nSave setup\nCancel draft changes\nConfirm launch setup before opening the app\n\nReview or save the host-managed resource and launch defaults below, then enter the application. This gate never starts a run by itself.\n\nEnter application",
+  "selects": [
+    {
+      "value": "",
+      "options": [
+        {
+          "label": "No resource selected",
+          "value": "",
+          "disabled": false
+        },
+        {
+          "label": "Memory Compactor · Shared · Single agent",
+          "value": "shared:AGENT:autobyteus-memory-compactor",
+          "disabled": false
+        },
+        {
+          "label": "Retrospective Skill Improver · Shared · Single agent",
+          "value": "shared:AGENT:autobyteus-retrospective-skill-improver",
+          "disabled": false
+        },
+        {
+          "label": "REV003 Saved Default Agent · Shared · Single agent",
+          "value": "shared:AGENT:rev003-saved-default-agent",
+          "disabled": false
+        },
+        {
+          "label": "Agent Team Architect · Shared · Single agent",
+          "value": "shared:AGENT:agent-team-architect",
+          "disabled": false
+        },
+        {
+          "label": "Codex · Shared · Single agent",
+          "value": "shared:AGENT:codex",
+          "disabled": false
+        },
+        {
+          "label": "Daily Assistant · Shared · Single agent",
+          "value": "shared:AGENT:daily-assistant",
+          "disabled": false
+        },
+        {
+          "label": "Product Prototyper · Shared · Single agent",
+          "value": "shared:AGENT:product-prototyper",
+          "disabled": false
+        },
+        {
+          "label": "research engineer · Shared · Single agent",
+          "value": "shared:AGENT:research-engineer",
+          "disabled": false
+        },
+        {
+          "label": "Resume Designer · Shared · Single agent",
+          "value": "shared:AGENT:resume-designer",
+          "disabled": false
+        },
+        {
+          "label": "Skill Optimizer · Shared · Single agent",
+          "value": "shared:AGENT:skill-optimizer",
+          "disabled": false
+        },
+        {
+          "label": "Software Tutorial Video Maker · Shared · Single agent",
+          "value": "shared:AGENT:software-tutorial-video-maker",
+          "disabled": false
+        }
+      ]
+    },
+    {
+      "value": "",
+      "options": [
+        {
+          "label": "No resource selected",
+          "value": "",
+          "disabled": false
+        },
+        {
+          "label": "Brief Studio Team · Bundled · Agent team",
+          "value": "bundle:AGENT_TEAM:brief-studio-team",
+          "disabled": false
+        },
+        {
+          "label": "Article Writing Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:article-writing-team",
+          "disabled": false
+        },
+        {
+          "label": "Classroom Simulation Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:classroom-simulation-team",
+          "disabled": false
+        },
+        {
+          "label": "Evidence-Driven Delivery Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:evidence-driven-delivery-team",
+          "disabled": false
+        },
+        {
+          "label": "Kids Coloring Story Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:kids-coloring-story-team",
+          "disabled": false
+        },
+        {
+          "label": "Kids Picture Story Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:kids-picture-story-team",
+          "disabled": false
+        },
+        {
+          "label": "Manga Video Studio Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:manga-video-studio-team",
+          "disabled": false
+        },
+        {
+          "label": "Narrated Presentation Video Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:narrated-presentation-video-team",
+          "disabled": false
+        },
+        {
+          "label": "Product Design & Prototyping Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:product-design-prototyping-team",
+          "disabled": false
+        },
+        {
+          "label": "Research To Deck Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:research-to-deck-team",
+          "disabled": false
+        },
+        {
+          "label": "Software Engineering Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:software-engineering-team",
+          "disabled": false
+        },
+        {
+          "label": "Software Product Promo Video Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:software-product-promo-video-team",
+          "disabled": false
+        },
+        {
+          "label": "STORM Team · Shared · Agent team",
+          "value": "shared:AGENT_TEAM:storm-team",
+          "disabled": false
+        }
+      ]
+    }
+  ],
+  "status": "Pass"
+}

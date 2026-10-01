@@ -1,0 +1,92 @@
+/
+/Library/Preferences/Logging/.plist-cache.w47zDFch
+/System/Library/Caches/com.apple.IntlDataCache.le.kbdx
+/System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/Aqua.car
+/System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/Assets.car
+/System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/DarkAqua.car
+/System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/FauxVibrantLight.car
+/System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/SystemAppearance.car
+/System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources/VibrantLight.car
+/System/Library/CoreServices/SystemVersion.bundle/English.lproj/SystemVersion.strings
+/System/Library/Extensions/AGXMetalG13X.bundle/Contents/MacOS/AGXMetalG13X
+/System/Library/Extensions/AGXMetalG13X.bundle/Contents/Resources/ds.g13s
+/System/Library/Fonts/Helvetica.ttc
+/System/Library/Fonts/SFNS.ttf
+/System/Library/Fonts/SFNSItalic.ttf
+/System/Library/Frameworks/AppKit.framework/Versions/C/Resources/Assets.car
+/System/Library/Frameworks/AppKit.framework/Versions/C/Resources/Common.loctable
+/System/Library/Frameworks/AppKit.framework/Versions/C/Resources/DictationManager.loctable
+/System/Library/Frameworks/AppKit.framework/Versions/C/Resources/InputManager.loctable
+/System/Library/Frameworks/AppKit.framework/Versions/C/Resources/MenuCommands.loctable
+/System/Library/Input Methods/SCIM.app/Contents/PlugIns/SCIM_Extension.appex/Contents/Resources/InfoPlist.loctable
+/System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/AppleKeyboardLayouts-L.dat
+/System/Library/Keyboard Layouts/AppleKeyboardLayouts.bundle/Contents/Resources/InfoPlist.loctable
+/System/Library/PrivateFrameworks/DesignLibrary.framework/Versions/A/Resources/Assets.car
+/System/Library/PrivateFrameworks/SFSymbols.framework/Versions/A/Resources/CoreGlyphs.bundle/Contents/Resources/Assets.car
+/System/Library/Video/Plug-Ins/VCPHEVC.bundle/Contents/Resources/InfoPlist.loctable
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper (Renderer).app/Contents/MacOS/AutoByteus Helper (Renderer)
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus Helper.app/Contents/MacOS/AutoByteus Helper
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libEGL.dylib
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libGLESv2.dylib
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libffmpeg.dylib
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/chrome_100_percent.pak
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/chrome_200_percent.pak
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/de.lproj/locale.pak
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/en.lproj/locale.pak
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/icudtl.dat
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/resources.pak
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/v8_context_snapshot.arm64.bin
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Mantle.framework/Versions/A/Mantle
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/ReactiveObjC.framework/Versions/A/ReactiveObjC
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/Squirrel.framework/Versions/A/Squirrel
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client/libquery_engine-darwin-arm64.dylib.node
+/dev/null
+/private/etc
+/private/etc/hosts
+/private/var/db/analyticsd/events.allowlist
+/private/var/db/mds/messages/501/se_SecurityMessages
+/private/var/db/timezone/tz/2026c.1.0/icutz/icutz44l.dat
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/0/com.apple.LaunchServices.dv/com.apple.LaunchServices-20971544-v2.csstore
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/C/com.autobyteus.app.helper/com.apple.metal/16777235_530/functions1.data
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/C/com.autobyteus.app.helper/com.apple.metal/16777235_530/functions1.list
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/C/com.autobyteus.app.helper/com.apple.metal/32024/libraries1.data
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/C/com.autobyteus.app.helper/com.apple.metal/32024/libraries1.list
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/.com.autobyteus.app.4sYYo7
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-9333-c818.log
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Cache/No_Vary_Search/journal.baj
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Cookies
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DIPS
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DIPS-wal
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnGraphiteCache/data_0
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnGraphiteCache/data_1
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnGraphiteCache/data_2
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnGraphiteCache/data_3
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnGraphiteCache/index
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnWebGPUCache/data_0
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnWebGPUCache/data_1
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnWebGPUCache/data_2
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnWebGPUCache/data_3
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/DawnWebGPUCache/index
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/GPUCache/data_0
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/GPUCache/data_1
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/GPUCache/data_2
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/GPUCache/data_3
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/GPUCache/index
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Local Storage/leveldb/000003.log
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Local Storage/leveldb/LOCK
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Local Storage/leveldb/LOG
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Local Storage/leveldb/MANIFEST-000001
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Shared Dictionary/db
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Trust Tokens
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/electron/session-data/Trust Tokens-journal
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/logs/app.log
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/db/production.db
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/logs/server.log
+/usr/lib/dyld
+/usr/lib/libobjc-trampolines.dylib
+/usr/share/icu/icudt78l.dat

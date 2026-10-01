@@ -37,6 +37,7 @@
       <SearchableGroupedSelect
         :model-value="draft.llmModelIdentifier"
         :options="groupedModelOptions"
+        :selected-display="currentModel.selectedDisplay.value"
         :disabled="disabled || !availableProviderGroups.length"
         :placeholder="$t('applications.components.applications.ApplicationLaunchSetupPanel.modelPlaceholder')"
         search-placeholder="Search models..."
@@ -80,6 +81,7 @@ import { computed, watch } from 'vue'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import ApplicationWorkspaceRootSelector from '~/components/applications/setup/ApplicationWorkspaceRootSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
+import { useRuntimeCurrentModelDescriptor } from '~/composables/useRuntimeCurrentModelDescriptor'
 import {
   normalizeScopedRuntimeKind,
   useRuntimeScopedModelSelection,
@@ -93,6 +95,7 @@ const props = withDefaults(defineProps<{
   slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
   draft: ApplicationAgentLaunchProfileDraft
   inheritedProfile: import('@autobyteus/application-sdk-contracts').ApplicationResolvedLaunchBaselineLeaf | null
+  serverOriginDraft?: ApplicationAgentLaunchProfileDraft | null
   disabled?: boolean
 }>(), {
   disabled: false,
@@ -130,11 +133,25 @@ const effectiveModelIdentifier = computed(() => (
   || props.inheritedProfile?.llmModelIdentifier?.trim()
   || ''
 ))
+const exactCurrentIdentifier = computed(() => {
+  const identifier = effectiveModelIdentifier.value
+  const runtime = effectiveRuntimeKind.value
+  if (!identifier || !runtime) return null
+  const saved = props.serverOriginDraft
+  const savedRuntime = saved?.runtimeKind || props.inheritedProfile?.runtimeKind
+  const savedCurrent = saved?.llmModelIdentifier === identifier && savedRuntime === runtime
+  const inheritedCurrent = props.inheritedProfile?.llmModelIdentifier === identifier
+    && props.inheritedProfile.runtimeKind === runtime
+  return savedCurrent || inheritedCurrent ? identifier : null
+})
+const currentModel = useRuntimeCurrentModelDescriptor(effectiveRuntimeKind, exactCurrentIdentifier)
 
 const selectedModelUnavailable = computed(() => (
   supportsModelIdentifier.value
   && effectiveModelIdentifier.value.length > 0
   && !hasModelIdentifier(effectiveModelIdentifier.value)
+  && !currentModel.loading.value
+  && !currentModel.descriptor.value
 ))
 
 watch(
@@ -170,6 +187,7 @@ watch(
     props.inheritedProfile?.llmModelIdentifier,
     availableProviderGroups.value,
     selectedModelUnavailable.value,
+    currentModel.loading.value,
   ] as const,
   () => {
     const hasRuntime = !supportsRuntimeKind.value || Boolean(effectiveRuntimeKind.value)
@@ -177,6 +195,7 @@ watch(
       && effectiveModelIdentifier.value.length === 0
     const isReady = hasRuntime
       && !modelMissing
+      && !currentModel.loading.value
       && !selectedModelUnavailable.value
     emit('readiness-change', {
       isReady,

@@ -22,7 +22,6 @@ const createConfig = (runtimeKind: RuntimeKind = RuntimeKind.CODEX_APP_SERVER) =
     autoExecuteTools: false,
     workspaceId: "workspace-1",
     llmConfig: null,
-    skillAccessMode: null,
   });
 
 const createBackend = (input: {
@@ -104,6 +103,8 @@ const createManagerFixture = (input: {
       autoByteusBackendFactory,
       codexBackendFactory,
       claudeBackendFactory,
+      agyBackendFactory: unavailableBackendFactory,
+      grokBackendFactory: unavailableBackendFactory,
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

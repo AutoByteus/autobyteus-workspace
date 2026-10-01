@@ -15,7 +15,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
     llmModelIdentifier: 'gpt-5.6-sol',
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY' as const,
     workspaceRootPath: '/ws/a',
   };
   return {
@@ -31,13 +30,13 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       isActive: true,
       summary: 'Deliver current package',
       executionTree: {
-        schemaVersion: 1,
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
         archivedAt: null,
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
+          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{

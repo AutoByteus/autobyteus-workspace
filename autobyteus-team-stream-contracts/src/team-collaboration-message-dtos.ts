@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
-import { agentTeamAddressDtoSchema } from "./team-execution-view-dtos.js";
 import { teamReferenceFileDtoSchema } from "./team-reference-file-dto.js";
 
 export const teamCommunicationMessageDtoSchema = z.object({
@@ -36,21 +35,6 @@ export const teamMemberInputMessagePayloadSchema = z.object({
   parent_communication_message_id: nonEmptyStringSchema.nullable(),
 }).strict();
 
-export const teamExternalUserMessagePayloadSchema = z.object({
-  agent_run_id: nonEmptyStringSchema,
-  member_address: agentTeamAddressDtoSchema,
-  content: z.string(),
-  received_at: nonEmptyStringSchema,
-  provider: nonEmptyStringSchema,
-  transport: nonEmptyStringSchema,
-  account_id: nonEmptyStringSchema,
-  peer_id: nonEmptyStringSchema,
-  thread_id: nonEmptyStringSchema.nullable(),
-  external_message_id: nonEmptyStringSchema,
-  context_file_paths: z.array(teamMemberInputContextFileDtoSchema),
-}).strict();
-
 export type TeamCommunicationMessageDto = Readonly<z.infer<typeof teamCommunicationMessageDtoSchema>>;
 export type TeamCommunicationMessagePayload = Readonly<z.infer<typeof teamCommunicationMessagePayloadSchema>>;
 export type TeamMemberInputMessagePayload = Readonly<z.infer<typeof teamMemberInputMessagePayloadSchema>>;
-export type TeamExternalUserMessagePayload = Readonly<z.infer<typeof teamExternalUserMessagePayloadSchema>>;

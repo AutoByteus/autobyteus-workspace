@@ -7,6 +7,8 @@ import { ContextFileLocalPathResolver } from '../../../src/context-files/service
 class StubLayout {
   constructor(private readonly resolvedFilePath: string) {}
 
+  getMemoryRootDirPath(): string { return path.dirname(this.resolvedFilePath); }
+
   getFinalFilePath(): string {
     return this.resolvedFilePath;
   }
@@ -20,7 +22,7 @@ const stubOwnerResolver = {
   validateDraftOwnerSync: () => {},
   resolveFinalOwnerSync: (owner: any) =>
     owner.kind === 'team_member_final'
-      ? { ...owner, memberRunId: 'worker_00000000000000000000000000000001' }
+      ? { ...owner, agentRunId: 'worker_00000000000000000000000000000001' }
       : owner,
 };
 
@@ -46,8 +48,10 @@ describe('ContextFileLocalPathResolver', () => {
 
     expect(resolver.resolve('/rest/runs/run-1/context-files/ctx_token__notes.txt')).toBe(filePath);
     expect(
-      resolver.resolve('/rest/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_token__notes.txt'),
+      resolver.resolve('/rest/team-runs/team-1/agent-runs/designer-run/context-files/ctx_token__notes.txt'),
     ).toBe(filePath);
+    expect(resolver.resolve('rest/team-runs/team-1/agent-runs/designer-run/context-files/ctx_token__notes.txt?download=1#preview')).toBe(filePath);
+    expect(resolver.resolve('/rest/team-runs/team-1/members/%2Fsolution_designer/context-files/ctx_token__notes.txt')).toBeNull();
   });
 
   it('resolves draft locators but ignores non-local external URLs', async () => {

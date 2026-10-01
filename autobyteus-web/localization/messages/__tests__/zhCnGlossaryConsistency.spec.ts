@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import zhCnAgentTeamsMessages from '../zh-CN/agentTeams.generated';
 import zhCnAgentsMessages from '../zh-CN/agents.generated';
 import zhCnApplicationsMessages from '../zh-CN/applications.generated';
+import zhCnChatMessages from '../zh-CN/chat';
 import zhCnMemoryMessages from '../zh-CN/memory.generated';
 import zhCnSettingsGeneratedMessages from '../zh-CN/settings.generated';
 import zhCnSettingsMessages from '../zh-CN/settings';
@@ -22,6 +23,7 @@ const scopedCatalogs = {
   memory: zhCnMemoryMessages,
   applications: zhCnApplicationsMessages,
   tools: zhCnToolsMessages,
+  chat: zhCnChatMessages,
 };
 
 const deprecatedGlossary = ['代理', '经纪人', '特工团队', '工作空间', '跑步', '队伍', '会员', '球队'];
@@ -32,11 +34,12 @@ describe('zh-CN glossary consistency', () => {
     expect(zhCnShellMessages['shell.navigation.agentTeams']).toBe('智能体团队');
     expect(zhCnSettingsMessages['settings.page.sections.applicationPackages']).toBe('应用包');
     expect(zhCnSettingsMessages['settings.page.sections.agentPackages']).toBe('智能体包');
-    expect(zhCnSettingsGeneratedMessages['settings.components.settings.messaging.ChannelBindingSetupCard.agent_definition']).toBe('智能体定义');
+    expect(zhCnSettingsGeneratedMessages['settings.components.settings.AgentPackagesManager.agent_packages']).toBe('智能体包');
     expect(zhCnAgentsMessages['agents.pages.agents.go_to_agents']).toBe('前往智能体');
     expect(zhCnAgentTeamsMessages['agentTeams.pages.agent_teams.go_to_agent_teams']).toBe('前往智能体团队');
     expect(zhCnWorkspaceMessages['workspace.components.workspace.common.WorkspaceHeaderActions.new_agent']).toBe('新建智能体');
-    expect(zhCnMemoryMessages['memory.components.memory.AgentTeamMemoryDetail.search_runs']).toBe('搜索运行...');
+    expect(zhCnMemoryMessages['memory.components.memory.CollaborationMemoryDetail.search_runs']).toBe('搜索运行...');
+    expect(zhCnMemoryMessages['memory.components.memory.MemoryHome.agent_orgs']).toBe('智能体组织');
     expect(zhCnApplicationsMessages['applications.components.applications.ApplicationLaunchConfigModal.default_model_for_all_agents']).toBe('默认模型（适用于所有智能体）');
     expect(zhCnToolsMessages['tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace']).toBe('没有可用的工作区。添加工作区以查看文件。');
   });

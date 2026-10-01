@@ -50,6 +50,7 @@
         <SearchableGroupedSelect
           :model-value="member.llmModelIdentifier"
           :options="groupedModelOptions"
+          :selected-display="currentModelDescriptor ? formatRuntimeCurrentModelDisplay(effectiveRuntimeKind, currentModelDescriptor) : null"
           :disabled="disabled || !allowModelOverride"
           :placeholder="modelPlaceholder"
           search-placeholder="Search models..."
@@ -65,6 +66,7 @@ import { computed } from 'vue'
 import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSelect.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
+import { formatRuntimeCurrentModelDisplay, type RuntimeCurrentModelDescriptor } from '~/composables/useRuntimeCurrentModelDescriptor'
 import type { ApplicationTeamMemberProfileDraft } from '~/utils/application/applicationLaunchProfile'
 import { buildUnavailableInheritedModelMessage } from '~/utils/teamRunConfigUtils'
 
@@ -74,6 +76,7 @@ const props = withDefaults(defineProps<{
   globalLlmModelIdentifier: string
   inheritedRuntimeKind: string
   inheritedLlmModelIdentifier: string
+  currentModelDescriptor?: RuntimeCurrentModelDescriptor | null
   allowRuntimeOverride?: boolean
   allowModelOverride?: boolean
   disabled?: boolean
@@ -113,6 +116,7 @@ const isUnresolvedInheritedModel = computed(() => (
   && !props.member.llmModelIdentifier
   && Boolean(props.globalLlmModelIdentifier || props.inheritedLlmModelIdentifier)
   && !hasModelIdentifier(props.globalLlmModelIdentifier || props.inheritedLlmModelIdentifier)
+  && !props.currentModelDescriptor
 ))
 const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
   globalLlmModelIdentifier:

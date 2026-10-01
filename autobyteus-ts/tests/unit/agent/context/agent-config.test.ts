@@ -6,7 +6,6 @@ import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
-import { SkillAccessMode } from '../../../../src/agent/context/skill-access-mode.js';
 import { createEnabledMemoryCompactionConfiguration } from '../../../../src/memory/compaction/memory-compaction-configuration.js';
 import { CompactionPolicy } from '../../../../src/memory/policies/compaction-policy.js';
 
@@ -69,20 +68,20 @@ describe('AgentConfig', () => {
 
     clone.skills.push('skill-b');
     expect(config.skills).toEqual(['skill-a']);
-    expect(clone.skillAccessMode).toBe(config.skillAccessMode);
     expect(config).not.toHaveProperty('memoryCompactionStrategyId');
     expect(clone).not.toHaveProperty('memoryCompactionStrategyId');
     expect(config).not.toHaveProperty('compactionStrategyId');
   });
 
-  it('defaults skillAccessMode to PRELOADED_ONLY when skills are configured', () => {
+  it('carries configured skills and no run-level skill switch', () => {
     const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, ['skill-a']);
-    expect(config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
+    expect(config.skills).toEqual(['skill-a']);
+    expect(config).not.toHaveProperty('skillAccessMode');
+    expect(config.toString()).not.toContain('skillAccessMode');
   });
 
-  it('defaults skillAccessMode to PRELOADED_ONLY when no skills are configured', () => {
+  it('defaults memory compaction to disabled', () => {
     const config = new AgentConfig('name', 'role', 'desc', makeLLM());
-    expect(config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
     expect(config.memoryCompaction).toEqual({ kind: 'disabled' });
     expect(config).not.toHaveProperty('compactionAgentRunner');
   });
@@ -95,7 +94,7 @@ describe('AgentConfig', () => {
     );
     const config = new AgentConfig(
       'name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null,
-      null, null, null, null, null, SkillAccessMode.PRELOADED_ONLY, memoryCompaction,
+      null, null, null, null, null, memoryCompaction,
     );
 
     const clone = config.copy();
@@ -109,16 +108,5 @@ describe('AgentConfig', () => {
       safetyMarginTokens: 77,
     });
     expect(clone.memoryCompaction.runner).toBe(runner);
-  });
-
-  it('respects explicit skillAccessMode', () => {
-    const config = new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, ['skill-a'], null, SkillAccessMode.NONE);
-    expect(config.skillAccessMode).toBe(SkillAccessMode.NONE);
-  });
-
-  it('rejects unsupported skillAccessMode values', () => {
-    expect(() => new AgentConfig('name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null, null, null, null, [], null, 'GLOBAL_DISCOVERY' as any)).toThrow(
-      "Unsupported skill access mode",
-    );
   });
 });

@@ -1,0 +1,6 @@
+Failed to finalize context files: Error: Unable to resolve context-file owner member '/x_marketer' for collaboration root 'marketing_team_0786c73dee5a434090665b5cd1a1bb91'.
+{"level":40,"time":1790443470243,"pid":60,"hostname":"3f5d05d4b324","reqId":"req-89","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":31.697165966033936,"msg":"http request completed"}
+Failed to finalize context files: Error: Unable to resolve context-file owner member '/x_marketer' for collaboration root 'marketing_team_0786c73dee5a434090665b5cd1a1bb91'.
+{"level":40,"time":1790443476150,"pid":60,"hostname":"3f5d05d4b324","reqId":"req-8j","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":20.696959018707275,"msg":"http request completed"}
+Failed to finalize context files: Error: Unable to resolve context-file owner member '/x_marketer' for collaboration root 'marketing_team_0786c73dee5a434090665b5cd1a1bb91'.
+{"level":40,"time":1790443542641,"pid":60,"hostname":"3f5d05d4b324","reqId":"req-as","method":"POST","url":"/rest/context-files/finalize","statusCode":400,"elapsedMs":31.574000120162964,"msg":"http request completed"}

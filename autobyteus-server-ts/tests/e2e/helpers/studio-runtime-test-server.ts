@@ -2,9 +2,6 @@ import type { FastifyInstance } from "fastify";
 import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import type { AgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
-import {
-  seedInternalServerBaseUrlFromListenAddress,
-} from "../../../src/config/server-runtime-endpoints.js";
 
 const TEST_LOGGING_CONFIG = Object.freeze({
   pinoLogLevel: "silent",
@@ -35,10 +32,6 @@ export const startStudioE2eRuntimeServer = async (
     const address = await studio.fastify.listen({
       port: 0,
       host: requestedHost,
-    });
-    seedInternalServerBaseUrlFromListenAddress({
-      requestedHost,
-      listenAddress: studio.fastify.server.address(),
     });
     await studio.applicationRuntime.lifecycle.recoverAfterListen();
     return Object.freeze({

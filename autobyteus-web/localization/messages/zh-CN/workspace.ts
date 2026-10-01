@@ -1,6 +1,7 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.teamCopy.failed": "无法复制此团队配置：{error}。请点击新建（+）重试。" ,
@@ -28,11 +29,15 @@ const messages = {
   "workspace.runModelConfig.orgStopped": "此组织已停止。保存模型设置和挂载团队的工作目录后，下次继续运行时生效。团队工作目录适用于其所有配置智能体；现有文件和历史记录不会移动。",
   "workspace.runModelConfig.orgActive": "请先停止整个组织，再更改其设置。",
   "workspace.runModelConfig.teamActive": "请先停止此团队，再更改模型设置。",
-  "workspace.runModelConfig.fixedIdentity": "运行时固定。替换模型的上下文容量不得小于已保存模型。",
-  "workspace.runModelConfig.loadingCapacity": "正在检查替换模型的上下文容量…",
-  "workspace.runModelConfig.capacityUnavailable": "无法查询上下文容量。仍可编辑当前模型的设置。",
-  "workspace.runModelConfig.capacityInvalid": "此范围的替换模型不符合条件。请在保存前选择符合条件的模型。",
-  "workspace.runModelConfig.noReplacements": "没有已验证的上下文容量相等或更大的替换模型。",
+  "workspace.runModelConfig.fixedRuntime": "此已保存运行的运行时不可更改。",
+  "workspace.runModelConfig.nativeModelHelp": "请选择已验证且上下文容量不小于已保存模型的模型。",
+  "workspace.runModelConfig.externalModelHelp": "可选择此运行时提供的任意模型。恢复运行时由该运行时处理上下文限制。",
+  "workspace.runModelConfig.unknownModelHelp": "此运行时的替换模型不可用。",
+  "workspace.runModelConfig.loadingOptions": "正在加载替换模型…",
+  "workspace.runModelConfig.optionsUnavailable": "运行时模型选项暂不可用。请刷新此运行后重试；已保存的模型标识仍可查看。",
+  "workspace.runModelConfig.replacementInvalid": "此替换模型已不再提供或不符合条件。保存前请刷新选项。",
+  "workspace.runModelConfig.noNativeReplacements": "没有已验证的上下文容量相等或更大的替换模型。",
+  "workspace.runModelConfig.noCatalogReplacements": "此运行时目前未提供其他模型。",
   "workspace.runModelConfig.fixedWorkspace": "现有运行的工作区已固定。",
   "workspace.runModelConfig.validation.required": "此项为必填项。",
   "workspace.runModelConfig.validation.type": "请输入 {expected} 类型的值。",
@@ -61,7 +66,6 @@ const messages = {
   "workspace.collaboration.identity.details": "参与者详情",
   "workspace.collaboration.identity.address": "地址",
   "workspace.collaboration.identity.agentRun": "智能体运行",
-  "workspace.collaboration.identity.task": "任务",
   "workspace.collaboration.identity.hostRun": "宿主运行",
   "workspace.collaboration.identity.executionRun": "执行运行",
   "workspace.collaboration.identity.teamRun": "团队运行",
@@ -82,7 +86,6 @@ const messages = {
   "workspace.agentOrg.history.expandRun": "展开 {{name}} 下的成员",
   "workspace.agentOrg.history.collapseRun": "折叠 {{name}} 下的成员",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} 执行层级",
-  "workspace.agentOrg.history.taskLabel": "任务：{{name}}",
   "workspace.agentOrg.history.empty": "暂无智能体组织运行历史记录。",
   "workspace.agentOrg.history.noWorkspace": "无工作区",
   "workspace.agentOrg.history.relativeNow": "刚刚",
@@ -143,8 +146,12 @@ const messages = {
     "配置",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help":
+    "Antigravity CLI 高信任模式：工具无需交互式确认即可运行。关闭后，被拒绝的操作无法在聊天中批准。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help":
+    "Antigravity CLI 成员高信任模式：工具无需交互式确认即可运行。关闭后，被拒绝的操作无法在聊天中批准。",
   "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
     "团队成员覆盖",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
@@ -197,6 +204,32 @@ const messages = {
     "新建 - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
+  "workspace.components.progress.BackgroundTaskPanel.title":
+    "后台任务",
+  "workspace.components.progress.BackgroundTaskPanel.counts":
+    "{{running}} 个运行中 · 共 {{total}} 个",
+  "workspace.components.progress.BackgroundTaskPanel.empty":
+    "没有后台任务",
+  "workspace.components.progress.BackgroundTaskPanel.untitled":
+    "后台任务",
+  "workspace.components.progress.BackgroundTaskPanel.kind.shell":
+    "命令行",
+  "workspace.components.progress.BackgroundTaskPanel.kind.subagent":
+    "子智能体",
+  "workspace.components.progress.BackgroundTaskPanel.kind.monitor":
+    "监视器",
+  "workspace.components.progress.BackgroundTaskPanel.kind.workflow":
+    "工作流",
+  "workspace.components.progress.BackgroundTaskPanel.kind.other":
+    "任务",
+  "workspace.components.progress.BackgroundTaskPanel.status.running":
+    "运行中",
+  "workspace.components.progress.BackgroundTaskPanel.status.completed":
+    "已完成",
+  "workspace.components.progress.BackgroundTaskPanel.status.failed":
+    "失败",
+  "workspace.components.progress.BackgroundTaskPanel.status.stopped":
+    "已停止",
   "workspace.components.progress.SystemInstructionActivityItem.title":
     "系统指令",
   "workspace.components.progress.SystemInstructionActivityItem.available":
@@ -213,6 +246,8 @@ const messages = {
     "由 AutoByteus 提供 · Claude SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
     "由 AutoByteus 提供 · Codex baseInstructions",
+  "workspace.components.progress.SystemInstructionActivityItem.source.grok":
+    "由 AutoByteus 提供 · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "由 AutoByteus 提供的系统指令",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
@@ -272,68 +307,6 @@ const messages = {
     "任务智能体",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "需要审批",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.tasks":
-    "任务",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular":
-    "个任务",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural":
-    "个任务",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_agent":
-    "聚焦智能体",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_team":
-    "聚焦团队",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
-    "聚焦",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
-    "选择一个任务进行阅读。",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
-    "正在等待在 Activity 中处理用户操作。",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
-    "暂无委派任务",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
-    "委派工作会从已保存的任务记录显示在这里。",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_agent":
-    "任务智能体",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_team":
-    "任务团队",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
-    "需要审批",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
-    "成员",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assigned":
-    "已分配任务",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_submitted":
-    "已提交结果 · 结果 {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.revised_result_submitted":
-    "已提交修订结果 · 结果 {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested":
-    "已请求修订 · 结果 {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested_for":
-    "已请求修订结果 {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted":
-    "结果 {{ordinal}} 已接受",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_interrupted":
-    "任务已中断",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_in_progress":
-    "进行中",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_awaiting_review":
-    "等待评审",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_revision_requested":
-    "已请求修订",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_accepted":
-    "已接受",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_interrupted":
-    "已中断",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_delegator":
-    "任务委派者",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assignee":
-    "任务执行者",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.system_lifecycle_event":
-    "系统生命周期事件",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted_fallback":
-    "结果已接受。",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.updated_at":
-    "更新于 {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "临时任务执行",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
@@ -360,23 +333,11 @@ const messages = {
   "workspace.history.hierarchy.status.error": "错误",
   "workspace.history.hierarchy.status.idle": "空闲",
   "workspace.history.hierarchy.status.offline": "离线",
-  "workspace.task_monitor.task": "任务",
-  "workspace.task_monitor.lifecycle.in_progress": "进行中",
-  "workspace.task_monitor.lifecycle.awaiting_review": "等待审核",
-  "workspace.task_monitor.lifecycle.revision_requested": "已请求修订",
-  "workspace.task_monitor.lifecycle.accepted": "已接受",
-  "workspace.task_monitor.lifecycle.interrupted": "已中断",
-  "workspace.task_monitor.execution.running": "运行中",
-  "workspace.task_monitor.execution.initializing": "正在初始化",
-  "workspace.task_monitor.execution.error": "错误",
-  "workspace.task_monitor.execution.idle": "空闲",
-  "workspace.task_monitor.execution.offline": "离线",
-  "workspace.task_monitor.combined_status": "{{lifecycle}} · {{execution}}",
-  "workspace.task_monitor.loading": "正在加载任务活动…",
-  "workspace.task_monitor.load_error": "无法加载任务活动。",
+  "workspace.members.started_by": "由 {{name}} 启动",
+  "workspace.task_monitor.loading": "正在加载活动…",
+  "workspace.task_monitor.load_error": "无法加载活动。",
   "workspace.task_monitor.retry": "重试",
-  "workspace.task_monitor.retry_accessible": "重试加载任务活动",
-  "workspace.task_monitor.empty": "此任务尚无活动记录。",
+  "workspace.task_monitor.retry_accessible": "重试加载活动",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "向此子团队发送消息",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

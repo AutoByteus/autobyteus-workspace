@@ -25,6 +25,14 @@ describe('mobile feature gates', () => {
     expect(mobileFeatureForRouteLocation({ path: '/mobile/workspace', query: {} })).toBe('desktopWorkspace');
   });
 
+  it('keeps Projects desktop-only', () => {
+    expect(isMobileFeatureSupported('projects')).toBe(false);
+    expect(mobileFeatureForRouteLocation({ path: '/projects', query: {} })).toBe('projects');
+    expect(mobileFeatureForRouteLocation({ path: '/mobile/projects/project_1', query: {} })).toBe('projects');
+    expect(isFeatureAvailableInRuntime('projects', false)).toBe(true);
+    expect(isFeatureAvailableInRuntime('projects', true)).toBe(false);
+  });
+
   it('keeps desktop-only controls available outside mobile but blocked in mobile', () => {
     expect(isFeatureAvailableInRuntime('applicationIframe', false)).toBe(true);
     expect(isFeatureAvailableInRuntime('applicationIframe', true)).toBe(false);

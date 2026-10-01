@@ -1,0 +1,340 @@
+TAP version 13
+# Subtest: direct adapter spawns the exact artifact in a controllable process tree
+ok 1 - direct adapter spawns the exact artifact in a controllable process tree
+  ---
+  duration_ms: 6.772
+  type: 'test'
+  ...
+# Subtest: direct launch failure preserves its primary error and retains the root when tree completion fails
+ok 2 - direct launch failure preserves its primary error and retains the root when tree completion fails
+  ---
+  duration_ms: 0.404792
+  type: 'test'
+  ...
+# Subtest: session disposes its owned root only after affirmative whole-tree completion
+ok 3 - session disposes its owned root only after affirmative whole-tree completion
+  ---
+  duration_ms: 7.411542
+  type: 'test'
+  ...
+# Subtest: session retains the root and fails when whole-tree completion is unconfirmed
+ok 4 - session retains the root and fails when whole-tree completion is unconfirmed
+  ---
+  duration_ms: 0.300334
+  type: 'test'
+  ...
+# Subtest: session rejects a non-affirmative controller result without disposing the root
+ok 5 - session rejects a non-affirmative controller result without disposing the root
+  ---
+  duration_ms: 0.108583
+  type: 'test'
+  ...
+# Subtest: foreign port occupancy is diagnostic and cannot veto owned-root disposal
+ok 6 - foreign port occupancy is diagnostic and cannot veto owned-root disposal
+  ---
+  duration_ms: 2.279167
+  type: 'test'
+  ...
+# Subtest: Playwright adapter lets Playwright own launch and exposes its application
+ok 7 - Playwright adapter lets Playwright own launch and exposes its application
+  ---
+  duration_ms: 1.127334
+  type: 'test'
+  ...
+# Subtest: verified Playwright launch rejection disposes an owned root and preserves the primary error
+ok 8 - verified Playwright launch rejection disposes an owned root and preserves the primary error
+  ---
+  duration_ms: 0.14225
+  type: 'test'
+  ...
+# Subtest: Playwright rejection retains caller-owned roots
+ok 9 - Playwright rejection retains caller-owned roots
+  ---
+  duration_ms: 0.257834
+  type: 'test'
+  ...
+# Subtest: Playwright rejection never replaces its primary error with disposal failure
+ok 10 - Playwright rejection never replaces its primary error with disposal failure
+  ---
+  duration_ms: 0.125541
+  type: 'test'
+  ...
+# Subtest: explicit executable file and macOS .app bundle both resolve to the binary
+ok 11 - explicit executable file and macOS .app bundle both resolve to the binary
+  ---
+  duration_ms: 7.0145
+  type: 'test'
+  ...
+# Subtest: explicit application errors carry APP_NOT_FOUND
+ok 12 - explicit application errors carry APP_NOT_FOUND
+  ---
+  duration_ms: 2.72675
+  type: 'test'
+  ...
+# Subtest: installed application has no default location on Linux
+ok 13 - installed application has no default location on Linux
+  ---
+  duration_ms: 0.169333
+  type: 'test'
+  ...
+# Subtest: installed application resolves from ~/Applications on macOS when present
+ok 14 - installed application resolves from ~/Applications on macOS when present
+  ---
+  duration_ms: 2.339084
+  type: 'test'
+  ...
+# Subtest: worktree discovery requires exactly one packaged executable
+ok 15 - worktree discovery requires exactly one packaged executable
+  ---
+  duration_ms: 2.760208
+  type: 'test'
+  ...
+# Subtest: resources directory follows the macOS bundle and Linux unpacked layouts
+ok 16 - resources directory follows the macOS bundle and Linux unpacked layouts
+  ---
+  duration_ms: 0.247833
+  type: 'test'
+  ...
+# Subtest: isolated-launch gate accepts the required contract and newer ones
+ok 17 - isolated-launch gate accepts the required contract and newer ones
+  ---
+  duration_ms: 5.458042
+  type: 'test'
+  ...
+# Subtest: isolated-launch gate refuses missing, malformed, non-integer and lower contracts
+ok 18 - isolated-launch gate refuses missing, malformed, non-integer and lower contracts
+  ---
+  duration_ms: 7.559792
+  type: 'test'
+  ...
+# Subtest: packed AppImages are detected by magic or suffix without being executed
+ok 19 - packed AppImages are detected by magic or suffix without being executed
+  ---
+  duration_ms: 2.1995
+  type: 'test'
+  ...
+# Subtest: an extracted AppImage layout goes through the normal marker gate
+ok 20 - an extracted AppImage layout goes through the normal marker gate
+  ---
+  duration_ms: 2.684042
+  type: 'test'
+  ...
+# Subtest: isolated launch environment preserves caller values, drops ELECTRON_RUN_AS_NODE and forces isolation values
+ok 21 - isolated launch environment preserves caller values, drops ELECTRON_RUN_AS_NODE and forces isolation values
+  ---
+  duration_ms: 0.774459
+  type: 'test'
+  ...
+# Subtest: a loopback-only listener makes the port unavailable
+ok 22 - a loopback-only listener makes the port unavailable
+  ---
+  duration_ms: 8.016667
+  type: 'test'
+  ...
+# Subtest: selectListenerPort rejects the production port and honours exclusions
+ok 23 - selectListenerPort rejects the production port and honours exclusions
+  ---
+  duration_ms: 0.561209
+  type: 'test'
+  ...
+# Subtest: whole-tree controller waits for a delayed descendant after the root has exited
+ok 24 - whole-tree controller waits for a delayed descendant after the root has exited
+  ---
+  duration_ms: 101.656834
+  type: 'test'
+  ...
+# Subtest: whole-tree controller force-escalates the same owned tree when a descendant ignores graceful close
+ok 25 - whole-tree controller force-escalates the same owned tree when a descendant ignores graceful close
+  ---
+  duration_ms: 5.469875
+  type: 'test'
+  ...
+# Subtest: whole-tree controller fails when absence cannot be confirmed
+ok 26 - whole-tree controller fails when absence cannot be confirmed
+  ---
+  duration_ms: 3.162209
+  type: 'test'
+  ...
+# Subtest: POSIX process-group controller closes a detached group owned by an earlier invocation
+ok 27 - POSIX process-group controller closes a detached group owned by an earlier invocation
+  ---
+  duration_ms: 102.931375
+  type: 'test'
+  ...
+# Subtest: Windows cleanup fails closed when a late child remains after the root exits
+ok 28 - Windows cleanup fails closed when a late child remains after the root exits
+  ---
+  duration_ms: 4.933208
+  type: 'test'
+  ...
+# Subtest: Windows cleanup never targets a reused root PID with another creation identity
+ok 29 - Windows cleanup never targets a reused root PID with another creation identity
+  ---
+  duration_ms: 0.300209
+  type: 'test'
+  ...
+# Subtest: Windows cleanup accepts root absence only after targeting the captured creation identity
+ok 30 - Windows cleanup accepts root absence only after targeting the captured creation identity
+  ---
+  duration_ms: 0.228334
+  type: 'test'
+  ...
+# Subtest: relative paths resolve against INIT_CWD and are rejected without it
+ok 31 - relative paths resolve against INIT_CWD and are rejected without it
+  ---
+  duration_ms: 1.171334
+  type: 'test'
+  ...
+# Subtest: options are validated per command
+ok 32 - options are validated per command
+  ---
+  duration_ms: 1.516458
+  type: 'test'
+  ...
+# Subtest: runCli prints one schema-v1 JSON value and maps error categories to exit codes
+ok 33 - runCli prints one schema-v1 JSON value and maps error categories to exit codes
+  ---
+  duration_ms: 0.391542
+  type: 'test'
+  ...
+# Subtest: start launches detached with the isolated overlay, records the instance and reports its facts
+ok 34 - start launches detached with the isolated overlay, records the instance and reports its facts
+  ---
+  duration_ms: 12.641084
+  type: 'test'
+  ...
+# Subtest: start refuses a busy control port and names the owning instance
+ok 35 - start refuses a busy control port and names the owning instance
+  ---
+  duration_ms: 5.417292
+  type: 'test'
+  ...
+# Subtest: readiness failure closes the group, removes the owned root and record, and reports the log tail
+ok 36 - readiness failure closes the group, removes the owned root and record, and reports the log tail
+  ---
+  duration_ms: 3.826584
+  type: 'test'
+  ...
+# Subtest: usage and environment errors happen before anything is launched
+ok 37 - usage and environment errors happen before anything is launched
+  ---
+  duration_ms: 2.641458
+  type: 'test'
+  ...
+# Subtest: Linux has no default installed app
+ok 38 - Linux has no default installed app
+  ---
+  duration_ms: 0.723959
+  type: 'test'
+  ...
+# Subtest: stop ends the group, deletes an owned root and removes the record
+ok 39 - stop ends the group, deletes an owned root and removes the record
+  ---
+  duration_ms: 3.476375
+  type: 'test'
+  ...
+# Subtest: stop of an instance whose app already quit sends no signal and still applies root disposal
+ok 40 - stop of an instance whose app already quit sends no signal and still applies root disposal
+  ---
+  duration_ms: 3.674458
+  type: 'test'
+  ...
+# Subtest: caller-provided roots are never deleted and --keep retains owned roots
+ok 41 - caller-provided roots are never deleted and --keep retains owned roots
+  ---
+  duration_ms: 6.405916
+  type: 'test'
+  ...
+# Subtest: restart keeps id, ports, data root and ownership flags
+ok 42 - restart keeps id, ports, data root and ownership flags
+  ---
+  duration_ms: 4.62475
+  type: 'test'
+  ...
+# Subtest: list reports liveness per record
+ok 43 - list reports liveness per record
+  ---
+  duration_ms: 12.444
+  type: 'test'
+  ...
+# Subtest: --build builds the worktree before resolving its executable
+ok 44 - --build builds the worktree before resolving its executable
+  ---
+  duration_ms: 1.709458
+  type: 'test'
+  ...
+# Subtest: start refuses an app without isolated-launch support before any port, root or spawn work
+ok 45 - start refuses an app without isolated-launch support before any port, root or spawn work
+  ---
+  duration_ms: 2.08875
+  type: 'test'
+  ...
+# Subtest: start refuses a packed AppImage with extraction guidance as a usage error
+ok 46 - start refuses a packed AppImage with extraction guidance as a usage error
+  ---
+  duration_ms: 2.034334
+  type: 'test'
+  ...
+# Subtest: restart re-checks isolated-launch support and leaves the instance running when refused
+ok 47 - restart re-checks isolated-launch support and leaves the instance running when refused
+  ---
+  duration_ms: 4.134833
+  type: 'test'
+  ...
+# Subtest: --from-worktree launches the worktree build when it carries the marker
+ok 48 - --from-worktree launches the worktree build when it carries the marker
+  ---
+  duration_ms: 5.054042
+  type: 'test'
+  ...
+# Subtest: instance args carry the control port, occlusion switches and identity marker
+ok 49 - instance args carry the control port, occlusion switches and identity marker
+  ---
+  duration_ms: 1.173375
+  type: 'test'
+  ...
+# Subtest: identity guard: absent group, reused pid, marked leader and leaderless live group
+ok 50 - identity guard: absent group, reused pid, marked leader and leaderless live group
+  ---
+  duration_ms: 0.215584
+  type: 'test'
+  ...
+# Subtest: readiness waits for backend health and the renderer main page
+ok 51 - readiness waits for backend health and the renderer main page
+  ---
+  duration_ms: 3.622542
+  type: 'test'
+  ...
+# Subtest: readiness reports an early exit and a timeout
+ok 52 - readiness reports an early exit and a timeout
+  ---
+  duration_ms: 20.195083
+  type: 'test'
+  ...
+# Subtest: records round-trip atomically and ignore unrelated or invalid files
+ok 53 - records round-trip atomically and ignore unrelated or invalid files
+  ---
+  duration_ms: 3.998458
+  type: 'test'
+  ...
+# Subtest: ids encode the control port and are unique
+ok 54 - ids encode the control port and are unique
+  ---
+  duration_ms: 0.758584
+  type: 'test'
+  ...
+# Subtest: default id resolution requires exactly one record
+ok 55 - default id resolution requires exactly one record
+  ---
+  duration_ms: 9.822666
+  type: 'test'
+  ...
+1..55
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 273.772417

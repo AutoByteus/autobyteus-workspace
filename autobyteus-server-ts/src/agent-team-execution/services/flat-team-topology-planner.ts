@@ -57,7 +57,6 @@ const launchValue = (value: AgentLaunchConfiguration): AgentLaunchConfiguration 
   llmModelIdentifier: value.llmModelIdentifier,
   llmConfig: value.llmConfig,
   autoExecuteTools: value.autoExecuteTools,
-  skillAccessMode: value.skillAccessMode,
   workspaceRootPath: value.workspaceRootPath,
 });
 
@@ -78,7 +77,6 @@ export class FlatTeamTopologyPlanner {
     const { definition, graph } = await this.resolveGraph(input.teamDefinitionId, input.rootDefinition);
     const rootConfig = this.validateRootConfig(input.teamConfigs);
     const memberConfigs = this.validateMemberConfigs(input.memberConfigs, graph);
-    this.validateRootInheritedSkillAccess(rootConfig, memberConfigs);
     const rootTeam = await this.compileRoot(graph, definition.name, rootConfig, memberConfigs);
     const config = new TeamRunConfig({
       teamBackendKind: TeamBackendKind.MIXED,
@@ -167,15 +165,6 @@ export class FlatTeamTopologyPlanner {
     const missing = [...expected.keys()].find((address) => !result.has(address));
     if (missing) throw new Error(`Launch settings for Team member '${missing}' were not provided.`);
     return result;
-  }
-
-  private validateRootInheritedSkillAccess(
-    rootConfig: TeamScopeLaunchInput,
-    memberConfigs: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
-  ): void {
-    const divergent = [...memberConfigs.entries()].find(([, config]) =>
-      config.skillAccessMode !== rootConfig.skillAccessMode);
-    if (divergent) throw new Error(`Agent '${divergent[0]}' cannot override root skillAccessMode.`);
   }
 
   private async compileRoot(

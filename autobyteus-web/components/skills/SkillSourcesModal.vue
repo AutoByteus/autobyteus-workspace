@@ -89,6 +89,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
+import { useSkillNamesStore } from '~/stores/skillNamesStore'
 import { storeToRefs } from 'pinia'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 
@@ -98,6 +99,7 @@ const emit = defineEmits(['close'])
 
 const store = useSkillSourcesStore()
 const skillStore = useSkillStore()
+const skillNames = useSkillNamesStore()
 const { skillSources, loading, error } = storeToRefs(store)
 
 const newPath = ref('')
@@ -127,7 +129,8 @@ async function handleAdd() {
   store.clearError()
   
   try {
-    await store.addSkillSource(newPath.value)
+    // A duplicate name is rejected by the server and opens the conflict pop-up (D-19).
+    await skillNames.runWithSkillNameChecks(() => store.addSkillSource(newPath.value))
     
     // Find the newly added source to show count
     const addedSource = skillSources.value.find(s => s.path === newPath.value || s.path.endsWith(newPath.value))
@@ -156,7 +159,7 @@ async function confirmRemove() {
   
   try {
     await store.removeSkillSource(sourceToRemove.value)
-    await skillStore.fetchAllSkills()
+    await Promise.all([skillStore.fetchAllSkills(), skillNames.fetchIssues().catch(() => undefined)])
     successMessage.value = t('skills.components.skills.SkillSourcesModal.remove_success')
   } catch (e) {
     // Error handled in store

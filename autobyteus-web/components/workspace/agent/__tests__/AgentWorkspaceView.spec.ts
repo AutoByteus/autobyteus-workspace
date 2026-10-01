@@ -1,249 +1,113 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
-import AgentWorkspaceView from '../AgentWorkspaceView.vue';
-import { AgentStatus } from '~/types/agent/AgentStatus';
-import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+import { flushPromises, mount } from '@vue/test-utils'
+import { computed, reactive } from 'vue'
+import AgentWorkspaceView from '../AgentWorkspaceView.vue'
+import { AgentContext } from '~/types/agent/AgentContext'
+import { AgentRunState } from '~/types/agent/AgentRunState'
+import { AgentStatus } from '~/types/agent/AgentStatus'
 
-const {
-  state,
-  agentContextsStoreMock,
-  agentDefinitionStoreMock,
-  runConfigStoreMock,
-  teamRunConfigStoreMock,
-  selectionStoreMock,
-  workspaceCenterViewStoreMock,
-} = vi.hoisted(() => {
-  const localState = {
-    activeRun: null as any,
-  };
-
-  const getById = vi.fn((id: string) => {
-    if (id === 'agent-def-1') {
-      return {
-        id: 'agent-def-1',
-        name: 'Story Agent',
-        avatarUrl: 'https://example.com/from-definition.png',
-      };
-    }
-    return null;
-  });
-
-  return {
-    state: localState,
-    agentContextsStoreMock: {
-      get activeRun() {
-        return localState.activeRun;
-      },
-    },
-    agentDefinitionStoreMock: {
-      agentDefinitions: [
-        {
-          id: 'agent-def-1',
-          name: 'Story Agent',
-          avatarUrl: 'https://example.com/from-definition.png',
-        },
-      ],
-      fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
-      getAgentDefinitionById: getById,
-    },
-    runConfigStoreMock: {
-      setAgentConfig: vi.fn(),
-    },
-    teamRunConfigStoreMock: {
-      clearConfig: vi.fn(),
-    },
-    selectionStoreMock: {
-      selectedType: 'agent',
-      clearSelection: vi.fn(),
-    },
-    workspaceCenterViewStoreMock: {
-      showConfig: vi.fn(),
-    },
-  };
-});
-
-vi.mock('~/stores/agentContextsStore', () => ({
-  useAgentContextsStore: () => agentContextsStoreMock,
-}));
-
+const mocks = vi.hoisted(() => ({
+  target: null as any,
+  push: vi.fn(),
+  startNewChat: vi.fn(),
+  showConfig: vi.fn(),
+}))
+vi.mock('vue-router', () => ({ useRouter: () => ({ push: mocks.push }) }))
+vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({ get activeWorkspaceTarget() { return mocks.target } }) }))
+vi.mock('~/stores/chatDraftStore', () => ({ useChatDraftStore: () => ({ startNewChat: mocks.startNewChat }) }))
+vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStore: () => ({ showConfig: mocks.showConfig }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({
-  useAgentDefinitionStore: () => agentDefinitionStoreMock,
-}));
+  useAgentDefinitionStore: () => ({ agentDefinitions: [{ id: 'autobyteus-daily-assistant' }], getAgentDefinitionById: () => null, fetchAllAgentDefinitions: vi.fn() }),
+}))
+vi.mock('~/composables/agentCollaboration/useAgentRunCollaborationSync', () => ({ useAgentRunCollaborationSync: vi.fn() }))
+vi.mock('~/composables/chat/useChatComposerOptions', () => ({
+  useChatComposerOptions: () => ({
+    skillOptions: computed(() => [{ name: 'writer', description: 'Writes' }]),
+    skillsAllInstalled: computed(() => true),
+  }),
+}))
 
-vi.mock('~/stores/agentRunConfigStore', () => ({
-  useAgentRunConfigStore: () => runConfigStoreMock,
-}));
+const buildTarget = (runId: string, firstMessage: string | null) => {
+  const context = reactive(new AgentContext({
+    agentDefinitionId: 'autobyteus-daily-assistant', agentDefinitionName: 'Daily Assistant', llmModelIdentifier: 'gpt-5.5',
+    runtimeKind: 'codex_app_server', workspaceId: 'ws-1',
+    workspaceMetadata: { workspaceId: 'ws-1', workspaceRootPath: '/Users/me/project', displayName: 'project', kind: 'filesystem' } as any,
+    autoExecuteTools: true, isLocked: false,
+  }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'autobyteus-daily-assistant' }))) as AgentContext
+  context.state.currentStatus = AgentStatus.Idle
+  if (firstMessage) context.state.conversation.messages.push({ type: 'user', text: firstMessage, timestamp: new Date(), contextFilePaths: [] } as any)
+  return { kind: 'standalone_agent', access: 'live', context, browse: { kind: 'run', runId } }
+}
 
-vi.mock('~/stores/teamRunConfigStore', () => ({
-  useTeamRunConfigStore: () => teamRunConfigStoreMock,
-}));
-
-vi.mock('~/stores/agentSelectionStore', () => ({
-  useAgentSelectionStore: () => selectionStoreMock,
-}));
-
-vi.mock('~/stores/workspaceCenterViewStore', () => ({
-  useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
-}));
-
-const buildAgentContext = (overrides: Record<string, unknown> = {}) => ({
-  config: {
-    agentDefinitionId: 'agent-def-1',
-    agentDefinitionName: 'Story Agent',
-    agentAvatarUrl: 'https://example.com/from-context.png',
-    isLocked: true,
-  },
-  state: {
-    runId: 'agent-1234',
-    currentStatus: AgentStatus.Idle,
-    compactionStatus: {
-      phase: 'started',
-      message: 'Compacting memory…',
-      turnId: 'turn-1',
+const mountView = () => mount(AgentWorkspaceView, {
+  global: {
+    stubs: {
+      AgentEventMonitor: { name: 'AgentEventMonitor', props: ['skillTagging', 'composerPlaceholder'], template: '<div data-test="monitor" />' },
+      AgentStatusDisplay: { template: '<span data-test="status" />' },
+      SkillImprovementComposerCta: true,
+      WorkspaceHeaderActions: {
+        template: '<div><button data-test="new-agent" @click="$emit(\'new-agent\')" /><button data-test="edit-config" @click="$emit(\'edit-config\')" /></div>',
+      },
     },
-    conversation: {
-      id: 'agent-1234',
-      createdAt: '2026-02-22T00:00:00.000Z',
-      updatedAt: '2026-02-22T00:00:00.000Z',
-      messages: [],
-    },
+    mocks: { $t: (key: string) => key },
   },
-  ...overrides,
-});
+})
 
-describe('AgentWorkspaceView', () => {
+describe('AgentWorkspaceView (the chat run view, D-17)', () => {
   beforeEach(() => {
-    setActivePinia(createPinia());
-    vi.clearAllMocks();
-    state.activeRun = buildAgentContext();
-  });
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+  })
 
-  const mountComponent = () => mount(AgentWorkspaceView, {
-    global: {
-      stubs: {
-        AgentEventMonitor: {
-          name: 'AgentEventMonitor',
-          props: ['conversation', 'runId', 'agentName', 'agentAvatarUrl'],
-          template: '<div data-test="agent-event-monitor"><slot name="composerContext" /></div>',
-        },
-        SkillImprovementComposerCta: {
-          props: ['target'],
-          template: '<div data-test="skill-improvement-cta" :data-run-id="target && target.runId" :data-helper-run="target && String(target.isHelperRun)" />',
-        },
-        AgentStatusDisplay: { template: '<div data-test="header-status" />' },
-        CopyButton: { template: '<button type="button" data-test="copy-button" />' },
-        TokenUsageHeaderChip: { template: '<div data-test="token-usage-header-chip" />' },
-        WorkspaceHeaderActions: {
-          template: `
-            <div>
-              <button type="button" data-test="new-agent" @click="$emit('new-agent')" />
-              <button type="button" data-test="edit-config" @click="$emit('edit-config')" />
-            </div>
-          `,
-        },
-      },
-    },
-  });
+  it('titles the run with its first message, truncated to 42 characters, with the full text on hover', () => {
+    const text = 'Help me write a skill for weekly planning and review'
+    mocks.target = buildTarget('run-1', text)
+    const title = mountView().get('[data-test="agent-workspace-title"]')
+    expect(title.text()).toBe(`${text.slice(0, 41)}…`)
+    expect(title.attributes('title')).toBe(text)
+  })
 
-  it('uses context avatar URL in header when available', () => {
-    const wrapper = mountComponent();
-    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
-    expect(monitor.props('runId')).toBe('agent-1234');
-    const avatar = wrapper.find('img[alt="Story Agent avatar"]');
-    expect(avatar.exists()).toBe(true);
-    expect(avatar.attributes('src')).toBe('https://example.com/from-context.png');
-  });
+  it('keeps the product title for a draft without messages', () => {
+    mocks.target = buildTarget('temp-1', null)
+    expect(mountView().get('[data-test="agent-workspace-title"]').text()).toBe('New - Daily Assistant')
+  })
 
-  it('does not render the token usage header chip', () => {
-    const wrapper = mountComponent();
-    expect(wrapper.find('[data-test="token-usage-header-chip"]').exists()).toBe(false);
-  });
+  it('＋ starts a New chat preset to this agent and workspace; ⚙ opens the run settings', async () => {
+    mocks.target = buildTarget('run-1', 'hello')
+    const wrapper = mountView()
 
-  it('does not render the removed conversation copy control', () => {
-    const wrapper = mountComponent();
-    expect(wrapper.find('[data-test="copy-button"]').exists()).toBe(false);
-  });
+    await wrapper.get('[data-test="new-agent"]').trigger('click')
+    await flushPromises()
+    expect(mocks.startNewChat).toHaveBeenCalledWith({ agentDefinitionId: 'autobyteus-daily-assistant', workspaceRootPath: '/Users/me/project' })
+    expect(mocks.push).toHaveBeenCalledWith('/chat')
 
-  it('falls back to definition avatar URL in header when context avatar is missing', () => {
-    state.activeRun = buildAgentContext({
-      config: {
-        agentDefinitionId: 'agent-def-1',
-        agentDefinitionName: 'Story Agent',
-        agentAvatarUrl: null,
-        isLocked: true,
-      },
-    });
+    await wrapper.get('[data-test="edit-config"]').trigger('click')
+    expect(mocks.showConfig).toHaveBeenCalledTimes(1)
+  })
 
-    const wrapper = mountComponent();
-    const avatar = wrapper.find('img[alt="Story Agent avatar"]');
-    expect(avatar.exists()).toBe(true);
-    expect(avatar.attributes('src')).toBe('https://example.com/from-definition.png');
-  });
+  it('gives the box `/` skill tagging with the agent skills', () => {
+    mocks.target = buildTarget('run-1', 'hello')
+    const monitor = mountView().getComponent({ name: 'AgentEventMonitor' })
+    expect(monitor.props('skillTagging')).toEqual({
+      skills: [{ name: 'writer', description: 'Writes' }], allInstalled: true, placeholder: expect.any(String),
+    })
+  })
 
-  it('opens selected run config from header action', async () => {
-    const wrapper = mountComponent();
-    await wrapper.get('[data-test="edit-config"]').trigger('click');
-    expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
-  });
-
-  it('passes the selected run to the composer skill-improvement CTA', () => {
-    const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
-    expect(cta.attributes('data-run-id')).toBe('agent-1234');
-    expect(cta.attributes('data-helper-run')).toBe('false');
-  });
-
-  it('marks the Retrospective Skill Improver helper run for CTA hiding', () => {
-    state.activeRun = buildAgentContext({
-      config: {
-        agentDefinitionId: 'autobyteus-retrospective-skill-improver',
-        agentDefinitionName: 'Retrospective Skill Improver',
-        agentAvatarUrl: null,
-        isLocked: true,
-      },
-    });
-
-    const wrapper = mountComponent();
-    const cta = wrapper.get('[data-test="skill-improvement-cta"]');
-    expect(cta.attributes('data-helper-run')).toBe('true');
-  });
-
-  it('seeds a new agent config from the selected run without sharing nested llmConfig', async () => {
-    state.activeRun = buildAgentContext({
-      config: {
-        agentDefinitionId: 'agent-def-1',
-        agentDefinitionName: 'Story Agent',
-        agentAvatarUrl: 'https://example.com/from-context.png',
-        llmModelIdentifier: 'gpt-5.4',
-        runtimeKind: 'codex_app_server',
-        workspaceId: 'ws-1',
-        autoExecuteTools: true,
-        skillAccessMode: 'PRELOADED_ONLY',
-        isLocked: true,
-        llmConfig: {
-          reasoning_effort: 'xhigh',
-          nested: { values: ['xhigh'] },
-        },
-      },
-    });
-
-    const sourceConfig = state.activeRun.config;
-    const wrapper = mountComponent();
-    await wrapper.get('[data-test="new-agent"]').trigger('click');
-
-    const seed = runConfigStoreMock.setAgentConfig.mock.calls[0]?.[0];
-    expect(seed).toEqual(expect.objectContaining({
-      isLocked: false,
-      llmConfig: {
-        reasoning_effort: 'xhigh',
-        nested: { values: ['xhigh'] },
-      },
-    }));
-
-    (seed.llmConfig.nested.values as string[]).push('mutated');
-    expect(sourceConfig.llmConfig.nested.values).toEqual(['xhigh']);
-    expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalledTimes(1);
-    expect(selectionStoreMock.clearSelection).toHaveBeenCalledTimes(1);
-  });
-
-});
+  it('F-04: a collaborator of the run has the ⚙ and ＋ controls, is titled by its name, and its box names it', async () => {
+    const host = buildTarget('run-1', 'hello')
+    const context = host.context
+    context.config = { ...context.config, agentDefinitionId: 'computer-use', agentDefinitionName: 'computer use agent' }
+    mocks.target = { ...host, kind: 'agent_run_task_agent', host: { hostRunId: 'host-run' } }
+    const wrapper = mountView()
+    expect(wrapper.get('[data-test="agent-workspace-title"]').text()).toBe('computer use agent')
+    const monitor = wrapper.getComponent({ name: 'AgentEventMonitor' })
+    expect(monitor.props('skillTagging')).toBeNull()
+    expect(monitor.props('composerPlaceholder')).toBe('Message computer use agent…')
+    await wrapper.get('[data-test="new-agent"]').trigger('click')
+    await flushPromises()
+    expect(mocks.startNewChat).toHaveBeenCalledWith({ agentDefinitionId: 'computer-use', workspaceRootPath: '/Users/me/project' })
+    await wrapper.get('[data-test="edit-config"]').trigger('click')
+    expect(mocks.showConfig).toHaveBeenCalledTimes(1)
+  })
+})

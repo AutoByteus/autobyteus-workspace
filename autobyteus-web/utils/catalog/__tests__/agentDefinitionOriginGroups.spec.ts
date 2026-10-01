@@ -14,6 +14,7 @@ const agent = (overrides: Partial<AgentDefinition> & Pick<AgentDefinition, 'id' 
   toolInvocationPreprocessorNames: overrides.toolInvocationPreprocessorNames ?? [],
   lifecycleProcessorNames: overrides.lifecycleProcessorNames ?? [],
   skillNames: overrides.skillNames ?? [],
+  skillScope: overrides.skillScope ?? 'CONFIGURED',
   ownershipScope: overrides.ownershipScope ?? 'SHARED',
   ownerTeamId: overrides.ownerTeamId,
   ownerTeamName: overrides.ownerTeamName,

@@ -15,7 +15,7 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
@@ -62,7 +62,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
     llmModelIdentifier: 'gpt-5.6-sol',
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY' as const,
     workspaceRootPath: '/ws/a',
   };
   return {
@@ -78,13 +77,13 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       isActive: true,
       summary: 'Deliver current package',
       executionTree: {
-        schemaVersion: 1,
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
         archivedAt: null,
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
+          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -123,13 +122,7 @@ const mountSubject = (options: {
     coordinatorAddress: '/worker',
     focusedAgentRunId: 'task-agent-run-1',
     workspaceRootPath: '/ws/a',
-    tasks: [testTaskRecord({
-      taskId: 'task_0001',
-      delegatorAgentRunId: worker.agentRunId!,
-      recipientAddress: '/worker',
-      target: { agentRunId: 'task-agent-run-1' },
-      description: 'Solve current task',
-    })],
+    delegations: [testDelegation({ delegatorAgentRunId: worker.agentRunId!, recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' } })],
   });
   if (!options.liveContext) {
     liveContext.view.getAgentContext('task-agent-run-1')!.state.currentStatus = AgentStatus.Running;
@@ -332,13 +325,15 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     const { wrapper, actions, state } = mountSubject();
     const stableRow = wrapper.get('[data-row-kind="stable_member"]');
     expect(stableRow.text()).toContain('worker');
+    const visibleTask = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
+    expect(visibleTask.attributes('aria-level')).toBe(stableRow.attributes('aria-level'));
+    expect(stableRow.attributes('aria-expanded')).toBeUndefined();
+    expect(stableRow.find('[data-test="workspace-team-member-disclosure"]').exists()).toBe(false);
     await stableRow.trigger('click');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: 'worker-run',
     }, 'workspace:/ws/a');
-    expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'agent:worker-run',
-    );
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
 
     actions.onSelectTeamMember.mockClear();
     const taskRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
@@ -347,14 +342,38 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(taskRow.classes()).toContain('is-selected');
     expect(taskRow.attributes()).toMatchObject({
       role: 'treeitem',
-      'aria-level': '2',
+      'aria-level': '1',
       'aria-selected': 'true',
-      title: 'Temporary task agent · Solve current task · /worker',
+      title: 'Temporary task agent · worker · /worker',
     });
-    await taskRow.trigger('click');
+    await taskRow.trigger('keydown', { key: 'Enter' });
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: 'task-agent-run-1',
     }, 'workspace:/ws/a');
+  });
+
+  it('keeps multiple peer tasks independently selectable and obeys outer Team collapse', async () => {
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1', coordinatorAddress: '/worker',
+      rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
+      delegations: ['first', 'second'].map((id) => testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/worker', target: { agentRunId: `${id}-run` } })),
+    });
+    const { wrapper, actions, state } = mountSubject({ liveContext });
+    const taskRows = () => wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(taskRows()).toHaveLength(2);
+    for (const [index, id] of ['first', 'second'].entries()) {
+      expect(taskRows()[index].attributes('aria-level')).toBe('1');
+      await taskRows()[index].trigger(index === 0 ? 'click' : 'keydown', { key: ' ' });
+      expect(actions.onSelectTeamMember).toHaveBeenLastCalledWith({
+        teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: `${id}-run`,
+      }, 'workspace:/ws/a');
+    }
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
+    await wrapper.setProps({ state: { ...state, isTeamExpanded: () => false } });
+    expect(taskRows()).toHaveLength(0);
+    expect(wrapper.find('[data-row-kind="stable_member"]').exists()).toBe(false);
+    await wrapper.setProps({ state });
+    expect(taskRows()).toHaveLength(2);
   });
 
   it('marks only the selected TeamRun current when member addresses repeat', async () => {
@@ -403,11 +422,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
         }),
       ],
       coordinatorAddress: '/worker', focusedAgentRunId: 'worker-run',
-      tasks: [testTaskRecord({
-        taskId: 'task_0002', delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group',
-        target: { teamRunId: 'task-team-run-1' }, description: 'Review design',
-        referenceFiles: ['/tmp/design-spec.md'],
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group', target: { teamRunId: 'task-team-run-1' } })],
     });
     const taskChildRunId = 'task-team-run-1:reviewer-run';
     liveContext.view.getAgentContext(taskChildRunId)!.state.currentStatus = AgentStatus.Running;
@@ -428,8 +443,9 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/study_group/reviewer', agentRunId: taskChildRunId,
     }, 'workspace:/ws/a');
-    expect(wrapper.text()).toContain('Task: Review design');
-    expect(wrapper.text()).not.toContain('/tmp/design-spec.md');
+    // REQ-009: the starter is not a visible line; it stays in the accessible label.
+    expect(wrapper.text()).not.toContain('Started by worker');
+    expect(taskRows[0].attributes('aria-label')).toContain('Started by worker');
   });
 
   it('removes transient execution rows when the exact live projection disappears', async () => {
@@ -466,7 +482,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(childRow().exists()).toBe(false);
     await nestedRow().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run');
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run', false);
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
     expect(childRow().exists()).toBe(true);
     await childRow().trigger('click');
@@ -544,7 +560,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await dot.trigger('click');
     expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
     expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
+      'workspace:/ws/a', 'team-run-1', 'team:product-team-run', false,
     );
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });

@@ -1,0 +1,275 @@
+
+> autobyteus-workspace@ dev /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode
+> pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 166ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Help us improve the Prisma ORM for everyone. Share your feedback in a short 2-min survey: https://pris.ly/orm/survey/release-5-22
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../.autobyteus/development/server-data/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/db/development.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:60347) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-30T08:16:50.512Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 57 items.
+Populating agent definition cache for the first time...
+[2026-09-30T08:16:51.200Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T08:16:51.210Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 24 items.
+Agent definition cache populated with 57 items.
+{"level":30,"time":1790756211220,"pid":60347,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50661"}
+{"level":30,"time":1790756211246,"pid":60347,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8000"}
+[2026-09-30T08:16:51.247Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8000
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+> autobyteus@1.4.92-beta.1 dev /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3000
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3000/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 39ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 539ms
+[nitro] ✔ Nuxt Nitro server built in 571ms
+ℹ Vite client warmed up in 1ms
+{"level":30,"time":1790756216892,"pid":60347,"hostname":"MacBookPro","reqId":"req-4","err":{"type":"GraphQLError","message":"Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)","stack":"SyntaxError: Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)","extensions":{}},"msg":"Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)"}
+{"level":40,"time":1790756216893,"pid":60347,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.4811669886112213,"msg":"http request completed"}
+{"level":30,"time":1790756216903,"pid":60347,"hostname":"MacBookPro","reqId":"req-5","err":{"type":"GraphQLError","message":"Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)","stack":"SyntaxError: Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)","extensions":{}},"msg":"Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)"}
+{"level":40,"time":1790756216903,"pid":60347,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.4781250059604645,"msg":"http request completed"}
+{"level":30,"time":1790756216914,"pid":60347,"hostname":"MacBookPro","reqId":"req-6","err":{"type":"GraphQLError","message":"Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)","stack":"SyntaxError: Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)","extensions":{}},"msg":"Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)"}
+{"level":40,"time":1790756216914,"pid":60347,"hostname":"MacBookPro","reqId":"req-6","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.43233299255371094,"msg":"http request completed"}
+{"level":30,"time":1790756216925,"pid":60347,"hostname":"MacBookPro","reqId":"req-7","err":{"type":"GraphQLError","message":"Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)","stack":"SyntaxError: Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)","extensions":{}},"msg":"Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)"}
+{"level":40,"time":1790756216925,"pid":60347,"hostname":"MacBookPro","reqId":"req-7","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.5547919869422913,"msg":"http request completed"}
+{"level":30,"time":1790756216936,"pid":60347,"hostname":"MacBookPro","reqId":"req-8","err":{"type":"GraphQLError","message":"Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)","stack":"SyntaxError: Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)","extensions":{}},"msg":"Unexpected non-whitespace character after JSON at position 7 (line 1 column 8)"}
+{"level":40,"time":1790756216936,"pid":60347,"hostname":"MacBookPro","reqId":"req-8","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":0.5169160068035126,"msg":"http request completed"}
+{"level":30,"time":1790756216947,"pid":60347,"hostname":"MacBookPro","reqId":"req-9","err":{"type":"GraphQLError","message":"Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)","stack":"SyntaxError: Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)","extensions":{}},"msg":"Unexpected non-whitespace character after JSON at position 11 (line 1 column 12)"}
+{"level":40,"time":1790756216947,"pid":60347,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":1.2053329944610596,"msg":"http request completed"}
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data
+In-memory cache: Added new agent definition with ID rsam-live-4985408431.
+Agent Definition created successfully with ID: rsam-live-4985408431
+[CodexAppServerClient] stderr: [2m2026-09-30T08:17:02.526974Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-4985408431
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-4985408431.
+Created and registered workspace ID: agent_ws_3469932e4a6a6471de5b71aa9cebabfe8010eec1f4a40e765557d2da3b145a39
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-4985408431
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-4985408431.
+Reusing registered workspace ID: agent_ws_3469932e4a6a6471de5b71aa9cebabfe8010eec1f4a40e765557d2da3b145a39
+[CodexAppServerClient] stderr: [2m2026-09-30T08:17:02.721902Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T08:17:02.829609Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'rsam_live_4985408431_b908ee2836ae4a28a19fea0a35fd0267'.
+Agent websocket attached for run rsam_live_4985408431_b908ee2836ae4a28a19fea0a35fd0267
+Created agent session 6fc74ff4-8cde-4359-8660-79946aab479f for run rsam_live_4985408431_b908ee2836ae4a28a19fea0a35fd0267
+Agent WebSocket connected: session=6fc74ff4-8cde-4359-8660-79946aab479f, run=rsam_live_4985408431_b908ee2836ae4a28a19fea0a35fd0267
+Closed agent session 6fc74ff4-8cde-4359-8660-79946aab479f
+Agent WebSocket disconnected: 6fc74ff4-8cde-4359-8660-79946aab479f
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-4985408431
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-4985408431.
+Created and registered workspace ID: agent_ws_a3340ab9912e9bcb6933bb4ecb98bc8006f67eb4f229d8e5fff04da49b2863cc
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-4985408431
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-4985408431.
+Reusing registered workspace ID: agent_ws_a3340ab9912e9bcb6933bb4ecb98bc8006f67eb4f229d8e5fff04da49b2863cc
+Published claude_agent_sdk agent run 'rsam_live_4985408431_d73ef3cca8cd48988b5383b9ab30aeac'.
+Agent websocket attached for run rsam_live_4985408431_d73ef3cca8cd48988b5383b9ab30aeac
+Created agent session 81da3135-b70e-4ece-bd87-56df8db44b7d for run rsam_live_4985408431_d73ef3cca8cd48988b5383b9ab30aeac
+Agent WebSocket connected: session=81da3135-b70e-4ece-bd87-56df8db44b7d, run=rsam_live_4985408431_d73ef3cca8cd48988b5383b9ab30aeac
+(node:60347) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Closed agent session 81da3135-b70e-4ece-bd87-56df8db44b7d
+Agent WebSocket disconnected: 81da3135-b70e-4ece-bd87-56df8db44b7d
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-4985408431
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-4985408431.
+Created and registered workspace ID: agent_ws_970490b04410751e15a210fced949c954f59cf786374a85fdbfe49ac830c3e8c
+Creating new workspace for rootPath: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-4985408431
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-4985408431.
+Reusing registered workspace ID: agent_ws_970490b04410751e15a210fced949c954f59cf786374a85fdbfe49ac830c3e8c
+Published antigravity_cli agent run 'rsam_live_4985408431_288e65e6c3074093835151a9f3752fa3'.
+Agent websocket attached for run rsam_live_4985408431_288e65e6c3074093835151a9f3752fa3
+Created agent session 9a180636-def0-463f-85fe-f8ecfda675df for run rsam_live_4985408431_288e65e6c3074093835151a9f3752fa3
+Agent WebSocket connected: session=9a180636-def0-463f-85fe-f8ecfda675df, run=rsam_live_4985408431_288e65e6c3074093835151a9f3752fa3
+Closed agent session 9a180636-def0-463f-85fe-f8ecfda675df
+Agent WebSocket disconnected: 9a180636-def0-463f-85fe-f8ecfda675df
+Added new custom server setting: AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+[2026-09-30T08:18:58.313Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T08:18:58.323Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 25 items.
+Agent definition cache populated with 58 items.
+[CodexAppServerClient] stderr: [2m2026-09-30T08:18:58.626444Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd="/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/applications/bundle-app__brief-studio__1851a920fbb206071d38049bba27efa2d05757e587a35a08fe82da4940b51808/runtime" command="codex" args=["app-server"] code=ENOENT open_fds=30 fs_read=0 fs_write=0
+[CodexAppServerClient] stderr: [2m2026-09-30T08:18:59.224728Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T08:18:59.327803Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+{"level":50,"time":1790756339503,"pid":60347,"hostname":"MacBookPro","reqId":"req-w","method":"POST","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/graphql","statusCode":503,"elapsedMs":0.48295798897743225,"msg":"http request completed"}
+{"level":50,"time":1790756352524,"pid":60347,"hostname":"MacBookPro","reqId":"req-x","method":"GET","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/status","statusCode":503,"elapsedMs":0.5279170274734497,"msg":"http request completed"}
+{"level":50,"time":1790756352545,"pid":60347,"hostname":"MacBookPro","reqId":"req-y","method":"POST","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/ensure-ready","statusCode":503,"elapsedMs":0.49962499737739563,"msg":"http request completed"}
+{"level":50,"time":1790756352558,"pid":60347,"hostname":"MacBookPro","reqId":"req-z","method":"GET","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/status","statusCode":503,"elapsedMs":0.2444159984588623,"msg":"http request completed"}
+{"level":50,"time":1790756352570,"pid":60347,"hostname":"MacBookPro","reqId":"req-10","method":"GET","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/execution-resource-configurations","statusCode":503,"elapsedMs":0.4424999952316284,"msg":"http request completed"}
+Populating agent definition cache for the first time...
+[2026-09-30T08:19:17.603Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T08:19:17.616Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 25 items.
+Agent definition cache populated with 58 items.
+[CodexAppServerClient] stderr: [2m2026-09-30T08:19:17.898096Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] Failed to spawn 'codex' (Error: spawn codex ENOENT). runtime=codex_app_server cwd="/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/applications/bundle-app__brief-studio__1851a920fbb206071d38049bba27efa2d05757e587a35a08fe82da4940b51808/runtime" command="codex" args=["app-server"] code=ENOENT open_fds=29 fs_read=0 fs_write=0
+[CodexAppServerClient] stderr: [2m2026-09-30T08:19:18.016103Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T08:19:18.126919Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+{"level":50,"time":1790756361328,"pid":60347,"hostname":"MacBookPro","reqId":"req-12","method":"GET","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/status","statusCode":503,"elapsedMs":0.3119159936904907,"msg":"http request completed"}
+{"level":50,"time":1790756361343,"pid":60347,"hostname":"MacBookPro","reqId":"req-13","method":"POST","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/backend/ensure-ready","statusCode":503,"elapsedMs":0.3201669752597809,"msg":"http request completed"}
+{"level":50,"time":1790756361357,"pid":60347,"hostname":"MacBookPro","reqId":"req-14","method":"GET","url":"/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f/execution-resource-configurations","statusCode":503,"elapsedMs":0.36329200863838196,"msg":"http request completed"}
+[2026-09-30T08:19:26.227Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-30T08:19:26.236Z] [INFO] [server.runtime] Server closed cleanly.

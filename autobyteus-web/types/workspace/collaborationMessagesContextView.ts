@@ -5,8 +5,8 @@ export type CollaborationMessageMemberIdentity = Readonly<{
   address: AgentTeamAddress
   label: string
 }> & (Readonly<{ kind: 'configured' }> | Readonly<{
-  kind: 'task'
-  taskId: string
+  /** A participant inside a delegated child (task Agent or task Team). */
+  kind: 'delegated'
   hostRunId: string
   executionRunId: string
 }>)
@@ -29,7 +29,7 @@ export interface CollaborationMessagesPerspective {
 }
 
 export interface CollaborationMessagesContextView {
-  readonly rootKind: 'agent_team' | 'agent_org'
+  readonly rootKind: 'agent_team' | 'agent_org' | 'agent'
   readonly rootRunId: string
   readonly focusedAgentRunId: string
   readonly focusedMemberAddress: AgentTeamAddress

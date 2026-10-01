@@ -1,11 +1,4 @@
-import type {
-  DelegateTaskInput,
-  DelegateTaskResult,
-  ReviewTaskResultInput,
-  ReviewTaskResultResult,
-  SubmitTaskResultInput,
-  SubmitTaskResultResult,
-} from "./task-lifecycle-command.js";
+import type { DelegateTaskInput, DelegateTaskResult } from "./task-delegation-command.js";
 import {
   cloneRootExecutionIdentity,
   sameRootExecutionIdentity,
@@ -19,25 +12,12 @@ export type MemberTaskCommandCapability = Readonly<{
     caller: CollaborationMemberExecutionIdentity,
     input: DelegateTaskInput,
   ): Promise<DelegateTaskResult>;
-  submitTaskResult(
-    caller: CollaborationMemberExecutionIdentity,
-    input: SubmitTaskResultInput,
-  ): Promise<SubmitTaskResultResult>;
-  reviewTaskResult(
-    caller: CollaborationMemberExecutionIdentity,
-    input: ReviewTaskResultInput,
-  ): Promise<ReviewTaskResultResult>;
 }>;
 
 export const requireMemberTaskCommandCapability = (
   value: MemberTaskCommandCapability | null | undefined,
 ): MemberTaskCommandCapability => {
-  if (
-    !value
-    || typeof value.delegateTask !== "function"
-    || typeof value.submitTaskResult !== "function"
-    || typeof value.reviewTaskResult !== "function"
-  ) {
+  if (!value || typeof value.delegateTask !== "function") {
     throw new Error("MemberTaskCommandCapability is required.");
   }
   const root = cloneRootExecutionIdentity(value.root);
@@ -46,14 +26,6 @@ export const requireMemberTaskCommandCapability = (
     delegateTask: (caller, input) => {
       assertCallerRoot(root, caller);
       return value.delegateTask(caller, input);
-    },
-    submitTaskResult: (caller, input) => {
-      assertCallerRoot(root, caller);
-      return value.submitTaskResult(caller, input);
-    },
-    reviewTaskResult: (caller, input) => {
-      assertCallerRoot(root, caller);
-      return value.reviewTaskResult(caller, input);
     },
   });
 };

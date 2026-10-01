@@ -146,7 +146,6 @@ const writeV2 = (
 
 const selectorPaths = (runtimeRoot: string) => ({
   agentConfig: path.join(runtimeRoot, 'selector-fixtures', 'agent', 'agent-config.json'),
-  bindings: path.join(runtimeRoot, 'external-channel', 'bindings.json'),
   applicationDatabase: path.join(
     runtimeRoot,
     'applications',
@@ -163,31 +162,6 @@ const writeSelectorFixture = (runtimeRoot: string, identifier = OLD_IDENTIFIER) 
     defaultLaunchConfig: { llmModelIdentifier: identifier },
     excludedNested: { llmModelIdentifier: identifier },
   });
-  writeJson(paths.bindings, [{
-    id: 'readable-migration-binding',
-    provider: 'WHATSAPP',
-    transport: 'PERSONAL_SESSION',
-    accountId: 'readable-migration-account',
-    peerId: 'readable-migration-peer',
-    threadId: '',
-    targetType: 'AGENT',
-    agentDefinitionId: 'readable-migration-agent',
-    launchPreset: {
-      workspaceRootPath: '/tmp/readable-migration-workspace',
-      llmModelIdentifier: identifier,
-      runtimeKind: 'AUTOBYTEUS',
-      autoExecuteTools: false,
-      skillAccessMode: 'GLOBAL_DISCOVERY',
-      llmConfig: null,
-    },
-    agentRunId: null,
-    teamRunId: null,
-    targetMemberRouteKey: null,
-    targetMemberPath: null,
-    allowTransportFallback: false,
-    createdAt: '2048-08-03T00:00:00.000Z',
-    updatedAt: '2048-08-03T00:00:00.000Z',
-  }]);
   writeJson(paths.excludedTrace, {
     llmModelIdentifier: identifier,
     freeText: `excluded:${identifier}`,
@@ -650,14 +624,9 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     expect(readAttemptLog(tokenNameStatus).counts.migratedCount).toBe(1);
 
     const agent = readJson(paths.agentConfig);
-    const binding = readJson(paths.bindings)[0];
     const application = readApplicationSelectors(paths.applicationDatabase);
     expect(agent.defaultLaunchConfig.llmModelIdentifier).toBe(READABLE_IDENTIFIER);
     expect(agent.excludedNested.llmModelIdentifier).toBe(OLD_IDENTIFIER);
-    expect(binding.launchPreset).toMatchObject({
-      llmModelIdentifier: READABLE_IDENTIFIER,
-      skillAccessMode: 'PRELOADED_ONLY',
-    });
     expect(application.profile.llmModelIdentifier).toBe(READABLE_IDENTIFIER);
     expect(application.profile.excludedNested.llmModelIdentifier).toBe(OLD_IDENTIFIER);
     expect(application.defaults.llmModelIdentifier).toBe(READABLE_IDENTIFIER);

@@ -1,0 +1,783 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts status and assistant text segments for a normal Codex turn
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:05:23.405022Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts status and assistant text segments for a normal Codex turn
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:05:23.845747Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts approval, tool execution, and terminal tool events for an approved command
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:06:54.281725Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts approval, tool execution, and terminal tool events for an approved command
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:06:54.385405Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:08:31.675408Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:08:32.147827Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts denied approval into TOOL_DENIED and preserves post-deny assistant output
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:08:41.206210Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts denied approval into TOOL_DENIED and preserves post-deny assistant output
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:08:41.312028Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts denied approval into TOOL_DENIED and preserves post-deny assistant output
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:08:48.150642Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0mexec_command failed: CreateProcess { message: "Rejected(\"rejected by user\")" }
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts tool execution events without approval when autoExecuteTools is enabled
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:18.394522Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts tool execution events without approval when autoExecuteTools is enabled
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:18.500699Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:26.765999Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:26.871194Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2memits multiple reasoning segment ids when one turn reasons again between two tool calls
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:52.907812Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:53.018116Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts raw Codex fileChange activity into segment, lifecycle, and artifact events
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T08:10:53.123456Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+ [31m❯[39m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m4 failed[39m[2m | [22m[33m3 skipped[39m[2m)[22m[33m 337579[2mms[22m[39m
+[31m     [31m×[31m converts status and assistant text segments for a normal Codex turn[39m[33m 90909[2mms[22m[39m
+[31m     [31m×[31m converts approval, tool execution, and terminal tool events for an approved command[39m[33m 97322[2mms[22m[39m
+     [33m[2m✓[22m[39m converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled [33m 9617[2mms[22m[39m
+[31m     [31m×[31m converts denied approval into TOOL_DENIED and preserves post-deny assistant output[39m[33m 97164[2mms[22m[39m
+     [33m[2m✓[22m[39m converts tool execution events without approval when autoExecuteTools is enabled [33m 8365[2mms[22m[39m
+     [33m[2m✓[22m[39m steers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014) [33m 26163[2mms[22m[39m
+[31m     [31m×[31m emits multiple reasoning segment ids when one turn reasons again between two tool calls[39m[32m 119[2mms[22m[39m
+     [33m[2m✓[22m[39m converts raw Codex fileChange activity into segment, lifecycle, and artifact events [33m 7918[2mms[22m[39m
+     [2m[90m↓[39m[22m executes open_tab through the live Codex Agent Tools MCP path
+     [2m[90m↓[39m[22m publishes an existing workspace file through the live Codex Agent Tools MCP path
+     [2m[90m↓[39m[22m executes the full browser tool surface through the live Codex Agent Tools MCP path
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts status and assistant text segments for a normal Codex turn
+[31m[1mError[22m: Error: Condition not met within 90000ms.
+Observed backend events:
+[
+  {
+    "eventType": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "statusHint": "ACTIVE",
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "reasoning",
+    "invocationId": "reasoning-block:06bc468a-66f3-4b5f-91f9-6a4409a6f69f:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:06bc468a-66f3-4b5f-91f9-6a4409a6f69f:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:06bc468a-66f3-4b5f-91f9-6a4409a6f69f:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "text",
+    "invocationId": "msg_0819bde8cfee32a7016ab77cc720e087d287dfa98ddf5fe599",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0819bde8cfee32a7016ab77cc720e087d287dfa98ddf5fe599",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0819bde8cfee32a7016ab77cc720e087d287dfa98ddf5fe599",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "idle",
+    "toolName": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "statusHint": "IDLE",
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  }
+][39m
+[36m [2m❯[22m waitForEvent tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m138:11[22m[39m
+    [90m136| [39m      toolName[33m:[39m event[33m.[39mpayload[33m.[39mtool_name [33m??[39m [35mnull[39m[33m,[39m
+    [90m137| [39m    }))[33m;[39m
+    [90m138| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m139| [39m      `${String(error)}\nObserved backend events:\n${JSON.stringify(ev…
+    [90m140| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m398:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts approval, tool execution, and terminal tool events for an approved command
+[31m[1mError[22m: Error: Condition not met within 90000ms.
+Observed backend events:
+[
+  {
+    "eventType": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "statusHint": "ACTIVE",
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "reasoning",
+    "invocationId": "reasoning-block:4f2e0d8d-f07f-4b05-959b-472c4ee3c543:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:4f2e0d8d-f07f-4b05-959b-472c4ee3c543:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:4f2e0d8d-f07f-4b05-959b-472c4ee3c543:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "run_bash",
+    "invocationId": "exec-e8e8113d-df37-44fe-bff2-899478b56da2",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-e8e8113d-df37-44fe-bff2-899478b56da2",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "TOOL_APPROVAL_REQUESTED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-e8e8113d-df37-44fe-bff2-899478b56da2",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "TOOL_APPROVED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-e8e8113d-df37-44fe-bff2-899478b56da2",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_SUCCEEDED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-e8e8113d-df37-44fe-bff2-899478b56da2",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-e8e8113d-df37-44fe-bff2-899478b56da2",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "reasoning",
+    "invocationId": "reasoning-block:4f2e0d8d-f07f-4b05-959b-472c4ee3c543:2",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:4f2e0d8d-f07f-4b05-959b-472c4ee3c543:2",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:4f2e0d8d-f07f-4b05-959b-472c4ee3c543:2",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "text",
+    "invocationId": "msg_0884f1c28b3d68cc016ab77d2795ac87d2affb6b258981b850",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0884f1c28b3d68cc016ab77d2795ac87d2affb6b258981b850",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0884f1c28b3d68cc016ab77d2795ac87d2affb6b258981b850",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0884f1c28b3d68cc016ab77d2795ac87d2affb6b258981b850",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "idle",
+    "toolName": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "statusHint": "IDLE",
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  }
+][39m
+[36m [2m❯[22m waitForEvent tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m138:11[22m[39m
+    [90m136| [39m      toolName[33m:[39m event[33m.[39mpayload[33m.[39mtool_name [33m??[39m [35mnull[39m[33m,[39m
+    [90m137| [39m    }))[33m;[39m
+    [90m138| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m139| [39m      `${String(error)}\nObserved backend events:\n${JSON.stringify(ev…
+    [90m140| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m529:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22mconverts denied approval into TOOL_DENIED and preserves post-deny assistant output
+[31m[1mError[22m[39m: Error: Condition not met within 90000ms.
+Observed backend events:
+[
+  {
+    "eventType": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "statusHint": "ACTIVE",
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "reasoning",
+    "invocationId": "reasoning-block:7cce2e26-4a57-4f54-82da-1cab19809be4:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:7cce2e26-4a57-4f54-82da-1cab19809be4:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "reasoning-block:7cce2e26-4a57-4f54-82da-1cab19809be4:1",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "run_bash",
+    "invocationId": "exec-ef166750-ef3f-4d2e-a2fd-a7d98c0e7144",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-ef166750-ef3f-4d2e-a2fd-a7d98c0e7144",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "TOOL_APPROVAL_REQUESTED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-ef166750-ef3f-4d2e-a2fd-a7d98c0e7144",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "TOOL_DENIED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-ef166750-ef3f-4d2e-a2fd-a7d98c0e7144",
+    "status": null,
+    "toolName": "run_bash"
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "exec-ef166750-ef3f-4d2e-a2fd-a7d98c0e7144",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "running",
+    "toolName": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "segmentType": "text",
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": "msg_0a407bc5f56d379f016ab77d91930c87d2a269e2a6117b1802",
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "segmentType": null,
+    "invocationId": null,
+    "status": "idle",
+    "toolName": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "statusHint": "IDLE",
+    "segmentType": null,
+    "invocationId": null,
+    "status": null,
+    "toolName": null
+  }
+]
+[36m [2m❯[22m waitForEvent tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m138:11[22m[39m
+    [90m136| [39m      toolName[33m:[39m event[33m.[39mpayload[33m.[39mtool_name [33m??[39m [35mnull[39m[33m,[39m
+    [90m137| [39m    }))[33m;[39m
+    [90m138| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m139| [39m      `${String(error)}\nObserved backend events:\n${JSON.stringify(ev…
+    [90m140| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m721:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22memits multiple reasoning segment ids when one turn reasons again between two tool calls
+[31m[1mError[22m: Codex model catalog did not return required model gpt-5.4. Available models: gpt-6-astra, gpt-6-sol, gpt-6-luna, gpt-5.6-sol, gpt-5.6-terra, gpt-5.6-luna, gpt-5.5[39m
+[36m [2m❯[22m fetchCodexModelIdentifier tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m186:13[22m[39m
+    [90m184| [39m  [35mif[39m (requiredModelIdentifier) {
+    [90m185| [39m    [35mif[39m ([33m![39mavailableModelIdentifiers[33m.[39m[34mincludes[39m(requiredModelIdentifier)) {
+    [90m186| [39m      [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m            [31m^[39m
+    [90m187| [39m        `Codex model catalog did not return required model ${requiredM…
+    [90m188| [39m      )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m938:29[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (11)[39m
+[2m   Start at [22m 10:05:18
+[2m   Duration [22m 342.28s[2m (transform 2.91s, setup 16ms, import 4.18s, tests 337.58s, environment 0ms)[22m
+

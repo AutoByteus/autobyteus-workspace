@@ -1,0 +1,41 @@
+{
+  "configured_native_tools": [
+    "view_file",
+    "write_to_file",
+    "replace_file_content",
+    "grep_search",
+    "list_dir",
+    "find_by_name",
+    "run_command",
+    "generate_image"
+  ],
+  "exit": 0,
+  "status": "SUCCESS",
+  "response_has_mcp_marker": true,
+  "tool_steps": [
+    {
+      "name": "view_file",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "view_file",
+      "state": "DONE"
+    },
+    {
+      "name": "call_mcp_tool",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "call_mcp_tool",
+      "state": "DONE"
+    }
+  ],
+  "mcp_methods": [
+    "server/discover",
+    "initialize",
+    "notifications/initialized",
+    "tools/list",
+    "tools/call"
+  ],
+  "unknown_name_error": false
+}

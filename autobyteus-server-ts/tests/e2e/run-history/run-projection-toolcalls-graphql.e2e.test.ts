@@ -5,7 +5,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -182,6 +181,8 @@ describe("Run projection tool-call GraphQL e2e", () => {
         autoByteusBackendFactory: {} as never,
         codexBackendFactory: {} as never,
         claudeBackendFactory: {} as never,
+        agyBackendFactory: {} as never,
+        grokBackendFactory: {} as never,
         activationRegistry: {} as never,
         memoryRecorder: {} as never,
         providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
@@ -275,7 +276,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       llmModelIdentifier: "gpt-5.2-codex",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: STANDALONE_THREAD_ID,
     } satisfies AgentRunMetadata);
@@ -356,7 +356,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       llmModelIdentifier: "gpt-5.6-sol",
       llmConfig: { reasoning_effort: "low" },
       autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-must-not-recover-command-failure",
     } satisfies AgentRunMetadata);
@@ -498,7 +497,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       llmModelIdentifier: "gpt-5.2-codex",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-should-not-recover-cross-file",
     } satisfies AgentRunMetadata);
@@ -607,7 +605,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       llmModelIdentifier: "gpt-5.2-codex",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-should-not-recover-reasoning",
     } satisfies AgentRunMetadata);
@@ -822,7 +819,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       llmModelIdentifier: "gpt-5.6-sol",
       llmConfig: { reasoning_effort: "max" },
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-must-not-recover-ordered-tool-reasoning",
     } satisfies AgentRunMetadata);
@@ -1125,7 +1121,6 @@ describe("Run projection tool-call GraphQL e2e", () => {
       llmModelIdentifier: "gpt-5.2-codex",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: "native-thread-should-not-recover-standalone",
     } satisfies AgentRunMetadata);

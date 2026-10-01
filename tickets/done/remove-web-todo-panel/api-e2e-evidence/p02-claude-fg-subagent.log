@@ -1,0 +1,8 @@
+[   0.8] INIT {"cli":"2.1.280","tools":["Task","Bash","CronCreate","CronDelete","CronList","DesignSync","Edit","EnterWorktree","ExitWorktree","ListAgents","Monitor","NotebookEdit","PushNotification","Read","RemoteTrigger","ReportFindings","ScheduleWakeup","SendMessage","Skill","TaskCreate","TaskGet","TaskList","TaskStop","TaskUpdate","ToolSearch","WebFetch","WebSearch","Workflow","Write"]}
+[   3.7] TOOL_USE {"name":"Agent","input":{"description":"Test foreground agent task","prompt":"Reply FOREGROUND_DONE without using any tools.","subagent_type":"general-purpose","run_in_background":false}}
+[   3.8] TASK {"type":"system","subtype":"task_started","task_id":"accb720f028725e55","tool_use_id":"toolu_01JxhtCHWAfcMxoYfXtd1v5Y","description":"Test foreground agent task","subagent_type":"general-purpose","is_backgrounded":false,"spawn_depth":1,"task_type":"local_agent","prompt":"Reply FOREGROUND_DONE without using any tools."}
+[   5.0] TASK {"type":"system","subtype":"task_updated","task_id":"accb720f028725e55","patch":{"status":"completed","end_time":1790704813007}}
+[   5.0] TASK {"type":"system","subtype":"task_notification","task_id":"accb720f028725e55","tool_use_id":"toolu_01JxhtCHWAfcMxoYfXtd1v5Y","status":"completed","output_file":"/private/tmp/claude-501/-private-tmp-claude-probe-OxaL/635f9ce5-1cd3-4821-9972-82865436bf3d/tasks/accb720f028725e55.output","summary":"FOREGROUND_DONE","usage":{"total_tokens":12518,"tool_uses":0,"duration_ms":1216}}
+[   6.5] TEXT "The foreground subagent has completed its task. Here is its answer:\n\n**FOREGROUND_DONE**"
+[   6.5] RESULT {"subtype":"success","origin":null}
+[  50.3] END {}

@@ -1,0 +1,38 @@
+{
+  "data": {
+    "listWorkspaceRunHistory": [
+      {
+        "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy",
+        "agentDefinitions": [
+          {
+            "agentDefinitionId": "telegram-helper",
+            "runs": [
+              {
+                "runId": "telegram_helper_ceadcfac50da4d92b0030dd31356750a",
+                "isActive": false,
+                "summary": "Hello from Telegram. What is 2+2? Answer in one short sentence."
+              },
+              {
+                "runId": "telegram_helper_legacymeta00000000000000000001",
+                "isActive": false,
+                "summary": "Hello from Telegram (legacy metadata variant)"
+              }
+            ]
+          }
+        ],
+        "teamDefinitions": [
+          {
+            "teamDefinitionId": "classroom-relay",
+            "runs": [
+              {
+                "teamRunId": "classroom_relay_999545672ef04187b3eca06713ee2a39",
+                "isActive": false,
+                "summary": "Professor, name one prime number. One short sentence."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

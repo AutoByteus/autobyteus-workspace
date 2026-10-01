@@ -1,6 +1,7 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
+import type { CollaboratorMention } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 
 export type AgentRunCommandState =
   | "STARTING"
@@ -27,6 +28,10 @@ export type AgentRunCommandErrorCode =
   | "ACTIVATION_FAILED"
   | "RUNTIME_REJECTED"
   | "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD"
+  | "COLLABORATOR_MENTION_INVALID"
+  | "COLLABORATOR_MENTION_UNAVAILABLE"
+  | "COLLABORATOR_ADMISSION_FAILED"
+  | "COLLABORATOR_ADD_FAILED"
   | "UNKNOWN_ERROR";
 
 export type SendMessageCommandAckPayload = {
@@ -39,6 +44,8 @@ export type SendMessageCommandAckPayload = {
   duplicate: boolean;
   code?: AgentRunCommandErrorCode;
   message?: string;
+  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
+  collaborator_name?: string;
   status?: AgentStatusPayload;
 };
 
@@ -52,6 +59,7 @@ export type AgentRunCommandRecord = {
   terminalAt: string | null;
   code?: AgentRunCommandErrorCode;
   message?: string;
+  collaboratorName?: string;
   turnId: string | null;
 };
 
@@ -61,6 +69,8 @@ export type AgentRunCommandCoordinatorInput = {
   dedupeKey: string;
   message: AgentInputUserMessage;
   summary?: string | null;
+  /** Shared definitions the user mentioned with `@`; admitted by the run's Agent root before posting. */
+  mentions?: readonly CollaboratorMention[];
   onActiveRunReady?: (run: AgentRun) => void;
 };
 

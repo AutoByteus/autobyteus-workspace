@@ -269,7 +269,6 @@ const rootConfig = computed<Readonly<ResolvedTeamRunLaunchConfig>>(() => Object.
   llmModelIdentifier: llmModelIdentifier.value,
   llmConfig: llmConfig.value,
   autoExecuteTools: autoExecuteTools.value,
-  skillAccessMode: 'PRELOADED_ONLY',
 }))
 const projection = computed(() => {
   if (!org.value || !referencesReady.value || !initializationReady.value) return null
@@ -433,7 +432,6 @@ const runOrg = async () => {
         llmModelIdentifier: llmModelIdentifier.value,
         llmConfig: llmConfig.value,
         autoExecuteTools: autoExecuteTools.value,
-        skillAccessMode: 'PRELOADED_ONLY',
         workspaceRootPath,
       },
       teamOverrides: serializedTeams,

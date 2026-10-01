@@ -1,7 +1,7 @@
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { parseExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { parseExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { parseExternalChannelProvider } from "../../external-channel/provider.js";
+import { parseExternalChannelTransport } from "../../external-channel/channel-transport.js";
 import { FileQueueStateStore } from "../queue/file-queue-state-store.js";
 import type {
   OutboxStore,

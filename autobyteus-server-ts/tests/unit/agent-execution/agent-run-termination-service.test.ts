@@ -134,7 +134,6 @@ describe("AgentRunService termination", () => {
         llmModelIdentifier: "gpt-test",
         llmConfig: null,
         autoExecuteTools: false,
-        skillAccessMode: null,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         platformAgentRunId: "thread-old",
         startedAt: "2026-05-17T00:05:00.000Z",
@@ -207,5 +206,34 @@ describe("AgentRunService termination", () => {
     }));
     expect(observed).toHaveBeenCalledTimes(2);
     stopObserving?.();
+  });
+
+  it("ends the Agent root before the host on an explicit Stop, even when the host runtime already died", async () => {
+    const order: string[] = [];
+    const agentRunManager = {
+      getActiveRun: vi.fn(),
+      terminateAgentRun: vi.fn(async () => { order.push("host"); return true; }),
+    };
+    const historyCatalogService = { recordRunTerminated: vi.fn(async () => undefined) };
+    const lifecycleService = {
+      terminateCollaborationRoot: vi.fn(async () => { order.push("root"); return true; }),
+    };
+    const service = new AgentRunService("/tmp/agent-run-service-test", {
+      agentRunManager: agentRunManager as never,
+      metadataService: {} as never,
+      historyCatalogService: historyCatalogService as never,
+      provisioningService: {} as never,
+      lifecycleService: lifecycleService as never,
+    });
+    agentRunManager.getActiveRun.mockReturnValue({ runtimeKind: RuntimeKind.CODEX_APP_SERVER });
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true });
+    expect(order).toEqual(["root", "host"]);
+
+    agentRunManager.getActiveRun.mockReturnValue(null);
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: true, route: "runtime" });
+    expect(historyCatalogService.recordRunTerminated).toHaveBeenLastCalledWith({ runId: "run-1" });
+
+    lifecycleService.terminateCollaborationRoot.mockResolvedValue(false);
+    await expect(service.terminateAgentRun("run-1")).resolves.toMatchObject({ success: false, route: "not_found" });
   });
 });

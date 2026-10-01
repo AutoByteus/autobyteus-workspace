@@ -1,8 +1,9 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunInputOptions } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
-import type { PrepareTaskAgentInput } from "./task-agent-execution.js";
-import type { PrepareTaskTeamInput } from "./task-team-execution.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "./task-agent-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "./task-team-execution.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
 import type { RuntimeTeamRunContext, TeamRunContext } from "./team-run-context.js";
 
@@ -31,8 +32,11 @@ export class TeamRun {
   }
   prepareTaskAgent(input: PrepareTaskAgentInput) { return this.backend.prepareTaskAgent(input); }
   prepareTaskTeam(input: PrepareTaskTeamInput) { return this.backend.prepareTaskTeam(input); }
-  prepareDirectTaskSettlement(taskId: string, binding: { agentRunId: string } | { teamRunId: string }) {
-    return this.backend.prepareDirectTaskSettlement(taskId, binding);
+  restoreTaskAgent(input: RestoreTaskAgentInput) { return this.backend.restoreTaskAgent(input); }
+  restoreTaskTeam(input: RestoreTaskTeamInput) { return this.backend.restoreTaskTeam(input); }
+  hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.backend.hasLiveDirectTaskExecution(reference); }
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
+    return this.backend.tryShutDownDirectTaskExecutionIfQuiet(reference);
   }
   prepareTermination() { return this.backend.prepareTermination(); }
   tryPrepareTerminationIfQuiescent() { return this.backend.tryPrepareTerminationIfQuiescent(); }

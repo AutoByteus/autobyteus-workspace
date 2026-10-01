@@ -5,6 +5,20 @@ export const buildRunProjectionConversation = (
   events: EventMonitorReplayEvent[],
 ): RunProjectionConversationEntry[] =>
   events.flatMap<RunProjectionConversationEntry>((event) => {
+    if (event.kind === "message" && event.role === "user" && event.senderId) {
+      // RD-004: an agent-to-agent delivery replays as "From <Sender>:", not as a user bubble.
+      return [{
+        kind: "inter_agent_message",
+        role: "user",
+        senderAgentRunId: event.senderId,
+        senderAddress: null,
+        ...(event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
+        content: event.content,
+        media: event.media,
+        ts: event.ts,
+      }];
+    }
+
     if (event.kind === "message") {
       return [{
         kind: "message",
@@ -28,6 +42,16 @@ export const buildRunProjectionConversation = (
 
     if (event.kind === "compaction") {
       return [];
+    }
+
+    if (event.kind === "system_task_notification") {
+      return [{
+        kind: "system_task_notification",
+        role: null,
+        senderId: event.senderId,
+        content: event.content,
+        ts: event.ts,
+      }];
     }
 
     return [{

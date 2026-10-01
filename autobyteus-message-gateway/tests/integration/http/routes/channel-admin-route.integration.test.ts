@@ -1,6 +1,6 @@
 import fastify from "fastify";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { ExternalChannelProvider } from "../../../../src/external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../../src/external-channel/channel-transport.js";
 import { describe, expect, it } from "vitest";
 import type {
   SessionProviderAdapter,

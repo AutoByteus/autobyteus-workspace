@@ -57,6 +57,8 @@ export class ConfiguredAgentExecutionHandle {
   private rootShutdownFenced = false;
   private unsubscribe: (() => void) | null = null;
   private platformAgentRunId: string | null;
+  /** Constructor mode until the first publication; any later re-activation (after the run died) restores. */
+  private activationMode: ConfiguredAgentActivationMode;
   private readonly overlay: ConfiguredAgentStatusOverlay;
   private readonly planner: ConfiguredAgentActivationPlanner;
 
@@ -86,12 +88,12 @@ export class ConfiguredAgentExecutionHandle {
       throw new Error("RootAgentExecutionCallbacks are required.");
     }
     this.platformAgentRunId = options.execution.platformAgentRunId?.trim() || null;
+    this.activationMode = options.activationMode;
     this.overlay = new ConfiguredAgentStatusOverlay(this.identity, (snapshot) => {
       options.callbacks.publishAgentEvent(this.identity, { kind: "status_overlay", snapshot });
     });
     this.planner = new ConfiguredAgentActivationPlanner({
       identity: this.identity,
-      mode: options.activationMode,
       manager: options.agentRunManager,
       activityInspector: options.activityInspector,
     });
@@ -139,10 +141,12 @@ export class ConfiguredAgentExecutionHandle {
     return this.agentRun ? this.agentRun.interrupt() : { accepted: true };
   }
   async fenceForRootShutdown(): Promise<AgentOperationResult> {
+    // Fence before the stale check so root shutdown can never re-activate a dead member.
     this.rootShutdownFenced = true;
     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
-    return this.agentRun
-      ? this.agentRun.fenceInputAndInterruptForRootShutdown()
+    const run = this.agentRun;
+    return run && !this.isStale(run)
+      ? run.fenceInputAndInterruptForRootShutdown()
       : { accepted: true };
   }
 
@@ -153,7 +157,9 @@ export class ConfiguredAgentExecutionHandle {
     if (this.agentRun || this.readinessAttempt) {
       throw new Error(`AgentRun '${this.identity.agentRunId}' already entered live readiness.`);
     }
-    const prepared = await this.planner.prepare(await this.buildAgentRunConfig(), this.platformAgentRunId);
+    const prepared = await this.planner.prepare(
+      await this.buildAgentRunConfig(), this.platformAgentRunId, this.activationMode,
+    );
     let state: "prepared" | "published" | "aborted" = "prepared";
     return Object.freeze({
       stagedPlatformBindings: Object.freeze(
@@ -171,6 +177,7 @@ export class ConfiguredAgentExecutionHandle {
           : prepared.bindingChange?.binding;
         if (binding) this.platformAgentRunId = binding.platformAgentRunId;
         const run = prepared.candidate.commitPublication();
+        this.activationMode = "restore";
         this.bindEvents(run);
         this.agentRun = run;
         state = "published";
@@ -186,14 +193,15 @@ export class ConfiguredAgentExecutionHandle {
 
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     if (this.readinessAttempt) await this.readinessAttempt.catch(() => null);
-    const prepared = this.agentRun ? await this.manager.prepareAgentRunTermination(this.agentRun) : null;
-    return prepared ? this.wrapPreparedTermination(prepared) : completedLocalTermination(() => this.dispose());
+    if (!this.agentRun || this.isStale(this.agentRun)) return completedLocalTermination(() => this.dispose());
+    return this.wrapPreparedTermination(await this.manager.prepareAgentRunTermination(this.agentRun));
   }
 
   async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
     if (this.readinessAttempt) return null;
-    if (!this.agentRun) return completedLocalTermination(() => this.dispose());
-    const prepared = await this.manager.tryPrepareAgentRunTerminationIfQuiescent(this.agentRun);
+    const run = this.agentRun;
+    if (!run || this.isStale(run)) return completedLocalTermination(() => this.dispose());
+    const prepared = await this.manager.tryPrepareAgentRunTerminationIfQuiescent(run);
     if (!prepared) return null;
     return this.wrapPreparedTermination(prepared);
   }
@@ -231,7 +239,7 @@ export class ConfiguredAgentExecutionHandle {
     let prepared: Awaited<ReturnType<ConfiguredAgentActivationPlanner["prepare"]>> | null = null;
     let durabilityCommitted = false;
     try {
-      prepared = await this.planner.prepare(await this.buildAgentRunConfig(), this.platformAgentRunId);
+      prepared = await this.planner.prepare(await this.buildAgentRunConfig(), this.platformAgentRunId, this.activationMode);
       const binding = prepared.bindingChange?.kind === "replace_without_conversation"
         ? prepared.bindingChange.replacement.binding
         : prepared.bindingChange?.binding;
@@ -244,6 +252,7 @@ export class ConfiguredAgentExecutionHandle {
         this.platformAgentRunId = binding.platformAgentRunId;
       }
       const run = prepared.candidate.commitPublication();
+      this.activationMode = "restore";
       this.bindEvents(run);
       this.agentRun = run;
       return run;
@@ -294,7 +303,6 @@ export class ConfiguredAgentExecutionHandle {
       memoryDir: (this.options.memoryLocator ?? new RootedAgentMemoryLocator())
         .getLocation(this.physicalScope, this.identity.agentRunId).memoryDir,
       llmConfig: execution.llmConfig as Record<string, unknown> | null,
-      skillAccessMode: execution.skillAccessMode,
       runtimeKind: execution.runtimeKind,
       memberExecutionContext: this.options.memberExecutionContext,
       applicationExecutionContext: this.options.applicationExecutionContext ?? null,
@@ -318,6 +326,20 @@ export class ConfiguredAgentExecutionHandle {
     this.overlay.set(status, this.getStatusSnapshot().details.status, errorMessage);
   }
   private get manager(): AgentRunManager { return this.options.agentRunManager ?? AgentRunManager.getInstance(); }
+
+  /**
+   * A run the manager no longer publishes died and was already removed (with its resources released)
+   * on inactive discovery, so it has nothing left to fence or terminate.
+   */
+  private isStale(run: AgentRun): boolean {
+    try {
+      return this.manager.getActiveRun(run.runId) !== run;
+    } catch (error) {
+      // Resource release failed on first discovery; the run is removed, so a retry sees it as stale.
+      console.warn(`COLLABORATION_STALE_RUN_DISCOVERY_FAILED agentRunId=${run.runId}`, error);
+      throw error;
+    }
+  }
 
   private wrapPreparedTermination(
     prepared: import("../../../agent-execution/domain/prepared-agent-run-termination.js").PreparedAgentRunTermination,

@@ -108,12 +108,12 @@ export const configuredRootFixture = async (placement: Placement, options: {
     const tree = buildInitialTeamRunExecutionTree({ config, teamDefinitionName: "Test Team" });
     await actualStore.write(memoryDir, tree as never);
     const root = await materializeTeamRoot({
-      config, tree, tasks: { schemaVersion: 1, rootTeamRunId: rootId, records: [] },
+      config, tree,
       messages: { schemaVersion: 1, rootTeamRunId: rootId, messages: [] },
       teamMemoryDir: memoryDir, mode, persistInitialPackage: false, factory,
       memberExecutionContextBuilder: new MemberExecutionContextBuilder(definitions as never),
       taskExecutionIdentity: taskExecutionIdentity as never, executionTreeStore: { write } as never,
-      taskRecordsStore: { write: sidecarWrite } as never, communicationStore: { write: sidecarWrite } as never,
+      communicationStore: { write: sidecarWrite } as never,
       onTerminated: vi.fn(),
     });
     return { ...common, root,
@@ -133,11 +133,10 @@ export const configuredRootFixture = async (placement: Placement, options: {
   ] });
   await actualStore.write(memoryDir, tree as never);
   const state = validateAgentOrgStatePackage({ executionTree: tree,
-    taskRecords: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: rootId, records: [] },
     communicationMessages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: rootId, messages: [] },
   });
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: rootId, orgMemoryDir: memoryDir,
-    executionTreeStore: { write } as never, taskRecordsStore: { write: sidecarWrite } as never,
+    executionTreeStore: { write } as never,
     communicationStore: { write: sidecarWrite } as never, enterPersistenceFailStop: failStop,
   });
   const root = await new AgentOrgExecutionScopeBuilder({ flatTeamExecutionFactory: factory,

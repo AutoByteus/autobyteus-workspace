@@ -1,10 +1,8 @@
-import type { CollaborationTasksContextView } from '~/types/workspace/collaborationTasksContextView'
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamWorkspaceContextView } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
 import { projectTeamCommunicationPerspective, projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective'
-import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries'
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService'
 
 export const testTeamWorkspaceContextView = (
@@ -27,7 +25,6 @@ export const testTeamWorkspaceContextView = (
     focusedMemberAddress: memberAddress,
     focusedAgentRunId,
     focusedAgentContext: context,
-    focusedTaskPresentation: () => view.getFocusedNavigationRow()?.task ?? null,
     isFocusedProjectionAuthoritative: () =>
       isTeamMemberProjectionAuthoritative(team, focusedAgentRunId),
     listMembers: () => entries.map((entry) => ({
@@ -64,17 +61,5 @@ export const testCollaborationMessagesContextView = (
     }).messages,
     referenceContentPath: (messageId, referenceId) =>
       `team-runs/${view.getRootTeamRunId()}/team-communication/messages/${messageId}/references/${referenceId}/content`,
-  }
-}
-
-export const testCollaborationTasksContextView = (
-  team: AgentTeamContext,
-  focusedAgentRunId = team.view.getFocusedAgentRunId(),
-): CollaborationTasksContextView => {
-  const view = team.view
-  return { rootKind: 'agent_team', rootRunId: view.getRootTeamRunId(), focusedAgentRunId,
-    listDelegatedTaskEntries: () => deriveDelegatedTaskEntries(team, focusedAgentRunId),
-    taskReferenceContentPath: (taskId, referenceId) =>
-      `team-runs/${view.getRootTeamRunId()}/task-delegations/${taskId}/references/${referenceId}/content`,
   }
 }

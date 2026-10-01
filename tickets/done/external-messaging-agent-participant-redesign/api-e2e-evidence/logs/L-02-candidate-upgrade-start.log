@@ -1,0 +1,317 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+App data directory: /private/tmp/emr-e2e/upgrade-a
+AppConfig instance created.
+Config file path: /private/tmp/emr-e2e/upgrade-a/.env
+Loading environment from: /private/tmp/emr-e2e/upgrade-a/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../private/tmp/emr-e2e/upgrade-a/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:18741
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:18741
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+APP DATA DIRECTORY: /private/tmp/emr-e2e/upgrade-a
+DB DIRECTORY: /private/tmp/emr-e2e/upgrade-a/db
+LOGS DIRECTORY: /private/tmp/emr-e2e/upgrade-a/logs
+DOWNLOAD DIRECTORY: /private/tmp/emr-e2e/upgrade-a/download
+MEMORY DIRECTORY: /private/tmp/emr-e2e/upgrade-a/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/private/tmp/emr-e2e/upgrade-a/db/production.db"
+
+26 migrations found in prisma/migrations
+
+Applying migration `20260924120000_remove_external_channel_tables`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:97593) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T14:56:38.616Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/tmp/emr-e2e/upgrade-a/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/upgrade-a/temp_workspace.
+Initialized TempWorkspace at /private/tmp/emr-e2e/upgrade-a/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-24T14:56:38.732Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-24T14:56:38.733Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1790261798739,"pid":97593,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51814"}
+{"level":30,"time":1790261798765,"pid":97593,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:18741"}
+[2026-09-24T14:56:38.765Z] [INFO] [server.runtime] Server listening on 0.0.0.0:18741
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1790261822298,"pid":97593,"hostname":"MacBookPro","reqId":"req-2","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1790261870754,"pid":97593,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/rest/api/channel-ingress/v1/messages","statusCode":404,"elapsedMs":0.596250057220459,"msg":"http request completed"}
+{"level":40,"time":1790261870771,"pid":97593,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/rest/api/channel-ingress/v1/delivery-events","statusCode":404,"elapsedMs":0.5022079944610596,"msg":"http request completed"}
+{"level":40,"time":1790261870786,"pid":97593,"hostname":"MacBookPro","reqId":"req-6","method":"POST","url":"/api/channel-ingress/v1/messages","statusCode":404,"elapsedMs":0.4040830135345459,"msg":"http request completed"}
+{"level":40,"time":1790261870802,"pid":97593,"hostname":"MacBookPro","reqId":"req-7","method":"POST","url":"/rest/api/never-existed","statusCode":404,"elapsedMs":0.4159579277038574,"msg":"http request completed"}
+{"level":40,"time":1790261870821,"pid":97593,"hostname":"MacBookPro","reqId":"req-8","method":"POST","url":"/rest/api/channel-ingress/v1/messages","statusCode":404,"elapsedMs":0.5564169883728027,"msg":"http request completed"}
+{"level":40,"time":1790261870839,"pid":97593,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/rest/api/channel-ingress/v1/delivery-events","statusCode":404,"elapsedMs":1.009167194366455,"msg":"http request completed"}
+{"level":40,"time":1790261870876,"pid":97593,"hostname":"MacBookPro","reqId":"req-b","method":"POST","url":"/rest/api/never-existed","statusCode":404,"elapsedMs":0.4149160385131836,"msg":"http request completed"}
+{"level":40,"time":1790261915332,"pid":97593,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/rest/api/channel-ingress/v1/messages","statusCode":404,"elapsedMs":1.1074168682098389,"msg":"http request completed"}
+{"level":40,"time":1790261915353,"pid":97593,"hostname":"MacBookPro","reqId":"req-e","method":"POST","url":"/rest/api/channel-ingress/v1/delivery-events","statusCode":404,"elapsedMs":3.1811671257019043,"msg":"http request completed"}
+{"level":40,"time":1790261915362,"pid":97593,"hostname":"MacBookPro","reqId":"req-f","method":"POST","url":"/rest/api/never-existed","statusCode":404,"elapsedMs":0.3038330078125,"msg":"http request completed"}
+{"level":40,"time":1790261915375,"pid":97593,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/rest/api/channel-ingress/v1/messages","statusCode":401,"elapsedMs":4.8938329219818115,"msg":"http request completed"}
+{"level":40,"time":1790261915385,"pid":97593,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/rest/api/channel-ingress/v1/delivery-events","statusCode":401,"elapsedMs":0.8963329792022705,"msg":"http request completed"}
+{"level":40,"time":1790261915401,"pid":97593,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.9756247997283936,"msg":"http request completed"}
+{"level":40,"time":1790261915414,"pid":97593,"hostname":"MacBookPro","reqId":"req-j","method":"POST","url":"/rest/api/never-existed","statusCode":401,"elapsedMs":3.9956250190734863,"msg":"http request completed"}
+{"level":40,"time":1790261979883,"pid":97593,"hostname":"MacBookPro","reqId":"req-l","method":"POST","url":"/rest/api/channel-ingress/v1/messages","statusCode":404,"elapsedMs":0.4803338050842285,"msg":"http request completed"}
+{"level":40,"time":1790261979901,"pid":97593,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/rest/api/channel-ingress/v1/delivery-events","statusCode":404,"elapsedMs":0.25583386421203613,"msg":"http request completed"}
+{"level":40,"time":1790261979925,"pid":97593,"hostname":"MacBookPro","reqId":"req-n","method":"POST","url":"/rest/api/never-existed","statusCode":404,"elapsedMs":0.22820782661437988,"msg":"http request completed"}
+{"level":40,"time":1790261979943,"pid":97593,"hostname":"MacBookPro","reqId":"req-o","method":"POST","url":"/rest/api/channel-ingress/v1/messages","statusCode":401,"elapsedMs":0.36020803451538086,"msg":"http request completed"}
+{"level":40,"time":1790261979959,"pid":97593,"hostname":"MacBookPro","reqId":"req-p","method":"POST","url":"/rest/api/channel-ingress/v1/delivery-events","statusCode":401,"elapsedMs":0.5061249732971191,"msg":"http request completed"}
+{"level":40,"time":1790261979978,"pid":97593,"hostname":"MacBookPro","reqId":"req-q","method":"POST","url":"/graphql","statusCode":401,"elapsedMs":0.5990829467773438,"msg":"http request completed"}
+{"level":40,"time":1790261979996,"pid":97593,"hostname":"MacBookPro","reqId":"req-r","method":"POST","url":"/rest/api/never-existed","statusCode":401,"elapsedMs":0.3312499523162842,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-legacy.
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-legacy.
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-legacy.
+Created terminal session 3ff74edb-e706-4b5b-b203-42757d99ce6b using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3ff74edb-e706-4b5b-b203-42757d99ce6b
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session 3ff74edb-e706-4b5b-b203-42757d99ce6b
+Terminal WebSocket disconnected: 3ff74edb-e706-4b5b-b203-42757d99ce6b
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-legacy.
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-legacy.
+Created terminal session ddc9c878-642b-4659-b987-b899cdc60348 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: ddc9c878-642b-4659-b987-b899cdc60348
+Terminal websocket attached for cwd /Users/normy
+Created terminal session 33991563-338c-46f4-a45e-5ee038d1ac30 using backend IsolatedPtySession for target /private/tmp/emr-e2e/ws-legacy
+Terminal WebSocket connected: 33991563-338c-46f4-a45e-5ee038d1ac30
+Terminal websocket attached for cwd /private/tmp/emr-e2e/ws-legacy
+Closed PTY session ddc9c878-642b-4659-b987-b899cdc60348
+Terminal WebSocket disconnected: ddc9c878-642b-4659-b987-b899cdc60348
+Closed PTY session 33991563-338c-46f4-a45e-5ee038d1ac30
+Terminal WebSocket disconnected: 33991563-338c-46f4-a45e-5ee038d1ac30
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-legacy.
+Created terminal session b423da8d-2fda-4e10-a959-0148d87ed5f6 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: b423da8d-2fda-4e10-a959-0148d87ed5f6
+Terminal websocket attached for cwd /Users/normy
+Created terminal session 6f198200-99c3-4561-811d-a90f2db7620a using backend IsolatedPtySession for target /private/tmp/emr-e2e/ws-legacy
+Terminal WebSocket connected: 6f198200-99c3-4561-811d-a90f2db7620a
+Terminal websocket attached for cwd /private/tmp/emr-e2e/ws-legacy
+Closed PTY session b423da8d-2fda-4e10-a959-0148d87ed5f6
+Terminal WebSocket disconnected: b423da8d-2fda-4e10-a959-0148d87ed5f6
+Closed PTY session 6f198200-99c3-4561-811d-a90f2db7620a
+Terminal WebSocket disconnected: 6f198200-99c3-4561-811d-a90f2db7620a
+Configuring MCP server with ID: e2e-token-echo
+In-memory cache: Added new MCP config e2e-token-echo.
+Attempting to discover and register tools for server ID: e2e-token-echo
+Overwriting existing MCP config with server_id 'e2e-token-echo'.
+Successfully registered tool definition: 'verify_e2e_token'
+Successfully discovered and registered 1 tools for server ID: e2e-token-echo
+In-memory cache: Added new agent definition with ID mcp-token-probe.
+Agent Definition created successfully with ID: mcp-token-probe
+[CodexAppServerClient] stderr: [2m2026-09-24T15:06:19.493330Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Created and registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Reusing registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+MediaStorageService initialized. Media root: /private/tmp/emr-e2e/upgrade-a/media
+AgentRuntimeState initialized for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': LLM instance 'OpenAILLM' and 5 tools prepared and stored in state.
+AgentContext composed for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' with config: 'MCP Token Probe'.
+AgentWorker initialized for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'.
+Registered AgentContext for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Context registered.
+Agent facade initialized for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' created and stored successfully.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' requesting runtime to start.
+AgentRuntime for 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Starting worker.
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Starting...
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' asyncRun(): Starting.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Runtime init completed (event store initialized).
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Runtime init completed (status deriver initialized).
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Runtime init completed (AgentEventInbox initialized).
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' to become idle (timeout: 30s)...
+AgentEventStream (ID: 990d8d64-4c28-49a0-943e-917a3e7e437b) initialized for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Subscribed to notifier.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Bootstrapper starting direct lifecycle execution.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Executing McpServerPrewarmingStep.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Executing SystemPromptProcessingStep.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Skill access mode is NONE. Skipping skill catalog.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Final processed system prompt configured and captured. Trace ID: rt_1790262397490_b7431150-20d9-47d3-9ad3-cddfb85c36f0. Final length: 2691.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' initialized successfully. Entering main event scheduler loop.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' has become idle.
+AgentEventStream (ID: 990d8d64-4c28-49a0-943e-917a3e7e437b) for 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 1b328c39-a59f-48b8-8594-3746863ebd86) initialized for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Subscribed to notifier.
+Published autobyteus agent run 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'.
+Agent websocket attached for run mcp_token_probe_833481d1878a4931b6c8490b138ffe4e
+Created agent session 9598d179-b4cf-48d1-804f-346b7917348f for run mcp_token_probe_833481d1878a4931b6c8490b138ffe4e
+Agent WebSocket connected: session=9598d179-b4cf-48d1-804f-346b7917348f, run=mcp_token_probe_833481d1878a4931b6c8490b138ffe4e
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': UserInputContextBuildingProcessor completed. Final content length: 111
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Reusing registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+Agent websocket attached for run mcp_token_probe_833481d1878a4931b6c8490b138ffe4e
+Created agent session 1764be99-9869-42a6-b2fa-ac2a3f54059e for run mcp_token_probe_833481d1878a4931b6c8490b138ffe4e
+Agent WebSocket connected: session=1764be99-9869-42a6-b2fa-ac2a3f54059e, run=mcp_token_probe_833481d1878a4931b6c8490b138ffe4e
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+Agent run 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': UserInputContextBuildingProcessor completed. Final content length: 54
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 9598d179-b4cf-48d1-804f-346b7917348f
+Agent WebSocket disconnected: 9598d179-b4cf-48d1-804f-346b7917348f
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Reusing registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Reusing registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+[CodexAppServerClient] stderr: [2m2026-09-24T15:06:52.733842Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229'.
+Agent websocket attached for run mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229
+Created agent session a62347ba-f657-4028-9dbf-743098ceaa5b for run mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229
+Agent WebSocket connected: session=a62347ba-f657-4028-9dbf-743098ceaa5b, run=mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229
+Agent websocket attached for run mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229
+Created agent session e99567fa-0534-48bd-8b65-04acf7bbfc19 for run mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229
+Agent WebSocket connected: session=e99567fa-0534-48bd-8b65-04acf7bbfc19, run=mcp_token_probe_2b296e028c224e8baa0920ed7fa2e229
+Closed agent session a62347ba-f657-4028-9dbf-743098ceaa5b
+Agent WebSocket disconnected: a62347ba-f657-4028-9dbf-743098ceaa5b
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Reusing registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+Creating new workspace for rootPath: /private/tmp/emr-e2e/ws-mcp
+Created metadata-only FileSystemWorkspace at /private/tmp/emr-e2e/ws-mcp.
+Reusing registered workspace ID: agent_ws_e17ab917296b3a9208f8decb4f387ec401b9213d68f1113dc00488769e2753f2
+Published claude_agent_sdk agent run 'mcp_token_probe_f1f403176eef46cab43366ab5703e9d1'.
+Agent websocket attached for run mcp_token_probe_f1f403176eef46cab43366ab5703e9d1
+Created agent session 37726069-555d-4503-9a06-98095c79bb08 for run mcp_token_probe_f1f403176eef46cab43366ab5703e9d1
+Agent WebSocket connected: session=37726069-555d-4503-9a06-98095c79bb08, run=mcp_token_probe_f1f403176eef46cab43366ab5703e9d1
+(node:97593) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: verify_e2e_token, mcp__autobyteus_agent_tools__verify_e2e_token. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790262430663,"pid":97593,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_H5eD3Z7-f5YKrC4rliApyQkCQttjJprmynoBThJkPmE","statusCode":400,"elapsedMs":0.39024996757507324,"msg":"http request completed"}
+Agent websocket attached for run mcp_token_probe_f1f403176eef46cab43366ab5703e9d1
+Created agent session 12ca8c59-9efc-4727-a30f-4656c2db1aa9 for run mcp_token_probe_f1f403176eef46cab43366ab5703e9d1
+Agent WebSocket connected: session=12ca8c59-9efc-4727-a30f-4656c2db1aa9, run=mcp_token_probe_f1f403176eef46cab43366ab5703e9d1
+Closed agent session 37726069-555d-4503-9a06-98095c79bb08
+Agent WebSocket disconnected: 37726069-555d-4503-9a06-98095c79bb08
+[2026-09-24T15:27:40.729Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Closed agent session 1764be99-9869-42a6-b2fa-ac2a3f54059e
+Agent WebSocket disconnected: 1764be99-9869-42a6-b2fa-ac2a3f54059e
+AgentEventStream (ID: 1b328c39-a59f-48b8-8594-3746863ebd86) for 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'. Attempting graceful shutdown.
+Agent 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Stop requested.
+AgentExternalEventNotifier (NotifierID: b7e55418-0e97-49da-aa9f-925e5ef3e153, AgentID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 12ca8c59-9efc-4727-a30f-4656c2db1aa9
+Agent WebSocket disconnected: 12ca8c59-9efc-4727-a30f-4656c2db1aa9
+Closed agent session e99567fa-0534-48bd-8b65-04acf7bbfc19
+Agent WebSocket disconnected: e99567fa-0534-48bd-8b65-04acf7bbfc19
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' asyncRun() loop has finished.
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Running shutdown sequence on worker loop.
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Shutdown resource cleanup completed successfully.
+AgentWorker 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e'.
+AgentRuntime for 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e': Context unregistered.
+AgentRuntime for 'mcp_token_probe_833481d1878a4931b6c8490b138ffe4e' stop() method completed.
+[2026-09-24T15:27:40.779Z] [INFO] [server.runtime] Server closed cleanly.

@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   assertAgentTeamAddress,
   getAgentTeamAddressBasename,
@@ -35,7 +34,6 @@ export const testAgentNode = (
     llmModelIdentifier: "test-model",
     llmConfig: null,
     autoExecuteTools: true,
-    skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     workspaceRootPath: null,
     ...overrides,
     address,
@@ -72,7 +70,6 @@ export const testAgentTeamNode = (input: {
       llmModelIdentifier: coordinator.llmModelIdentifier,
       llmConfig: coordinator.llmConfig,
       autoExecuteTools: coordinator.autoExecuteTools,
-      skillAccessMode: coordinator.skillAccessMode,
       workspaceRootPath: coordinator.workspaceRootPath,
     },
     ...(address === "/" ? {} : {
@@ -114,6 +111,7 @@ export const testMemberExecutionContext = (input: {
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
   const agentRunId = input.agentRunId ?? `run-${getAgentTeamAddressBasename(memberAddress) ?? "agent"}`;
   return new MemberExecutionContext({
+    teamScoped: true,
     identity: createCollaborationMemberExecutionIdentity({
       root: createTeamRootExecutionIdentity(rootTeamRunId),
       memberAddress,
@@ -138,14 +136,6 @@ export const testMemberTaskCommandCapability = (
   delegateTask: async (caller, input) => {
     if (!root) throw new Error("Test task command capability has no RootTeamRun.");
     return root.delegateTask({ identity: caller }, input);
-  },
-  submitTaskResult: async (caller, input) => {
-    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.submitTaskResult({ identity: caller }, input);
-  },
-  reviewTaskResult: async (caller, input) => {
-    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.reviewTaskResult({ identity: caller }, input);
   },
 });
 

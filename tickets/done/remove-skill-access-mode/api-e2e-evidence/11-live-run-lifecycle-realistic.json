@@ -1,0 +1,446 @@
+{
+  "state": {
+    "tag": "rsamb1790755410615",
+    "skillName": "rsam_skill_rsamb1790755410615",
+    "body": "BODY_rsamb1790755410615",
+    "agentId": "rsam-skilled-rsamb1790755410615",
+    "plainId": "rsam-plain-rsamb1790755410615",
+    "teamDefId": "rsam-team-rsamb1790755410615",
+    "orgDefId": "rsam-org-rsamb1790755410615",
+    "ws": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790755410615",
+    "agentRuns": [
+      "rsam_skilled_rsamb1790755410615_701d78158936411ea116a891bd3d0ab2",
+      "rsam_skilled_rsamb1790755410615_57d9fa4d66bd40269edd434fca572720"
+    ],
+    "teamRuns": [
+      "rsam_team_rsamb1790755410615_1f2acccac201420f8cc56380e3732d21",
+      "rsam_team_rsamb1790755410615_f6044566e64040649da51ecabfa399d5"
+    ],
+    "orgRuns": [
+      "rsam_org_rsamb1790755410615_dac9ebd09b01419aac6aa9ed780049a1",
+      "rsam_org_rsamb1790755410615_fa8690f4570b4eb09ad73c6c6bb4e292"
+    ],
+    "plainRun": "rsam_plain_rsamb1790755410615_db60dee29f3e429ca7ecab2defcd2187"
+  },
+  "log": [
+    {
+      "check": "plain agent create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "rsam_plain_rsamb1790755410615_db60dee29f3e429ca7ecab2defcd2187"
+      }
+    },
+    {
+      "check": "plain agent turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_15",
+        "errors": []
+      }
+    },
+    {
+      "check": "agent with no skills: no skills section in the system prompt",
+      "ok": true,
+      "detail": {
+        "promptChars": 2658
+      }
+    },
+    {
+      "check": "agent[0] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "rsam_skilled_rsamb1790755410615_701d78158936411ea116a891bd3d0ab2"
+      }
+    },
+    {
+      "check": "agent[0] first turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_16",
+        "errors": []
+      }
+    },
+    {
+      "check": "agent[0]: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 3460
+      }
+    },
+    {
+      "check": "agent[0]: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "agent[0] terminate",
+      "ok": true
+    },
+    {
+      "check": "agent[0] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "rsam_skilled_rsamb1790755410615_701d78158936411ea116a891bd3d0ab2"
+      }
+    },
+    {
+      "check": "agent[0] turn after restore replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_17",
+        "errors": []
+      }
+    },
+    {
+      "check": "agent[0] after restore: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 3460
+      }
+    },
+    {
+      "check": "agent[0] after restore: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "team[0] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "rsam_team_rsamb1790755410615_1f2acccac201420f8cc56380e3732d21"
+      }
+    },
+    {
+      "check": "team[0] resume config has no skill field",
+      "ok": true,
+      "detail": {
+        "lead": {
+          "address": "/lead",
+          "agentRunId": "rsam_skilled_rsamb1790755410615_d7134ce244d444de9a6deeec1aef9e5e"
+        }
+      }
+    },
+    {
+      "check": "team[0] lead turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_18",
+        "errors": []
+      }
+    },
+    {
+      "check": "team[0] stream messages carry no skill field",
+      "ok": true,
+      "detail": {
+        "messages": 27,
+        "sawSnapshot": true
+      }
+    },
+    {
+      "check": "team[0] lead: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 7399
+      }
+    },
+    {
+      "check": "team[0] lead: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "team[0] terminate",
+      "ok": true
+    },
+    {
+      "check": "team[0] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "rsam_team_rsamb1790755410615_1f2acccac201420f8cc56380e3732d21"
+      }
+    },
+    {
+      "check": "team[0] lead turn after restore replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_19",
+        "errors": []
+      }
+    },
+    {
+      "check": "org[0] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run created successfully.",
+        "agentOrgRunId": "rsam_org_rsamb1790755410615_dac9ebd09b01419aac6aa9ed780049a1"
+      }
+    },
+    {
+      "check": "org[0] run config has no skill field",
+      "ok": true,
+      "detail": {
+        "director": {
+          "address": "/director",
+          "agentRunId": "rsam_skilled_rsamb1790755410615_25cab62a347646b380c51fb93e8ba0e4"
+        }
+      }
+    },
+    {
+      "check": "org[0] director turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_20",
+        "errors": []
+      }
+    },
+    {
+      "check": "org[0] stream messages carry no skill field",
+      "ok": true,
+      "detail": {
+        "sawSnapshot": true
+      }
+    },
+    {
+      "check": "org[0] director: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 7392
+      }
+    },
+    {
+      "check": "org[0] director: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "org[0] terminate",
+      "ok": true
+    },
+    {
+      "check": "org[0] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run restored successfully.",
+        "agentOrgRunId": "rsam_org_rsamb1790755410615_dac9ebd09b01419aac6aa9ed780049a1"
+      }
+    },
+    {
+      "check": "org[0] director turn after restore replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_21",
+        "errors": []
+      }
+    },
+    {
+      "check": "agent[1] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "rsam_skilled_rsamb1790755410615_57d9fa4d66bd40269edd434fca572720"
+      }
+    },
+    {
+      "check": "agent[1] first turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_22",
+        "errors": []
+      }
+    },
+    {
+      "check": "agent[1]: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 3460
+      }
+    },
+    {
+      "check": "agent[1]: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "agent[1] terminate",
+      "ok": true
+    },
+    {
+      "check": "agent[1] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "rsam_skilled_rsamb1790755410615_57d9fa4d66bd40269edd434fca572720"
+      }
+    },
+    {
+      "check": "agent[1] turn after restore replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_23",
+        "errors": []
+      }
+    },
+    {
+      "check": "agent[1] after restore: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 3460
+      }
+    },
+    {
+      "check": "agent[1] after restore: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "team[1] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "rsam_team_rsamb1790755410615_f6044566e64040649da51ecabfa399d5"
+      }
+    },
+    {
+      "check": "team[1] resume config has no skill field",
+      "ok": true,
+      "detail": {
+        "lead": {
+          "address": "/lead",
+          "agentRunId": "rsam_skilled_rsamb1790755410615_2b4b5d693bf046cb95ac9825b234effa"
+        }
+      }
+    },
+    {
+      "check": "team[1] lead turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_24",
+        "errors": []
+      }
+    },
+    {
+      "check": "team[1] stream messages carry no skill field",
+      "ok": true,
+      "detail": {
+        "messages": 27,
+        "sawSnapshot": true
+      }
+    },
+    {
+      "check": "team[1] lead: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 7399
+      }
+    },
+    {
+      "check": "team[1] lead: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "team[1] terminate",
+      "ok": true
+    },
+    {
+      "check": "team[1] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent team run restored successfully.",
+        "teamRunId": "rsam_team_rsamb1790755410615_f6044566e64040649da51ecabfa399d5"
+      }
+    },
+    {
+      "check": "team[1] lead turn after restore replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_25",
+        "errors": []
+      }
+    },
+    {
+      "check": "org[1] create",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run created successfully.",
+        "agentOrgRunId": "rsam_org_rsamb1790755410615_fa8690f4570b4eb09ad73c6c6bb4e292"
+      }
+    },
+    {
+      "check": "org[1] run config has no skill field",
+      "ok": true,
+      "detail": {
+        "director": {
+          "address": "/director",
+          "agentRunId": "rsam_skilled_rsamb1790755410615_70879450ffc242b6aed7f4af9d54b8ff"
+        }
+      }
+    },
+    {
+      "check": "org[1] director turn replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_26",
+        "errors": []
+      }
+    },
+    {
+      "check": "org[1] stream messages carry no skill field",
+      "ok": true,
+      "detail": {
+        "sawSnapshot": true
+      }
+    },
+    {
+      "check": "org[1] director: system prompt sent to the model has the catalog entry and SKILL.md path",
+      "ok": true,
+      "detail": {
+        "promptChars": 7392
+      }
+    },
+    {
+      "check": "org[1] director: system prompt does not inline the skill body",
+      "ok": true
+    },
+    {
+      "check": "org[1] terminate",
+      "ok": true
+    },
+    {
+      "check": "org[1] restore",
+      "ok": true,
+      "detail": {
+        "success": true,
+        "message": "Agent organization run restored successfully.",
+        "agentOrgRunId": "rsam_org_rsamb1790755410615_fa8690f4570b4eb09ad73c6c6bb4e292"
+      }
+    },
+    {
+      "check": "org[1] director turn after restore replied",
+      "ok": true,
+      "detail": {
+        "reply": "RSAM_FAKE_REPLY_27",
+        "errors": []
+      }
+    },
+    {
+      "check": "no record written by the server contains the field",
+      "ok": true,
+      "detail": {
+        "files": 73,
+        "carrying": []
+      }
+    }
+  ],
+  "fail": []
+}

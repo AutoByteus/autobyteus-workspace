@@ -1,0 +1,134 @@
+{
+  "cli_version": "1.2.10",
+  "model": "gemini-3.8-flash-low",
+  "cases": {
+    "view_file": {
+      "prompt": "Read probe.txt in the added directory using the file viewing tool. Reply with its exact contents only.",
+      "autoapprove": false,
+      "added_fixture_directory": true,
+      "exit_code": 0,
+      "timed_out": false,
+      "json_event_count": 8,
+      "non_json_stdout_line_numbers": [],
+      "event_types": [
+        "init",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "result"
+      ],
+      "tool_updates": [
+        {
+          "step_index": 2,
+          "name": "view_file",
+          "state": "ACTIVE"
+        },
+        {
+          "step_index": 2,
+          "name": "view_file",
+          "state": "DONE"
+        }
+      ],
+      "created_file_content": null
+    },
+    "run_command_allowed": {
+      "prompt": "Run the shell command printf TOOL-EVENT-ALLOWED exactly once; do not use another method. Then report its output.",
+      "autoapprove": true,
+      "added_fixture_directory": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "json_event_count": 8,
+      "non_json_stdout_line_numbers": [],
+      "event_types": [
+        "init",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "result"
+      ],
+      "tool_updates": [
+        {
+          "step_index": 2,
+          "name": "run_command",
+          "state": "ACTIVE"
+        },
+        {
+          "step_index": 2,
+          "name": "run_command",
+          "state": "DONE"
+        }
+      ],
+      "created_file_content": null
+    },
+    "run_command_denied": {
+      "prompt": "Run the shell command printf TOOL-EVENT-DENIED exactly once; do not use another method. Then report its output.",
+      "autoapprove": false,
+      "added_fixture_directory": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "json_event_count": 6,
+      "non_json_stdout_line_numbers": [],
+      "event_types": [
+        "init",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "result"
+      ],
+      "tool_updates": [
+        {
+          "step_index": 2,
+          "name": "run_command",
+          "state": "ACTIVE"
+        },
+        {
+          "step_index": 2,
+          "name": "run_command",
+          "state": "ERROR"
+        }
+      ],
+      "created_file_content": null
+    },
+    "file_write_allowed": {
+      "prompt": "Use a file-writing tool (not a shell command) to create created.txt in the current project with exactly TOOL-EVENT-WRITE followed by a newline. Then confirm the filename.",
+      "autoapprove": true,
+      "added_fixture_directory": false,
+      "exit_code": 0,
+      "timed_out": false,
+      "json_event_count": 10,
+      "non_json_stdout_line_numbers": [],
+      "event_types": [
+        "init",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "step_update",
+        "result"
+      ],
+      "tool_updates": [
+        {
+          "step_index": 2,
+          "name": "write_to_file",
+          "state": "ACTIVE"
+        },
+        {
+          "step_index": 2,
+          "name": "write_to_file",
+          "state": "DONE"
+        }
+      ],
+      "created_file_content": "TOOL-EVENT-WRITE\n"
+    }
+  }
+}

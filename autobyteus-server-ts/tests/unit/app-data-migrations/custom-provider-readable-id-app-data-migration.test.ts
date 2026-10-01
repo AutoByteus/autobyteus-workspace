@@ -90,7 +90,6 @@ const setupFixture = async () => {
   const selectorPaths = {
     agent: path.join(directory, 'agents', 'alpha', 'agent-config.json'),
     team: path.join(directory, 'agent-teams', 'alpha', 'team-config.json'),
-    bindings: path.join(directory, 'external-channel', 'bindings.json'),
     agentRun: path.join(directory, 'memory', 'agents', 'run-1', 'run_metadata.json'),
     teamRun: path.join(directory, 'memory', 'agent_teams', 'run-2', 'team_run_metadata.json'),
     improver: path.join(
@@ -111,11 +110,6 @@ const setupFixture = async () => {
     defaultLaunchConfig: { llmModelIdentifier: oldIdentifier },
     arbitrary: { llmModelIdentifier: oldIdentifier },
   });
-  await writeJson(selectorPaths.bindings, [{
-    id: 'binding-1',
-    launchPreset: { llmModelIdentifier: oldIdentifier },
-    arbitrary: { llmModelIdentifier: oldIdentifier },
-  }]);
   await writeJson(selectorPaths.agentRun, {
     llmModelIdentifier: oldIdentifier,
     nested: { llmModelIdentifier: oldIdentifier },
@@ -233,18 +227,16 @@ describe('CustomProviderReadableIdAppDataMigration', () => {
 
     const agent = await readJson(fixture.selectorPaths.agent);
     const team = await readJson(fixture.selectorPaths.team);
-    const bindings = await readJson(fixture.selectorPaths.bindings);
     const agentRun = await readJson(fixture.selectorPaths.agentRun);
     const teamRun = await readJson(fixture.selectorPaths.teamRun);
     const improver = await readJson(fixture.selectorPaths.improver);
     expect(agent.defaultLaunchConfig.llmModelIdentifier).toBe(newIdentifier);
     expect(team.defaultLaunchConfig.llmModelIdentifier).toBe(newIdentifier);
-    expect(bindings[0].launchPreset.llmModelIdentifier).toBe(newIdentifier);
     expect(agentRun.llmModelIdentifier).toBe(newIdentifier);
     expect(teamRun.memberTree[0].llmModelIdentifier).toBe(newIdentifier);
     expect(teamRun.memberTree[1].memberTree[0].llmModelIdentifier).toBe(newIdentifier);
     expect(improver.llmModelIdentifier).toBe(newIdentifier);
-    for (const current of [agent, team, bindings[0], agentRun, teamRun, improver]) {
+    for (const current of [agent, team, agentRun, teamRun, improver]) {
       expect(JSON.stringify(current)).toContain(oldIdentifier);
     }
 

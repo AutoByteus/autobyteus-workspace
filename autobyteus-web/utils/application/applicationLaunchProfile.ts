@@ -8,6 +8,7 @@ import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
 } from '@autobyteus/application-sdk-contracts'
+import { toRaw } from 'vue'
 
 export type ApplicationAgentLaunchProfileDraft = {
   kind: 'AGENT'
@@ -73,7 +74,7 @@ const hasOwn = (value: object | null | undefined, key: string): boolean => (
 
 const cloneLlmConfig = (
   value: Record<string, unknown> | null | undefined,
-): Record<string, unknown> | null => value ? structuredClone(value) : null
+): Record<string, unknown> | null => value ? structuredClone(toRaw(value)) : null
 
 export const isSameResourceRef = (
   left: ApplicationExecutionResourceRef | null | undefined,
@@ -153,7 +154,10 @@ export const resolveEffectiveResourceRef = (
     view.savedOverride
     && buildResourceRefKey(view.savedOverride.executionResourceRef) === draft.selection
   ) {
-    return structuredClone(view.savedOverride.executionResourceRef)
+    const saved = view.savedOverride.executionResourceRef
+    return saved.source === 'bundle'
+      ? { source: saved.source, kind: saved.kind, localId: saved.localId }
+      : { source: saved.source, kind: saved.kind, definitionId: saved.definitionId }
   }
   return resolveSelectedResourceRef(draft.selection, availableResources)
 }

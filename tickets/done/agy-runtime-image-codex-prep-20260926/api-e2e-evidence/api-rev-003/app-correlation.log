@@ -1,0 +1,286 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+Custom app data directory set to: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY
+Updated config file path to /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/.env
+Loading environment from: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY
+DB DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/db
+LOGS DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/logs
+DOWNLOAD DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/download
+MEMORY DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-26T13:34:54.456Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stderr | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:autobyteus-org:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus-org/autobyteus-agents/agent-orgs/autobyteus-org
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Creating temp workspace at: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/temp_workspace.
+Initialized TempWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Agent definition cache populated with 10 items.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Populating agent definition cache for the first time...
+[2026-09-26T13:34:54.790Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Agent definition cache populated with 10 items.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+[2026-09-26T13:34:54.793Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 12 items.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+In-memory cache: Added new agent definition with ID agy-native-image-b474ba6f-0148-4b2c-a32f-f79d63ec5ab2.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Agent Definition created successfully with ID: agy-native-image-b474ba6f-0148-4b2c-a32f-f79d63ec5ab2
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Created and registered workspace ID: agent_ws_133153613b08754a2b3bed54746a2f8c72561361c2abd957ef7f5fc0db28dc3f
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-app-image-e2e-38FVbY/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Reusing registered workspace ID: agent_ws_133153613b08754a2b3bed54746a2f8c72561361c2abd957ef7f5fc0db28dc3f
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Published antigravity_cli agent run 'agy_native_image_b474ba6f_0148_4b2c_a32f_f79d63e_5ead4958247d41dfa70801830ba37f21'.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+Agent websocket attached for run agy_native_image_b474ba6f_0148_4b2c_a32f_f79d63e_5ead4958247d41dfa70801830ba37f21
+Created agent session 739c4302-ccb8-466f-bc7e-198ab5b3a581 for run agy_native_image_b474ba6f_0148_4b2c_a32f_f79d63e_5ead4958247d41dfa70801830ba37f21
+Agent WebSocket connected: session=739c4302-ccb8-466f-bc7e-198ab5b3a581, run=agy_native_image_b474ba6f_0148_4b2c_a32f_f79d63e_5ead4958247d41dfa70801830ba37f21
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat > publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Closed agent session 739c4302-ccb8-466f-bc7e-198ab5b3a581
+Agent WebSocket disconnected: 739c4302-ccb8-466f-bc7e-198ab5b3a581
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+In-memory cache: Removed agent definition with ID agy-native-image-b474ba6f-0148-4b2c-a32f-f79d63ec5ab2.
+
+stdout | tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts > real AutoByteus AGY standalone native image chat
+Agent Definition with ID agy-native-image-b474ba6f-0148-4b2c-a32f-f79d63ec5ab2 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts (2 tests | 1 skipped) 20893ms
+     ✓ publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket  20484ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 1 skipped (2)
+   Start at  15:34:48
+   Duration  26.80s (transform 3.92s, setup 13ms, import 5.43s, tests 20.89s, environment 0ms)
+

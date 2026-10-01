@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { CodexAgentRunContext } from "../../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-context.js";
@@ -40,9 +39,9 @@ const createRunContext = (
       workspaceId: workingDirectory,
       memoryDir: input.memoryDir ?? null,
       llmConfig: null,
-      skillAccessMode: SkillAccessMode.NONE,
       memberExecutionContext: input.teamRunId
         ? new MemberExecutionContext({
+            teamScoped: true,
             identity: {
               root: createTeamRootExecutionIdentity(input.teamRunId),
               memberAddress: `/${runId}`,

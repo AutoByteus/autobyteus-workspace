@@ -1,0 +1,6 @@
+[2026-09-27T10:21:01.398Z] [INFO] [electron] Application started
+[2026-09-27T10:21:01.484Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:01.486Z] [INFO] [electron] [updater] Generated new staging user ID: bc6f15e7-5c5f-54bf-a0ca-4d524802fa9d
+[2026-09-27T10:21:01.504Z] [INFO] [electron] [updater] Found version 1.4.90 (url: AutoByteus_personal_macos-arm64-1.4.90.zip)
+[2026-09-27T10:21:01.533Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:01.536Z] [INFO] [electron] [updater] Found version 1.4.90 (url: AutoByteus_personal_macos-arm64-1.4.90.zip)

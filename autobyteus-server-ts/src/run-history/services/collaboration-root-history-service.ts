@@ -17,7 +17,7 @@ export class CollaborationRootHistoryService {
   constructor(private readonly dependencies: Readonly<{
     memoryDir: string;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
-    orgs: Pick<AgentOrgRunHistoryCatalogService, "listRows">;
+    orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows">;
     orgRuns: Pick<AgentOrgRunManager, "getActive">;
     orgTrees?: AgentOrgRunExecutionTreeStore;
   }>) {
@@ -27,7 +27,7 @@ export class CollaborationRootHistoryService {
   async list(): Promise<readonly CollaborationRootHistoryItem[]> {
     const [teams, orgRows] = await Promise.all([
       this.dependencies.teams.listTeamRunHistory(),
-      this.dependencies.orgs.listRows(),
+      this.dependencies.orgs.listCatalogRows(),
     ]);
     const items: CollaborationRootHistoryItem[] = teams.map((team) => Object.freeze({
       root_subject_kind: "agent_team" as const,

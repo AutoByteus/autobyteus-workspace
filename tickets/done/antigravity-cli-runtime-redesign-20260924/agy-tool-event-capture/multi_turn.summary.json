@@ -1,0 +1,75 @@
+{
+  "input_messages": [
+    {
+      "event": "user",
+      "message": {
+        "content": "Run the shell command printf FIRST-TURN-TOOL exactly once. Report its output."
+      }
+    },
+    {
+      "event": "user",
+      "message": {
+        "content": "Run the shell command printf SECOND-TURN-TOOL exactly once. Report its output."
+      }
+    }
+  ],
+  "exit_code": 0,
+  "event_count": 15,
+  "result_count": 2,
+  "tools": [
+    {
+      "step_index": 2,
+      "state": "ACTIVE",
+      "name": "run_command",
+      "command": "printf FIRST-TURN-TOOL"
+    },
+    {
+      "step_index": 2,
+      "state": "DONE",
+      "name": "run_command",
+      "command": "printf FIRST-TURN-TOOL"
+    },
+    {
+      "step_index": 6,
+      "state": "ACTIVE",
+      "name": "run_command",
+      "command": "printf SECOND-TURN-TOOL"
+    },
+    {
+      "step_index": 6,
+      "state": "DONE",
+      "name": "run_command",
+      "command": "printf SECOND-TURN-TOOL"
+    }
+  ],
+  "results": [
+    {
+      "conversation_id": "4d02d92b-1c8a-432b-9ba0-e7be9bb85058",
+      "status": "SUCCESS",
+      "response": "The command output is:\n\n```\nFIRST-TURN-TOOL\n```\n",
+      "duration_seconds": 5.93897,
+      "num_turns": 1,
+      "usage": {
+        "input_tokens": 25900,
+        "output_tokens": 128,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 26028
+      }
+    },
+    {
+      "conversation_id": "4d02d92b-1c8a-432b-9ba0-e7be9bb85058",
+      "status": "SUCCESS",
+      "response": "The command output is:\n\n```\nSECOND-TURN-TOOL\n```\n",
+      "duration_seconds": 14.996169,
+      "num_turns": 2,
+      "usage": {
+        "input_tokens": 52404,
+        "output_tokens": 256,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 52660
+      }
+    }
+  ]
+}

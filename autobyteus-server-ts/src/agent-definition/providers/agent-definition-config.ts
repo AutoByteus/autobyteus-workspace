@@ -1,12 +1,16 @@
-import type {
-  AgentDefinition,
-  AgentDefinitionDefaultLaunchConfig,
+import {
+  DEFAULT_AGENT_SKILL_SCOPE,
+  normalizeAgentSkillScope,
+  type AgentDefinition,
+  type AgentDefinitionDefaultLaunchConfig,
+  type AgentSkillScope,
 } from "../domain/models.js";
 import { normalizeDefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 
 export type AgentConfigRecord = {
   toolNames?: string[];
   skillNames?: string[];
+  skillScope?: AgentSkillScope;
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];
   toolExecutionResultProcessorNames?: string[];
@@ -22,6 +26,7 @@ export const normalizeStringArray = (value: unknown): string[] =>
 export const defaultAgentConfig = (): AgentConfigRecord => ({
   toolNames: [],
   skillNames: [],
+  skillScope: DEFAULT_AGENT_SKILL_SCOPE,
   inputProcessorNames: [],
   llmResponseProcessorNames: [],
   toolExecutionResultProcessorNames: [],
@@ -36,6 +41,7 @@ export const normalizeAgentConfigRecord = (
 ): AgentConfigRecord => ({
   toolNames: normalizeStringArray(value?.toolNames),
   skillNames: normalizeStringArray(value?.skillNames),
+  skillScope: normalizeAgentSkillScope(value?.skillScope),
   inputProcessorNames: normalizeStringArray(value?.inputProcessorNames),
   llmResponseProcessorNames: normalizeStringArray(value?.llmResponseProcessorNames),
   toolExecutionResultProcessorNames: normalizeStringArray(value?.toolExecutionResultProcessorNames),
@@ -48,6 +54,7 @@ export const normalizeAgentConfigRecord = (
 export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigRecord => ({
   toolNames: domainObj.toolNames ?? [],
   skillNames: domainObj.skillNames ?? [],
+  skillScope: domainObj.skillScope ?? DEFAULT_AGENT_SKILL_SCOPE,
   inputProcessorNames: domainObj.inputProcessorNames ?? [],
   llmResponseProcessorNames: domainObj.llmResponseProcessorNames ?? [],
   toolExecutionResultProcessorNames: domainObj.toolExecutionResultProcessorNames ?? [],

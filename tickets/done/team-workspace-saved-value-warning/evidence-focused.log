@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.85 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-workspace-saved-value-warning/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts services/runConfigEditing/__tests__/existingAgentOrgWorkspaceDraft.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-workspace-saved-value-warning/autobyteus-web
+
+stderr | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runConfigEditing/__tests__/existingAgentOrgWorkspaceDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runConfigEditing/__tests__/existingAgentOrgWorkspaceDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runConfigEditing/__tests__/existingAgentOrgWorkspaceDraft.spec.ts (1 test) 3ms
+ ✓ components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts (9 tests) 42ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (6 tests) 26ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (14 tests) 148ms
+
+ Test Files  4 passed (4)
+      Tests  30 passed (30)
+   Start at  14:27:37
+   Duration  5.78s (transform 3.07s, setup 19.03s, collect 972ms, tests 219ms, environment 975ms, prepare 598ms)
+

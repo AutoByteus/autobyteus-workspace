@@ -1,0 +1,870 @@
+
+> autobyteus@1.4.81 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/config/__tests__/RunConfigPanel.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders placeholder when nothing selected
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Team Form when Team Template set
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Agent for an active empty New workspace while retaining the canonical Temp config
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit an Agent workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > hands two active New Team workspace commands to the draft owner and launches the exact current draft once
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root runtime' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root model' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root reasoning and fast controls' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root auto-execute' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'explicit nested Team override' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'exact nested Agent override' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run when workspace is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'root Team' workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'nested Team' workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'root Team'
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'nested Team'
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Property "agentRunConfigStore" was accessed during render but is not defined on instance. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of render function 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > returns to event view from selection-mode config header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > routes selected existing runs through the specialized stopped-run editor
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts (30 tests | 18 failed) 93ms
+   ✓ RunConfigPanel > renders placeholder when nothing selected 7ms
+   × RunConfigPanel > renders Agent Form when Agent Template set 5ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   ✓ RunConfigPanel > renders Team Form when Team Template set 5ms
+   × RunConfigPanel > triggers team run on button click when launch readiness passes 4ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending 3ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > loads a pending New workspace path before creating an agent run 1ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > blocks agent run creation when pending New workspace loading fails 2ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded 1ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits 2ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > disables Run Agent for an active empty New workspace while retaining the canonical Temp config 2ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > does not admit an Agent workspace from an inactive New-path buffer in Existing mode 1ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes 2ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > hands two active New Team workspace commands to the draft owner and launches the exact current draft once 4ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root runtime' edits 5ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root model' edits 6ms
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root reasoning and fast controls' edits 4ms
+   ✓ RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root auto-execute' edits 4ms
+   ✓ RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'explicit nested Team override' edits 4ms
+   ✓ RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'exact nested Agent override' edits 3ms
+   ✓ RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails 2ms
+   ✓ RunConfigPanel > disables team run when workspace is missing 4ms
+   × RunConfigPanel > does not admit a missing 'root Team' workspace from an inactive New-path buffer in Existing mode 4ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > does not admit a missing 'nested Team' workspace from an inactive New-path buffer in Existing mode 2ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > disables Run Team for an active empty New workspace on the 'root Team' 2ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > disables Run Team for an active empty New workspace on the 'nested Team' 1ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > disables agent run when workspace is missing 1ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   × RunConfigPanel > keeps draft agent configuration editable for workspace selection events 1ms
+     → Cannot read properties of undefined (reading 'seedModelIdentifier')
+   ✓ RunConfigPanel > keeps draft team configuration editable for workspace selection events 2ms
+   ✓ RunConfigPanel > returns to event view from selection-mode config header action 5ms
+   ✓ RunConfigPanel > routes selected existing runs through the specialized stopped-run editor 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Agent for an active empty New workspace while retaining the canonical Temp config
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit an Agent workspace from an inactive New-path buffer in Existing mode
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6007:46
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ setupRenderEffect ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6142:5
+ ❯ mountComponent ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5917:7
+ ❯ processComponent ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5869:9
+ ❯ patch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5386:11
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6014:11
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > hands two active New Team workspace commands to the draft owner and launches the exact current draft once
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:684:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root runtime' edits
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:789:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'root Team' workspace from an inactive New-path buffer in Existing mode
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'nested Team' workspace from an inactive New-path buffer in Existing mode
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:898:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'root Team'
+ FAIL  components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'nested Team'
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ components/workspace/config/__tests__/RunConfigPanel.spec.ts:934:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 13 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')
+ ❯ Proxy._sfc_render components/workspace/config/RunConfigPanel.vue:35:53
+     33|         :key="activeRunConfigContextRenderKey"
+     34|         :config="effectiveAgentConfig"
+     35|         :seed-model-identifier="agentRunConfigStore.seedModelIdentifie…
+       |                                                     ^
+     36|         :agent-definition="activeAgentDefinition"
+     37|         :workspace-loading-state="effectiveWorkspaceLoadingState"
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:33
+ ❯ flushJobs ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:405:9
+ ❯ processTicksAndRejections node:internal/process/task_queues:103:5
+
+This error originated in "components/workspace/config/__tests__/RunConfigPanel.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  18 failed | 12 passed (30)
+     Errors  13 errors
+   Start at  20:43:35
+   Duration  5.70s (transform 3.21s, setup 4.71s, collect 385ms, tests 93ms, environment 165ms, prepare 132ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

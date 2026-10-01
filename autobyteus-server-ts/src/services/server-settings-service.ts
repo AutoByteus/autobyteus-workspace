@@ -4,6 +4,7 @@ import {
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
 } from "../skill-improvement/domain/settings.js";
+import { PROJECTS_CAPABILITY_SETTING_KEY } from "../projects/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
@@ -30,6 +31,10 @@ import {
   resolveStreamingContentFlushIntervalMs,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../config/streaming-content-flush-interval-setting.js";
+import {
+  normalizeTaskExecutionIdleShutdownGraceForPersistence,
+  TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
+} from "../config/task-execution-idle-shutdown-setting.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 
 export {
@@ -147,6 +152,11 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
+      PROJECTS_CAPABILITY_SETTING_KEY,
+      "Controls whether the Projects module is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
       AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
     );
@@ -167,6 +177,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeStreamingContentFlushIntervalForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
+      "Milliseconds a delegated agent or team may stay quiet before it is shut down. A message to its run ID restores it with its conversation. Default: 600000 (10 minutes); allowed range 60000 to 86400000.",
+      true,
+      {
+        normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
       },
     );
 
@@ -371,8 +390,8 @@ export class ServerSettingsService {
     return true;
   }
 
-  getApplicationsEnabledSetting(): boolean | null {
-    const rawValue = appConfigProvider.config.get(APPLICATIONS_CAPABILITY_SETTING_KEY)?.trim();
+  getBooleanSetting(key: string): boolean | null {
+    const rawValue = appConfigProvider.config.get(key)?.trim();
     if (!rawValue) {
       return null;
     }
@@ -380,27 +399,8 @@ export class ServerSettingsService {
     return rawValue.toLowerCase() === "true";
   }
 
-  setApplicationsEnabledSetting(enabled: boolean): void {
-    appConfigProvider.config.set(
-      APPLICATIONS_CAPABILITY_SETTING_KEY,
-      enabled ? "true" : "false",
-    );
-  }
-
-  getSkillImprovementEnabledSetting(): boolean | null {
-    const rawValue = appConfigProvider.config.get(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY)?.trim();
-    if (!rawValue) {
-      return null;
-    }
-
-    return rawValue.toLowerCase() === "true";
-  }
-
-  setSkillImprovementEnabledSetting(enabled: boolean): void {
-    appConfigProvider.config.set(
-      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
-      enabled ? "true" : "false",
-    );
+  setBooleanSetting(key: string, enabled: boolean): void {
+    appConfigProvider.config.set(key, enabled ? "true" : "false");
   }
 
   getSettingValue(key: string): string | null {

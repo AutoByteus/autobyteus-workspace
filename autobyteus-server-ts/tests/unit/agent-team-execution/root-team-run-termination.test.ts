@@ -55,7 +55,6 @@ const buildRoot = (input: {
     rootRun: rootRun as never,
     config,
     tree,
-    tasks: Object.freeze({ schemaVersion: 1, rootTeamRunId: config.rootTeam.teamRunId, records: Object.freeze([]) }),
     messages: Object.freeze({ schemaVersion: 1, rootTeamRunId: config.rootTeam.teamRunId, messages: Object.freeze([]) }),
     persistence: persistence as never,
     publisher: new TeamRunEventPublisher(),
@@ -150,10 +149,10 @@ describe("RootTeamRun termination stabilization", () => {
       }),
     };
     const { root, persistence } = buildRoot({ scope });
-    const taskDelegation = (root as never as {
-      taskDelegation: { shutdownAndSettle(reason: string): Promise<void> };
-    }).taskDelegation;
-    vi.spyOn(taskDelegation, "shutdownAndSettle").mockImplementation(async () => {
+    const taskExecutions = (root as never as {
+      taskExecutions: { drain(): Promise<void> };
+    }).taskExecutions;
+    vi.spyOn(taskExecutions, "drain").mockImplementation(async () => {
       order.push("task-drain");
     });
     persistence.drain.mockImplementation(async () => { order.push("persistence-drain"); });

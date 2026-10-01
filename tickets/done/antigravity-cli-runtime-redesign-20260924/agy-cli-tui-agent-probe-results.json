@@ -1,0 +1,11 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "promptInteractiveUsed": true,
+  "customAgentNameShownInTui": true,
+  "expectedCodeShownInTui": false,
+  "logCreatedConversationLines": 1,
+  "uniqueConversationIdsOnCreatedLines": 1,
+  "elapsedSeconds": 36.12,
+  "processExitAfterSigterm": 0,
+  "rawTerminalAndLogPersisted": false
+}

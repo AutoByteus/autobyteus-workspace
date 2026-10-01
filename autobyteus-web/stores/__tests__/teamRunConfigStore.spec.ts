@@ -42,7 +42,6 @@ const flatConfig = (): TeamRunConfig => ({
     llmModelIdentifier: 'gpt-5.6-luna',
     llmConfig: { reasoning_effort: 'medium' },
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
   },
   teamOverrides: {},
   agentOverrides: {

@@ -5,7 +5,6 @@ import { createRequire } from "node:module";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -57,7 +56,6 @@ const createConfig = (): AgentRunConfig => new AgentRunConfig({
   autoExecuteTools: true,
   workspaceId: "standalone-error-workspace",
   llmConfig: null,
-  skillAccessMode: SkillAccessMode.NONE,
 });
 
 const createErrorBackend = (accepted: boolean): RuntimeFixture => {
@@ -112,6 +110,8 @@ const createManager = (backend: AgentRunBackend): AgentRunManager => {
     autoByteusBackendFactory: createFactory(unusedAuto),
     codexBackendFactory: createFactory(backend),
     claudeBackendFactory: createFactory(unusedClaude),
+    agyBackendFactory: createFactory(unusedClaude),
+    grokBackendFactory: createFactory(unusedClaude),
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,
@@ -127,7 +127,6 @@ const buildMetadata = (): AgentRunMetadata => ({
   llmModelIdentifier: "fixture-model",
   llmConfig: null,
   autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.NONE,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
   activationState: "PREPARED",
@@ -211,7 +210,9 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
     historyCatalogService: catalogService,
     workspaceManager: {} as never,
     provisioningService: {} as never,
-    lifecycleService: {} as never,
+    // terminateAgentRun ends a registered Agent collaboration root first; a manager-owned Error
+    // runtime has none.
+    lifecycleService: { terminateCollaborationRoot: vi.fn(async () => false) } as never,
   });
   const studioHandle = configureE2eStudioApplicationApiServices({
     agentDefinitionService: {} as never,

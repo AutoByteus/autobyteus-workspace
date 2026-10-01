@@ -1,8 +1,12 @@
 import { nextTick, ref } from 'vue';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 
 const setActiveTab = vi.fn();
+const selectTabExplicitly = vi.fn();
+const useContextualDefaultTab = vi.fn();
 const activeTab = ref('progress');
 const visibleTabs = ref([
   { name: 'files', label: 'Files' },
@@ -19,12 +23,6 @@ vi.mock('~/stores/activeContextStore', () => ({
     activeAgentContext: { state: { runId: 'run-1' } },
     activeConfig: null,
     get activeWorkspaceTarget() { return activeWorkspaceTarget.value; },
-  }),
-}));
-
-vi.mock('~/stores/agentTodoStore', () => ({
-  useAgentTodoStore: () => ({
-    getTodos: () => [],
   }),
 }));
 
@@ -45,6 +43,8 @@ vi.mock('~/composables/useRightSideTabs', () => ({
     activeTab,
     visibleTabs,
     setActiveTab,
+    selectTabExplicitly,
+    useContextualDefaultTab,
   }),
 }));
 
@@ -71,6 +71,8 @@ import RightSideTabs from '../RightSideTabs.vue';
 describe('RightSideTabs', () => {
   beforeEach(() => {
     setActiveTab.mockReset();
+    selectTabExplicitly.mockReset();
+    useContextualDefaultTab.mockReset();
     activeTab.value = 'progress';
     visibleTabs.value = [
       { name: 'files', label: 'Files' },
@@ -97,7 +99,7 @@ describe('RightSideTabs', () => {
         },
         CollaborationOverviewPanel: {
           name: 'CollaborationOverviewPanel',
-          props: ['messages', 'tasks'],
+          props: ['messages'],
           template: '<div class="collaboration-overview-stub" />',
         },
         TerminalPanel: {
@@ -135,6 +137,23 @@ describe('RightSideTabs', () => {
       wrapper.unmount();
     },
   );
+
+  it('does not switch tabs when a background task appears for the active run (DEC-006, REQ-010)', async () => {
+    setActivePinia(createPinia());
+    activeTab.value = 'files';
+    activeWorkspaceTarget.value = { kind: 'standalone_agent', context: { config: { workspaceId: 'ws-1' } } };
+    const wrapper = mountSubject();
+    setActiveTab.mockReset();
+
+    useAgentBackgroundTaskStore().upsertTask('run-1', {
+      taskId: 'bg-1', kind: 'shell', description: 'sleep 20', status: 'running',
+      summary: null, startedAt: '2026-09-29T16:48:20.000Z',
+    });
+    await nextTick();
+
+    expect(setActiveTab).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
 
   it('keeps the shared tab shell clipped instead of scrollable', () => {
     const wrapper = mountSubject();
@@ -210,7 +229,6 @@ describe('RightSideTabs', () => {
     activeWorkspaceTarget.value = {
       kind: 'agent_org_direct_agent',
       collaborationMessages: messages,
-      collaborationTasks: { rootKind: 'agent_org', rootRunId: 'org-run', focusedAgentRunId: 'direct' },
       context: { config: { workspaceId: null, workspaceMetadata: null } },
     };
     activeTab.value = 'teamMembers';
@@ -220,27 +238,23 @@ describe('RightSideTabs', () => {
 
     const overview = wrapper.getComponent({ name: 'CollaborationOverviewPanel' });
     expect(overview.props('messages')).toStrictEqual(messages);
-    expect(overview.props('tasks')).toMatchObject({ rootKind: 'agent_org', focusedAgentRunId: 'direct' });
+    expect(overview.props()).not.toHaveProperty('tasks');
   });
 
-  it('tracks the compound collaboration root when Team and AgentOrg run IDs collide', async () => {
-    activeWorkspaceTarget.value = {
-      kind: 'standalone_team_member',
-      collaborationMessages: { rootKind: 'agent_team', rootRunId: 'shared-run-id' },
-      team: {},
-      context: { config: { workspaceId: null, workspaceMetadata: null } },
-    };
+  it('registers the shared contextual default and routes tab-bar clicks as explicit choices', async () => {
     const wrapper = mountSubject();
-    setActiveTab.mockClear();
+    expect(useContextualDefaultTab).toHaveBeenCalledTimes(1);
 
-    activeWorkspaceTarget.value = {
-      kind: 'agent_org_direct_agent',
-      collaborationMessages: { rootKind: 'agent_org', rootRunId: 'shared-run-id' },
-      context: { config: { workspaceId: null, workspaceMetadata: null } },
-    };
+    wrapper.findComponent({ name: 'TabList' }).vm.$emit('select', 'artifacts');
     await nextTick();
+    expect(selectTabExplicitly).toHaveBeenCalledWith('artifacts');
+    wrapper.unmount();
+  });
 
-    expect(setActiveTab).toHaveBeenCalledWith('teamMembers');
+  it('replaces an invisible active tab on mount with the first visible tab', () => {
+    activeTab.value = 'teamMembers';
+    const wrapper = mountSubject();
+    expect(setActiveTab).toHaveBeenCalledWith('files');
     wrapper.unmount();
   });
 

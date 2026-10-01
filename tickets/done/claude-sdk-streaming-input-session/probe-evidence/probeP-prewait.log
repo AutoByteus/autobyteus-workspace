@@ -1,0 +1,27 @@
+   0.0s >>> SEND 09d67984 Reply only READY.
+   0.3s FRAME command_lifecycle {"command_uuid":"09d67984-4720-4fc3-9140-01a537237a5e","state":"queued","uuid":"814ee536-785f-4782-8a24-ab6c5879b625"}
+   0.3s FRAME command_lifecycle {"command_uuid":"09d67984-4720-4fc3-9140-01a537237a5e","state":"started","uuid":"51714c4b-3df8-4303-99b9-9d91aad33516"}
+   0.3s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   1.8s FRAME assistant ["thinking"] echo=09d67984
+   1.9s FRAME assistant ["READY."] echo=-
+   1.9s FRAME result/success success answers=[09d67984] origin=undefined terminal=completed
+   1.9s FRAME command_lifecycle {"command_uuid":"09d67984-4720-4fc3-9140-01a537237a5e","state":"completed","uuid":"be8f8b95-1c37-488e-ab18-19fca2892ed6"}
+   3.4s ==== mode prewait cli /Users/normy/.local/bin/claude
+   3.4s >>> SEND d967f02b Reply only A.
+   3.4s interrupt(cancelQueued) immediately after send -> {"still_queued":[],"cancelled":[]}
+   3.4s FRAME command_lifecycle {"command_uuid":"d967f02b-b2a7-454f-af0b-74f41598d974","state":"queued","uuid":"a11cbf52-d0ee-424b-b6a8-a2186dcfbc91"}
+   3.4s FRAME command_lifecycle {"command_uuid":"d967f02b-b2a7-454f-af0b-74f41598d974","state":"started","uuid":"2e4bc29f-552f-415d-a61f-7c20ca67a8ce"}
+   3.4s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+   4.4s FRAME assistant ["thinking"] echo=d967f02b
+   4.4s FRAME assistant ["A."] echo=-
+   4.4s FRAME result/success success answers=[d967f02b] origin=undefined terminal=completed
+   4.4s FRAME command_lifecycle {"command_uuid":"d967f02b-b2a7-454f-af0b-74f41598d974","state":"completed","uuid":"7a107961-40f7-4823-a607-d78c2c9f5fdc"}
+  15.4s >>> SEND e031e81d Reply only AFTER.
+  15.4s FRAME command_lifecycle {"command_uuid":"e031e81d-e358-4b63-8511-ca037b373793","state":"queued","uuid":"e70ce709-285a-453f-8000-7b8f18d6a663"}
+  15.4s FRAME command_lifecycle {"command_uuid":"e031e81d-e358-4b63-8511-ca037b373793","state":"started","uuid":"071980e1-d17f-4f69-a387-e85d22595d83"}
+  15.4s FRAME system/init capabilities=["interrupt_receipt_v1","interrupt_cancel_queued_v1","msg_lifecycle_v1","mcp_read_resource_v1","mcp_tool_ui_meta_v1"]
+  16.3s FRAME assistant ["thinking"] echo=e031e81d
+  16.3s FRAME assistant ["AFTER."] echo=-
+  16.3s FRAME result/success success answers=[e031e81d] origin=undefined terminal=completed
+  16.3s FRAME command_lifecycle {"command_uuid":"e031e81d-e358-4b63-8511-ca037b373793","state":"completed","uuid":"26d39759-20f9-4a4d-8a4c-609d521d79d7"}
+  17.3s ==== answered uuid lists: [["09d67984"],["d967f02b"],["e031e81d"]]

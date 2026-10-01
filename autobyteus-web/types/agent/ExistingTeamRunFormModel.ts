@@ -10,11 +10,15 @@ export type ExistingWorkspaceDisplay = Readonly<{
   availability: 'available' | 'historical-only' | 'none'
 }>
 
+export type ExistingWorkspacePresentation =
+  | Readonly<{ kind: 'fixed-path' }>
+  | Readonly<{ kind: 'selector'; model: WorkspaceSelectorModel }>
+
 export type ExistingTeamScopeFormModel = TeamScopeDisplayFields & Readonly<{
   mode: 'existing'
   originalModelIdentifier: string
   modelOptions?: ExistingRunModelOptionsState
-  workspaceControl: WorkspaceSelectorModel
+  workspacePresentation: ExistingWorkspacePresentation
   directlyEdited: boolean
 }>
 
@@ -22,7 +26,7 @@ export type ExistingTeamFormAgentNode = TeamAgentDisplayFields & Readonly<{
   mode: 'existing'
   originalModelIdentifier: string
   modelOptions?: ExistingRunModelOptionsState
-  storedWorkspace: ExistingWorkspaceDisplay | null
+  workspacePresentation: ExistingWorkspacePresentation
   directlyEdited: boolean
 }>
 

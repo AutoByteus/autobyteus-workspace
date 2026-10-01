@@ -56,6 +56,21 @@ describe('ModelCatalogService', () => {
     ImageClientFactory.reinitialize();
   });
 
+  it('keeps Claude offered snapshots and exact-current lookup behind one catalog authority', async () => {
+    const raw = ['default', 'opus'].map((model_identifier) => ({ model_identifier,
+      provider_id: 'ANTHROPIC', provider_name: 'Anthropic', provider_type: 'ANTHROPIC' }));
+    const selectionCatalog = vi.fn(async () => ({ offeredModels: [raw[1]],
+      findExactCurrent: (id: string) => raw.find((model) => model.model_identifier === id) ?? null }));
+    const service = new ModelCatalogService(builtInCatalog, customProviderStore as never,
+      customSyncService as never, remoteDiscoveryService as never,
+      { selectionCatalog } as never, emptyExternalCatalog as never);
+    expect((await service.listLlmModels('claude_agent_sdk')).map((model) => model.model_identifier)).toEqual(['opus']);
+    expect((await service.listProviderModelCatalogSnapshots('claude_agent_sdk'))[0]?.llmModels
+      .map((model) => model.model_identifier)).toEqual(['opus']);
+    expect((await service.resolveExactCurrentLlmModel('claude_agent_sdk', 'default'))?.model_identifier).toBe('default');
+    expect(selectionCatalog).toHaveBeenCalledTimes(3);
+  });
+
   it('returns static and cold dynamic registry snapshots without remote discovery', async () => {
     const snapshots = await createService().listProviderModelCatalogSnapshots('autobyteus');
     const openAi = snapshots.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OPENAI);

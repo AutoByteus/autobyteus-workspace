@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { ExternalChannelProvider } from "../../../../../src/external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../../../src/external-channel/channel-transport.js";
 import { WechatPersonalAdapter } from "../../../../../src/infrastructure/adapters/wechat-personal/wechat-personal-adapter.js";
 import { HttpWechatySidecarClient } from "../../../../../src/infrastructure/adapters/wechat-personal/wechaty-sidecar-client.js";
 

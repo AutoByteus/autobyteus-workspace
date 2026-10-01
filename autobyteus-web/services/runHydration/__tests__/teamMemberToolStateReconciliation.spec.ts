@@ -4,7 +4,7 @@ import type { Conversation } from '~/types/conversation'
 import type { ToolActivity } from '~/types/activity/RunActivity'
 import type { ToolCallSegment, ToolInvocationStatus } from '~/types/segments'
 import { reconcileTeamMemberToolState as reconcile } from '../teamMemberToolStateReconciliation'
-const tool = (status: ToolInvocationStatus, extra = {}): ToolCallSegment => ({ type: 'tool_call', invocationId: 'inv', toolName: 'submit_task_result',
+const tool = (status: ToolInvocationStatus, extra = {}): ToolCallSegment => ({ type: 'tool_call', invocationId: 'inv', toolName: 'run_bash',
   status, arguments: { message: 'actual' }, logs: ['live log'], result: null, error: null, ...extra })
 const conversation = (segment?: ToolCallSegment): Conversation => ({ id: 'task', createdAt: '', updatedAt: '', messages: [
   { type: 'user', text: 'history text', timestamp: new Date(1000), contextFilePaths: [{ kind: 'workspace_path', id: 'file', locator: '/note', displayName: 'note', type: 'Text' }] },
@@ -69,7 +69,7 @@ it('TASK-04: equivalent duplicates normalize to one exact tool and Activity; pro
   const result = reconcile(data)
   expect((result.conversation.messages[1] as any).segments).toHaveLength(1)
   expect(result.activities).toHaveLength(1)
-  expect(selected(result).toolName).toBe('submit_task_result')
+  expect(selected(result).toolName).toBe('run_bash')
 })
 it('TASK-04: actual optional routing retained only in Activity fills the copied invocation', () => {
   const data = input(tool('awaiting-approval', { approvalTarget: null }))

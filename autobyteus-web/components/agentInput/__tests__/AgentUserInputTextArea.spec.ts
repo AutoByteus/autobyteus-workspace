@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick, reactive } from 'vue'
 import AgentUserInputTextArea from '../AgentUserInputTextArea.vue'
@@ -8,16 +9,28 @@ type MockAgentContext = {
   contextId: string
   requirement: string
   contextFilePaths: Array<{ path: string; type: 'Text' | 'Image' | 'Audio' | 'Video' }>
+  submissionPending: boolean
+  state: { runId: string; currentStatus: AgentStatus }
 }
 
-const createContext = (contextId: string, requirement = ''): MockAgentContext => ({
+// Status and pending flags read the store mock's knobs so tests keep driving them from one place.
+const createContext = (contextId: string, requirement = ''): MockAgentContext => reactive({
   contextId,
   requirement,
   contextFilePaths: [],
-})
+  get submissionPending() { return activeContextStoreMock.submissionPending },
+  state: {
+    runId: contextId,
+    get currentStatus() { return activeContextStoreMock.currentStatus },
+  },
+}) as MockAgentContext
 
-const activeContextStoreMock = reactive({
-  activeAgentContext: createContext('ctx-1') as MockAgentContext | null,
+const activeContextStoreMock: any = reactive({
+  activeAgentContext: null as MockAgentContext | null,
+  get activeWorkspaceTarget() {
+    const context = this.activeAgentContext
+    return context ? { kind: 'standalone_agent', context, access: 'live' } : null
+  },
   submissionPending: false,
   currentStatus: AgentStatus.Idle,
   currentRequirement: '',
@@ -132,7 +145,7 @@ describe('AgentUserInputTextArea', () => {
   })
 
   it('hides the voice button when voice input is not installed', async () => {
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     expect(wrapper.find('button[title="Start voice input"]').exists()).toBe(false)
@@ -141,7 +154,7 @@ describe('AgentUserInputTextArea', () => {
   it('shows the voice button when voice input is installed and ready', async () => {
     voiceInputStoreMock.isAvailable = true
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     expect(wrapper.find('button[title="Start voice input"]').exists()).toBe(true)
@@ -151,7 +164,7 @@ describe('AgentUserInputTextArea', () => {
     voiceInputStoreMock.isAvailable = true
     voiceInputStoreMock.isRecording = true
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     expect(wrapper.text()).toContain('Recording... Tap stop when you are done.')
@@ -162,7 +175,7 @@ describe('AgentUserInputTextArea', () => {
     voiceInputStoreMock.isAvailable = true
     voiceInputStoreMock.isStarting = true
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     const button = wrapper.find('button[title="Starting microphone..."]')
@@ -179,7 +192,7 @@ describe('AgentUserInputTextArea', () => {
     contextFileUploadStoreMock.isUploading = true
     selectContext(createContext('ctx-uploading', 'ready to send'))
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
@@ -190,7 +203,7 @@ describe('AgentUserInputTextArea', () => {
     activeContextStoreMock.submissionPending = false
     selectContext(createContext('ctx-interrupt', ''))
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     const button = wrapper.find('button[title="Stop generation"]')
@@ -209,7 +222,7 @@ describe('AgentUserInputTextArea', () => {
     activeContextStoreMock.currentStatus = AgentStatus.Idle
     selectContext(createContext('ctx-sending', 'ready to send'))
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()
 
     const sendButton = wrapper.find('button[title="Send message"]')
@@ -223,7 +236,7 @@ describe('AgentUserInputTextArea', () => {
     activeContextStoreMock.submissionPending = true
     selectContext(createContext('ctx-pending-enter', 'ready to send'))
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await wrapper.find('textarea').trigger('keydown', { key: 'Enter' })
 
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
@@ -234,7 +247,7 @@ describe('AgentUserInputTextArea', () => {
     activeContextStoreMock.currentStatus = AgentStatus.Running
     selectContext(createContext('ctx-running-enter', 'draft is ignored while running'))
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await wrapper.find('textarea').trigger('keydown', { key: 'Enter' })
 
     expect(activeContextStoreMock.interruptGeneration).toHaveBeenCalledTimes(1)
@@ -244,7 +257,7 @@ describe('AgentUserInputTextArea', () => {
   it('leaves Shift+Enter to the textarea without invoking the primary action', async () => {
     selectContext(createContext('ctx-shift-enter', 'first line'))
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await wrapper.find('textarea').trigger('keydown', { key: 'Enter', shiftKey: true })
 
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
@@ -268,7 +281,7 @@ describe('AgentUserInputTextArea', () => {
       })
     })
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     const textarea = wrapper.find('textarea')
 
     await textarea.setValue('launch this offline agent')
@@ -277,10 +290,6 @@ describe('AgentUserInputTextArea', () => {
     await nextTick()
 
     expect(requirementAtSend).toBe('launch this offline agent')
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      context,
-      'launch this offline agent',
-    )
     expect((textarea.element as HTMLTextAreaElement).value).toBe('')
     expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
 
@@ -301,7 +310,7 @@ describe('AgentUserInputTextArea', () => {
       return Promise.resolve()
     })
 
-    const wrapper = mount(AgentUserInputTextArea, {
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), {
       props: { beforeSend },
     })
     await wrapper.find('textarea').setValue('message with pending mobile files')
@@ -322,7 +331,7 @@ describe('AgentUserInputTextArea', () => {
     const beforeSend = vi.fn().mockRejectedValue(new Error('mobile pending attachment focus is invalid'))
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
-    const wrapper = mount(AgentUserInputTextArea, {
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), {
       props: { beforeSend },
     })
     await wrapper.find('textarea').setValue('blocked until focus is valid')
@@ -338,13 +347,13 @@ describe('AgentUserInputTextArea', () => {
   it('commits typing and deliberate clearing to the exact context without waiting or sending', async () => {
     const context = createContext('ctx-edit')
     selectContext(context)
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await wrapper.find('textarea').setValue('new draft')
     expect(context.requirement).toBe('new draft')
     await wrapper.find('textarea').setValue('')
     expect(context.requirement).toBe('')
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenNthCalledWith(1, context, 'new draft')
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenNthCalledWith(2, context, '')
+    // The piece writes the target context directly; it never goes through the active-context store.
+    expect(activeContextStoreMock.updateRequirementForContext).not.toHaveBeenCalled()
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
   })
 
@@ -353,7 +362,7 @@ describe('AgentUserInputTextArea', () => {
     const apiE2eContext = createContext('ctx-api-e2e')
     selectContext(architectureContext)
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     const textarea = wrapper.find('textarea')
 
     await textarea.setValue('dsfdsf')
@@ -367,10 +376,6 @@ describe('AgentUserInputTextArea', () => {
 
     expect(architectureContext.requirement).toBe('dsfdsf')
     expect(apiE2eContext.requirement).toBe('')
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      architectureContext,
-      'dsfdsf',
-    )
   })
 
   it('commits the previous member draft before a new member starts typing', async () => {
@@ -378,7 +383,7 @@ describe('AgentUserInputTextArea', () => {
     const apiE2eContext = createContext('ctx-api-e2e')
     selectContext(architectureContext)
 
-    const wrapper = mount(AgentUserInputTextArea)
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     const textarea = wrapper.find('textarea')
 
     await textarea.setValue('draft for architecture')
@@ -392,13 +397,5 @@ describe('AgentUserInputTextArea', () => {
     await textarea.setValue('draft for api e2e')
     expect(architectureContext.requirement).toBe('draft for architecture')
     expect(apiE2eContext.requirement).toBe('draft for api e2e')
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      architectureContext,
-      'draft for architecture',
-    )
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      apiE2eContext,
-      'draft for api e2e',
-    )
   })
 })

@@ -16,6 +16,7 @@ export type EditableRuntimeCatalogOperationState = Readonly<{
 
 export type EditableTeamScopeFormModel = TeamScopeDisplayFields & Readonly<{
   mode: 'editable'
+  seedModelIdentifier: string | null
   inheritedConfig: Readonly<ResolvedTeamRunLaunchConfig> | null
   override: Readonly<TeamScopeConfigOverride> | null
   workspaceSelection: Readonly<WorkspaceSelectionState>
@@ -25,6 +26,7 @@ export type EditableTeamScopeFormModel = TeamScopeDisplayFields & Readonly<{
 
 export type EditableTeamFormAgentNode = TeamAgentDisplayFields & Readonly<{
   mode: 'editable'
+  seedModelIdentifier: string | null
   override: Readonly<AgentConfigOverride> | undefined
   baselineConfig: Readonly<ResolvedTeamRunLaunchConfig>
   runtimeCatalogState: EditableRuntimeCatalogOperationState

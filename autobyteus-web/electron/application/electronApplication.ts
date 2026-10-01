@@ -28,6 +28,8 @@ import { ServerManagerFactory } from '../server/serverManagerFactory'
 import type { BaseServerManager } from '../server/baseServerManager'
 import { ServerStatusManager } from '../server/serverStatusManager'
 import { AppUpdater } from '../updater/appUpdater'
+import type { AppUpdateController } from '../updater/appUpdateController'
+import { DisabledAppUpdater } from '../updater/disabledAppUpdater'
 import { registerExtensionIpcHandlers } from '../extensionIpcHandlers'
 import { ManagedExtensionService } from '../extensions/managedExtensionService'
 import { BrowserRuntime, startBrowserRuntime } from '../browser/browser-runtime'
@@ -48,7 +50,7 @@ export class ElectronApplication {
   private readonly profile: ElectronLaunchProfile
   private readonly serverManager: BaseServerManager
   private readonly serverStatusManager: ServerStatusManager
-  private readonly appUpdater: AppUpdater | null
+  private readonly appUpdateController: AppUpdateController
   private readonly shellWindowRegistry = new WorkspaceShellWindowRegistry()
   private managedExtensionService: ManagedExtensionService | null = null
   private browserRuntime: BrowserRuntime | null = null
@@ -62,9 +64,10 @@ export class ElectronApplication {
       clientEndpoint: profile.clientEndpoint,
       listenerPolicy: 'preserve-backend-default',
       baseDataRoot: profile.baseDataRoot,
+      environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
-    this.appUpdater = profile.updaterEnabled ? new AppUpdater() : null
+    this.appUpdateController = profile.updaterEnabled ? new AppUpdater() : new DisabledAppUpdater()
   }
 
   private get activeEmbeddedBaseUrl(): string {
@@ -349,7 +352,7 @@ export class ElectronApplication {
     saveNodeRegistrySnapshot(app.getPath('userData'), this.nodeRegistrySnapshot)
     await app.whenReady()
     this.managedExtensionService = new ManagedExtensionService(this.profile.baseDataRoot)
-    this.appUpdater?.initialize()
+    this.appUpdateController.initialize()
     const authRegistry = new BrowserBridgeAuthRegistry()
     this.browserRuntime = await startBrowserRuntime({
       iconPath: this.getWindowIcon(),
@@ -379,7 +382,7 @@ export class ElectronApplication {
     }
 
     this.openNodeWindow(EMBEDDED_NODE_ID)
-    this.appUpdater?.startAutoCheck()
+    this.appUpdateController.startAutoCheck()
     void this.serverStatusManager.initializeServer().catch((error) => {
       logger.error('Server initialization failed in background:', error)
     })

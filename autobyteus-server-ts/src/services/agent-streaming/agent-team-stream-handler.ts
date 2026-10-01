@@ -17,9 +17,9 @@ import { AgentSessionManager } from "./agent-session-manager.js";
 import { parseCommandAgentRunId, TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE } from "./team-agent-run-command-parser.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "./team-execution-view-projector.js";
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
-import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 
 export type WebSocketConnection = { send(data: string): void; close(code?: number): void };
 type TeamStreamSink = AgentStreamServerMessageSink<TeamStreamServerMessage>;
@@ -32,10 +32,12 @@ const errorMessage = (
   message: string,
   agentRunId: string | null = null,
   details?: string,
+  collaboratorName?: string,
 ): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({ type: "ERROR", payload: {
     code, message, ...(details ? { details } : {}), change_sequence: null, agent_run_id: agentRunId,
     error_scope: null, error_effect: null, turn_id: null,
+    ...(collaboratorName ? { collaborator_name: collaboratorName } : {}),
   } });
 
 const TEAM_SEND_MESSAGE_REJECTED = "TEAM_SEND_MESSAGE_REJECTED";
@@ -53,7 +55,6 @@ export class AgentTeamStreamHandler {
   constructor(
     private readonly sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
     private readonly teamRunService: TeamRunService = getTeamRunService(),
-    private readonly broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     private readonly teamRunManager: Pick<AgentTeamRunManager, "getLifecycleSnapshot" | "subscribeToLifecycle"> = AgentTeamRunManager.getInstance(),
   ) {}
 
@@ -84,7 +85,6 @@ export class AgentTeamStreamHandler {
       return null;
     }
     this.activeTasks.set(sessionId, Promise.resolve());
-    this.broadcaster.registerConnection(sessionId, teamRunId, egress);
     console.info(`Agent Team WebSocket connected: session=${sessionId}, run=${teamRunId}`);
     return sessionId;
   }
@@ -113,7 +113,6 @@ export class AgentTeamStreamHandler {
   }
 
   async disconnect(sessionId: string): Promise<void> {
-    this.broadcaster.unregisterConnection(sessionId);
     const task = this.activeTasks.get(sessionId);
     this.activeTasks.delete(sessionId);
     this.cleanupSession(sessionId);
@@ -171,12 +170,33 @@ export class AgentTeamStreamHandler {
   ): Promise<void> {
     const agentRunId = parseCommandAgentRunId(payload);
     if (!agentRunId) return this.sendInvalidTarget(sink, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
+    let content = payload.content;
+    if (payload.mentions?.length) {
+      try {
+        const admission = await root.admitCollaboratorMentions({
+          focusedAgentRunId: agentRunId,
+          content: payload.content,
+          mentions: toCollaboratorMentions(payload.mentions),
+        });
+        if (!admission.admitted) {
+          // Nothing was added or posted; the client keeps the draft and shows the notice.
+          sink?.send("collaboratorName" in admission
+            ? errorMessage(admission.code, admission.message, agentRunId, undefined, admission.collaboratorName)
+            : errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));
+          return;
+        }
+        content = admission.content;
+      } catch (error) {
+        sink?.send(errorMessage(TEAM_SEND_MESSAGE_FAILED, error instanceof Error ? error.message : String(error), agentRunId));
+        return;
+      }
+    }
     const contextFiles = [
       ...payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
       ...payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
     ];
     const message = AgentInputUserMessage.fromDict({
-      content: payload.content,
+      content,
       context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
       metadata: { input_origin: "user_message", message_id: payload.message_id, dedupe_key: payload.dedupe_key },
     });

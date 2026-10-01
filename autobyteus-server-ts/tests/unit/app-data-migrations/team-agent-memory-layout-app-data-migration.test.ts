@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
@@ -54,7 +53,7 @@ describe("TeamAgentMemoryLayoutAppDataMigration", () => {
       llmModelIdentifier: "test-model",
       llmConfig: null,
       autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      skillAccessMode: "PRELOADED_ONLY",
       workspaceRootPath: null,
     };
     const agent = (address: string, agentRunId: string): ConfiguredAgentExecution => ({

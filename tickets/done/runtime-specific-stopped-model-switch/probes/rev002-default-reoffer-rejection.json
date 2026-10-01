@@ -1,0 +1,32 @@
+{
+  "before": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "metadataConfig": {
+          "llmModelIdentifier": "opus",
+          "llmConfig": null
+        }
+      }
+    }
+  },
+  "save": {
+    "data": {
+      "updateStoppedAgentRunModelConfig": {
+        "success": false,
+        "outcome": "MODEL_UNAVAILABLE",
+        "message": "Current model options are unavailable; saved settings were not changed.",
+        "fieldErrors": []
+      }
+    }
+  },
+  "after": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "metadataConfig": {
+          "llmModelIdentifier": "opus",
+          "llmConfig": null
+        }
+      }
+    }
+  }
+}

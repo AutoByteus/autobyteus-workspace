@@ -7,14 +7,17 @@ import {
   createCollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
-import type { PrepareTaskAgentInput } from "../domain/task-agent-execution.js";
-import type { PrepareTaskTeamInput } from "../domain/task-team-execution.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/task-agent-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
+import type { TeamRun } from "../domain/team-run.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
-import type { PreparedTaskSettlement } from "../domain/prepared-task-settlement.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
-import { FlatTeamExecutionContext } from "./flat-team-execution-context.js";
+import { FlatAgentExecutionContext, FlatTeamExecutionContext, type ConfiguredMemberActivationMode } from "./flat-team-execution-context.js";
+import type { TeamRunAgentNode } from "../domain/team-run-config.js";
+import { CollaboratorTeamExecutionRegistry, type PreparedCollaboratorTeam } from "./registries/collaborator-team-execution-registry.js";
 import { TaskTeamExecutionFactory } from "./task-team-execution-factory.js";
 import { ConfiguredAgentExecutionRegistry } from "./registries/configured-agent-execution-registry.js";
 import { FlatTeamAgentExecutionHandle } from "./flat-team-agent-execution-handle.js";
@@ -37,6 +40,8 @@ export class FlatTeamExecutionManager {
   private readonly configured: ConfiguredAgentExecutionRegistry;
   private readonly taskAgents: TaskAgentExecutionRegistry;
   private readonly taskTeams: TaskTeamExecutionRegistry;
+  private readonly configResolver: FlatTeamMemberConfigResolver;
+  private readonly collaboratorTeams: CollaboratorTeamExecutionRegistry;
 
   constructor(
     private readonly context: TeamRunContext<FlatTeamExecutionContext>,
@@ -49,9 +54,10 @@ export class FlatTeamExecutionManager {
       callbacks: FlatTeamExecutionCallbacks;
     },
   ) {
+    this.configResolver = new FlatTeamMemberConfigResolver(context);
     this.configured = new ConfiguredAgentExecutionRegistry({
       teamContext: context,
-      configResolver: new FlatTeamMemberConfigResolver(context),
+      configResolver: this.configResolver,
       agentRunManager: options.agentRunManager,
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
@@ -70,6 +76,46 @@ export class FlatTeamExecutionManager {
       teamContext: context,
       subTeamRunFactory: options.subTeamRunFactory,
     });
+    this.collaboratorTeams = new CollaboratorTeamExecutionRegistry({
+      teamContext: context,
+      subTeamRunFactory: options.subTeamRunFactory,
+    });
+  }
+
+  /**
+   * Adds a collaborator Agent as a direct Agent of this TeamRun (Team root): its context joins
+   * `memberContexts` (routing, status) and its node the config resolver. The handle starts
+   * lazily on the first message. `commit` runs after the tree write is durable.
+   */
+  prepareCollaboratorAgent(node: TeamRunAgentNode, mode: ConfiguredMemberActivationMode): Readonly<{ commit(): void }> {
+    this.assertActive();
+    if (this.context.runtimeContext.memberContexts.some((member) =>
+      member.address === node.address || member.agentRunId === node.agentRunId)) {
+      throw new Error(`TeamRun '${this.context.teamRunId}' already has an Agent at '${node.address}'.`);
+    }
+    return Object.freeze({
+      commit: () => {
+        this.configResolver.addCollaborator(node, mode);
+        this.context.runtimeContext.memberContexts.push(new FlatAgentExecutionContext({
+          address: node.address,
+          agentRunId: node.agentRunId,
+          runtimeKind: node.runtimeKind,
+          platformAgentRunId: node.platformAgentRunId,
+        }));
+      },
+    });
+  }
+
+  /** Prepares a collaborator Team as one TeamRun under this TeamRun (lazy members, no idle shutdown). */
+  prepareCollaboratorTeam(input: Parameters<CollaboratorTeamExecutionRegistry["prepare"]>[0]): Promise<PreparedCollaboratorTeam> {
+    this.assertActive();
+    return this.collaboratorTeams.prepare(input);
+  }
+
+  requireCollaboratorTeam(teamRunId: string): TeamRun {
+    const run = this.collaboratorTeams.get(teamRunId);
+    if (!run) throw new Error(`Collaborator TeamRun '${teamRunId}' is not active in TeamRun '${this.context.teamRunId}'.`);
+    return run;
   }
 
 
@@ -122,15 +168,17 @@ export class FlatTeamExecutionManager {
     });
     return [
       ...configured,
-      ...this.taskAgents.listHandles().flatMap((handle) => handle.getLeafAgentStatusSnapshots()),
+      ...this.taskAgents.getLeafAgentStatusSnapshots(),
       ...this.taskTeams.listTeamRuns().flatMap((run) => run.getLeafAgentStatusSnapshots()),
+      ...this.collaboratorTeams.list().flatMap((run) => run.getLeafAgentStatusSnapshots()),
     ];
   }
 
   hasOpenExecutionWork(): boolean {
     return this.configured.listHandles().some((handle) => handle.hasOpenExecutionWork()) ||
-      this.taskAgents.listHandles().some((handle) => handle.hasOpenExecutionWork()) ||
-      this.taskTeams.listTeamRuns().some((run) => run.hasOpenExecutionWork());
+      this.taskAgents.hasRunningWork() ||
+      this.taskTeams.hasRunningWork() ||
+      this.collaboratorTeams.hasOpenExecutionWork();
   }
 
   reserveDirectAgentInput(
@@ -182,14 +230,28 @@ export class FlatTeamExecutionManager {
     return this.taskTeams.prepare(input);
   }
 
-  prepareDirectTaskSettlement(
-    taskId: string,
-    binding: { agentRunId: string } | { teamRunId: string },
-  ): Promise<PreparedTaskSettlement | null> {
+  restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void> {
     this.assertActive();
-    return "agentRunId" in binding
-      ? this.taskAgents.prepareSettlement(taskId, binding.agentRunId)
-      : this.taskTeams.prepareSettlement(taskId, binding.teamRunId);
+    return this.taskAgents.restore(input);
+  }
+
+  restoreTaskTeam(input: RestoreTaskTeamInput): Promise<TeamRun> {
+    this.assertActive();
+    return this.taskTeams.restore(input);
+  }
+
+  hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
+    if (!this.isActive()) return false;
+    return "agentRunId" in reference
+      ? this.taskAgents.isLive(reference.agentRunId)
+      : this.taskTeams.get(reference.teamRunId)?.isActive() ?? false;
+  }
+
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
+    this.assertActive();
+    return "agentRunId" in reference
+      ? this.taskAgents.tryShutDownIfQuiet(reference.agentRunId)
+      : this.taskTeams.tryShutDownIfQuiet(reference.teamRunId);
   }
 
   prepareTermination(): Promise<PreparedLocalExecutionTermination> {
@@ -224,7 +286,7 @@ export class FlatTeamExecutionManager {
         if (!local) return this.cancelDeferredPreparation(locals);
         locals.push(local);
       }
-      for (const run of this.taskTeams.listPreparedTeamRuns()) {
+      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
         const local = await run.tryPrepareTerminationIfQuiescent();
         if (!local) return this.cancelDeferredPreparation(locals);
         locals.push(local);
@@ -246,6 +308,7 @@ export class FlatTeamExecutionManager {
     this.configured.freezeMaterialization();
     this.taskAgents.freezeMaterialization();
     this.taskTeams.freezeMaterialization();
+    this.collaboratorTeams.freezeMaterialization();
 
     const agentHandles = [...new Set([
       ...this.configured.listHandles().filter((handle): handle is FlatTeamAgentExecutionHandle =>
@@ -256,6 +319,7 @@ export class FlatTeamExecutionManager {
     const childRuns = [...new Set([
       ...this.taskTeams.listTeamRuns(),
       ...this.taskTeams.listPreparedTeamRuns(),
+      ...this.collaboratorTeams.list(),
     ])];
     const childScopes = childRuns.map((run) => run.freezeForRootTermination());
     this.frozenTerminationScope = this.createFrozenTerminationScope(agentHandles, childScopes);
@@ -286,7 +350,7 @@ export class FlatTeamExecutionManager {
       for (const run of this.taskTeams.listTeamRuns()) {
         locals.push(await run.prepareTermination());
       }
-      for (const run of this.taskTeams.listPreparedTeamRuns()) {
+      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
         locals.push(await run.prepareTermination());
       }
       for (const handle of [...this.configured.listHandles()].reverse()) {
@@ -360,6 +424,7 @@ export class FlatTeamExecutionManager {
     this.configured.dispose();
     this.taskAgents.dispose();
     this.taskTeams.dispose();
+    this.collaboratorTeams.dispose();
     this.lifecycle = "terminated";
     return { accepted: true };
   }
@@ -404,6 +469,11 @@ export class FlatTeamExecutionManager {
         if (fencing) return fencing;
         const attempt = fenceOnce();
         fencing = attempt;
+        void attempt.then((result) => {
+          if (!result.accepted && fencing === attempt) fencing = null;
+        }, () => {
+          if (fencing === attempt) fencing = null;
+        });
         return attempt;
       },
       finish: () => {
@@ -426,6 +496,7 @@ export class FlatTeamExecutionManager {
     this.configured.dispose();
     this.taskAgents.dispose();
     this.taskTeams.dispose();
+    this.collaboratorTeams.dispose();
     this.lifecycle = "terminated";
   }
 

@@ -71,7 +71,6 @@ const buildTeamNode = (focusedAgentRunId: string): TeamTreeNode => {
 const buildActions = () => {
   const runHistoryStore = {
     selectTreeRun: vi.fn(async () => ({ disposition: 'committed' as const })),
-    createDraftRun: vi.fn(async () => ({ disposition: 'committed' as const })),
   };
   const selectionStore = { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null, selectRun: vi.fn() };
   const presentTeamStreamRecoveryFeedback = vi.fn();
@@ -84,7 +83,7 @@ const buildActions = () => {
       setTeamExpanded: vi.fn(),
       toggleTeam: vi.fn(),
       emitRunSelected: vi.fn(),
-      emitRunCreated: vi.fn(),
+      startPresetChat: vi.fn(async () => undefined),
       presentTeamStreamRecoveryFeedback,
     }),
   };
@@ -121,4 +120,19 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
 
     expect(presentTeamStreamRecoveryFeedback).toHaveBeenCalledWith(feedback);
   });
+
+  it('starts a New chat preset to the agent and workspace from the agent row plus', async () => {
+    const startPresetChat = vi.fn(async () => undefined)
+    const actions = useWorkspaceHistorySelectionActions({
+      runHistoryStore: { selectTreeRun: vi.fn() },
+      selectionStore: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null, selectRun: vi.fn() },
+      setTeamExpanded: vi.fn(),
+      toggleTeam: vi.fn(),
+      emitRunSelected: vi.fn(),
+      startPresetChat,
+      presentTeamStreamRecoveryFeedback: vi.fn(),
+    })
+    await actions.onCreateRun('/ws/a', 'agent-def-1')
+    expect(startPresetChat).toHaveBeenCalledWith({ workspaceRootPath: '/ws/a', agentDefinitionId: 'agent-def-1' })
+  })
 });

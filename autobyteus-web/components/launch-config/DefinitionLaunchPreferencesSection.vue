@@ -21,6 +21,7 @@
       <RuntimeModelConfigFields
         :runtime-kind="runtimeKind"
         :llm-model-identifier="llmModelIdentifier"
+        :seed-model-identifier="seedModelIdentifier"
         :llm-config="llmConfig"
         :allow-blank-runtime="true"
         :blank-runtime-label="$t('workspace.components.launchConfig.DefinitionLaunchPreferencesSection.blankRuntime')"
@@ -45,6 +46,7 @@ import { hasMeaningfulDefaultLaunchConfig } from '~/types/launch/defaultLaunchCo
 const props = defineProps<{
   runtimeKind?: string | null
   llmModelIdentifier?: string | null
+  seedModelIdentifier?: string | null
   llmConfig?: Record<string, unknown> | null
   idPrefix?: string
 }>()

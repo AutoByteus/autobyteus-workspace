@@ -14,7 +14,12 @@ import { AtomicRunPackageFileCommitWriter } from '../../../src/run-history/store
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../src/run-history/services/root-run-package-readiness-index.js';
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { ContextFileOwnerResolver } from '../../../src/context-files/services/context-file-owner-resolver.js';
-import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
+import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../../fixtures/released-run-tree-fixtures.js";
+
+// Flat-family migration inputs are pre-delegator data: seed released Team tree V2 shapes.
+const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
+  toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 import { testOrgTeamNode, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
 
 const roots: string[] = [];
@@ -33,7 +38,7 @@ const env = async () => {
   const config = { getAgentTeamsDir: () => path.join(root, 'defs', 'teams'), getAgentOrgsDir: () => path.join(root, 'defs', 'orgs'), getBaseUrl: () => 'https://installation.test' } as AppConfig;
   const base = testExecutionTree({ rootTeamRunId: 'org', children: [testAgentNode('/direct', { agentRunId: 'direct' })], coordinatorAddress: '/direct' });
   const tree = { ...base, rootTeam: { ...base.rootTeam, members: [...base.rootTeam.members,
-    testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead', 'lead')] })],
+    toReleasedConfiguredNode(testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead', 'lead')] }))],
     taskExecutions: [{ address: '/direct', agentRunId: 'task', platformAgentRunId: null, startedAt: '2026-09-01T00:00:01.000Z', settledAt: '2026-09-01T00:00:02.000Z' }],
   } };
   await put(path.join(source, treeName), json(tree));
@@ -94,14 +99,14 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(await fs.readFile(path.join(e.target, 'mounted', 'lead', 'context_files', 'ctx_x__image.png'))).toEqual(payload);
     expect(new RunMemoryFileStore(path.join(e.target, 'direct')).readCompleteRawTraceArchiveSegmentDictsByFileName('raw_traces_000001.jsonl'))
       .toEqual([{ ...JSON.parse(archived), media: { images: [current('task', 'ctx_task__a.txt')] } }]);
-    const resolver = new ContextFileOwnerResolver({ locations: new AgentOrgExecutionTreeLocationService({ memoryDir: e.memory }) });
+    const resolver = new ContextFileOwnerResolver({ memoryDir: e.memory, locations: new AgentOrgExecutionTreeLocationService({ memoryDir: e.memory }) });
     const owner = await resolver.resolveFinalOwner({ kind: 'org_member_final', orgRunId: 'org', agentRunId: 'lead' });
     expect('memoryDir' in owner && owner.memoryDir).toBe(path.join(e.target, 'mounted', 'lead'));
     write.mockClear(); expect((await e.migrate(writer)).status).toBe('SUCCEEDED');
     expect(write.mock.calls.filter(([input]) => input.file === 'context_file_locators')).toHaveLength(0);
     await put(standalone, trace('/not-an-attachment')); await put(flatTrace, trace('/not-an-attachment'));
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
-    expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']); expect(readiness.listAdmitted('agent_team')).toEqual(['flat']);
+    expect(readiness.listDiagnostics()).toMatchObject([{rootSubjectKind: "agent", rootRunId: "viewer", code: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED"}]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']); expect(readiness.listAdmitted('agent_team')).toEqual(['flat']);
   });
 
 
@@ -133,7 +138,7 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(await fs.readFile(targetFile, 'utf8')).toBe(bytes);
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
-    // Required byte loss is now request-scoped after the migration has proved its committed target.
+    // Structural admission remains independent of attachment availability and ledger status.
     await fs.unlink(path.join(e.target, 'task', 'context_files', filename));
     await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
@@ -207,7 +212,7 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(rows[0].media.images).toEqual([current('lead')]); expect(rows[0].content).toBe(uri); expect(rows[1].media.images).toEqual(['https://foreign.test' + uri]);
     await expect(fs.stat(path.join(e.target, treeName))).rejects.toMatchObject({ code: 'ENOENT' });
     const readiness = new RootRunPackageReadinessIndex(e.memory);
-    // Post-migration payload availability is request-scoped; readiness remains structural.
+    // Missing attachments are checked on use, not by auditing history during admission.
     await put(file, trace(current('missing'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
     await put(file, trace(current('lead'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });

@@ -1,0 +1,116 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 7.92kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 3.4s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 0.8s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#8 DONE 0.9s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B done
+#9 DONE 0.0s
+
+#10 [builder  1/28] FROM docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
+#10 resolve docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7 0.0s done
+#10 DONE 0.0s
+
+#11 [builder  2/28] WORKDIR /app
+#11 CACHED
+
+#12 [builder  3/28] RUN corepack enable
+#12 CACHED
+
+#13 [runtime  1/32] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#13 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4 0.0s done
+#13 DONE 0.0s
+
+#14 [runtime  2/32] WORKDIR /app
+#14 CACHED
+
+#15 [internal] load build context
+#15 transferring context: 46.28MB 0.9s done
+#15 DONE 1.0s
+
+#16 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#16 0.450 Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#16 0.475 Get:2 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+#16 0.513 Get:3 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]
+#16 0.541 Get:4 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+#16 0.561 Get:5 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.4 kB]
+#16 0.627 Get:6 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main arm64 Packages [52.1 kB]
+#16 0.680 Get:7 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+#16 0.695 Get:8 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main arm64 Packages [59.6 kB]
+#16 0.797 Get:9 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+#16 0.827 Get:10 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+#16 0.873 Get:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1,776 kB]
+#16 1.056 Get:12 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Components [658 kB]
+#16 ...
+
+#17 [builder  4/28] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#17 DONE 0.2s
+
+#16 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#16 1.151 Get:13 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]
+#16 ...
+
+#18 [builder  5/28] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#18 DONE 0.0s
+
+#19 [builder  6/28] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#19 DONE 0.0s
+
+#20 [builder  7/28] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#20 DONE 0.0s
+
+#21 [builder  8/28] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#21 DONE 0.0s
+
+#22 [builder  9/28] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+#22 DONE 0.0s
+
+#23 [builder 10/28] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+#23 DONE 0.0s
+
+#24 [builder 11/28] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#24 DONE 0.0s
+
+#25 [builder 12/28] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#25 DONE 0.0s
+
+#16 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#16 ...
+
+#26 [builder 13/28] COPY autobyteus-web/package.json ./autobyteus-web/
+#26 DONE 0.0s
+
+#27 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#27 0.284 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz

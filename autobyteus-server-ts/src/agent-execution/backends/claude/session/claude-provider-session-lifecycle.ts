@@ -14,12 +14,15 @@ const normalizeUuid = (value: string): string => {
   return normalized;
 };
 
-/** Store-free owner of one immutable Claude provider UUID and query mode. */
+/**
+ * Store-free owner of one immutable Claude provider UUID and the create-then-resume
+ * binding of each session process open (one open per process lifetime).
+ */
 export class ClaudeProviderSessionLifecycle {
   readonly sessionId: string;
   private phase: ClaudeProviderSessionPhase;
   private currentBinding: ClaudeSdkSessionBinding | null = null;
-  private currentQueryConfirmed = false;
+  private currentProcessConfirmed = false;
 
   private constructor(sessionId: string, phase: ClaudeProviderSessionPhase) {
     this.sessionId = normalizeUuid(sessionId);
@@ -41,25 +44,30 @@ export class ClaudeProviderSessionLifecycle {
 
   get currentPhase(): ClaudeProviderSessionPhase { return this.phase; }
 
-  buildNextQueryBinding(): ClaudeSdkSessionBinding {
+  get isCurrentProcessConfirmed(): boolean {
+    return this.currentBinding !== null && this.currentProcessConfirmed;
+  }
+
+  /** Binding for the next process open: `create` only before the first open, `resume` afterwards. */
+  buildOpenBinding(): ClaudeSdkSessionBinding {
     if (this.currentBinding) {
-      throw new Error("Claude provider session already has an open query binding.");
+      throw new Error("Claude provider session already has an open process binding.");
     }
     return this.phase === "NEW_RESERVED"
       ? Object.freeze({ kind: "create", sessionId: this.sessionId })
       : Object.freeze({ kind: "resume", sessionId: this.sessionId });
   }
 
-  noteQueryOpened(binding: ClaudeSdkSessionBinding): void {
+  noteProcessOpened(binding: ClaudeSdkSessionBinding): void {
     if (this.currentBinding || binding.sessionId !== this.sessionId) {
-      throw new Error("CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude query binding does not match its lifecycle.");
+      throw new Error("CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude process binding does not match its lifecycle.");
     }
     const expectedKind = this.phase === "NEW_RESERVED" ? "create" : "resume";
     if (binding.kind !== expectedKind) {
-      throw new Error("Claude provider session query mode does not match its lifecycle phase.");
+      throw new Error("Claude provider session open mode does not match its lifecycle phase.");
     }
     this.currentBinding = binding;
-    this.currentQueryConfirmed = false;
+    this.currentProcessConfirmed = false;
     this.phase = "RESUME_REQUIRED_UNCONFIRMED";
   }
 
@@ -74,20 +82,14 @@ export class ClaudeProviderSessionLifecycle {
       throw new Error("CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.");
     }
     if (!this.currentBinding) {
-      throw new Error("Claude provider session identity was reported without an open query.");
+      throw new Error("Claude provider session identity was reported without an open process.");
     }
-    this.currentQueryConfirmed = true;
+    this.currentProcessConfirmed = true;
     this.phase = "RESUMABLE_CONFIRMED";
   }
 
-  assertCurrentQueryConfirmed(): void {
-    if (!this.currentBinding || !this.currentQueryConfirmed) {
-      throw new Error("CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.");
-    }
-  }
-
-  closeCurrentQuery(): void {
+  noteProcessClosed(): void {
     this.currentBinding = null;
-    this.currentQueryConfirmed = false;
+    this.currentProcessConfirmed = false;
   }
 }

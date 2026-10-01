@@ -1,0 +1,3 @@
+  14.7s USAGE {"usage":{"in":389,"out":3291,"cr":0,"cw":0},"cost":0.017797,"model":{"claude-haiku-4-5-20251001":{"in":1292,"out":3301,"cost":0.017797}},"num_turns":1}
+  24.2s USAGE {"usage":{"in":10,"out":2114,"cr":0,"cw":6652},"cost":0.041680999999999996,"model":{"claude-haiku-4-5-20251001":{"in":1302,"out":5415,"cost":0.041680999999999996}},"num_turns":1}
+  25.4s USAGE {"usage":{"in":10,"out":40,"cr":6652,"cw":2157},"cost":0.046870199999999994,"model":{"claude-haiku-4-5-20251001":{"in":1312,"out":5455,"cost":0.046870199999999994}},"num_turns":1}

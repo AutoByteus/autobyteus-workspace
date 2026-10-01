@@ -151,8 +151,8 @@ export class SkillImprovementImproverSessionService {
       llmModelIdentifier: resolved.llmModelIdentifier,
       autoExecuteTools: true,
       llmConfig: resolved.llmConfig,
-      skillAccessMode: resolved.skillAccessMode,
       runtimeKind: resolved.runtimeKind,
+      launchPurpose: "server_helper",
     });
     const run = this.requireActiveRun(created.runId);
     const state: SkillImprovementImproverSessionState = await this.improverSessionStore.write(context, {

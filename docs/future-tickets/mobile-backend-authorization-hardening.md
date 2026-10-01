@@ -116,7 +116,7 @@ Putting all of that into Phase One would delay the primary first milestone: Andr
 
 ## Acceptance Criteria
 
-- AC-P2-001: A default mobile session cannot call representative admin GraphQL mutations such as server settings updates, LLM API key updates, MCP server configuration, app-data migrations, package/skill management, or managed messaging gateway configuration.
+- AC-P2-001: A default mobile session cannot call representative admin GraphQL mutations such as server settings updates, LLM API key updates, MCP server configuration, app-data migrations, or package/skill management.
 - AC-P2-002: A direct mobile call to `/ws/terminal/...` is rejected by the backend.
 - AC-P2-003: Mobile file write/delete/move/rename/create mutations are rejected by the backend.
 - AC-P2-004: Allowed read-only mobile file/artifact viewing still works.

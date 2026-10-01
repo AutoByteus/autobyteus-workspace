@@ -1,13 +1,10 @@
 import type {
   DelegateTaskInput,
   DelegateTaskResult,
-  ReviewTaskResultInput,
-  ReviewTaskResultResult,
-  SubmitTaskResultInput,
-  SubmitTaskResultResult,
-} from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+} from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import {
   cloneCollaborationMemberExecutionIdentity,
+  isRootSubjectKind,
   sameRootExecutionIdentity,
   type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -18,13 +15,9 @@ import {
 import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
 
 export const DELEGATE_TASK_TOOL_NAME = "delegate_task";
-export const SUBMIT_TASK_RESULT_TOOL_NAME = "submit_task_result";
-export const REVIEW_TASK_RESULT_TOOL_NAME = "review_task_result";
 
 export const TASK_DELEGATION_TOOL_NAME_LIST = [
   DELEGATE_TASK_TOOL_NAME,
-  SUBMIT_TASK_RESULT_TOOL_NAME,
-  REVIEW_TASK_RESULT_TOOL_NAME,
 ] as const;
 
 export type TaskDelegationToolName =
@@ -56,7 +49,7 @@ export const requireConfiguredTaskDelegationToolContext = (
   if (
     !identity ||
     !identity.root ||
-    (identity.root.rootSubjectKind !== "agent_team" && identity.root.rootSubjectKind !== "agent_org") ||
+    !isRootSubjectKind(identity.root.rootSubjectKind) ||
     typeof identity.root.rootRunId !== "string" ||
     !identity.root.rootRunId.trim() ||
     typeof identity.memberAddress !== "string" ||
@@ -79,14 +72,10 @@ export const requireConfiguredTaskDelegationToolContext = (
 
 export type TaskDelegationToolInputs = {
   [DELEGATE_TASK_TOOL_NAME]: DelegateTaskInput;
-  [SUBMIT_TASK_RESULT_TOOL_NAME]: SubmitTaskResultInput;
-  [REVIEW_TASK_RESULT_TOOL_NAME]: ReviewTaskResultInput;
 };
 
 export type TaskDelegationToolResults = {
   [DELEGATE_TASK_TOOL_NAME]: DelegateTaskResult;
-  [SUBMIT_TASK_RESULT_TOOL_NAME]: SubmitTaskResultResult;
-  [REVIEW_TASK_RESULT_TOOL_NAME]: ReviewTaskResultResult;
 };
 
 export type TaskDelegationToolErrorPayload = {

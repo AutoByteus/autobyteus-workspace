@@ -1,0 +1,157 @@
+{
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d36363338342d313739303336323439353633302532467265763030332d6170706c69636174696f6e2d7061636b616765__7265763030332d6d6f64656c2d7365747570",
+  "slots": [
+    {
+      "slot": {
+        "slotKey": "agentSlot",
+        "name": "Optional Agent",
+        "description": "Test-owned saved exact default Agent selection",
+        "allowedExecutionResourceKinds": [
+          "AGENT"
+        ],
+        "allowedExecutionResourceSources": [
+          "shared"
+        ],
+        "required": false,
+        "supportedLaunchConfig": {
+          "AGENT": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "llmConfig": true,
+            "workspaceRootPath": true
+          }
+        },
+        "defaultExecutionResourceRef": null
+      },
+      "packageBaseline": null,
+      "selectedResourceBaseline": {
+        "slotKey": "agentSlot",
+        "executionResourceRef": {
+          "source": "shared",
+          "kind": "AGENT",
+          "definitionId": "rev003-saved-default-agent"
+        },
+        "resourceDefinitionId": "rev003-saved-default-agent",
+        "resourceKind": "AGENT",
+        "leaves": [
+          {
+            "memberAddress": null,
+            "displayName": "REV003 Saved Default Agent",
+            "agentDefinitionId": "rev003-saved-default-agent",
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "default",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "provenance": {
+              "runtimeKind": {
+                "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                "agentDefinitionId": "rev003-saved-default-agent"
+              },
+              "llmModelIdentifier": {
+                "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                "agentDefinitionId": "rev003-saved-default-agent"
+              },
+              "llmConfig": {
+                "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                "agentDefinitionId": "rev003-saved-default-agent"
+              }
+            }
+          }
+        ]
+      },
+      "savedOverride": {
+        "slotKey": "agentSlot",
+        "executionResourceRef": {
+          "source": "shared",
+          "kind": "AGENT",
+          "definitionId": "rev003-saved-default-agent"
+        },
+        "launchOverride": null
+      },
+      "savedOverrideState": "VALID",
+      "effectiveConfiguration": {
+        "slotKey": "agentSlot",
+        "executionResourceRef": {
+          "source": "shared",
+          "kind": "AGENT",
+          "definitionId": "rev003-saved-default-agent"
+        },
+        "resourceDefinitionId": "rev003-saved-default-agent",
+        "resourceKind": "AGENT",
+        "leaves": [
+          {
+            "memberAddress": null,
+            "displayName": "REV003 Saved Default Agent",
+            "agentDefinitionId": "rev003-saved-default-agent",
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "default",
+            "llmConfig": {
+              "reasoning_effort": "high"
+            },
+            "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-66384-1790362495630/applications/bundle-app__rev003-model-setup__77264d39bc1cf25c3de5c33d6764dbfb1dd5029149515cb2144ae03c088eaa85/runtime",
+            "provenance": {
+              "runtimeKind": {
+                "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                "agentDefinitionId": "rev003-saved-default-agent"
+              },
+              "llmModelIdentifier": {
+                "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                "agentDefinitionId": "rev003-saved-default-agent"
+              },
+              "llmConfig": {
+                "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                "agentDefinitionId": "rev003-saved-default-agent"
+              },
+              "workspaceRootPath": "APPLICATION_RUNTIME"
+            }
+          }
+        ]
+      },
+      "issues": [],
+      "canResetToPackageDefaults": true,
+      "updatedAt": "2026-09-25T19:08:35.814Z"
+    },
+    {
+      "slot": {
+        "slotKey": "draftingTeam",
+        "name": "Optional Team",
+        "description": "Team resource used when Brief Studio launches a new drafting run.",
+        "allowedExecutionResourceKinds": [
+          "AGENT_TEAM"
+        ],
+        "allowedExecutionResourceSources": [
+          "bundle",
+          "shared"
+        ],
+        "required": false,
+        "supportedLaunchConfig": {
+          "AGENT_TEAM": {
+            "llmModelIdentifier": true,
+            "runtimeKind": true,
+            "llmConfig": true,
+            "workspaceRootPath": true,
+            "memberOverrides": {
+              "llmModelIdentifier": true,
+              "runtimeKind": true,
+              "llmConfig": true
+            }
+          }
+        },
+        "defaultExecutionResourceRef": null
+      },
+      "packageBaseline": null,
+      "selectedResourceBaseline": null,
+      "savedOverride": null,
+      "savedOverrideState": "ABSENT",
+      "effectiveConfiguration": null,
+      "issues": [],
+      "canResetToPackageDefaults": false,
+      "updatedAt": null
+    }
+  ],
+  "readiness": {
+    "status": "RUNNABLE",
+    "issues": []
+  }
+}

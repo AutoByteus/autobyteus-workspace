@@ -1,0 +1,5 @@
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 44758 normy   33u  IPv4 0x991c7fec04dcad59      0t0  TCP 127.0.0.1:9333 (LISTEN)
+AutoByteu 44758 normy   34u  IPv4 0xcfe8892328d359ba      0t0  TCP 127.0.0.1:57377 (LISTEN)
+AutoByteu 45707 normy   31u  IPv4 0xccd2638ce02ebe28      0t0  TCP 127.0.0.1:57396 (LISTEN)
+AutoByteu 45707 normy   32u  IPv4 0x74d43a389ab03892      0t0  TCP *:57374 (LISTEN)

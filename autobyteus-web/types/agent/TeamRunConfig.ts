@@ -1,6 +1,5 @@
 import type {
   AgentRuntimeKind,
-  SkillAccessMode,
 } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import type { AgentTeamAddress } from './AgentTeamAddress'
@@ -16,7 +15,6 @@ export interface TeamScopeRootConfig {
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
   autoExecuteTools: boolean
-  skillAccessMode: SkillAccessMode
 }
 
 export interface TeamScopeConfigOverride {
@@ -42,7 +40,6 @@ export interface ResolvedTeamRunLaunchConfig {
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
   autoExecuteTools: boolean
-  skillAccessMode: SkillAccessMode
 }
 
 export interface TeamRunConfig {

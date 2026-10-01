@@ -3,7 +3,7 @@ import { parseTeamStreamServerMessage } from '@autobyteus/team-stream-contracts'
 import { createPinia, setActivePinia } from 'pinia'
 import { computed, defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
-import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures'
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
@@ -25,9 +25,9 @@ afterEach(() => { wrapper?.unmount(); wrapper = undefined; useAgentTeamRunStore(
 const projection = () => ({ data: { getTeamMemberRunProjection: {
   agentRunId: TASK,
   conversation: [{ kind: 'message', role: 'assistant', content: 'Historical work', ts: 10 },
-    { kind: 'tool_call_pending', invocationId: INV, toolName: 'submit_task_result', toolArgs: { message: 'old argument' }, ts: 11 }],
+    { kind: 'tool_call_pending', invocationId: INV, toolName: 'run_bash', toolArgs: { message: 'old argument' }, ts: 11 }],
   activities: [{ kind: 'system_instruction', activityId: 'system', content: 'Retained system', ts: 10 },
-    { kind: 'tool', invocationId: INV, toolName: 'submit_task_result', status: 'parsed', arguments: { message: 'old argument' }, ts: 11 }],
+    { kind: 'tool', invocationId: INV, toolName: 'run_bash', status: 'parsed', arguments: { message: 'old argument' }, ts: 11 }],
   hasEarlierActiveTraceEvents: true,
 } } })
 const harness = (subject = TASK, autoExecuteTools = false) => {
@@ -44,16 +44,15 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0,
-    execution_tree: team.view.getExecutionTree(), tasks: [], messages: [],
+    execution_tree: team.view.getExecutionTree(), messages: [],
     agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null })) })
-  emit('TASK_DELEGATION_EVENT', { event_type: 'TASK_AGENT_ACTIVATED', change_sequence: ++sequence, parent_team_run_id: ROOT,
-    execution: { kind: 'task_agent', address: '/worker', agent_run_id: TASK, platform_agent_run_id: null, started_at: '2026-09-14T10:00:00Z', settled_at: null },
-    task: testTaskRecord({ taskId: 'task-1', delegatorAgentRunId: 'lead', recipientAddress: '/worker', target: { agentRunId: TASK } }) })
+  emit('TASK_EXECUTION_STARTED', { change_sequence: ++sequence, parent_team_run_id: ROOT,
+    execution: { kind: 'task_agent', address: '/worker', agent_run_id: TASK, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-09-14T10:00:00Z' } })
   expect(stream.isReady).toBe(true)
   expect(team.view.getFocusedAgentRunId()).toBe('lead')
   const context = team.view.getAgentContext(subject)!
   const approval = () => emit('TOOL_APPROVAL_REQUESTED', { change_sequence: ++sequence, agent_run_id: subject, invocation_id: INV,
-    tool_name: 'submit_task_result', turn_id: 'task-turn', arguments: { message: 'actual task result' } })
+    tool_name: 'run_bash', turn_id: 'task-turn', arguments: { message: 'actual task result' } })
   const data = projection(); data.data.getTeamMemberRunProjection.agentRunId = subject
   io.query.mockResolvedValue(data)
   const select = () => inspectMountedTeamMember({ teamRunId: ROOT, agentRunId: subject, commit: () => useAgentSelectionStore().selectRun(ROOT, 'team') })
@@ -98,7 +97,7 @@ it.each([
 ])('TASK-03: actual %s before selection is not downgraded by history', async (type, status, extra) => {
   const test = harness(); test.approval()
   test.emit(type as string, { change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV,
-    tool_name: 'submit_task_result', turn_id: 'task-turn', ...(type === 'TOOL_APPROVED' ? {} : { arguments: null }), ...extra as object })
+    tool_name: 'run_bash', turn_id: 'task-turn', ...(type === 'TOOL_APPROVED' ? {} : { arguments: null }), ...extra as object })
   expect((await test.select()).disposition).toBe('committed')
   expect(test.tools()[0]?.status).toBe(status)
   expect(useAgentActivityStore().getToolActivities(TASK)[0]?.status).toBe(status)
@@ -161,7 +160,7 @@ it('TASK-04: configured Team member retains the same manual decision and context
 it('TASK-03: auto task execution retains its actual terminal lifecycle without manufacturing manual controls', async () => {
   const test = harness(TASK, true)
   for (const type of ['TOOL_EXECUTION_STARTED', 'TOOL_EXECUTION_SUCCEEDED']) test.emit(type, {
-    change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV, tool_name: 'submit_task_result',
+    change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV, tool_name: 'run_bash',
     turn_id: 'auto-turn', arguments: { message: 'automatic result' }, ...(type.endsWith('SUCCEEDED') ? { result: 'submitted' } : {}),
   })
   expect((await test.select()).disposition).toBe('committed')
@@ -176,23 +175,12 @@ it('TASK-03: terminal event during the first fetch retries and cannot become pen
   const test = harness(); test.approval()
   io.query.mockImplementationOnce(async () => {
     test.emit('TOOL_EXECUTION_SUCCEEDED', { change_sequence: test.next(), agent_run_id: TASK, invocation_id: INV,
-      tool_name: 'submit_task_result', turn_id: 'task-turn', arguments: null, result: 'submitted once' })
+      tool_name: 'run_bash', turn_id: 'task-turn', arguments: null, result: 'submitted once' })
     return projection()
   })
   expect((await test.select()).disposition).toBe('committed')
   expect(test.tools()[0]).toMatchObject({ status: 'success', result: 'submitted once' })
   expect(useAgentActivityStore().getToolActivities(TASK)[0]).toMatchObject({ status: 'success', result: 'submitted once' })
-  expect(io.ws.send).not.toHaveBeenCalled()
-})
-it('TASK-04: a settled task does not inherit actionable obsolete live approval', async () => {
-  const test = harness(); test.approval()
-  test.emit('TASK_DELEGATION_EVENT', { event_type: 'TASK_EXECUTION_SETTLED', change_sequence: test.next(),
-    execution: { agent_run_id: TASK }, settled_at: '2026-09-14T10:05:00Z',
-    task: { ...testTaskRecord({ taskId: 'task-1', delegatorAgentRunId: 'lead', recipientAddress: '/worker', target: { agentRunId: TASK } }), status: 'accepted' } })
-  expect((await test.select()).disposition).toBe('committed')
-  expect(test.tools()[0]?.status).toBe('parsed')
-  test.render()
-  expect(wrapper!.findAll('button').filter(b => b.text() === 'Approve')).toHaveLength(0)
   expect(io.ws.send).not.toHaveBeenCalled()
 })
 it('TASK-04: superseded selection leaves the existing conversation and Activity untouched', async () => {

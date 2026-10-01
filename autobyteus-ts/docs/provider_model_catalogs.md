@@ -77,7 +77,7 @@ or credentials.
 | LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
-| LLM | `grok-4.6` | `grok-4.6` | xAI / Grok | 2026-08-22 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high reasoning (default high), 500k-token curated context metadata, and cache-aware pricing with a long-context tier above 200k input tokens. |
+| LLM | `grok-4.7` | `grok-4.7` | xAI / Grok | 2026-09-26 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high/xhigh reasoning (default high), 500k-token curated context metadata, and cache-aware pricing with a long-context tier above 200k input tokens. |
 | LLM | `claude-fable-5-1` | `claude-fable-5-1` | Anthropic | 2026-09-22 | Exact ID; uses 1M context/input / 128k output metadata and Standard cache-aware pricing effective 2026-09-01. Adaptive thinking is always on, so the catalog exposes no manual thinking toggle. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
@@ -103,12 +103,12 @@ or credentials.
 | Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
 | Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
 
-## xAI Grok 4.6
+## xAI Grok 4.7
 
-`grok-4.6` is the only built-in Grok model. It keeps the existing xAI
+`grok-4.7` is the only built-in Grok model. It keeps the existing xAI
 OpenAI-compatible Chat Completions endpoint at `https://api.x.ai/v1`, including
 streaming and function-tool calls. The model always reasons and accepts only
-`reasoning_effort: low | medium | high`, defaulting to `high`; `none` is not a
+`reasoning_effort: low | medium | high | xhigh`, defaulting to `high`; `none` is not a
 supported value.
 
 The Grok adapter strips xAI-invalid `presence_penalty`, `frequency_penalty`,
@@ -120,10 +120,11 @@ The catalog records `$2.00` input, `$6.00` output, and `$0.50`
 cached-input-read pricing per million tokens through 200k input tokens. Above
 200k the full request uses `$4.00` input, `$12.00` output, and `$1.00` cached
 input. Curated metadata records a 500,000-token context limit verified
-2026-08-22; no maximum output limit is asserted without official evidence.
+2026-09-26; no maximum output limit is asserted without official evidence.
 
-Earlier Grok rows, including `grok-4.5`, are not aliases or fallbacks for
-`grok-4.6`.
+Earlier Grok rows, including `grok-4.6` and `grok-4.5`, are not aliases or
+fallbacks for `grok-4.7`; persisted selections of a retired row require
+explicit reselection.
 
 ## Frontend Schema-Default Display And Disclosure Contract
 

@@ -1,0 +1,822 @@
+{
+  "agent-claude": {
+    "create": {
+      "data": {
+        "createAgentRun": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+        }
+      }
+    },
+    "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8",
+    "stop": {
+      "data": {
+        "terminateAgentRun": {
+          "success": true
+        }
+      }
+    },
+    "options": {
+      "data": {
+        "agentRunModelOptions": {
+          "currentModelIdentifier": "default",
+          "replacements": [
+            {
+              "llmModelIdentifier": "opus"
+            },
+            {
+              "llmModelIdentifier": "claude-fable-5-1[1m]"
+            },
+            {
+              "llmModelIdentifier": "sonnet"
+            },
+            {
+              "llmModelIdentifier": "haiku"
+            },
+            {
+              "llmModelIdentifier": "claude-opus-5"
+            },
+            {
+              "llmModelIdentifier": "claude-fable-5"
+            },
+            {
+              "llmModelIdentifier": "claude-opus-4-8"
+            },
+            {
+              "llmModelIdentifier": "claude-opus-4-7"
+            },
+            {
+              "llmModelIdentifier": "claude-opus-4-6"
+            },
+            {
+              "llmModelIdentifier": "claude-sonnet-4-6"
+            }
+          ],
+          "unavailableReason": null
+        }
+      }
+    }
+  },
+  "agent-codex": {
+    "create": {
+      "data": {
+        "createAgentRun": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+        }
+      }
+    },
+    "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d",
+    "stop": {
+      "data": {
+        "terminateAgentRun": {
+          "success": true
+        }
+      }
+    },
+    "options": {
+      "data": {
+        "agentRunModelOptions": {
+          "currentModelIdentifier": "gpt-6-astra",
+          "replacements": [
+            {
+              "llmModelIdentifier": "gpt-6-sol"
+            },
+            {
+              "llmModelIdentifier": "gpt-6-luna"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.6-sol"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.6-terra"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.6-luna"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.5"
+            }
+          ],
+          "unavailableReason": null
+        }
+      }
+    }
+  },
+  "agent-native": {
+    "create": {
+      "data": {
+        "createAgentRun": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "daily_assistant_00109c5041b94117baa816006b8f64b9"
+        }
+      }
+    },
+    "runId": "daily_assistant_00109c5041b94117baa816006b8f64b9",
+    "stop": {
+      "data": {
+        "terminateAgentRun": {
+          "success": true
+        }
+      }
+    },
+    "options": {
+      "data": {
+        "agentRunModelOptions": {
+          "currentModelIdentifier": "gpt-6-astra",
+          "replacements": [
+            {
+              "llmModelIdentifier": "gpt-5.5"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.6-luna"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.6-sol"
+            },
+            {
+              "llmModelIdentifier": "gpt-5.6-terra"
+            },
+            {
+              "llmModelIdentifier": "gpt-6-luna"
+            },
+            {
+              "llmModelIdentifier": "gpt-6-sol"
+            }
+          ],
+          "unavailableReason": null
+        }
+      }
+    }
+  },
+  "team-claude": {
+    "create": {
+      "data": {
+        "createAgentTeamRun": {
+          "success": true,
+          "message": "Agent team run created successfully.",
+          "teamRunId": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02"
+        }
+      }
+    },
+    "runId": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+    "stop": {
+      "data": {
+        "terminateAgentTeamRun": {
+          "success": true
+        }
+      }
+    },
+    "options": {
+      "data": {
+        "teamRunModelOptions": [
+          {
+            "scopeAddress": "/",
+            "currentModelIdentifier": "claude-opus-4-7",
+            "replacements": [
+              {
+                "llmModelIdentifier": "default"
+              },
+              {
+                "llmModelIdentifier": "opus"
+              },
+              {
+                "llmModelIdentifier": "claude-fable-5-1[1m]"
+              },
+              {
+                "llmModelIdentifier": "sonnet"
+              },
+              {
+                "llmModelIdentifier": "haiku"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-5"
+              },
+              {
+                "llmModelIdentifier": "claude-fable-5"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-8"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/professor",
+            "currentModelIdentifier": "claude-opus-4-7",
+            "replacements": [
+              {
+                "llmModelIdentifier": "default"
+              },
+              {
+                "llmModelIdentifier": "opus"
+              },
+              {
+                "llmModelIdentifier": "claude-fable-5-1[1m]"
+              },
+              {
+                "llmModelIdentifier": "sonnet"
+              },
+              {
+                "llmModelIdentifier": "haiku"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-5"
+              },
+              {
+                "llmModelIdentifier": "claude-fable-5"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-8"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/student",
+            "currentModelIdentifier": "claude-opus-4-7",
+            "replacements": [
+              {
+                "llmModelIdentifier": "default"
+              },
+              {
+                "llmModelIdentifier": "opus"
+              },
+              {
+                "llmModelIdentifier": "claude-fable-5-1[1m]"
+              },
+              {
+                "llmModelIdentifier": "sonnet"
+              },
+              {
+                "llmModelIdentifier": "haiku"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-5"
+              },
+              {
+                "llmModelIdentifier": "claude-fable-5"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-8"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              }
+            ],
+            "unavailableReason": null
+          }
+        ]
+      }
+    }
+  },
+  "org-antigravity": {
+    "create": {
+      "data": {
+        "createAgentOrgRun": {
+          "success": true,
+          "message": "Agent organization run created successfully.",
+          "agentOrgRunId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1"
+        }
+      }
+    },
+    "runId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+    "stop": {
+      "data": {
+        "terminateAgentOrgRun": {
+          "success": true
+        }
+      }
+    },
+    "options": {
+      "data": {
+        "agentOrgRunModelOptions": [
+          {
+            "scopeAddress": "/",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/product_design_prototyping_team",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/product_design_prototyping_team/product_prototyper",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/product_design_prototyping_team/prototype_bootstrapper",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team/solution_designer",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team/architecture_reviewer",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team/implementation_engineer",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team/code_reviewer",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team/api_e2e_engineer",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          },
+          {
+            "scopeAddress": "/software_engineering_team/delivery_engineer",
+            "currentModelIdentifier": "gemini-3.1-pro-high",
+            "replacements": [
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.8-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.7-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-high"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-medium"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.6-flash-low"
+              },
+              {
+                "llmModelIdentifier": "gemini-3.1-pro-low"
+              },
+              {
+                "llmModelIdentifier": "claude-sonnet-4-6"
+              },
+              {
+                "llmModelIdentifier": "claude-opus-4-6-thinking"
+              },
+              {
+                "llmModelIdentifier": "gpt-oss-120b-medium"
+              }
+            ],
+            "unavailableReason": null
+          }
+        ]
+      }
+    }
+  }
+}

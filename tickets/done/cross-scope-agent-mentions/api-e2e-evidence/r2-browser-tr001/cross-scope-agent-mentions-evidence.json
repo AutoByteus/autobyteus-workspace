@@ -1,0 +1,78 @@
+{
+  "startedAt": "2026-10-01T07:35:44.020Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "L01": {
+      "title": "Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Not Applicable",
+      "ms": 1,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "N01": {
+      "title": "AC-013 New chat `@` is still the launch-target picker",
+      "result": "Pass",
+      "ms": 5180,
+      "details": {
+        "targets": [
+          "analyst",
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 81286
+    },
+    {
+      "label": "frontend",
+      "pid": 81314
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 81314,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 81286,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-FBOS0d"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-FBOS0d",
+  "backendUrl": "http://127.0.0.1:63073",
+  "frontUrl": "http://127.0.0.1:63074",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0,
+    "notApplicable": 1
+  },
+  "completedAt": "2026-10-01T07:36:01.541Z"
+}

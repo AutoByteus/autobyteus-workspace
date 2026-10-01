@@ -1,0 +1,25 @@
+# Requirements revision approval result — SR-005
+
+## Classification and decision requested
+`runtime-specific-stopped-model-switch` is in a **Ready for Approval** requirements-revision hold for the Claude SDK `default` alias correction. This is not `Architecture Design Complete`, `Delivery Completed`, or user verification of the current build. No implementation/review handoff is authorized for this delta yet.
+
+The user observed the ticket-packaged Electron picker and directed that, when the Claude SDK's `default` alias resolves to a concrete model already listed, **the backend Claude provider catalog should filter the redundant alias before the frontend receives it**; the frontend should display backend choices, not hide the alias itself. The live SDK catalog reports `default` and `opus` resolving to `claude-opus-5-5`, so the condition is real. The exact approval question is whether the revised behavior in `requirements-doc.md` REQ-008/AC-010–011 and the focused qualification to REQ-002/AC-001 matches this intent.
+
+## Proposed outcome and constraints
+1. Backend Claude selection-facing provider snapshots and stopped-run replacement options omit `default` only when the SDK unambiguously reports another listed ID for the same concrete model. The named sibling and every other distinct model remain; no context-capacity gate returns. Other runtimes are unchanged.
+2. If no matching sibling can be established, retain `default` rather than discard the only reported choice or guess a mapping.
+3. Existing runs that saved exact `default` remain visible and retain the stored identifier, normal continuation and supported same-model settings Save. No implicit conversion to `opus` or history reset. A changed selection uses the deliberately chosen exact target.
+4. The backend is the authority for catalog normalization; frontend renderers consume its offered choices and may still display a historical saved current value separately. The confusing fallback group is an observed presentation issue, not authorization for a frontend-only alias filter.
+
+## Basis and package state
+- Original user goal: allow every runtime-offered external model regardless of context capacity, preserve AutoByteus's capacity restriction and stopped-run history. Approved at SR-002; design SR-003 independently passed ARCH-REV-001; implementation/validation/delivery are downstream, with delivery awaiting explicit user verification.
+- New user direction: E20–E21 in `investigation-notes.md`, specifically backend-owned filtering of a proven redundant Claude `default` alias.
+- Evidence: running backend GraphQL snapshot/options and packaged Electron UI in E16–E19 and `model-picker-verification-investigation.md`; source paths in AE-10–11. Filtering the backend list also affects fresh Save validation, so historical saved `default` needs compatibility treatment.
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/requirements-doc.md` — Ready for Approval for SR-005 delta, prior SR-002 basis remains approved.
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/investigation-notes.md`.
+- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-spec.md` — Needs Revision for new delta; old SR-003 body reviewed only for old basis.
+- Revision history: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/solution-revision-record.md`.
+- Supplement: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/model-picker-verification-investigation.md` — evidence only, not a normative UI/UX spec. Independent review artifacts ARCH-REV-001 apply to SR-003 only; new review report N/A — not applicable yet. Product prototype N/A — not requested.
+- Worktree/branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch`, `codex/runtime-specific-stopped-model-switch`; refreshed base `origin/personal` at `a2694ed453e353550d8b345fa82ef489634dcaf2`; finalization target `origin/personal` through Delivery Engineer.
+- Open risk: backend catalog filtering and same-model historical `default` Save share a current validation list. The design revision must separate selectable rows from validation of persisted exact aliases without rewriting user data. Provider continuation coverage remains downstream-owned.
+- Handoff-rule outcome: `get_handoff_rules` checked after persisting SR-005. No rule matches a Ready-for-Approval requirements hold; no message was sent to architecture review, implementation or delivery. Next action is user approval/correction, then design revision, classification and applicable review route.

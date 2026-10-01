@@ -2,6 +2,53 @@ import { describe, expect, it } from 'vitest';
 import { buildConversationFromProjection } from '../runProjectionConversation';
 
 describe('runProjectionConversation', () => {
+  it('rehydrates a replayed Claude background-task notice as a system task notification segment', () => {
+    const conversation = buildConversationFromProjection('run-claude-notice', [
+      { kind: 'message', role: 'user', content: 'build in the background', ts: 1 },
+      { kind: 'message', role: 'assistant', content: 'Started.', ts: 2 },
+      { kind: 'system_task_notification', role: null, senderId: 'system.claude_background_task',
+        content: 'Background task completed: Build app (completed)', ts: 3 },
+      { kind: 'message', role: 'assistant', content: 'Build finished.', ts: 4 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'haiku' });
+
+    const segments = conversation.messages.flatMap((message) => message.type === 'ai' ? message.segments : []);
+    expect(segments).toContainEqual({
+      type: 'system_task_notification',
+      senderId: 'system.claude_background_task',
+      content: 'Background task completed: Build app (completed)',
+    });
+    const aiText = conversation.messages.filter((message) => message.type === 'ai').map((message) => message.text).join('|');
+    expect(aiText).not.toContain('Background task completed');
+  });
+
+  it('rehydrates an AGY provider ERROR denial without making other errors denied', () => {
+    const conversation = buildConversationFromProjection('run-denied', [
+      { kind: 'tool_call', invocationId: 'agy-denied', toolName: 'run_command',
+        toolResult: { status: 'denied', provider_state: 'ERROR' }, toolError: 'permission denied', ts: 1 },
+      { kind: 'tool_call', invocationId: 'agy-done-denied', toolName: 'run_command',
+        toolResult: { status: 'denied', provider_state: 'DONE' }, toolError: 'permission denied', ts: 2 },
+      { kind: 'tool_call', invocationId: 'other-error', toolName: 'run_bash',
+        toolResult: null, toolError: 'failed', ts: 3 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'gemini-3.8-flash-low' });
+    const statuses = conversation.messages.flatMap((message) => message.type === 'ai'
+      ? message.segments.filter((segment) => segment.type === 'tool_call').map((segment) => segment.status)
+      : []);
+    expect(statuses).toEqual(['denied', 'denied', 'error']);
+  });
+
+  it('rehydrates an AGY daemon tool closed as a background task as a succeeded card with its result', () => {
+    const toolResult = { provider_state: 'RUNNING',
+      output: 'Started as a background task; still running when the turn ended.' };
+    const conversation = buildConversationFromProjection('run-agy-daemon', [
+      { kind: 'tool_call', invocationId: 'agy-daemon', toolName: 'run_command',
+        toolArgs: { CommandLine: 'pnpm dev', IsDaemon: true }, toolResult, toolError: null, ts: 1 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'gemini-3.8-flash-high' });
+    const tools = conversation.messages.flatMap((message) => message.type === 'ai'
+      ? message.segments.filter((segment) => segment.type === 'tool_call') : []);
+    expect(tools).toHaveLength(1);
+    expect(tools[0]).toMatchObject({ status: 'success', result: toolResult });
+  });
+
   it('hydrates the deferred-tool projection as Thinking A, tool card, Thinking B', () => {
     const conversation = buildConversationFromProjection(
       'run-deferred-tool-reasoning',
@@ -425,7 +472,7 @@ describe('runProjectionConversation', () => {
   });
 
   it('hydrates user projection media into context file attachments from canonical media keys', () => {
-    const imageLocator = '/rest/team-runs/team-1/members/solution_designer/context-files/ctx_abc__image.png';
+    const imageLocator = '/rest/team-runs/team-1/agent-runs/solution_designer/context-files/ctx_abc__image.png';
     const audioLocator = 'local-file:///Users/Normy/audio%20100%25%231.mp3';
     const videoLocator = 'local-file://opaque-video-context';
 
@@ -502,5 +549,19 @@ describe('runProjectionConversation', () => {
       mediaType: 'image',
       urls: [imageLocator],
     });
+  });
+
+  it('RD-004: replays a stored agent-to-agent delivery as "From <Sender>:"; an old trace without a sender stays a user message', () => {
+    const conversation = buildConversationFromProjection('run-1', [
+      { kind: 'inter_agent_message', role: 'user', senderAgentRunId: 'researcher-run', senderAddress: '/researcher',
+        content: 'You received a message from sender name: researcher, sender id: researcher-run\nmessage:\nPlease prototype it.', ts: 1 },
+      { kind: 'message', role: 'assistant', content: 'On it.', ts: 2 },
+      { kind: 'message', role: 'user', content: 'You received a message from sender name: old, sender id: old-run\nmessage:\nlegacy', ts: 3 },
+    ], { agentDefinitionId: 'a', agentName: 'A', llmModelIdentifier: 'm' });
+    expect(conversation.messages.map((message) => message.type)).toEqual(['ai', 'user']);
+    expect(conversation.messages[0]).toMatchObject({ segments: [
+      { type: 'inter_agent_message', senderAgentRunId: 'researcher-run', senderAddress: '/researcher', content: 'Please prototype it.' },
+      { type: 'text', content: 'On it.' },
+    ] });
   });
 });

@@ -17,7 +17,6 @@ const launchConfiguration = (value: AgentLaunchConfiguration): AgentLaunchConfig
   llmModelIdentifier: value.llmModelIdentifier,
   llmConfig: value.llmConfig,
   autoExecuteTools: value.autoExecuteTools,
-  skillAccessMode: value.skillAccessMode,
   workspaceRootPath: value.workspaceRootPath,
 });
 
@@ -37,7 +36,6 @@ export const buildInitialTeamRunExecutionTree = (input: {
   teamDefinitionName: string;
   createdAt?: string;
 }): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
-  schemaVersion: 2,
   createdAt: input.createdAt ?? new Date().toISOString(),
   archivedAt: null,
   applicationBinding: input.config.applicationBinding,
@@ -53,6 +51,7 @@ export const buildInitialTeamRunExecutionTree = (input: {
       if (member.kind !== "agent") throw new Error(`Team V2 cannot contain configured Team '${member.address}'.`);
       return toAgent(member);
     }),
+    collaborators: [],
     taskExecutions: [],
   },
 }, input.config.rootTeam.teamRunId);

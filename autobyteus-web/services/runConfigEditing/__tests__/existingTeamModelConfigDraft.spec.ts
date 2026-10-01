@@ -14,16 +14,15 @@ const launch = (
   llm_model_identifier: model,
   llm_config: config,
   auto_execute_tools: false,
-  skill_access_mode: 'PRELOADED_ONLY',
   workspace_root_path: '/workspace',
 })
 const tree = (): TeamRunExecutionTreeDto => ({
-  schema_version: 2,
   created_at: '2026-08-25T00:00:00.000Z',
   archived_at: null,
   application_binding: null,
   handoffs: [],
   root_team: {
+    collaborators: [],
     address: '/', team_definition_id: 'root-def', team_definition_name: 'Team', team_run_id: 'root-run',
     coordinator_address: '/linked', default_launch_configuration: launch('gpt', { effort: 'medium' }), task_executions: [],
     members: [

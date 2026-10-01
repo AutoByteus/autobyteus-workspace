@@ -1,0 +1,409 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:74825) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/.env
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-26T09:10:34.172Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-appdata-SE4kWx/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Populating agent definition cache for the first time...
+[2026-09-26T09:10:34.679Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+[2026-09-26T09:10:34.684Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E)
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+In-memory cache: Added new agent definition with ID busy-delivery-sender-ef1d85f2-da50-4b8f-8578-68f8f98f1fac.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Definition created successfully with ID: busy-delivery-sender-ef1d85f2-da50-4b8f-8578-68f8f98f1fac
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+In-memory cache: Added new agent definition with ID busy-delivery-worker-ef1d85f2-da50-4b8f-8578-68f8f98f1fac.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Definition created successfully with ID: busy-delivery-worker-ef1d85f2-da50-4b8f-8578-68f8f98f1fac
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+[2026-09-26T09:10:34.793Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID busy-delivery-team-ef1d85f2-da50-4b8f-8578-68f8f98f1fac.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Team Definition created successfully with ID: busy-delivery-team-ef1d85f2-da50-4b8f-8578-68f8f98f1fac
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-oBv0oh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-oBv0oh.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Created and registered workspace ID: agent_ws_6987b780152c60f8d366f0399cba09af94d046fe0a2c1afc90192448b1b4fece
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent team websocket attached for team run busy_delivery_team_ef1d85f2_da50_4b8f_8578_68f8f_3ab9c5856075463886bbd01b28793e71
+Created agent session fad6e99b-4f58-43f2-8fd4-69a767bb577b for run busy_delivery_team_ef1d85f2_da50_4b8f_8578_68f8f_3ab9c5856075463886bbd01b28793e71
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Team WebSocket connected: session=fad6e99b-4f58-43f2-8fd4-69a767bb577b, run=busy_delivery_team_ef1d85f2_da50_4b8f_8578_68f8f_3ab9c5856075463886bbd01b28793e71
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-oBv0oh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-oBv0oh.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Reusing registered workspace ID: agent_ws_6987b780152c60f8d366f0399cba09af94d046fe0a2c1afc90192448b1b4fece
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Published claude_agent_sdk agent run 'busy_delivery_worker_ef1d85f2_da50_4b8f_8578_68f_aeda96701f344f9b95484b7570bc40f0'.
+
+(node:74825) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-oBv0oh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-oBv0oh.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Reusing registered workspace ID: agent_ws_6987b780152c60f8d366f0399cba09af94d046fe0a2c1afc90192448b1b4fece
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Published claude_agent_sdk agent run 'busy_delivery_sender_ef1d85f2_da50_4b8f_8578_68f_25b536e861d84463879029abb97a00f7'.
+
+(node:74825) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+[AC-004 claude worker] worker/sender stream: [{"index":3,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":4,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":6,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":7,"type":"TURN_STARTED","run":"worker"},{"index":8,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":9,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"worker"},{"index":10,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":11,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":13,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":14,"type":"TOOL_EXECUTION_STARTED","run":"worker","tool":"Bash","args":{"command":"python3 -c \"import time; time.sleep(25); print('WORK_DONE')\"","description":"Run Python sleep command for 25 seconds then print output","timeout":30000}},{"index":15,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":16,"type":"TOOL_APPROVED","run":"worker","tool":"Bash"},{"index":17,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":18,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":20,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":21,"type":"TURN_STARTED","run":"sender"},{"index":22,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":23,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"sender"},{"index":24,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":25,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":27,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":28,"type":"TOOL_EXECUTION_STARTED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender ef1d85: your final reply must include the word PINEAPPLE.","message_type":"direct"}},{"index":31,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":32,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":34,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":35,"type":"TOOL_EXECUTION_SUCCEEDED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender ef1d85: your final reply must include the word PINEAPPLE.","message_type":"direct"},"result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /worker.\",\"target_agent_run_id\":\"busy_delivery_worker_ef1d85f2_da50_4b8f_8578_68f_aeda96701f"},{"index":36,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":38,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":40,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":42,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":44,"type":"TURN_COMPLETED","run":"sender"},{"index":45,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":46,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":48,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":49,"type":"TOOL_EXECUTION_SUCCEEDED","run":"worker","tool":"Bash","args":{"command":"python3 -c \"import time; time.sleep(25); print('WORK_DONE')\"","timeout":30000,"description":"Run Python sleep command for 25 seconds then print output"},"result":"WORK_DONE"},{"index":50,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":52,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":54,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":56,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":58,"type":"TURN_COMPLETED","run":"worker"},{"index":59,"type":"AGENT_STATUS","run":"worker","tool":null}]
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+[AC-004 claude worker] worker turn busy_delivery_worker_ef1d85f2_da50_4b8f_8578_68f_aeda96701f344f9b95484b7570bc40f0:turn:787f1638-c0c9-4f9b-94bd-5ec943d08462: receipt@29 < completed@58
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Closed agent session fad6e99b-4f58-43f2-8fd4-69a767bb577b
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+[2026-09-26T09:11:17.931Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID busy-delivery-team-ef1d85f2-da50-4b8f-8578-68f8f98f1fac.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Team Definition with ID busy-delivery-team-ef1d85f2-da50-4b8f-8578-68f8f98f1fac deleted successfully.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+In-memory cache: Removed agent definition with ID busy-delivery-sender-ef1d85f2-da50-4b8f-8578-68f8f98f1fac.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Definition with ID busy-delivery-sender-ef1d85f2-da50-4b8f-8578-68f8f98f1fac deleted successfully.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+In-memory cache: Removed agent definition with ID busy-delivery-worker-ef1d85f2-da50-4b8f-8578-68f8f98f1fac.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (claude worker)
+Agent Definition with ID busy-delivery-worker-ef1d85f2-da50-4b8f-8578-68f8f98f1fac deleted successfully.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+In-memory cache: Added new agent definition with ID busy-delivery-sender-76b4bf5f-a635-4876-9378-a99c301fcb7a.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Definition created successfully with ID: busy-delivery-sender-76b4bf5f-a635-4876-9378-a99c301fcb7a
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+In-memory cache: Added new agent definition with ID busy-delivery-worker-76b4bf5f-a635-4876-9378-a99c301fcb7a.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Definition created successfully with ID: busy-delivery-worker-76b4bf5f-a635-4876-9378-a99c301fcb7a
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+[2026-09-26T09:11:17.987Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID busy-delivery-team-76b4bf5f-a635-4876-9378-a99c301fcb7a.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Team Definition created successfully with ID: busy-delivery-team-76b4bf5f-a635-4876-9378-a99c301fcb7a
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Created and registered workspace ID: agent_ws_9716328de6352ae931dda5eeb2bf20fe31a532f8639ca5a376200dcae9bd96ec
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent team websocket attached for team run busy_delivery_team_76b4bf5f_a635_4876_9378_a99c3_6a487269b0814c1faf1a9af8d475dcba
+Created agent session 3cf87d45-7d3a-4a4d-bd35-f62f7d3aca4e for run busy_delivery_team_76b4bf5f_a635_4876_9378_a99c3_6a487269b0814c1faf1a9af8d475dcba
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Team WebSocket connected: session=3cf87d45-7d3a-4a4d-bd35-f62f7d3aca4e, run=busy_delivery_team_76b4bf5f_a635_4876_9378_a99c3_6a487269b0814c1faf1a9af8d475dcba
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Reusing registered workspace ID: agent_ws_9716328de6352ae931dda5eeb2bf20fe31a532f8639ca5a376200dcae9bd96ec
+
+stderr | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+[CodexAppServerClient] stderr: 2026-09-26T09:11:18.582341Z ERROR codex_app_server: Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Published codex_app_server agent run 'busy_delivery_worker_76b4bf5f_a635_4876_9378_a99_2c2cff2484304f2089539e756ec30768'.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Reusing registered workspace ID: agent_ws_9716328de6352ae931dda5eeb2bf20fe31a532f8639ca5a376200dcae9bd96ec
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Published claude_agent_sdk agent run 'busy_delivery_sender_76b4bf5f_a635_4876_9378_a99_4ac4d24aa5e84f999bd8bca616bf7520'.
+
+(node:74825) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+[AC-004 codex worker] worker/sender stream: [{"index":3,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":4,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":6,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":7,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"worker"},{"index":8,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":9,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":10,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":11,"type":"TURN_STARTED","run":"worker"},{"index":12,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":14,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":16,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":18,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":20,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":21,"type":"TOOL_EXECUTION_STARTED","run":"worker","tool":"run_bash","args":{"command":"/bin/bash -lc \"python3 -c \\\"import time; time.sleep(25); print('WORK_DONE')\\\"\"","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c"}},{"index":22,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":23,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":25,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":26,"type":"TURN_STARTED","run":"sender"},{"index":27,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":28,"type":"SYSTEM_INSTRUCTIONS_SUPPLIED","run":"sender"},{"index":29,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":30,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":32,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":33,"type":"TOOL_EXECUTION_STARTED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender 76b4bf: your final reply must include the word PINEAPPLE.","message_type":"direct"}},{"index":36,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":37,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":39,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":40,"type":"TOOL_EXECUTION_SUCCEEDED","run":"sender","tool":"send_message_to","args":{"recipient_address":"/worker","content":"From sender 76b4bf: your final reply must include the word PINEAPPLE.","message_type":"direct"},"result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /worker.\",\"target_agent_run_id\":\"busy_delivery_worker_76b4bf5f_a635_4876_9378_a99_2c2cff2484"},{"index":41,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":43,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":45,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":47,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":49,"type":"TURN_COMPLETED","run":"sender"},{"index":50,"type":"AGENT_STATUS","run":"sender","tool":null},{"index":51,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":52,"type":"TOOL_EXECUTION_SUCCEEDED","run":"worker","tool":"run_bash","args":{"command":"/bin/bash -lc \"python3 -c \\\"import time; time.sleep(25); print('WORK_DONE')\\\"\"","cwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-busy-member-e2e-ZUCT3c"},"result":"WORK_DONE\n"},{"index":53,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":55,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":57,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":59,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":61,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":63,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":65,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":67,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":69,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":71,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":73,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":75,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":77,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":79,"type":"AGENT_STATUS","run":"worker","tool":null},{"index":80,"type":"TURN_COMPLETED","run":"worker"},{"index":81,"type":"AGENT_STATUS","run":"worker","tool":null}]
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+[AC-004 codex worker] worker turn 01a0dcfb-b89b-7930-bede-73f504720be9: receipt@34 < completed@80
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Closed agent session 3cf87d45-7d3a-4a4d-bd35-f62f7d3aca4e
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+[2026-09-26T09:12:01.918Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID busy-delivery-team-76b4bf5f-a635-4876-9378-a99c301fcb7a.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Team Definition with ID busy-delivery-team-76b4bf5f-a635-4876-9378-a99c301fcb7a deleted successfully.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+In-memory cache: Removed agent definition with ID busy-delivery-sender-76b4bf5f-a635-4876-9378-a99c301fcb7a.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Definition with ID busy-delivery-sender-76b4bf5f-a635-4876-9378-a99c301fcb7a deleted successfully.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+In-memory cache: Removed agent definition with ID busy-delivery-worker-76b4bf5f-a635-4876-9378-a99c301fcb7a.
+
+stdout | tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts > Teammate message to a busy member (live team E2E) > delivers a teammate message into the busy member's running turn (codex worker)
+Agent Definition with ID busy-delivery-worker-76b4bf5f-a635-4876-9378-a99c301fcb7a deleted successfully.
+
+ ✓ tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts (2 tests) 87773ms
+     ✓ delivers a teammate message into the busy member's running turn (claude worker)  43196ms
+     ✓ delivers a teammate message into the busy member's running turn (codex worker)  43984ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  11:10:27
+   Duration  94.22s (transform 4.34s, setup 14ms, import 5.95s, tests 87.77s, environment 0ms)
+

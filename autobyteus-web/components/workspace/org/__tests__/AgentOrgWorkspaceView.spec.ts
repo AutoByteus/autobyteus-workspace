@@ -41,7 +41,7 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
 const context = (phase: 'live' | 'reopen_required' | 'historical' = 'live') => ({
   phase,
   error: phase === 'reopen_required' ? 'Sequence gap' : null,
-  executionTree: { rootOrg: { orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
+  executionTree: { rootOrg: { collaborators: [], orgDefinitionId: 'org-def', orgRunId: 'org-run' } },
 })
 const directTarget = {
   kind: 'agent_org_direct_agent', access: 'live',

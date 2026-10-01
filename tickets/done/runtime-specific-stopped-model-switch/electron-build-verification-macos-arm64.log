@@ -1,0 +1,31 @@
+# Local macOS ARM64 Electron package verification
+Fri Sep 25 16:16:21 UTC 2026
+Build command exit: 0 (see electron-build-macos-arm64.log)
+Bundle:
+com.autobyteus.app
+1.4.81
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Bundled server dist/index.js: present
+Signature:
+Signature=adhoc
+TeamIdentifier=not set
+Artifacts:
+-rw-r--r--@ 1 normy  staff   457M Sep 25 18:13 electron-dist/AutoByteus_personal_macos-arm64-1.4.81.dmg
+-rw-r--r--@ 1 normy  staff   452M Sep 25 18:16 electron-dist/AutoByteus_personal_macos-arm64-1.4.81.zip
+SHA-256:
+5f85fcbef6857d512ff431378fc7d8cd61945ae5a3e617af31454899ebb664c7  electron-dist/AutoByteus_personal_macos-arm64-1.4.81.dmg
+c9b1f5a5eec7095c097446673e079e8bc69155a307ea9130b4838594aaec0af3  electron-dist/AutoByteus_personal_macos-arm64-1.4.81.zip
+DMG verification:
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $81ABA231
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $CEE6003D
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $67B3E38D
+Die überprüfte CRC32-Prüfsumme ist $E5D8A287
+hdiutil: verify: checksum of "electron-dist/AutoByteus_personal_macos-arm64-1.4.81.dmg" is VALID
+ZIP verification:
+ZIP archive integrity: Pass
+Post-smoke cleanup: isolated Electron process exited; port 63959 had no listener; owned temporary data root was removed. Two build-created untracked SDK dist directories were removed after verifying they contained no tracked files. DMG, ZIP, and packaged app were retained for user testing.

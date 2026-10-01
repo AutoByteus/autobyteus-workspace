@@ -1,4 +1,4 @@
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
+import type { ExternalMessageEnvelope } from "../../external-channel/external-message-envelope.js";
 import type { ChannelMentionPolicyService } from "./channel-mention-policy-service.js";
 
 export type InboundClassification =

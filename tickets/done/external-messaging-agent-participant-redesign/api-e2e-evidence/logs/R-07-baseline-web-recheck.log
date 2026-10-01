@@ -1,0 +1,475 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-web
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | electron/server/__tests__/StartupDelayLifecycle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/workspace-history-draft-send.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | pages/__tests__/org-definition-navigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/workspace-history-draft-send.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | electron/server/__tests__/StartupDelayLifecycle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ tests/integration/app-font-size-fixed-px-audit.integration.test.ts (2 tests | 1 failed) 27ms
+   ✓ app font-size fixed-px audit > keeps the corrected settings source perimeter enrolled in the durable audit 1ms
+   × app font-size fixed-px audit > keeps the reviewed V1 typography perimeter free of fixed-px text sizing 25ms
+     → expected [ …(14) ] to deeply equal []
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts (1 test | 1 failed) 6ms
+   × workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model 5ms
+     → expected { disposition: 'committed' } to be undefined
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  stableKey: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-1',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Team Alpha',
+    workspaceRootPath: '/ws/a',
+    summary: 'Team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/super_agent',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-run-1',
+    rootTeam: {
+      teamRunId: 'team-1',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Team Alpha',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-1',
+      coordinatorAddress: '/super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'Team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+[Vue warn]: Unhandled error during execution of native event handler 
+  at <WorkspaceHistoryWorkspaceSection key="workspace:/ws/a" workspace-node= {
+  workspaceRootPath: '/ws/a',
+  workspaceName: 'autobyteus_org',
+  agents: [
+    {
+      agentDefinitionId: 'agent-def-1',
+      agentName: 'SuperAgent',
+      agentAvatarUrl: 'https://example.com/superagent.png',
+      runs: [Array]
+    }
+  ],
+  workspaceId: 'workspace:/ws/a',
+  stableKey: 'workspace:/ws/a'
+} workspace-teams= [
+  {
+    teamRunId: 'team-live',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'Live Team',
+    workspaceRootPath: '/ws/a',
+    summary: 'Live team summary',
+    lastActivityAt: '2026-01-01T02:00:00.000Z',
+    lastKnownStatus: 'ACTIVE',
+    isActive: true,
+    currentStatus: 'processing',
+    deleteLifecycle: 'CLEANUP_PENDING',
+    focusedAddress: '/live_member',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-live-1',
+    rootTeam: {
+      teamRunId: 'team-live',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'Live Team',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-live',
+      coordinatorAddress: '/live_member',
+      workspaceRootPath: '/ws/a',
+      summary: 'Live team summary',
+      lastActivityAt: '2026-01-01T02:00:00.000Z',
+      currentStatus: null,
+      isActive: true,
+      deleteLifecycle: 'CLEANUP_PENDING',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  },
+  {
+    teamRunId: 'team-history',
+    teamDefinitionId: 'team-def-1',
+    teamDefinitionName: 'History Team',
+    workspaceRootPath: '/ws/a',
+    summary: 'History team summary',
+    lastActivityAt: '2026-01-01T03:00:00.000Z',
+    lastKnownStatus: 'IDLE',
+    isActive: false,
+    currentStatus: 'idle',
+    deleteLifecycle: 'READY',
+    focusedAddress: '/history_member',
+    members: [ [Object] ],
+    focusedAgentRunId: 'member-history-1',
+    rootTeam: {
+      teamRunId: 'team-history',
+      kind: 'agent_team',
+      memberAddress: '/',
+      displayName: 'History Team',
+      teamDefinitionId: 'team-def-1',
+      teamRunIdForNode: 'team-history',
+      coordinatorAddress: '/history_member',
+      workspaceRootPath: '/ws/a',
+      summary: 'History team summary',
+      lastActivityAt: '2026-01-01T03:00:00.000Z',
+      currentStatus: null,
+      isActive: false,
+      deleteLifecycle: 'READY',
+      children: [Array]
+    },
+    executionRows: [ [Object] ]
+  }
+]  ... > 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: injection "Symbol(router)" not found. 
+  at <WorkspaceAgentRunsTreePanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts (3 tests | 2 failed) 88ms
+   × WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection 62ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+   × WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened 15ms
+     → expected false to be true // Object.is equality
+   ✓ WorkspaceAgentRunsTreePanel regressions > removes a draft agent row through the local close path 10ms
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+stderr | pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope
+An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A104%2C%22args%22%3A%5B%22cache.diff%22%2C%22canonizeResults%22%2C%22Please%20remove%20this%20option.%22%5D%7D
+
+ ❯ pages/__tests__/org-definition-navigation.spec.ts (2 tests | 1 failed) 104ms
+   × definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure 84ms
+     → expected false to be true // Object.is equality
+   ✓ definition inspection return through actual pages and stores > keeps standalone Team -> shared member -> Team -> catalog navigation free of Org return scope 20ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  electron/server/__tests__/StartupDelayLifecycle.spec.ts [ electron/server/__tests__/StartupDelayLifecycle.spec.ts ]
+Error: [vitest] No "default" export is defined on the "child_process" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+vi.mock(import("child_process"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    // your mocked methods
+  }
+})
+
+ ❯ electron/server/windowsServerManager.ts:1:23
+      1| import { spawn } from 'child_process'
+       |                       ^
+      2| import type { ChildProcess, StdioOptions } from 'child_process'
+      3| import * as path from 'path'
+ ❯ electron/server/__tests__/StartupDelayLifecycle.spec.ts:6:1
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  pages/__tests__/org-definition-navigation.spec.ts > definition inspection return through actual pages and stores > returns Org -> exact owned Team -> shared member -> same Team -> same Org without catalog exposure
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ pages/__tests__/org-definition-navigation.spec.ts:110:5
+    108|     expect(wrapper.text()).toContain('Org description')
+    109|     expect(calls.filter(call => call.field === 'agentTeamDefinition').…
+    110|     expect(calls.every(call => ['getServerSettings', 'agentOrgDefiniti…
+       |     ^
+    111|   })
+    112| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/integration/app-font-size-fixed-px-audit.integration.test.ts > app font-size fixed-px audit > keeps the reviewed V1 typography perimeter free of fixed-px text sizing
+AssertionError: expected [ …(14) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "components/settings/token-usage/TokenUsageRunDetailsView.vue -> Tailwind arbitrary text-[Npx] @ line 7: <label class=\"grid gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500\">",
++   "components/settings/token-usage/TokenUsageRunDetailsView.vue -> Tailwind arbitrary text-[Npx] @ line 19: <label class=\"grid gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500\">",
++   "components/settings/token-usage/analytics/TokenUsageAnalyticsControls.vue -> Tailwind arbitrary text-[Npx] @ line 15: <span class=\"text-[10px] font-bold uppercase tracking-wider text-slate-500\">{{ t('settings.components.settings.TokenUsageAnalytics.utcRange') }}</span>",
++   "components/settings/token-usage/analytics/TokenUsageAnalyticsControls.vue -> Tailwind arbitrary text-[Npx] @ line 55: <span v-if=\"activeFilterCount\" class=\"inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white\">{{ activeFilterCount }}</span>",
++   "components/settings/token-usage/analytics/TokenUsageAnalyticsSummaryCards.vue -> Tailwind arbitrary text-[Npx] @ line 22: <p class=\"text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500\">{{ card.label }}</p>",
++   "components/settings/token-usage/analytics/TokenUsageBreakdown.vue -> Tailwind arbitrary text-[Npx] @ line 25: <thead class=\"bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500\">",
++   "components/settings/token-usage/analytics/TokenUsageBreakdown.vue -> Tailwind arbitrary text-[Npx] @ line 67: <dt class=\"text-[10px] font-bold uppercase tracking-wider text-slate-500\">{{ detail.label }}</dt>",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> hard-coded CSS font-size px @ line 194: .chart-y-axis { color: #64748b; display: flex; flex-direction: column; font-size: 10px; padding: 0 10px 42px 0; text-align: right; }",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> hard-coded CSS font-size px @ line 195: .chart-y-axis > strong { color: #475569; font-size: 10px; font-weight: 700; margin-bottom: 8px; white-space: nowrap; }",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> hard-coded CSS font-size px @ line 204: .line-x-labels { color: #64748b; font-size: 10px; height: 25px; position: relative; }",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> hard-coded CSS font-size px @ line 211: .chart-x-title { color: #64748b; font-size: 10px; font-weight: 500; text-align: center; }",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> hard-coded CSS font-size px @ line 214: .chart-y-axis { font-size: 9px; padding-right: 7px; }",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> hard-coded CSS font-size px @ line 215: .chart-y-axis > strong, .line-x-labels, .chart-x-title { font-size: 9px; }",
++   "components/settings/token-usage/analytics/TokenUsageTrendChart.vue -> Tailwind arbitrary text-[Npx] @ line 69: <thead class=\"sticky top-0 bg-slate-50 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500\">",
++ ]
+
+ ❯ tests/integration/app-font-size-fixed-px-audit.integration.test.ts:122:22
+    120|     );
+    121| 
+    122|     expect(failures).toEqual([]);
+       |                      ^
+    123|   });
+    124| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/integration/workspace-history-draft-send.integration.test.ts > workspace history + draft send integration > supports tree-plus draft creation and first send promotion with a resolved model
+AssertionError: expected { disposition: 'committed' } to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+{
+  "disposition": "committed",
+}
+
+ ❯ tests/integration/workspace-history-draft-send.integration.test.ts:144:33
+    142|     });
+    143| 
+    144|     expect(tempRunIdFromConfig).toBeUndefined();
+       |                                 ^
+    145| 
+    146|     const tempRunId = contextsStore.createRunFromTemplate();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > routes team top-row clicks through persisted member hydration instead of blind team selection
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Number of calls: 0
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:429:47
+    427|     await flushPromises();
+    428| 
+    429|     expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+       |                                               ^
+    430|       expect.objectContaining({
+    431|         teamRunId: 'team-1',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts > WorkspaceAgentRunsTreePanel regressions > keeps a previously selected team expanded when another team row is opened
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts:507:103
+    505| 
+    506|     expect(wrapper.find('[data-test="workspace-team-member-team-live-/…
+    507|     expect(wrapper.find('[data-test="workspace-team-member-team-histor…
+       |                                                                                                       ^
+    508|   });
+    509| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:237:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "routes team top-row clicks through persisted member hydration instead of blind team selection". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: params.selectionStore.beginSelectionIntent is not a function
+ ❯ Object.onSelectTeam composables/useWorkspaceHistorySelectionActions.ts:74:42
+     72| 
+     73|   const onSelectTeam = async (team: TeamTreeNode, workspaceId = ''): P…
+     74|     const intent = params.selectionStore.beginSelectionIntent();
+       |                                          ^
+     75|     const isAlreadySelectedTeam =
+     76|       params.selectionStore.selectedType === 'team'
+ ❯ onClick components/workspace/history/WorkspaceHistoryWorkspaceSection.vue:237:35
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ Object.callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ HTMLButtonElement.invoker ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:665:17
+ ❯ Function.captureError ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/window/WindowErrorUtility.ts:29:13
+ ❯ HTMLButtonElement.#callDispatchEventListeners ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:277:25
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/event/EventTarget.ts:121:35
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/element/Element.ts:1252:29
+ ❯ HTMLButtonElement.dispatchEvent ../node_modules/.pnpm/happy-dom@15.11.7/node_modules/happy-dom/src/nodes/html-button-element/HTMLButtonElement.ts:351:29
+
+This error originated in "components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps a previously selected team expanded when another team row is opened". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  5 failed (5)
+      Tests  5 failed | 3 passed (8)
+     Errors  2 errors
+   Start at  17:17:49
+   Duration  8.41s (transform 4.45s, setup 32.58s, collect 2.24s, tests 226ms, environment 1.48s, prepare 900ms)
+

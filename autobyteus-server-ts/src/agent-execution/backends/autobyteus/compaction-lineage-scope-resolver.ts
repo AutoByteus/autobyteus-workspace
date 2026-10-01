@@ -7,17 +7,24 @@ const requireText = (value: string, fieldName: string): string => {
   return normalized;
 };
 
+/**
+ * Team members compact under their root TeamRun. AgentOrg members, the Agent-root host and
+ * Agent-root children compact under their own AgentRun (the host keeps its standalone lineage).
+ */
 export const resolveCompactionLineageScope = (
   runId: string,
   memberExecutionContext: MemberExecutionContext | null | undefined,
-): CompactionLineageScope => memberExecutionContext?.identity.root.rootSubjectKind === "agent_team"
-  ? {
-      targetKind: "team_member",
-      runId: requireText(memberExecutionContext.identity.root.rootRunId, "rootRunId"),
-      memberId: requireText(memberExecutionContext.identity.agentRunId, "agentRunId"),
-    }
-  : {
-      targetKind: "agent_run",
-      runId: requireText(runId, "runId"),
-      memberId: null,
-    };
+): CompactionLineageScope => {
+  switch (memberExecutionContext?.identity.root.rootSubjectKind) {
+    case "agent_team":
+      return {
+        targetKind: "team_member",
+        runId: requireText(memberExecutionContext.identity.root.rootRunId, "rootRunId"),
+        memberId: requireText(memberExecutionContext.identity.agentRunId, "agentRunId"),
+      };
+    case "agent_org":
+    case "agent":
+    case undefined:
+      return { targetKind: "agent_run", runId: requireText(runId, "runId"), memberId: null };
+  }
+};

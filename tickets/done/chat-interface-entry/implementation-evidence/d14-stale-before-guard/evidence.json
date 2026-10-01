@@ -1,0 +1,66 @@
+{
+  "scenario": "stale",
+  "startedAt": "2026-09-28T22:10:56.271Z",
+  "runtime": "codex_app_server",
+  "iterations": [
+    {
+      "model": "gpt-5.5",
+      "preparedRunId": "daily_assistant_b20d0e0d821f42db864b11e864751626",
+      "routeRunId": "daily_assistant_b20d0e0d821f42db864b11e864751626",
+      "staleServedAt": 1790633470244,
+      "staleSnapshotHadPInactive": true,
+      "replied": false,
+      "error": "page.waitForFunction: Timeout 120000ms exceeded.",
+      "preparedSockets": [
+        {
+          "url": "ws://127.0.0.1:51869/ws/agent/daily_assistant_b20d0e0d821f42db864b11e864751626",
+          "createdAt": 1790633470238,
+          "openedAt": 1790633470240,
+          "closedAt": 1790633470251,
+          "code": 1005
+        }
+      ],
+      "closesOfP": [
+        {
+          "url": "ws://127.0.0.1:51869/ws/agent/daily_assistant_b20d0e0d821f42db864b11e864751626",
+          "at": 1790633470248,
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:8:77)\n    at WebSocketClient.disconnect (http://127.0.0.1:51870/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:51870/_nuxt/services/agentStreaming/AgentStreamingService.ts:82:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:51870/_nuxt/stores/agentRunStore.ts:250:15)\n    at Proxy.wrappedAction (http://127.0.0.1:51870/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:51870/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:51870/_nuxt/stores/runHistoryLoadActions.ts:168:21)\n    at http://127.0.0.1:51870/_nuxt/stores/runHistoryLoadActions.ts:78:15\n    at async Promise.all (index 0)\n    at async fetchRunHistoryTree (http://127.0.0.1:51870/_nuxt/stores/runHistoryLoadActions.ts:99:5)"
+        }
+      ],
+      "status": "Error",
+      "iteration": 1,
+      "ms": 126093
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 98716
+    },
+    {
+      "label": "frontend",
+      "pid": 98739
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 98739,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 98716,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-SBtFZL"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-SBtFZL",
+  "backendUrl": "http://127.0.0.1:51869",
+  "frontUrl": "http://127.0.0.1:51870",
+  "summary": {
+    "iterations": 1,
+    "losses": 1
+  },
+  "completedAt": "2026-09-28T22:13:10.362Z"
+}

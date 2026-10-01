@@ -1,12 +1,12 @@
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { ExternalChannelProvider } from "../../../external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../external-channel/channel-transport.js";
 import {
   ExternalPeerType,
-} from "autobyteus-ts/external-channel/peer-type.js";
+} from "../../../external-channel/peer-type.js";
 import {
   parseExternalMessageEnvelope,
   type ExternalMessageEnvelope,
-} from "autobyteus-ts/external-channel/external-message-envelope.js";
+} from "../../../external-channel/external-message-envelope.js";
 import type { PersonalInboundAttachment } from "./baileys-session-client.js";
 
 export type WhatsAppPersonalInboundEvent = {

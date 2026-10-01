@@ -1,0 +1,62 @@
+{
+  "exit": 0,
+  "status": "SUCCESS",
+  "response": "The `capsule-test` MCP server's `probe_echo` tool returned the following exact text:\n\n```\nCAPSULE-MCP-MARKER-7318\n```\n",
+  "serverStarted": true,
+  "serverMessages": [
+    "server/discover",
+    "initialize",
+    "notifications/initialized",
+    "tools/list",
+    "tools/call"
+  ],
+  "tools": [
+    [
+      "ACTIVE",
+      "view_file",
+      {
+        "name": "view_file",
+        "parameters": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/capsule-test/probe_echo.json"
+        }
+      }
+    ],
+    [
+      "DONE",
+      "view_file",
+      {
+        "name": "view_file",
+        "parameters": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/capsule-test/probe_echo.json"
+        },
+        "output": "1 lines, 171 bytes"
+      }
+    ],
+    [
+      "ACTIVE",
+      "call_mcp_tool",
+      {
+        "name": "call_mcp_tool",
+        "parameters": {
+          "Arguments": {},
+          "ServerName": "capsule-test",
+          "ToolName": "probe_echo"
+        }
+      }
+    ],
+    [
+      "DONE",
+      "call_mcp_tool",
+      {
+        "name": "call_mcp_tool",
+        "parameters": {
+          "Arguments": {},
+          "ServerName": "capsule-test",
+          "ToolName": "probe_echo"
+        },
+        "output": "CAPSULE-MCP-MARKER-7318"
+      }
+    ]
+  ],
+  "stderrTail": ""
+}

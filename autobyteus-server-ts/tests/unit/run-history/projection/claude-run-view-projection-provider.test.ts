@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { ClaudeSessionManager } from "../../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
@@ -26,7 +25,6 @@ const createMetadata = (
   llmModelIdentifier: "claude-sonnet",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   platformAgentRunId: "session-1",
   lastKnownStatus: "ACTIVE",

@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { validateTeamRunExecutionTreePayload as validateTeamRunExecutionTreeV1Payload } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
+import { validateTaskDelegationRecordsV1Payload } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../src/services/team-communication/team-communication-v1-schema.js";
 import { TeamRunV1PackagePromoter } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.js";
 

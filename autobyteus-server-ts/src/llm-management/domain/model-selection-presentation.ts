@@ -1,10 +1,8 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 
 /**
- * Runtime-neutral picker hint carried on a catalog row.
- * `aliasOfModelIdentifier` names another `model_identifier` in the same runtime
- * catalog that represents this row in model pickers; the row itself stays a
- * valid catalog identifier.
+ * Internal SDK-derived evidence used by ClaudeModelCatalog to identify a
+ * redundant default row. The alias target is never transported to Web.
  */
 export type ModelSelectionPresentation = Readonly<{
   recommended: boolean;

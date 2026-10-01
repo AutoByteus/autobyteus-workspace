@@ -1,14 +1,9 @@
 import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
-import { taskBearingView } from './taskBearingOrgFixture'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
-import { AgentOrgExecutionViewIndex } from '../agentOrgExecutionViewIndex'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { computed } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { AgentOrgExecutionContext } from '../agentOrgExecutionContext'
-import { projectAgentOrgTasks } from '../agentOrgTaskPresentation'
-import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 
 const mocks = vi.hoisted(() => ({
   query: vi.fn(),
@@ -75,7 +70,7 @@ class TestWebSocket {
 
 const launch = {
   runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'gpt-5.6-sol', llmConfig: null,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY' as const, workspaceRootPath: null,
+  autoExecuteTools: false, workspaceRootPath: null,
 }
 const connected = {
   type: 'CONNECTED',
@@ -88,13 +83,14 @@ const serverError = {
 const snapshot = {
   type: 'ROOT_EXECUTION_VIEW_SNAPSHOT',
   payload: {
-    root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1,
+    root_subject_kind: 'agent_org', root_run_id: 'org-run',
     root_org: {
       base_change_sequence: 4, is_active: true,
       execution_tree: {
-        schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
+        subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
         rootOrg: {
+          collaborators: [],
           address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -103,7 +99,6 @@ const snapshot = {
           }],
         },
       },
-      task_records: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', records: [] },
       communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
       agent_statuses: [{
         member_address: '/direct', agent_run_id: 'agent-run', status: 'idle', trigger: null,
@@ -349,12 +344,10 @@ describe('AgentOrgStreamingService', () => {
       type: 'ROOT_EXECUTION_EVENT',
       payload: {
         root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task', event: { kind: 'activated', task: {
-          taskId: 'task-fresh', delegatorAgentRunId: 'agent-run',
-          recipientAddress: '/direct', taskExecution: { agentRunId: 'agent-task-fresh' },
-          description: 'Fresh task', referenceFiles: [], status: 'active', updates: [],
-          createdAt: '2026-09-01T00:00:01.000Z',
-        } } },
+        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
+          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+        } },
       },
     })
 
@@ -364,101 +357,10 @@ describe('AgentOrgStreamingService', () => {
     recoverySocket.emit(connected)
     recoverySocket.emit(snapshot)
     await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
-    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task' }))
+    expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }))
     expect(first.requireReopen).not.toHaveBeenCalled()
     expect(reportError).not.toHaveBeenCalled()
     expect(mocks.query).toHaveBeenCalledTimes(2)
-  })
-
-  it('publishes one store-observable context identity so the mounted-Team task panel advances without refocus', async () => {
-    const view = taskBearingView()
-    view.base_change_sequence = 4
-    const baseTask = view.task_records.records[0]!
-    const context = new AgentOrgExecutionContext({ orgRunId: 'org-run', view,
-      entries: [...new AgentOrgExecutionViewIndex(view).agents.values()].map((agent) => ({
-        agentRunId: agent.agentRunId, memberAddress: agent.address,
-        context: new AgentContext({ ...agent.source.launchConfiguration,
-          agentDefinitionId: agent.source.agentDefinitionId, agentDefinitionName: agent.address,
-          workspaceId: null, isLocked: true } as any,
-          new AgentRunState(agent.agentRunId, { id: agent.agentRunId, messages: [], createdAt: '', updatedAt: '' } as any)),
-      })),
-    })
-    context.select('/director')
-    vi.spyOn(context, 'select')
-    mocks.hydrate.mockResolvedValue(context)
-    const contextsStore = useAgentOrgContextsStore()
-    const observed = computed(() => contextsStore.contextFor('org-run'))
-    const panelStatus = computed(() => {
-      const value = observed.value as any
-      if (!value) return null
-      return projectAgentOrgTasks({
-        orgRunId: 'org-run', view: value.view, index: value.index, focusedAgentRunId: 'agent-director',
-      })[0]?.displayStatus ?? null
-    })
-    const submission = {
-      submissionId: 'submission-1', message: 'Initial result.', referenceFiles: [],
-      createdAt: '2026-09-01T00:00:02.000Z',
-    }
-    const revision = {
-      reviewId: 'review-1', reviewedSubmissionId: 'submission-1', decision: 'request_revision',
-      comment: 'Revise it.', referenceFiles: [], createdAt: '2026-09-01T00:00:03.000Z',
-    }
-    const acceptance = {
-      reviewId: 'review-2', reviewedSubmissionId: 'submission-1', decision: 'accept',
-      comment: null, referenceFiles: [], createdAt: '2026-09-01T00:00:04.000Z',
-    }
-
-    const inspected = new AgentOrgExecutionContext({ orgRunId: 'org-run', view, entries: context.listAgentContextEntries() })
-    inspected.select('/director')
-    mocks.hydrate.mockResolvedValueOnce(inspected).mockResolvedValue(context)
-    mocks.query.mockResolvedValueOnce({ data: { getAgentOrgRunInspection: {
-      schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view,
-    } } })
-    await contextsStore.openForInspection('org-run')
-    const socket = TestWebSocket.instances[0]!
-    socket.emit(connected)
-    socket.emit(snapshot)
-    await vi.waitFor(() => expect(observed.value?.phase).toBe('live'))
-    vi.mocked(context.select).mockClear()
-    expect(panelStatus.value).toBe('in_progress')
-
-    socket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task', event: {
-          kind: 'submitted', submission,
-          task: { ...baseTask, status: 'awaiting_review', updates: [submission] },
-        } },
-      },
-    })
-    await vi.waitFor(() => expect(panelStatus.value).toBe('awaiting_review'))
-
-    socket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 6,
-        event: { kind: 'task', event: {
-          kind: 'reviewed', review: revision,
-          task: { ...baseTask, status: 'active', updates: [submission, revision] },
-        } },
-      },
-    })
-    await vi.waitFor(() => expect(panelStatus.value).toBe('revision_requested'))
-
-    socket.emit({
-      type: 'ROOT_EXECUTION_EVENT',
-      payload: {
-        root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 7,
-        event: { kind: 'task', event: {
-          kind: 'settled', settledAt: '2026-09-01T00:00:05.000Z',
-          task: { ...baseTask, status: 'accepted', updates: [submission, acceptance] },
-        } },
-      },
-    })
-    await vi.waitFor(() => expect(panelStatus.value).toBe('accepted'))
-    expect(context.select).not.toHaveBeenCalled()
-    contextsStore.releaseContext('org-run')
   })
 
   it('completes a command only from an ACK with the exact command type and target', async () => {
@@ -600,12 +502,10 @@ describe('AgentOrgStreamingService', () => {
       type: 'ROOT_EXECUTION_EVENT',
       payload: {
         root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task', event: { kind: 'activated', task: {
-          taskId: 'task-fresh', delegatorAgentRunId: 'agent-run',
-          recipientAddress: '/direct', taskExecution: { agentRunId: 'agent-task-fresh' },
-          description: 'Fresh task', referenceFiles: [], status: 'active', updates: [],
-          createdAt: '2026-09-01T00:00:01.000Z',
-        } } },
+        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
+          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+        } },
       },
     })
     await vi.waitFor(() => expect(mocks.query).toHaveBeenCalledTimes(1))
@@ -687,12 +587,10 @@ describe('AgentOrgStreamingService', () => {
       type: 'ROOT_EXECUTION_EVENT',
       payload: {
         root_subject_kind: 'agent_org', root_run_id: 'org-run', change_sequence: 5,
-        event: { kind: 'task', event: { kind: 'activated', task: {
-          taskId: 'task-fresh', delegatorAgentRunId: 'agent-run',
-          recipientAddress: '/direct', taskExecution: { agentRunId: 'agent-task-fresh' },
-          description: 'Fresh task', referenceFiles: [], status: 'active', updates: [],
-          createdAt: '2026-09-01T00:00:01.000Z',
-        } } },
+        event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
+          address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
+          delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+        } },
       },
     })
     await vi.waitFor(() => expect(mocks.query).toHaveBeenCalledTimes(1))

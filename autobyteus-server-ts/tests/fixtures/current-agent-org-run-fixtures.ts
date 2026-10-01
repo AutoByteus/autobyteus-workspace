@@ -3,14 +3,12 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "../../src/agent-org-execu
 import type { ConfiguredAgentExecutionNode, ConfiguredTeamExecutionNode } from "../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { assertAgentTeamAddress } from "../../src/agent-collaboration/domain/agent-team-address.js";
 import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 
 export const testOrgLaunchConfiguration = (workspaceRootPath: string | null = "/workspace") => ({
   runtimeKind: RuntimeKind.AUTOBYTEUS,
   llmModelIdentifier: "test-model",
   llmConfig: null,
   autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   workspaceRootPath,
 });
 
@@ -47,7 +45,6 @@ export const testAgentOrgExecutionTree = (input: {
   orgDefinitionId?: string
   orgDefinitionName?: string
 }): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
-  schemaVersion: 1,
   subjectKind: "agent_org",
   createdAt: "2026-09-01T00:00:00.000Z",
   archivedAt: null,

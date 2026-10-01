@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { CodexAgentRunContext } from "../../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-context.js";
@@ -34,7 +33,6 @@ const createRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools,
       workspaceId: input.workingDirectory,
       llmConfig: null,
-      skillAccessMode: SkillAccessMode.NONE,
       memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
@@ -94,6 +92,7 @@ const createThread = (
 
 const createMemberExecutionContext = () =>
   new MemberExecutionContext({
+    teamScoped: true,
     identity: {
       root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/ping",
@@ -966,6 +965,17 @@ describe("CodexThread input submission policy", () => {
     });
     expect(thread.activeTurnId).toBe("turn-A");
     expect(client.request.mock.calls.every(([method]) => method === "turn/steer")).toBe(true);
+  });
+
+  it("rejects a steer for a turn that is no longer active before any RPC with a distinct code", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    thread.markTurnStarted("turn-B");
+
+    await expect(thread.appendInput(new AgentInputUserMessage("late"), "turn-A")).rejects.toMatchObject({
+      code: "CODEX_TURN_STEER_TURN_NOT_ACTIVE",
+    });
+    expect(client.request).not.toHaveBeenCalledWith("turn/steer", expect.anything());
   });
 
   it("rejects a steer response without its method-specific top-level turnId", async () => {

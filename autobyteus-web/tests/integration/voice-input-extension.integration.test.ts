@@ -260,10 +260,7 @@ describe('voice input extension integration', () => {
 
     await voiceInputStore.stopRecording()
 
-    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
-      activeContextStoreMock.activeAgentContext,
-      'draft fixture transcript',
-    )
+    expect(activeContextStoreMock.activeAgentContext.requirement).toBe('draft fixture transcript')
     expect(addToastMock).not.toHaveBeenCalled()
   })
 })

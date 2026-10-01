@@ -3,9 +3,18 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { z } from "zod";
-import { ClaudeSdkClient } from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import {
+  ClaudeSdkClient,
+  type ClaudeSdkCanUseTool,
+  type ClaudeSdkStreamingSessionOptions,
+} from "../../../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import type { ClaudeSdkStreamingSession } from "../../../../../src/runtime-management/claude/client/claude-sdk-streaming-session.js";
+import {
+  buildStandaloneClaudeProcessEnv,
+  resolveClaudeCliExecutableCandidates,
+} from "../../../../helpers/claude-cli-executable-candidates.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -43,44 +52,69 @@ const resolveHaikuModelIdentifier = async (client: ClaudeSdkClient): Promise<str
   return haiku.model_identifier;
 };
 
-const readLiveTurnResult = async (
-  query: AsyncIterable<unknown>,
-  timeoutMs = FLOW_TEST_TIMEOUT_MS,
-): Promise<{ chunks: string[]; resultText: string | null; sessionId: string | null }> =>
-  Promise.race([
-    (async () => {
-      const chunks: string[] = [];
-      let resultText: string | null = null;
-      let sessionId: string | null = null;
-      for await (const chunk of query) {
-        chunks.push(JSON.stringify(chunk));
-        const payload =
-          chunk && typeof chunk === "object" && !Array.isArray(chunk)
-            ? (chunk as Record<string, unknown>)
-            : null;
-        if (typeof payload?.session_id === "string" && payload.session_id.length > 0) {
-          sessionId = payload.session_id;
-        }
-        const type =
-          typeof payload?.type === "string" ? payload.type.trim().toLowerCase() : null;
-        if (typeof payload?.result === "string" && payload.result.length > 0) {
-          resultText = payload.result;
-        }
-        if (type === "result") {
-          break;
-        }
-      }
-      return { chunks, resultText, sessionId };
-    })(),
-    delay(timeoutMs).then(() => {
-      throw new Error(`Claude SDK client turn did not reach a result chunk within ${String(timeoutMs)}ms.`);
-    }),
-  ]);
+type LiveSession = {
+  session: ClaudeSdkStreamingSession;
+  frames: Array<Record<string, unknown>>;
+  send: (text: string) => string;
+  nextResult: (timeoutMs?: number) => Promise<Record<string, unknown>>;
+  close: () => void;
+};
 
-describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)", () => {
+const allowAllTools: ClaudeSdkCanUseTool = async (_toolName, input) => ({ behavior: "allow", updatedInput: input });
+
+/** Opens one live streaming session and pumps its frames (single consumer). */
+const openLiveSession = async (
+  client: ClaudeSdkClient,
+  options: ClaudeSdkStreamingSessionOptions,
+): Promise<LiveSession> => {
+  const session = await client.openStreamingSession(options);
+  const frames: Array<Record<string, unknown>> = [];
+  const results: Array<Record<string, unknown>> = [];
+  let waiter: (() => void) | null = null;
+  void (async () => {
+    try {
+      for await (const frame of session.messages) {
+        const payload = frame as Record<string, unknown>;
+        frames.push(payload);
+        if (payload.type === "result") results.push(payload);
+        waiter?.();
+      }
+    } catch {
+      // A closed or killed process ends the stream; tests assert on frames.
+    }
+    waiter?.();
+  })();
+  let consumed = 0;
+  return {
+    session,
+    frames,
+    send: (text) => {
+      const uuid = randomUUID();
+      session.send({ type: "user", uuid, parent_tool_use_id: null, message: { role: "user", content: [{ type: "text", text }] } });
+      return uuid;
+    },
+    nextResult: async (timeoutMs = FLOW_TEST_TIMEOUT_MS) => {
+      const deadline = Date.now() + timeoutMs;
+      while (results.length <= consumed) {
+        if (Date.now() > deadline) throw new Error(`No Claude result within ${String(timeoutMs)}ms.`);
+        await Promise.race([new Promise<void>((resolve) => { waiter = resolve; }), delay(250)]);
+      }
+      return results[consumed++]!;
+    },
+    close: () => session.close(),
+  };
+};
+
+const resultMentions = (live: LiveSession, token: string): boolean =>
+  live.frames.some((frame) => JSON.stringify(frame).includes(token));
+
+describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live streaming transport)", () => {
   const createdWorkspaces = new Set<string>();
+  const openSessions: LiveSession[] = [];
 
   afterEach(async () => {
+    vi.unstubAllEnvs();
+    for (const live of openSessions.splice(0)) live.close();
     await Promise.all(
       Array.from(createdWorkspaces).map((workspaceRoot) =>
         fs.rm(workspaceRoot, { recursive: true, force: true }).catch(() => undefined),
@@ -89,44 +123,40 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
     createdWorkspaces.clear();
   });
 
+  const open = async (client: ClaudeSdkClient, options: ClaudeSdkStreamingSessionOptions) => {
+    const live = await openLiveSession(client, options);
+    openSessions.push(live);
+    return live;
+  };
+
   it(
-    "lists live models, runs a live Claude query turn, and fetches live session messages",
+    "lists live models, answers consecutive messages on one streaming session, and fetches session messages",
     async () => {
       const workspaceRoot = await createWorkspace("claude-sdk-client-live");
       createdWorkspaces.add(workspaceRoot);
-
       const client = new ClaudeSdkClient();
       const modelIdentifier = await resolveHaikuModelIdentifier(client);
-      const token = `CLAUDE_SDK_CLIENT_LIVE_${Date.now()}`;
+      const firstToken = `CLAUDE_SDK_CLIENT_LIVE_A_${Date.now()}`;
+      const secondToken = `CLAUDE_SDK_CLIENT_LIVE_B_${Date.now()}`;
+      const binding = createSessionBinding();
 
-      const query = await client.startQueryTurn({
+      const live = await open(client, {
         systemPrompt: "",
-        sessionBinding: createSessionBinding(),
-        prompt: `Reply with exactly '${token}'. Do not add any other text.`,
+        sessionBinding: binding,
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
-        autoExecuteTools: false,
       });
+      const first = live.send(`Reply with exactly '${firstToken}'. Do not add any other text.`);
+      expect((await live.nextResult()).user_message_uuids).toEqual([first]);
+      const second = live.send(`Reply with exactly '${secondToken}'. Do not add any other text.`);
+      expect((await live.nextResult()).user_message_uuids).toEqual([second]);
 
-      try {
-        const { chunks, resultText, sessionId } = await readLiveTurnResult(query);
-
-        expect(chunks.length).toBeGreaterThan(0);
-        expect(chunks.some((chunk) => chunk.includes(token)) || resultText?.includes(token)).toBe(
-          true,
-        );
-
-        expect(sessionId).toBeTruthy();
-
-        const rawMessages = await client.getSessionMessages(sessionId!);
-        expect(rawMessages).not.toBeNull();
-        if (Array.isArray(rawMessages)) {
-          expect(rawMessages.length).toBeGreaterThan(0);
-        }
-      } finally {
-        query.close();
-      }
+      expect(resultMentions(live, firstToken)).toBe(true);
+      expect(resultMentions(live, secondToken)).toBe(true);
+      expect(live.frames.every((frame) => !frame.session_id || frame.session_id === binding.sessionId)).toBe(true);
+      const rawMessages = await client.getSessionMessages(binding.sessionId);
+      expect(JSON.stringify(rawMessages)).toContain(secondToken);
     },
     FLOW_TEST_TIMEOUT_MS,
   );
@@ -136,7 +166,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
     async () => {
       const workspaceRoot = await createWorkspace("claude-sdk-client-skill");
       createdWorkspaces.add(workspaceRoot);
-
       const client = new ClaudeSdkClient();
       const modelIdentifier = await resolveHaikuModelIdentifier(client);
       const skillName = `sdk_skill_${Date.now()}`;
@@ -159,94 +188,58 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         "utf-8",
       );
 
-      const query = await client.startQueryTurn({
+      const live = await open(client, {
         systemPrompt: "",
         sessionBinding: createSessionBinding(),
-        prompt: [
-          `Use the project skill $${skillName} for this request.`,
-          `Trigger token: ${triggerToken}`,
-          "Follow the skill exactly.",
-        ].join("\n"),
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "default",
-        autoExecuteTools: true,
+        canUseTool: allowAllTools,
       });
+      live.send([
+        `Use the project skill $${skillName} for this request.`,
+        `Trigger token: ${triggerToken}`,
+        "Follow the skill exactly.",
+      ].join("\n"));
+      await live.nextResult();
 
-      try {
-        const { chunks, resultText } = await readLiveTurnResult(query);
-        expect(
-          chunks.some((chunk) => chunk.includes(responseToken)) || resultText?.includes(responseToken),
-        ).toBe(true);
-      } finally {
-        query.close();
-      }
+      expect(resultMentions(live, responseToken)).toBe(true);
     },
     FLOW_TEST_TIMEOUT_MS,
   );
 
   it(
-    "resumes a live Claude query session and retains prior session history",
+    "resumes a closed streaming session in a new process and retains prior session history",
     async () => {
       const workspaceRoot = await createWorkspace("claude-sdk-client-resume");
       createdWorkspaces.add(workspaceRoot);
-
       const client = new ClaudeSdkClient();
       const modelIdentifier = await resolveHaikuModelIdentifier(client);
+      const codeword = `PAPAYA${Date.now()}`;
+      const binding = createSessionBinding();
 
-      const firstToken = `CLAUDE_SDK_RESUME_FIRST_${Date.now()}`;
-      const secondToken = `CLAUDE_SDK_RESUME_SECOND_${Date.now()}`;
-
-      let initialSessionId: string | null = null;
-      const firstQuery = await client.startQueryTurn({
+      const first = await open(client, {
         systemPrompt: "",
-        sessionBinding: createSessionBinding(),
-        prompt: `Reply with exactly '${firstToken}'. Do not add any other text.`,
+        sessionBinding: binding,
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
-        autoExecuteTools: false,
       });
-      try {
-        const firstResult = await readLiveTurnResult(firstQuery);
-        expect(
-          firstResult.chunks.some((chunk) => chunk.includes(firstToken)) ||
-            firstResult.resultText?.includes(firstToken),
-        ).toBe(true);
+      first.send(`Remember the codeword ${codeword}. Reply only OK.`);
+      await first.nextResult();
+      first.close();
 
-        initialSessionId = firstResult.sessionId;
-        expect(initialSessionId).toBeTruthy();
-      } finally {
-        firstQuery.close();
-      }
-
-      const resumedQuery = await client.startQueryTurn({
+      const resumed = await open(client, {
         systemPrompt: "",
-        sessionBinding: { kind: "resume", sessionId: initialSessionId! },
-        prompt: `Reply with exactly '${secondToken}'. Do not add any other text.`,
+        sessionBinding: { kind: "resume", sessionId: binding.sessionId },
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
-        autoExecuteTools: false,
       });
+      resumed.send("What codeword did I ask you to remember? Reply with only the codeword.");
+      await resumed.nextResult();
 
-      try {
-        const secondResult = await readLiveTurnResult(resumedQuery);
-        const resumedSessionId = secondResult.sessionId;
-        expect(resumedSessionId).toBeTruthy();
-        expect(
-          secondResult.chunks.some((chunk) => chunk.includes(secondToken)) ||
-            secondResult.resultText?.includes(secondToken),
-        ).toBe(true);
-
-        const rawMessages = await client.getSessionMessages(resumedSessionId!);
-        expect(rawMessages).not.toBeNull();
-        const serializedMessages = JSON.stringify(rawMessages);
-        expect(serializedMessages).toContain(firstToken);
-        expect(serializedMessages).toContain(secondToken);
-      } finally {
-        resumedQuery.close();
-      }
+      expect(resultMentions(resumed, codeword)).toBe(true);
     },
     FLOW_TEST_TIMEOUT_MS,
   );
@@ -256,12 +249,10 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
     async () => {
       const workspaceRoot = await createWorkspace("claude-sdk-client-mcp");
       createdWorkspaces.add(workspaceRoot);
-
       const client = new ClaudeSdkClient();
       const modelIdentifier = await resolveHaikuModelIdentifier(client);
       const invocationTokens: string[] = [];
       const toolToken = `CLAUDE_SDK_MCP_${Date.now()}`;
-
       const echoTool = await client.createToolDefinition({
         name: "echo_token",
         description: "Echoes back the provided token.",
@@ -270,58 +261,99 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         },
         handler: async (args) => {
           const token =
-            args &&
-            typeof args === "object" &&
-            !Array.isArray(args) &&
-            "token" in args &&
+            args && typeof args === "object" && !Array.isArray(args) && "token" in args &&
             typeof (args as { token?: unknown }).token === "string"
-              ? ((args as { token: string }).token)
+              ? (args as { token: string }).token
               : "";
           invocationTokens.push(token);
-          return {
-            content: [{ type: "text", text: `ECHO:${token}` }],
-          };
+          return { content: [{ type: "text", text: `ECHO:${token}` }] };
         },
       });
-
-      const mcpServer = await client.createMcpServer({
-        name: "integration_echo",
-        tools: [echoTool],
-      });
+      const mcpServer = await client.createMcpServer({ name: "integration_echo", tools: [echoTool] });
       expect(mcpServer).not.toBeNull();
 
-      const query = await client.startQueryTurn({
+      const live = await open(client, {
         systemPrompt: "",
         sessionBinding: createSessionBinding(),
-        prompt: [
-          "Use the custom MCP tool exactly once.",
-          "The tool is exposed from MCP server 'integration_echo'.",
-          "Its tool name is 'echo_token'.",
-          "If Claude shows the fully qualified MCP tool name, use 'mcp__integration_echo__echo_token'.",
-          `Pass this exact token argument value: ${toolToken}`,
-          "Do not use any other tool.",
-          "After the tool succeeds, reply with exactly DONE.",
-        ].join("\n"),
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
-        mcpServers: {
-          integration_echo: mcpServer!,
-        },
+        mcpServers: { integration_echo: mcpServer! },
         permissionMode: "default",
-        autoExecuteTools: true,
+        canUseTool: allowAllTools,
       });
+      live.send([
+        "Use the custom MCP tool exactly once.",
+        "The tool is exposed from MCP server 'integration_echo'.",
+        "Its tool name is 'echo_token'.",
+        "If Claude shows the fully qualified MCP tool name, use 'mcp__integration_echo__echo_token'.",
+        `Pass this exact token argument value: ${toolToken}`,
+        "Do not use any other tool.",
+        "After the tool succeeds, reply with exactly DONE.",
+      ].join("\n"));
+      await live.nextResult();
 
+      expect(invocationTokens).toEqual([toolToken]);
+      expect(resultMentions(live, "DONE")).toBe(true);
+    },
+    FLOW_TEST_TIMEOUT_MS,
+  );
+});
+
+// Design step 1 risk control (RSK-006): `interrupt({ cancelQueued: true })` is protocol-documented
+// and capability-advertised but not declared in the SDK d.ts. Re-run after Claude CLI or Agent SDK
+// bumps with RUN_CLAUDE_E2E=1 on both CLIs AutoByteus can launch.
+const cliCandidates = resolveClaudeCliExecutableCandidates();
+const describeCancelQueued = liveClaudeTestsEnabled && cliCandidates.length > 0 ? describe : describe.skip;
+
+describeCancelQueued("Claude CLI Stop contract (interrupt with cancelQueued)", () => {
+  it.each(cliCandidates.map((candidate) => [candidate.label, candidate] as const))(
+    "%s cancels a queued message atomically with the interrupt and keeps the process usable",
+    async (_label, candidate) => {
+      vi.stubEnv("CLAUDE_CODE_EXECUTABLE_PATH", candidate.executablePath);
+      const workspaceRoot = await createWorkspace("claude-cancel-queued");
+      const client = new ClaudeSdkClient();
+      const live = await openLiveSession(client, {
+        systemPrompt: "",
+        sessionBinding: createSessionBinding(),
+        model: "haiku",
+        workingDirectory: workspaceRoot,
+        permissionMode: "default",
+        canUseTool: allowAllTools,
+        env: { ...buildStandaloneClaudeProcessEnv(), CLAUDE_AGENT_SDK_AUTH_MODE: "cli" },
+      });
       try {
-        const { chunks, resultText } = await readLiveTurnResult(query);
-        const serialized = chunks.join("\n");
+        live.send("Reply only READY.");
+        await live.nextResult();
+        expect(live.session.capabilities?.has("interrupt_cancel_queued_v1")).toBe(true);
 
-        expect(invocationTokens, serialized || resultText || "no-stream-output").toEqual([toolToken]);
-        expect(serialized.includes("DONE") || resultText?.includes("DONE")).toBe(true);
-        expect(serialized.includes(`ECHO:${toolToken}`) || resultText?.includes(`ECHO:${toolToken}`)).toBe(
-          true,
-        );
+        const a = live.send("Use Bash in the foreground to run: python3 -c 'import time; time.sleep(25)' then reply DONE.");
+        const deadline = Date.now() + 60_000;
+        while (!live.frames.some((frame) => frame.type === "system" && frame.subtype === "task_started")) {
+          if (Date.now() > deadline) throw new Error("The foreground Bash command never started.");
+          await delay(200);
+        }
+        const b = live.send("Reply only B-SHOULD-NOT-RUN.");
+        await delay(1_500);
+        const outcome = await live.session.interruptAndCancelQueued();
+        const interrupted = await live.nextResult();
+
+        expect(outcome.cancelled).toContain(b);
+        expect(interrupted.user_message_uuids).toEqual([a]);
+        expect(String(interrupted.terminal_reason)).toMatch(/^aborted/u);
+
+        const c = live.send("Reply only AFTER.");
+        const after = await live.nextResult();
+        expect(after.user_message_uuids).toEqual([c]);
+        const answered = live.frames
+          .filter((frame) => frame.type === "result")
+          .flatMap((frame) => (frame.user_message_uuids as string[] | undefined) ?? []);
+        expect(answered).not.toContain(b);
+        expect(live.frames
+          .filter((frame) => frame.type === "assistant")
+          .some((frame) => JSON.stringify(frame).includes("B-SHOULD-NOT-RUN"))).toBe(false);
       } finally {
-        query.close();
+        live.close();
+        await fs.rm(workspaceRoot, { recursive: true, force: true }).catch(() => undefined);
       }
     },
     FLOW_TEST_TIMEOUT_MS,

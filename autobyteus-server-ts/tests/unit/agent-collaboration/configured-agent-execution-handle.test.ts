@@ -3,7 +3,6 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "../../../src/agent-collaboration/execution/events/task-system-input-presentation.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../../src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ConfiguredAgentExecutionHandle } from "../../../src/agent-collaboration/execution/backends/configured-agent-execution-handle.js";
 import {
@@ -38,6 +37,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     ancestorTeamRunIds: kind === "agent_team" ? [] : ["mounted-team-run"],
   });
   const memberExecutionContext = new MemberExecutionContext({
+    teamScoped: true,
     identity,
     authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({
@@ -55,6 +55,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     postUserMessage: vi.fn(),
     approveToolInvocation: vi.fn(),
     interrupt: vi.fn(async () => ({ accepted: true as const })),
+    fenceInputAndInterruptForRootShutdown: vi.fn(async () => ({ accepted: true as const })),
   };
   const abort = vi.fn(async () => ({ kind: "aborted" as const }));
   const prepareNewAgentRun = vi.fn(async ({ runId, config }) => ({
@@ -68,6 +69,16 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     runId: identity.agentRunId, runtimeKind, platformAgentRunId,
     commitPublication: () => fakeRun, abort,
   }));
+  const prepareRestoreAgentRun = vi.fn(async () => ({
+    runId: identity.agentRunId, runtimeKind, platformAgentRunId: null,
+    commitPublication: () => fakeRun, abort,
+  }));
+  const getActiveRun = vi.fn((): typeof fakeRun | null => fakeRun.isActive() ? fakeRun : null);
+  const localFinish = vi.fn(async () => ({ accepted: true as const }));
+  const prepareAgentRunTermination = vi.fn(async () => ({
+    cancel: vi.fn(), commit: () => ({ finish: localFinish }),
+  }));
+  const tryPrepareAgentRunTerminationIfQuiescent = vi.fn(async () => null);
   const publishAgentEvent = vi.fn();
   const commitPlatformBindingChange = vi.fn();
   const handle = new ConfiguredAgentExecutionHandle({
@@ -78,7 +89,6 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
       llmModelIdentifier: "model",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind,
       workspaceRootPath: null,
       platformAgentRunId: null,
@@ -86,7 +96,10 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     activationMode: mode,
     memberExecutionContext,
     callbacks: { publishAgentEvent, commitPlatformBindingChange },
-    agentRunManager: { prepareNewAgentRun, prepareRestoreAgentRunFromPlatformState } as never,
+    agentRunManager: {
+      prepareNewAgentRun, prepareRestoreAgentRunFromPlatformState, prepareRestoreAgentRun,
+      getActiveRun, prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent,
+    } as never,
     memoryLocator: {
       getLocation: (physicalScope: typeof scope, agentRunId: string) => ({
         scope: physicalScope,
@@ -96,7 +109,13 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     } as never,
     activityInspector: { inspect: () => activity } as never,
   });
-  return { activity, commitPlatformBindingChange, prepareRestoreAgentRunFromPlatformState, handle, root, identity, scope, memberExecutionContext, prepareNewAgentRun, fakeRun, abort, publishAgentEvent };
+  return {
+    activity, commitPlatformBindingChange, prepareRestoreAgentRunFromPlatformState, prepareRestoreAgentRun, handle, root,
+    identity, scope, memberExecutionContext, prepareNewAgentRun, fakeRun, abort, publishAgentEvent, getActiveRun,
+    prepareAgentRunTermination, tryPrepareAgentRunTerminationIfQuiescent, localFinish,
+    /** The runtime died: AgentRunManager discovers it inactive and stops publishing it. */
+    crash: () => { fakeRun.isActive.mockReturnValue(false); },
+  };
 };
 
 describe("ConfiguredAgentExecutionHandle", () => {
@@ -201,5 +220,109 @@ describe("on-demand binding readiness", () => {
     await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true, code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
     await expect(f.handle.getOrCreateAgentRun()).rejects.toMatchObject({ indeterminate: true });
     expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("dead member (stale run) termination", () => {
+  const activate = async (f: ReturnType<typeof build>) => { await f.handle.getOrCreateAgentRun(); };
+
+  it("terminates a published run through the AgentRunManager as before", async () => {
+    const f = build("agent_org");
+    await activate(f);
+    const prepared = await f.handle.prepareTermination();
+    await expect(prepared.commit().finish()).resolves.toEqual({ accepted: true });
+    expect(f.prepareAgentRunTermination).toHaveBeenCalledWith(f.fakeRun);
+    expect(f.localFinish).toHaveBeenCalledOnce();
+  });
+
+  it("completes termination of a run the manager no longer publishes and disposes the handle", async () => {
+    const f = build("agent_org", RuntimeKind.ANTIGRAVITY_CLI);
+    await activate(f);
+    f.crash();
+    const prepared = await f.handle.prepareTermination();
+    await expect(prepared.commit().finish()).resolves.toEqual({ accepted: true });
+    expect(f.getActiveRun).toHaveBeenCalledWith("agent-run");
+    expect(f.prepareAgentRunTermination).not.toHaveBeenCalled();
+    expect(f.handle.getStatusSnapshot().details.status).toBe("offline");
+    await expect(f.handle.terminate()).resolves.toEqual({ accepted: true });
+  });
+
+  it("completes quiescent termination of a stale run", async () => {
+    const f = build("agent_team", RuntimeKind.ANTIGRAVITY_CLI);
+    await activate(f);
+    f.crash();
+    const prepared = await f.handle.tryPrepareTerminationIfQuiescent();
+    expect(prepared).not.toBeNull();
+    await expect(prepared!.commit().finish()).resolves.toEqual({ accepted: true });
+    expect(f.tryPrepareAgentRunTerminationIfQuiescent).not.toHaveBeenCalled();
+  });
+
+  it("accepts the root-shutdown fence for a stale run and never re-activates it afterwards", async () => {
+    const f = build("agent_org", RuntimeKind.ANTIGRAVITY_CLI);
+    await activate(f);
+    f.crash();
+    await expect(f.handle.fenceForRootShutdown()).resolves.toEqual({ accepted: true });
+    expect(f.fakeRun.fenceInputAndInterruptForRootShutdown).not.toHaveBeenCalled();
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toThrow("fenced for root shutdown");
+    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(1);
+    expect(f.prepareRestoreAgentRunFromPlatformState).not.toHaveBeenCalled();
+  });
+
+  it("fences a published run through the run as before", async () => {
+    const f = build("agent_org");
+    await activate(f);
+    await expect(f.handle.fenceForRootShutdown()).resolves.toEqual({ accepted: true });
+    expect(f.fakeRun.fenceInputAndInterruptForRootShutdown).toHaveBeenCalledOnce();
+  });
+
+  it("surfaces a stale-discovery cleanup failure once, then completes on retry", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const f = build("agent_org", RuntimeKind.ANTIGRAVITY_CLI);
+      await activate(f);
+      f.crash();
+      f.getActiveRun.mockImplementationOnce(() => { throw new Error("resource release failed"); });
+      await expect(f.handle.prepareTermination()).rejects.toThrow("resource release failed");
+      expect(warn.mock.calls[0]?.[0]).toContain("COLLABORATION_STALE_RUN_DISCOVERY_FAILED");
+      const prepared = await f.handle.prepareTermination();
+      await expect(prepared.commit().finish()).resolves.toEqual({ accepted: true });
+      expect(f.prepareAgentRunTermination).not.toHaveBeenCalled();
+    } finally { warn.mockRestore(); }
+  });
+});
+
+describe("re-activation after the member's runtime died", () => {
+  it("resumes the persisted external conversation in a fresh-created Org instead of rejecting it", async () => {
+    const f = build("agent_org", RuntimeKind.ANTIGRAVITY_CLI, "fresh");
+    await f.handle.getOrCreateAgentRun();
+    expect(f.prepareNewAgentRun).toHaveBeenCalledOnce();
+    f.activity.kind = "present";
+    f.fakeRun.isActive.mockReturnValueOnce(false); // the member's runtime died
+    await expect(f.handle.getOrCreateAgentRun()).resolves.toBe(f.fakeRun);
+    expect(f.prepareRestoreAgentRunFromPlatformState).toHaveBeenCalledWith(expect.objectContaining({
+      runId: "agent-run", platformAgentRunId: "external-thread",
+    }));
+    expect(f.prepareNewAgentRun).toHaveBeenCalledOnce();
+  });
+
+  it("switches to restore after eager (prepared) publication too", async () => {
+    const f = build("agent_team", RuntimeKind.AUTOBYTEUS, "fresh");
+    const prepared = await f.handle.prepareConfiguredActivation();
+    prepared.commitAfterDurability();
+    f.activity.kind = "present";
+    f.fakeRun.isActive.mockReturnValueOnce(false);
+    await f.handle.getOrCreateAgentRun();
+    expect(f.prepareRestoreAgentRun).toHaveBeenCalledOnce();
+    expect(f.prepareNewAgentRun).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the constructor mode when the first activation fails", async () => {
+    const f = build("agent_org", RuntimeKind.AUTOBYTEUS, "fresh");
+    f.prepareNewAgentRun.mockRejectedValueOnce(new Error("provider unavailable"));
+    await expect(f.handle.getOrCreateAgentRun()).rejects.toThrow("provider unavailable");
+    f.activity.kind = "present";
+    await expect(f.handle.getOrCreateAgentRun()).resolves.toBe(f.fakeRun);
+    expect(f.prepareNewAgentRun).toHaveBeenCalledTimes(2);
+    expect(f.prepareRestoreAgentRun).not.toHaveBeenCalled();
   });
 });

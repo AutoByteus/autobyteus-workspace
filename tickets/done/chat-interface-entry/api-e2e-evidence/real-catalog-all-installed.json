@@ -1,0 +1,45 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-real-catalog-mMj4bA/data
+AppConfig instance created.
+{
+  "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-real-catalog-mMj4bA",
+  "skillsPaths": "/Users/normy/autobyteus_org/autobyteus-agents,/Users/normy/.codex/skills,/Users/normy/autobyteus_org/autobyteus-skills",
+  "packageRoots": "/Users/normy/autobyteus_org/autobyteus-agents,/Users/normy/autobyteus_org/autobyteus-private-agents",
+  "cases": {
+    "catalog": {
+      "installedRecords": 78,
+      "listSkills": 78,
+      "byOrigin": {
+        "agent_private": 64,
+        "global": 14
+      },
+      "sameNames": true
+    },
+    "regular": {
+      "bindings": 78,
+      "kinds": [
+        "resolved"
+      ],
+      "ms": 36,
+      "hasEffectiveSkills": true,
+      "bundledAgentPrivate": 64
+    },
+    "detailed": {
+      "result": "resolved",
+      "bindings": 78,
+      "kinds": {
+        "resolved": 78
+      },
+      "ms": 297,
+      "invalid": []
+    },
+    "agyCapsuleTempWorkspace": {
+      "result": "materialized",
+      "snapshots": 78,
+      "capsuleBytes": 3123267,
+      "ms": 1813
+    }
+  },
+  "cleanup": "removed owned temp dir"
+}

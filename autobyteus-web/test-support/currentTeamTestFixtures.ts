@@ -1,7 +1,6 @@
 import type {
   AgentLaunchConfigurationDto,
   ConfiguredMemberExecutionDto,
-  TaskDelegationRecordDto,
   TaskExecutionDto,
   TaskTeamMemberExecutionDto,
   TeamCommunicationMessageDto,
@@ -34,10 +33,9 @@ export interface TestAgentNode {
   readonly agentDefinitionId: string;
   readonly agentRunId: string;
   readonly platformAgentRunId: string | null;
-  readonly runtimeKind: 'autobyteus' | 'codex_app_server' | 'claude_agent_sdk';
+  readonly runtimeKind: 'autobyteus' | 'codex_app_server' | 'claude_agent_sdk' | 'grok_build';
   readonly llmModelIdentifier: string;
   readonly autoExecuteTools: boolean;
-  readonly skillAccessMode: 'PRELOADED_ONLY' | 'NONE';
   readonly llmConfig: Record<string, unknown> | null;
   readonly workspaceRootPath: string | null;
   readonly currentStatus: AgentStatus;
@@ -74,7 +72,6 @@ export const testAgentNode = (
   runtimeKind: 'autobyteus',
   llmModelIdentifier: 'test-model',
   autoExecuteTools: true,
-  skillAccessMode: 'NONE',
   llmConfig: null,
   workspaceRootPath: null,
   currentStatus: AgentStatus.Idle,
@@ -133,7 +130,7 @@ export const testAgentContext = (input: {
       displayName: 'test-workspace', kind: 'filesystem',
     } : null,
     autoExecuteTools: input.autoExecuteTools ?? true,
-    skillAccessMode: 'NONE', isLocked: true, llmConfig: null,
+    isLocked: true, llmConfig: null,
   };
   const conversation: Conversation = {
     id: input.runId, messages: input.messages ?? [], createdAt: NOW, updatedAt: NOW,
@@ -151,7 +148,6 @@ function launch(node: TestAgentNode): AgentLaunchConfigurationDto {
   llm_model_identifier: node.llmModelIdentifier,
   llm_config: node.llmConfig,
   auto_execute_tools: node.autoExecuteTools,
-  skill_access_mode: node.skillAccessMode,
   workspace_root_path: node.workspaceRootPath,
   };
 }
@@ -205,48 +201,35 @@ const taskMembers = (node: TestSubTeamNode, taskTeamRunId: string): TaskTeamMemb
         members: taskMembers(child, taskTeamRunId), task_executions: [],
       });
 
-const executionForTask = (
-  task: TaskDelegationRecordDto,
+/** One delegated child in a test tree: who started it, and the task Agent or task Team it is. */
+export interface TestDelegation {
+  readonly delegatorAgentRunId: string;
+  readonly recipientAddress: AgentTeamAddress;
+  readonly target: { agentRunId: string } | { teamRunId: string };
+  readonly startedAt?: string;
+}
+
+export const testDelegation = (input: TestDelegation): TestDelegation => Object.freeze({ ...input });
+
+const executionForDelegation = (
+  delegation: TestDelegation,
   rootChildren: readonly TestTeamNode[],
 ): TaskExecutionDto => {
-  if ('agent_run_id' in task.task_execution) return {
-    kind: 'task_agent', address: task.recipient_address,
-    agent_run_id: task.task_execution.agent_run_id,
-    platform_agent_run_id: null, started_at: task.created_at, settled_at: null,
+  const startedAt = delegation.startedAt ?? NOW;
+  if ('agentRunId' in delegation.target) return {
+    kind: 'task_agent', address: delegation.recipientAddress,
+    agent_run_id: delegation.target.agentRunId,
+    platform_agent_run_id: null, delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
   };
-  const configured = taskTeamNode(rootChildren, task.recipient_address);
-  if (!configured) throw new Error(`No configured task Team exists at '${task.recipient_address}'.`);
+  const configured = taskTeamNode(rootChildren, delegation.recipientAddress);
+  if (!configured) throw new Error(`No configured task Team exists at '${delegation.recipientAddress}'.`);
   return {
-    kind: 'task_team', address: task.recipient_address,
-    team_run_id: task.task_execution.team_run_id,
-    members: taskMembers(configured, task.task_execution.team_run_id),
-    task_executions: [], started_at: task.created_at, settled_at: null,
+    kind: 'task_team', address: delegation.recipientAddress,
+    team_run_id: delegation.target.teamRunId,
+    members: taskMembers(configured, delegation.target.teamRunId),
+    task_executions: [], delegator_agent_run_id: delegation.delegatorAgentRunId, started_at: startedAt,
   };
 };
-
-export const testTaskRecord = (input: {
-  taskId: string;
-  delegatorAgentRunId: string;
-  recipientAddress: AgentTeamAddress;
-  target: { agentRunId: string } | { teamRunId: string };
-  status?: TaskDelegationRecordDto['status'];
-  description?: string;
-  createdAt?: string;
-  updates?: TaskDelegationRecordDto['updates'];
-  referenceFiles?: TaskDelegationRecordDto['reference_files'];
-}): TaskDelegationRecordDto => Object.freeze({
-  task_id: input.taskId,
-  delegator_agent_run_id: input.delegatorAgentRunId,
-  recipient_address: input.recipientAddress,
-  task_execution: 'agentRunId' in input.target
-    ? { agent_run_id: input.target.agentRunId }
-    : { team_run_id: input.target.teamRunId },
-  description: input.description ?? `Task ${input.taskId}`,
-  reference_files: Object.freeze([...(input.referenceFiles ?? [])]),
-  status: input.status ?? 'active',
-  updates: Object.freeze([...(input.updates ?? [])]),
-  created_at: input.createdAt ?? NOW,
-});
 
 export const buildTestTeamContext = (input: {
   teamRunId?: string;
@@ -258,7 +241,7 @@ export const buildTestTeamContext = (input: {
   workspaceRootPath?: string | null;
   contexts?: readonly { agentRunId: string; context: AgentContext }[];
   isActive?: boolean;
-  tasks?: readonly TaskDelegationRecordDto[];
+  delegations?: readonly TestDelegation[];
   taskExecutions?: readonly TaskExecutionDto[];
   messages?: readonly TeamCommunicationMessageDto[];
   configuration?: Record<string, unknown>;
@@ -268,18 +251,18 @@ export const buildTestTeamContext = (input: {
   const coordinatorAddress = input.coordinatorAddress
     ?? input.rootChildren.find((node) => node.kind === 'agent')?.address;
   if (!coordinatorAddress) throw new Error('Test Team requires one Agent coordinator.');
-  const tasks = [...(input.tasks ?? [])];
   const taskExecutions = input.taskExecutions
     ? [...input.taskExecutions]
-    : tasks.map((task) => executionForTask(task, input.rootChildren));
+    : (input.delegations ?? []).map((delegation) => executionForDelegation(delegation, input.rootChildren));
   const coordinator = configuredAgents(input.rootChildren)
     .find((node) => node.address === coordinatorAddress);
   if (!coordinator) throw new Error(`No configured coordinator exists at '${coordinatorAddress}'.`);
   const rootLaunch = withWorkspaceFallback(launch(coordinator), input.workspaceRootPath ?? null);
   const tree: TeamRunExecutionTreeDto = {
-    schema_version: 2, created_at: NOW, archived_at: null,
+    created_at: NOW, archived_at: null,
     application_binding: null, handoffs: [],
     root_team: {
+      collaborators: [],
       address: '/',
       team_definition_id: input.teamDefinitionId ?? 'test-team-definition',
       team_definition_name: input.teamDefinitionName ?? 'Test Team',
@@ -330,7 +313,7 @@ export const buildTestTeamContext = (input: {
   const view = createTeamExecutionViewState({
     rootTeamRunId: teamRunId, rootActive: input.isActive ?? true,
     baseChangeSequence: input.baseChangeSequence ?? 0,
-    executionTree: tree, tasks, messages: input.messages ?? [], configuration,
+    executionTree: tree, messages: input.messages ?? [], configuration,
     initialFocusedAgentRunId: focusedAgentRunId, agentContexts: contexts,
     createAgentContext: (agentRunId, address, currentTree) => createTeamAgentContext({
       tree: currentTree, agentRunId, address, workspaceMetadata,

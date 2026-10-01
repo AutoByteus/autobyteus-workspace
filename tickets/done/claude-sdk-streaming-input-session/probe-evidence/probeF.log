@@ -1,0 +1,24 @@
+   0.0s >>> SEND S3a uuid=71a31566 :: Use Bash (foreground) to run exactly: python3 -c 'import time; time.sl
+   0.3s command_lifecycle 
+   0.3s command_lifecycle 
+   0.4s system init  pid-session=315e349c
+   1.2s rate_limit_event 
+   2.5s assistant ["thinking"] echo=71a31566
+   3.2s assistant ["tool_use:Bash:{\"command\":\"python3 -c 'import time; time.sleep(40); print(\\\"LONG_DONE\\\")'\",\"des"] echo=-
+   6.9s system task_started  
+   9.0s >>> interrupt()
+   9.0s interrupt receipt {"still_queued":[]}
+   9.0s system task_notification stopped 
+   9.0s user uuid=c8e3d542 tool_result
+   9.0s user uuid=f165d311 text
+   9.0s result error_during_execution origin=undefined answers=71a31566 all=[71a31566] num_turns=3 terminal=aborted_tools
+   9.0s >>> SEND S3b uuid=4503666d :: Reply only ALIVE.
+   9.0s command_lifecycle 
+   9.0s command_lifecycle 
+   9.0s command_lifecycle 
+   9.0s system init  pid-session=315e349c
+  10.0s assistant ["thinking"] echo=4503666d
+  10.1s assistant ["ALIVE."] echo=-
+  10.1s result success origin=undefined answers=4503666d all=[4503666d] num_turns=1 terminal=completed
+  10.1s closing
+  10.6s stream ended

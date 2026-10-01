@@ -1,0 +1,3 @@
+37941 Tue Sep 29 08:14:44 2026     /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+38852 Tue Sep 29 08:14:48 2026     /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/
+38852

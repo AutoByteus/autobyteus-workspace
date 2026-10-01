@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "createdAt": "2026-08-14T10:00:00.000Z",
   "archivedAt": null,
   "applicationBinding": null,
@@ -15,7 +15,6 @@
       "llmModelIdentifier": "gpt-5.6-luna",
       "llmConfig": null,
       "autoExecuteTools": false,
-      "skillAccessMode": "PRELOADED_ONLY",
       "workspaceRootPath": "/workspace/software-engineering"
     },
     "members": [
@@ -31,7 +30,6 @@
           "llmModelIdentifier": "gpt-5.6-luna",
           "llmConfig": null,
           "autoExecuteTools": false,
-          "skillAccessMode": "PRELOADED_ONLY",
           "workspaceRootPath": "/workspace/software-engineering"
         }
       }
@@ -71,15 +69,15 @@
                 "address": "/qa/automation/tester",
                 "agentRunId": "nested-task-agent-run-001",
                 "platformAgentRunId": null,
-                "startedAt": "2026-08-14T10:22:00.000Z",
-                "settledAt": null
+                "delegatorAgentRunId": "task-team-agent-run-qa-lead-001",
+                "startedAt": "2026-08-14T10:22:00.000Z"
               }
             ]
           }
         ],
         "taskExecutions": [],
-        "startedAt": "2026-08-14T10:20:00.000Z",
-        "settledAt": null
+        "delegatorAgentRunId": "agent-run-product-manager",
+        "startedAt": "2026-08-14T10:20:00.000Z"
       }
     ]
   }

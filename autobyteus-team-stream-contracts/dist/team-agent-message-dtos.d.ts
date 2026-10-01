@@ -409,16 +409,24 @@ export declare const teamAgentPayloadSchemas: {
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
-    readonly TODO_LIST_UPDATE: z.ZodObject<{
-        todos: z.ZodArray<z.ZodObject<{
-            todo_id: z.ZodString;
-            description: z.ZodString;
-            status: z.ZodEnum<{
-                pending: "pending";
-                in_progress: "in_progress";
-                done: "done";
-            }>;
-        }, z.core.$strict>>;
+    readonly BACKGROUND_TASK_UPDATED: z.ZodObject<{
+        task_id: z.ZodString;
+        kind: z.ZodEnum<{
+            shell: "shell";
+            subagent: "subagent";
+            monitor: "monitor";
+            workflow: "workflow";
+            other: "other";
+        }>;
+        description: z.ZodString;
+        status: z.ZodEnum<{
+            running: "running";
+            completed: "completed";
+            failed: "failed";
+            stopped: "stopped";
+        }>;
+        summary: z.ZodNullable<z.ZodString>;
+        started_at: z.ZodString;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
@@ -474,6 +482,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     change_sequence: z.ZodNullable<z.ZodNumber>;
     agent_run_id: z.ZodNullable<z.ZodString>;
+    collaborator_name: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>, z.ZodObject<{
     error_scope: z.ZodLiteral<"turn">;
     error_effect: z.ZodEnum<{
@@ -489,6 +498,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     change_sequence: z.ZodNullable<z.ZodNumber>;
     agent_run_id: z.ZodNullable<z.ZodString>;
+    collaborator_name: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>, z.ZodObject<{
     error_scope: z.ZodLiteral<"runtime">;
     error_effect: z.ZodLiteral<"terminal">;
@@ -501,6 +511,7 @@ export declare const teamAgentErrorPayloadSchema: z.ZodUnion<readonly [z.ZodObje
     provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     change_sequence: z.ZodNullable<z.ZodNumber>;
     agent_run_id: z.ZodNullable<z.ZodString>;
+    collaborator_name: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>]>;
 export declare const teamInterruptCommandAckPayloadSchema: z.ZodUnion<readonly [z.ZodObject<{
     command_type: z.ZodLiteral<"INTERRUPT_GENERATION">;

@@ -38,10 +38,10 @@
 
       <aside class="rounded-lg bg-white p-3 shadow-sm">
         <div data-test="composer-attachments" class="border-b">
-          <ContextFilePathInputArea />
+          <ContextFilePathInputArea :target="composerTarget" />
         </div>
         <div data-test="composer-input">
-          <AgentUserInputTextArea />
+          <AgentUserInputTextArea :target="composerTarget" />
         </div>
         <div class="mt-3 text-xs text-slate-600">
           <p data-test="rich-focus">focus={{ richTeam.view.getFocusedAgentRunId() }}</p>
@@ -59,6 +59,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } 
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
+import { useComposerTarget } from '~/composables/agentInput/useComposerTarget';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
@@ -87,8 +88,9 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
+
+const composerTarget = useComposerTarget();
 
 definePageMeta({ layout: false });
 
@@ -123,7 +125,6 @@ const configFor = (runId: string, workspaceIndex: number): AgentRunConfig => ({
   workspaceId: `workspace-${workspaceIndex}`,
   workspaceMetadata: workspaceMetadata(workspaceIndex),
   autoExecuteTools: false,
-  skillAccessMode: 'NONE',
   isLocked: true,
   llmConfig: null,
 });
@@ -171,20 +172,6 @@ const richStableTeamNode = testSubTeamNode('/ReviewTeam', [richReviewerNode], {
   teamRunId: 'review-team-run',
   coordinatorAddress: '/ReviewTeam/reviewer',
 });
-const richTaskAgent = testTaskRecord({
-  taskId: 'task_0001',
-  delegatorAgentRunId: richWorkerContext.state.runId,
-  recipientAddress: '/worker',
-  target: { agentRunId: richTaskContext.state.runId },
-  description: 'Hidden task detail',
-});
-const richTaskTeam = testTaskRecord({
-  taskId: 'task_0002',
-  delegatorAgentRunId: richWorkerContext.state.runId,
-  recipientAddress: '/ReviewTeam',
-  target: { teamRunId: 'rich-task-team-run' },
-  description: 'Hidden nested task detail',
-});
 const richTeam = buildTestTeamContext({
   teamRunId: 'team-0',
   teamDefinitionId: 'contention-team',
@@ -197,11 +184,10 @@ const richTeam = buildTestTeamContext({
     workspaceMetadata: workspaceMetadata(0),
   },
   rootChildren: [richWorkerNode, richStableTeamNode],
-  tasks: [richTaskAgent, richTaskTeam],
   taskExecutions: [
     {
       kind: 'task_agent', address: '/worker', agent_run_id: richTaskContext.state.runId,
-      platform_agent_run_id: null, started_at: now, settled_at: null,
+      platform_agent_run_id: null, delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
     },
     {
       kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
@@ -209,7 +195,7 @@ const richTeam = buildTestTeamContext({
         kind: 'task_team_agent', address: '/ReviewTeam/reviewer',
         agent_run_id: richTaskTeamChildContext.state.runId, platform_agent_run_id: null,
       }],
-      task_executions: [], started_at: now, settled_at: null,
+      task_executions: [], delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
     },
   ],
   contexts: [

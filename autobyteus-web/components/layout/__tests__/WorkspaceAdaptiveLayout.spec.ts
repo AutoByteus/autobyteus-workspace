@@ -124,6 +124,8 @@ describe('WorkspaceAdaptiveLayout', () => {
           }),
         ],
         stubs: {
+          // The extracted tool shell is part of this layout's rendered structure.
+          WorkspaceToolShell: false,
           RightSideTabs: { template: '<div class="right-tabs-stub"></div>' },
           RightSidebarStrip: {
             props: ['stripBehavior', 'stripActivation'],
@@ -455,10 +457,18 @@ describe('WorkspaceAdaptiveLayout', () => {
   });
 
   it('keeps right-strip ownership separate from generic surface controls', () => {
-    const source = readFileSync(
+    // The right dock/strip/drawer machinery lives in the extracted WorkspaceToolShell;
+    // the layout keeps only the center-view selection and the left-navigation actions.
+    const layoutSource = readFileSync(
       resolve(process.cwd(), 'components/layout/WorkspaceAdaptiveLayout.vue'),
       'utf8',
     );
+    const shellSource = readFileSync(
+      resolve(process.cwd(), 'components/layout/WorkspaceToolShell.vue'),
+      'utf8',
+    );
+    const source = `${layoutSource}\n${shellSource}`;
+    expect(layoutSource).toContain('<WorkspaceToolShell data-test="workspace-adaptive-layout"');
 
     expect(source).not.toContain('showToolsTrigger');
     expect(source).not.toContain('showRightToolsTrigger');

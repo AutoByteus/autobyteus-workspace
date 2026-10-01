@@ -1,0 +1,190 @@
+{
+  "base": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-team-mcp-live-ZZAa2r",
+  "deliveries": [
+    {
+      "recipientAddress": "/recipient",
+      "content": "MCP-MARKER-ORG-5127",
+      "messageType": "agent_message",
+      "referenceFiles": []
+    }
+  ],
+  "dispatch": {
+    "forwarded": true,
+    "turnId": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+    "platformAgentRunId": "b0b20903-31f8-4b2c-8778-fcf5708ae463"
+  },
+  "events": [
+    {
+      "eventType": "TURN_STARTED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "invocation_id": "agy-tool-f2503679-e8ac-4467-ae5a-8b67d7cd1907-2",
+        "tool_name": "view_file",
+        "arguments": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/send_message_to.json"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "invocation_id": "agy-tool-f2503679-e8ac-4467-ae5a-8b67d7cd1907-2",
+        "tool_name": "view_file",
+        "arguments": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/send_message_to.json"
+        },
+        "result": {
+          "provider_state": "DONE",
+          "output": "1 lines, 2305 bytes"
+        },
+        "provider_state": "DONE"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "invocation_id": "agy-tool-f2503679-e8ac-4467-ae5a-8b67d7cd1907-4",
+        "tool_name": "call_mcp_tool",
+        "arguments": {
+          "Arguments": {
+            "content": "MCP-MARKER-ORG-5127",
+            "recipient_address": "/recipient"
+          },
+          "ServerName": "autobyteus_agent_tools",
+          "ToolName": "send_message_to"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "invocation_id": "agy-tool-f2503679-e8ac-4467-ae5a-8b67d7cd1907-4",
+        "tool_name": "call_mcp_tool",
+        "arguments": {
+          "Arguments": {
+            "content": "MCP-MARKER-ORG-5127",
+            "recipient_address": "/recipient"
+          },
+          "ServerName": "autobyteus_agent_tools",
+          "ToolName": "send_message_to"
+        },
+        "result": {
+          "provider_state": "DONE",
+          "output": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /recipient.\",\"target_agent_run_id\":\"org-recipient-run\"}"
+        },
+        "provider_state": "DONE"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_START",
+      "runId": "org-live-member",
+      "payload": {
+        "id": "agy-text-f2503679-e8ac-4467-ae5a-8b67d7cd1907-5",
+        "segment_type": "text",
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "org-live-member",
+      "payload": {
+        "id": "agy-text-f2503679-e8ac-4467-ae5a-8b67d7cd1907-5",
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "delta": "The message was successfully sent using `send_me"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "org-live-member",
+      "payload": {
+        "id": "agy-text-f2503679-e8ac-4467-ae5a-8b67d7cd1907-5",
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "delta": "ssage_to`.\n\n### Tool Result:\n- **Acc"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "org-live-member",
+      "payload": {
+        "id": "agy-text-f2503679-e8ac-4467-ae5a-8b67d7cd1907-5",
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "delta": "epted:** `true`\n- **Code:** `DELIVERED`\n- **Message:** `Delivered message to /recipient.`\n- **Target Agent Run ID:** `org-recipient-run`\n"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_END",
+      "runId": "org-live-member",
+      "payload": {
+        "id": "agy-text-f2503679-e8ac-4467-ae5a-8b67d7cd1907-5",
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOKEN_USAGE_UPDATED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "idempotency_key": "agy:b0b20903-31f8-4b2c-8778-fcf5708ae463:1",
+        "runtime_kind": "antigravity_cli",
+        "ingestion_kind": "agy_result",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "b0b20903-31f8-4b2c-8778-fcf5708ae463",
+        "model_identifier": "gemini-3.8-flash-low",
+        "model_value": "gemini-3.8-flash-low",
+        "model_provider": "GEMINI",
+        "provider_name": "Antigravity CLI",
+        "reported_input_tokens": 29133,
+        "reported_output_tokens": 221,
+        "reported_total_tokens": 29354,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_read_input_tokens": 0,
+        "cache_state": "zero_reported",
+        "reasoning_output_tokens": 0,
+        "raw_usage_json": {
+          "input_tokens": 29133,
+          "output_tokens": 221,
+          "thinking_tokens": 0,
+          "cache_read_tokens": 0,
+          "total_tokens": 29354
+        },
+        "quality_flags": [
+          "agy_provider_reported_cumulative_usage"
+        ]
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TURN_COMPLETED",
+      "runId": "org-live-member",
+      "payload": {
+        "turn_id": "f2503679-e8ac-4467-ae5a-8b67d7cd1907",
+        "provider_status": "SUCCESS"
+      },
+      "statusHint": "IDLE"
+    }
+  ]
+}

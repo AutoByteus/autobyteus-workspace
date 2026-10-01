@@ -1,0 +1,692 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22m[2mClaudeAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts status and text events for a normal Claude backend turn
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22m[2mClaudeAgentRunBackendFactory integration (live transport)[2m > [22m[2mconverts status and text events for a normal Claude backend turn
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [31m❯[39m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 226306[2mms[22m[39m
+     [33m[2m✓[22m[39m converts status and text events for a normal Claude backend turn [33m 4477[2mms[22m[39m
+     [33m[2m✓[22m[39m converts approval, tool execution, and success events for an approved Claude Write tool turn [33m 6933[2mms[22m[39m
+     [33m[2m✓[22m[39m converts deny events for a Claude tool approval rejection [33m 8618[2mms[22m[39m
+     [33m[2m✓[22m[39m auto-executes a Claude Write tool turn without approval events [33m 7102[2mms[22m[39m
+     [33m[2m✓[22m[39m interrupts a pending Claude tool approval through the backend and emits deny/idle events [33m 5909[2mms[22m[39m
+     [33m[2m✓[22m[39m restores a Claude backend after a tool-using turn and continues the same conversation [33m 10513[2mms[22m[39m
+[31m     [31m×[31m executes open_tab through the live Claude Agent Tools MCP path[39m[33m 91354[2mms[22m[39m
+[31m     [31m×[31m executes the full browser tool surface through the live Claude Agent Tools MCP path[39m[33m 91398[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mexecutes open_tab through the live Claude Agent Tools MCP path
+[31m[1mError[22m[39m: Error: Condition not met within 90000ms.
+Observed Claude backend events:
+[
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "status": "initializing",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "statusHint": "ACTIVE",
+    "status": null,
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "tool_call",
+    "invocationId": "toolu_017yPycas2jNUzSnFUdTe9aj",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_017yPycas2jNUzSnFUdTe9aj",
+    "toolName": "Bash",
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_APPROVED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_017yPycas2jNUzSnFUdTe9aj",
+    "toolName": "Bash",
+    "reason": "auto_execute_tools_enabled",
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_017yPycas2jNUzSnFUdTe9aj",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_SUCCEEDED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_017yPycas2jNUzSnFUdTe9aj",
+    "toolName": "Bash",
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "text",
+    "invocationId": "run-claude-backend-browser-714b684b-a63b-43ae-acba-84ccaa34ac20:turn:2ae672a9-2be9-47ac-8e14-e02dfaf73ac0:claude-text:msg_011CfRhcjYTDZgx6hqbXr16s:0",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "text",
+    "invocationId": "run-claude-backend-browser-714b684b-a63b-43ae-acba-84ccaa34ac20:turn:2ae672a9-2be9-47ac-8e14-e02dfaf73ac0:claude-text:msg_011CfRhcjYTDZgx6hqbXr16s:0",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "run-claude-backend-browser-714b684b-a63b-43ae-acba-84ccaa34ac20:turn:2ae672a9-2be9-47ac-8e14-e02dfaf73ac0:claude-text:msg_011CfRhcjYTDZgx6hqbXr16s:0",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "statusHint": "IDLE",
+    "status": null,
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "IDLE",
+    "status": "idle",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  }
+]
+[36m [2m❯[22m waitForEvent tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m114:11[22m[39m
+    [90m112| [39m      error[33m:[39m event[33m.[39mpayload[33m.[39merror [33m??[39m [35mnull[39m[33m,[39m
+    [90m113| [39m    }))[33m;[39m
+    [90m114| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m115| [39m      `${String(error)}\nObserved Claude backend events:\n${JSON.strin…
+    [90m116| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m869:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts[2m > [22mClaudeAgentRunBackendFactory integration (live transport)[2m > [22mexecutes the full browser tool surface through the live Claude Agent Tools MCP path
+[31m[1mError[22m[39m: Error: Condition not met within 90000ms.
+Observed Claude backend events:
+[
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": null,
+    "status": "initializing",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TURN_STARTED",
+    "statusHint": "ACTIVE",
+    "status": null,
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "tool_call",
+    "invocationId": "toolu_0121rdGQ8HSJmFTVceAJLpar",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_0121rdGQ8HSJmFTVceAJLpar",
+    "toolName": "mcp__Claude_Browser__open_tab",
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_0121rdGQ8HSJmFTVceAJLpar",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_FAILED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_0121rdGQ8HSJmFTVceAJLpar",
+    "toolName": "mcp__Claude_Browser__open_tab",
+    "reason": null,
+    "error": "<tool_use_error>Error: No such tool available: mcp__Claude_Browser__open_tab</tool_use_error>"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "tool_call",
+    "invocationId": "toolu_01Gbd8sMjf69PYjc92fhvuZd",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_STARTED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_01Gbd8sMjf69PYjc92fhvuZd",
+    "toolName": "mcp__remote-devices__Claude_Browser__open_tab",
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_01Gbd8sMjf69PYjc92fhvuZd",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOOL_EXECUTION_FAILED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "toolu_01Gbd8sMjf69PYjc92fhvuZd",
+    "toolName": "mcp__remote-devices__Claude_Browser__open_tab",
+    "reason": null,
+    "error": "<tool_use_error>Error: No such tool available: mcp__remote-devices__Claude_Browser__open_tab</tool_use_error>"
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_START",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "text",
+    "invocationId": "run-claude-backend-browser-surface-00cd2c8e-e75e-43b5-84a3-0dc78e3f0aec:turn:2a33e035-54ec-4c78-acf7-034cdd5e49f5:claude-text:msg_011CfRhjRSU7PyqbtG9ncztJ:0",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_CONTENT",
+    "statusHint": null,
+    "status": null,
+    "segmentType": "text",
+    "invocationId": "run-claude-backend-browser-surface-00cd2c8e-e75e-43b5-84a3-0dc78e3f0aec:turn:2a33e035-54ec-4c78-acf7-034cdd5e49f5:claude-text:msg_011CfRhjRSU7PyqbtG9ncztJ:0",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "SEGMENT_END",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": "run-claude-backend-browser-surface-00cd2c8e-e75e-43b5-84a3-0dc78e3f0aec:turn:2a33e035-54ec-4c78-acf7-034cdd5e49f5:claude-text:msg_011CfRhjRSU7PyqbtG9ncztJ:0",
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "ACTIVE",
+    "status": "running",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TOKEN_USAGE_UPDATED",
+    "statusHint": null,
+    "status": null,
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "TURN_COMPLETED",
+    "statusHint": "IDLE",
+    "status": null,
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  },
+  {
+    "eventType": "AGENT_STATUS",
+    "statusHint": "IDLE",
+    "status": "idle",
+    "segmentType": null,
+    "invocationId": null,
+    "toolName": null,
+    "reason": null,
+    "error": null
+  }
+]
+[36m [2m❯[22m waitForEvent tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m114:11[22m[39m
+    [90m112| [39m      error[33m:[39m event[33m.[39mpayload[33m.[39merror [33m??[39m [35mnull[39m[33m,[39m
+    [90m113| [39m    }))[33m;[39m
+    [90m114| [39m    [35mthrow[39m [35mnew[39m [33mError[39m(
+    [90m   | [39m          [31m^[39m
+    [90m115| [39m      `${String(error)}\nObserved Claude backend events:\n${JSON.strin…
+    [90m116| [39m    )[33m;[39m
+[90m [2m❯[22m tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts:[2m967:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m6 passed[39m[22m[90m (8)[39m
+[2m   Start at [22m 10:01:19
+[2m   Duration [22m 230.55s[2m (transform 2.75s, setup 17ms, import 3.72s, tests 226.31s, environment 0ms)[22m
+

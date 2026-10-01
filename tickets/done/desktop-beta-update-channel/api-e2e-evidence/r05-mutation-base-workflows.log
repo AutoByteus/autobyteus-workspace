@@ -1,0 +1,6 @@
+FAIL: test_beta_tag_push_publishes_a_prerelease (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest)
+FAIL: test_manual_dispatch_of_a_beta_tag_is_always_a_prerelease (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest)
+FAIL: test_prerelease_tags_use_generated_notes_even_with_curated_notes_present (scripts.tests.test_release_channel_workflow_steps.ReleaseNotesModeStepTest) (workflow='release-desktop.yml')
+FAIL: test_prerelease_tags_use_generated_notes_even_with_curated_notes_present (scripts.tests.test_release_channel_workflow_steps.ReleaseNotesModeStepTest) (workflow='release-android.yml')
+Ran 8 tests in 0.082s
+FAILED (failures=4)

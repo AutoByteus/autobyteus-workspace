@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "provider": "TELEGRAM",
+    "transport": "BUSINESS_API",
+    "accountId": "e2e-bot",
+    "peerId": "e2e-peer-1001",
+    "threadId": "",
+    "targetType": "AGENT",
+    "agentDefinitionId": "telegram-helper",
+    "teamDefinitionId": null,
+    "launchPreset": {
+      "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy",
+      "llmModelIdentifier": "gpt-5.4-mini",
+      "runtimeKind": "autobyteus",
+      "autoExecuteTools": false,
+      "skillAccessMode": "NONE",
+      "llmConfig": null
+    },
+    "agentRunId": "telegram_helper_ceadcfac50da4d92b0030dd31356750a",
+    "teamRunId": null,
+    "targetMemberAddress": null,
+    "allowTransportFallback": false,
+    "createdAt": "2026-09-24T14:51:39.190Z",
+    "updatedAt": "2026-09-24T14:51:56.391Z"
+  },
+  {
+    "id": "2",
+    "provider": "TELEGRAM",
+    "transport": "BUSINESS_API",
+    "accountId": "e2e-bot",
+    "peerId": "e2e-group-2002",
+    "threadId": "",
+    "targetType": "TEAM",
+    "agentDefinitionId": null,
+    "teamDefinitionId": "classroom-relay",
+    "launchPreset": {
+      "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy",
+      "llmModelIdentifier": "gpt-5.4-mini",
+      "runtimeKind": "autobyteus",
+      "autoExecuteTools": false,
+      "skillAccessMode": "NONE",
+      "llmConfig": null
+    },
+    "agentRunId": null,
+    "teamRunId": "classroom_relay_999545672ef04187b3eca06713ee2a39",
+    "targetMemberAddress": null,
+    "allowTransportFallback": false,
+    "createdAt": "2026-09-24T14:53:04.439Z",
+    "updatedAt": "2026-09-24T14:53:04.548Z"
+  }
+]

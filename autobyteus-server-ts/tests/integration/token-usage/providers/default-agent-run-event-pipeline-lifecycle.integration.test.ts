@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_prisma";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../src/agent-execution/domain/agent-run-context.js";
@@ -28,7 +27,6 @@ describe("default token event pipeline real SQLite lifecycle", () => {
       llmModelIdentifier: "gpt-test",
       autoExecuteTools: true,
       workspaceId: "workspace-token-pipeline-lifecycle",
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     }),
   });

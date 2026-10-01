@@ -9,9 +9,11 @@ import { RunModelSelectionService } from '../../../src/llm-management/services/r
 import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js';
 import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../fixtures/current-agent-org-run-fixtures.js';
-import { AgentOrgTaskDelegationRecordsV1Store } from '../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js';
 import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
 import { applyAgentOrgRunModelConfigPatches, listAgentOrgRunModelConfigScopes, resolveAgentOrgRunModelConfigTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
+
+const view = (rows: any[]) => ({ offeredModels: rows,
+  findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
 
 const roots: string[] = [];
 afterEach(async () => { vi.restoreAllMocks(); await Promise.all(roots.splice(0).map(p => fs.rm(p, { recursive: true, force: true }))); });
@@ -28,18 +30,17 @@ async function setup() {
   const tree = { ...root, rootOrg: { ...root.rootOrg, defaultLaunchConfiguration: { ...root.rootOrg.defaultLaunchConfiguration,
     llmModelIdentifier: 'test-model', llmConfig: { temperature: 1, enabled: true } } } };
   const store = new AgentOrgRunExecutionTreeStore(); await store.write(dir, tree);
-  await new AgentOrgTaskDelegationRecordsV1Store().write(dir, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', records: [] });
   await new AgentOrgCommunicationMessagesV1Store().write(dir, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] });
-  const catalog = { listLlmModels: vi.fn().mockResolvedValue(['test-model','equal','larger','smaller'].map(model_identifier =>
-    ({ model_identifier, config_schema: { properties: { temperature: { type: 'number', minimum: 0, maximum: 1 }, enabled: { type: 'boolean' } } } }))) };
-  const capacity = { resolveMany: vi.fn().mockResolvedValue({
+  const catalog = { runtimeModelSelectionCatalog: vi.fn().mockResolvedValue(view(['test-model','equal','larger','smaller'].map(model_identifier =>
+    ({ model_identifier, config_schema: { properties: { temperature: { type: 'number', minimum: 0, maximum: 1 }, enabled: { type: 'boolean' } } } })))) };
+  const capacity = { resolveMany: vi.fn().mockReturnValue({
     'test-model': { kind: 'known', tokens: 100, source: 'provider' }, equal: { kind: 'known', tokens: 100, source: 'provider' },
     larger: { kind: 'known', tokens: 200, source: 'provider' }, smaller: { kind: 'known', tokens: 50, source: 'provider' },
   }) };
   const validator = new RunModelSelectionService(catalog, capacity);
   let runActive = true;
   const run = { orgRunId: 'org', rootIdentity: createAgentOrgRootExecutionIdentity('org'), isActive: () => runActive,
-    deliverExactAgentMessage: vi.fn(), terminate: vi.fn(async () => ({ accepted: true })) };
+    hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(), terminate: vi.fn(async () => ({ accepted: true })) };
   const build = vi.fn().mockResolvedValue(run);
   const ensureWorkspaceByRootPath = vi.fn(async (root: string) => ({ getBasePath: () => root }));
   const manager = new AgentOrgRunManager({ workspaces: { ensureWorkspaceByRootPath } as any, memoryDir, executionTreeStore: store, modelSelectionValidator: validator,
@@ -165,7 +166,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
       launchConfiguration: { ...team.members[0].launchConfiguration, workspaceRootPath: '/distinct', llmModelIdentifier: 'larger', llmConfig: { enabled: false } } });
     tree.rootOrg.members.push(testOrgTeamNode({ address: '/sibling', teamRunId: 'sibling', coordinatorAddress: '/sibling/lead', members: [testOrgAgentNode('/sibling/lead', 'sibling-lead')] }));
     team.taskExecutions = [{ address: '/team/lead', agentRunId: 'old-task', platformAgentRunId: null,
-      startedAt: '2026-09-01T00:00:00.000Z', settledAt: '2026-09-01T00:01:00.000Z' }];
+      delegatorAgentRunId: 'lead', startedAt: '2026-09-01T00:00:00.000Z' }];
     await h.store.write(h.dir, tree);
     const write = vi.spyOn(h.store, 'write'), validate = vi.spyOn(h.validator, 'validateMany');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org',

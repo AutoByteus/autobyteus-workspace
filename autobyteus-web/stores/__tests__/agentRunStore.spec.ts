@@ -165,7 +165,6 @@ describe('agentRunStore', () => {
                 llmModelIdentifier: 'edited-model',
                 runtimeKind: 'codex_app_server',
                 autoExecuteTools: true,
-                skillAccessMode: 'NONE',
                 llmConfig: { reasoning: { effort: 'xhigh' } },
                 isLocked: false,
             },
@@ -184,6 +183,7 @@ describe('agentRunStore', () => {
             },
             requirement: 'do something',
             contextFilePaths: [],
+            requestedSkillNames: [],
             submissionPending: false,
             isSubscribed: false,
         };
@@ -225,7 +225,6 @@ describe('agentRunStore', () => {
                 llmModelIdentifier: 'edited-model',
                 autoExecuteTools: true,
                 llmConfig: { reasoning: { effort: 'xhigh' } },
-                skillAccessMode: 'NONE',
                 runtimeKind: 'codex_app_server',
                 initialSummary: 'do something',
               },
@@ -253,6 +252,35 @@ describe('agentRunStore', () => {
             dedupeKey: expect.stringMatching(/^agent_run_input:perm-agent-id:client_/),
           }),
         );
+    });
+
+    it('composes skill tags into the sent content, keeps the summary on the user text and clears the tags', async () => {
+        mockAgentContext.requestedSkillNames = ['skill-optimizer', 'writer'];
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        const composed = 'Use these skills for this request: skill-optimizer, writer.\n\ndo something';
+        expect(mockAgentContext.state.conversation.messages[0].text).toBe(composed);
+        expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+          variables: { input: expect.objectContaining({ initialSummary: 'do something' }) },
+        }));
+        expect(mockSendMessage).toHaveBeenCalledWith(composed, [], [], expect.anything());
+        expect(mockAgentContext.requestedSkillNames).toEqual([]);
+        expect(mockAgentContext.requirement).toBe('');
+    });
+
+    it('uses the instruction as the summary only for a tags-only message', async () => {
+        mockAgentContext.requirement = '';
+        mockAgentContext.requestedSkillNames = ['writer'];
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+          variables: { input: expect.objectContaining({ initialSummary: 'Use the writer skill for this request.' }) },
+        }));
+        expect(mockSendMessage).toHaveBeenCalledWith('Use the writer skill for this request.', [], [], expect.anything());
     });
 
     it('publishes the authoritative Error status with exact navigation when preparation fails', async () => {
@@ -562,4 +590,103 @@ describe('agentRunStore', () => {
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
         expect(mockAgentContext.state.conversation.messages).toHaveLength(0);
     });
+
+    describe('activation pending marker (D-14)', () => {
+        const markedIds = ['perm-agent-id', 'run-1', 'run-offline', 'run-error', 'run-idle'];
+        beforeEach(() => {
+            const store = useAgentRunStore();
+            // Services and markers are module-level: start every test without either.
+            markedIds.forEach((id) => { store.disconnectAgentStream(id); store.clearActivationPending(id); });
+            mockDisconnect.mockClear();
+        });
+
+        it('marks a first send with the permanent id, before the stream connects, and keeps it after SEND_MESSAGE', async () => {
+            const store = useAgentRunStore();
+            let markedAtConnect: boolean | null = null;
+            mockConnect.mockImplementation(() => { markedAtConnect = store.isActivationPending('perm-agent-id'); });
+
+            await store.sendUserInputAndSubscribe();
+
+            expect(markedAtConnect).toBe(true);
+            expect(store.isActivationPending('temp-1')).toBe(false);
+            // Only server-confirmed activation (an active snapshot) or a failure ends it.
+            expect(store.isActivationPending('perm-agent-id')).toBe(true);
+        });
+
+        it.each([[AgentStatus.Offline, 'run-offline'], [AgentStatus.Error, 'run-error']])(
+            'marks a resume of a %s run before connecting', async (status, runId) => {
+                mockAgentContext.state.runId = runId;
+                mockAgentContext.state.currentStatus = status;
+                const store = useAgentRunStore();
+
+                await store.sendUserInputAndSubscribe();
+
+                expect(store.isActivationPending(runId)).toBe(true);
+            });
+
+        it('does not mark a send to a run it already considers live', async () => {
+            mockAgentContext.state.runId = 'run-idle';
+            mockAgentContext.state.currentStatus = AgentStatus.Idle;
+            const store = useAgentRunStore();
+
+            await store.sendUserInputAndSubscribe();
+
+            expect(store.isActivationPending('run-idle')).toBe(false);
+        });
+
+        it('clears the marker on a handled failure after promotion', async () => {
+            contextFileUploadStoreMock.finalizeDraftAttachments.mockRejectedValueOnce(new Error('finalize failed'));
+            const store = useAgentRunStore();
+
+            await store.sendUserInputAndSubscribe();
+
+            expect(mockContextsStore.promoteTemporaryId).toHaveBeenCalledWith('temp-1', 'perm-agent-id');
+            expect(store.isActivationPending('perm-agent-id')).toBe(false);
+        });
+
+        it('clears the marker when the stream connection times out', async () => {
+            vi.useFakeTimers();
+            try {
+                mockConnectionState.value = 'connecting';
+                const store = useAgentRunStore();
+                const sending = store.sendUserInputAndSubscribe();
+                await vi.advanceTimersByTimeAsync(100);
+                expect(store.isActivationPending('perm-agent-id')).toBe(true);
+
+                await vi.advanceTimersByTimeAsync(10_500);
+                await sending;
+
+                expect(store.isActivationPending('perm-agent-id')).toBe(false);
+                expect(mockSendMessage).not.toHaveBeenCalled();
+            } finally {
+                vi.useRealTimers();
+            }
+        });
+
+        it('clears the marker on a rejected SEND_MESSAGE ack, not on an accepted one', async () => {
+            const store = useAgentRunStore();
+            await store.sendUserInputAndSubscribe();
+            const onAck = mockServiceOptions.value.onSendMessageCommandAck;
+
+            onAck({ command_type: 'SEND_MESSAGE', run_id: 'perm-agent-id', message_id: 'm', dedupe_key: 'd', state: 'accepted', accepted: true, duplicate: false });
+            expect(store.isActivationPending('perm-agent-id')).toBe(true);
+
+            onAck({ command_type: 'SEND_MESSAGE', run_id: 'perm-agent-id', message_id: 'm', dedupe_key: 'd', state: 'rejected', accepted: false, duplicate: false, code: 'ACTIVATION_FAILED' });
+            expect(store.isActivationPending('perm-agent-id')).toBe(false);
+        });
+
+        it('clears the marker on terminate and on close', async () => {
+            const store = useAgentRunStore();
+            mockAgentContext.state.runId = 'run-1';
+            store.markActivationPending('run-1');
+            mutateMock.mockResolvedValueOnce({ data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] });
+            await store.terminateRun('run-1');
+            expect(store.isActivationPending('run-1')).toBe(false);
+
+            store.markActivationPending('run-1');
+            await store.closeAgent('run-1', { terminate: false });
+            expect(store.isActivationPending('run-1')).toBe(false);
+        });
+    });
 });
+

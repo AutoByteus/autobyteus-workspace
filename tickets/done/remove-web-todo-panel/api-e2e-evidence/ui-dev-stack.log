@@ -1,0 +1,474 @@
+
+> autobyteus-workspace@ dev /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel
+> pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 167ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data
+AppConfig instance created.
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../.autobyteus/development/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/db/development.db"
+
+SQLite database development.db created at file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/db/development.db
+
+26 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:4447) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T18:10:18.329Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 49 items.
+Populating agent definition cache for the first time...
+[2026-09-29T18:10:18.879Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T18:10:18.887Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 49 items.
+{"level":30,"time":1790705418898,"pid":4447,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58945"}
+{"level":30,"time":1790705418925,"pid":4447,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:8000"}
+[2026-09-29T18:10:18.926Z] [INFO] [server.runtime] Server listening on 127.0.0.1:8000
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+> autobyteus@1.4.91-beta.9 dev /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 3000
+
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:3000/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+✔ Vite client built in 38ms
+
+ WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+✔ Vite server built in 720ms
+[nitro] ✔ Nuxt Nitro server built in 698ms
+ℹ Vite client warmed up in 1ms
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data
+ℹ ✨ new dependencies optimized: @monaco-editor/loader, vue-pdf-embed, xlsx, markdown-it, dompurify, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+{"level":30,"time":1790705473046,"pid":4447,"hostname":"MacBookPro","reqId":"req-v","err":{"type":"GraphQLError","message":"Graphql validation error","stack":"FastifyError: Graphql validation error\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)","extensions":{}},"msg":"Graphql validation error"}
+{"level":40,"time":1790705473047,"pid":4447,"hostname":"MacBookPro","reqId":"req-v","method":"POST","url":"/graphql","statusCode":400,"elapsedMs":2.773832991719246,"msg":"http request completed"}
+In-memory cache: Added new agent definition with ID bg-tasks-validation-agent.
+Agent Definition created successfully with ID: bg-tasks-validation-agent
+[CodexAppServerClient] stderr: [2m2026-09-29T18:11:29.111541Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /tmp/bgtasks-ui/codex
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/codex.
+Created and registered workspace ID: agent_ws_c3b4f1ef2c467f2bf68dd055a58e6049f11f80abaa78b3375d3f61f72c0198ba
+Creating new workspace for rootPath: /tmp/bgtasks-ui/codex
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/codex.
+Reusing registered workspace ID: agent_ws_c3b4f1ef2c467f2bf68dd055a58e6049f11f80abaa78b3375d3f61f72c0198ba
+[CodexAppServerClient] stderr: [2m2026-09-29T18:11:36.662427Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c'.
+Creating new workspace for rootPath: /tmp/bgtasks-ui/claude
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/claude.
+Created and registered workspace ID: agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3
+Creating new workspace for rootPath: /tmp/bgtasks-ui/claude
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/claude.
+Reusing registered workspace ID: agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3
+Published claude_agent_sdk agent run 'bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d'.
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d/raw_traces_active.jsonl
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/bgtasks-ui/claude
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/claude.
+Reusing registered workspace ID: agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3
+Agent websocket attached for run bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d
+Created agent session 87ffd1ae-02f3-49f7-9c8b-60471cc91dc3 for run bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d
+Agent WebSocket connected: session=87ffd1ae-02f3-49f7-9c8b-60471cc91dc3, run=bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /tmp/bgtasks-ui/codex
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/codex.
+Reusing registered workspace ID: agent_ws_c3b4f1ef2c467f2bf68dd055a58e6049f11f80abaa78b3375d3f61f72c0198ba
+Agent websocket attached for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Created agent session 4ec89930-4bd5-49c3-8419-aaa85481d5a5 for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Agent WebSocket connected: session=4ec89930-4bd5-49c3-8419-aaa85481d5a5, run=bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Closed agent session 87ffd1ae-02f3-49f7-9c8b-60471cc91dc3
+Agent WebSocket disconnected: 87ffd1ae-02f3-49f7-9c8b-60471cc91dc3
+Closed agent session 4ec89930-4bd5-49c3-8419-aaa85481d5a5
+Agent WebSocket disconnected: 4ec89930-4bd5-49c3-8419-aaa85481d5a5
+ℹ ✨ new dependencies optimized: @xterm/xterm, @xterm/addon-fit, @novnc/novnc
+ℹ ✨ optimized dependencies changed. reloading
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d/raw_traces_active.jsonl
+Agent websocket attached for run bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d
+Created agent session e5e23eda-bff5-4658-95d7-519168c9e5ba for run bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d
+Agent WebSocket connected: session=e5e23eda-bff5-4658-95d7-519168c9e5ba, run=bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d
+Agent websocket attached for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Created agent session eca8d979-f29c-4433-b5ad-593acfed4654 for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Agent WebSocket connected: session=eca8d979-f29c-4433-b5ad-593acfed4654, run=bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_4f78d7efccfe4461b60cadd90a57553d/raw_traces_active.jsonl
+Created WorkspaceFileExplorer for agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3 (file-explorer-websocket).
+FileSystemWatcher initialized for '/tmp/bgtasks-ui/claude' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/bgtasks-ui/claude
+Acquired file watcher lease for /tmp/bgtasks-ui/claude (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 76a3dcb2-5c61-451c-b5e6-e38f935ba8df for workspace agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3
+Created file explorer session 76a3dcb2-5c61-451c-b5e6-e38f935ba8df for workspace agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3. Active sessions: 1
+File explorer WebSocket connected: 76a3dcb2-5c61-451c-b5e6-e38f935ba8df for workspace agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3
+File explorer websocket attached for workspace agent_ws_d0b0cc60403518bc8baedad51875286f015a0afda899dd719ccb7cfa673185a3
+Released file watcher lease for /tmp/bgtasks-ui/claude (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/bgtasks-ui/claude
+FileExplorerSession closed: 76a3dcb2-5c61-451c-b5e6-e38f935ba8df
+Closed file explorer session 76a3dcb2-5c61-451c-b5e6-e38f935ba8df. Active sessions: 0
+File explorer WebSocket disconnected: 76a3dcb2-5c61-451c-b5e6-e38f935ba8df
+Closed agent session e5e23eda-bff5-4658-95d7-519168c9e5ba
+Agent WebSocket disconnected: e5e23eda-bff5-4658-95d7-519168c9e5ba
+Creating new workspace for rootPath: /tmp/bgtasks-ui/agy
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/agy.
+Created and registered workspace ID: agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+Creating new workspace for rootPath: /tmp/bgtasks-ui/agy
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/agy.
+Reusing registered workspace ID: agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+Published antigravity_cli agent run 'bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0'.
+Closed agent session eca8d979-f29c-4433-b5ad-593acfed4654
+Agent WebSocket disconnected: eca8d979-f29c-4433-b5ad-593acfed4654
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0/raw_traces_active.jsonl
+Agent websocket attached for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Created agent session b01fca31-e547-4374-b8ba-85102aff8085 for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Agent WebSocket connected: session=b01fca31-e547-4374-b8ba-85102aff8085, run=bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Agent websocket attached for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Created agent session 60c7feaa-df74-4226-9c44-e2edd1f18fe3 for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Agent WebSocket connected: session=60c7feaa-df74-4226-9c44-e2edd1f18fe3, run=bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0/raw_traces_active.jsonl
+Created WorkspaceFileExplorer for agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c (file-explorer-websocket).
+FileSystemWatcher initialized for '/tmp/bgtasks-ui/agy' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/bgtasks-ui/agy
+Acquired file watcher lease for /tmp/bgtasks-ui/agy (file-explorer-websocket); active leases: 1
+FileExplorerSession created: fa5785c6-9ed7-403d-acb3-e4b092708f75 for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+Created file explorer session fa5785c6-9ed7-403d-acb3-e4b092708f75 for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c. Active sessions: 1
+File explorer WebSocket connected: fa5785c6-9ed7-403d-acb3-e4b092708f75 for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+File explorer websocket attached for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+Released file watcher lease for /tmp/bgtasks-ui/agy (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/bgtasks-ui/agy
+FileExplorerSession closed: fa5785c6-9ed7-403d-acb3-e4b092708f75
+Closed file explorer session fa5785c6-9ed7-403d-acb3-e4b092708f75. Active sessions: 0
+File explorer WebSocket disconnected: fa5785c6-9ed7-403d-acb3-e4b092708f75
+FileSystemWatcher initialized for '/tmp/bgtasks-ui/agy' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/bgtasks-ui/agy
+Acquired file watcher lease for /tmp/bgtasks-ui/agy (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 7340dfa7-b779-47a0-a85e-b024b02ae738 for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+Created file explorer session 7340dfa7-b779-47a0-a85e-b024b02ae738 for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c. Active sessions: 1
+File explorer WebSocket connected: 7340dfa7-b779-47a0-a85e-b024b02ae738 for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+File explorer websocket attached for workspace agent_ws_cf3c1dd19db32c8c7a29c6c0a33da06007636ddb14a25d3f8faf9284184abb9c
+Agent websocket attached for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Created agent session d42ebd10-8911-46da-b3d4-d482c7ff0938 for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Agent WebSocket connected: session=d42ebd10-8911-46da-b3d4-d482c7ff0938, run=bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Watcher detected creation: /tmp/bgtasks-ui/agy/second.txt
+Creating new workspace for rootPath: /tmp/bgtasks-ui/claude2
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/claude2.
+Created and registered workspace ID: agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0
+Creating new workspace for rootPath: /tmp/bgtasks-ui/claude2
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/claude2.
+Reusing registered workspace ID: agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0
+Published claude_agent_sdk agent run 'bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b'.
+Closed agent session d42ebd10-8911-46da-b3d4-d482c7ff0938
+Agent WebSocket disconnected: d42ebd10-8911-46da-b3d4-d482c7ff0938
+Closed agent session b01fca31-e547-4374-b8ba-85102aff8085
+Agent WebSocket disconnected: b01fca31-e547-4374-b8ba-85102aff8085
+Released file watcher lease for /tmp/bgtasks-ui/agy (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/bgtasks-ui/agy
+FileExplorerSession closed: 7340dfa7-b779-47a0-a85e-b024b02ae738
+Closed file explorer session 7340dfa7-b779-47a0-a85e-b024b02ae738. Active sessions: 0
+File explorer WebSocket disconnected: 7340dfa7-b779-47a0-a85e-b024b02ae738
+Closed agent session 60c7feaa-df74-4226-9c44-e2edd1f18fe3
+Agent WebSocket disconnected: 60c7feaa-df74-4226-9c44-e2edd1f18fe3
+Agent websocket attached for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Created agent session a37f83e2-0c4d-4a7d-b299-e39f90fd090e for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Agent WebSocket connected: session=a37f83e2-0c4d-4a7d-b299-e39f90fd090e, run=bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b/raw_traces_active.jsonl
+Agent websocket attached for run bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Created agent session e006bf64-e930-46fa-b764-26a61f6288a8 for run bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Agent WebSocket connected: session=e006bf64-e930-46fa-b764-26a61f6288a8, run=bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Agent websocket attached for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Created agent session ce54274f-61e0-4620-8ed0-c5b52355628b for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Agent WebSocket connected: session=ce54274f-61e0-4620-8ed0-c5b52355628b, run=bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agents/bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b/raw_traces_active.jsonl
+Agent websocket attached for run bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Created agent session e98b2e63-2e5d-4797-a03d-234a6081e6d6 for run bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Agent WebSocket connected: session=e98b2e63-2e5d-4797-a03d-234a6081e6d6, run=bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Created WorkspaceFileExplorer for agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0 (file-explorer-websocket).
+FileSystemWatcher initialized for '/tmp/bgtasks-ui/claude2' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/bgtasks-ui/claude2
+Acquired file watcher lease for /tmp/bgtasks-ui/claude2 (file-explorer-websocket); active leases: 1
+FileExplorerSession created: ccd9957c-3cbc-4c40-b2ae-66235dfb573b for workspace agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0
+Created file explorer session ccd9957c-3cbc-4c40-b2ae-66235dfb573b for workspace agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0. Active sessions: 1
+File explorer WebSocket connected: ccd9957c-3cbc-4c40-b2ae-66235dfb573b for workspace agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0
+File explorer websocket attached for workspace agent_ws_6c305c26887640f8c89db7f6c9d3ae27d4d018acac67f5b0beb58585f14c96c0
+In-memory cache: Added new agent definition with ID bg-tasks-peer-agent.
+Agent Definition created successfully with ID: bg-tasks-peer-agent
+[2026-09-29T18:24:12.984Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID bg-tasks-validation-team.
+Agent Team Definition created successfully with ID: bg-tasks-validation-team
+Creating new workspace for rootPath: /tmp/bgtasks-ui/team
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/team.
+Created and registered workspace ID: agent_ws_8268aafc0f4f96afcebebdbbfffe7620db637c635272ac76da6c2e6d30b5ab71
+Closed agent session e98b2e63-2e5d-4797-a03d-234a6081e6d6
+Agent WebSocket disconnected: e98b2e63-2e5d-4797-a03d-234a6081e6d6
+Closed agent session a37f83e2-0c4d-4a7d-b299-e39f90fd090e
+Agent WebSocket disconnected: a37f83e2-0c4d-4a7d-b299-e39f90fd090e
+Released file watcher lease for /tmp/bgtasks-ui/claude2 (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/bgtasks-ui/claude2
+FileExplorerSession closed: ccd9957c-3cbc-4c40-b2ae-66235dfb573b
+Closed file explorer session ccd9957c-3cbc-4c40-b2ae-66235dfb573b. Active sessions: 0
+File explorer WebSocket disconnected: ccd9957c-3cbc-4c40-b2ae-66235dfb573b
+Closed agent session ce54274f-61e0-4620-8ed0-c5b52355628b
+Agent WebSocket disconnected: ce54274f-61e0-4620-8ed0-c5b52355628b
+Closed agent session e006bf64-e930-46fa-b764-26a61f6288a8
+Agent WebSocket disconnected: e006bf64-e930-46fa-b764-26a61f6288a8
+Agent websocket attached for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Created agent session 69de3206-0ed9-44d9-8f71-3a353e00a648 for run bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Agent WebSocket connected: session=69de3206-0ed9-44d9-8f71-3a353e00a648, run=bg_tasks_validation_agent_4c9e732d8d42443bae59b5b1599932b0
+Agent websocket attached for run bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Created agent session fa65b082-10b4-4d5a-865d-ff901a65dfa9 for run bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Agent WebSocket connected: session=fa65b082-10b4-4d5a-865d-ff901a65dfa9, run=bg_tasks_validation_agent_2dcbb63d542d4eb0a87deefd37bab98b
+Agent websocket attached for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Created agent session f93eb0b5-f995-40db-b2a9-8157aa4af435 for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Agent WebSocket connected: session=f93eb0b5-f995-40db-b2a9-8157aa4af435, run=bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agent_teams/bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2/bg_tasks_validation_agent_f020f623e354468ab2abfc5ea5d4ea8d/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agent_teams/bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2/bg_tasks_peer_agent_2c3fa4fbde39461491348416c75b7107/raw_traces_active.jsonl
+Agent team websocket attached for team run bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2
+Created agent session a566c61a-4c2b-4a89-a7a4-c565ca4cb81f for run bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2
+Agent Team WebSocket connected: session=a566c61a-4c2b-4a89-a7a4-c565ca4cb81f, run=bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agent_teams/bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2/bg_tasks_validation_agent_f020f623e354468ab2abfc5ea5d4ea8d/raw_traces_active.jsonl
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agent_teams/bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2/bg_tasks_validation_agent_f020f623e354468ab2abfc5ea5d4ea8d/raw_traces_active.jsonl
+Creating new workspace for rootPath: /tmp/bgtasks-ui/team
+Created metadata-only FileSystemWorkspace at /tmp/bgtasks-ui/team.
+Reusing registered workspace ID: agent_ws_8268aafc0f4f96afcebebdbbfffe7620db637c635272ac76da6c2e6d30b5ab71
+Published claude_agent_sdk agent run 'bg_tasks_validation_agent_f020f623e354468ab2abfc5ea5d4ea8d'.
+(node:4447) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790706282650,"pid":4447,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_gexIhuyoMDE__fYYjl32BHu3QqqAvbAiVcPIiINdX0c","statusCode":400,"elapsedMs":0.8324590027332306,"msg":"http request completed"}
+Memory file missing: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/.autobyteus/development/server-data/memory/agent_teams/bg_tasks_validation_team_9317e7214b8b4196a318f55429bde6d2/bg_tasks_peer_agent_2c3fa4fbde39461491348416c75b7107/raw_traces_active.jsonl
+Agent websocket attached for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Created agent session 0dca8aec-befa-4559-be5e-109133089208 for run bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Agent WebSocket connected: session=0dca8aec-befa-4559-be5e-109133089208, run=bg_tasks_validation_agent_85ce80b3925447e28a9ff64ebf50f27c
+Closed agent session 0dca8aec-befa-4559-be5e-109133089208
+Agent WebSocket disconnected: 0dca8aec-befa-4559-be5e-109133089208
+Closed agent session 69de3206-0ed9-44d9-8f71-3a353e00a648
+Agent WebSocket disconnected: 69de3206-0ed9-44d9-8f71-3a353e00a648
+Closed agent session fa65b082-10b4-4d5a-865d-ff901a65dfa9
+Agent WebSocket disconnected: fa65b082-10b4-4d5a-865d-ff901a65dfa9
+Closed agent session f93eb0b5-f995-40db-b2a9-8157aa4af435
+Agent WebSocket disconnected: f93eb0b5-f995-40db-b2a9-8157aa4af435
+Closed agent session a566c61a-4c2b-4a89-a7a4-c565ca4cb81f
+[2026-09-29T18:29:22.792Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-29T18:29:22.800Z] [INFO] [server.runtime] Server closed cleanly.

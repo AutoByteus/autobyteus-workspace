@@ -1,0 +1,8 @@
+## actionlint
+exit=0
+## shellcheck
+exit=0
+## guards
+guard:web-boundary exit=0
+guard:localization-boundary exit=0
+audit:localization-literals exit=0

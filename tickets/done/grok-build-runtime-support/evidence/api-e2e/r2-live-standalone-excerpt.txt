@@ -1,0 +1,6 @@
+GROK_LIVE_DENY_TERMINAL TURN_COMPLETED {"turn_id":"930d829c-6192-4359-afd0-5f6dee5e3394","provider_stop_reason":"cancelled"}
+GROK_LIVE_INTERRUPT_LATENCY_MS 101
+GROK_LIVE_STANDALONE {"runId":"grok_live_standalone_19c3bcdd_9b10_4d92_b0d3_1bb_ff3a69b80b6c4fa3824491edf4cb5c86","sessionId":"01a0df1c-3ffd-7542-977b-4adbfaff0da8","usageRows":5,"stepAUsageCalls":2,"interruptLatencyMs":101}
+ ✓ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts (3 tests | 2 skipped) 24733ms
+     ✓ runs a standalone Grok agent through tools, approvals, interrupt, stop and exact restore (AC-003/004/006/008/009)  20434ms
+      Tests  1 passed | 2 skipped (3)

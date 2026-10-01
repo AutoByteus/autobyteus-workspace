@@ -1,0 +1,1680 @@
+{
+  "before": {
+    "data": {
+      "agentPackages": [
+        {
+          "packageId": "built-in:default",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948",
+          "sharedAgentCount": 2,
+          "agentTeamCount": 0
+        }
+      ]
+    }
+  },
+  "import": {
+    "data": {
+      "importAgentPackage": [
+        {
+          "packageId": "built-in:default",
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948",
+          "sharedAgentCount": 2,
+          "agentTeamCount": 0
+        },
+        {
+          "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+          "path": "/Users/normy/autobyteus_org/autobyteus-agents",
+          "sharedAgentCount": 8,
+          "agentTeamCount": 12
+        }
+      ]
+    }
+  },
+  "agents": {
+    "data": {
+      "agentDefinitions": [
+        {
+          "id": "autobyteus-memory-compactor",
+          "name": "Memory Compactor"
+        },
+        {
+          "id": "autobyteus-retrospective-skill-improver",
+          "name": "Retrospective Skill Improver"
+        },
+        {
+          "id": "agent-team-architect",
+          "name": "Agent Team Architect"
+        },
+        {
+          "id": "codex",
+          "name": "Codex"
+        },
+        {
+          "id": "daily-assistant",
+          "name": "Daily Assistant"
+        },
+        {
+          "id": "product-prototyper",
+          "name": "Product Prototyper"
+        },
+        {
+          "id": "research-engineer",
+          "name": "research engineer"
+        },
+        {
+          "id": "resume-designer",
+          "name": "Resume Designer"
+        },
+        {
+          "id": "skill-optimizer",
+          "name": "Skill Optimizer"
+        },
+        {
+          "id": "software-tutorial-video-maker",
+          "name": "Software Tutorial Video Maker"
+        },
+        {
+          "id": "team-local-agent:article-writing-team:article-reviewer",
+          "name": "article reviewer"
+        },
+        {
+          "id": "team-local-agent:article-writing-team:article-writer",
+          "name": "article writer"
+        },
+        {
+          "id": "team-local-agent:classroom-simulation-team:professor",
+          "name": "Professor"
+        },
+        {
+          "id": "team-local-agent:classroom-simulation-team:student",
+          "name": "Student"
+        },
+        {
+          "id": "team-local-agent:evidence-driven-delivery-team:implementer",
+          "name": "implementer"
+        },
+        {
+          "id": "team-local-agent:evidence-driven-delivery-team:investigator",
+          "name": "investigator"
+        },
+        {
+          "id": "team-local-agent:evidence-driven-delivery-team:planner",
+          "name": "planner"
+        },
+        {
+          "id": "team-local-agent:evidence-driven-delivery-team:validator",
+          "name": "validator"
+        },
+        {
+          "id": "team-local-agent:kids-coloring-story-team:child-experience-reviewer",
+          "name": "child-experience-reviewer"
+        },
+        {
+          "id": "team-local-agent:kids-coloring-story-team:coloring-page-illustrator",
+          "name": "coloring-page-illustrator"
+        },
+        {
+          "id": "team-local-agent:kids-coloring-story-team:printable-pack-producer",
+          "name": "printable-pack-producer"
+        },
+        {
+          "id": "team-local-agent:kids-coloring-story-team:story-activity-designer",
+          "name": "story-activity-designer"
+        },
+        {
+          "id": "team-local-agent:kids-picture-story-team:book-production-editor",
+          "name": "book-production-editor"
+        },
+        {
+          "id": "team-local-agent:kids-picture-story-team:picture-book-illustrator",
+          "name": "picture-book-illustrator"
+        },
+        {
+          "id": "team-local-agent:kids-picture-story-team:picture-book-reviewer",
+          "name": "picture-book-reviewer"
+        },
+        {
+          "id": "team-local-agent:kids-picture-story-team:story-picture-book-author",
+          "name": "story-picture-book-author"
+        },
+        {
+          "id": "team-local-agent:manga-video-studio-team:manga-illustrator",
+          "name": "manga illustrator"
+        },
+        {
+          "id": "team-local-agent:manga-video-studio-team:manga-showrunner",
+          "name": "manga showrunner"
+        },
+        {
+          "id": "team-local-agent:manga-video-studio-team:storyboard-director",
+          "name": "storyboard director"
+        },
+        {
+          "id": "team-local-agent:manga-video-studio-team:voice-video-producer",
+          "name": "voice and video producer"
+        },
+        {
+          "id": "team-local-agent:narrated-presentation-video-team:narration-script-reviewer",
+          "name": "narration-script-reviewer"
+        },
+        {
+          "id": "team-local-agent:narrated-presentation-video-team:presentation-director",
+          "name": "presentation-director"
+        },
+        {
+          "id": "team-local-agent:narrated-presentation-video-team:slide-video-producer",
+          "name": "slide-video-producer"
+        },
+        {
+          "id": "team-local-agent:product-design-prototyping-team:product-prototyper",
+          "name": "product prototyper"
+        },
+        {
+          "id": "team-local-agent:product-design-prototyping-team:prototype-bootstrapper",
+          "name": "prototype bootstrapper"
+        },
+        {
+          "id": "team-local-agent:research-to-deck-team:deck-reviewer",
+          "name": "deck reviewer"
+        },
+        {
+          "id": "team-local-agent:research-to-deck-team:deep-researcher",
+          "name": "deep researcher"
+        },
+        {
+          "id": "team-local-agent:research-to-deck-team:infographic-powerpoint-designer",
+          "name": "infographic PowerPoint designer"
+        },
+        {
+          "id": "team-local-agent:software-engineering-team:api-e2e-engineer",
+          "name": "api e2e engineer"
+        },
+        {
+          "id": "team-local-agent:software-engineering-team:architecture-reviewer",
+          "name": "architecture reviewer"
+        },
+        {
+          "id": "team-local-agent:software-engineering-team:code-reviewer",
+          "name": "code reviewer"
+        },
+        {
+          "id": "team-local-agent:software-engineering-team:delivery-engineer",
+          "name": "delivery engineer"
+        },
+        {
+          "id": "team-local-agent:software-engineering-team:implementation-engineer",
+          "name": "implementation engineer"
+        },
+        {
+          "id": "team-local-agent:software-engineering-team:solution-designer",
+          "name": "solution designer"
+        },
+        {
+          "id": "team-local-agent:software-product-promo-video-team:promo-director",
+          "name": "promo-director"
+        },
+        {
+          "id": "team-local-agent:software-product-promo-video-team:promo-video-producer",
+          "name": "promo-video-producer"
+        },
+        {
+          "id": "team-local-agent:software-product-promo-video-team:visual-director",
+          "name": "visual-director"
+        },
+        {
+          "id": "team-local-agent:software-product-promo-video-team:visual-reviewer",
+          "name": "visual-reviewer"
+        },
+        {
+          "id": "team-local-agent:storm-team:article-polisher-verifier",
+          "name": "article polisher verifier"
+        },
+        {
+          "id": "team-local-agent:storm-team:cited-article-writer",
+          "name": "cited article writer"
+        },
+        {
+          "id": "team-local-agent:storm-team:expert-interviewer",
+          "name": "expert interviewer"
+        },
+        {
+          "id": "team-local-agent:storm-team:outline-architect",
+          "name": "outline architect"
+        },
+        {
+          "id": "team-local-agent:storm-team:perspective-miner",
+          "name": "perspective miner"
+        },
+        {
+          "id": "team-local-agent:storm-team:topic-research-coordinator",
+          "name": "topic research coordinator"
+        }
+      ]
+    }
+  },
+  "teams": {
+    "data": {
+      "agentTeamDefinitions": [
+        {
+          "id": "article-writing-team",
+          "name": "Article Writing Team"
+        },
+        {
+          "id": "classroom-simulation-team",
+          "name": "Classroom Simulation Team"
+        },
+        {
+          "id": "evidence-driven-delivery-team",
+          "name": "Evidence-Driven Delivery Team"
+        },
+        {
+          "id": "kids-coloring-story-team",
+          "name": "Kids Coloring Story Team"
+        },
+        {
+          "id": "kids-picture-story-team",
+          "name": "Kids Picture Story Team"
+        },
+        {
+          "id": "manga-video-studio-team",
+          "name": "Manga Video Studio Team"
+        },
+        {
+          "id": "narrated-presentation-video-team",
+          "name": "Narrated Presentation Video Team"
+        },
+        {
+          "id": "product-design-prototyping-team",
+          "name": "Product Design & Prototyping Team"
+        },
+        {
+          "id": "research-to-deck-team",
+          "name": "Research To Deck Team"
+        },
+        {
+          "id": "software-engineering-team",
+          "name": "Software Engineering Team"
+        },
+        {
+          "id": "software-product-promo-video-team",
+          "name": "Software Product Promo Video Team"
+        },
+        {
+          "id": "storm-team",
+          "name": "STORM Team"
+        }
+      ]
+    }
+  },
+  "orgs": {
+    "data": {
+      "agentOrgDefinitions": [
+        {
+          "id": "northstar-operating-company",
+          "name": "Northstar Operating Company"
+        },
+        {
+          "id": "software-development-department",
+          "name": "Software Development Department"
+        }
+      ]
+    }
+  },
+  "catalog_autobyteus": {
+    "data": {
+      "providerModelCatalogSnapshots": [
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "claude-fable-5",
+              "canonicalName": "claude-fable-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-fable-5-1",
+              "canonicalName": "claude-fable-5-1",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "claude-opus-4.7",
+              "canonicalName": "claude-opus-4.7",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-4.8",
+              "canonicalName": "claude-opus-4.8",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-5",
+              "canonicalName": "claude-opus-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-5-5",
+              "canonicalName": "claude-opus-5-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_display": {
+                    "description": "Adaptive thinking display mode. Claude Opus 5.5 always uses adaptive thinking.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-sonnet-4.6",
+              "canonicalName": "claude-sonnet-4.6",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable extended thinking summaries in Claude responses",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_budget_tokens": {
+                    "description": "Token budget for extended thinking (min 1024)",
+                    "type": "integer",
+                    "default": 1024,
+                    "minimum": 1024
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-sonnet-5",
+              "canonicalName": "claude-sonnet-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "thinking_display": {
+                    "description": "Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.",
+                    "type": "string",
+                    "default": "omitted",
+                    "enum": [
+                      "omitted",
+                      "summarized"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": []
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "deepseek-v4-flash",
+              "canonicalName": "deepseek-v4-flash",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls DeepSeek V4 thinking effort when thinking mode is enabled.",
+                    "type": "string",
+                    "default": "high",
+                    "enum": [
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "Enable or disable DeepSeek V4 thinking mode.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled",
+                      "disabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "deepseek-v4-pro",
+              "canonicalName": "deepseek-v4-pro",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls DeepSeek V4 thinking effort when thinking mode is enabled.",
+                    "type": "string",
+                    "default": "high",
+                    "enum": [
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "Enable or disable DeepSeek V4 thinking mode.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled",
+                      "disabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "gemini-3.1-pro-preview",
+              "canonicalName": "gemini-3.1-pro-preview",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_level": {
+                    "description": "How deeply the model should reason before responding",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "include_thoughts": {
+                    "description": "Include model thought summaries in responses",
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gemini-3.8-flash",
+              "canonicalName": "gemini-3.8-flash",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_level": {
+                    "description": "How deeply the model should reason before responding",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high"
+                    ]
+                  },
+                  "include_thoughts": {
+                    "description": "Include model thought summaries in responses",
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "glm-5.3",
+              "canonicalName": "glm-5.3",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls GLM-5.3 thinking effort. Thinking is always enabled.",
+                    "type": "string",
+                    "default": "max",
+                    "enum": [
+                      "low",
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "GLM-5.3 thinking is always enabled.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "grok-4.6",
+              "canonicalName": "grok-4.6",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls Grok 4.6 reasoning effort. Reasoning is always enabled.",
+                    "type": "string",
+                    "default": "high",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "kimi-k3",
+              "canonicalName": "kimi-k3",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls Kimi K3 reasoning effort. Thinking is always enabled.",
+                    "type": "string",
+                    "default": "max",
+                    "enum": [
+                      "low",
+                      "high",
+                      "max"
+                    ]
+                  },
+                  "thinking_type": {
+                    "description": "Kimi K3 thinking is always enabled.",
+                    "type": "string",
+                    "default": "enabled",
+                    "enum": [
+                      "enabled"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": []
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "minimax-m3",
+              "canonicalName": "minimax-m3",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "devstral-2",
+              "canonicalName": "devstral-2",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "mistral-large-3",
+              "canonicalName": "mistral-large-3",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "llmModels": []
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "gpt-5.4",
+              "canonicalName": "gpt-5.4",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.4-mini",
+              "canonicalName": "gpt-5.4-mini",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.5",
+              "canonicalName": "gpt-5.5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-luna",
+              "canonicalName": "gpt-5.6-luna",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-sol",
+              "canonicalName": "gpt-5.6-sol",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-terra",
+              "canonicalName": "gpt-5.6-terra",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-6-astra",
+              "canonicalName": "gpt-6-astra",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-6-luna",
+              "canonicalName": "gpt-6-luna",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "gpt-6-sol",
+              "canonicalName": "gpt-6-sol",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "reasoning_effort": {
+                    "description": "Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "none",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  "reasoning_summary": {
+                    "description": "Include a reasoning summary in the response when supported.",
+                    "type": "string",
+                    "default": "none",
+                    "enum": [
+                      "none",
+                      "auto",
+                      "concise",
+                      "detailed"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "qwen:deepseek-v4-flash-0731",
+              "canonicalName": "deepseek-v4-flash-0731",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen:deepseek-v4-pro",
+              "canonicalName": "deepseek-v4-pro",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen:glm-5.2",
+              "canonicalName": "glm-5.2",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3-max",
+              "canonicalName": "qwen3-max",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.7-max",
+              "canonicalName": "qwen3.7-max",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "qwen3.8-max",
+              "canonicalName": "qwen3.8-max",
+              "configSchema": null
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "catalog_claude_agent_sdk": {
+    "data": {
+      "providerModelCatalogSnapshots": [
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "default",
+              "canonicalName": "claude-opus-5-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-fable-5",
+              "canonicalName": "claude-fable-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-fable-5-1[1m]",
+              "canonicalName": "claude-fable-5-1",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "haiku",
+              "canonicalName": "claude-haiku-4-5-20251001",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "claude-opus-4-6",
+              "canonicalName": "claude-opus-4-6",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-4-7",
+              "canonicalName": "claude-opus-4-7",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-4-8",
+              "canonicalName": "claude-opus-4-8",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-opus-5",
+              "canonicalName": "claude-opus-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "opus",
+              "canonicalName": "claude-opus-5-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "claude-sonnet-4-6",
+              "canonicalName": "claude-sonnet-4-6",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            },
+            {
+              "modelIdentifier": "sonnet",
+              "canonicalName": "claude-sonnet-5",
+              "configSchema": {
+                "type": "object",
+                "properties": {
+                  "thinking_enabled": {
+                    "description": "Enable Claude extended thinking.",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "reasoning_effort": {
+                    "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+                    "type": "string",
+                    "default": "medium",
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  }
+                },
+                "required": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "catalog_codex_app_server": {
+    "data": {
+      "providerModelCatalogSnapshots": [
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "gpt-5.5",
+              "canonicalName": "gpt-5.5",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-luna",
+              "canonicalName": "gpt-5.6-luna",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-sol",
+              "canonicalName": "gpt-5.6-sol",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "low",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max",
+                      "ultra"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-5.6-terra",
+              "canonicalName": "gpt-5.6-terra",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max",
+                      "ultra"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-6-astra",
+              "canonicalName": "gpt-6-astra",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max",
+                      "ultra"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-6-luna",
+              "canonicalName": "gpt-6-luna",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "modelIdentifier": "gpt-6-sol",
+              "canonicalName": "gpt-6-sol",
+              "configSchema": {
+                "parameters": [
+                  {
+                    "name": "reasoning_effort",
+                    "type": "enum",
+                    "description": "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
+                    "required": false,
+                    "default_value": "medium",
+                    "enum_values": [
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh",
+                      "max",
+                      "ultra"
+                    ]
+                  },
+                  {
+                    "name": "service_tier",
+                    "label": "Fast mode",
+                    "type": "enum",
+                    "description": "Enable Codex Fast mode for this model. Default leaves Codex service tier unchanged.",
+                    "required": false,
+                    "enum_values": [
+                      "fast"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "catalog_antigravity_cli": {
+    "data": {
+      "providerModelCatalogSnapshots": [
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "gemini-3.1-pro-high",
+              "canonicalName": "gemini-3.1-pro-high",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.1-pro-low",
+              "canonicalName": "gemini-3.1-pro-low",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.6-flash-high",
+              "canonicalName": "gemini-3.6-flash-high",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.6-flash-low",
+              "canonicalName": "gemini-3.6-flash-low",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.6-flash-medium",
+              "canonicalName": "gemini-3.6-flash-medium",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.7-flash-high",
+              "canonicalName": "gemini-3.7-flash-high",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.7-flash-low",
+              "canonicalName": "gemini-3.7-flash-low",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.7-flash-medium",
+              "canonicalName": "gemini-3.7-flash-medium",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.8-flash-high",
+              "canonicalName": "gemini-3.8-flash-high",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.8-flash-low",
+              "canonicalName": "gemini-3.8-flash-low",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "gemini-3.8-flash-medium",
+              "canonicalName": "gemini-3.8-flash-medium",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "claude-opus-4-6-thinking",
+              "canonicalName": "claude-opus-4-6-thinking",
+              "configSchema": null
+            },
+            {
+              "modelIdentifier": "claude-sonnet-4-6",
+              "canonicalName": "claude-sonnet-4-6",
+              "configSchema": null
+            }
+          ]
+        },
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "gpt-oss-120b-medium",
+              "canonicalName": "gpt-oss-120b-medium",
+              "configSchema": null
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

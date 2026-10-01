@@ -20,6 +20,7 @@ import type {
   AgentRunFileChangeStatus,
 } from "../../../agent-execution/domain/agent-run-file-change.js";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import { parseBackgroundTaskUpdatedPayload } from "../../../agent-execution/domain/agent-background-task.js";
 
 export type AgentRunPresentationAdaptationResult =
   | Readonly<{ kind: "publish"; event: AgentPresentationEvent }>
@@ -163,7 +164,8 @@ const tokenRunSummary = (
   if (expectedIdentity.root.rootSubjectKind === "agent_team") {
     if (rootTeamRunId !== expectedIdentity.root.rootRunId) throw new Error("run_summary_after_event root_team_run_id is invalid");
   } else if (rootTeamRunId !== null) {
-    throw new Error("AgentOrg token summary must not claim a Team root");
+    // AgentOrg and Agent roots attribute usage by AgentRun; no Team root is claimed.
+    throw new Error(`${expectedIdentity.root.rootSubjectKind} token summary must not claim a Team root`);
   }
   const summary = agentTokenUsageRunSummarySchema.parse(rootNeutral) as Omit<TokenUsageRunSummaryPayload, "root_team_run_id">;
   if (summary.run_id !== expectedIdentity.agentRunId) throw new Error("run_summary_after_event run_id is invalid");
@@ -178,8 +180,8 @@ const token = (payload: Record<string, unknown>, expectedIdentity: Collaboration
   if (expectedIdentity.root.rootSubjectKind === "agent_team" && required(claimedRoot, "root_team_run_id") !== expectedIdentity.root.rootRunId) {
     throw new Error("root_team_run_id does not match the TeamRun execution");
   }
-  if (expectedIdentity.root.rootSubjectKind === "agent_org" && claimedRoot !== null && claimedRoot !== undefined) {
-    throw new Error("AgentOrg token usage must not claim a Team root");
+  if (expectedIdentity.root.rootSubjectKind !== "agent_team" && claimedRoot !== null && claimedRoot !== undefined) {
+    throw new Error(`${expectedIdentity.root.rootSubjectKind} token usage must not claim a Team root`);
   }
   return Object.freeze({
   usageEventId: required(raw(payload, "usage_event_id", "usageEventId"), "usage_event_id"),
@@ -345,17 +347,8 @@ export class AgentRunPresentationAdapter {
         return correlated({ eventType: "TOOL_EXECUTION_INTERRUPTED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), reason: required(p.reason, "reason") }, statusHint: hint });
       case AgentRunEventType.TOOL_LOG:
         return correlated({ eventType: "TOOL_LOG", details: { logEntry: stringValue(raw(p, "log_entry", "logEntry")), toolInvocationId: required(raw(p, "tool_invocation_id", "toolInvocationId"), "tool_invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")) }, statusHint: hint });
-      case AgentRunEventType.TODO_LIST_UPDATE: {
-        const entries = Array.isArray(p.todos) ? p.todos : [];
-        const todos = entries.map((entry) => {
-          if (!isRecord(entry)) throw new Error("todos contains an invalid entry");
-          const item = entry;
-          const status = item.status;
-          if (status !== "pending" && status !== "in_progress" && status !== "done") throw new Error("todo status is invalid");
-          return Object.freeze({ todoId: required(raw(item, "todo_id", "todoId"), "todo_id"), description: stringValue(item.description), status });
-        });
-        return correlated({ eventType: "TODO_LIST_UPDATE", details: { todos: Object.freeze(todos) }, statusHint: hint });
-      }
+      case AgentRunEventType.BACKGROUND_TASK_UPDATED:
+        return correlated({ eventType: "BACKGROUND_TASK_UPDATED", details: parseBackgroundTaskUpdatedPayload(p), statusHint: hint });
       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION: {
         const senderRunId = text(raw(p, "sender_run_id", "senderRunId"));
         const sender = senderRunId

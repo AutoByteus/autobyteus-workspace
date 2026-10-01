@@ -1,6 +1,5 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { resolveTurnIdFromAppServerMessage } from "../thread/codex-thread-id-resolver.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
@@ -53,14 +52,6 @@ export const convertCodexTurnEvent = (
       ];
     case CodexThreadEventName.TURN_DIFF_UPDATED:
       return [];
-    case CodexThreadEventName.TURN_TASK_PROGRESS_UPDATED:
-      return [
-        context.createEvent(
-          codexEventName,
-          AgentRunEventType.TODO_LIST_UPDATE,
-          serializePayload(payload),
-        ),
-      ];
     default:
       return [];
   }

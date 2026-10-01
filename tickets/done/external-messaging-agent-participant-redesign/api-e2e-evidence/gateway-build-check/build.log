@@ -1,0 +1,4 @@
+
+> autobyteus-message-gateway@1.4.79 build /private/tmp/emr-gw/autobyteus-message-gateway
+> tsc -p tsconfig.build.json
+

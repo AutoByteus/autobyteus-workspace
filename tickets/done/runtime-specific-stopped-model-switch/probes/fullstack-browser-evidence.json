@@ -1,0 +1,452 @@
+{
+  "startedAt": "2026-09-25T15:31:01.640Z",
+  "frontendUrl": "http://127.0.0.1:59549",
+  "backendUrl": "http://127.0.0.1:59544",
+  "cases": {
+    "agent-claude": {
+      "status": "Pass",
+      "result": {
+        "id": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8",
+        "options": [
+          "default",
+          "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+          "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+          "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+          "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+          "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+          "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+          "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+          "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+          "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks",
+          "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks"
+        ],
+        "before": {
+          "data": {
+            "getAgentRunResumeConfig": {
+              "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8",
+              "isActive": false,
+              "metadataConfig": {
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "claude-opus-4-7",
+                "llmConfig": null,
+                "runtimeReference": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "sessionId": "e6acaae1-f2be-4be7-8318-e6a86d02c5d3",
+                  "threadId": null,
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        "after": {
+          "data": {
+            "getAgentRunResumeConfig": {
+              "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8",
+              "isActive": false,
+              "metadataConfig": {
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": null,
+                "runtimeReference": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "sessionId": "e6acaae1-f2be-4be7-8318-e6a86d02c5d3",
+                  "threadId": null,
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        "status": [
+          "Loading replacement models…",
+          "Model settings updated. They will be used when this run resumes."
+        ],
+        "help": "Choose any model offered by this runtime. The runtime handles context limits when the run resumes."
+      }
+    },
+    "agent-codex": {
+      "status": "Pass",
+      "result": {
+        "id": "daily_assistant_50fa6a7af32f42a38d86466a9267826d",
+        "options": [
+          "GPT-5.5 (default reasoning: medium)",
+          "GPT-5.6-Luna (default reasoning: medium)",
+          "GPT-5.6-Sol (default reasoning: low)",
+          "GPT-5.6-Terra (default reasoning: medium)",
+          "GPT-6-Astra (default reasoning: medium)",
+          "GPT-6-Luna (default reasoning: medium)",
+          "GPT-6-Sol (default reasoning: medium)"
+        ],
+        "before": {
+          "data": {
+            "getAgentRunResumeConfig": {
+              "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d",
+              "isActive": false,
+              "metadataConfig": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6-luna",
+                "llmConfig": null,
+                "runtimeReference": {
+                  "runtimeKind": "codex_app_server",
+                  "sessionId": null,
+                  "threadId": "01a0d92b-5c9a-76e0-b979-454da22705ca",
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        "after": {
+          "data": {
+            "getAgentRunResumeConfig": {
+              "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d",
+              "isActive": false,
+              "metadataConfig": {
+                "runtimeKind": "codex_app_server",
+                "llmModelIdentifier": "gpt-6-astra",
+                "llmConfig": null,
+                "runtimeReference": {
+                  "runtimeKind": "codex_app_server",
+                  "sessionId": null,
+                  "threadId": "01a0d92b-5c9a-76e0-b979-454da22705ca",
+                  "metadata": null
+                }
+              }
+            }
+          }
+        },
+        "status": [
+          "Model settings updated. They will be used when this run resumes."
+        ],
+        "help": "Choose any model offered by this runtime. The runtime handles context limits when the run resumes."
+      }
+    },
+    "agent-native": {
+      "status": "Pass",
+      "result": {
+        "id": "daily_assistant_00109c5041b94117baa816006b8f64b9",
+        "options": [
+          "gpt-5.5",
+          "gpt-5.6-luna",
+          "gpt-5.6-sol",
+          "gpt-5.6-terra",
+          "gpt-6-astra",
+          "gpt-6-luna",
+          "gpt-6-sol"
+        ],
+        "copy": [
+          "context capacity."
+        ]
+      }
+    }
+  },
+  "graphql": [
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+      }
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+      }
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-claude"
+      }
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8",
+          "llmModelIdentifier": "default",
+          "llmConfig": null
+        }
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_c7b04341e38e42598d897d0dc4efd6d8"
+      }
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+      }
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+      }
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-codex"
+      }
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "codex_app_server"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d",
+          "llmModelIdentifier": "gpt-6-astra",
+          "llmConfig": null
+        }
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_50fa6a7af32f42a38d86466a9267826d"
+      }
+    },
+    {
+      "operationName": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_00109c5041b94117baa816006b8f64b9"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_00109c5041b94117baa816006b8f64b9"
+      }
+    },
+    {
+      "operationName": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_00109c5041b94117baa816006b8f64b9"
+      }
+    },
+    {
+      "operationName": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "operationName": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "operationName": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "operationName": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-native"
+      }
+    },
+    {
+      "operationName": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_00109c5041b94117baa816006b8f64b9"
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_00109c5041b94117baa816006b8f64b9"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "AUTOBYTEUS",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "LMSTUDIO",
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "EnsureProviderModelCatalog",
+      "variables": {
+        "providerId": "OLLAMA",
+        "runtimeKind": "autobyteus"
+      }
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,42 @@
+{
+  "exit_code": 0,
+  "event_count": 8,
+  "tools": [
+    {
+      "step_index": 2,
+      "state": "ACTIVE",
+      "info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "sh -c 'exit 7'"
+        }
+      }
+    },
+    {
+      "step_index": 2,
+      "state": "DONE",
+      "info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "sh -c 'exit 7'"
+        }
+      }
+    }
+  ],
+  "results": [
+    {
+      "conversation_id": "9aab2d79-1cdb-4379-8106-2a2162c73166",
+      "status": "SUCCESS",
+      "response": "The command `sh -c 'exit 7'` was executed once and failed with exit code `7`.\n",
+      "duration_seconds": 6.939456,
+      "num_turns": 1,
+      "usage": {
+        "input_tokens": 26069,
+        "output_tokens": 338,
+        "thinking_tokens": 202,
+        "cache_read_tokens": 0,
+        "total_tokens": 26407
+      }
+    }
+  ]
+}

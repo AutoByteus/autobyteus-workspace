@@ -77,11 +77,12 @@ identity, or scalar name/id targets.
 include:
 
 - Agent events: turn, segment, Agent status, compaction, token usage, assistant
-  completion, tool lifecycle/log, todo, task notification, artifact, and file
+  completion, tool lifecycle/log, background task, task notification, artifact, and file
   change, each with exact `agent_execution`;
-- Team-only events: `TASK_DELEGATION_EVENT`, `TEAM_COMMUNICATION_MESSAGE`,
-  `MEMBER_INPUT_MESSAGE`, and `EXTERNAL_USER_MESSAGE` with their explicit exact
-  execution/participant addresses;
+- Team-only events: `TASK_EXECUTION_STARTED` (a delegated child committed under
+  its host TeamRun, with nullable `delegator_agent_run_id`),
+  `TEAM_COMMUNICATION_MESSAGE`, and `MEMBER_INPUT_MESSAGE` with their explicit
+  exact execution/participant addresses;
 - control: `CONNECTED`, `TEAM_RUN_LIFECYCLE`, `AGENT_COMMAND_ACK`; and
 - `ERROR`, either correlated to an `agent_execution` or explicitly uncorrelated.
 
@@ -127,7 +128,7 @@ end-text recovery, or consumer-side missing-start synthesis.
 Visible Agent status is `offline | initializing | idle | running | error`.
 Turn lifecycle and status are owned upstream by `AgentRun`; Team root liveness is
 separately emitted as `TEAM_RUN_LIFECYCLE {is_active}`. Transport connection,
-root liveness, Agent status, task state, and open-work settlement are not
+root liveness, Agent status, delegated-child liveness, and open work are not
 substitutes for one another.
 
 Every canonical Agent error carries nullable evidence fields:

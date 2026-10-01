@@ -1,0 +1,14 @@
+Resolve Release Metadata	Check repository artifact hygiene	﻿2026-09-26T19:38:03.8409595Z ##[group]Run python3 scripts/check_repository_artifact_hygiene.py
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.8410116Z [36;1mpython3 scripts/check_repository_artifact_hygiene.py[0m
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.8475304Z shell: /usr/bin/bash -e {0}
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.8475574Z ##[endgroup]
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9370122Z Repository artifact hygiene check failed.
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9371071Z Tracked files scanned: 33131
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9371809Z Path-length threshold: 200
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9372276Z 
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9372717Z Tracked checkout-risk paths longer than 200 characters: 2
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9374807Z Action: Shorten, move, or remove these paths before release. GitHub-hosted Windows checkout can fail before repository scripts can run.
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9377385Z  - 215 chars: tickets/done/team-attachment-exact-execution/api-e2e-evidence/child-processes/converts-a-copied-retained-duplicate-address-package-before-admission-and-preserves-bytes-history-and-original-backups-across-restart.log
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9380294Z  - 201 chars: tickets/done/team-attachment-exact-execution/api-e2e-evidence/child-processes/blocks-both-real-startup-entrypoints-on-unresolved-attachment-proof-and-admits-standalone-after-the-fixture-is-repaired.log
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9401520Z ##[error]Repository artifact hygiene failed with 2 tracked violation(s).
+Resolve Release Metadata	Check repository artifact hygiene	2026-09-26T19:38:03.9451289Z ##[error]Process completed with exit code 1.

@@ -1,5 +1,4 @@
 import { randomUUID } from "node:crypto";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   parseApplicationAgentMemberAddress,
   type ApplicationAgentMemberAddress,
@@ -43,11 +42,6 @@ const required = (value: string, field: string): string => {
   const result = value.trim();
   if (!result) throw new Error(`${field} is required.`);
   return result;
-};
-const skillMode = (value: SkillAccessMode | string | null | undefined): SkillAccessMode => {
-  if (value == null || value === SkillAccessMode.PRELOADED_ONLY) return SkillAccessMode.PRELOADED_ONLY;
-  if (value === SkillAccessMode.NONE) return SkillAccessMode.NONE;
-  throw new Error(`Unsupported skillAccessMode '${value}'.`);
 };
 const collectRunIds = (binding: ApplicationAgentBindingRecord): string[] => binding.runtime.subject === "AGENT_RUN"
   ? [binding.runtime.agentRunId]
@@ -125,7 +119,6 @@ export class ApplicationRunBindingLaunchService {
       llmModelIdentifier: launch.llmModelIdentifier,
       autoExecuteTools: Boolean(launch.autoExecuteTools),
       llmConfig: launch.llmConfig ?? null,
-      skillAccessMode: skillMode(launch.skillAccessMode),
       runtimeKind,
       applicationBinding: {
         applicationId: seed.applicationId,
@@ -236,7 +229,6 @@ export class ApplicationRunBindingLaunchService {
       workspaceRootPath: required(input.workspaceRootPath, "launchPreset.workspaceRootPath"),
       llmModelIdentifier: required(input.llmModelIdentifier, "launchPreset.llmModelIdentifier"),
       autoExecuteTools: Boolean(input.autoExecuteTools),
-      skillAccessMode: skillMode(input.skillAccessMode),
       runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),
       llmConfig: input.llmConfig ?? null,
     };
@@ -247,7 +239,6 @@ export class ApplicationRunBindingLaunchService {
       teamAddress: required(input.teamAddress, "teamConfig.teamAddress"),
       llmModelIdentifier: required(input.llmModelIdentifier, "teamConfig.llmModelIdentifier"),
       autoExecuteTools: Boolean(input.autoExecuteTools),
-      skillAccessMode: skillMode(input.skillAccessMode),
       workspaceRootPath: required(input.workspaceRootPath, "teamConfig.workspaceRootPath"),
       llmConfig: input.llmConfig ?? null,
       runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),
@@ -260,7 +251,6 @@ export class ApplicationRunBindingLaunchService {
       agentDefinitionId: required(input.agentDefinitionId, "memberConfig.agentDefinitionId"),
       llmModelIdentifier: required(input.llmModelIdentifier, "memberConfig.llmModelIdentifier"),
       autoExecuteTools: Boolean(input.autoExecuteTools),
-      skillAccessMode: skillMode(input.skillAccessMode),
       workspaceRootPath: required(input.workspaceRootPath, "memberConfig.workspaceRootPath"),
       llmConfig: input.llmConfig ?? null,
       runtimeKind: this.requireNormalizedRuntimeKind(input.runtimeKind),

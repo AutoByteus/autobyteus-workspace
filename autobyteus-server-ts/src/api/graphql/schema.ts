@@ -12,6 +12,7 @@ import { AgentDefinitionResolver } from './types/agent-definition.js';
 import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
 import { AgentOrgDefinitionResolver } from './types/agent-org-definition.js';
 import { AgentOrgRunResolver } from './types/agent-org-run.js';
+import { AgentRunCollaborationResolver } from './types/agent-run-collaboration.js';
 import { TokenUsageStatisticsResolver } from './types/token-usage-stats.js';
 import { TokenUsageAnalyticsResolver } from './types/token-usage-analytics.js';
 import { AgentCustomizationOptionsResolver } from './types/agent-customization-options.js';
@@ -22,22 +23,22 @@ import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryExplorerResolver } from './types/memory-explorer.js';
 import { MemoryViewResolver } from './types/memory-view.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
-import { ExternalChannelSetupResolver } from './types/external-channel-setup.js';
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
-import { TaskDelegationResolver } from './types/task-delegation.js';
 import { TeamRunHistoryResolver } from './types/team-run-history.js';
 import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
 import { ApplicationPackageResolver } from './types/application-packages.js';
-import { ManagedMessagingGatewayResolver } from './types/managed-messaging-gateway.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
 import { DefinitionAdmissionResolver } from './types/definition-admission.js';
 import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
+import { ProjectResolver } from './types/projects.js';
+import { ProjectTaskResolver } from './types/project-tasks.js';
+import { ProjectsCapabilityResolver } from './types/projects-capability.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -55,6 +56,7 @@ export async function buildGraphqlSchema() {
       AgentTeamDefinitionResolver,
       AgentOrgDefinitionResolver,
       AgentOrgRunResolver,
+      AgentRunCollaborationResolver,
       TokenUsageStatisticsResolver,
       TokenUsageAnalyticsResolver,
       AgentCustomizationOptionsResolver,
@@ -65,21 +67,21 @@ export async function buildGraphqlSchema() {
       MemoryExplorerResolver,
       MemoryViewResolver,
       MemorySyncResolver,
-      ExternalChannelSetupResolver,
       RunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,
-      TaskDelegationResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,
       ApplicationPackageResolver,
-      ManagedMessagingGatewayResolver,
       AppDataMigrationResolver,
       SkillImprovementResolver,
       SecretStorageResolver,
       DefinitionAdmissionResolver,
       CollaborationRootHistoryResolver,
+      ProjectResolver,
+      ProjectTaskResolver,
+      ProjectsCapabilityResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

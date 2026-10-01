@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "./root-run-package-readiness-index.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -10,6 +11,12 @@ import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
 import { compactSummary } from "./run-history-service-helpers.js";
+import {
+  createStandaloneRunLiveness,
+  type AgentRunActivityLookup,
+  type StandaloneRunCollaborationRoots,
+  type StandaloneRunLiveness,
+} from "./standalone-run-liveness.js";
 import {
   commitAgentRunModelConfig,
   type AgentRunModelConfigCommitResult,
@@ -35,10 +42,6 @@ type AgentDefinitionLookup = {
   getAgentDefinitionById(
     agentDefinitionId: string,
   ): Promise<{ name?: string | null } | null>;
-};
-
-type AgentRunActivityLookup = {
-  hasActiveRun(runId: string): boolean | Promise<boolean>;
 };
 
 const catalogStates = new Map<string, CatalogState>();
@@ -80,6 +83,7 @@ const normalizeRow = (
   createdAt: row.createdAt,
   archivedAt: row.archivedAt ?? null,
   terminatedAt: row.terminatedAt ?? null,
+  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
 });
 
 const cloneRows = (
@@ -96,11 +100,12 @@ export interface CatalogMutationResultMessage {
 }
 
 export class AgentRunHistoryCatalogService {
+  private readonly readiness: RootRunPackageReadinessIndex;
   private readonly indexStore: AgentRunHistoryIndexStore;
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly identityResolver: AgentRunHistoryIdentityResolver;
   private readonly agentDefinitionService: AgentDefinitionLookup;
-  private readonly agentRunManager: AgentRunActivityLookup;
+  private readonly liveness: StandaloneRunLiveness;
   private readonly state: CatalogState;
   private readonly definitionNameCache = new Map<string, string>();
 
@@ -112,6 +117,7 @@ export class AgentRunHistoryCatalogService {
       identityResolver?: AgentRunHistoryIdentityResolver;
       agentDefinitionService?: AgentDefinitionLookup;
       agentRunManager?: AgentRunActivityLookup;
+      collaborationRoots?: StandaloneRunCollaborationRoots;
     } = {},
   ) {
     this.indexStore =
@@ -129,26 +135,21 @@ export class AgentRunHistoryCatalogService {
           return AgentDefinitionService.getInstance().getAgentDefinitionById(agentDefinitionId);
         },
       };
-    this.agentRunManager =
-      dependencies.agentRunManager ?? {
-        hasActiveRun: async (runId: string) => {
-          const { AgentRunManager } = await import(
-            "../../agent-execution/services/agent-run-manager.js"
-          );
-          return AgentRunManager.getInstance().hasActiveRun(runId);
-        },
-      };
+    this.liveness = createStandaloneRunLiveness(dependencies);
     this.state = getState(memoryDir);
+    this.readiness = new RootRunPackageReadinessIndex(memoryDir);
   }
 
   async listCatalogRows(): Promise<RunHistoryIndexRow[]> {
     await this.ensureInitialized();
-    return this.getSortedRows();
+    await this.readiness.awaitReady();
+    return this.getSortedRows().filter((row) => this.readiness.isAdmitted("agent", row.runId));
   }
 
   async getCatalogRow(runId: string): Promise<RunHistoryIndexRow | null> {
     await this.ensureInitialized();
-    return this.state.rows.get(runId.trim()) ?? null;
+    await this.readiness.awaitReady();
+    return this.readiness.isAdmitted("agent", runId) ? this.state.rows.get(runId.trim()) ?? null : null;
   }
 
   async recordPreparedRun(input: {
@@ -190,6 +191,7 @@ export class AgentRunHistoryCatalogService {
         throw error;
       }
     });
+    await this.readiness.admitCurrent("agent", input.runId);
   }
 
   async recordRunStarted(input: {
@@ -270,6 +272,18 @@ export class AgentRunHistoryCatalogService {
     });
   }
 
+  /** The run's collaboration package now exists; history can show its children without reading it. */
+  async recordCollaborationPackageCreated(input: { runId: string }): Promise<void> {
+    await this.mutate(async (rows) => {
+      const row = rows.get(input.runId);
+      if (!row || row.hasCollaboration) {
+        return { value: undefined, shouldFlush: false };
+      }
+      rows.set(input.runId, normalizeRow({ ...row, hasCollaboration: true }));
+      return { value: undefined, shouldFlush: true };
+    });
+  }
+
   async archiveRun(rawRunId: string): Promise<CatalogMutationResultMessage> {
     return this.setArchiveState(rawRunId, true);
   }
@@ -283,7 +297,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.agentRunManager.hasActiveRun(identity.runId)) {
+    if (!(await this.liveness.releaseForHistory(identity.runId))) {
       return {
         success: false,
         message: "Run is active. Terminate it before deleting history.",
@@ -298,7 +312,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.agentRunManager.hasActiveRun(identity.runId)) {
+    if (!(await this.liveness.releaseForHistory(identity.runId))) {
       return {
         success: false,
         message: "Prepared run already has an active runtime.",
@@ -335,6 +349,7 @@ export class AgentRunHistoryCatalogService {
       this.state.rows = stagedRows;
       try {
         await fs.rm(identity.runDirPath, { recursive: true, force: true });
+        this.readiness.excludeCurrent("agent", identity.runId, "Prepared run removed.");
       } catch (error) {
         logger.warn(`Run '${identity.runId}' hidden from catalog but filesystem cleanup failed: ${String(error)}`);
         return {
@@ -354,7 +369,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.agentRunManager.hasActiveRun(identity.runId)) {
+    if (!(await this.liveness.releaseForHistory(identity.runId))) {
       return {
         success: false,
         message: "Run is active. Terminate it before archiving history.",
@@ -396,6 +411,7 @@ export class AgentRunHistoryCatalogService {
       this.state.rows = stagedRows;
       try {
         await fs.rm(runDirPath, { recursive: true, force: true });
+        this.readiness.excludeCurrent("agent", runId, "Run removed.");
       } catch (error) {
         logger.warn(`Run '${runId}' hidden from catalog but filesystem cleanup failed: ${String(error)}`);
         return {

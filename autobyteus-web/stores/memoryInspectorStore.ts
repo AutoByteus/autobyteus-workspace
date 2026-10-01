@@ -1,14 +1,28 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
-import { GET_AGENT_RUN_MEMORY_VIEW, GET_TEAM_MEMBER_RUN_MEMORY_VIEW } from '~/graphql/queries/memoryViewQueries';
+import {
+  GET_AGENT_ORG_MEMBER_RUN_MEMORY_VIEW,
+  GET_AGENT_RUN_MEMORY_VIEW,
+  GET_TEAM_MEMBER_RUN_MEMORY_VIEW,
+} from '~/graphql/queries/memoryViewQueries';
 import type { MemoryExplorerSourceInput, MemoryInspectTarget, MemoryInspectorTab, RunMemoryView } from '~/types/memory';
 
 type AgentRunMemoryViewQuery = { getAgentRunMemoryView?: RunMemoryView | null };
 type TeamMemberRunMemoryViewQuery = { getTeamMemberRunMemoryView?: RunMemoryView | null };
+type AgentOrgMemberRunMemoryViewQuery = { getAgentOrgMemberRunMemoryView?: RunMemoryView | null };
+type MemoryViewQuery = AgentRunMemoryViewQuery & TeamMemberRunMemoryViewQuery & AgentOrgMemberRunMemoryViewQuery;
+
+/** The one view query and its result field for each inspect-target kind. */
+const VIEW_QUERIES = {
+  agent_run: { query: GET_AGENT_RUN_MEMORY_VIEW, dataKey: 'getAgentRunMemoryView' },
+  team_member_run: { query: GET_TEAM_MEMBER_RUN_MEMORY_VIEW, dataKey: 'getTeamMemberRunMemoryView' },
+  org_member_run: { query: GET_AGENT_ORG_MEMBER_RUN_MEMORY_VIEW, dataKey: 'getAgentOrgMemberRunMemoryView' },
+} as const satisfies Record<MemoryInspectTarget['kind'], { query: unknown; dataKey: keyof MemoryViewQuery }>;
 
 type ViewVariables = {
   runId?: string;
   teamRunId?: string;
+  orgRunId?: string;
   agentRunId?: string;
   source?: MemoryExplorerSourceInput;
   includeWorkingContext?: boolean;
@@ -42,6 +56,9 @@ const sameTarget = (a: MemoryInspectTarget | null, b: MemoryInspectTarget): bool
   if (a.kind === 'agent_run' && b.kind === 'agent_run') return a.runId === b.runId;
   if (a.kind === 'team_member_run' && b.kind === 'team_member_run') {
     return a.teamRunId === b.teamRunId && a.agentRunId === b.agentRunId;
+  }
+  if (a.kind === 'org_member_run' && b.kind === 'org_member_run') {
+    return a.orgRunId === b.orgRunId && a.agentRunId === b.agentRunId;
   }
   return false;
 };
@@ -96,18 +113,16 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
       this.error = null;
       const currentRequestId = ++this.requestId;
       try {
-        const query = this.target.kind === 'agent_run' ? GET_AGENT_RUN_MEMORY_VIEW : GET_TEAM_MEMBER_RUN_MEMORY_VIEW;
+        const { query, dataKey } = VIEW_QUERIES[this.target.kind];
         const variables = this.buildVariables(this.target);
-        const { data, errors } = await getApolloClient().query<AgentRunMemoryViewQuery | TeamMemberRunMemoryViewQuery, ViewVariables>({
+        const { data, errors } = await getApolloClient().query<MemoryViewQuery, ViewVariables>({
           query,
           variables,
           fetchPolicy: 'network-only',
         });
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         if (currentRequestId !== this.requestId) return null;
-        const payload = this.target.kind === 'agent_run'
-          ? (data as AgentRunMemoryViewQuery)?.getAgentRunMemoryView
-          : (data as TeamMemberRunMemoryViewQuery)?.getTeamMemberRunMemoryView;
+        const payload = data?.[dataKey];
         if (payload) {
           this.memoryView = payload;
           if (this.includeRawTraces) {
@@ -136,6 +151,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
         rawTraceFileName: this.includeRawTraces ? this.selectedRawTraceFileName : null,
       };
       if (target.kind === 'agent_run') return { ...common, runId: target.runId };
+      if (target.kind === 'org_member_run') return { ...common, orgRunId: target.orgRunId, agentRunId: target.agentRunId };
       return { ...common, teamRunId: target.teamRunId, agentRunId: target.agentRunId };
     },
 

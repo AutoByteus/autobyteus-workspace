@@ -1,0 +1,154 @@
+Local packaging-layer build only; not a full production image or API/E2E sign-off.
+Platform linux/arm64, base latest. Exact runtime prefix extracted from Dockerfile.monorepo.
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.19kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/4] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#4 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4 0.0s done
+#4 DONE 0.3s
+
+#5 [2/4] WORKDIR /app
+#5 DONE 0.1s
+
+#6 [3/4] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#6 0.426 Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#6 0.535 Get:2 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+#6 0.563 Get:3 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.4 kB]
+#6 0.578 Get:4 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+#6 0.629 Get:5 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main arm64 Packages [52.1 kB]
+#6 0.650 Get:6 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]
+#6 0.699 Get:7 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main arm64 Packages [59.6 kB]
+#6 1.327 Get:8 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+#6 1.584 Get:9 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+#6 1.695 Get:10 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+#6 1.909 Get:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1,776 kB]
+#6 2.395 Get:12 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Components [658 kB]
+#6 2.456 Get:13 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]
+#6 4.213 Get:14 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Components [5,467 kB]
+#6 4.585 Get:15 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]
+#6 4.594 Get:16 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]
+#6 4.617 Get:17 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Components [37.7 kB]
+#6 4.618 Get:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1,692 kB]
+#6 4.753 Get:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Components [239 kB]
+#6 4.774 Get:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2,198 kB]
+#6 4.946 Get:21 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Components [532 kB]
+#6 4.989 Get:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [2,996 kB]
+#6 5.261 Get:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Components [159 B]
+#6 5.261 Get:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [94.8 kB]
+#6 5.263 Get:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Components [159 B]
+#6 5.263 Get:26 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]
+#6 5.263 Get:27 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Components [3,712 B]
+#6 5.263 Get:28 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]
+#6 5.264 Get:29 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Components [13.6 kB]
+#6 5.264 Get:30 http://ports.ubuntu.com/ubuntu-ports noble-backports/restricted arm64 Components [160 B]
+#6 5.264 Get:31 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [671 B]
+#6 5.378 Get:32 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Components [161 B]
+#6 5.378 Get:33 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1,357 kB]
+#6 5.485 Get:34 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Components [56.2 kB]
+#6 5.488 Get:35 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1,637 kB]
+#6 5.619 Get:36 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Components [97.7 kB]
+#6 5.625 Get:37 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [2,811 kB]
+#6 5.849 Get:38 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Components [156 B]
+#6 5.849 Get:39 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [89.7 kB]
+#6 5.856 Get:40 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Components [157 B]
+#6 7.144 Fetched 42.1 MB in 6s (7,394 kB/s)
+#6 7.144 Reading package lists...
+#6 8.092 Reading package lists...
+#6 9.115 Building dependency tree...
+#6 9.331 Reading state information...
+#6 9.628 git is already the newest version (1:2.43.0-1ubuntu7.3).
+#6 9.628 ripgrep is already the newest version (14.1.0-1).
+#6 9.628 curl is already the newest version (8.5.0-2ubuntu10.15).
+#6 9.628 ca-certificates is already the newest version (20260601~24.04.1).
+#6 9.628 The following packages were automatically installed and are no longer required:
+#6 9.628   geocode-glib-common gnome-keyring-pkcs11 libabsl20220623t64
+#6 9.628   libebackend-1.2-11t64 libebook-1.2-21t64 libebook-contacts-1.2-4t64
+#6 9.628   libedata-book-1.2-27t64 libedata-cal-2.0-2t64 libedataserverui-1.2-4t64
+#6 9.629   libgeocode-glib-2-0 libgweather-4-0t64 libgweather-4-common libphonenumber8
+#6 9.629   libprotobuf32t64 p11-kit p11-kit-modules
+#6 9.629 Use 'apt autoremove' to remove them.
+#6 9.684 0 upgraded, 0 newly installed, 0 to remove and 8 not upgraded.
+#6 DONE 9.8s
+
+#7 [4/4] RUN echo "CLI install cache buster: implementation-IR-001"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#7 0.249 CLI install cache buster: implementation-IR-001
+#7 29.94 
+#7 29.94 added 4 packages in 29s
+#7 37.99 
+#7 37.99 added 3 packages in 8s
+#7 38.26 ⠋ Detecting system environment...
+#7 38.28 ✓ Platform detected: linux_arm64
+#7 38.28 ⠋ Querying release repository...
+#7 38.49 ✓ Latest available version: 1.2.12
+#7 38.49 ⠋ Downloading release package...
+#7 44.99 ✓ Download complete and checksum verified.
+#7 44.99 ⠋ Extracting binary from archive...
+#7 46.23 ⠋ Configuring shell environment...
+#7 46.33 ERROR: logging before google.Init: I0928 04:24:01.442066       1 installer.go:27] Running Antigravity CLI setup...
+#7 46.33 
+#7 46.33 Warning: /tmp/tmp.vyqCQBXJSw/agy-bin is not present in your active PATH.
+#7 46.33 To use the 'agy' CLI globally, please manually add it to your shell profile:
+#7 46.33 
+#7 46.33   echo 'export PATH="/tmp/tmp.vyqCQBXJSw/agy-bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+#7 46.33 
+#7 46.33 
+#7 46.33 ✅ Antigravity CLI binary placed successfully at /tmp/tmp.vyqCQBXJSw/home/.local/bin/agy
+#7 46.33 Note: The binary is installed, but it is not in your active PATH. Please follow the instructions above to add it, then restart your terminal session.
+#7 46.42 1.2.12
+#7 47.00 Installed agy: 1.2.12
+#7 47.00 1.2.12
+#7 47.00 Installed grok: grok 1.0.41 (4220f3b224a6)
+#7 47.00 grok 1.0.41 (4220f3b224a6)
+#7 DONE 47.3s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 30.0s done
+#8 exporting manifest sha256:b161031912abc69e6216faae75d7847dca23de5c70cfe47187cb6fce52e1c65f done
+#8 exporting config sha256:929408ddd8f8ca2728b70025cbd43952433fbd3f8d801d2bca3aa18453b8555e done
+#8 exporting attestation manifest sha256:800282017e209866237ed8ed4d8179328596fb187c7870359d030c5eaa662bef done
+#8 exporting manifest list sha256:8e9f80026d21086b814112e1e150081a94d9a82da77175b9279849896d120e75 done
+#8 naming to docker.io/library/autobyteus-cli-ir001-local:arm64 done
+#8 unpacking to docker.io/library/autobyteus-cli-ir001-local:arm64
+#8 unpacking to docker.io/library/autobyteus-cli-ir001-local:arm64 4.9s done
+#8 DONE 35.0s
+
+Build exit status: 0
+
+Local packaging image root bash -lc probe, --network none, no mounts; not full server startup.
+set -eu
+printf 'uid=%s HOME=%s\n' "$(id -u)" "$HOME"
+test "$(id -u)" = 0
+test "$HOME" = /root
+test "${GROK_HOME+x}" != x
+node --version
+command -v agy grok
+readlink -f "$(command -v grok)"
+timeout 30s agy --version
+timeout 30s grok --version
+uid=0 HOME=/root
+v22.23.3
+/usr/local/bin/agy
+/usr/bin/grok
+/usr/lib/node_modules/@xai-official/grok/bin/grok-native
+1.2.12
+grok 1.0.41 (4220f3b224a6)
+Probe exit status: 0
+
+Other local implementation checks (2026-09-28):
+python3 -m unittest discover -s scripts/tests -p test_server_docker_cli_latest_defaults.py: 8 passed
+python3 -m unittest discover -s scripts/tests -p test_server_docker_browser_bridge.py: 6 passed
+python3 -m unittest discover -s scripts/tests -p test_docker_build_context_sources.py: 2 passed
+/bin/sh -n on each joined Dockerfile RUN instruction: passed
+git diff --check: passed
+Dockerfile nonempty lines: 113; source delta 27 added / 2 removed.

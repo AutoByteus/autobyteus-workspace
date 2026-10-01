@@ -2,9 +2,9 @@ import os from "node:os";
 import path from "node:path";
 import { mkdtemp, rm } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../../src/external-channel/channel-transport.js";
+import { ExternalPeerType } from "../../../../src/external-channel/peer-type.js";
+import { ExternalChannelProvider } from "../../../../src/external-channel/provider.js";
 import { InboundInboxService } from "../../../../src/application/services/inbound-inbox-service.js";
 import { FileInboxStore } from "../../../../src/infrastructure/inbox/file-inbox-store.js";
 

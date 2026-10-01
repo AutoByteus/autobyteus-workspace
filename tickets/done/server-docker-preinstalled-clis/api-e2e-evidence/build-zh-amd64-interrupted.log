@@ -1,0 +1,342 @@
+$ docker buildx build --builder desktop-linux --progress plain --platform linux/amd64 --load --build-arg CLI_INSTALL_CACHE_BUSTER=api001-a --build-arg BASE_IMAGE_TAG=zh -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-cli-api001:zh-amd64 .
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 7.92kB 0.1s done
+#1 DONE 0.1s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.0s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#4 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 ...
+
+#6 [auth] autobyteus/chrome-vnc:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#7 [auth] library/node:pull token for registry-1.docker.io
+#7 DONE 0.0s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:zh
+#8 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm
+#5 DONE 0.9s
+
+#8 [internal] load metadata for docker.io/autobyteus/chrome-vnc:zh
+#8 DONE 0.9s
+
+#9 [internal] load .dockerignore
+#9 transferring context: 282B 0.1s done
+#9 DONE 0.1s
+
+#10 [builder  1/28] FROM docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
+#10 resolve docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7 0.1s done
+#10 DONE 0.1s
+
+#11 [runtime  1/32] FROM docker.io/autobyteus/chrome-vnc:zh@sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67
+#11 resolve docker.io/autobyteus/chrome-vnc:zh@sha256:19d4c0164e5c7006e38a81c0260611cbf26f871f2d3e749d574016676f4f9a67 0.1s done
+#11 DONE 1.6s
+
+#12 [runtime  2/32] WORKDIR /app
+#12 DONE 0.1s
+
+#13 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#13 ...
+
+#14 [internal] load build context
+#14 transferring context: 620.54kB 1.7s done
+#14 DONE 1.8s
+
+#15 [builder 11/28] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#15 CACHED
+
+#16 [builder 15/28] COPY autobyteus-ts ./autobyteus-ts
+#16 CACHED
+
+#17 [builder 17/28] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#17 CACHED
+
+#18 [builder 13/28] COPY autobyteus-web/package.json ./autobyteus-web/
+#18 CACHED
+
+#19 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#19 CACHED
+
+#20 [builder 16/28] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#20 CACHED
+
+#21 [builder  3/28] RUN corepack enable
+#21 CACHED
+
+#22 [builder 10/28] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+#22 CACHED
+
+#23 [builder  7/28] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#23 CACHED
+
+#24 [builder  9/28] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+#24 CACHED
+
+#25 [builder 12/28] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#25 CACHED
+
+#26 [builder  6/28] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#26 CACHED
+
+#27 [builder  8/28] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#27 CACHED
+
+#28 [builder 18/28] COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+#28 CACHED
+
+#29 [builder  2/28] WORKDIR /app
+#29 CACHED
+
+#30 [builder  5/28] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#30 CACHED
+
+#31 [builder 19/28] COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+#31 CACHED
+
+#32 [builder  4/28] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#32 CACHED
+
+#33 [builder 20/28] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#33 CACHED
+
+#13 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#13 1.373 Get:1 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+#13 1.374 Get:2 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+#13 1.530 Get:3 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#13 1.530 Get:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+#13 1.564 Get:5 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+#13 1.581 Get:6 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+#13 1.638 Get:7 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+#13 ...
+
+#34 [builder 21/28] COPY autobyteus-server-ts ./autobyteus-server-ts
+#34 DONE 2.1s
+
+#35 [builder 22/28] COPY autobyteus-web ./autobyteus-web
+#35 DONE 2.1s
+
+#13 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#13 3.155 Get:8 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1,300 kB]
+#13 3.454 Get:9 http://security.ubuntu.com/ubuntu noble-security/main amd64 Components [59.3 kB]
+#13 3.460 Get:10 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1,549 kB]
+#13 3.677 Get:11 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Components [97.1 kB]
+#13 3.684 Get:12 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1,905 kB]
+#13 3.780 Get:13 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Components [157 B]
+#13 3.780 Get:14 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [50.0 kB]
+#13 3.782 Get:15 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [158 B]
+#13 4.674 Get:16 https://deb.nodesource.com/node_22.x nodistro/main amd64 Packages [12.4 kB]
+#13 6.038 Get:17 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+#13 6.350 Get:18 http://archive.ubuntu.com/ubuntu noble/main amd64 Components [665 kB]
+#13 6.541 Get:19 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+#13 8.177 Get:20 http://archive.ubuntu.com/ubuntu noble/universe amd64 Components [5,943 kB]
+#13 8.740 Get:21 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+#13 8.777 Get:22 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+#13 8.837 Get:23 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Components [41.9 kB]
+#13 8.870 Get:24 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1,633 kB]
+#13 9.033 Get:25 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [242 kB]
+#13 9.155 Get:26 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main amd64 Packages [52.1 kB]
+#13 9.181 Get:27 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2,159 kB]
+#13 9.382 Get:28 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [534 kB]
+#13 9.454 Get:29 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2,048 kB]
+#13 9.707 Get:30 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [159 B]
+#13 9.742 Get:31 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [56.2 kB]
+#13 9.775 Get:32 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [888 B]
+#13 10.23 Get:33 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.0 kB]
+#13 10.26 Get:34 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [6,374 B]
+#13 10.30 Get:35 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [36.0 kB]
+#13 10.33 Get:36 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [13.6 kB]
+#13 10.36 Get:37 http://archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [160 B]
+#13 10.40 Get:38 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+#13 10.43 Get:39 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [161 B]
+#13 11.06 Get:40 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main amd64 Packages [61.4 kB]
+#13 ...
+
+#36 [builder 23/28] RUN pnpm -C autobyteus-agent-presentation-contracts build
+#36 1.802
+#36 1.802 > @autobyteus/agent-presentation-contracts@0.1.0 build /app/autobyteus-agent-presentation-contracts
+#36 1.802 > tsc -p tsconfig.build.json
+#36 1.802
+#36 DONE 8.2s
+
+#37 [builder 24/28] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#37 1.476
+#37 1.476 > @autobyteus/collaboration-stream-contracts@0.1.0 build /app/autobyteus-collaboration-stream-contracts
+#37 1.476 > tsc -p tsconfig.build.json
+#37 1.476
+#37 ...
+
+#13 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#13 13.57 Fetched 40.8 MB in 10s (3,943 kB/s)
+#13 13.57 Reading package lists...
+#13 15.00 Reading package lists...
+#13 16.33 Building dependency tree...
+#13 16.74 Reading state information...
+#13 17.19 git is already the newest version (1:2.43.0-1ubuntu7.3).
+#13 17.19 ripgrep is already the newest version (14.1.0-1).
+#13 17.19 curl is already the newest version (8.5.0-2ubuntu10.15).
+#13 17.19 ca-certificates is already the newest version (20260601~24.04.1).
+#13 17.19 The following packages were automatically installed and are no longer required:
+#13 17.19   geocode-glib-common gnome-keyring-pkcs11 libabsl20220623t64
+#13 17.19   libebackend-1.2-11t64 libebook-1.2-21t64 libebook-contacts-1.2-4t64
+#13 17.19   libedata-book-1.2-27t64 libedata-cal-2.0-2t64 libedataserverui-1.2-4t64
+#13 17.19   libgeocode-glib-2-0 libgweather-4-0t64 libgweather-4-common libphonenumber8
+#13 17.19   libprotobuf32t64 p11-kit p11-kit-modules
+#13 17.19 Use 'apt autoremove' to remove them.
+#13 17.26 0 upgraded, 0 newly installed, 0 to remove and 8 not upgraded.
+#13 DONE 17.3s
+
+#38 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#38 0.226 CLI install cache buster: api001-a
+#38 ...
+
+#37 [builder 24/28] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#37 DONE 6.3s
+
+#39 [builder 25/28] RUN pnpm -C autobyteus-team-stream-contracts build
+#39 1.127
+#39 1.127 > @autobyteus/team-stream-contracts@0.1.0 build /app/autobyteus-team-stream-contracts
+#39 1.127 > tsc -p tsconfig.build.json
+#39 1.127
+#39 DONE 6.6s
+
+#38 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#38 ...
+
+#40 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#40 3.665 Prisma schema loaded from prisma/schema.prisma
+#40 12.81
+#40 12.81 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 433ms
+#40 12.81
+#40 12.81 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#40 12.81
+#40 12.81 Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+#40 12.81
+#40 DONE 13.3s
+
+#38 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#38 ...
+
+#41 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#41 1.043
+#41 1.043 > autobyteus-server-ts@0.1.1 prebuild /app/autobyteus-server-ts
+#41 1.043 > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+#41 1.043
+#41 2.039
+#41 2.039 > autobyteus-server-ts@0.1.1 prepare:shared /app/autobyteus-server-ts
+#41 2.039 > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+#41 2.039
+#41 3.207 Scope: 3 of 9 workspace projects
+#41 3.220 autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+#41 3.223 autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+#41 5.893 autobyteus-application-sdk-contracts build: Done
+#41 ...
+
+#38 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#38 30.76
+#38 30.76 added 4 packages in 30s
+#38 41.46
+#38 41.46 added 3 packages in 10s
+#38 ...
+
+#41 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#41 20.04 autobyteus-ts build: [verify:runtime-deps] OK
+#41 20.07 autobyteus-ts build: Done
+#41 20.07 autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+#41 21.96 autobyteus-application-backend-sdk build: Done
+#41 24.31 Prisma schema loaded from prisma/schema.prisma
+#41 26.10
+#41 26.10 ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 338ms
+#41 26.10
+#41 26.10 Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+#41 26.10
+#41 26.10 Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+#41 26.10
+#41 26.38
+#41 26.38 > autobyteus-server-ts@0.1.1 build /app/autobyteus-server-ts
+#41 26.38 > pnpm run build:full
+#41 26.38
+#41 27.30
+#41 27.30 > autobyteus-server-ts@0.1.1 build:full /app/autobyteus-server-ts
+#41 27.30 > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+#41 27.30
+#41 ...
+
+#38 [runtime  4/32] RUN echo "CLI install cache buster: api001-a"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#38 42.00 ⠋ Detecting system environment...
+#38 42.12 ✓ Platform detected: linux_amd64
+#38 42.12 ⠋ Querying release repository...
+#38 42.56 ✓ Latest available version: 1.2.12
+#38 42.58 ⠋ Downloading release package...
+#38 49.39 ✓ Download complete and checksum verified.
+#38 49.41 ⠋ Extracting binary from archive...
+#38 51.19 ⠋ Configuring shell environment...
+#38 51.74 ERROR: logging before google.Init: I0928 04:59:45.328726       1 installer.go:27] Running Antigravity CLI setup...
+#38 51.74
+#38 51.74 Warning: /tmp/tmp.1rVBV7qIGK/agy-bin is not present in your active PATH.
+#38 51.74 To use the 'agy' CLI globally, please manually add it to your shell profile:
+#38 51.74
+#38 51.74   echo 'export PATH="/tmp/tmp.1rVBV7qIGK/agy-bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+#38 51.74
+#38 51.74
+#38 51.74 ✅ Antigravity CLI binary placed successfully at /tmp/tmp.1rVBV7qIGK/home/.local/bin/agy
+#38 51.74 Note: The binary is installed, but it is not in your active PATH. Please follow the instructions above to add it, then restart your terminal session.
+#38 52.29 1.2.12
+#38 53.91 Installed agy: 1.2.12
+#38 53.94 1.2.12
+#38 53.94 Installed grok: grok 1.0.41 (4220f3b224a6)
+#38 53.97 grok 1.0.41 (4220f3b224a6)
+#38 DONE 54.2s
+
+#41 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#41 ...
+
+#42 [runtime  5/32] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#42 DONE 0.2s
+
+#41 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#41 69.42 AgentFactory (Singleton) initialized.
+#41 69.57 Built-in agents bootstrap smoke check passed.
+#41 69.62 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+#41 DONE 69.8s
+
+#43 [builder 28/28] RUN pnpm -C autobyteus-web build:mobile-web
+#43 0.990
+#43 0.990 > autobyteus@1.4.91-beta.1 build:mobile-web /app/autobyteus-web
+#43 0.990 > node ./scripts/build-mobile-web.mjs
+#43 0.990
+#43 1.746 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+#43 4.362
+#43 4.362 > autobyteus@1.4.91-beta.1 generate /app/autobyteus-web
+#43 4.362 > nuxt generate
+#43 4.362
+#43 5.247 ┌  Building Nuxt for production...
+#43 5.655 │
+#43 5.655 ●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+#43 6.549 isElectronBuild false
+#43 6.600 [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+#43 8.038 │
+#43 8.038 ●  Nitro preset: static
+#43 9.842
+#43 9.842  WARN  Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+#43 9.842   npx update-browserslist-db@latest
+#43 9.842   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+#43 9.842
+#43 10.18 ℹ Building client...
+#43 10.20 ℹ vite v7.3.1 building client environment for production...
+#43 10.42 ℹ transforming...

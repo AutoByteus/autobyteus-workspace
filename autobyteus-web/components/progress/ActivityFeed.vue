@@ -54,8 +54,6 @@ import { computed, ref, watch, nextTick } from 'vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import RunActivityItem from './RunActivityItem.vue';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
@@ -68,7 +66,6 @@ defineEmits<{
 
 const activityStore = useAgentActivityStore();
 const activeContext = useActiveContextStore();
-const teamContextsStore = useAgentTeamContextsStore();
 const { t } = useLocalization();
 
 const currentAgentRunId = computed(() => activeContext.activeAgentContext?.state.runId ?? '');
@@ -80,15 +77,7 @@ const activities = computed(() => {
   // Standard log order (append bottom) is usually better for "Feed".
   return activityStore.getActivities(currentAgentRunId.value);
 });
-const emptyLabel = computed(() => {
-  const team = teamContextsStore.activeTeamContext;
-  const runId = currentAgentRunId.value;
-  const focusedRow = team?.view.getFocusedNavigationRow() ?? null;
-  return team && runId && focusedRow?.task && focusedRow.agentRunId === runId
-    && isTeamMemberProjectionAuthoritative(team, runId)
-    ? t('workspace.task_monitor.empty')
-    : t('workspace.components.progress.ActivityFeed.no_activity_history_yet');
-});
+const emptyLabel = computed(() => t('workspace.components.progress.ActivityFeed.no_activity_history_yet'));
 
 // Highlighting / Scrolling
 const feedContainer = ref<HTMLElement | null>(null);

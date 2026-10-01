@@ -36,6 +36,7 @@ const teamExecutionTree = {
   application_binding: null,
   handoffs: [],
   root_team: {
+    collaborators: [],
     team_definition_id: 'browser-team-definition',
     team_definition_name: 'Browser Team',
     team_run_id: TEAM_RUN_ID,
@@ -53,7 +54,6 @@ const teamExecutionTree = {
         llm_model_identifier: 'browser-probe-model',
         llm_config: null,
         auto_execute_tools: false,
-        skill_access_mode: 'NONE',
         workspace_root_path: null,
       },
     }],

@@ -4,7 +4,8 @@
       <div class="min-w-0">
         <p class="text-sm font-bold text-blue-950">Auto approve tools</p>
         <p class="mt-1 text-xs leading-relaxed text-slate-500">
-          High-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default.
+          <template v-if="runtimeKind === 'antigravity_cli'">High-trust mode: Antigravity CLI runs tools without interactive prompts. When off, denied actions cannot be approved in chat.</template>
+          <template v-else>High-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default.</template>
         </p>
       </div>
       <button
@@ -31,8 +32,10 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   autoExecuteTools: boolean
+  runtimeKind?: string
   disabled?: boolean
 }>(), {
+  runtimeKind: 'autobyteus',
   disabled: false,
 })
 

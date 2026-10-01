@@ -1,20 +1,30 @@
 <template>
   <div class="h-full overflow-auto bg-gray-50">
-    <MemoryHome v-if="currentView === 'home'" @change-tab="changeHomeTab" @change-source="changeSource" @select-agent="selectAgent" @select-team="selectTeam" />
+    <MemoryHome v-if="currentView === 'home'" @change-tab="changeHomeTab" @change-source="changeSource" @select-agent="selectAgent" @select-team="selectTeam" @select-org="selectOrg" />
     <AgentMemoryDetail
       v-else-if="currentView === 'agent-detail' && currentAgentSelector"
       :selector="currentAgentSelector"
       @back="goHome('agents')"
       @inspect-run="inspectAgentRun"
     />
-    <AgentTeamMemoryDetail
-      v-else-if="currentView === 'team-detail' && currentTeamDefinitionId"
-      :team-definition-id="currentTeamDefinitionId"
-      @back="goHome('teams')"
-      @inspect-member="inspectTeamMember"
+    <CollaborationMemoryDetail
+      v-else-if="collaborationDetail"
+      :title="collaborationDetail.title"
+      :rows="collaborationDetail.rows"
+      :loading="collaborationDetail.list.loading"
+      :error="collaborationDetail.list.error"
+      :page="collaborationDetail.list.page"
+      :total-pages="collaborationDetail.list.totalPages"
+      :search="collaborationDetail.list.search"
+      :read-only="explorerStore.selectedSource.readOnly"
+      @back="goHome(collaborationDetail.family)"
+      @search="searchCollaborationRuns"
+      @change-page="changeCollaborationRunsPage"
+      @retry="fetchCollaborationRuns"
+      @inspect-member="inspectCollaborationMember"
     />
     <MemoryInspector
-      v-else-if="currentView === 'agent-inspector' || currentView === 'team-inspector'"
+      v-else-if="currentView === 'agent-inspector' || currentView === 'team-inspector' || currentView === 'org-inspector'"
       :back-label="inspectorBackLabel"
       @back="backFromInspector"
     />
@@ -31,18 +41,28 @@ import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import MemoryHome from '~/components/memory/MemoryHome.vue';
 import AgentMemoryDetail from '~/components/memory/AgentMemoryDetail.vue';
-import AgentTeamMemoryDetail from '~/components/memory/AgentTeamMemoryDetail.vue';
+import CollaborationMemoryDetail from '~/components/memory/CollaborationMemoryDetail.vue';
 import MemoryInspector from '~/components/memory/MemoryInspector.vue';
 import { useMemoryExplorerStore, type MemoryHomeTab } from '~/stores/memoryExplorerStore';
 import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
-import type { AgentRunMemorySummary, AgentTeamRunMemorySummary, AgentTeamWithMemorySummary, AgentWithMemorySelector, AgentWithMemorySummary, MemoryExplorerSourceInput, MemoryInspectTarget, TeamMemberMemoryTargetSummary } from '~/types/memory';
+import type {
+  AgentOrgWithMemorySummary,
+  AgentRunMemorySummary,
+  AgentTeamWithMemorySummary,
+  AgentWithMemorySelector,
+  AgentWithMemorySummary,
+  CollaborationMemberMemoryTargetSummary,
+  CollaborationRunMemoryRow,
+  MemoryInspectTarget,
+} from '~/types/memory';
 
 const route = useRoute();
 const router = useRouter();
 const explorerStore = useMemoryExplorerStore();
 const inspectorStore = useMemoryInspectorStore();
 
-type MemoryView = 'home' | 'agent-detail' | 'team-detail' | 'agent-inspector' | 'team-inspector';
+const MEMORY_VIEWS = ['home', 'agent-detail', 'team-detail', 'org-detail', 'agent-inspector', 'team-inspector', 'org-inspector'] as const;
+type MemoryView = typeof MEMORY_VIEWS[number];
 
 const queryValue = (key: string): string | undefined => {
   const value = route.query[key];
@@ -55,7 +75,7 @@ const cleanQuery = (query: Record<string, string | null | undefined>) => Object.
 
 const currentView = computed((): MemoryView => {
   const view = queryValue('view') as MemoryView | undefined;
-  return view && ['home', 'agent-detail', 'team-detail', 'agent-inspector', 'team-inspector'].includes(view) ? view : 'home';
+  return view && MEMORY_VIEWS.includes(view) ? view : 'home';
 });
 
 const currentAgentSelector = computed((): AgentWithMemorySelector | null => {
@@ -66,11 +86,41 @@ const currentAgentSelector = computed((): AgentWithMemorySelector | null => {
 });
 
 const currentTeamDefinitionId = computed(() => queryValue('teamDefinitionId') ?? null);
+const currentOrgDefinitionId = computed(() => queryValue('orgDefinitionId') ?? null);
+
+const routeHomeTab = (): MemoryHomeTab => {
+  const tab = queryValue('tab');
+  return tab === 'teams' || tab === 'orgs' ? tab : 'agents';
+};
+
+/** Team and org runs rendered by the shared detail view; the family decides which store list and actions apply. */
+const collaborationDetail = computed(() => {
+  if (currentView.value === 'team-detail' && currentTeamDefinitionId.value) {
+    return {
+      family: 'teams' as const,
+      definitionId: currentTeamDefinitionId.value,
+      title: explorerStore.selectedTeam?.teamDefinitionName || currentTeamDefinitionId.value,
+      list: explorerStore.teamRuns,
+      rows: explorerStore.teamRuns.entries.map((run): CollaborationRunMemoryRow => ({ ...run, runId: run.teamRunId })),
+    };
+  }
+  if (currentView.value === 'org-detail' && currentOrgDefinitionId.value) {
+    return {
+      family: 'orgs' as const,
+      definitionId: currentOrgDefinitionId.value,
+      title: explorerStore.selectedOrg?.orgDefinitionName || currentOrgDefinitionId.value,
+      list: explorerStore.orgRuns,
+      rows: explorerStore.orgRuns.entries.map((run): CollaborationRunMemoryRow => ({ ...run, runId: run.orgRunId })),
+    };
+  }
+  return null;
+});
 
 const inspectorBackLabel = computed(() => {
   const target = inspectorStore.target;
   if (!target) return 'Back to Memory';
   if (target.kind === 'agent_run') return `Back to ${target.agentDisplayName || target.agentDefinitionId || 'Agent'}`;
+  if (target.kind === 'org_member_run') return `Back to ${target.orgDefinitionName || target.orgDefinitionId || 'Agent Org'}`;
   return `Back to ${target.teamDefinitionName || target.teamDefinitionId || 'Agent Team'}`;
 });
 
@@ -85,41 +135,74 @@ function sourceQuery(): string | undefined {
   return explorerStore.selectedSourceQueryValue;
 }
 
-function selectedSourceInput(): MemoryExplorerSourceInput {
-  return explorerStore.selectedSourceInput;
+/** Drops an unknown imported source from the URL; the replace triggers the next sync on Local. */
+const replaceUnknownSource = () => router.replace({
+  path: '/memory',
+  query: cleanQuery({ ...(route.query as Record<string, string | undefined>), source: undefined }),
+});
+
+/** The home view is where the source selector lives: refresh the list in the background, never delaying the list. */
+async function refreshSourcesForHome(): Promise<void> {
+  await explorerStore.loadSources();
+  const key = routeSourceKey();
+  if (currentView.value === 'home' && key !== 'local' && !explorerStore.hasSource(key)) await replaceUnknownSource();
 }
 
-async function syncRouteSource(): Promise<void> {
-  await explorerStore.loadSources();
-  const valid = explorerStore.setSelectedSourceByKey(routeSourceKey());
-  if (!valid && queryValue('source')) {
-    const nextQuery = { ...(route.query as Record<string, string | undefined>), source: undefined };
-    await router.replace({ path: '/memory', query: cleanQuery(nextQuery) });
+/**
+ * Applies the routed home tab or detail selection. Selecting a different agent, team or org resets its list,
+ * so the new view never renders the previous selection's runs.
+ */
+function selectRouteSubject(): void {
+  if (currentView.value === 'home') explorerStore.setHomeTab(routeHomeTab());
+  else if (currentView.value === 'agent-detail' && currentAgentSelector.value) {
+    explorerStore.setSelectedAgentFromRoute(currentAgentSelector.value, queryValue('agentName'));
+  } else if (currentView.value === 'team-detail' && currentTeamDefinitionId.value) {
+    explorerStore.setSelectedTeamFromRoute(currentTeamDefinitionId.value, queryValue('teamName'));
+  } else if (currentView.value === 'org-detail' && currentOrgDefinitionId.value) {
+    explorerStore.setSelectedOrgFromRoute(currentOrgDefinitionId.value, queryValue('orgName'));
   }
 }
 
+/**
+ * The single fetch owner: every route-driven view loads its data here exactly once per route change. The sources
+ * list is only awaited for an imported source the loaded list does not know yet; detail and inspector navigation
+ * never request it.
+ */
 async function syncRouteState() {
-  await syncRouteSource();
+  const key = routeSourceKey();
+  if (key !== 'local' && !explorerStore.hasSource(key)) {
+    await explorerStore.loadSources();
+    if (!explorerStore.hasSource(key)) {
+      await replaceUnknownSource();
+      return;
+    }
+  }
+  explorerStore.setSelectedSourceByKey(key);
+  selectRouteSubject();
+  // No `await` between the selection above and the fetch start below, so the new view shows its loading state
+  // in the same render that dropped the previous selection's list.
   if (currentView.value === 'home') {
-    const tab = queryValue('tab') === 'teams' ? 'teams' : 'agents';
-    explorerStore.setHomeTab(tab);
     inspectorStore.clear();
-    if (tab === 'agents') await explorerStore.fetchAgents();
-    else await explorerStore.fetchTeams();
+    void refreshSourcesForHome();
+    await explorerStore.fetchHomeTab(routeHomeTab());
     return;
   }
 
   if (currentView.value === 'agent-detail' && currentAgentSelector.value) {
     inspectorStore.clear();
-    explorerStore.setSelectedAgentFromRoute(currentAgentSelector.value, queryValue('agentName'));
     await explorerStore.fetchAgentRuns(currentAgentSelector.value);
     return;
   }
 
   if (currentView.value === 'team-detail' && currentTeamDefinitionId.value) {
     inspectorStore.clear();
-    explorerStore.setSelectedTeamFromRoute(currentTeamDefinitionId.value, queryValue('teamName'));
     await explorerStore.fetchTeamRuns(currentTeamDefinitionId.value);
+    return;
+  }
+
+  if (currentView.value === 'org-detail' && currentOrgDefinitionId.value) {
+    inspectorStore.clear();
+    await explorerStore.fetchOrgRuns(currentOrgDefinitionId.value);
     return;
   }
 
@@ -128,7 +211,14 @@ async function syncRouteState() {
 }
 
 function buildTargetFromRoute(): MemoryInspectTarget | null {
-  const source = selectedSourceInput();
+  const source = explorerStore.selectedSourceInput;
+  const agentRunId = queryValue('agentRunId');
+  const member = {
+    agentRunId: agentRunId ?? '',
+    memberAddress: queryValue('memberAddress') ?? null,
+    memberName: queryValue('memberName') ?? null,
+    lastUpdatedAt: queryValue('updatedAt') ?? null,
+  };
   if (currentView.value === 'agent-inspector') {
     const runId = queryValue('runId');
     if (!runId) return null;
@@ -146,7 +236,6 @@ function buildTargetFromRoute(): MemoryInspectTarget | null {
   }
   if (currentView.value === 'team-inspector') {
     const teamRunId = queryValue('teamRunId');
-    const agentRunId = queryValue('agentRunId');
     if (!teamRunId || !agentRunId) return null;
     return {
       kind: 'team_member_run',
@@ -154,99 +243,112 @@ function buildTargetFromRoute(): MemoryInspectTarget | null {
       teamDefinitionId: queryValue('teamDefinitionId') ?? null,
       teamDefinitionName: queryValue('teamName') ?? null,
       teamRunId,
-      agentRunId,
-      memberAddress: queryValue('memberAddress') ?? null,
-      memberName: queryValue('memberName') ?? null,
-      lastUpdatedAt: queryValue('updatedAt') ?? null,
+      ...member,
+    };
+  }
+  if (currentView.value === 'org-inspector') {
+    const orgRunId = queryValue('orgRunId');
+    if (!orgRunId || !agentRunId) return null;
+    return {
+      kind: 'org_member_run',
+      source,
+      orgDefinitionId: queryValue('orgDefinitionId') ?? null,
+      orgDefinitionName: queryValue('orgName') ?? null,
+      orgRunId,
+      ...member,
     };
   }
   return null;
 }
 
-const pushHome = (tab: MemoryHomeTab = explorerStore.homeTab) => router.push({ path: '/memory', query: cleanQuery({ view: 'home', tab, source: sourceQuery() }) });
+const pushMemory = (query: Record<string, string | null | undefined>) =>
+  router.push({ path: '/memory', query: cleanQuery({ source: sourceQuery(), ...query }) });
+
+const pushHome = (tab: MemoryHomeTab = explorerStore.homeTab) => pushMemory({ view: 'home', tab });
 const goHome = pushHome;
 const changeHomeTab = pushHome;
 
 const changeSource = async (sourceKey: string) => {
   explorerStore.setSelectedSourceByKey(sourceKey);
-  await router.push({ path: '/memory', query: cleanQuery({ view: 'home', tab: explorerStore.homeTab, source: sourceQuery() }) });
+  await pushMemory({ view: 'home', tab: explorerStore.homeTab });
 };
 
-const selectAgent = async (agent: AgentWithMemorySummary) => {
-  await explorerStore.openAgentMemory(agent);
-  router.push({
-    path: '/memory',
-    query: cleanQuery({
-      view: 'agent-detail',
-      source: sourceQuery(),
-      agentAttribution: agent.attribution,
-      agentDefinitionId: agent.agentDefinitionId,
-      agentName: agent.displayName,
-    }),
-  });
-};
+const agentDetailQuery = (agent: { attribution?: string | null; agentDefinitionId?: string | null; displayName?: string | null }) => ({
+  view: 'agent-detail',
+  agentAttribution: agent.attribution,
+  agentDefinitionId: agent.agentDefinitionId,
+  agentName: agent.displayName,
+});
 
-const selectTeam = async (team: AgentTeamWithMemorySummary) => {
-  await explorerStore.openTeamMemory(team);
-  router.push({ path: '/memory', query: cleanQuery({ view: 'team-detail', source: sourceQuery(), teamDefinitionId: team.teamDefinitionId, teamName: team.teamDefinitionName }) });
-};
+const selectAgent = (agent: AgentWithMemorySummary) => pushMemory(agentDetailQuery(agent));
 
-const inspectAgentRun = async (run: AgentRunMemorySummary) => {
+const selectTeam = (team: AgentTeamWithMemorySummary) =>
+  pushMemory({ view: 'team-detail', teamDefinitionId: team.teamDefinitionId, teamName: team.teamDefinitionName });
+
+const selectOrg = (org: AgentOrgWithMemorySummary) =>
+  pushMemory({ view: 'org-detail', orgDefinitionId: org.orgDefinitionId, orgName: org.orgDefinitionName });
+
+const inspectAgentRun = (run: AgentRunMemorySummary) => {
   const agent = explorerStore.selectedAgent;
-  const target: MemoryInspectTarget = {
-    kind: 'agent_run',
-    source: selectedSourceInput(),
-    runId: run.runId,
-    agentAttribution: agent?.attribution,
-    agentDefinitionId: agent?.agentDefinitionId ?? run.agentDefinitionId ?? null,
-    agentDisplayName: agent?.displayName ?? run.agentName ?? null,
-    runLabel: run.summary || run.runId,
-    workspaceRootPath: run.workspaceRootPath ?? null,
-    lastUpdatedAt: run.lastUpdatedAt ?? null,
-  };
-  await inspectorStore.inspect(target);
-  router.push({
-    path: '/memory',
-    query: cleanQuery({
-      view: 'agent-inspector',
-      source: sourceQuery(),
-      runId: run.runId,
-      agentAttribution: target.agentAttribution,
-      agentDefinitionId: target.agentDefinitionId,
-      agentName: target.agentDisplayName,
-      runLabel: target.runLabel,
-      workspace: target.workspaceRootPath,
-      updatedAt: target.lastUpdatedAt,
+  return pushMemory({
+    ...agentDetailQuery({
+      attribution: agent?.attribution,
+      agentDefinitionId: agent?.agentDefinitionId ?? run.agentDefinitionId ?? null,
+      displayName: agent?.displayName ?? run.agentName ?? null,
     }),
+    view: 'agent-inspector',
+    runId: run.runId,
+    runLabel: run.summary || run.runId,
+    workspace: run.workspaceRootPath ?? null,
+    updatedAt: run.lastUpdatedAt ?? null,
   });
 };
 
-const inspectTeamMember = async (run: AgentTeamRunMemorySummary, member: TeamMemberMemoryTargetSummary) => {
-  const target: MemoryInspectTarget = {
-    kind: 'team_member_run',
-    source: selectedSourceInput(),
-    teamDefinitionId: run.teamDefinitionId,
-    teamDefinitionName: run.teamDefinitionName,
-    teamRunId: run.teamRunId,
+const searchCollaborationRuns = (search: string) => {
+  const detail = collaborationDetail.value;
+  if (!detail) return;
+  if (detail.family === 'teams') void explorerStore.setTeamRunsSearch(detail.definitionId, search);
+  else void explorerStore.setOrgRunsSearch(detail.definitionId, search);
+};
+
+const changeCollaborationRunsPage = (page: number) => {
+  const detail = collaborationDetail.value;
+  if (!detail) return;
+  if (detail.family === 'teams') void explorerStore.changeTeamRunsPage(detail.definitionId, page);
+  else void explorerStore.changeOrgRunsPage(detail.definitionId, page);
+};
+
+const fetchCollaborationRuns = () => {
+  const detail = collaborationDetail.value;
+  if (!detail) return;
+  if (detail.family === 'teams') void explorerStore.fetchTeamRuns(detail.definitionId);
+  else void explorerStore.fetchOrgRuns(detail.definitionId);
+};
+
+const inspectCollaborationMember = (runId: string, member: CollaborationMemberMemoryTargetSummary) => {
+  const memberQuery = (runLastUpdatedAt?: string | null) => ({
     agentRunId: member.agentRunId,
     memberAddress: member.memberAddress,
-    memberName: member.memberName,
-    lastUpdatedAt: member.lastUpdatedAt ?? run.lastUpdatedAt ?? null,
-  };
-  await inspectorStore.inspect(target);
-  router.push({
-    path: '/memory',
-    query: cleanQuery({
-      view: 'team-inspector',
-      source: sourceQuery(),
-      teamDefinitionId: run.teamDefinitionId,
-      teamName: run.teamDefinitionName,
-      teamRunId: run.teamRunId,
-      agentRunId: member.agentRunId,
-      memberAddress: member.memberAddress,
-      memberName: member.memberName,
-      updatedAt: target.lastUpdatedAt,
-    }),
+    memberName: member.displayName,
+    updatedAt: member.lastUpdatedAt ?? runLastUpdatedAt ?? null,
+  });
+  if (collaborationDetail.value?.family === 'orgs') {
+    const run = explorerStore.orgRuns.entries.find((entry) => entry.orgRunId === runId);
+    return pushMemory({
+      view: 'org-inspector',
+      orgDefinitionId: run?.orgDefinitionId ?? currentOrgDefinitionId.value,
+      orgName: run?.orgDefinitionName ?? explorerStore.selectedOrg?.orgDefinitionName,
+      orgRunId: runId,
+      ...memberQuery(run?.lastUpdatedAt),
+    });
+  }
+  const run = explorerStore.teamRuns.entries.find((entry) => entry.teamRunId === runId);
+  return pushMemory({
+    view: 'team-inspector',
+    teamDefinitionId: run?.teamDefinitionId ?? currentTeamDefinitionId.value,
+    teamName: run?.teamDefinitionName ?? explorerStore.selectedTeam?.teamDefinitionName,
+    teamRunId: runId,
+    ...memberQuery(run?.lastUpdatedAt),
   });
 };
 
@@ -254,26 +356,15 @@ function backFromInspector() {
   const target = inspectorStore.target;
   if (!target) return goHome('agents');
   if (target.kind === 'agent_run') {
-    router.push({
-      path: '/memory',
-      query: cleanQuery({
-        view: 'agent-detail',
-        source: sourceQuery(),
-        agentAttribution: target.agentAttribution,
-        agentDefinitionId: target.agentDefinitionId,
-        agentName: target.agentDisplayName,
-      }),
-    });
-    return;
+    return pushMemory(agentDetailQuery({
+      attribution: target.agentAttribution,
+      agentDefinitionId: target.agentDefinitionId,
+      displayName: target.agentDisplayName,
+    }));
   }
-  router.push({
-    path: '/memory',
-    query: cleanQuery({
-      view: 'team-detail',
-      source: sourceQuery(),
-      teamDefinitionId: target.teamDefinitionId,
-      teamName: target.teamDefinitionName,
-    }),
-  });
+  if (target.kind === 'org_member_run') {
+    return pushMemory({ view: 'org-detail', orgDefinitionId: target.orgDefinitionId, orgName: target.orgDefinitionName });
+  }
+  return pushMemory({ view: 'team-detail', teamDefinitionId: target.teamDefinitionId, teamName: target.teamDefinitionName });
 }
 </script>

@@ -1,0 +1,15 @@
+SHELL=/bin/bash
+TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/
+USER=normy
+SSH_AUTH_SOCK=/var/run/com.apple.launchd.uBwfIRP5W9/Listeners
+PATH=/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+HOME=/Users/normy
+LOGNAME=normy
+ELECTRON_RUN_AS_NODE=1
+PORT=57374
+SERVER_PORT=57374
+DATABASE_URL=file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/db/production.db
+DB_TYPE=sqlite
+AUTOBYTEUS_DATA_DIR=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:57374
+AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL=http://127.0.0.1:57377

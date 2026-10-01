@@ -1,0 +1,5 @@
+.                                                                        [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_page_dialogs_follow_the_agent_decision_and_are_reported
+1 passed, 5 deselected in 4.89s

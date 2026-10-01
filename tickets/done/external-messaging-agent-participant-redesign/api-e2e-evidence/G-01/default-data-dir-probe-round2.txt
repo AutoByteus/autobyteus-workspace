@@ -1,0 +1,20 @@
+# G-01 recheck (round 2) on 40f769e0d: candidate server with NO --data-dir (default app-data dir = server package root) (2026-09-24T15:38:33Z)
+before: tracked external-channel files: 0
+health=200
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+[2026-09-24T15:38:37.040Z] [INFO] [server.runtime] Server listening on 127.0.0.1:18771
+migration_id|status|attempts|summary|error_message
+20260924_remove_external_messaging_data|SUCCEEDED|1|Scanned 4; migrated 0; skipped 4; failed 0.|
+migrationId=20260924_remove_external_messaging_data
+displayName=Remove external messaging data
+statusSummary={"scannedCount":4,"migratedCount":0,"skippedCount":4,"failedCount":0}
+error=
+details=
+{"itemId":"bindingDataDir","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts/external-channel","status":"SKIPPED","message":"Not present."}
+{"itemId":"gatewayInstallDir","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts/extensions/messaging-gateway","status":"SKIPPED","message":"Not present."}
+{"itemId":"gatewayDownloadDir","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts/download/messaging-gateway","status":"SKIPPED","message":"Not present."}
+{"itemId":"gatewayLogsDir","filePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts/logs/messaging-gateway","status":"SKIPPED","message":"Not present."}
+
+after: git status --short (tracked changes):
+(none)
+server stopped

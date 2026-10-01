@@ -13,7 +13,7 @@ export type SkillImprovementCapability = {
 
 type SkillImprovementCapabilitySettingsAccess = Pick<
   ServerSettingsService,
-  "getSkillImprovementEnabledSetting" | "setSkillImprovementEnabledSetting"
+  "getBooleanSetting" | "setBooleanSetting"
 >;
 
 export class SkillImprovementCapabilityService {
@@ -37,16 +37,16 @@ export class SkillImprovementCapabilityService {
   }
 
   async getCapability(): Promise<SkillImprovementCapability> {
-    const existing = this.settings.getSkillImprovementEnabledSetting();
+    const existing = this.settings.getBooleanSetting(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY);
     if (existing !== null) {
       return this.buildCapability(existing, "SERVER_SETTING");
     }
-    this.settings.setSkillImprovementEnabledSetting(false);
+    this.settings.setBooleanSetting(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY, false);
     return this.buildCapability(false, "INITIALIZED_DISABLED");
   }
 
   async setEnabled(enabled: boolean): Promise<SkillImprovementCapability> {
-    this.settings.setSkillImprovementEnabledSetting(enabled);
+    this.settings.setBooleanSetting(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY, enabled);
     return this.buildCapability(enabled, "SERVER_SETTING");
   }
 

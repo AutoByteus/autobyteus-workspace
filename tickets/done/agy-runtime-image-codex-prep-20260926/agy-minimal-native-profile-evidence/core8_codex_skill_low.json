@@ -1,0 +1,29 @@
+{
+  "configured_native_tools": [
+    "view_file",
+    "write_to_file",
+    "replace_file_content",
+    "grep_search",
+    "list_dir",
+    "find_by_name",
+    "run_command",
+    "generate_image"
+  ],
+  "model": "gemini-3.8-flash-low",
+  "skill_file_present": true,
+  "exit": 0,
+  "status": "SUCCESS",
+  "response_mentions_stage_zero": true,
+  "response_length": 397,
+  "tool_steps": [
+    {
+      "name": "view_file",
+      "state": "ACTIVE"
+    },
+    {
+      "name": "view_file",
+      "state": "DONE"
+    }
+  ],
+  "unknown_name_error": false
+}

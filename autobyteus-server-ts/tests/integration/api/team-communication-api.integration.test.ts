@@ -4,7 +4,6 @@ import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const timestamp = "2026-04-12T10:00:00.000Z";
@@ -52,7 +51,6 @@ describe("Team communication API integration", () => {
               agentDefinitionId: "agent-def-sender",
               llmModelIdentifier: "model-1",
               autoExecuteTools: true,
-              skillAccessMode: SkillAccessMode.NONE,
               llmConfig: null,
               workspaceRootPath,
               applicationExecutionContext: null,
@@ -68,7 +66,6 @@ describe("Team communication API integration", () => {
               agentDefinitionId: "agent-def-receiver",
               llmModelIdentifier: "model-1",
               autoExecuteTools: true,
-              skillAccessMode: SkillAccessMode.NONE,
               llmConfig: null,
               workspaceRootPath,
               applicationExecutionContext: null,

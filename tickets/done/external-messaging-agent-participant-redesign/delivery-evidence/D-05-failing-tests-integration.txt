@@ -1,0 +1,46 @@
+ FAIL  tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > does not silently skip malformed application-owned agents during catalog read
+ FAIL  tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > updates application-owned agent defaultLaunchConfig in place
+ FAIL  tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts > Codex command failure transport integration > preserves one enriched provider-shaped failure through standalone and Team wire path
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command id
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > finalizes a nested member through its exact containing TeamRun and canonical addre
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects basename and sibling addresses instead of guessing a nested owner
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /image
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/file
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > does not hydrate legacy-only persisted runs after the clean-cut removal
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > hydrates historical AutoByteus team-member file changes through GraphQL and REST
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > hydrates unified rows through GraphQL and serves current text/media bytes through the run-scoped route
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+ FAIL  tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts > Brief Studio production application Agent Tool through MCP > lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged role prompts with context-first validation and publication ordering
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team configs with the research-first coordinator handoff
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch reinforcement without replacing role-local ownership
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selection
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file path
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > respects nested .gitignore file
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+ FAIL  tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surface
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL

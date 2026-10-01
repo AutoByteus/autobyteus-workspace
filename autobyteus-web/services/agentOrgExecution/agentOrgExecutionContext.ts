@@ -1,4 +1,5 @@
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { assertAgentOrgRunConfigChange } from './agentOrgRunConfigAdoption'
 import { existingRunModelConfigsEqual } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
@@ -18,15 +19,16 @@ import type { CollaborationMessagesContextView } from '~/types/workspace/collabo
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
-import { projectAgentOrgTasks } from './agentOrgTaskPresentation'
-import type { CollaborationTasksContextView } from '~/types/workspace/collaborationTasksContextView'
 import { AgentOrgExecutionViewIndex, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
-import { projectSettledAgentOrgTask } from './agentOrgTaskSettlementProjection'
 import {
   assertAgentOrgCommunicationMessagesCorrelated,
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
+import { collaboratorAgentSourceAt, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { createAgentContext } from './agentOrgMemberContextFactory'
+import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -37,11 +39,10 @@ export type AgentOrgContextEntry = Readonly<{
   context: AgentContext
 }>
 
-type TaskRecord = AgentOrgExecutionViewDto['task_records']['records'][number]
-type TaskEvent = Extract<AgentOrgExecutionEventDto, { kind: 'task' }>['event']
+type TaskExecutionStartedEvent = Extract<AgentOrgExecutionEventDto, { kind: 'task_execution_started' }>
 type AgentOrgStatus = AgentOrgExecutionViewDto['agent_statuses'][number]
 
-const nameAt = (address: string): string => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
+const nameAt = memberDisplayName
 
 export class AgentOrgExecutionContext {
   readonly orgRunId: string
@@ -118,16 +119,13 @@ export class AgentOrgExecutionContext {
     const common = {
       ...access, root: Object.freeze({ orgRunId: this.orgRunId }), address: agent.address, context,
       collaborationMessages: this.messagesView(agent.address, agent.agentRunId),
-      collaborationTasks: this.tasksView(agent.agentRunId),
       browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId,
         memberAddress: agent.address, agentRunId: agent.agentRunId }),
     }
-    const task = agent.task ? this.taskPresentation(agent.task.executionRunId) : null
-    if (agent.kind === 'task') return Object.freeze({ ...common, kind: 'agent_org_task_agent', task: task! })
+    if (agent.kind === 'task') return Object.freeze({ ...common, kind: 'agent_org_task_agent' })
     if (agent.host.kind === 'team') return Object.freeze({
       ...common, team: this.teamView(this.index.requireTeam(agent.host.runId), agent, context),
-      ...(task ? { kind: 'agent_org_task_team_member' as const, task }
-        : { kind: 'agent_org_team_member' as const }),
+      kind: agent.delegation ? 'agent_org_task_team_member' as const : 'agent_org_team_member' as const,
     })
     return Object.freeze({ ...common, kind: 'agent_org_direct_agent' })
   }
@@ -159,7 +157,7 @@ export class AgentOrgExecutionContext {
     const view = { ...this.view, execution_tree: cloneExistingRunJsonValue(executionTree) }
     const index = new AgentOrgExecutionViewIndex(view)
     const updates = [...index.agents.values()].flatMap((agent) => {
-      if (agent.task || agent.kind !== 'configured') return []
+      if (agent.delegation || agent.kind !== 'configured') return []
       const context = this.getAgentContext(agent.agentRunId)
       if (!context) throw new Error(`Org configured context '${agent.agentRunId}' is unavailable.`)
       const launch = agent.source.launchConfiguration
@@ -205,21 +203,22 @@ export class AgentOrgExecutionContext {
           agentRunId: event.agent_run_id, memberAddress: event.member_address,
         },
       )
-    } else if (event.kind === 'task') {
-      if (this.validateTaskEvent(event.event) === 'checkpoint_required') {
-        return 'checkpoint_required'
+    } else if (event.kind === 'task_execution_started') {
+      // A new delegated child needs new contexts; reload through a checkpoint.
+      this.validateTaskExecutionStarted(event)
+      return 'checkpoint_required'
+    } else if (event.kind === 'collaborator_added') {
+      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
+      // place (no checkpoint) so the pending send that added it keeps its acknowledgement.
+      const root = this.view.execution_tree.rootOrg
+      if ((root.collaborators ?? []).some((entry) => entry.address === event.collaborator.address)
+        || this.index.configured.has(event.collaborator.address)) {
+        this.correlationFailure(`AgentOrg collaborator address '${event.collaborator.address}' is already in use.`)
       }
-      const settlement = event.event.kind === 'settled'
-        ? this.projectTaskSettlement(event.event.task, event.event.settledAt)
-        : null
-      if (settlement) this.commitView(settlement.view)
-      else {
-        const records = [...this.view.task_records.records]
-        const index = records.findIndex((record) => record.taskId === event.event.task.taskId)
-        if (index >= 0) records[index] = event.event.task
-        else records.push(event.event.task)
-        this.commitView({ ...this.view, task_records: { ...this.view.task_records, records } })
-      }
+      this.commitView({ ...this.view, execution_tree: { ...this.view.execution_tree,
+        rootOrg: { ...root, collaborators: [...(root.collaborators ?? []), event.collaborator] } } })
+      this.addContextsForNewAgents()
+      collaboratorCandidatesService.invalidate('agent_org', this.orgRunId)
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])
@@ -252,92 +251,61 @@ export class AgentOrgExecutionContext {
     this.phase = 'reopen_required'
   }
 
+  /** Offline contexts for indexed agents without one (a collaborator's new executions). */
+  private addContextsForNewAgents(): void {
+    const workspaceFor = (rootPath: string | null) => rootPath
+      ? [...this.index.agents.values()].map((agent) => this.contexts.get(agent.agentRunId)?.config.workspaceMetadata)
+        .find((metadata) => metadata?.workspaceRootPath === rootPath) ?? null
+      : null
+    for (const agent of this.index.agents.values()) {
+      if (this.contexts.has(agent.agentRunId)) continue
+      const context = createAgentContext({
+        address: agent.address, agentRunId: agent.agentRunId,
+        agentDefinitionId: agent.source.agentDefinitionId, launch: agent.source.launchConfiguration,
+      }, this.view.execution_tree.createdAt, workspaceFor(agent.source.launchConfiguration.workspaceRootPath))
+      context.state = reactive(context.state)
+      const live = reactive(context)
+      this.contexts.set(agent.agentRunId, live)
+      const rootPath = agent.source.launchConfiguration.workspaceRootPath
+      if (!live.config.workspaceMetadata && rootPath) {
+        void useRunHistoryStore().resolveWorkspaceMetadataByRootPath(rootPath).then((metadata) => {
+          if (metadata && !live.config.workspaceMetadata) {
+            live.config = { ...live.config, workspaceMetadata: metadata, workspaceId: metadata.workspaceId }
+          }
+        }).catch(() => undefined)
+      }
+    }
+  }
+
   private commitView(view: AgentOrgExecutionViewDto): void {
     const index = new AgentOrgExecutionViewIndex(view)
     this.view = view
     this.index = index
   }
 
-  private validateTaskEvent(event: TaskEvent): AgentOrgEventApplication {
-    const task = event.task
-    if (!this.index.agents.has(task.delegatorAgentRunId)) {
-      this.correlationFailure(`AgentOrg task '${task.taskId}' delegator identity mismatch.`)
+  private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
+    const execution = event.execution
+    const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
+    const address = parseAgentTeamAddress(execution.address)
+    const configured = this.index.configured.get(address)
+    const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
+    const source = configured
+      ?? collaboratorAgentSourceAt(collaborators, address)
+      ?? collaboratorTeamSourceAt(collaborators, address)
+    const hostKnown = event.host_kind === 'root'
+      ? event.host_run_id === this.orgRunId
+      : this.index.teams.has(event.host_run_id)
+    // A newly started child always records its delegator.
+    if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown || !source
+      || ('agentDefinitionId' in source) !== ('agentRunId' in execution)
+      || this.index.agents.has(runId) || this.index.teams.has(runId)) {
+      this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
     }
-    const existing = this.view.task_records.records.find((record: TaskRecord) => record.taskId === task.taskId)
-    if (event.kind === 'activated') {
-      if (existing) this.correlationFailure(`AgentOrg task '${task.taskId}' activation is duplicated.`)
-      this.validateFreshTaskExecution(task)
-      return 'checkpoint_required'
-    }
-    if (!existing || !this.sameTaskIdentity(existing, task)
-      || !this.taskExecutionMatchesConfiguredRecipient(task)) {
-      this.correlationFailure(`AgentOrg task '${task.taskId}' lifecycle identity mismatch.`)
-    }
-    return 'applied'
-  }
-
-  private taskExecutionMatchesConfiguredRecipient(task: TaskRecord): boolean {
-    const runId = 'agentRunId' in task.taskExecution ? task.taskExecution.agentRunId : task.taskExecution.teamRunId
-    const indexed = this.index.assignments.get(runId)
-    return Boolean(indexed && indexed.taskId === task.taskId && this.sameTaskIdentity(indexed, task))
-  }
-
-  private validateFreshTaskExecution(task: TaskRecord): void {
-    const recipient = parseAgentTeamAddress(task.recipientAddress)
-    const expectedKind = 'agentRunId' in task.taskExecution ? 'agent' : 'team'
-    const runId = 'agentRunId' in task.taskExecution
-      ? task.taskExecution.agentRunId
-      : task.taskExecution.teamRunId
-    const source = this.index.configured.get(recipient)
-    if (!source || ('agentRunId' in source ? 'agent' : 'team') !== expectedKind
-      || this.index.agents.has(runId)
-      || this.index.teams.has(runId)) {
-      this.correlationFailure(`AgentOrg task '${task.taskId}' execution identity mismatch.`)
-    }
-  }
-
-  private sameTaskIdentity(left: TaskRecord, right: TaskRecord): boolean {
-    if (left.delegatorAgentRunId !== right.delegatorAgentRunId
-      || left.recipientAddress !== right.recipientAddress) return false
-    return 'agentRunId' in left.taskExecution
-      ? 'agentRunId' in right.taskExecution
-        && left.taskExecution.agentRunId === right.taskExecution.agentRunId
-      : 'teamRunId' in right.taskExecution
-        && left.taskExecution.teamRunId === right.taskExecution.teamRunId
-  }
-
-  private projectTaskSettlement(task: TaskRecord, settledAt: string) {
-    let settlement: ReturnType<typeof projectSettledAgentOrgTask>
-    try {
-      settlement = projectSettledAgentOrgTask({
-        view: this.view,
-        task,
-        settledAt,
-      })
-    } catch {
-      this.correlationFailure(`AgentOrg task '${task.taskId}' settlement projection mismatch.`)
-    }
-    const contexts = settlement.terminalAgentRunIds.map((agentRunId) => this.contexts.get(agentRunId))
-    if (contexts.some((context) => !context)) {
-      this.correlationFailure(`AgentOrg task '${task.taskId}' settlement context mismatch.`)
-    }
-    contexts.forEach((context) => applyOfflineOrTerminalCleanup(context!))
-    return settlement
   }
 
   private correlationFailure(message: string): never {
     this.requireReopen(message)
     throw new Error(this.error!)
-  }
-
-  private taskPresentation(executionRunId: string) {
-    const task = this.index.assignments.get(executionRunId)!
-    return Object.freeze({ taskId: task.taskId, description: task.description,
-      displayStatus: task.status === 'active'
-        ? (task.updates.at(-1) && 'decision' in task.updates.at(-1)!
-          && (task.updates.at(-1) as { decision: string }).decision === 'request_revision'
-            ? 'revision_requested' as const : 'in_progress' as const)
-        : task.status })
   }
 
   private teamView(team: OrgTeamViewIdentity, agent: OrgAgentViewIdentity, context: AgentContext): TeamWorkspaceContextView {
@@ -350,18 +318,8 @@ export class AgentOrgExecutionContext {
       teamRunId: team.teamRunId, teamAddress: team.address,
       teamDefinitionName: nameAt(team.address), coordinatorAddress: team.source.coordinatorAddress,
       focusedMemberAddress: agent.address, focusedAgentRunId: agent.agentRunId, focusedAgentContext: context,
-      focusedTaskPresentation: () => agent.task ? this.taskPresentation(agent.task.executionRunId) : null,
       isFocusedProjectionAuthoritative: () => true,
       listMembers: () => Object.freeze(members),
-    })
-  }
-
-  private tasksView(focusedAgentRunId: string): CollaborationTasksContextView {
-    return Object.freeze({ rootKind: 'agent_org', rootRunId: this.orgRunId, focusedAgentRunId,
-      listDelegatedTaskEntries: () => projectAgentOrgTasks({ orgRunId: this.orgRunId,
-        view: this.view, index: this.index, focusedAgentRunId }),
-      taskReferenceContentPath: (taskId: string, referenceId: string) =>
-        `agent-org-runs/${encodeURIComponent(this.orgRunId)}/task-delegations/${encodeURIComponent(taskId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
   }
 

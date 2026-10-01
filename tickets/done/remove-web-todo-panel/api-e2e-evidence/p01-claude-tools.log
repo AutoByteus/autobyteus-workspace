@@ -1,0 +1,4 @@
+[   1.1] INIT {"cli":"2.1.280","tools":["Task","Bash","CronCreate","CronDelete","CronList","DesignSync","Edit","EnterWorktree","ExitWorktree","ListAgents","Monitor","NotebookEdit","PushNotification","Read","RemoteTrigger","ReportFindings","ScheduleWakeup","SendMessage","Skill","TaskCreate","TaskGet","TaskList","TaskStop","TaskUpdate","ToolSearch","WebFetch","WebSearch","Workflow","Write"]}
+[   2.2] TEXT "OK"
+[   2.2] RESULT {"subtype":"success","origin":null}
+[   2.9] END {}

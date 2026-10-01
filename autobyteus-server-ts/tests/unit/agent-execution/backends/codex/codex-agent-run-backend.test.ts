@@ -244,6 +244,54 @@ describe("CodexAgentRunBackend", () => {
     expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "supported" });
   });
 
+  it("marks a steer rejected by the local turn pre-check as definitely undelivered (IC-3)", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-other");
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-ended",
+      message: new AgentInputUserMessage("late append"),
+    });
+
+    expect(result).toMatchObject({
+      forwarded: false,
+      code: "CODEX_TURN_STEER_TURN_NOT_ACTIVE",
+      undeliveredRetryAsStart: true,
+    });
+    expect((codexThread.client as any).request).not.toHaveBeenCalledWith("turn/steer", expect.anything());
+  });
+
+  it("keeps an RPC steer rejection as a visible failure without retry (IC-3)", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockRejectedValueOnce(new Error("turn is not steerable"));
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("rejected append"),
+    });
+
+    expect(result).toMatchObject({ forwarded: false, code: "CODEX_TURN_STEER_REJECTED" });
+    expect(result).not.toHaveProperty("undeliveredRetryAsStart");
+  });
+
+  it("keeps a post-RPC steer id mismatch as a visible failure without retry (IC-3)", async () => {
+    const { backend, codexThread } = createBackend();
+    codexThread.markTurnStarted("turn-active");
+    (codexThread.client as any).request.mockResolvedValueOnce({ turnId: "turn-other" });
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-active",
+      message: new AgentInputUserMessage("possibly delivered"),
+    });
+
+    expect(result).toMatchObject({ forwarded: false, code: "CODEX_TURN_STEER_ID_MISMATCH" });
+    expect(result).not.toHaveProperty("undeliveredRetryAsStart");
+  });
+
   it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";

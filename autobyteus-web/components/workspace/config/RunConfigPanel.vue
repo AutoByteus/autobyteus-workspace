@@ -17,8 +17,12 @@
       </button>
     </div>
 
+    <DraftRunConfigEditor
+      v-if="isDraftSelection"
+      :context="draftContext"
+    />
     <ExistingRunConfigEditor
-      v-if="isSelectionMode"
+      v-else-if="isSelectionMode"
       :key="`existing:${selectionStore.selectedType}:${selectionStore.selectedRunId}`"
     />
 
@@ -32,6 +36,7 @@
         v-else-if="effectiveAgentConfig && activeAgentDefinition"
         :key="activeRunConfigContextRenderKey"
         :config="effectiveAgentConfig"
+        :seed-model-identifier="runConfigStore.seedModelIdentifier"
         :agent-definition="activeAgentDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :workspace-selection="workspaceSelection"
@@ -87,6 +92,8 @@ import { useRightSideTabs } from '~/composables/useRightSideTabs'
 import AgentRunConfigForm from './AgentRunConfigForm.vue'
 import TeamRunConfigForm from './TeamRunConfigForm.vue'
 import ExistingRunConfigEditor from './ExistingRunConfigEditor.vue'
+import DraftRunConfigEditor from './DraftRunConfigEditor.vue'
+import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 import type { TeamRunFormModel } from '~/types/agent/TeamRunFormModel'
@@ -112,6 +119,13 @@ const { t: $t } = useLocalization()
 const workspaceSelection = ref<WorkspaceSelectionState>({ mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' })
 const isRunPreparationPending = ref(false)
 const isSelectionMode = computed(() => !!selectionStore.selectedRunId)
+// A selected standalone `temp-*` draft has no server run: it is edited locally, never through
+// the existing-run editor (which would load a canonical config the server does not have).
+const isDraftSelection = computed(() => selectionStore.selectedType === 'agent'
+  && isTemporaryRunId(selectionStore.selectedRunId))
+const draftContext = computed(() => (isDraftSelection.value && selectionStore.selectedRunId
+  ? contextsStore.getRun(selectionStore.selectedRunId) ?? null
+  : null))
 const isTeamLaunchPending = computed(() => teamRunStore.isDraftLaunchPending(teamRunConfigStore.selectedDraft?.draftId ?? null))
 
 const effectiveAgentConfig = computed((): AgentRunConfig | null => {
@@ -233,6 +247,7 @@ const teamRunFormModel = computed((): Readonly<TeamRunFormModel> | null => {
   if (!config || !definition) return null
   return projectEditableTeamRunFormModel({
     config,
+    seedConfig: teamRunConfigStore.selectedDraft?.seedConfig,
     teamDefinition: definition,
     getTeamDefinitionById: teamDefinitionStore.getCatalogAgentTeamDefinitionById,
     repairAddresses: teamRunConfigStore.repairNotice?.addresses || [],
@@ -384,7 +399,7 @@ const handleRun = async () => {
 }
 
 const showConversationView = () => {
-  existingRunConfigStore.clear()
+  if (!isDraftSelection.value) existingRunConfigStore.clear()
   workspaceCenterViewStore.showChat()
 }
 

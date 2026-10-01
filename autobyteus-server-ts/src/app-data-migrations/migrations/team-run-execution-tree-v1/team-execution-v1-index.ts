@@ -12,7 +12,7 @@ import type {
   TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "./team-run-execution-tree-v1-types.js";
-import type { TaskExecutionReference } from "../../../agent-team-execution/task-delegation/task-delegation-record-v1.js";
+import type { TaskExecutionReference } from "../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js";
 import {
   createChildTeamRunPhysicalScope,
   createRootTeamRunPhysicalScope,

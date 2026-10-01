@@ -8,7 +8,6 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
@@ -264,6 +263,8 @@ describe("recent run projection GraphQL e2e", () => {
       autoByteusBackendFactory: unusedExecutionBoundary(),
       codexBackendFactory: unusedExecutionBoundary(),
       claudeBackendFactory: unusedExecutionBoundary(),
+      agyBackendFactory: unusedExecutionBoundary(),
+      grokBackendFactory: unusedExecutionBoundary(),
       activationRegistry: new AgentRunActivationRegistry(unusedExecutionBoundary()),
       memoryRecorder: unusedExecutionBoundary(),
       providerInputNormalizer: { normalizeForProvider: unavailableExecution },
@@ -317,7 +318,6 @@ describe("recent run projection GraphQL e2e", () => {
       llmModelIdentifier: "model",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       platformAgentRunId: null,
       lastKnownStatus: "IDLE",
@@ -346,7 +346,6 @@ describe("recent run projection GraphQL e2e", () => {
         agentDefinitionId: "recent-window-agent",
         llmModelIdentifier: "model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         workspaceRootPath,
       })],
     }));
@@ -578,7 +577,6 @@ describe("recent run projection GraphQL e2e", () => {
       llmModelIdentifier: "model",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       platformAgentRunId: null,
       lastKnownStatus: "IDLE",

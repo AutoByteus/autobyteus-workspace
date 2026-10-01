@@ -1,6 +1,5 @@
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
-export type SkillAccessMode = 'PRELOADED_ONLY' | 'NONE';
 export type AgentRuntimeKind = string;
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
 
@@ -8,6 +7,8 @@ const AGENT_RUNTIME_KIND_LABELS: Record<string, string> = {
   autobyteus: 'AutoByteus',
   codex_app_server: 'Codex App Server',
   claude_agent_sdk: 'Claude Agent SDK',
+  antigravity_cli: 'Antigravity CLI',
+  grok_build: 'Grok Build',
 };
 
 export const runtimeKindToLabel = (runtimeKind: string): string => {
@@ -58,9 +59,6 @@ export interface AgentRunConfig {
   /** Whether to auto-execute tool calls without user confirmation */
   autoExecuteTools: boolean;
 
-  /** Controls which skills this agent can use for this run */
-  skillAccessMode: SkillAccessMode;
-  
   /** 
    * Whether this config is locked (read-only).
    * Set to true after the first message is sent to the backend.

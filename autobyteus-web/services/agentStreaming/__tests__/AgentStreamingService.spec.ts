@@ -61,6 +61,23 @@ describe('AgentStreamingService', () => {
         };
     });
 
+    it('holds a mention send until its ack: resolves on acceptance, rejects a failed add without an error segment', async () => {
+        service.connect('test-agent-id', mockAgentContext);
+        const ack = (messageId: string, extra: Record<string, unknown>) => (service as any).handleMessage(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: { command_type: 'SEND_MESSAGE', run_id: 'test-agent-id', message_id: messageId, dedupe_key: messageId, duplicate: false, ...extra },
+        }));
+        const accepted = service.sendMessageAwaitingAdmission('Ask @Product Team', [], [], { messageId: 'm-ok', dedupeKey: 'm-ok' });
+        ack('m-ok', { state: 'accepted', accepted: true });
+        await expect(accepted).resolves.toBeUndefined();
+
+        const rejected = service.sendMessageAwaitingAdmission('Ask @Marketing Team', [], [], { messageId: 'm-no', dedupeKey: 'm-no' });
+        ack('m-no', { state: 'rejected', accepted: false, code: 'COLLABORATOR_ADD_FAILED', message: 'Its model is not available.', collaborator_name: 'Marketing Team' });
+        await expect(rejected).rejects.toMatchObject({ name: 'CollaboratorAddRejection', collaboratorName: 'Marketing Team' });
+        // Nothing was posted, so the conversation gets no error message (the notice reports it).
+        expect(mockConversation.messages).toEqual([]);
+    });
+
     it('should initialize with disconnected state', () => {
         expect((service as any).wsClient).toBeDefined();
     });
@@ -119,42 +136,6 @@ describe('AgentStreamingService', () => {
         }
     });
 
-    it('mirrors external user messages into the open conversation', () => {
-        (service as any).dispatchMessage(
-            {
-                type: 'EXTERNAL_USER_MESSAGE',
-                payload: {
-                    content: 'hello from telegram',
-                    received_at: '2026-03-09T11:22:33.000Z',
-                    context_file_paths: [
-                        {
-                            path: 'https://example.com/voice.wav',
-                            type: 'Audio',
-                        },
-                    ],
-                },
-            },
-            mockAgentContext,
-        );
-
-        expect(mockConversation.messages).toHaveLength(1);
-        expect(mockConversation.messages[0]).toMatchObject({
-            type: 'user',
-            text: 'hello from telegram',
-            contextFilePaths: [
-                expect.objectContaining({
-                    kind: 'external_url',
-                    locator: 'https://example.com/voice.wav',
-                    displayName: 'voice.wav',
-                    type: 'Audio',
-                }),
-            ],
-        });
-        expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');
-        expect(mockConversation.updatedAt).toBeTruthy();
-        expect(mockAgentContext.submissionPending).toBe(false);
-    });
-
     it('routes successful tool execution through the browser-owned post-success handler', () => {
         const payload = {
             invocation_id: 'call-1',
@@ -207,7 +188,7 @@ describe('AgentStreamingService', () => {
         ['TOOL_EXECUTION_FAILED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', error: 'failed' }],
         ['TOOL_EXECUTION_INTERRUPTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', reason: 'stopped' }],
         ['TOOL_LOG', { log_entry: 'late log', tool_invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
-        ['TODO_LIST_UPDATE', { todos: [] }],
+        ['BACKGROUND_TASK_UPDATED', { task_id: 'task-1', kind: 'shell', description: 'sleep 20', status: 'running', summary: null, started_at: '2026-09-29T16:48:20.000Z' }],
         ['INTER_AGENT_MESSAGE', { content: 'late message' }],
         ['SYSTEM_TASK_NOTIFICATION', { sender_id: 'system', content: 'late task' }],
     ])('keeps canonical error for ordinary %s activity', (type, payload) => {
@@ -303,6 +284,29 @@ describe('AgentStreamingService', () => {
             type: 'AGENT_STATUS', payload: { status: 'idle' },
         }));
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+    });
+
+    it('reports every SEND_MESSAGE ack to onSendMessageCommandAck and still projects it', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const onSendMessageCommandAck = vi.fn();
+        const ackService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient, onSendMessageCommandAck });
+        ackService.connect('run-1', mockAgentContext);
+        const rejected = {
+            command_type: 'SEND_MESSAGE', run_id: 'run-1', message_id: 'm-1', dedupe_key: 'agent_run_input:run-1:m-1',
+            state: 'rejected', accepted: false, duplicate: false, code: 'ACTIVATION_FAILED', message: 'Activation failed.',
+        };
+
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_COMMAND_ACK', payload: rejected }));
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_STATUS', payload: { status: 'offline' } }));
+
+        expect(onSendMessageCommandAck).toHaveBeenCalledTimes(1);
+        expect(onSendMessageCommandAck).toHaveBeenCalledWith(expect.objectContaining({ run_id: 'run-1', accepted: false, code: 'ACTIVATION_FAILED' }));
+        expect(mockConversation.messages.at(-1)?.segments).toContainEqual(
+            expect.objectContaining({ type: 'error', code: 'ACTIVATION_FAILED' }));
     });
 
     it.each(['disconnected', 'connecting', 'reconnecting'])('rejects standalone interrupt while %s without sending', (state) => {

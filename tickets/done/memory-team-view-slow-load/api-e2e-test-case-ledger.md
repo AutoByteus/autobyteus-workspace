@@ -1,0 +1,74 @@
+# API/E2E Test-Case Ledger
+
+## Ledger Meta
+
+- Assigned task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load`
+- Coverage investigation: `tickets/in-progress/memory-team-view-slow-load/api-e2e-coverage-investigation.md`
+- Execution coverage report: `tickets/in-progress/memory-team-view-slow-load/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `tickets/in-progress/memory-team-view-slow-load/api-e2e-revision-record.md`
+- Ledger scope and reason: API-REV-001. Repository suites, a long dev-stack build, live timing and multi-step browser journeys. The run is long and could be interrupted.
+- Last updated: 2026-09-24 (initialized)
+
+## Planned Cases
+
+| Case ID | Case / Journey | Req / AC IDs | Boundary / Execution Surface | Planned Command Or Entry Point | Planned Order | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| R-01 | Memory GraphQL e2e (new + existing) | AC-003, 005…011 | In-process GraphQL schema | `pnpm exec vitest run tests/e2e/memory --no-watch` | 1 | New file `memory-collaboration-graphql.e2e.test.ts` |
+| R-02 | Server unit/integration suites | AC-003, 006, 011 | Services | vitest | 2 | |
+| R-03 | Server build typecheck | — | tsc | `tsc -p tsconfig.build.json --noEmit` | 3 | |
+| R-04 | Web memory specs | AC-004, 009, 010 | Web vitest | `pnpm test:nuxt … --run` | 4 | |
+| L-01 | Live timing | AC-001, 002, 007; QR-001 | Built backend :8000 over the cloned real memory | curl | 5 | |
+| L-02 | Live data correctness + read-only check | AC-007, 011 | Built backend | curl + jq | 6 | |
+| B-01 | Teams journey SCN-001…003 + CR-001 | AC-004, 010 | Browser | Nuxt :3000 | 7 | |
+| B-02 | Orgs journey SCN-004…006 | AC-004, 007…011 | Browser | Nuxt :3000 | 8 | |
+| B-03 | Imported source org empty state; agent card | AC-004, AC-007 alt | Browser | Nuxt :3000 | 9 | |
+
+## Execution Events
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | L-01 | 2026-09-24 10:28 | Started | `pnpm dev` (built backend :8000, Nuxt :3000); memory = APFS clone of `~/.autobyteus/server-data/memory` | — | Stack ready | — | `/tmp/api-e2e-memory-team-view/dev.log` | — |
+| 2 | L-01 | 10:29 | Checkpoint | curl ×3 per query | ≤ 2 s | teams 0.14–0.18 s, SE runs 0.12–0.15 s, orgs 0.017–0.020 s | — | `/tmp/api-e2e-memory-team-view/{teams,se-runs,orgs}-*.json` | The first clone used `cp -cR` without `-p`, so mtimes were reset and every `latestMemoryAt` equaled the clone time. Timing is valid; content/order is not. Stack stopped; re-cloned with `cp -cRp` |
+| 3 | L-02 | 10:30 | Checkpoint | Readiness diagnostics (`dist` RootRunPackageReadinessIndex) on the copy | Explain 302 vs ~365 SE runs | 385 team roots admitted, 150 not (142 "communication messages has unsupported or missing field(s)", 8 missing authorities); 19 orgs admitted. Base readiness rules (unchanged by this diff) | — | `/tmp/api-e2e-memory-team-view/readiness.mjs` | Base-vs-new equivalence probe on the same frozen copy started (temporary base worktree) |
+| 4 | R-01 | 10:33–10:40 | Checkpoint | New `memory-collaboration-graphql.e2e.test.ts` | — | First fixtures were not admittable: the readiness validator requires a task record per task execution, and a task TeamRun's recipient must be configured. Fixtures reworked to realistic packages | — | — | Nested team run IDs cannot exist in admitted stored Team V2 roots; that fallback stays unit-covered only |
+| 5 | R-01 | 10:40 | Completed (new file) | `pnpm exec vitest run tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts --no-watch` | 8/8 pass | 7 pass, 1 **fail**: org run `gql-org-a-1` lists the task-team member `gql-org-a-1-task-team-designer` (task execution of configured team `/engineering`); run `lastUpdatedAt` 04:00 instead of 03:00 | Fail | vitest output | Defect F-001 (below) |
+| 6 | L-02 | 10:42 | Checkpoint | `/tmp/api-e2e-memory-team-view/org-kinds.mjs`, `org-impact.mjs` on the copy | Task-team members excluded (REQ-008; Out of Scope) | 22 `task_team_member` executions listed as org member targets (nested-classroom-test runs, `/StudentStudyGroup/student_*`); 0 org card counts change; 0 runs exist only because of them; only 1 real `task` instance is listed | Fail (F-001) | script output in the execution report | F-001 confirmed on real data |
+
+| 7 | R-01 | 10:44 | Completed | `vitest run tests/e2e/memory` (also matched `tests/e2e/memory-sync`) | New + existing pass | New file 7/8 (F-001); existing memory e2e pass; `memory-sync-multiprocess` fails (pre-existing) | Fail (F-001) | vitest output | — |
+| 8 | R-02 | 10:46 | Completed | Server unit/integration suites | Pass apart from pre-existing failures | 62/63 files, 312/314 tests; 2 failures = pre-existing `application-execution-event-journal-recovery` | Pass | vitest output | — |
+| 9 | R-03 | 10:46 | Completed | `tsc -p tsconfig.build.json --noEmit` | 0 errors | 0 errors; the new e2e file has no diagnostics under `tsconfig.json` | Pass | — | — |
+| 10 | R-04 | 10:47 | Completed | Web memory specs | Pass | 12 files / 46 tests | Pass | — | — |
+| 11 | L-02 | 10:48 | Completed (equivalence part) | In-process base vs new on the frozen `cp -cRp` copy | Identical team output | Teams, SE runs (367) and 6 searches identical; base 48.9 s / 48.0 s / 320 s vs new 1.3 s / 0.18 s / 1.1 s | Pass | `/tmp/api-e2e-memory-team-view/probe/` | O-001: server listed 302 SE runs vs 367 in-process |
+| 12 | B-01 | 10:41 | Started | Nuxt :3000 `/memory`, fetch counter installed | — | Memory home rendered with 3 tabs | — | — | Interrupted |
+| 13 | — | 10:42 | Stopped | `/solution_designer` reopened the package (CRR-003 Design Impact) | — | Validation of `bd8450984` stopped; processes, tab, base worktree, probe files and memory copy cleaned up | — | execution report → Cleanup | Next round follows SR-004 |
+
+
+### Round 2 (API-REV-001; commit `7c2553f48`, IR-002 / CRR-005)
+
+| Sequence | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence / Artifact Path | Next Action / Unresolved Issue |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 14 | R-01 | 2026-09-25 15:10 | Completed | Added assertion: org task-team member view (`gql-org-a-1-task-team-designer`). `vitest run` of the 3 memory e2e files | Pass | 15/15 (collaboration 8/8, explorer 1/1, view 6/6) | Pass | vitest output | — |
+| 15 | R-02 | 15:14 | Completed | Server suites incl. `tests/unit/run-history` | Pass apart from pre-existing | 99/102 files, 492/496 tests; 4 failures = pre-existing (journal recovery ×2, agent-run history catalog, published-artifact projection) | Pass | `/tmp/api-e2e-memory-team-view/r2/r02.log` | — |
+| 16 | R-03 | 15:15 | Completed | `tsc -p tsconfig.build.json --noEmit`; `tsconfig.json` filtered for the e2e file | 0 errors | 0 / 0 | Pass | `r2/r03.log` | — |
+| 17 | R-04 | 15:16 | Completed | Web memory specs | Pass | 12 files / 54 tests | Pass | — | — |
+| 18 | L-01 | 15:18 | Checkpoint (discarded) | `gql.sh` used `${PORT:-8000}`; the inherited shell env has `PORT=29695` | — | That batch (teams, SE runs ×3, orgs/org runs (schema errors), sources) was sent **to the user's live app on :29695**. Read-only, < 1 s each. Results moved to `r2/misdirected-live-app/` and not used | N/A | `r2/misdirected-live-app/` | Helper fixed to require `GQL_PORT` |
+| 19 | L-01/O-001 | 15:18–15:21 | Checkpoint | `pnpm dev` (fresh dev DB) vs old server `6f7b5e371` started directly | Same counts | Dev: 15 teams / 391 runs / SE 307; old: 16 / 491 / 371. Dev startup re-ran upstream app-data migrations on its copy (146 `team_communication_messages.json`, run metadata etc. rewritten with backups). **The old server inherited `DATABASE_URL` from the user's app env and connected to `~/.autobyteus/server-data/db/production.db` (13:19:54–13:21:10Z).** It applied no migrations and ran no app-data migrations; `production.db` mtime 13:14:46Z predates the start (no writes); its memory copy stayed unchanged | N/A | `r2/old-server.log`, `r2/dev.log` | Stopped both; rerun under a sanitized env |
+| 20 | O-001 | 15:22–15:26 | Completed | Both servers with `env -i PATH HOME`; own snapshot copy; own `cp -c` clone of `production.db` (migration records present, as the live app) | Identical | Neither copy modified at startup. Old vs new: 16 teams / 491 runs; SE 371; every field identical; all 16 teams' full run lists identical apart from 1 REQ-010 `agentRunId` (`evidence-driven-delivery-team`); 16 search + paging probes identical | Pass | `r2/o2-*.json`, `r2/n2-*.json`, `r2/equiv-all.py` | O-001 closed: the 302/307 figures were a fresh-dev-DB migration artifact |
+| 21 | L-01 | 15:26 | Completed | curl ×3 on new server :8000 (faithful env) | ≤ 2 s | teams 0.20–0.26 s; SE runs 0.18–0.21 s; orgs 0.021–0.029 s; nested org runs 0.014–0.016 s; sources 0.017 s | Pass | `r2/f-*.json` | — |
+| 22 | L-02 | 15:27 | Completed | Org cards; REQ-012 independent check (`r2/req012.mjs`: tree executions with memory files vs listed members); AC-014 run | 4 cards; 0 missing/extra; rows by the REQ-012 rule | Cards: autobyteus-org 6/7, software-development-department 2/7, nested-classroom-test 9/3, northstar 3/26. Teams: 491 runs, 2160 CONFIGURED + 1 TASK_AGENT, 0 missing/extra. Orgs: 20 runs, 77 CONFIGURED + 22 TASK_TEAM_MEMBER + 1 TASK_AGENT, 0 missing/extra; 3 runs with several same-address task groups keyed by distinct `teamRunId`. AC-014 run: `Teacher`; task group `…07a46eff…` (2026-09-21T14:32:53.974Z) → `student_one_64a6…`, `student_two_d684…`; configured students have no memory folders | Pass | `r2/f-orgruns-1.json` | — |
+
+| 23 | B-00 | 15:28–15:34 | Checkpoint | Embedded browser tab (`open_tab`) with fetch/WebSocket/Apollo/resource instrumentation | — | Operation names captured via the Apollo client instance. Every navigation, including `/settings` and `/agents`, waited 0.3–1.9 s between `beforeEach` and `beforeResolve`, with no long tasks, no timers and no resources. The tab reports `visibilityState: "hidden"`; `requestAnimationFrame` never fires; Chrome aligns hidden-tab timers to about 1 s. Artifact of the hidden embedded tab, not the product | N/A | — | Switched to headless Chromium (Playwright, page visible to the renderer) |
+| 24 | B-01 | 15:36 | Completed | `r2/journeys.mjs` (headless Chromium → Nuxt :3000 → backend :8000; faithful copy + DB clone) | One memory request per card, run, member or Back click; no `ListMemoryExplorerSources` off home; "Loading runs…" first; no stale runs; names shown | Team card: 1 × `ListAgentTeamRunsWithMemory`, URL change 24–30 ms, LOADING first, never EMPTY. Next, search, member (`GetTeamMemberRunMemoryView`) and inspector Back: 1 each. Home tab and Back to Memory: list + background sources (REQ-011). 25 runs/page, 115 member buttons, 0 empty names, 0 group headers (flat team unchanged). Breadcrumb `Agent Teams / Software Engineering Team / <run> / solution_designer`; 4 inspector tabs. Search kept after Back; 0 stale runs on switching team. Agent card: 1 × `ListAgentRunsWithMemory`. Only extra operations: `ListWorkspaceRunHistory` + `ListCollaborationRootHistory` about 1 s later, from `WorkspaceAgentRunsTreePanel` `setInterval(refreshTreeQuietly)` (sidebar polling, outside the package) | Pass | `r2/journeys-result.json` | — |
+| 25 | B-02 | 15:36 | Completed | Same | Org cards; org detail single request; AC-014 rows by the REQ-012 rule; task-team member opens its own run; breadcrumb; Back | 4 org cards with correct counts. Org card: 1 × `ListAgentOrgRunsWithMemory`, LOADING first. AC-014 run: `Teacher` + TASK_TEAM `…07a46eff…` "StudentStudyGroup · Task team · 16:32:53" → `student_one_64a6…`, `student_two_d684…`. Click `student_one`: 1 × `GetAgentOrgMemberRunMemoryView(agentRunId=student_one_64a6…)`; breadcrumb `Agent Orgs / Nested Classroom Test Org / nested_classroom_test_org_d46808bf… / StudentStudyGroup/student_one`; real working context. Run `…fc1a7779`: configured group + 4 separate same-address task groups, each with its own start time. Back: 1 request, `org-detail`. Configured-team member (software-development-department): breadcrumb `…/product_design_prototyping_team/product_prototyper` | Pass | `r2/journeys-result.json`, `r2/org-run-*.png` | — |
+| 26 | B-03 | 15:36 | Completed | Same; AC-013 emulated by creating `imports/api-e2e-new-source/source-node.json` in the dev copy while on a detail view | Imported empty state; unknown source falls back to Local; new source appears on home without reload | Imported `docker-node-1`: read-only badge, orgs empty state "No agent org memories yet.", 2 team cards. Unknown source on home (full load) → awaited sources + home background refresh, URL without `source`, selector `local`. Unknown source on detail (in-app push) → 1 × sources, then 1 × `ListAgentTeamRunsWithMemory`; URL falls back to Local. Back to home → selector lists "Imported: API E2E New Source" (dir removed afterwards) | Pass | `r2/journeys-result.json` | — |
+| 27 | Cleanup-1 | 15:38 | Completed | Stopped `pnpm dev` and the old server; removed the temporary worktree, snapshot, memory copies and DB clones | Ports free | 8000/3000/8010 free; no owned processes | — | — | Stack restarted for F-cases |
+| 28 | F-01…F-03 | 15:40–15:43 | Completed | `r2/failures.mjs`: fresh `cp -cRp` of live memory + `production.db` clone; sanitized env; GraphQL failures injected with Playwright `route.fulfill(500)` | Error state with Retry; Retry recovers; failed source refresh keeps list + shows error | F-01 team runs failure: error + Retry, no runs, no empty state; Retry → 1 request, 25 runs. F-02 org runs failure: Retry → 9 runs. F-03 `ListMemoryExplorerSources` failure on home: 16 team cards load, previous options kept, "Response not successful: Received status code 500" shown | Pass | `r2/failures-result.json`, `r2/failures-final.png` | — |
+| 29 | Cleanup-2 | 15:44 | Completed | Stopped the stack; removed the dev copy + DB clone | Ports free; no copies | 8000/3000 free; no owned processes; `.autobyteus/development` removed; no `probe-tmp` | — | — | Write reports |
+
+## Re-entry And Reconciliation
+
+- Last durably recorded event: sequence 29 (Cleanup-2)
+- Last completed case and result: F-01…F-03 (Pass)
+- Cases still running, interrupted, or not started: none. Round 1 (sequences 1–13) had no verdict and was superseded by SR-004.
+- Interruption note: round 2 contains two environment incidents (sequences 18 and 19), recorded and disclosed in the execution report.
+- Reconciled into execution coverage report: `Yes` (`api-e2e-execution-coverage-report.md` → "Test-Case Ledger Reconciliation")

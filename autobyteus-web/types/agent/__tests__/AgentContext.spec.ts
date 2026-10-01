@@ -14,7 +14,6 @@ describe('AgentContext', () => {
             llmModelIdentifier: 'gpt-4',
             runtimeKind: 'autobyteus',
             autoExecuteTools: true,
-            skillAccessMode: 'PRELOADED_ONLY',
             isLocked: false,
         };
 
@@ -46,7 +45,6 @@ describe('AgentContext', () => {
             llmModelIdentifier: 'gpt-4',
             runtimeKind: 'autobyteus',
             autoExecuteTools: true,
-            skillAccessMode: 'PRELOADED_ONLY',
             isLocked: false,
         };
         const mockConversation: Conversation = {

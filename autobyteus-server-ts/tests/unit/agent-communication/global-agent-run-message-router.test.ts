@@ -132,7 +132,8 @@ describe("GlobalAgentRunMessageRouter", () => {
       message: "Delivered by Team owner.",
     }));
     const activeRootDirectory = new ActiveCollaborationRootDirectory();
-    activeRootDirectory.reserve(memberExecutionContext.identity.root, { deliverExactAgentMessage }).commit();
+    const hasAgentExecution = vi.fn((agentRunId: string) => agentRunId === "same-root-target");
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, { hasAgentExecution, deliverExactAgentMessage }).commit();
     const router = new GlobalAgentRunMessageRouter({
       agentRunManager: { getActiveRun: vi.fn(() => target.run) },
       activeRootDirectory,
@@ -146,6 +147,49 @@ describe("GlobalAgentRunMessageRouter", () => {
       accepted: true,
       agentRunId: "same-root-target",
     });
+    expect(deliverExactAgentMessage).toHaveBeenCalledOnce();
+  });
+
+  it("routes a same-root shut-down delegated target through the sender root so delivery can wake it", async () => {
+    const memberExecutionContext = testMemberExecutionContext({
+      rootTeamRunId: "root-team-run",
+      memberAddress: "/sender",
+      agentRunId: "sender-run",
+    });
+    const sameRootSender = buildAgentRunMessageSenderContext({
+      senderRunId: "sender-run",
+      senderName: "Sender",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      memberExecutionContext,
+    });
+    const deliverExactAgentMessage = vi.fn(async () => ({
+      accepted: true,
+      code: "DELIVERED",
+      message: "Restored and delivered.",
+    }));
+    const activeRootDirectory = new ActiveCollaborationRootDirectory();
+    activeRootDirectory.reserve(memberExecutionContext.identity.root, {
+      hasAgentExecution: (agentRunId: string) => agentRunId === "dormant-child",
+      deliverExactAgentMessage,
+    }).commit();
+    const getActiveRun = vi.fn(() => null);
+    const router = new GlobalAgentRunMessageRouter({ agentRunManager: { getActiveRun }, activeRootDirectory });
+
+    await expect(router.deliver({
+      sender: sameRootSender,
+      targetAgentRunId: "dormant-child",
+      content: "Follow-up.",
+    })).resolves.toMatchObject({ accepted: true, agentRunId: "dormant-child" });
+    expect(deliverExactAgentMessage).toHaveBeenCalledWith(expect.objectContaining({
+      targetAgentRunId: "dormant-child", content: "Follow-up.",
+    }));
+    expect(getActiveRun).not.toHaveBeenCalled();
+
+    await expect(router.deliver({
+      sender: sameRootSender,
+      targetAgentRunId: "other-root-dormant",
+      content: "Cross-root.",
+    })).resolves.toMatchObject({ accepted: false, code: "TARGET_AGENT_RUN_NOT_ACTIVE" });
     expect(deliverExactAgentMessage).toHaveBeenCalledOnce();
   });
 

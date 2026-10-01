@@ -27,11 +27,13 @@ export interface WorkspaceHistorySectionState {
     workspaceId: string,
     teamRunId: string,
     memberAddress: string,
+    openByDefault?: boolean,
   ) => boolean;
   toggleTeamMember: (
     workspaceId: string,
     teamRunId: string,
     memberAddress: string,
+    openByDefault?: boolean,
   ) => void;
   isAgentOrgDefinitionExpanded?: (workspaceId: string, definitionId: string) => boolean;
   toggleAgentOrgDefinition?: (workspaceId: string, definitionId: string) => void;
@@ -39,6 +41,8 @@ export interface WorkspaceHistorySectionState {
   toggleAgentOrgRun?: (rootRunId: string) => void;
   isAgentOrgTeamExpanded?: (rootRunId: string, address: string) => boolean;
   toggleAgentOrgTeam?: (rootRunId: string, address: string) => void;
+  isAgentOrgTaskTeamExpanded?: (rootRunId: string, teamRunId: string) => boolean;
+  toggleAgentOrgTaskTeam?: (rootRunId: string, teamRunId: string) => void;
   isAgentOrgRunSelected?: (rootRunId: string) => boolean;
   isAgentOrgMemberSelected?: (rootRunId: string, address: string, agentRunId?: string) => boolean;
   isAgentOrgTerminating?: (rootRunId: string) => boolean;

@@ -142,14 +142,13 @@ it('supports keyboard search, option navigation, selection and Escape focus reco
   wrapper.unmount()
 })
 
-describe('alias-aware Claude options', () => {
+describe('current-only Claude display', () => {
   const claudeOptions: GroupedOption[] = [
     {
       label: 'Anthropic',
       items: [
         {
           id: 'opus[1m]',
-          aliasIds: ['default'],
           recommended: true,
           name: 'claude-opus-5-5[1m]',
           description: 'Opus (1M context) · Opus 5.5 with 1M context · Best for everyday, complex tasks',
@@ -171,13 +170,15 @@ describe('alias-aware Claude options', () => {
     },
   ]
 
-  it('shows a saved alias value as the option that represents it, with the check mark', async () => {
-    const wrapper = await openSelect(claudeOptions, 'default')
-
+  it('shows current-only display without selecting an offered sibling', async () => {
+    const wrapper = mount(SearchableGroupedSelect, { attachTo: document.body,
+      props: { modelValue: 'default', options: claudeOptions, selectedDisplay: 'Anthropic / claude-opus-5-5[1m]' } })
+    await wrapper.get('button').trigger('click')
+    await nextTick()
     expect(wrapper.get('button').text()).toContain('Anthropic / claude-opus-5-5[1m]')
     const rows = optionRows()
-    expect(rows.map((row) => row.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false'])
-    expect(rows[0]?.querySelector('svg')).not.toBeNull()
+    expect(rows.map((row) => row.getAttribute('aria-selected'))).toEqual(['false', 'false', 'false'])
+    expect(rows[0]?.querySelector('svg')).toBeNull()
     expect(rows[1]?.querySelector('svg')).toBeNull()
     expect(rows[0]?.querySelector('[data-test="select-item-recommended"]')?.textContent?.trim()).toBe('Recommended')
     expect(rows[1]?.querySelector('[data-test="select-item-recommended"]')).toBeNull()
@@ -185,17 +186,17 @@ describe('alias-aware Claude options', () => {
     wrapper.unmount()
   })
 
-  it('does not emit when the option already representing the value is chosen again', async () => {
+  it('emits the sibling ID only after an explicit click', async () => {
     const wrapper = await openSelect(claudeOptions, 'default')
 
     await new DOMWrapper(optionRows()[0]!).trigger('click')
-    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    expect(wrapper.emitted('update:modelValue')).toEqual([['opus[1m]']])
     expect(document.body.querySelector('input')).toBeNull()
 
     await wrapper.get('button').trigger('click')
     await nextTick()
     await new DOMWrapper(optionRows()[2]!).trigger('keydown', { key: 'Enter' })
-    expect(wrapper.emitted('update:modelValue')).toEqual([['sonnet']])
+    expect(wrapper.emitted('update:modelValue')).toEqual([['opus[1m]'], ['sonnet']])
 
     wrapper.unmount()
   })

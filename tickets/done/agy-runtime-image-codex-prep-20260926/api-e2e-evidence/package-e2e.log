@@ -1,0 +1,295 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+Custom app data directory set to: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-skills-data-vyAf4w
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-skills-data-vyAf4w/.env
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-09-26T10:05:06.770Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-26T10:05:06.770Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-09-26T10:05:06.770Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-09-26T10:05:06.782Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-09-26T10:05:06.782Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-09-26T10:05:06.793Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-09-26T10:05:06.793Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 2 items.
+
+stderr | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Tool 'run_bash' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Single Private Skill Agent' not found in registry. Skipping.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Resolved skill 'autobyteus_single_1790417106782_bc2de5991d43e8' to path: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106782_bc2de5991d43e8-TCHjI2/agents/autobyteus-single-agent-1790417106782_bc2de5991d43e8/skills/autobyteus_single_1790417106782_bc2de5991d43e8
+
+stderr | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Tool 'run_bash' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'read_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'edit_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+Tool 'write_file' defined in agent definition 'AutoByteus Runtime Multi Private Skill Agent' not found in registry. Skipping.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Resolved skill 'autobyteus_tone_1790417106782_bc2de5991d43e8' to path: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106782_bc2de5991d43e8-TCHjI2/agents/autobyteus-multi-agent-1790417106782_bc2de5991d43e8/skills/autobyteus_tone_1790417106782_bc2de5991d43e8
+Resolved skill 'autobyteus_outline_1790417106782_bc2de5991d43e8' to path: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106782_bc2de5991d43e8-TCHjI2/agents/autobyteus-multi-agent-1790417106782_bc2de5991d43e8/skills/autobyteus_outline_1790417106782_bc2de5991d43e8
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-09-26T10:05:06.800Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-09-26T10:05:06.800Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-09-26T10:05:06.812Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-09-26T10:05:06.812Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Starting directory traversal for: '/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-single-1790417106800_7df8e5a5c2d88/skills/single_private_1790417106800_7df8e5a5c2d88' with max_depth=null
+Creating on-demand SkillWorkspace for: single_private_1790417106800_7df8e5a5c2d88
+Creating on-demand SkillWorkspace for: single_private_1790417106800_7df8e5a5c2d88
+Creating on-demand SkillWorkspace for: tone_1790417106800_7df8e5a5c2d88
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-single-1790417106800_7df8e5a5c2d88/skills/single_private_1790417106800_7df8e5a5c2d88.
+Initialized SkillWorkspace for skill 'single_private_1790417106800_7df8e5a5c2d88' at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-single-1790417106800_7df8e5a5c2d88/skills/single_private_1790417106800_7df8e5a5c2d88
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-single-1790417106800_7df8e5a5c2d88/skills/single_private_1790417106800_7df8e5a5c2d88.
+Initialized SkillWorkspace for skill 'single_private_1790417106800_7df8e5a5c2d88' at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-single-1790417106800_7df8e5a5c2d88/skills/single_private_1790417106800_7df8e5a5c2d88
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-multi-1790417106800_7df8e5a5c2d88/skills/tone_1790417106800_7df8e5a5c2d88.
+Initialized SkillWorkspace for skill 'tone_1790417106800_7df8e5a5c2d88' at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-multi-1790417106800_7df8e5a5c2d88/skills/tone_1790417106800_7df8e5a5c2d88
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Created WorkspaceFileExplorer for skill_ws_single_private_1790417106800_7df8e5a5c2d88 (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_single_private_1790417106800_7df8e5a5c2d88 (graphql-file-content).
+Created WorkspaceFileExplorer for skill_ws_tone_1790417106800_7df8e5a5c2d88 (graphql-file-content).
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Directory traversal for '/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106800_7df8e5a5c2d88-2yKgGv/agents/shared-single-1790417106800_7df8e5a5c2d88/skills/single_private_1790417106800_7df8e5a5c2d88' completed in 0.0080 seconds.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-09-26T10:05:06.834Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-09-26T10:05:06.834Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-09-26T10:05:06.846Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stderr | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+DEFINITION_CONTRACT_INVALID: skipped Team 'team-1790417106834_aba97ced8429a' at '/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-09-26T10:05:06.847Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Starting directory traversal for: '/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/skills/team_shared_1790417106834_aba97ced8429a' with max_depth=null
+Creating on-demand SkillWorkspace for: team_shared_1790417106834_aba97ced8429a
+Creating on-demand SkillWorkspace for: team_shared_1790417106834_aba97ced8429a
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/skills/team_shared_1790417106834_aba97ced8429a.
+Initialized SkillWorkspace for skill 'team_shared_1790417106834_aba97ced8429a' at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/skills/team_shared_1790417106834_aba97ced8429a
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/skills/team_shared_1790417106834_aba97ced8429a.
+Initialized SkillWorkspace for skill 'team_shared_1790417106834_aba97ced8429a' at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/skills/team_shared_1790417106834_aba97ced8429a
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Created WorkspaceFileExplorer for skill_ws_team_shared_1790417106834_aba97ced8429a (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_team_shared_1790417106834_aba97ced8429a (graphql-file-content).
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Directory traversal for '/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agent-package-private-local-1790417106834_aba97ced8429a-zO6fjV/agent-teams/team-1790417106834_aba97ced8429a/skills/team_shared_1790417106834_aba97ced8429a' completed in 0.0050 seconds.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-09-26T10:05:06.865Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-09-26T10:05:06.865Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (4 tests) 179ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  12:05:02
+   Duration  4.24s (transform 2.65s, setup 12ms, import 3.61s, tests 179ms, environment 0ms)
+

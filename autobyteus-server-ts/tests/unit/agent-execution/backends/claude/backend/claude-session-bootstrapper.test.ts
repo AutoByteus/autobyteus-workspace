@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeSessionBootstrapper } from "../../../../../../src/agent-execution/backends/claude/backend/claude-session-bootstrapper.js";
@@ -26,7 +25,6 @@ const createMemberExecutionContext = () =>
 const createRunContext = (input: {
   autoExecuteTools: boolean;
   memberExecutionContext?: MemberExecutionContext | null;
-  skillAccessMode?: SkillAccessMode;
 }) =>
   new AgentRunContext({
     runId: input.memberExecutionContext?.agentRunId ?? "run-claude-standalone",
@@ -36,13 +34,12 @@ const createRunContext = (input: {
       llmModelIdentifier: "haiku",
       autoExecuteTools: input.autoExecuteTools,
       workspaceId: "workspace-claude",
-      skillAccessMode: input.skillAccessMode ?? SkillAccessMode.NONE,
       memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: null,
   });
 
-const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = []) => {
+const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED") => {
   const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async () => []) };
   const bootstrapper = new ClaudeSessionBootstrapper(
     { resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any,
@@ -56,7 +53,7 @@ const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = []) => {
         toolNames: [],
       })),
     } as any,
-    { resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
+    { resolveSkillScope: () => skillScope, resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
   );
   return { bootstrapper, workspaceSkillMaterializer };
 };
@@ -98,13 +95,12 @@ describe("ClaudeSessionBootstrapper", () => {
       rootPath: "/tmp/claude-skill",
     });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill },
+      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
       { kind: "unresolved", name: "missing-skill" },
     ]);
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext({
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     }));
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith({
@@ -114,8 +110,20 @@ describe("ClaudeSessionBootstrapper", () => {
         { kind: "expose-resolved", skill },
         { kind: "reconcile-unresolved", name: "missing-skill" },
       ],
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      workspaceCollisionPolicy: "fail",
     });
     expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
+  });
+
+  it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
+    const skill = new Skill({ name: "installed-skill", description: "d", content: "# c", rootPath: "/skills/installed-skill" });
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
+      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
+    ], "ALL_INSTALLED");
+
+    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }));
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
   });
 });

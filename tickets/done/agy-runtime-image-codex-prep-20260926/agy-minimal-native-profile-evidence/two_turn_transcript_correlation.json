@@ -1,0 +1,15 @@
+{
+  "case": "two_turn_transcript_correlation",
+  "cli_version": "1.2.11",
+  "model": "gemini-3.8-flash-low",
+  "configured_native_tools": ["view_file", "write_to_file", "replace_file_content", "grep_search", "list_dir", "find_by_name", "run_command", "generate_image"],
+  "isolation": "temporary custom-agent capsule and workspace, removed after test; provider-owned conversation retained",
+  "conversation_id": "3d5ce362-1127-4d6b-8259-4a2c04d7d876",
+  "init_keys": ["model", "cwd", "agent", "tools", "permission_mode"],
+  "turns": [
+    {"turn": 1, "result_status": "SUCCESS", "stream_native_image_steps": [], "transcript_rows_at_result": [0, 1]},
+    {"turn": 2, "result_status": "SUCCESS", "stream_native_image_steps": [{"step_index": 4, "tool_name": "generate_image", "states": ["ACTIVE", "DONE"]}], "transcript_rows_at_result": [2, 3, 4, 5]}
+  ],
+  "correlation": {"preceding_planner_step_index": 3, "preceding_planner_tool_name": "generate_image", "media_step_index": 4, "media_mime_type": "image/jpeg", "media_uri_scheme": "file", "media_file_inside_exact_conversation_root": true, "media_file_regular_bytes": 370645, "media_file_magic_hex": "ffd8ff"},
+  "limits": "Observed provider transcript shape, not documented stable API; no full AutoByteus app, multi-image turn, or future-version validation. Raw model text, parameters, and file URI are intentionally omitted."
+}

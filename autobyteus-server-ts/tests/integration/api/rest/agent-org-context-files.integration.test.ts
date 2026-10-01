@@ -1,3 +1,4 @@
+import { writeAttachmentSidecars } from "../../../fixtures/current-attachment-package-fixtures.js";
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -7,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const config = vi.hoisted(() => ({ root: '' }));
 vi.mock('../../../../src/config/app-config-provider.js', () => ({ appConfigProvider: { config: {
-  getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
+  getBaseUrl: () => "http://app.test", getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, 'memory'),
 } } }));
 import { registerContextFileRoutes } from '../../../../src/api/rest/context-files.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
@@ -46,15 +47,16 @@ beforeEach(async () => {
   const team = testOrgTeamNode({ address: '/delivery', teamRunId: 'configured-team', coordinatorAddress: lead.address, members: [lead] });
   const raw = structuredClone(testAgentOrgExecutionTree({ orgRunId: 'org', members: [direct, team] })) as any;
   raw.rootOrg.taskExecutions = [
-    { address: direct.address, agentRunId: 'retained-direct', platformAgentRunId: null, startedAt: '2026-09-01T00:00:01.000Z', settledAt: '2026-09-01T00:00:02.000Z' },
-    { address: team.address, teamRunId: 'retained-team', members: [{ address: lead.address, agentRunId: 'retained-lead', platformAgentRunId: null }], taskExecutions: [], startedAt: '2026-09-01T00:00:01.000Z', settledAt: '2026-09-01T00:00:02.000Z' },
+    { address: direct.address, agentRunId: 'retained-direct', platformAgentRunId: null, delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z' },
+    { address: team.address, teamRunId: 'retained-team', members: [{ address: lead.address, agentRunId: 'retained-lead', platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z' },
   ];
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
   await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, 'org'));
+  writeAttachmentSidecars(dir, 'org', 'org');
   treeFile = path.join(dir, 'agent_org_run_execution_tree.json'); treeBytes = await fs.readFile(treeFile);
   layout = new ContextFileLayout({ appDataDir: config.root, memoryDir });
   local = new ContextFileLocalPathResolver({ layout, baseUrl: 'http://app.test', ownerResolver: new ContextFileOwnerResolver({
-    locations: new AgentOrgExecutionTreeLocationService({ memoryDir }), // no runtime manager
+    memoryDir, locations: new AgentOrgExecutionTreeLocationService({ memoryDir }), // no runtime manager
   }) });
   app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: '/rest' });
 });

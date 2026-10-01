@@ -1,0 +1,16 @@
+{
+  "data": {
+    "discoverAndRegisterMcpServerTools": {
+      "success": true,
+      "message": "Successfully discovered and registered 1 tools.",
+      "discoveredTools": [
+        {
+          "name": "verify_e2e_token",
+          "description": "Reports whether the configured E2E token env var is present, echoing the given nonce.",
+          "origin": "MCP",
+          "category": "e2e-token-echo"
+        }
+      ]
+    }
+  }
+}

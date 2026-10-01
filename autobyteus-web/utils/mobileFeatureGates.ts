@@ -15,6 +15,7 @@ export type MobileFeatureId =
   | 'desktopUpdates'
   | 'localFolderPicker'
   | 'applicationIframe'
+  | 'projects'
   | 'browser';
 
 const supportedMobileFeatures = new Set<MobileFeatureId>([
@@ -57,6 +58,9 @@ export function mobileFeatureForRouteLocation(input: {
   }
   if (path.startsWith('/nodes')) {
     return 'desktopSettings';
+  }
+  if (path.startsWith('/projects')) {
+    return 'projects';
   }
   if (path.startsWith('/settings')) {
     const section = String(input.query?.section ?? '').toLowerCase();

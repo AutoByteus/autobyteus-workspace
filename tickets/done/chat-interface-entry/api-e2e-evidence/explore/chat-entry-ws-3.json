@@ -1,0 +1,48 @@
+{
+  "result": {
+    "urls": [
+      "http://127.0.0.1:18732/chat",
+      "http://127.0.0.1:18732/chat",
+      "http://127.0.0.1:18732/chat",
+      "http://127.0.0.1:18732/chat",
+      "http://127.0.0.1:18732/chat",
+      "http://127.0.0.1:18732/chat?id=temp-chat-1790630234315-1",
+      "http://127.0.0.1:18732/chat?id=daily_assistant_e4a9f2dd8f214bc7be7c4b20bb47d4fd",
+      "http://127.0.0.1:18732/chat?id=daily_assistant_e4a9f2dd8f214bc7be7c4b20bb47d4fd",
+      "http://127.0.0.1:18732/chat?id=daily_assistant_e4a9f2dd8f214bc7be7c4b20bb47d4fd",
+      "http://127.0.0.1:18732/chat?id=daily_assistant_e4a9f2dd8f214bc7be7c4b20bb47d4fd",
+      "http://127.0.0.1:18732/chat?id=daily_assistant_e4a9f2dd8f214bc7be7c4b20bb47d4fd"
+    ],
+    "defaultModelFromLastUsed": "claude-fable-5\nAutoByteus",
+    "workspaceTrigger": "folder-ws1790630233703",
+    "hint": "Files are saved in folder-ws1790630233703 · /tmp/chat-entry-live-g5kZ/folder-ws1790630233703",
+    "approval": "Ask first",
+    "urlAfterFailedSend": "http://127.0.0.1:18732/chat?id=temp-chat-1790630234315-1",
+    "viewAfterFail": "DA\nReply with exactly TEMP-RESEND-OK.\nError\n\nDaily Assistant\n·\nfolder-ws1790630233703\n·\nAsk first\n\nYou\nReply with exactly TEMP-RESEND-OK.\nDA\nDaily Assistant\n\nAn Error Occurred\n\nInjected prepare failure (API/E2E)\n\nShow Details\nContext Files (0)\n(drag, paste, or upload)\ngpt-5.5\nCodex\nMedium",
+    "injected": 1,
+    "inputAfterFail": "",
+    "urlAfterResend": "http://127.0.0.1:18732/chat?id=daily_assistant_e4a9f2dd8f214bc7be7c4b20bb47d4fd",
+    "replyVisible": true,
+    "wsCloses": [],
+    "statusAfterResend": "Running",
+    "viewTail": " exactly TEMP-RESEND-OK.\nIdle\n\nDaily Assistant\n·\nfolder-ws1790630233703\n·\nAsk first\n\nYou\nReply with exactly TEMP-RESEND-OK.\nDA\nDaily Assistant\n\nAn Error Occurred\n\nInjected prepare failure (API/E2E)\n\nShow Details\nYou\nReply with exactly TEMP-RESEND-OK.\nDA\nDaily Assistant\n\nTEMP-RESEND-OK\n\nContext Files (0)\n(drag, paste, or upload)\ngpt-5.5\nCodex\nMedium",
+    "afterReloadTail": "DA\nReply with exactly TEMP-RESEND-OK.\nIdle\n\nDaily Assistant\n·\nfolder-ws1790630233703\n·\nAsk first\n\nYou\nReply with exactly TEMP-RESEND-OK.\nDA\nDaily Assistant\n\nTEMP-RESEND-OK\n\nContext Files (0)\n(drag, paste, or upload)\ngpt-5.5\nCodex",
+    "header": "DA\nReply with exactly TEMP-RESEND-OK.\nIdle\n\nDaily Assistant\n·\nfolder-ws1790630233703\n·\nAsk first",
+    "headerApproval": "Ask first",
+    "server": {
+      "workspaceRootPath": "/tmp/chat-entry-live-g5kZ/folder-ws1790630233703",
+      "autoExecuteTools": false,
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.5"
+    },
+    "materializedInFolder": [
+      "probe-alpha",
+      "probe-beta",
+      "probe-bundled",
+      "retrospective-skill-improver"
+    ]
+  },
+  "errors": [
+    "console: Error sending user input: ApolloError: Injected prepare failure (API/E2E)\n    at new ApolloError (http://127.0.0.1:18732/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10"
+  ]
+}

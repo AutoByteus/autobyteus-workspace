@@ -21,23 +21,25 @@ const member = (node: TeamRunNode): TaskTeamMemberExecution => node.kind === "ag
 export const projectTaskAgentExecution = (input: {
   address: TaskAgentExecution["address"];
   agentRunId: string;
+  delegatorAgentRunId: string;
   startedAt: string;
 }): TaskAgentExecution => Object.freeze({
   address: input.address,
   agentRunId: input.agentRunId,
   platformAgentRunId: null,
+  delegatorAgentRunId: input.delegatorAgentRunId,
   startedAt: input.startedAt,
-  settledAt: null,
 });
 
 export const projectTaskTeamExecution = (input: {
   node: TeamRunAgentTeamNode;
+  delegatorAgentRunId: string;
   startedAt: string;
 }): TaskTeamExecution => Object.freeze({
   address: input.node.address,
   teamRunId: input.node.teamRunId,
   members: Object.freeze(input.node.children.map(member)),
   taskExecutions: Object.freeze([]),
+  delegatorAgentRunId: input.delegatorAgentRunId,
   startedAt: input.startedAt,
-  settledAt: null,
 });

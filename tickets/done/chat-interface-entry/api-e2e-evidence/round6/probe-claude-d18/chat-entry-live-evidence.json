@@ -1,0 +1,99 @@
+{
+  "startedAt": "2026-09-29T14:10:05.045Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 6462,
+      "details": {
+        "model": "sonnet",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 12852,
+      "details": {
+        "runId": "daily_assistant_af7a3f6211014729b54ba4e123ba5c55",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "claude-sonnet-5 · Claude SDK",
+        "triggerFirstSeen": "sonnet",
+        "triggerSettledAfterMs": 1442
+      }
+    },
+    "C05": {
+      "title": "Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)",
+      "result": "Pass",
+      "ms": 4470,
+      "details": {
+        "title": "Reply with the two markers from these ski…",
+        "editability": {
+          "editable": false,
+          "reason": "RUN_ACTIVE"
+        },
+        "d18": {
+          "recorded": {
+            "thinking_enabled": false,
+            "reasoning_effort": "medium"
+          },
+          "defaults": {
+            "thinking_enabled": false,
+            "reasoning_effort": "medium"
+          },
+          "notRecordedShown": false,
+          "missingHistoricalMarkers": 0,
+          "enabledFormControls": 0
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 94178
+    },
+    {
+      "label": "frontend",
+      "pid": 94205
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 94205,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 94178,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-gPc7vI"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-gPc7vI",
+  "backendUrl": "http://127.0.0.1:54617",
+  "frontUrl": "http://127.0.0.1:54618",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T14:10:58.598Z"
+}

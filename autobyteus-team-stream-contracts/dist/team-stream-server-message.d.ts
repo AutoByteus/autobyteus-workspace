@@ -1,13 +1,12 @@
 import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
-import { teamCommunicationMessagePayloadSchema, teamExternalUserMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
+import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamTaskDelegationPayloadSchema } from "./team-task-message-dtos.js";
+import { teamCollaboratorAddedPayloadSchema, teamTaskExecutionStartedPayloadSchema } from "./team-task-execution-message-dtos.js";
 export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     root_team_run_id: z.ZodString;
     base_change_sequence: z.ZodNumber;
     execution_tree: z.ZodType<Readonly<{
-        schema_version: 2;
         created_at: string;
         archived_at: string | null;
         application_binding: Readonly<{
@@ -27,10 +26,10 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             coordinator_address: string;
             default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
             members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+            collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
-        schema_version: 2;
         created_at: string;
         archived_at: string | null;
         application_binding: Readonly<{
@@ -50,96 +49,10 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
             coordinator_address: string;
             default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
             members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+            collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
         }>;
     }>, unknown>>;
-    tasks: z.ZodArray<z.ZodObject<{
-        task_id: z.ZodString;
-        delegator_agent_run_id: z.ZodString;
-        recipient_address: z.ZodString;
-        task_execution: z.ZodUnion<readonly [z.ZodObject<{
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            team_run_id: z.ZodString;
-        }, z.core.$strict>]>;
-        description: z.ZodString;
-        reference_files: z.ZodArray<z.ZodObject<{
-            reference_id: z.ZodString;
-            path: z.ZodString;
-            type: z.ZodEnum<{
-                file: "file";
-                image: "image";
-                audio: "audio";
-                video: "video";
-                pdf: "pdf";
-                csv: "csv";
-                excel: "excel";
-                other: "other";
-            }>;
-            created_at: z.ZodString;
-            updated_at: z.ZodString;
-        }, z.core.$strict>>;
-        status: z.ZodEnum<{
-            interrupted: "interrupted";
-            accepted: "accepted";
-            active: "active";
-            awaiting_review: "awaiting_review";
-        }>;
-        updates: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
-            kind: z.ZodLiteral<"submission">;
-            submission_id: z.ZodString;
-            message: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            created_at: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"review">;
-            review_id: z.ZodString;
-            reviewed_submission_id: z.ZodString;
-            decision: z.ZodEnum<{
-                accept: "accept";
-                request_revision: "request_revision";
-            }>;
-            comment: z.ZodNullable<z.ZodString>;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            created_at: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"interruption">;
-            interruption_id: z.ZodString;
-            reason: z.ZodString;
-            created_at: z.ZodString;
-        }, z.core.$strict>], "kind">>;
-        created_at: z.ZodString;
-    }, z.core.$strict>>;
     messages: z.ZodArray<z.ZodObject<{
         message_id: z.ZodString;
         sender_agent_run_id: z.ZodString;
@@ -618,17 +531,25 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"TODO_LIST_UPDATE">;
+    type: z.ZodLiteral<"BACKGROUND_TASK_UPDATED">;
     payload: z.ZodObject<{
-        todos: z.ZodArray<z.ZodObject<{
-            todo_id: z.ZodString;
-            description: z.ZodString;
-            status: z.ZodEnum<{
-                pending: "pending";
-                in_progress: "in_progress";
-                done: "done";
-            }>;
-        }, z.core.$strict>>;
+        task_id: z.ZodString;
+        kind: z.ZodEnum<{
+            shell: "shell";
+            subagent: "subagent";
+            monitor: "monitor";
+            workflow: "workflow";
+            other: "other";
+        }>;
+        description: z.ZodString;
+        status: z.ZodEnum<{
+            running: "running";
+            completed: "completed";
+            failed: "failed";
+            stopped: "stopped";
+        }>;
+        summary: z.ZodNullable<z.ZodString>;
+        started_at: z.ZodString;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
@@ -694,7 +615,6 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         root_team_run_id: z.ZodString;
         base_change_sequence: z.ZodNumber;
         execution_tree: z.ZodType<Readonly<{
-            schema_version: 2;
             created_at: string;
             archived_at: string | null;
             application_binding: Readonly<{
@@ -714,10 +634,10 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 coordinator_address: string;
                 default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
                 members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+                collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
-            schema_version: 2;
             created_at: string;
             archived_at: string | null;
             application_binding: Readonly<{
@@ -737,96 +657,10 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
                 coordinator_address: string;
                 default_launch_configuration: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto;
                 members: readonly import("./team-execution-view-dtos.js").ConfiguredMemberExecutionDto[];
+                collaborators: readonly import("./team-execution-view-dtos.js").CollaboratorEntryDto[];
                 task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
             }>;
         }>, unknown>>;
-        tasks: z.ZodArray<z.ZodObject<{
-            task_id: z.ZodString;
-            delegator_agent_run_id: z.ZodString;
-            recipient_address: z.ZodString;
-            task_execution: z.ZodUnion<readonly [z.ZodObject<{
-                agent_run_id: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                team_run_id: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            status: z.ZodEnum<{
-                interrupted: "interrupted";
-                accepted: "accepted";
-                active: "active";
-                awaiting_review: "awaiting_review";
-            }>;
-            updates: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
-                kind: z.ZodLiteral<"submission">;
-                submission_id: z.ZodString;
-                message: z.ZodString;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"review">;
-                review_id: z.ZodString;
-                reviewed_submission_id: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"interruption">;
-                interruption_id: z.ZodString;
-                reason: z.ZodString;
-                created_at: z.ZodString;
-            }, z.core.$strict>], "kind">>;
-            created_at: z.ZodString;
-        }, z.core.$strict>>;
         messages: z.ZodArray<z.ZodObject<{
             message_id: z.ZodString;
             sender_agent_run_id: z.ZodString;
@@ -886,408 +720,48 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         agent_run_id: z.ZodString;
     }, z.core.$strict>]>;
 }, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"TASK_DELEGATION_EVENT">;
-    payload: z.ZodDiscriminatedUnion<[z.ZodObject<{
-        event_type: z.ZodLiteral<"TASK_AGENT_ACTIVATED">;
+    type: z.ZodLiteral<"TASK_EXECUTION_STARTED">;
+    payload: z.ZodObject<{
         change_sequence: z.ZodNumber;
         parent_team_run_id: z.ZodString;
-        execution: z.ZodType<Readonly<{
+        execution: z.ZodUnion<readonly [z.ZodType<Readonly<{
             kind: "task_agent";
             address: string;
             agent_run_id: string;
             platform_agent_run_id: string | null;
+            delegator_agent_run_id: string | null;
             started_at: string;
-            settled_at: string | null;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_agent";
             address: string;
             agent_run_id: string;
             platform_agent_run_id: string | null;
+            delegator_agent_run_id: string | null;
             started_at: string;
-            settled_at: string | null;
-        }>, unknown>>;
-        task: z.ZodObject<{
-            task_id: z.ZodString;
-            delegator_agent_run_id: z.ZodString;
-            recipient_address: z.ZodString;
-            task_execution: z.ZodUnion<readonly [z.ZodObject<{
-                agent_run_id: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                team_run_id: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            status: z.ZodEnum<{
-                interrupted: "interrupted";
-                accepted: "accepted";
-                active: "active";
-                awaiting_review: "awaiting_review";
-            }>;
-            updates: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
-                kind: z.ZodLiteral<"submission">;
-                submission_id: z.ZodString;
-                message: z.ZodString;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"review">;
-                review_id: z.ZodString;
-                reviewed_submission_id: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"interruption">;
-                interruption_id: z.ZodString;
-                reason: z.ZodString;
-                created_at: z.ZodString;
-            }, z.core.$strict>], "kind">>;
-            created_at: z.ZodString;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        event_type: z.ZodLiteral<"TASK_TEAM_ACTIVATED">;
-        change_sequence: z.ZodNumber;
-        parent_team_run_id: z.ZodString;
-        execution: z.ZodType<Readonly<{
+        }>, unknown>>, z.ZodType<Readonly<{
             kind: "task_team";
             address: string;
             team_run_id: string;
             members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
+            delegator_agent_run_id: string | null;
             started_at: string;
-            settled_at: string | null;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             kind: "task_team";
             address: string;
             team_run_id: string;
             members: readonly import("./team-execution-view-dtos.js").TaskTeamMemberExecutionDto[];
             task_executions: readonly import("./team-execution-view-dtos.js").TaskExecutionDto[];
+            delegator_agent_run_id: string | null;
             started_at: string;
-            settled_at: string | null;
-        }>, unknown>>;
-        task: z.ZodObject<{
-            task_id: z.ZodString;
-            delegator_agent_run_id: z.ZodString;
-            recipient_address: z.ZodString;
-            task_execution: z.ZodUnion<readonly [z.ZodObject<{
-                agent_run_id: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                team_run_id: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            status: z.ZodEnum<{
-                interrupted: "interrupted";
-                accepted: "accepted";
-                active: "active";
-                awaiting_review: "awaiting_review";
-            }>;
-            updates: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
-                kind: z.ZodLiteral<"submission">;
-                submission_id: z.ZodString;
-                message: z.ZodString;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"review">;
-                review_id: z.ZodString;
-                reviewed_submission_id: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"interruption">;
-                interruption_id: z.ZodString;
-                reason: z.ZodString;
-                created_at: z.ZodString;
-            }, z.core.$strict>], "kind">>;
-            created_at: z.ZodString;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        event_type: z.ZodLiteral<"TASK_EXECUTION_SETTLED">;
+        }>, unknown>>]>;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"COLLABORATOR_ADDED">;
+    payload: z.ZodObject<{
         change_sequence: z.ZodNumber;
-        execution: z.ZodUnion<readonly [z.ZodObject<{
-            agent_run_id: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            team_run_id: z.ZodString;
-        }, z.core.$strict>]>;
-        task: z.ZodObject<{
-            task_id: z.ZodString;
-            delegator_agent_run_id: z.ZodString;
-            recipient_address: z.ZodString;
-            task_execution: z.ZodUnion<readonly [z.ZodObject<{
-                agent_run_id: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                team_run_id: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            status: z.ZodEnum<{
-                interrupted: "interrupted";
-                accepted: "accepted";
-                active: "active";
-                awaiting_review: "awaiting_review";
-            }>;
-            updates: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
-                kind: z.ZodLiteral<"submission">;
-                submission_id: z.ZodString;
-                message: z.ZodString;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"review">;
-                review_id: z.ZodString;
-                reviewed_submission_id: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"interruption">;
-                interruption_id: z.ZodString;
-                reason: z.ZodString;
-                created_at: z.ZodString;
-            }, z.core.$strict>], "kind">>;
-            created_at: z.ZodString;
-        }, z.core.$strict>;
-        settled_at: z.ZodString;
-    }, z.core.$strict>, z.ZodObject<{
-        event_type: z.ZodLiteral<"TASK_CHANGED">;
-        change_sequence: z.ZodNumber;
-        task: z.ZodObject<{
-            task_id: z.ZodString;
-            delegator_agent_run_id: z.ZodString;
-            recipient_address: z.ZodString;
-            task_execution: z.ZodUnion<readonly [z.ZodObject<{
-                agent_run_id: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                team_run_id: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            status: z.ZodEnum<{
-                interrupted: "interrupted";
-                accepted: "accepted";
-                active: "active";
-                awaiting_review: "awaiting_review";
-            }>;
-            updates: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
-                kind: z.ZodLiteral<"submission">;
-                submission_id: z.ZodString;
-                message: z.ZodString;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"review">;
-                review_id: z.ZodString;
-                reviewed_submission_id: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                reference_files: z.ZodArray<z.ZodObject<{
-                    reference_id: z.ZodString;
-                    path: z.ZodString;
-                    type: z.ZodEnum<{
-                        file: "file";
-                        image: "image";
-                        audio: "audio";
-                        video: "video";
-                        pdf: "pdf";
-                        csv: "csv";
-                        excel: "excel";
-                        other: "other";
-                    }>;
-                    created_at: z.ZodString;
-                    updated_at: z.ZodString;
-                }, z.core.$strict>>;
-                created_at: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"interruption">;
-                interruption_id: z.ZodString;
-                reason: z.ZodString;
-                created_at: z.ZodString;
-            }, z.core.$strict>], "kind">>;
-            created_at: z.ZodString;
-        }, z.core.$strict>;
-    }, z.core.$strict>], "event_type">;
+        collaborator: z.ZodType<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown, z.core.$ZodTypeInternals<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown>>;
+    }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"TEAM_COMMUNICATION_MESSAGE">;
     payload: z.ZodObject<{
@@ -1338,24 +812,6 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         parent_communication_message_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"EXTERNAL_USER_MESSAGE">;
-    payload: z.ZodObject<{
-        agent_run_id: z.ZodString;
-        member_address: z.ZodString;
-        content: z.ZodString;
-        received_at: z.ZodString;
-        provider: z.ZodString;
-        transport: z.ZodString;
-        account_id: z.ZodString;
-        peer_id: z.ZodString;
-        thread_id: z.ZodNullable<z.ZodString>;
-        external_message_id: z.ZodString;
-        context_file_paths: z.ZodArray<z.ZodObject<{
-            path: z.ZodString;
-            type: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
-}, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"ERROR">;
     payload: z.ZodUnion<readonly [z.ZodObject<{
         error_scope: z.ZodNull;
@@ -1369,6 +825,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         change_sequence: z.ZodNullable<z.ZodNumber>;
         agent_run_id: z.ZodNullable<z.ZodString>;
+        collaborator_name: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>, z.ZodObject<{
         error_scope: z.ZodLiteral<"turn">;
         error_effect: z.ZodEnum<{
@@ -1384,6 +841,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         change_sequence: z.ZodNullable<z.ZodNumber>;
         agent_run_id: z.ZodNullable<z.ZodString>;
+        collaborator_name: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>, z.ZodObject<{
         error_scope: z.ZodLiteral<"runtime">;
         error_effect: z.ZodLiteral<"terminal">;
@@ -1396,6 +854,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         provider_request_id: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         change_sequence: z.ZodNullable<z.ZodNumber>;
         agent_run_id: z.ZodNullable<z.ZodString>;
+        collaborator_name: z.ZodOptional<z.ZodString>;
     }, z.core.$strict>]>;
 }, z.core.$strict>], "type">;
 type TeamAgentServerMessage = {
@@ -1417,17 +876,17 @@ export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
     type: "AGENT_COMMAND_ACK";
     payload: z.infer<typeof teamInterruptCommandAckPayloadSchema>;
 }> | Readonly<{
-    type: "TASK_DELEGATION_EVENT";
-    payload: z.infer<typeof teamTaskDelegationPayloadSchema>;
+    type: "TASK_EXECUTION_STARTED";
+    payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema>;
+}> | Readonly<{
+    type: "COLLABORATOR_ADDED";
+    payload: z.infer<typeof teamCollaboratorAddedPayloadSchema>;
 }> | Readonly<{
     type: "TEAM_COMMUNICATION_MESSAGE";
     payload: z.infer<typeof teamCommunicationMessagePayloadSchema>;
 }> | Readonly<{
     type: "MEMBER_INPUT_MESSAGE";
     payload: z.infer<typeof teamMemberInputMessagePayloadSchema>;
-}> | Readonly<{
-    type: "EXTERNAL_USER_MESSAGE";
-    payload: z.infer<typeof teamExternalUserMessagePayloadSchema>;
 }> | Readonly<{
     type: "ERROR";
     payload: z.infer<typeof teamAgentErrorPayloadSchema>;

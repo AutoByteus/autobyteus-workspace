@@ -7,10 +7,9 @@ import { useWorkspaceHistorySubjectActions } from '../useWorkspaceHistorySubject
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
-import { taskBearingView, taskRecord } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
+import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { ListCollaborationRootHistory } from '~/graphql/queries/collaborationRootHistoryQueries'
 import { GetAgentOrgMemberRunProjection, GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
-import CollaborationDelegatedTasksSection from '~/components/workspace/collaboration/CollaborationDelegatedTasksSection.vue'
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), instances: [] as any[], ready: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: mocks.query, mutate: mocks.mutate }) }))
@@ -28,17 +27,13 @@ const retainedView = (active: boolean) => {
   const second = structuredClone(first)
   second.teamRunId = 'same-name-team-two'
   second.members.forEach(member => { member.agentRunId += '-two' })
-  second.settledAt = first.settledAt = '2026-09-01T00:05:00.000Z'
   view.execution_tree.rootOrg.taskExecutions.push(second)
-  view.task_records.records.push(taskRecord('task-team-two', '/team', { teamRunId: second.teamRunId }))
-  for (const task of view.task_records.records.filter(task => 'teamRunId' in task.taskExecution)) {
-    task.status = 'accepted'
-    task.updates = [
-      { submissionId: `result-${task.taskId}`, message: 'Retained result', referenceFiles: [], createdAt: '2026-09-01T00:03:00.000Z' },
-      { reviewId: `review-${task.taskId}`, reviewedSubmissionId: `result-${task.taskId}`, decision: 'accept', comment: null, referenceFiles: [], createdAt: '2026-09-01T00:04:00.000Z' },
-    ]
-  }
-  view.agent_statuses = active ? view.agent_statuses.filter(status => !status.agent_run_id.startsWith('agent-task-')) : []
+  // Shut-down delegated executions are dormant: the active view reports them offline.
+  view.agent_statuses = active
+    ? view.agent_statuses.map(status => status.agent_run_id.startsWith('agent-task-') ? { ...status, status: 'offline' as const } : status)
+      .concat(second.members.map(member => ({ member_address: member.address, agent_run_id: (member as { agentRunId: string }).agentRunId,
+        status: 'offline' as const, trigger: null, tool_name: null, error_message: null, error_details: null })))
+    : []
   return view
 }
 const historyResponse = (view: ReturnType<typeof retainedView>) => ({ data: { listCollaborationRootHistory: [{
@@ -57,7 +52,7 @@ const setup = async (active = true) => {
   mocks.query.mockImplementation(async ({ query, variables }) => {
     if (query === ListCollaborationRootHistory) return historyResponse(view)
     if (query === GetAgentOrgRunInspection) return { data: { getAgentOrgRunInspection: {
-      schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view,
+      root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view,
     } } }
     if (query === GetAgentOrgMemberRunProjection) return { data: { getAgentOrgMemberRunProjection: {
       ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
@@ -86,8 +81,7 @@ const setup = async (active = true) => {
   // Real component -> real action -> real Pinia read/strict parser -> real router/context selection.
   wrapper = mount(defineComponent({ setup() {
     execute = useWorkspaceHistorySubjectActions().execute
-    const tasks = context.selectedTarget()!.collaborationTasks
-    return () => h(CollaborationDelegatedTasksSection, { tasks })
+    return () => h('div')
   } }), { global: { plugins: [router], stubs: {
     Icon: { template: '<span />' }, MarkdownRenderer: { props: ['content'], template: '<article>{{ content }}</article>' },
   } } })
@@ -99,28 +93,24 @@ const inspect = (agentRunId = 'agent-task-worker') => ({ rootSubjectKind: 'agent
 const historyQueries = () => mocks.query.mock.calls.filter(([{ query }]) => query === ListCollaborationRootHistory)
 
 describe('exact Org task inspection independent of history drawer initialization', () => {
-  it('awaits the canonical cold read, then opens the settled non-coordinator; warm same-name links keep exact identity', async () => {
-    const { context, history, router, push, view } = await setup()
+  it('awaits the canonical cold read, then opens the shut-down non-coordinator; warm same-name links keep exact identity', async () => {
+    const { context, history, router, push, execute, view } = await setup()
     let release!: (result: unknown) => void
     mocks.query.mockImplementationOnce(() => new Promise(resolve => { release = resolve }))
-    await wrapper!.findAll('[data-test="team-delegated-task-summary-row"]')[1].trigger('click')
-    await wrapper!.get('[data-test="task-direction-team"]').trigger('click')
-    await wrapper!.get('[data-test="task-identity-detail"]').findAll('[data-test="task-identity-agent"]')[2].trigger('click')
+    const opening = execute(inspect())
     await flushPromises()
     expect(historyQueries()).toHaveLength(1)
     expect(push).not.toHaveBeenCalled()
     expect(context.selectedAddress).toBe('/director')
-    release(historyResponse(view)); await flushPromises()
+    release(historyResponse(view)); await opening; await flushPromises()
     expect(history.agentOrgHistory).toHaveLength(1)
     expect(router.currentRoute.value.query).toMatchObject({ rootSubjectKind: 'agent_org', orgRunId: 'org-run',
       definitionId: 'org-definition', mode: 'active', agentRunId: 'agent-task-worker', memberAddress: '/team/worker' })
-    expect(context.selectedTarget()).toMatchObject({ access: 'read_only', context: { state: { runId: 'agent-task-worker' } } })
-    await wrapper!.findAll('[data-test="team-delegated-task-summary-row"]')[2].trigger('click')
-    await wrapper!.get('[data-test="task-direction-team"]').trigger('click')
-    await wrapper!.get('[data-test="task-identity-detail"]').findAll('[data-test="task-identity-agent"]')[2].trigger('click')
+    expect(context.selectedTarget()).toMatchObject({ context: { state: { runId: 'agent-task-worker' } } })
+    await execute(inspect('agent-task-worker-two'))
     await flushPromises()
     expect(router.currentRoute.value.query.agentRunId).toBe('agent-task-worker-two')
-    expect(context.selectedTarget()).toMatchObject({ access: 'read_only', context: { state: { runId: 'agent-task-worker-two' } } })
+    expect(context.selectedTarget()).toMatchObject({ context: { state: { runId: 'agent-task-worker-two' } } })
     expect(historyQueries()).toHaveLength(1)
     expect(mocks.instances).toHaveLength(1)
     expect(mocks.mutate).not.toHaveBeenCalled()

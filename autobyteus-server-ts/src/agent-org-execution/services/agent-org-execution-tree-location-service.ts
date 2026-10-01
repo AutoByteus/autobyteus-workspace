@@ -1,6 +1,9 @@
 import fs from "node:fs";
-import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type {
+  LocatedExecutionGroup,
+  LocatedExecutionKind,
+} from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import { getAgentOrgRunExecutionTreePath } from "../../run-history/store/agent-org-run-execution-tree-path.js";
@@ -20,6 +23,11 @@ export type LocatedAgentOrgAgentExecution = Readonly<{
   memberAddress: AgentTeamAddress;
   platformAgentRunId: string | null;
   configuredPlacement: ConfiguredAgentExecutionNode | null;
+  executionKind: LocatedExecutionKind;
+  /** Task agents only. */
+  startedAt: string | null;
+  /** Teams from the org root (exclusive) down to the hosting team, outermost first. */
+  groupPath: readonly LocatedExecutionGroup[];
   memoryDir: string;
   tree: AgentOrgRunExecutionTreeSnapshot;
   isActive: boolean;
@@ -42,6 +50,7 @@ export class AgentOrgExecutionTreeLocationService {
     this.packageCatalog = new AgentOrgRunPackageCatalog(input.memoryDir);
   }
   async findAgent(input: AgentLookup): Promise<LocatedAgentOrgAgentExecution | null> {
+    await this.packageCatalog.awaitReady();
     const active = this.findInActive(input);
     if (active) return active;
     for (const id of await this.lookupRootIds(input, false)) {
@@ -61,9 +70,16 @@ export class AgentOrgExecutionTreeLocationService {
     }
     return null;
   }
-  async listAgents(): Promise<LocatedAgentOrgAgentExecution[]> {
+  /** Lists every Agent execution of all Org roots, or of one admitted root (one tree read) when `rootRunId` is given. */
+  async listAgents(input: { rootRunId?: string | null } = {}): Promise<LocatedAgentOrgAgentExecution[]> {
+    await this.packageCatalog.awaitReady();
     const output: LocatedAgentOrgAgentExecution[] = [];
-    for (const id of await this.listRootIds()) {
+    const requested = input.rootRunId?.trim() || null;
+    const rootIds = !requested
+      ? await this.listRootRunIds()
+      : this.manager.getActive(requested) ? [requested] : await this.lookupRootIds({ rootRunId: requested }, false);
+    for (const id of rootIds) {
+      if (!this.packageCatalog.isAdmitted(id)) continue;
       const active = this.manager.getActive(id);
       const tree = active?.getExecutionTreeSnapshot() ?? await this.readStoredTree(id);
       if (!tree) continue;
@@ -74,8 +90,9 @@ export class AgentOrgExecutionTreeLocationService {
   }
   async containsRunId(runIdInput: string): Promise<boolean> {
     const runId = required(runIdInput, "runId");
-    for (const id of await this.listRootIds()) {
+    for (const id of await this.listRootRunIds()) {
       if (id === runId) return true;
+      if (!this.packageCatalog.isAdmitted(id)) continue;
       const active = this.manager.getActive(id);
       const tree = active?.getExecutionTreeSnapshot() ?? await this.readStoredTree(id);
       if (!tree) continue;
@@ -84,8 +101,14 @@ export class AgentOrgExecutionTreeLocationService {
     }
     return false;
   }
+  /** Active and admitted stored Org root run IDs, sorted. */
+  async listRootRunIds(): Promise<string[]> {
+    await this.packageCatalog.awaitReady();
+    return this.packageCatalog.listAdmitted();
+  }
   private findInActive(input: AgentLookup): LocatedAgentOrgAgentExecution | null {
     for (const id of this.lookupRootIdsSync(input, true)) {
+      if (!this.packageCatalog.isAdmitted(id)) continue;
       const tree = this.manager.getActive(id)?.getExecutionTreeSnapshot();
       const result = tree ? this.findInTree(tree, input, true) : null;
       if (result) return result;
@@ -107,6 +130,14 @@ export class AgentOrgExecutionTreeLocationService {
     const agent = index.requireAgent(agentRunId);
     const scope = index.getPhysicalScopeForAgent(agentRunId);
     const configured = index.getConfiguredPlacement(agent.address);
+    const groupPath = agent.host.hostKind === "team"
+      ? [...index.listTeamAncestorsDeepestFirst(agent.host.hostRunId)].reverse().map((team): LocatedExecutionGroup => Object.freeze({
+        teamRunId: team.teamRunId,
+        address: team.address,
+        executionKind: team.executionKind,
+        startedAt: "startedAt" in team.source ? team.source.startedAt : null,
+      }))
+      : [];
     return Object.freeze({
       rootSubjectKind: "agent_org",
       rootRunId: tree.rootOrg.orgRunId,
@@ -116,19 +147,20 @@ export class AgentOrgExecutionTreeLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.source.platformAgentRunId,
       configuredPlacement: configured && "agentRunId" in configured ? configured : null,
+      executionKind: agent.executionKind,
+      startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
+      groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getRootedAgentRunDirPath(scope, agentRunId),
       tree,
-      isActive: isActive && index.isLiveAgent(agentRunId),
+      // A shut-down child of an active root stays addressable: input wakes it.
+      isActive,
     });
-  }
-  private async listRootIds(): Promise<string[]> {
-    return [...new Set([...this.manager.listActiveOrgRunIds(), ...await this.listStoredRootIds()])].sort();
   }
   private async lookupRootIds(input: AgentLookup, activeOnly: boolean): Promise<string[]> {
     const requested = input.rootRunId?.trim() || null;
     if (requested) {
       if (activeOnly) return this.manager.getActive(requested) ? [requested] : [];
-      return this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(requested) ? [] : [requested];
+      return !this.packageCatalog.isAdmitted(requested) ? [] : [requested];
     }
     return activeOnly ? [...this.manager.listActiveOrgRunIds()].sort() : this.listStoredRootIds();
   }
@@ -136,26 +168,16 @@ export class AgentOrgExecutionTreeLocationService {
     const requested = input.rootRunId?.trim() || null;
     if (requested) {
       if (activeOnly) return this.manager.getActive(requested) ? [requested] : [];
-      return this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(requested) ? [] : [requested];
+      return !this.packageCatalog.isAdmitted(requested) ? [] : [requested];
     }
     return activeOnly ? [...this.manager.listActiveOrgRunIds()].sort() : this.listStoredRootIdsSync();
   }
   private async listStoredRootIds(): Promise<string[]> {
-    const discovered = (await fsPromises.readdir(this.layout.getOrgRootDirPath(), { withFileTypes: true }).catch(() => []))
-      .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-    return this.packageCatalog.isInitialized()
-      ? discovered.filter((id) => this.packageCatalog.isAdmitted(id))
-      : discovered;
+    await this.packageCatalog.awaitReady();
+    return this.packageCatalog.listAdmitted();
   }
   private listStoredRootIdsSync(): string[] {
-    try {
-      const discovered = fs.readdirSync(this.layout.getOrgRootDirPath(), { withFileTypes: true })
-        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-      return this.packageCatalog.isInitialized()
-        ? discovered.filter((id) => this.packageCatalog.isAdmitted(id))
-        : discovered;
-    }
-    catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
+    return this.packageCatalog.listAdmitted();
   }
   private readStoredTree(id: string): Promise<AgentOrgRunExecutionTreeSnapshot | null> {
     return this.store.read(this.layout.getOrgDirPath(id), id);

@@ -17,6 +17,7 @@ import {
 } from "../utils/package-root-summary.js";
 import { AgentPackageRegistryStore } from "../stores/agent-package-registry-store.js";
 import { AgentPackageRootSettingsStore } from "../stores/agent-package-root-settings-store.js";
+import { SkillService } from "../../skills/services/skill-service.js";
 import {
   buildGitHubSourceMetadata,
   buildInstalledGitHubMetadata,
@@ -27,6 +28,9 @@ import {
 } from "./agent-package-mappers.js";
 
 type RefreshCachesFn = () => Promise<void>;
+
+/** The skill-name check each import path runs before it commits (REQ-023). */
+type SkillNameGuard = Pick<SkillService, "assertNoIncomingSkillNameConflicts">;
 
 const LOCAL_PATH_SOURCE_KIND = "LOCAL_PATH";
 const GITHUB_SOURCE_KIND = "GITHUB_REPOSITORY";
@@ -55,6 +59,7 @@ export class AgentPackageService {
   private readonly installer: GitHubAgentPackageInstaller;
   private readonly refreshAgentDefinitions: RefreshCachesFn;
   private readonly refreshAgentTeams: RefreshCachesFn;
+  private readonly skillNames: SkillNameGuard;
 
   constructor(dependencies: {
     rootSettingsStore?: AgentPackageRootSettingsStore;
@@ -62,6 +67,7 @@ export class AgentPackageService {
     installer?: GitHubAgentPackageInstaller;
     refreshAgentDefinitions?: RefreshCachesFn;
     refreshAgentTeams?: RefreshCachesFn;
+    skillNames?: SkillNameGuard;
   } = {}) {
     this.rootSettingsStore =
       dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
@@ -75,6 +81,7 @@ export class AgentPackageService {
     this.refreshAgentTeams =
       dependencies.refreshAgentTeams ??
       (() => AgentTeamDefinitionService.getInstance().refreshCache());
+    this.skillNames = dependencies.skillNames ?? SkillService.getInstance();
   }
 
   async listAgentPackages(): Promise<AgentPackage[]> {
@@ -171,6 +178,9 @@ export class AgentPackageService {
     }
 
     validatePackageRoot(targetPackage.path);
+    // R-3: a rejected reload keeps the previous registration; the files already on disk stay, and
+    // the catalog and the Skills page banner reflect them (REQ-024).
+    this.assertPackageSkillNames(targetPackage.path);
     await this.refreshCatalogCaches();
     return this.listAgentPackages();
   }
@@ -257,6 +267,14 @@ export class AgentPackageService {
     }
 
     try {
+      this.assertPackageSkillNames(replacement.rootPath);
+    } catch (error) {
+      // The staged revision is rolled back; the package, its record and its status are unchanged.
+      await replacement.rollback().catch(() => undefined);
+      throw error;
+    }
+
+    try {
       await this.registryStore.upsertManagedGitHubPackageRecord({
         normalizedSource: repositorySource.normalizedRepository,
         source: replacement.canonicalSourceUrl,
@@ -284,6 +302,7 @@ export class AgentPackageService {
     if (resolvedPath === this.rootSettingsStore.getDefaultRootPath()) {
       throw new Error("Path is already the default agent package.");
     }
+    this.assertPackageSkillNames(resolvedPath);
 
     this.rootSettingsStore.addAdditionalRootPath(resolvedPath);
     const packageId = buildLocalPackageId(resolvedPath);
@@ -329,6 +348,8 @@ export class AgentPackageService {
 
     try {
       validatePackageRoot(installedPackage.rootPath);
+      // A rejected download is deleted by the rollback below.
+      this.assertPackageSkillNames(installedPackage.rootPath);
       this.rootSettingsStore.addAdditionalRootPath(installedPackage.rootPath);
 
       await this.registryStore.upsertManagedGitHubPackageRecord({
@@ -458,6 +479,10 @@ export class AgentPackageService {
 
       return left.path.localeCompare(right.path);
     });
+  }
+
+  private assertPackageSkillNames(rootPath: string): void {
+    this.skillNames.assertNoIncomingSkillNameConflicts({ path: rootPath, layout: "definition_root", tier: 2 });
   }
 
   private async refreshCatalogCaches(): Promise<void> {

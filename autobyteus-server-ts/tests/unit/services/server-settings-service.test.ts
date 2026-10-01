@@ -514,27 +514,45 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.delete).not.toHaveBeenCalled();
   });
 
-  it("reads the typed applications capability setting as true, false, or null", () => {
+  it("reads a boolean setting as true, false, or null for the requested key", () => {
     const service = new ServerSettingsService();
 
     mockConfig.get.mockReturnValueOnce(' true ');
-    expect(service.getApplicationsEnabledSetting()).toBe(true);
+    expect(service.getBooleanSetting('ENABLE_APPLICATIONS')).toBe(true);
+    expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_APPLICATIONS');
 
     mockConfig.get.mockReturnValueOnce('false');
-    expect(service.getApplicationsEnabledSetting()).toBe(false);
+    expect(service.getBooleanSetting('ENABLE_PROJECTS')).toBe(false);
+    expect(mockConfig.get).toHaveBeenLastCalledWith('ENABLE_PROJECTS');
 
     mockConfig.get.mockReturnValueOnce('   ');
-    expect(service.getApplicationsEnabledSetting()).toBeNull();
+    expect(service.getBooleanSetting('ENABLE_SKILL_IMPROVEMENT')).toBeNull();
+
+    mockConfig.get.mockReturnValueOnce(undefined);
+    expect(service.getBooleanSetting('ENABLE_PROJECTS')).toBeNull();
   });
 
-  it("persists the typed applications capability setting as normalized strings", () => {
+  it("persists a boolean setting as normalized strings for the requested key", () => {
     const service = new ServerSettingsService();
 
-    service.setApplicationsEnabledSetting(true);
-    service.setApplicationsEnabledSetting(false);
+    service.setBooleanSetting('ENABLE_APPLICATIONS', true);
+    service.setBooleanSetting('ENABLE_PROJECTS', false);
 
     expect(mockConfig.set).toHaveBeenNthCalledWith(1, 'ENABLE_APPLICATIONS', 'true');
-    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_APPLICATIONS', 'false');
+    expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_PROJECTS', 'false');
+  });
+
+  it("registers ENABLE_PROJECTS as an editable predefined setting", () => {
+    mockConfig.getConfigData.mockReturnValue({ ENABLE_PROJECTS: 'true' });
+
+    const service = new ServerSettingsService();
+    const setting = service.getAvailableSettings().find((entry) => entry.key === 'ENABLE_PROJECTS');
+
+    expect(setting).toMatchObject({
+      key: 'ENABLE_PROJECTS',
+      value: 'true',
+      description: 'Controls whether the Projects module is available for this node at runtime. Defaults to disabled.',
+    });
   });
 
   it.each([

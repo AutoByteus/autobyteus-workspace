@@ -101,11 +101,6 @@ describe("RemoteAccessRoutePolicy", () => {
     }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback", isAuthenticated: true } });
   });
 
-  it("keeps channel ingress outside mobile credential auth", () => {
-    expect(classifyHttpRoute("POST", "/rest/api/channel-ingress/v1/messages")).toBe("EXTERNAL_SIGNATURE");
-    expect(classifyHttpRoute("POST", "/rest/api/channel-ingress/v1/delivery-events")).toBe("EXTERNAL_SIGNATURE");
-  });
-
   it("validates mra access_token query credential for GraphQL WebSocket upgrades", async () => {
     const authService = {
       authorizeMobileCredential: vi.fn(async () => ({

@@ -1,7 +1,8 @@
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
 import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../../agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
+// SR-006 adaptation: task records are released evidence only, read through the frozen records v1 module.
+import { AgentOrgTaskDelegationRecordsV1Store } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail } from "../../domain/app-data-migration-types.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
@@ -151,11 +152,13 @@ export class AgentOrgHistoryFirstMessageSummaryV1AppDataMigration implements App
       this.dependencies.tasks.read(orgDir, orgRunId),
       this.dependencies.messages.read(orgDir, orgRunId),
     ]);
-    if (!tree || !taskRecords || !communicationMessages) {
+    if (!tree || !communicationMessages) {
       throw new Error(`AgentOrg '${orgRunId}' is missing a required current authority.`);
     }
-    const validated = validateAgentOrgStatePackage({ executionTree: tree, taskRecords, communicationMessages });
-    return Object.freeze({ orgRunId, tree, taskRecords, communicationMessages, index: validated.index });
+    // The current package is tree V2 + messages; a records file exists only for pre-change runs.
+    const validated = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages });
+    const evidenceRecords = taskRecords ?? Object.freeze({ schemaVersion: 1 as const, subjectKind: "agent_org" as const, orgRunId, records: Object.freeze([]) });
+    return Object.freeze({ orgRunId, tree, taskRecords: evidenceRecords, communicationMessages, index: validated.index });
   }
 
   private async readConfiguredCorpora(index: AgentOrgExecutionIndex): Promise<readonly AgentOrgConfiguredTraceCorpus[]> {

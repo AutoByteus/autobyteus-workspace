@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.91-beta.9 test:e2e:agent-org-task-team-disclosure /Users/normy/autobyteus_org/autobyteus-worktrees/task-team-row-collapse-chevron/autobyteus-web
+> node tests/e2e/agent-org-task-team-disclosure-probe.mjs
+
+Agent Org delegated Team disclosure browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/task-team-row-collapse-chevron/autobyteus-web/test-results/agent-org-task-team-disclosure/evidence.json

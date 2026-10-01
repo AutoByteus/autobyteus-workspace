@@ -1,0 +1,87 @@
+{
+  "startedAt": "2026-10-01T07:12:50.920Z",
+  "runtime": "antigravity_cli",
+  "cases": {
+    "L01": {
+      "title": "Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Pass",
+      "ms": 60587,
+      "details": {
+        "runId": "research_assistant_353b03a515f8444784668cf6e6b76e92",
+        "hostPids": [
+          30179
+        ],
+        "childRunId": "code_reviewer_16f6cadb8507449e8a584ad05c053c77",
+        "childPids": [
+          30313
+        ],
+        "rootActiveAfterCrash": true,
+        "childStatusAfterCrash": "idle",
+        "hostActiveAfterChildSend": true,
+        "hostActiveAfterWake": true,
+        "wokenHostPids": [
+          30444
+        ],
+        "rootActiveBeforeDelete": true,
+        "viewAfterDelete": null,
+        "runDirAfterDelete": false,
+        "childAliveAfterDelete": false
+      }
+    },
+    "L02": {
+      "title": "Host crash without collaborators: Archive succeeds and the lingering root is ended",
+      "result": "Pass",
+      "ms": 15416,
+      "details": {
+        "runId": "research_assistant_9b6c26c1f44648948809fcb72487aba6",
+        "hostPids": [
+          30631
+        ],
+        "rootBeforeCrash": true,
+        "rootAfterCrash": true,
+        "rootAfterArchive": null
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 28587
+    },
+    {
+      "label": "frontend",
+      "pid": 28614
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 28614,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 28587,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-FQCg8q"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-FQCg8q",
+  "backendUrl": "http://127.0.0.1:61619",
+  "frontUrl": "http://127.0.0.1:61620",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-01T07:14:20.972Z"
+}

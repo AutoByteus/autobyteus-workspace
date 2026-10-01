@@ -1,0 +1,252 @@
+{
+  "startedAt": "2026-09-29T14:43:47.993Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 13,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 5875,
+      "details": {
+        "model": "haiku",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 0
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 13587,
+      "details": {
+        "runId": "daily_assistant_2b2280aa66fb4bec97c02ec25325b34f",
+        "exposure": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "claude-haiku-4-5-20251001 · Claude SDK",
+        "triggerFirstSeen": "haiku",
+        "triggerSettledAfterMs": 1846
+      }
+    },
+    "C05": {
+      "title": "Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)",
+      "result": "Pass",
+      "ms": 4366,
+      "details": {
+        "title": "Reply with the two markers from these ski…",
+        "editability": {
+          "editable": false,
+          "reason": "RUN_ACTIVE"
+        },
+        "d18": {
+          "recorded": null,
+          "defaults": null,
+          "notRecordedShown": false,
+          "missingHistoricalMarkers": 0,
+          "enabledFormControls": 0
+        }
+      }
+    },
+    "C15": {
+      "title": "D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end",
+      "result": "Pass",
+      "ms": 14909,
+      "details": {
+        "weak": "daily_assistant_dc86a1c6cc8a4cc0826e2bc45023e592",
+        "configured": "probe_shadow_owner_bfaf67830cea4026a57aaadcc9dfa54b",
+        "linkTarget": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha",
+        "removedDispositions": 0
+      }
+    },
+    "C20": {
+      "title": "V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link",
+      "result": "Pass",
+      "ms": 12689,
+      "details": {
+        "da": "daily_assistant_ec22d965c8a84675a25ceb1936bb5cde",
+        "borrower": "probe_borrower_04a596d0c2f44a4d8f962a2cb38ec5cc",
+        "outcome": "replied",
+        "heldBefore": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+        "heldAfter": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+        "log": [],
+        "unresolved": [],
+        "removed": []
+      }
+    },
+    "C21": {
+      "title": "AC-021: out-of-band duplicate → amber Skills banner \"Some skills share a name…\"; Show details lists the used and ignored paths",
+      "result": "Pass",
+      "ms": 1483,
+      "details": {
+        "issue": {
+          "name": "probe-alpha",
+          "usedPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha",
+          "ignoredPaths": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-shadow-owner/skills/probe-alpha"
+          ],
+          "kind": "conflict"
+        },
+        "bannerText": "Some skills share a name. AutoByteus uses one copy per name.\n\nShow details",
+        "background": "rgb(255, 251, 235)"
+      }
+    },
+    "C22": {
+      "title": "AC-020 UI: add folder / Create skill / package import / package reload with a duplicate → \"Duplicate skill names\" pop-up with both paths, nothing changes; tier-4 duplicate accepted with the \"Ignored N skills…\" toast",
+      "result": "Pass",
+      "ms": 5932,
+      "details": {
+        "addFolder": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/incoming-skills/probe-bundled\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-bundled",
+              "text": "probe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/incoming-skills/probe-bundled",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/incoming-skills/probe-bundled"
+              ]
+            }
+          ]
+        },
+        "create": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-bundled\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-bundled",
+              "text": "probe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-bundled",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-bundled"
+              ]
+            }
+          ]
+        },
+        "importPkg": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/dup-package/agents/dup-helper/skills/probe-alpha\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-alpha",
+              "text": "probe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/dup-package/agents/dup-helper/skills/probe-alpha",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/dup-package/agents/dup-helper/skills/probe-alpha"
+              ]
+            }
+          ]
+        },
+        "reload": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/reload-package/agents/rl-helper/skills/probe-alpha\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-alpha",
+              "text": "probe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/reload-package/agents/rl-helper/skills/probe-alpha",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/reload-package/agents/rl-helper/skills/probe-alpha"
+              ]
+            }
+          ]
+        },
+        "tier4": {
+          "toast": "Ignored 1 skill from the Codex default folder because your own copy takes precedence.",
+          "issue": {
+            "name": "probe-alpha",
+            "usedPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/skills/probe-alpha",
+            "ignoredPaths": [
+              "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/home/.codex/skills/probe-alpha"
+            ],
+            "kind": "shadowed_runtime_default"
+          }
+        }
+      }
+    },
+    "C23": {
+      "title": "DEC-017a: Agent Org agents use their own skills — org skills on the Skills page and in /, org agent and org team-local agent reply with their skill markers, links point to the org folders",
+      "result": "Pass",
+      "ms": 17155,
+      "details": {
+        "writerRun": "org_writer_6edc9a8b35604307812ebd30e1f15693",
+        "memberRun": "crew_member_99e8c41267334e72b9ddf59434f4e4c6",
+        "slash": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill"
+        ],
+        "links": {
+          "writer": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agent-orgs/probe-skill-org/agents/org-writer/skills/org-writer-skill",
+          "member": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agent-orgs/probe-skill-org/agent-teams/org-crew/agents/member/skills/org-member-skill",
+          "shared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA/server-data/agent-orgs/probe-skill-org/agent-teams/org-crew/skills/org-crew-shared"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 75914
+    },
+    {
+      "label": "frontend",
+      "pid": 76257
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 76257,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 75914,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-SRwFmA",
+  "backendUrl": "http://127.0.0.1:58806",
+  "frontUrl": "http://127.0.0.1:58807",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T14:45:13.525Z"
+}

@@ -15,6 +15,7 @@ const buildAgentDefinition = (overrides: Partial<AgentDefinition> = {}): AgentDe
   instructions: 'Follow the architecture brief.',
   toolNames: ['tool-a'],
   skillNames: ['skill-a'],
+  skillScope: 'CONFIGURED',
   inputProcessorNames: [],
   llmResponseProcessorNames: [],
   toolExecutionResultProcessorNames: [],
@@ -99,5 +100,15 @@ describe('AgentCard', () => {
     expect(wrapper.text()).not.toContain('Team:')
     expect(wrapper.text()).not.toContain('Sync')
     expect(wrapper.text()).toContain('Run')
+  })
+
+  it('shows "All installed skills" instead of a skill list for ALL_INSTALLED agents', () => {
+    const wrapper = mount(AgentCard, {
+      props: { agentDef: buildAgentDefinition({ skillNames: [], skillScope: 'ALL_INSTALLED' }) },
+      global: { mocks: { $t: (key: string) => key } },
+    })
+
+    expect(wrapper.text()).toContain('agents.components.agents.AgentCard.allInstalledSkills')
+    expect(wrapper.text()).not.toContain('agents.components.agents.AgentCard.none')
   })
 })

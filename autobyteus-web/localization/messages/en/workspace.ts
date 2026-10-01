@@ -1,6 +1,7 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.teamCopy.failed": "Could not copy this Team configuration: {error} Use New (+) to retry.",
@@ -28,11 +29,15 @@ const messages = {
   "workspace.runModelConfig.orgStopped": "This Org is stopped. Save model settings and mounted Team workspaces for the next continuation. A Team workspace applies to all its configured Agents; existing files and history stay where they are.",
   "workspace.runModelConfig.orgActive": "Stop the enclosing Org before changing its settings.",
   "workspace.runModelConfig.teamActive": "Stop this team before changing model settings.",
-  "workspace.runModelConfig.fixedIdentity": "Runtime is fixed. Replacement models must have at least the saved model’s context capacity.",
-  "workspace.runModelConfig.loadingCapacity": "Checking replacement model context capacities…",
-  "workspace.runModelConfig.capacityUnavailable": "Context capacity lookup is unavailable. Current-model settings can still be edited.",
-  "workspace.runModelConfig.capacityInvalid": "This scope’s replacement is not eligible. Choose an eligible model before saving.",
-  "workspace.runModelConfig.noReplacements": "No verified equal-or-larger replacement models are available.",
+  "workspace.runModelConfig.fixedRuntime": "Runtime is fixed for this saved run.",
+  "workspace.runModelConfig.nativeModelHelp": "Choose a verified model with at least the saved model’s context capacity.",
+  "workspace.runModelConfig.externalModelHelp": "Choose any model offered by this runtime. The runtime handles context limits when the run resumes.",
+  "workspace.runModelConfig.unknownModelHelp": "Replacement models for this runtime are unavailable.",
+  "workspace.runModelConfig.loadingOptions": "Loading replacement models…",
+  "workspace.runModelConfig.optionsUnavailable": "Runtime model options are unavailable. Refresh this run to retry; its saved model identity remains visible.",
+  "workspace.runModelConfig.replacementInvalid": "This replacement is no longer offered or eligible. Refresh options before saving.",
+  "workspace.runModelConfig.noNativeReplacements": "No verified equal-or-larger replacement models are available.",
+  "workspace.runModelConfig.noCatalogReplacements": "No other models are currently offered by this runtime.",
   "workspace.runModelConfig.fixedWorkspace": "Workspace is fixed for existing runs.",
   "workspace.runModelConfig.validation.required": "A value is required.",
   "workspace.runModelConfig.validation.type": "Enter a value of type {expected}.",
@@ -61,7 +66,6 @@ const messages = {
   "workspace.collaboration.identity.details": "Participant details",
   "workspace.collaboration.identity.address": "Address",
   "workspace.collaboration.identity.agentRun": "Agent run",
-  "workspace.collaboration.identity.task": "Task",
   "workspace.collaboration.identity.hostRun": "Host run",
   "workspace.collaboration.identity.executionRun": "Execution run",
   "workspace.collaboration.identity.teamRun": "Team run",
@@ -82,7 +86,6 @@ const messages = {
   "workspace.agentOrg.history.expandRun": "Expand {{name}} descendants",
   "workspace.agentOrg.history.collapseRun": "Collapse {{name}} descendants",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} execution hierarchy",
-  "workspace.agentOrg.history.taskLabel": "Task: {{name}}",
   "workspace.agentOrg.history.empty": "No Agent Org run history yet.",
   "workspace.agentOrg.history.noWorkspace": "No workspace",
   "workspace.agentOrg.history.relativeNow": "now",
@@ -143,8 +146,12 @@ const messages = {
     "Configuration",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help":
+    "High-trust mode for Antigravity CLI: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+  "workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help":
+    "High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.",
   "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
     "Team Members Override",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":
@@ -197,6 +204,32 @@ const messages = {
     "New - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
+  "workspace.components.progress.BackgroundTaskPanel.title":
+    "Background Tasks",
+  "workspace.components.progress.BackgroundTaskPanel.counts":
+    "{{running}} running · {{total}} total",
+  "workspace.components.progress.BackgroundTaskPanel.empty":
+    "No background tasks",
+  "workspace.components.progress.BackgroundTaskPanel.untitled":
+    "Background task",
+  "workspace.components.progress.BackgroundTaskPanel.kind.shell":
+    "Shell",
+  "workspace.components.progress.BackgroundTaskPanel.kind.subagent":
+    "Subagent",
+  "workspace.components.progress.BackgroundTaskPanel.kind.monitor":
+    "Monitor",
+  "workspace.components.progress.BackgroundTaskPanel.kind.workflow":
+    "Workflow",
+  "workspace.components.progress.BackgroundTaskPanel.kind.other":
+    "Task",
+  "workspace.components.progress.BackgroundTaskPanel.status.running":
+    "Running",
+  "workspace.components.progress.BackgroundTaskPanel.status.completed":
+    "Completed",
+  "workspace.components.progress.BackgroundTaskPanel.status.failed":
+    "Failed",
+  "workspace.components.progress.BackgroundTaskPanel.status.stopped":
+    "Stopped",
   "workspace.components.progress.SystemInstructionActivityItem.title":
     "System instructions",
   "workspace.components.progress.SystemInstructionActivityItem.available":
@@ -213,6 +246,8 @@ const messages = {
     "AutoByteus-supplied · Claude SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
     "AutoByteus-supplied · Codex baseInstructions",
+  "workspace.components.progress.SystemInstructionActivityItem.source.grok":
+    "AutoByteus-supplied · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "AutoByteus-supplied system instructions",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":
@@ -273,68 +308,6 @@ const messages = {
     "Task agent",
   "workspace.components.workspace.team.TeamTaskAgentActivityBar.approval_required":
     "Approval required",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.tasks":
-    "Tasks",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular":
-    "task",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural":
-    "tasks",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_agent":
-    "Focus agent",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus_team":
-    "Focus team",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.focus":
-    "Focus",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.select_task":
-    "Select a task to read it.",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice":
-    "Waiting for user action in Activity.",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty":
-    "No delegated tasks yet",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail":
-    "Delegated work appears here from saved task records.",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_agent":
-    "Task Agent",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_team":
-    "Task Team",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.approval_required":
-    "Approval required",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.members":
-    "Members",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assigned":
-    "Task assigned",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_submitted":
-    "Result submitted · Result {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.revised_result_submitted":
-    "Revised result submitted · Result {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested":
-    "Revision requested · Result {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.revision_requested_for":
-    "Revision requested for Result {{ordinal}}",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted":
-    "Result {{ordinal}} accepted",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_interrupted":
-    "Task interrupted",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_in_progress":
-    "In progress",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_awaiting_review":
-    "Awaiting review",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_revision_requested":
-    "Revision requested",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_accepted":
-    "Accepted",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.status_interrupted":
-    "Interrupted",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_delegator":
-    "Task delegator",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.task_assignee":
-    "Task assignee",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.system_lifecycle_event":
-    "System lifecycle event",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.result_accepted_fallback":
-    "Result accepted.",
-  "workspace.components.workspace.team.TeamDelegatedTasksSection.updated_at":
-    "Updated {{time}}",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.temporary_execution_title":
     "Temporary task execution",
   "workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.team_status_running":
@@ -361,23 +334,11 @@ const messages = {
   "workspace.history.hierarchy.status.error": "error",
   "workspace.history.hierarchy.status.idle": "idle",
   "workspace.history.hierarchy.status.offline": "offline",
-  "workspace.task_monitor.task": "Task",
-  "workspace.task_monitor.lifecycle.in_progress": "In progress",
-  "workspace.task_monitor.lifecycle.awaiting_review": "Awaiting review",
-  "workspace.task_monitor.lifecycle.revision_requested": "Revision requested",
-  "workspace.task_monitor.lifecycle.accepted": "Accepted",
-  "workspace.task_monitor.lifecycle.interrupted": "Interrupted",
-  "workspace.task_monitor.execution.running": "Running",
-  "workspace.task_monitor.execution.initializing": "Initializing",
-  "workspace.task_monitor.execution.error": "Error",
-  "workspace.task_monitor.execution.idle": "Idle",
-  "workspace.task_monitor.execution.offline": "Offline",
-  "workspace.task_monitor.combined_status": "{{lifecycle}} · {{execution}}",
-  "workspace.task_monitor.loading": "Loading task activity…",
-  "workspace.task_monitor.load_error": "Couldn't load task activity.",
+  "workspace.members.started_by": "Started by {{name}}",
+  "workspace.task_monitor.loading": "Loading activity…",
+  "workspace.task_monitor.load_error": "Couldn't load activity.",
   "workspace.task_monitor.retry": "Retry",
-  "workspace.task_monitor.retry_accessible": "Retry loading task activity",
-  "workspace.task_monitor.empty": "No activity recorded for this task yet.",
+  "workspace.task_monitor.retry_accessible": "Retry loading activity",
   "workspace.components.workspace.team.TeamWorkspaceView.send_subteam_placeholder":
     "Send a message to this subteam",
   "workspace.components.workspace.team.TeamWorkspaceView.send_to_subteam":

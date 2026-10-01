@@ -30,7 +30,7 @@ describe("TeamRunHistoryIndexStore", () => {
       },
     ]);
 
-    await expect(store.getRow("team-1")).resolves.toEqual({
+    await expect(store.readIndexStrict()).resolves.toMatchObject({ rows: [{
       teamRunId: "team-1",
       teamDefinitionId: "team-def-1",
       teamDefinitionName: "Team One",
@@ -39,7 +39,7 @@ describe("TeamRunHistoryIndexStore", () => {
       createdAt: "2026-03-26T10:00:00.000Z",
       archivedAt: null,
       terminatedAt: "2026-03-26T11:00:00.000Z",
-    });
+    }] });
     const payload = JSON.parse(await fs.readFile(path.join(memoryDir, "team_run_history_index.json"), "utf-8"));
     expect(Array.isArray(payload)).toBe(true);
   });
@@ -65,7 +65,7 @@ describe("TeamRunHistoryIndexStore", () => {
       "utf-8",
     );
 
-    await expect(new TeamRunHistoryIndexStore(memoryDir).listRows()).resolves.toEqual([]);
+    await expect(new TeamRunHistoryIndexStore(memoryDir).readIndexStrict()).rejects.toThrow();
   });
 
   it("rejects plain rows with invalid team run identities", async () => {
@@ -86,6 +86,6 @@ describe("TeamRunHistoryIndexStore", () => {
       "utf-8",
     );
 
-    await expect(new TeamRunHistoryIndexStore(memoryDir).listRows()).resolves.toEqual([]);
+    await expect(new TeamRunHistoryIndexStore(memoryDir).readIndexStrict()).rejects.toThrow();
   });
 });

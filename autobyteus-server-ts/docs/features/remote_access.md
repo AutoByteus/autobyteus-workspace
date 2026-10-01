@@ -46,8 +46,6 @@ The route policy classifies every HTTP request before normal route handling:
   - GraphQL WebSocket upgrades
 - Local-dev-only routes:
   - GraphQL GET/development UI surfaces remain loopback-only.
-- External-signature routes:
-  - managed external-channel ingress paths remain governed by their signature contract instead of Phone Access credentials.
 
 Trusted-network owner/protected/WebSocket routes are reachable without an additional credential under the product model above. When a request presents an `mra_...` mobile credential on protected REST/GraphQL/WebSocket routes, the backend validates it and records a mobile auth context. Mobile credentials are rejected on owner-management routes such as settings changes, pairing-session creation, device listing, and revocation.
 

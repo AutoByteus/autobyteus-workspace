@@ -1,0 +1,149 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mStop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-stop-ab4178b4-b3c8-438b-bec3-ab0280f0cff0
+Created agent session 4caac5c2-1800-483f-8f14-ba6b5515dbeb for run claude-live-stop-ab4178b4-b3c8-438b-bec3-ab0280f0cff0
+Agent WebSocket connected: session=4caac5c2-1800-483f-8f14-ba6b5515dbeb, run=claude-live-stop-ab4178b4-b3c8-438b-bec3-ab0280f0cff0
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mStop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude]
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mStop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude]
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mStop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude]
+[22m[39mClosed agent session 4caac5c2-1800-483f-8f14-ba6b5515dbeb
+Agent WebSocket disconnected: 4caac5c2-1800-483f-8f14-ba6b5515dbeb
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mStop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-stop-a0d47373-dc64-403b-bf15-a084ce8e8ea5
+Created agent session cfd18dc1-93dc-4717-bf04-a6b673959504 for run claude-live-stop-a0d47373-dc64-403b-bf15-a084ce8e8ea5
+Agent WebSocket connected: session=cfd18dc1-93dc-4717-bf04-a6b673959504, run=claude-live-stop-a0d47373-dc64-403b-bf15-a084ce8e8ea5
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mStop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [sdk-bundled-claude]
+[22m[39mClosed agent session cfd18dc1-93dc-4717-bf04-a6b673959504
+Agent WebSocket disconnected: cfd18dc1-93dc-4717-bf04-a6b673959504
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mterminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-terminate-f25acf45-942d-46ee-81dd-3a4efb1c6381
+Created agent session 22bfa6ff-9ee0-4926-ad3c-eeadc78d33d2 for run claude-live-terminate-f25acf45-942d-46ee-81dd-3a4efb1c6381
+Agent WebSocket connected: session=22bfa6ff-9ee0-4926-ad3c-eeadc78d33d2, run=claude-live-terminate-f25acf45-942d-46ee-81dd-3a4efb1c6381
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mterminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [path-claude]
+[22m[39mClosed agent session 22bfa6ff-9ee0-4926-ad3c-eeadc78d33d2
+Agent WebSocket disconnected: 22bfa6ff-9ee0-4926-ad3c-eeadc78d33d2
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mterminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-terminate-11d98a66-22c7-4b64-94eb-06e3f112a001
+Created agent session a075d002-43ea-4594-8db8-fdea2c8980ae for run claude-live-terminate-11d98a66-22c7-4b64-94eb-06e3f112a001
+Agent WebSocket connected: session=a075d002-43ea-4594-8db8-fdea2c8980ae, run=claude-live-terminate-11d98a66-22c7-4b64-94eb-06e3f112a001
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mterminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [sdk-bundled-claude]
+[22m[39mClosed agent session a075d002-43ea-4594-8db8-fdea2c8980ae
+Agent WebSocket disconnected: a075d002-43ea-4594-8db8-fdea2c8980ae
+
+ [32m✓[39m tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts [2m([22m[2m14 tests[22m[2m | [22m[33m10 skipped[39m[2m)[22m[33m 47380[2mms[22m[39m
+     [33m[2m✓[22m[39m Stop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude] [33m 13913[2mms[22m[39m
+     [33m[2m✓[22m[39m Stop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [sdk-bundled-claude] [33m 13962[2mms[22m[39m
+     [33m[2m✓[22m[39m terminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [path-claude] [33m 9552[2mms[22m[39m
+     [33m[2m✓[22m[39m terminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [sdk-bundled-claude] [33m 9952[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m4 passed[39m[22m[2m | [22m[33m10 skipped[39m[90m (14)[39m
+[2m   Start at [22m 05:52:42
+[2m   Duration [22m 51.80s[2m (transform 2.63s, setup 16ms, import 3.91s, tests 47.38s, environment 0ms)[22m
+

@@ -12,7 +12,6 @@ const metadata = (): AgentRunMetadata => ({
   llmModelIdentifier: "gpt-test",
   llmConfig: { reasoning_effort: "medium" },
   autoExecuteTools: false,
-  skillAccessMode: null,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "thread-old",
   preparedAt: "2026-05-17T00:00:00.000Z",

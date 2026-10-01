@@ -10,9 +10,6 @@ import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
@@ -144,10 +141,8 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
   const createdWorkspaceRoots = new Set<string>();
-  let originalInternalServerBaseUrl: string | undefined;
 
   beforeAll(async () => {
-    originalInternalServerBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "claude-team-runtime-e2e-appdata-"));
     await writeFile(
       path.join(testDataDir, ".env"),
@@ -178,11 +173,6 @@ describeClaudeRuntime("Claude team inter-agent roundtrip e2e (live transport)", 
     if (testDataDir) {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
-    }
-    if (originalInternalServerBaseUrl) {
-      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalServerBaseUrl;
-    } else {
-      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     }
   });
 
@@ -402,7 +392,6 @@ Rules:
             teamAddress: "/",
             llmModelIdentifier: modelIdentifier,
             autoExecuteTools: true,
-            skillAccessMode: "NONE",
             runtimeKind: "claude_agent_sdk",
             workspaceRootPath,
           }],
@@ -412,7 +401,6 @@ Rules:
               agentDefinitionId: pingAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -421,7 +409,6 @@ Rules:
               agentDefinitionId: pongAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -835,7 +822,6 @@ Rules:
             teamAddress: "/",
             llmModelIdentifier: modelIdentifier,
             autoExecuteTools: false,
-            skillAccessMode: "NONE",
             runtimeKind: "claude_agent_sdk",
             workspaceRootPath,
           }],
@@ -845,7 +831,6 @@ Rules:
               agentDefinitionId: workerAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: false,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1118,7 +1103,6 @@ Rules:
               teamAddress: "/",
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1126,7 +1110,6 @@ Rules:
               teamAddress: "/research_subteam",
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1137,7 +1120,6 @@ Rules:
               agentDefinitionId: parentAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1146,7 +1128,6 @@ Rules:
               agentDefinitionId: specialistAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1365,7 +1346,6 @@ Rules:
             teamAddress: "/",
             llmModelIdentifier: modelIdentifier,
             autoExecuteTools: true,
-            skillAccessMode: "NONE",
             runtimeKind: "claude_agent_sdk",
             workspaceRootPath,
           }],
@@ -1375,7 +1355,6 @@ Rules:
               agentDefinitionId: professorAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1672,7 +1651,6 @@ Rules:
             teamAddress: "/",
             llmModelIdentifier: modelIdentifier,
             autoExecuteTools: true,
-            skillAccessMode: "NONE",
             runtimeKind: "claude_agent_sdk",
             workspaceRootPath,
           }],
@@ -1682,7 +1660,6 @@ Rules:
               agentDefinitionId: professorAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -1691,7 +1668,6 @@ Rules:
               agentDefinitionId: studentAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },

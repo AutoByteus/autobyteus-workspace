@@ -6,11 +6,9 @@ import {
   Mutation,
   Query,
   ObjectType,
-  registerEnumType,
   Resolver,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   getStudioAgentRunService,
   getStudioRunModelConfigService,
@@ -25,10 +23,6 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
-
-registerEnumType(SkillAccessMode, {
-  name: "SkillAccessModeEnum",
-});
 
 @ObjectType()
 export class TerminateAgentRunResult {
@@ -58,9 +52,6 @@ export class CreateAgentRunInput {
 
   @Field(() => GraphQLJSON, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
-
-  @Field(() => SkillAccessMode)
-  skillAccessMode!: SkillAccessMode;
 
   @Field(() => String)
   runtimeKind!: string;
@@ -212,7 +203,6 @@ export class AgentRunResolver {
         llmModelIdentifier: input.llmModelIdentifier.trim(),
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
-        skillAccessMode: input.skillAccessMode,
         runtimeKind: input.runtimeKind.trim(),
       });
 
@@ -243,7 +233,6 @@ export class AgentRunResolver {
         llmModelIdentifier: input.llmModelIdentifier.trim(),
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
-        skillAccessMode: input.skillAccessMode,
         runtimeKind: input.runtimeKind.trim(),
         initialSummary: input.initialSummary ?? null,
       });

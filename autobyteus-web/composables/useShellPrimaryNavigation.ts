@@ -1,16 +1,19 @@
 import { computed, type ComputedRef } from 'vue';
 import { useRoute, type RouteLocationRaw } from 'vue-router';
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 export type ShellPrimaryNavKey =
+  | 'chat'
   | 'agents'
   | 'agentTeams'
   | 'agentOrgs'
   | 'applications'
   | 'skills'
   | 'memory'
-  | 'nodes';
+  | 'nodes'
+  | 'projects';
 
 export interface ShellPrimaryNavItem {
   key: ShellPrimaryNavKey;
@@ -21,6 +24,7 @@ export interface ShellPrimaryNavItem {
 export const SHELL_NODES_NETWORK_ICON = 'autobyteus:nodes-network';
 
 const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
+  { key: 'chat', labelKey: 'shell.navigation.chat', icon: 'heroicons:chat-bubble-left-right' },
   { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
   { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
   { key: 'agentOrgs', labelKey: 'shell.navigation.agentOrgs', icon: 'heroicons:building-office-2' },
@@ -28,10 +32,13 @@ const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
   { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
   { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
   { key: 'nodes', labelKey: 'shell.navigation.nodes', icon: SHELL_NODES_NETWORK_ICON },
+  { key: 'projects', labelKey: 'shell.navigation.projects', icon: 'heroicons:folder' },
 ];
 
 export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocationRaw {
   switch (key) {
+    case 'chat':
+      return '/chat';
     case 'agents':
       return { path: '/agents', query: { view: 'list' } };
     case 'agentTeams':
@@ -46,11 +53,15 @@ export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocation
       return '/memory';
     case 'nodes':
       return '/nodes';
+    case 'projects':
+      return '/projects';
   }
 }
 
 export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, path: string): boolean {
   switch (key) {
+    case 'chat':
+      return path.startsWith('/chat');
     case 'agents':
       return path.startsWith('/agents');
     case 'agentTeams':
@@ -65,6 +76,8 @@ export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, path: string)
       return path.startsWith('/memory');
     case 'nodes':
       return path.startsWith('/nodes');
+    case 'projects':
+      return path.startsWith('/projects');
   }
 }
 
@@ -76,6 +89,7 @@ export function useShellPrimaryNavigation(): {
 } {
   const route = useRoute();
   const applicationsCapabilityStore = useApplicationsCapabilityStore();
+  const projectsCapabilityStore = useProjectsCapabilityStore();
 
   const primaryNavItems = computed(() => {
     return allShellPrimaryNavItems.filter((item) => {
@@ -85,6 +99,9 @@ export function useShellPrimaryNavigation(): {
       if (item.key === 'nodes') {
         return isFeatureAvailableInRuntime('desktopSettings');
       }
+      if (item.key === 'projects') {
+        return projectsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('projects');
+      }
       return true;
     });
   });
@@ -93,6 +110,9 @@ export function useShellPrimaryNavigation(): {
     primaryNavItems,
     resolvePrimaryRoute: resolveShellPrimaryRoute,
     isPrimaryNavActive: (key: ShellPrimaryNavKey) => isShellPrimaryRouteActive(key, route.path),
-    ensurePrimaryNavigationReady: () => applicationsCapabilityStore.ensureResolved(),
+    ensurePrimaryNavigationReady: () => Promise.allSettled([
+      applicationsCapabilityStore.ensureResolved(),
+      projectsCapabilityStore.ensureResolved(),
+    ]),
   };
 }

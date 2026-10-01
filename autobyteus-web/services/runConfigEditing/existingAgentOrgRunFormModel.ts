@@ -11,7 +11,7 @@ import type {
   ExistingWorkspaceDisplay,
 } from '~/types/agent/ExistingTeamRunFormModel'
 import type { ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
-import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRuntimeKind } from '~/types/agent/AgentRunConfig'
 import type { ExistingAgentOrgModelConfigDraft } from './existingAgentOrgModelConfigDraft'
 import type { AgentOrgConfiguredAgentNode, AgentOrgConfiguredMember } from '~/types/collaboration/agentOrgExecution'
 
@@ -28,7 +28,6 @@ const resolved = (launch: Launch, selection: ExistingRunModelSelection): Readonl
   workspaceRootPath: launch.workspaceRootPath,
   ...selection,
   autoExecuteTools: launch.autoExecuteTools,
-  skillAccessMode: launch.skillAccessMode as SkillAccessMode,
 })
 
 export const projectExistingAgentOrgRunFormModel = (input: {
@@ -48,9 +47,9 @@ export const projectExistingAgentOrgRunFormModel = (input: {
     return { mode: 'existing', address, displayName, effectiveConfig: resolved(launch, draft.draftSelection),
       isCustomized: address !== '/' && (!draft.linkedToParentAtDraftStart || draft.directlyEdited || launch.workspaceRootPath !== tree.rootOrg.defaultLaunchConfiguration.workspaceRootPath),
       directlyEdited: draft.directlyEdited, originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
-      modelOptions: input.modelOptionsByAddress?.[address], workspaceControl: input.workspaceDraft[address]
+      modelOptions: input.modelOptionsByAddress?.[address], workspacePresentation: { kind: 'selector', model: input.workspaceDraft[address]
         ? { mode: 'editable', selection: input.workspaceDraft[address]!.selection, isLoading: false, error: null }
-        : { mode: 'stored', workspace: workspace(launch) } }
+        : { mode: 'stored', workspace: workspace(launch) } } }
   }
   const agent = (node: AgentOrgConfiguredAgentNode,
     coordinatorAddress: string | null): ExistingTeamFormAgentNode => {
@@ -61,7 +60,9 @@ export const projectExistingAgentOrgRunFormModel = (input: {
       isCustomized: !draft.linkedToParentAtDraftStart || draft.directlyEdited,
       directlyEdited: draft.directlyEdited, effectiveConfig: resolved(node.launchConfiguration, draft.draftSelection),
       originalModelIdentifier: draft.originalSelection.llmModelIdentifier,
-      modelOptions: input.modelOptionsByAddress?.[node.address], storedWorkspace: workspace(node.launchConfiguration) }
+      modelOptions: input.modelOptionsByAddress?.[node.address], workspacePresentation: {
+        kind: 'selector', model: { mode: 'stored', workspace: workspace(node.launchConfiguration) },
+      } }
   }
   const members: ExistingTeamFormMemberNode[] = tree.rootOrg.members.map((member: AgentOrgConfiguredMember) => {
     if ('agentRunId' in member) return agent(member, null)

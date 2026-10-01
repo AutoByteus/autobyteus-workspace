@@ -1,0 +1,9 @@
+[start#4 after success] health=200 after 3s
+migration_id|status|attempts|summary|error_message
+20260924_remove_external_messaging_data|SUCCEEDED|3|Scanned 4; migrated 1; skipped 3; failed 0.|
+[2026-09-24T15:05:08.324Z] [INFO] [server.runtime] Server listening on 127.0.0.1:18761
+  absent  external-channel
+  absent  extensions/messaging-gateway
+  absent  download/messaging-gateway
+  absent  logs/messaging-gateway
+[start#4 after success] stopped

@@ -10,10 +10,9 @@ export const CLAUDE_SDK_DEFAULT_MODEL_VALUE = "default";
 const NOT_RECOMMENDED: ModelSelectionPresentation = { recommended: false, aliasOfModelIdentifier: null };
 
 /**
- * Derives picker hints over the full SDK row set: the `default` row folds into the
- * first other row (SDK order) resolving to the same canonical model ID, which becomes
- * the recommended option. Without such a sibling, `default` stays its own recommended
- * option. Catalog identities are never changed here.
+ * Derives internal identity evidence over the full raw SDK row set. The first
+ * distinct row (SDK order) resolving to the same canonical ID as `default`
+ * becomes recommended. Filtering of redundant `default` belongs to ClaudeModelCatalog.
  */
 export const deriveClaudeModelSelectionPresentation = (
   descriptors: readonly NormalizedModelDescriptor[],

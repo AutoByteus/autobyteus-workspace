@@ -3,7 +3,6 @@ import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
@@ -87,7 +86,6 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
         workspaceId: "workspace-e2e",
         memoryDir: `/tmp/autobyteus-e2e-memory/${runId}`,
         llmConfig: null,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       }),
       runtimeContext: { threadId: `thread-${runId}`, activeTurnId: null },
@@ -193,7 +191,6 @@ const buildMetadata = (runId: string): AgentRunMetadata => ({
   llmModelIdentifier: "e2e-model",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: `platform-${runId}`,
   lastKnownStatus: "ACTIVE",

@@ -3,10 +3,13 @@ import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
 import { AgentMemoryExplorerService } from "../../../agent-memory/services/agent-memory-explorer-service.js";
 import { TeamMemoryExplorerService } from "../../../agent-memory/services/team-memory-explorer-service.js";
+import { AgentOrgMemoryExplorerService } from "../../../agent-memory/services/agent-org-memory-explorer-service.js";
 import { getMemoryExplorerSourceService } from "../../../agent-memory/services/memory-explorer-source-service.js";
 import type { AgentMemoryAttribution as DomainAgentMemoryAttribution } from "../../../agent-memory/domain/models.js";
 import {
   AgentMemoryAttribution,
+  AgentOrgRunMemoryPage,
+  AgentOrgWithMemoryPage,
   AgentRunMemoryPage,
   AgentTeamRunMemoryPage,
   AgentTeamWithMemoryPage,
@@ -90,5 +93,30 @@ export class MemoryExplorerResolver {
     const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
     const service = new TeamMemoryExplorerService(resolvedSource.rootDir);
     return await service.listAgentTeamRunsWithMemory(teamDefinitionId, search ?? null, page, pageSize) as unknown as AgentTeamRunMemoryPage;
+  }
+
+  @Query(() => AgentOrgWithMemoryPage)
+  async listAgentOrgsWithMemory(
+    @Arg("source", () => MemoryExplorerSourceInput, { nullable: true }) source?: MemoryExplorerSourceInput | null,
+    @Arg("search", () => String, { nullable: true }) search?: string | null,
+    @Arg("page", () => Int, { defaultValue: 1 }) page = 1,
+    @Arg("pageSize", () => Int, { defaultValue: 25 }) pageSize = 25,
+  ): Promise<AgentOrgWithMemoryPage> {
+    const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
+    const service = new AgentOrgMemoryExplorerService(resolvedSource.rootDir);
+    return await service.listAgentOrgsWithMemory(search ?? null, page, pageSize) as unknown as AgentOrgWithMemoryPage;
+  }
+
+  @Query(() => AgentOrgRunMemoryPage)
+  async listAgentOrgRunsWithMemory(
+    @Arg("orgDefinitionId", () => String) orgDefinitionId: string,
+    @Arg("source", () => MemoryExplorerSourceInput, { nullable: true }) source?: MemoryExplorerSourceInput | null,
+    @Arg("search", () => String, { nullable: true }) search?: string | null,
+    @Arg("page", () => Int, { defaultValue: 1 }) page = 1,
+    @Arg("pageSize", () => Int, { defaultValue: 25 }) pageSize = 25,
+  ): Promise<AgentOrgRunMemoryPage> {
+    const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
+    const service = new AgentOrgMemoryExplorerService(resolvedSource.rootDir);
+    return await service.listAgentOrgRunsWithMemory(orgDefinitionId, search ?? null, page, pageSize) as unknown as AgentOrgRunMemoryPage;
   }
 }

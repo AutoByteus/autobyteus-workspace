@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -28,7 +27,6 @@ export interface TeamRunPresetInput {
   workspaceRootPath: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   runtimeKind: RuntimeKind;
   llmConfig?: Record<string, unknown> | null;
 }
@@ -37,7 +35,6 @@ export type TeamRunMemberConfigInput = {
   agentDefinitionId?: string | null;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   workspaceRootPath?: string | null;
   llmConfig?: Record<string, unknown> | null;
   runtimeKind: RuntimeKind | string;
@@ -46,7 +43,6 @@ export type TeamRunTeamConfigInput = {
   teamAddress: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   workspaceRootPath?: string | null;
   llmConfig?: Record<string, unknown> | null;
   runtimeKind: RuntimeKind | string;
@@ -181,7 +177,7 @@ export class TeamRunService {
 
   async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
     const normalized = required(teamRunId, "teamRunId");
-    if (this.manager.hasManagedTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already managed and cannot be restored.`);
+    // The manager decides "already managed" versus completing a stopping root inside its transition.
     this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const root = await this.manager.restoreTeamRun(normalized);
     try {
@@ -282,6 +278,5 @@ const normalizePreset = (value: TeamRunPresetInput): AgentLaunchConfiguration =>
   llmModelIdentifier: required(value.llmModelIdentifier, "teamLaunchPreset.llmModelIdentifier"),
   runtimeKind: resolveRequiredRuntimeKind(value.runtimeKind, "teamLaunchPreset.runtimeKind"),
   autoExecuteTools: Boolean(value.autoExecuteTools),
-  skillAccessMode: value.skillAccessMode,
   llmConfig: value.llmConfig ?? null,
 });

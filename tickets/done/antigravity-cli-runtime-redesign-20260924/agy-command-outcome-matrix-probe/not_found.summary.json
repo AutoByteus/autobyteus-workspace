@@ -1,0 +1,31 @@
+{
+  "case": "not_found",
+  "requestedCommand": "agy_command_that_does_not_exist_73682",
+  "autoApprove": true,
+  "processExit": 0,
+  "resultStatus": "SUCCESS",
+  "resultResponse": "The command failed and exited with exit code `127`. The shell output indicated:\n\n```\nzsh:1: command not found: agy_command_that_does_not_exist_73682\n```\n",
+  "deniedActions": null,
+  "tools": [
+    {
+      "state": "ACTIVE",
+      "info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "agy_command_that_does_not_exist_73682"
+        }
+      }
+    },
+    {
+      "state": "DONE",
+      "info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "agy_command_that_does_not_exist_73682"
+        },
+        "output": "zsh:1: command not found: agy_command_that_does_not_exist_73682\r\n"
+      }
+    }
+  ],
+  "stderrTail": ""
+}

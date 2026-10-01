@@ -1,0 +1,10 @@
+[start#2 fault still active] health=200 after 3s
+migration_id|status|attempts|summary|error_message
+20260924_remove_external_messaging_data|FAILED|2|Scanned 4; migrated 0; skipped 3; failed 1.|1 external messaging data root could not be removed; the cleanup retries on the next start.
+[2026-09-24T15:04:56.693Z] [WARN] [server.runtime] Studio app-data migration '20260924_remove_external_messaging_data' is FAILED: 1 external messaging data root could not be removed; the cleanup retries on the next start.
+[2026-09-24T15:04:56.842Z] [INFO] [server.runtime] Server listening on 127.0.0.1:18761
+  absent  external-channel
+  absent  extensions/messaging-gateway
+  PRESENT download/messaging-gateway (1 files)
+  absent  logs/messaging-gateway
+[start#2 fault still active] stopped

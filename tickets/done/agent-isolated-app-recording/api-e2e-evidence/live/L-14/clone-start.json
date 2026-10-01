@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-9334-c01d",
+    "pid": 89002,
+    "executablePath": "/private/tmp/abclone/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:58209",
+    "graphqlUrl": "http://127.0.0.1:58209/graphql",
+    "controlEndpoint": "http://127.0.0.1:9334",
+    "controlPort": 9334,
+    "serverPort": 58209,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-C8sqKh",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-C8sqKh/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-9334-c01d.log"
+  }
+}

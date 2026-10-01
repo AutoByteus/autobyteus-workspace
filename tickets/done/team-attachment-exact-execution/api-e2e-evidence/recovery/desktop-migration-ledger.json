@@ -1,0 +1,14 @@
+{
+  "id": 67,
+  "migration_id": "20260926_team_context_file_execution_locators_v1",
+  "display_name": "Exact Team attachment execution locators",
+  "status": "SUCCEEDED_WITH_WARNINGS",
+  "attempts": 3,
+  "started_at": 1790483976928,
+  "completed_at": 1790484137323,
+  "summary": "Scanned 1242; migrated 246; skipped 996; failed 0.",
+  "error_message": null,
+  "log_path": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-recovery-installed-pli4ilol/desktop/server-data/logs/app-data-migrations/20260926_team_context_file_execution_locators_v1-2026-09-27T04-42-17-322Z.log",
+  "created_at": "2026-09-27 03:32:29",
+  "updated_at": "2026-09-27 04:42:17"
+}

@@ -33,7 +33,6 @@ const ACTIVITY_EVENT_TYPES = new Set<AgentRunEventType>([
   AgentRunEventType.TOOL_EXECUTION_FAILED,
   AgentRunEventType.TOOL_EXECUTION_INTERRUPTED,
   AgentRunEventType.TOOL_LOG,
-  AgentRunEventType.TODO_LIST_UPDATE,
 ]);
 
 export class AgentTurnLifecycleState {

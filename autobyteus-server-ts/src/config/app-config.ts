@@ -6,8 +6,6 @@ import {
   listExistingAbsoluteDirectoryPaths,
   listExistingDirectoryPaths,
   normalizeOptionalConfigString,
-  normalizeOptionalUrlBase,
-  parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
 import { forbiddenGenericSettingNames, retiredSettingNames } from "./app-config-setting-policy.js";
@@ -429,28 +427,6 @@ export class AppConfig {
       label: "Application package root",
       onWarn: logger.warn,
     });
-  }
-
-  getChannelCallbackBaseUrl(): string | null {
-    return normalizeOptionalUrlBase(this.get("CHANNEL_CALLBACK_BASE_URL"));
-  }
-
-  getChannelCallbackSharedSecret(): string | null {
-    return normalizeOptionalConfigString(this.get("CHANNEL_CALLBACK_SHARED_SECRET"));
-  }
-
-  getChannelCallbackTimeoutMs(defaultValue = 5000): number {
-    try {
-      return parsePositiveNumberConfig({
-        rawValue: this.get("CHANNEL_CALLBACK_TIMEOUT_MS"),
-        envName: "CHANNEL_CALLBACK_TIMEOUT_MS",
-        defaultValue,
-      });
-    } catch (error) {
-      throw new AppConfigError(
-        error instanceof Error ? error.message : String(error),
-      );
-    }
   }
 
   loadEnvironment(): boolean {

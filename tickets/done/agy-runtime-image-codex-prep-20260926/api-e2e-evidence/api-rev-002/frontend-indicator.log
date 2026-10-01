@@ -1,0 +1,24 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web
+
+stderr | components/conversation/__tests__/ToolCallIndicator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/__tests__/ToolCallIndicator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+(node:89130) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ components/conversation/__tests__/ToolCallIndicator.spec.ts (14 tests) 27ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  15:24:50
+   Duration  4.00s (transform 2.35s, setup 3.55s, collect 15ms, tests 27ms, environment 128ms, prepare 93ms)
+

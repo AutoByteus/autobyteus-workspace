@@ -527,7 +527,6 @@ const defineRuntimeSuite = (input: {
       llmModelIdentifier: string;
       workspaceRootPath: string;
       autoExecuteTools: boolean;
-      skillAccessMode?: "NONE" | "PRELOADED_ONLY" | "PRELOADED_ONLY";
     }): Promise<string> => {
       const mutation = `
         mutation CreateAgentRun($input: CreateAgentRunInput!) {
@@ -548,7 +547,6 @@ const defineRuntimeSuite = (input: {
           llmModelIdentifier: inputOverride.llmModelIdentifier,
           autoExecuteTools: inputOverride.autoExecuteTools,
           llmConfig: input.llmConfig ?? null,
-          skillAccessMode: inputOverride.skillAccessMode ?? "NONE",
           runtimeKind: input.runtimeKind,
         },
       });
@@ -595,7 +593,7 @@ const defineRuntimeSuite = (input: {
         query AgentRunResume($runId: String!) {
           getAgentRunResumeConfig(runId: $runId) {
             metadataConfig {
-              skillAccessMode
+              runtimeKind
             }
           }
         }
@@ -606,12 +604,12 @@ const defineRuntimeSuite = (input: {
         const result = await execGraphql<{
           getAgentRunResumeConfig: {
             metadataConfig: {
-              skillAccessMode: string | null;
+              runtimeKind: string;
             };
           };
         }>(query, { runId });
         const metadataConfig = result.getAgentRunResumeConfig.metadataConfig;
-        if (metadataConfig.skillAccessMode === "PRELOADED_ONLY") {
+        if (metadataConfig.runtimeKind === input.runtimeKind) {
           return;
         }
         await wait(1_000);
@@ -2195,7 +2193,6 @@ const defineRuntimeSuite = (input: {
           llmModelIdentifier,
           workspaceRootPath,
           autoExecuteTools: true,
-          skillAccessMode: "PRELOADED_ONLY",
         });
 
         const { app, socket, messages } = await openAgentSocket(runId);
@@ -2279,7 +2276,6 @@ const defineRuntimeSuite = (input: {
             llmModelIdentifier,
             workspaceRootPath,
             autoExecuteTools: true,
-            skillAccessMode: "PRELOADED_ONLY",
           });
 
           const { app, socket, messages } = await openAgentSocket(runId);

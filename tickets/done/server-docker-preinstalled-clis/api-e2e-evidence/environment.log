@@ -1,0 +1,11 @@
+Mon Sep 28 05:06:53 UTC 2026
+58289e97ebb0ea2b6b57bfd4fb53fb3beaf3e02f
+Client=29.0.1 Server=29.0.1 ServerArch=arm64
+desktop-linux
+NAME/NODE                     DRIVER/ENDPOINT     STATUS    BUILDKIT   PLATFORMS
+multi-platform-builder*       docker-container
+ \_ multi-platform-builder0    \_ desktop-linux   running   v0.26.2    linux/amd64 (+2), linux/arm64, linux/arm (+2), linux/ppc64le, (3 more)
+default                       docker
+ \_ default                    \_ default         running   v0.25.2    linux/amd64 (+2), linux/arm64, linux/ppc64le, linux/s390x, (2 more)
+desktop-linux                 docker
+ \_ desktop-linux              \_ desktop-linux   running   v0.25.2    linux/amd64 (+2), linux/arm64, linux/ppc64le, linux/s390x, (2 more)

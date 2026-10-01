@@ -1,8 +1,4 @@
 import fs from "node:fs/promises";
-import {
-  SkillAccessMode,
-  resolveSkillAccessMode,
-} from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -99,13 +95,13 @@ export class AgentRunProvisioningService {
       llmModelIdentifier: preparedInput.llmModelIdentifier,
       llmConfig: preparedInput.llmConfig,
       autoExecuteTools: preparedInput.autoExecuteTools,
-      skillAccessMode: preparedInput.skillAccessMode,
       runtimeKind: preparedInput.runtimeKind,
       platformAgentRunId: null,
       preparedAt: preparedAt.toISOString(),
       preparedExpiresAt: preparedExpiresAt.toISOString(),
       startedAt: null,
       applicationExecutionContext: preparedRun.config.applicationExecutionContext,
+      ...(input.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
     };
 
     await this.historyCatalogService.recordPreparedRun({
@@ -180,7 +176,6 @@ export class AgentRunProvisioningService {
     llmModelIdentifier: string;
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
-    skillAccessMode: SkillAccessMode;
     applicationBinding: CreateAgentRunInput["applicationBinding"];
   }> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
@@ -214,7 +209,6 @@ export class AgentRunProvisioningService {
       llmModelIdentifier: input.llmModelIdentifier.trim(),
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
-      skillAccessMode: resolveSkillAccessMode(input.skillAccessMode, 0),
       applicationBinding: input.applicationBinding ?? null,
     };
   }
@@ -226,7 +220,6 @@ export class AgentRunProvisioningService {
     llmModelIdentifier: string;
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
-    skillAccessMode: SkillAccessMode;
     applicationBinding: CreateAgentRunInput["applicationBinding"];
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(input.agentDefinitionId);
@@ -241,7 +234,6 @@ export class AgentRunProvisioningService {
         workspaceId: input.workspaceId,
         memoryDir,
         llmConfig: input.llmConfig,
-        skillAccessMode: input.skillAccessMode,
         applicationExecutionContext: input.applicationBinding
           ? createApplicationExecutionContext(input.applicationBinding, runId)
           : null,

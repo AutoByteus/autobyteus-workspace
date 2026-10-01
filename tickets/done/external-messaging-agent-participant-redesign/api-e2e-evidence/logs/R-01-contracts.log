@@ -1,0 +1,47 @@
+Scope: 2 of 13 workspace projects
+autobyteus-agent-presentation-contracts test$ pnpm build && node --test tests/*.test.mjs
+autobyteus-agent-presentation-contracts test: > @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-agent-presentation-contracts
+autobyteus-agent-presentation-contracts test: > tsc -p tsconfig.build.json
+autobyteus-agent-presentation-contracts test: TAP version 13
+autobyteus-agent-presentation-contracts test: # Subtest: accepts a strict root-neutral message and rejects root identity
+autobyteus-agent-presentation-contracts test: ok 1 - accepts a strict root-neutral message and rejects root identity
+autobyteus-agent-presentation-contracts test:   ---
+autobyteus-agent-presentation-contracts test:   duration_ms: 12.440541
+autobyteus-agent-presentation-contracts test:   type: 'test'
+autobyteus-agent-presentation-contracts test:   ...
+autobyteus-agent-presentation-contracts test: 1..1
+autobyteus-agent-presentation-contracts test: # tests 1
+autobyteus-agent-presentation-contracts test: # suites 0
+autobyteus-agent-presentation-contracts test: # pass 1
+autobyteus-agent-presentation-contracts test: # fail 0
+autobyteus-agent-presentation-contracts test: # cancelled 0
+autobyteus-agent-presentation-contracts test: # skipped 0
+autobyteus-agent-presentation-contracts test: # todo 0
+autobyteus-agent-presentation-contracts test: # duration_ms 168.512875
+autobyteus-agent-presentation-contracts test: Done
+autobyteus-team-stream-contracts test$ pnpm build && node --test tests/*.test.mjs
+autobyteus-team-stream-contracts test: > @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-team-stream-contracts
+autobyteus-team-stream-contracts test: > tsc -p tsconfig.build.json
+autobyteus-team-stream-contracts test: TAP version 13
+autobyteus-team-stream-contracts test: # Subtest: validates and preserves the exact cumulative summary on a team token event
+autobyteus-team-stream-contracts test: ok 1 - validates and preserves the exact cumulative summary on a team token event
+autobyteus-team-stream-contracts test:   ---
+autobyteus-team-stream-contracts test:   duration_ms: 4.897292
+autobyteus-team-stream-contracts test:   type: 'test'
+autobyteus-team-stream-contracts test:   ...
+autobyteus-team-stream-contracts test: # Subtest: requires a non-negative safe-integer report generation
+autobyteus-team-stream-contracts test: ok 2 - requires a non-negative safe-integer report generation
+autobyteus-team-stream-contracts test:   ---
+autobyteus-team-stream-contracts test:   duration_ms: 0.6905
+autobyteus-team-stream-contracts test:   type: 'test'
+autobyteus-team-stream-contracts test:   ...
+autobyteus-team-stream-contracts test: 1..2
+autobyteus-team-stream-contracts test: # tests 2
+autobyteus-team-stream-contracts test: # suites 0
+autobyteus-team-stream-contracts test: # pass 2
+autobyteus-team-stream-contracts test: # fail 0
+autobyteus-team-stream-contracts test: # cancelled 0
+autobyteus-team-stream-contracts test: # skipped 0
+autobyteus-team-stream-contracts test: # todo 0
+autobyteus-team-stream-contracts test: # duration_ms 131.557833
+autobyteus-team-stream-contracts test: Done

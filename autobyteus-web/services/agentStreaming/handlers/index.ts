@@ -27,16 +27,12 @@ export {
 } from './agentStatusHandler';
 
 export {
-  handleExternalUserMessage,
-} from './externalUserMessageHandler';
-
-export {
   handleMemberInputMessage,
 } from './memberInputMessageHandler';
 
 export {
-  handleTodoListUpdate,
-} from './todoHandler';
+  handleBackgroundTaskUpdated,
+} from './backgroundTaskHandler';
 
 export {
   handleSystemTaskNotification,

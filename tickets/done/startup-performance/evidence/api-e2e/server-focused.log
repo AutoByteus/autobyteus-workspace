@@ -1,0 +1,372 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:75381) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts (24 tests) 2791ms
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts > initial family locator transition: actual files, no user data > preserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts (11 tests) 1615ms
+     ✓ preserves candidate cross-view owner and archive bytes without touching outside-cohort histories, then strictly reads final bytes after the root move  406ms
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'missing' for collaboration root 'child-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-E-D' for collaboration root 'child-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-C-D' for collaboration root 'root-team-exact'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+ ✓ tests/integration/api/rest/context-files.integration.test.ts (10 tests) 782ms
+stdout | tests/integration/agent-memory/user-attachment-history.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/direct/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/direct/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/direct/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/repeat/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/repeat/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/repeat/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/team/lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/team/lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/team/lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/task-team/task-lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/task-team/task-lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_orgs/org/task-team/task-lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agents/standalone/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agents/standalone/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agents/standalone/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_teams/standalone-team/standalone-lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_teams/standalone-team/standalone-lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-yBhN6b/memory/agent_teams/standalone-team/standalone-lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/direct/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/direct/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/direct/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/repeat/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/repeat/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/repeat/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/team/lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/team/lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/team/lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/task-team/task-lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/task-team/task-lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_orgs/org/task-team/task-lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agents/standalone/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agents/standalone/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agents/standalone/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_teams/standalone-team/standalone-lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_teams/standalone-team/standalone-lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Ip79XX/memory/agent_teams/standalone-team/standalone-lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/direct/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/direct/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/direct/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/repeat/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/repeat/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/repeat/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/team/lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/team/lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/team/lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/task-team/task-lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/task-team/task-lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_orgs/org/task-team/task-lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agents/standalone/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agents/standalone/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agents/standalone/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_teams/standalone-team/standalone-lead/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_teams/standalone-team/standalone-lead/semantic.jsonl
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-tDVkOo/memory/agent_teams/standalone-team/standalone-lead/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'file-only' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-mEmP0V/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'unknown' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-YzciyP/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'media-only' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-WOt9QE/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'no-context' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-iGGv3x/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'file-only' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-nyzlJe/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'unknown' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-Wxud1T/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'media-only' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-0htldG/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'no-context' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-1cjYxY/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'file-only' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-b899NS/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'unknown' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-v6OymA/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'media-only' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-F7khOU/memory/agents/isolated/raw_traces_manifest.json
+
+stderr | tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'no-context' preserves optional facts in the same accepted row
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/attachment-history-jLpNsa/memory/agents/isolated/raw_traces_manifest.json
+
+ ✓ tests/integration/agent-memory/user-attachment-history.integration.test.ts (15 tests) 4717ms
+     ✓ autobyteus preserves both partitions for exact configured/task and standalone owners  1167ms
+     ✓ codex_app_server preserves both partitions for exact configured/task and standalone owners  1192ms
+     ✓ claude_agent_sdk preserves both partitions for exact configured/task and standalone owners  887ms
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: orgRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'org/unknown'.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'wrong-root/configured-direct'.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > preserves existing per-file partial-batch continuation without a new retry or journal
+Failed to finalize context files: Error: controlled move failure
+
+ ✓ tests/integration/api/rest/agent-org-context-files.integration.test.ts (4 tests) 815ms
+     ✓ uploads/opens/removes/finalizes distinct bytes for repeated configured/task addresses; retains saved owner across views/reopen  444ms
+ ✓ tests/unit/run-history/services/root-run-package-readiness-index.test.ts (9 tests) 988ms
+ ✓ tests/unit/context-files/context-file-access-containment.test.ts (9 tests) 304ms
+ ✓ tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts (5 tests) 358ms
+ ✓ tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts (3 tests) 233ms
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:76077) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (22 tests) 89ms
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > Studio readable-provider migration startup gate > builds and listens only after readable identity status SUCCEEDED
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ ✓ tests/unit/server-runtime-app-data-migration-gate.test.ts (13 tests) 535ms
+     ✓ builds and listens only after readable identity status SUCCEEDED  515ms
+ ✓ tests/unit/context-files/context-file-exact-execution.test.ts (1 test) 147ms
+ ✓ tests/unit/run-history/atomic-run-package-file-commit-writer.test.ts (2 tests) 88ms
+ ✓ tests/unit/context-files/context-file-local-path-resolver.test.ts (2 tests) 7ms
+ ✓ tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts (17 tests) 13ms
+ ✓ tests/unit/context-files/context-file-owner-resolver.test.ts (7 tests) 9ms
+ ✓ tests/unit/context-files/context-file-owner-types.test.ts (13 tests) 5ms
+ ✓ tests/unit/context-files/context-file-path-environment.test.ts (8 tests) 4ms
+ ✓ tests/unit/context-files/context-file-layout.test.ts (1 test) 2ms
+
+ Test Files  19 passed (19)
+      Tests  176 passed (176)
+   Start at  09:12:26
+   Duration  35.54s (transform 9.00s, setup 175ms, import 18.51s, tests 13.50s, environment 1ms)
+

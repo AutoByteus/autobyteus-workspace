@@ -1,0 +1,54 @@
+{
+  "completedAt": "2026-09-27T07:55:39.774098+00:00",
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "versionLabel": "1.4.88",
+  "flavor": "personal",
+  "unsigned": true,
+  "published": false,
+  "installedOrLaunched": false,
+  "apiCompiledModuleMatches": [
+    {
+      "file": "app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js",
+      "sha256": "9d5a22d842a40e53e05dce8c8e699ed44b042158db5f2a6d44de3dbfa80208cb",
+      "matchesAPIValidatedCandidate": true
+    },
+    {
+      "file": "run-history/services/root-run-package-readiness-index.js",
+      "sha256": "07d27c61a279e26f24c51c9f468fb40f56c0ba9080daa5b9f84806dc29140c7f",
+      "matchesAPIValidatedCandidate": true
+    },
+    {
+      "file": "context-files/services/context-file-read-service.js",
+      "sha256": "6cabbd47fbc9a5ddaf22a0acb5f965cd605386471b9303a11537be4fea52e771",
+      "matchesAPIValidatedCandidate": true
+    },
+    {
+      "file": "context-files/services/context-file-local-path-resolver.js",
+      "sha256": "73f2db7987aa408b76e312fca62184f7839dd524744795d7b2f2785fa0f89e69",
+      "matchesAPIValidatedCandidate": true
+    },
+    {
+      "file": "context-files/services/context-file-path-validation.js",
+      "sha256": "41c9240171765a9f1dc0f7a92101c184101dade3476bdbfb5bd3aed02a2eb715",
+      "matchesAPIValidatedCandidate": true
+    }
+  ],
+  "deletedModulesAbsent": true,
+  "sourceTestFingerprintsUnchanged": true,
+  "artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.88.dmg",
+      "size": 479089208,
+      "sha256": "3e7d5e8abe0538ad2df0f574993b5b0ce919ef5632a0fcb6873f2bddc7f83d8d",
+      "modifiedAt": "2026-09-27T07:52:53.013640+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.88.zip",
+      "size": 474198640,
+      "sha256": "dbb5fc95617adc1fa375bb93c5bd1002c86031d432c273563513760cf9703db3",
+      "modifiedAt": "2026-09-27T07:55:10.014397+00:00"
+    }
+  ],
+  "dmgIntegrity": "Pass",
+  "packagedTerminalStaticCheck": "Pass"
+}

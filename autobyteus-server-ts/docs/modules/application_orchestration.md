@@ -113,15 +113,19 @@ runnable. Agent configurations can include `runtimeKind`,
 `llmModelIdentifier`, and `workspaceRootPath` only when the slot supports them.
 Team configurations use shared defaults plus current member runtime/model
 overrides, with `workspaceRootPath` on the shared defaults.
+For an effective saved/seeded model, host validation resolves the exact current
+descriptor through `ModelCatalogService.resolveExactCurrentLlmModel`, rather
+than treating the selection-facing offered list as the authority for an
+existing value. A Claude `default` omitted as a redundant new choice can
+therefore remain a valid effective Agent or Team leaf, with its exact ID and
+credential/schema evidence intact. A genuinely missing raw current model still
+fails validation; exact-current resolution is not a bypass for a newly changed
+model or a silent conversion to a recommended sibling.
 
-Application agent-execution launch inputs carry an optional `skillAccessMode`
-field. It has a narrow value set: `PRELOADED_ONLY` is the
-host-managed default and means "use the configured skills on the target
-definition"; `NONE` suppresses AutoByteus skill exposure when an
-internal/application flow intentionally needs that. The saved setup
-launch-configuration editors do not expose a skill-access selector, and the removed
-`GLOBAL_DISCOVERY` value is not a valid saved setup, backend SDK, or
-`agentExecution` input.
+Application agent-execution launch inputs carry no skill setting. Every launched
+agent or team member uses the skills of its agent definition (`skillScope` /
+`skillNames`). A skill-access property still sent by an application bundle
+built against the older SDK is not read.
 
 `ApplicationLaunchConfigurationService` is the semantic owner behind the
 legacy-named launch-setup routes:

@@ -9,6 +9,7 @@
     :data-transient-kind="row.transientKind"
     :data-team-run-id="row.teamRunId"
     :data-member-address="row.memberAddress"
+    :data-agent-run-id="row.agentRunId ?? undefined"
     :data-tree-depth="row.depth"
     :title="identityLabel"
     :aria-label="accessibleLabel"
@@ -57,30 +58,33 @@
     />
 
     <div class="flex min-w-0 flex-1 items-start py-1 pr-2">
-      <span class="member-status inline-flex flex-shrink-0 items-center">
+      <!-- Status and icon sit in a box as tall as the name line, so they stay centered on it. -->
+      <span class="member-status inline-flex h-5 flex-shrink-0 items-center">
         <StatusDot
           v-if="row.memberKind === 'agent'"
           class="mr-1.5"
           data-test="workspace-transient-status-dot"
           :status="row.currentStatus"
-          variant="transient"
         />
       </span>
-      <span
-        v-if="row.memberKind === 'agent_team'"
-        class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
-        data-team-icon="temporary-task-team"
-        aria-hidden="true"
-      >
-        <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
+      <span class="mr-1.5 inline-flex h-5 flex-shrink-0 items-center" aria-hidden="true">
+        <span
+          v-if="row.memberKind === 'agent_team'"
+          class="inline-flex h-4 w-4 items-center justify-center rounded-[0.2rem] border border-dashed border-indigo-400 bg-white text-indigo-600"
+          data-team-icon="temporary-task-team"
+        >
+          <Icon icon="heroicons:bolt-20-solid" class="h-3 w-3" />
+        </span>
+        <!-- A task Agent shows the same solid status dot and initials as a member. -->
+        <span
+          v-else
+          class="inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
+          data-test="workspace-task-agent-avatar"
+        >{{ initials }}</span>
       </span>
+      <!-- No visible "Started by" line; the starter stays in the accessible label. -->
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
         <span class="block truncate">{{ row.displayName }}</span>
-        <span
-          v-if="combinedTaskStatus"
-          class="mt-0.5 block truncate text-[0.6875rem] font-medium text-slate-600"
-          data-test="workspace-transient-task-status"
-        >{{ combinedTaskStatus }}</span>
         <span
           v-if="inspectionAttempt?.state === 'loading'"
           class="mt-0.5 block text-[0.6875rem] font-medium text-indigo-700"
@@ -149,32 +153,27 @@ const roleLabel = computed(() => t(
 
 const status = computed(() => props.row.currentStatus || AgentStatus.Offline);
 const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
-const executionStatusLabel = computed(() => t(`workspace.task_monitor.execution.${status.value}`));
-const lifecycleStatusLabel = computed(() => props.row.task
-  ? t(`workspace.task_monitor.lifecycle.${props.row.task.displayStatus}`)
+const startedByLabel = computed(() => props.row.delegatedBy
+  ? t('workspace.members.started_by', { name: props.row.delegatedBy })
   : '');
-const combinedTaskStatus = computed(() => props.row.task && props.row.memberKind === 'agent'
-  ? t('workspace.task_monitor.combined_status', {
-    lifecycle: lifecycleStatusLabel.value,
-    execution: executionStatusLabel.value,
-  })
-  : lifecycleStatusLabel.value);
+const initials = computed(() => props.row.displayName.split(/\s+/).filter(Boolean).slice(0, 2)
+  .map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI');
 const inspectionAttempt = computed(() => props.row.agentRunId
   ? runHistoryStore.getTeamMemberInspectionAttempt(props.row.teamRunId, props.row.agentRunId)
   : null);
 
 const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
   role: roleLabel.value,
-  name: props.row.task?.description || props.row.displayName,
+  name: props.row.displayName,
   address: props.row.memberAddress,
 }));
 
 const accessibleLabel = computed(() => t('workspace.history.hierarchy.tree_item', {
   role: roleLabel.value,
-  name: props.row.task?.description || props.row.displayName,
+  name: props.row.displayName,
   address: props.row.memberAddress,
   level: props.row.depth + 1,
-  status: combinedTaskStatus.value || statusLabel.value,
+  status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
 }));
 
 const disclosureLabel = computed(() => t(
@@ -202,6 +201,12 @@ const activateRow = (): void => {
 <style scoped>
 .transient-execution-row {
   isolation: isolate;
+}
+
+/* The row has a 1px border; draw the branch lines from the border edge so they continue the
+   lines of the rows above and below exactly. */
+.transient-execution-row > .hierarchy-branches {
+  inset: -1px;
 }
 
 .transient-execution-row > :not(.hierarchy-identity-tooltip):not(.hierarchy-branches) {

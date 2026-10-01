@@ -8,6 +8,7 @@ import {
   NO_VNC_ELECTRON_REQUIRED_NOTICE_FILES,
   NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
 } from './noVncThirdPartyNotice'
+import { ISOLATED_LAUNCH_MARKER_EXTRA_RESOURCE } from './isolatedLaunchMarker'
 
 // Load environment variables from .env.local (for Apple credentials)
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
@@ -245,7 +246,9 @@ const options: Configuration = {
       from: "build/icons",
       to: "icons"
     },
-    NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE
+    NO_VNC_THIRD_PARTY_NOTICE_EXTRA_RESOURCE,
+    // Capability marker read by `pnpm isolated-app` before launching this build isolated.
+    ISOLATED_LAUNCH_MARKER_EXTRA_RESOURCE
   ],
   publish: updaterPublishConfig,
   // Default artifact name pattern

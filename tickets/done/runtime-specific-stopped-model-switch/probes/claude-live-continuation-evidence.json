@@ -1,0 +1,57 @@
+{
+  "id": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+  "startedAt": "2026-09-25T15:44:50.592Z",
+  "events": [
+    {
+      "type": "sent",
+      "time": "2026-09-25T15:44:52.581Z"
+    },
+    {
+      "type": "checkpoint",
+      "seconds": 0,
+      "tail": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-claude-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nnow\nagent-codex\nagent-codex-live\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nDA\nDaily Assistant - 5F35\nOffline\nYou\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nDA\nDaily Assistant\n\nYou’ve hit your session limit · resets 7:20pm (Europe/Berlin)\n\nYou\nReply with exactly PROBE_CLAUDE_BETA and no other text.\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n "
+    },
+    {
+      "type": "possible-error",
+      "seconds": 11,
+      "tail": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-claude-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nnow\nagent-codex\nagent-codex-live\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nDA\nDaily Assistant - 5F35\nError\nYou\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nDA\nDaily Assistant\n\nYou’ve hit your session limit · resets 7:20pm (Europe/Berlin)\n\nYou\nReply with exactly PROBE_CLAUDE_BETA and no other text.\nDA\nDaily Assistant\n\nYou’ve hit your session limit · resets 7:20pm (Europe/Berlin)\n\nAn Error Occurred\n\nError: CLAUDE_RUNTIME_RESULT_ERROR: You've hit your session limit · resets 7:20pm (Europe/Berlin)\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~/autobyteus_org/autobyteus-worktrees/runtime-speci\nbyteus-server-ts/tests/.tmp/runtime-switch-browser-\ns/agent-claude-live $ rkspaces"
+    }
+  ],
+  "errors": [],
+  "before": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "haiku",
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+            "threadId": null,
+            "metadata": null
+          }
+        }
+      }
+    }
+  },
+  "after": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+        "isActive": true,
+        "metadataConfig": {
+          "llmModelIdentifier": "haiku",
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+            "threadId": null,
+            "metadata": null
+          }
+        }
+      }
+    }
+  },
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-claude-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nnow\nagent-codex\nagent-codex-live\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nDA\nDaily Assistant - 5F35\nError\nYou\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nDA\nDaily Assistant\n\nYou’ve hit your session limit · resets 7:20pm (Europe/Berlin)\n\nYou\nReply with exactly PROBE_CLAUDE_BETA and no other text.\nDA\nDaily Assistant\n\nYou’ve hit your session limit · resets 7:20pm (Europe/Berlin)\n\nAn Error Occurred\n\nError: CLAUDE_RUNTIME_RESULT_ERROR: You've hit your session limit · resets 7:20pm (Europe/Berlin)\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~/autobyteus_org/autobyteus-worktrees/runtime-speci\nbyteus-server-ts/tests/.tmp/runtime-switch-browser-\ns/agent-claude-live $ rkspaces",
+  "status": "Provider Error"
+}

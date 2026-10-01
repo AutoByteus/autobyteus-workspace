@@ -152,7 +152,7 @@ const prepareServerDist = (): void => {
     cwd: serverRoot,
     stdio: "inherit",
   });
-  execFileSync(process.execPath, [path.join(serverRoot, "scripts", "copy-managed-messaging-assets.mjs")], {
+  execFileSync(process.execPath, [path.join(serverRoot, "scripts", "copy-build-assets.mjs")], {
     cwd: serverRoot,
     stdio: "inherit",
   });
@@ -224,7 +224,6 @@ const seedSourceMemory = (sourceDataDir: string): void => {
     llmModelIdentifier: "model-a",
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: null,
     runtimeKind: "autobyteus",
     platformAgentRunId: null,
     startedAt: "2026-06-23T02:00:00.000Z",

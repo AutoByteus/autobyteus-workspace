@@ -1,0 +1,37 @@
+{
+  "id": "daily_assistant_79724120b0b5454bb2ac78e40631a475",
+  "stop": {
+    "data": {
+      "terminateAgentRun": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    }
+  },
+  "files": {
+    "raw_traces_active.jsonl": {
+      "size": 991,
+      "sha256": "7867dfd1ff896215556baed74d1829eac53684784b1fadd33c851592c7a419b8"
+    },
+    "run_metadata.json": {
+      "size": 973,
+      "sha256": "90e89738dd791c2868cd1f29849fd9eacda7f97fb8506bdc3078fe8d76671bca"
+    }
+  },
+  "metadata": {
+    "runId": "daily_assistant_79724120b0b5454bb2ac78e40631a475",
+    "agentDefinitionId": "daily-assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-codex-live",
+    "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/memory/agents/daily_assistant_79724120b0b5454bb2ac78e40631a475",
+    "llmModelIdentifier": "gpt-6-astra",
+    "llmConfig": null,
+    "autoExecuteTools": false,
+    "skillAccessMode": "PRELOADED_ONLY",
+    "runtimeKind": "codex_app_server",
+    "platformAgentRunId": "01a0d93a-3ae0-79b2-a9a5-40c15215b8d6",
+    "preparedAt": "2026-09-25T15:41:06.939Z",
+    "preparedExpiresAt": "2026-09-26T15:41:06.939Z",
+    "startedAt": "2026-09-25T15:41:07.339Z",
+    "applicationExecutionContext": null
+  }
+}

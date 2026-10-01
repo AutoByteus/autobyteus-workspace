@@ -27,7 +27,6 @@ const agentMetadata = (address: string, agentRunId: string, agentDefinitionId: s
   agentDefinitionId,
   llmModelIdentifier: 'model-x',
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   llmConfig: null,
   workspaceRootPath: '/ws/a',
   applicationExecutionContext: null,
@@ -244,7 +243,6 @@ vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
   GetTeamCommunicationMessages: 'GetTeamCommunicationMessages',
-  GetTaskDelegationRecords: 'GetTaskDelegationRecords',
 }));
 
 vi.mock('~/graphql/mutations/runHistoryMutations', () => ({
@@ -404,13 +402,6 @@ describe('Historical team lazy hydration integration', () => {
       if (query === 'GetTeamCommunicationMessages') {
         return {
           data: { getTeamCommunicationMessages: [] },
-          errors: [],
-        };
-      }
-
-      if (query === 'GetTaskDelegationRecords') {
-        return {
-          data: { getTaskDelegationRecords: [] },
           errors: [],
         };
       }

@@ -2,7 +2,6 @@ import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { lookup as lookupMime } from "mime-types";
-import type { TaskUpdate } from "../../agent-collaboration/execution/task/task-delegation-record-v1.js";
 import { AgentOrgRunManager } from "./agent-org-run-manager.js";
 
 export type AgentOrgReferenceContentErrorCode =
@@ -33,11 +32,6 @@ const required = (value: string, name: string): string => {
 const referenceId = (ownerId: string, filePath: string): string =>
   createHash("sha256").update(`${ownerId}\0${filePath}`).digest("hex");
 
-const updateId = (update: TaskUpdate): string =>
-  "submissionId" in update ? update.submissionId
-    : "reviewId" in update ? update.reviewId
-      : update.interruptionId;
-
 const readableFile = (absolutePath: string): boolean => {
   try {
     if (!fs.statSync(absolutePath).isFile()) return false;
@@ -54,9 +48,16 @@ const readableFile = (absolutePath: string): boolean => {
   }
 };
 
-/** Resolves Org-owned sidecar references without reinterpreting them as Team records. */
+/** The communication messages of one collaboration root (an Org, or a standalone Agent run's root). */
+export type CollaborationMessageRecords = Readonly<{
+  getCollaborationRecordsSnapshot(rootRunId: string): Promise<Readonly<{
+    messages: Readonly<{ messages: readonly Readonly<{ messageId: string; referenceFiles: readonly string[] }>[] }>;
+  }>>;
+}>;
+
+/** Resolves root-owned sidecar references without reinterpreting them as Team records. */
 export class AgentOrgReferenceContentService {
-  constructor(private readonly records: Pick<AgentOrgRunManager, "getCollaborationRecordsSnapshot"> = AgentOrgRunManager.getInstance()) {}
+  constructor(private readonly records: CollaborationMessageRecords = AgentOrgRunManager.getInstance()) {}
 
   async resolveCommunication(input: Readonly<{
     orgRunId: string;
@@ -70,25 +71,6 @@ export class AgentOrgReferenceContentService {
     const filePath = message?.referenceFiles.find((candidate) =>
       referenceId(messageId, candidate) === expectedReferenceId);
     return this.open(filePath);
-  }
-
-  async resolveTask(input: Readonly<{
-    orgRunId: string;
-    taskId: string;
-    referenceId: string;
-  }>): Promise<ResolvedAgentOrgReferenceContent> {
-    const snapshot = await this.records.getCollaborationRecordsSnapshot(required(input.orgRunId, "orgRunId"));
-    const taskId = required(input.taskId, "taskId");
-    const expectedReferenceId = required(input.referenceId, "referenceId");
-    const task = snapshot.tasks.records.find((candidate) => candidate.taskId === taskId);
-    const candidates = task ? [
-      ...task.referenceFiles.map((filePath) => ({ ownerId: task.taskId, filePath })),
-      ...task.updates.flatMap((update) => "referenceFiles" in update
-        ? update.referenceFiles.map((filePath) => ({ ownerId: updateId(update), filePath }))
-        : []),
-    ] : [];
-    return this.open(candidates.find((candidate) =>
-      referenceId(candidate.ownerId, candidate.filePath) === expectedReferenceId)?.filePath);
   }
 
   private open(filePath: string | undefined): ResolvedAgentOrgReferenceContent {

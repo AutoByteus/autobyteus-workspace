@@ -47,6 +47,8 @@ import {
 } from './autobyteus-remote-model-discovery-service.js';
 import { getClaudeModelCatalog, type ClaudeModelCatalog } from './claude-model-catalog.js';
 import { getCodexModelCatalog, type CodexModelCatalog } from './codex-model-catalog.js';
+import { AntigravityModelCatalog } from './antigravity-model-catalog.js';
+import { GrokBuildModelCatalog } from './grok-build-model-catalog.js';
 import {
   DynamicModelSourceLifecycle,
   type DynamicSourceSpec,
@@ -64,6 +66,10 @@ export type LocalProviderModelCatalogSnapshot = ProviderModelCatalogSnapshot<
   ImageModel,
   VideoModel
 >;
+export type RuntimeModelSelectionCatalog = Readonly<{
+  offeredModels: readonly ModelInfo[];
+  findExactCurrent: (identifier: string) => ModelInfo | null;
+}>;
 
 export class ModelCatalogService {
   private readonly lifecycle = new DynamicModelSourceLifecycle();
@@ -78,6 +84,8 @@ export class ModelCatalogService {
       getAutobyteusRemoteModelDiscoveryService(),
     private readonly claudeModelCatalog: ClaudeModelCatalog = getClaudeModelCatalog(),
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
+    private readonly antigravityModelCatalog = new AntigravityModelCatalog(),
+    private readonly grokBuildModelCatalog = new GrokBuildModelCatalog(),
   ) {}
 
   async listProviderModelCatalogSnapshots(
@@ -197,10 +205,26 @@ export class ModelCatalogService {
   }
 
   async listLlmModels(runtimeKind?: string | null, workspaceRootPath?: string): Promise<ModelInfo[]> {
+    return [...(await this.runtimeModelSelectionCatalog(runtimeKind, workspaceRootPath)).offeredModels];
+  }
+
+  async resolveExactCurrentLlmModel(runtimeKind: string | null | undefined, identifier: string, workspaceRootPath?: string): Promise<ModelInfo | null> {
+    return (await this.runtimeModelSelectionCatalog(runtimeKind, workspaceRootPath)).findExactCurrent(identifier);
+  }
+
+  async runtimeModelSelectionCatalog(runtimeKind?: string | null, workspaceRootPath?: string): Promise<RuntimeModelSelectionCatalog> {
     const runtime = normalizeRuntime(runtimeKind);
-    if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.listModels();
-    if (runtime === RuntimeKind.CODEX_APP_SERVER) return this.codexModelCatalog.listModels(workspaceRootPath);
-    return LLMFactory.listAvailableModels();
+    if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.selectionCatalog();
+    const models = runtime === RuntimeKind.CODEX_APP_SERVER
+      ? await this.codexModelCatalog.listModels(workspaceRootPath)
+      : runtime === RuntimeKind.ANTIGRAVITY_CLI
+        ? await this.antigravityModelCatalog.listModels()
+        : runtime === RuntimeKind.GROK_BUILD
+          ? await this.grokBuildModelCatalog.listModels()
+          : runtime === RuntimeKind.AUTOBYTEUS
+            ? await LLMFactory.listAvailableModels()
+            : (() => { throw new Error(`Unsupported runtime: ${runtime}`); })();
+    return { offeredModels: models, findExactCurrent: (id) => models.find((row) => row.model_identifier === id) ?? null };
   }
 
   async listAudioModels(runtimeKind?: string | null): Promise<AudioModel[]> {
@@ -368,9 +392,7 @@ export class ModelCatalogService {
   }
 
   private async listExternalRuntimeSnapshots(runtime: RuntimeKind): Promise<LocalProviderModelCatalogSnapshot[]> {
-    const models = runtime === RuntimeKind.CLAUDE_AGENT_SDK
-      ? await this.claudeModelCatalog.listModels()
-      : await this.codexModelCatalog.listModels();
+    const models = [...(await this.runtimeModelSelectionCatalog(runtime)).offeredModels];
     const grouped = new Map<string, ModelInfo[]>();
     for (const model of models) grouped.set(model.provider_id, [
       ...(grouped.get(model.provider_id) ?? []),

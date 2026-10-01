@@ -3,7 +3,9 @@
     v-if="target"
     :target="target"
     :show-header-actions="true"
-    @new-agent="createNewAgent"
+    :skill-tagging="skillTagging"
+    :composer-placeholder="childPlaceholder"
+    @new-agent="startNewChatForRun"
     @edit-config="openSelectedRunConfig"
   />
   <div v-else class="p-4 text-center text-gray-500">
@@ -13,30 +15,66 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import AgentWorkspaceSurface from '~/components/workspace/agent/AgentWorkspaceSurface.vue'
 import { useActiveContextStore } from '~/stores/activeContextStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
-import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore'
-import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
-import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
-import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults'
+import { useChatComposerOptions } from '~/composables/chat/useChatComposerOptions'
+import { useAgentRunCollaborationSync } from '~/composables/agentCollaboration/useAgentRunCollaborationSync'
+import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
+import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
+import { useLocalization } from '~/composables/useLocalization'
 
+/**
+ * The standalone agent run view (the chat run view, D-17): the product run header with ⚙ and ＋,
+ * the conversation, and the product box with `/` skill tags. A collaborator of the run (F-04)
+ * has the same header controls and a box that names it.
+ */
+const { t } = useLocalization()
+const router = useRouter()
 const active = useActiveContextStore()
 const definitions = useAgentDefinitionStore()
-const runConfig = useAgentRunConfigStore()
-const teamRunConfig = useTeamRunConfigStore()
-const selection = useAgentSelectionStore()
+const chatDraftStore = useChatDraftStore()
 const center = useWorkspaceCenterViewStore()
-const target = computed(() => active.activeWorkspaceTarget?.kind === 'standalone_agent'
-  ? active.activeWorkspaceTarget
-  : null)
+// The run's own agent, or a task child brought into the run with `@`.
+const target = computed(() => {
+  const current = active.activeWorkspaceTarget
+  return current && (current.kind === 'standalone_agent' || current.kind === 'agent_run_task_agent'
+    || current.kind === 'agent_run_task_team_member') ? current : null
+})
+const isHost = computed(() => target.value?.kind === 'standalone_agent')
+useAgentRunCollaborationSync()
 
-const createNewAgent = () => {
-  if (!target.value) return
-  runConfig.setAgentConfig(buildEditableAgentRunSeed(target.value.context.config))
-  teamRunConfig.clearConfig()
-  selection.clearSelection()
+const composerOptions = useChatComposerOptions(computed(() => target.value?.context.config.agentDefinitionId ?? null))
+const skillTagging = computed<SkillTaggingCapability | null>(() => {
+  const config = target.value?.context.config
+  if (!config || !isHost.value) return null
+  return {
+    skills: composerOptions.skillOptions.value,
+    allInstalled: composerOptions.skillsAllInstalled.value,
+    placeholder: config.agentDefinitionId === DEFAULT_CHAT_AGENT_DEFINITION_ID
+      ? t('chat.run.placeholderDefault')
+      : t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }),
+  }
+})
+
+/** F-04: a collaborator view names its agent in the box, like the Org's delegated-Agent view. */
+const childPlaceholder = computed(() => {
+  const config = target.value?.context.config
+  return config && !isHost.value ? t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }) : null
+})
+
+/** ＋ starts a New chat preset to this run's agent and workspace (UIS-013 R3). */
+const startNewChatForRun = async () => {
+  const config = target.value?.context.config
+  if (!config) return
+  chatDraftStore.startNewChat({
+    agentDefinitionId: config.agentDefinitionId,
+    workspaceRootPath: config.workspaceMetadata?.workspaceRootPath || undefined,
+  })
+  await router.push('/chat')
 }
 const openSelectedRunConfig = () => { if (target.value) center.showConfig() }
 

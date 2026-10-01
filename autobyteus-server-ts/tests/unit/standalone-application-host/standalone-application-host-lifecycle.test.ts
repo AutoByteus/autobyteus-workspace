@@ -1,3 +1,4 @@
+const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const TOKEN_MIGRATION_ID = "token-usage-v1";
@@ -59,7 +60,10 @@ const mocks = vi.hoisted(() => {
   };
   const workspaceManager = {};
   const runtimeAvailabilityService = {};
-  const modelCatalogService = { listLlmModels: vi.fn(async () => []) };
+  const modelCatalogService = {
+    resolveExactCurrentLlmModel: vi.fn(async () => null),
+    runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })),
+  };
   const modelAvailabilityService = {};
   const llmProviderService = {};
   const codexClientManager = {};
@@ -103,7 +107,6 @@ const mocks = vi.hoisted(() => {
     buildApplicationPlatformRuntime: vi.fn(() => ({ lifecycle: applicationLifecycle })),
     buildStandaloneApplicationServer: vi.fn(async () => app),
     configureDeniedPaths: vi.fn(),
-    seedInternalBaseUrl: vi.fn(),
     loggerWarn: vi.fn(),
   };
 });
@@ -152,6 +155,9 @@ vi.mock("../../../src/secret-management/secret-vault-runtime.js", () => ({
     initialize: mocks.initializeSecretVault,
     close: mocks.closeSecretVault,
   }),
+}));
+vi.mock("../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js", () => ({
+  TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID: "20260926_team_context_file_execution_locators_v1",
 }));
 vi.mock("../../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
@@ -224,9 +230,6 @@ vi.mock("../../../src/compositions/build-standalone-application-server.js", () =
 vi.mock("autobyteus-ts/tools/file/workspace-path-utils.js", () => ({
   configureFileToolDeniedPaths: mocks.configureDeniedPaths,
 }));
-vi.mock("../../../src/config/server-runtime-endpoints.js", () => ({
-  seedInternalServerBaseUrlFromListenAddress: mocks.seedInternalBaseUrl,
-}));
 
 import { startStandaloneApplicationHost } from "../../../src/standalone-application-host/start-standalone-application-host.js";
 
@@ -237,6 +240,7 @@ const status = (
 ) => ({ migrationId, status: migrationStatus, ...extra });
 
 const successfulStatuses = () => [
+  status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"),
   status(TOKEN_MIGRATION_ID, "SUCCEEDED"),
   status(TEAM_MIGRATION_ID, "SUCCEEDED"),
   status(READABLE_MIGRATION_ID, "SUCCEEDED_WITH_WARNINGS"),
@@ -387,6 +391,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
 
   it("retains degraded token history and strict TeamRun admission without blocking a current-schema run", async () => {
     mocks.runPending.mockResolvedValueOnce([
+      status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"),
       status(TOKEN_MIGRATION_ID, "FAILED", { logPath: "/tmp/token.log", errorMessage: "history failed" }),
       status(TEAM_MIGRATION_ID, "FAILED", { logPath: "/tmp/team.log", errorMessage: "legacy package" }),
       status(READABLE_MIGRATION_ID, "SUCCEEDED"),
@@ -415,7 +420,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
   ] as const)(
     "rejects %s readable-provider readiness after catalog rebuild and unwinds repository resources",
     async (_label, statuses, expectedStatus, expectedLogPath) => {
-      mocks.runPending.mockResolvedValueOnce(statuses);
+      mocks.runPending.mockResolvedValueOnce([status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"), ...statuses]);
 
       await expect(startStandaloneApplicationHost(input)).rejects.toThrow(
         `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:${expectedStatus}:${expectedLogPath}`,
@@ -470,5 +475,14 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.stopEventPipeline).toHaveBeenCalledTimes(1);
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
+  });
+  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS", "SUCCEEDED"])("uses independent package admission for attachment status %s", async (value) => {
+    mocks.runPending.mockResolvedValueOnce([...successfulStatuses().filter((entry) => entry.migrationId !== ATTACHMENT_MIGRATION_ID),
+      ...(value === "MISSING" ? [] : [{ migrationId: ATTACHMENT_MIGRATION_ID, status: value }])]);
+    const host = await startStandaloneApplicationHost(input);
+    expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
+    expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildApplicationPlatformRuntime.mock.invocationCallOrder[0]!);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    await host.close();
   });
 });

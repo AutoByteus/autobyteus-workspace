@@ -1,0 +1,179 @@
+{
+  "startedAt": "2026-09-30T22:56:21.366Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "T01": {
+      "title": "UXJ-001 Team run: member-focused menu (VIS-001), send (VIS-004), task Team + task Agent rows (VIS-006), Team tab, C-02 observation",
+      "result": "Fail",
+      "ms": 344377,
+      "error": "Timed out waiting for task Agent row in the Team tree",
+      "details": null
+    },
+    "T02": {
+      "title": "UXJ-002 Team run: open a task Team member (system task notice, VIS-005) and chat with it directly",
+      "result": "Fail",
+      "ms": 30090,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"]').filter({ hasText: /product prototyper/i }).first()\n",
+      "details": null
+    },
+    "T03": {
+      "title": "UXJ-003 / VIS-007: a collaborator that cannot be started → red notice, no row, card not failed; dismiss; replaced by next send",
+      "result": "Fail",
+      "ms": 32565,
+      "error": "Timed out waiting for flaky collaborator admitted",
+      "details": null
+    },
+    "O01": {
+      "title": "UXJ-004 Org run: menu excludes the Org, members and teams (VIS-008); task Agent + task Team rows and Org tab (VIS-009)",
+      "result": "Pass",
+      "ms": 32441,
+      "details": {
+        "orgRunId": "launch_org_a39eac8e05e5471a9f4236f7f13cc692",
+        "options": [
+          "research-assistant",
+          "code-reviewer",
+          "flaky-agent",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team"
+        ],
+        "footer": "analyst gets your message and brings them into this run",
+        "chips": 2,
+        "taskAgentRows": [
+          {
+            "text": "CR\ncode reviewer",
+            "label": "code reviewer, running, Started by analyst, /code_reviewer, code_reviewer_5b6f46eb719e4a1ba39e9ff4d49189c4",
+            "avatar": true
+          },
+          {
+            "text": "PP\nproduct prototyper",
+            "label": "product prototyper, running, /product_team/product_prototyper, product_prototyper_a829b50adedd494bb97b876f13440d1b",
+            "avatar": true
+          },
+          {
+            "text": "PB\nprototype bootstrapper",
+            "label": "prototype bootstrapper, idle, /product_team/prototype_bootstrapper, prototype_bootstrapper_a1511204aaea42aa924e861ada28e4f7",
+            "avatar": true
+          }
+        ],
+        "orgTabRows": [
+          "Message Oct 1, 01:03 AM from product_prototyper I've reviewed the launch page planning task and developed a comprehensive strategy covering hero section, value proposition, product features showcase, social proof, CTAs, FAQ, and footer—organized by user journey and conversion goals. I need more context on: product type, target audience, key differentiators, brand guidelines, and launch goals to refine this plan and build the actual prototype. Recommendations: Start with hero impact, showcase core benefits early, include strong social proof, and design clear conversion paths for different user segments. Ready to dive deeper once you share those details!"
+        ],
+        "tabs": [
+          "Files",
+          "Org",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ]
+      }
+    },
+    "O02": {
+      "title": "UXJ-004 Org run: open the task Agent (VIS-010) and chat with it",
+      "result": "Fail",
+      "ms": 242756,
+      "error": "page.waitForFunction: Timeout 240000ms exceeded.",
+      "details": null
+    },
+    "L01": {
+      "title": "Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Fail",
+      "ms": 140350,
+      "error": "Timed out waiting for host runtime inactive after its process died",
+      "details": null
+    },
+    "L02": {
+      "title": "Host crash without collaborators: Archive succeeds and the lingering root is ended",
+      "result": "Fail",
+      "ms": 126993,
+      "error": "Timed out waiting for host runtime inactive after its process died",
+      "details": null
+    },
+    "P01": {
+      "title": "Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`",
+      "result": "Pass",
+      "ms": 37721,
+      "details": {
+        "teamRunId": "review_team_fe9a13958f27497e963b60bcbdafbe6b",
+        "teamHadCollaboratorsKey": true,
+        "orgRunId": "launch_org_69d5094e5156484a9003ebe145473341",
+        "orgHadCollaboratorsKey": true,
+        "teamMenu": [
+          "research-assistant",
+          "code-reviewer",
+          "flaky-agent",
+          "analyst",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team"
+        ],
+        "orgCollaboratorsAfterContinue": []
+      }
+    },
+    "N01": {
+      "title": "AC-013 New chat `@` is still the launch-target picker",
+      "result": "Pass",
+      "ms": 1132,
+      "details": {
+        "targets": [
+          "analyst",
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "flaky-agent",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 85327
+    },
+    {
+      "label": "frontend",
+      "pid": 85354
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 85354,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 85327,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-CfL6zj"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-CfL6zj",
+  "backendUrl": "http://127.0.0.1:54815",
+  "frontUrl": "http://127.0.0.1:54816",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "flaky": "flaky-agent",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-09-30T23:13:04.546Z"
+}

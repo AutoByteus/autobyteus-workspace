@@ -11,7 +11,7 @@
       type="file"
       multiple
       class="hidden"
-      :disabled="!activeContextStore.activeAgentContext"
+      :disabled="!target"
       @change="onFileSelect"
     />
 
@@ -46,7 +46,7 @@
         class="text-blue-500 hover:text-white hover:bg-blue-500 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
         :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')"
         :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')"
-        :disabled="!activeContextStore.activeAgentContext"
+        :disabled="!target"
         @click.stop="triggerFileInput"
       >
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -157,7 +157,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useContextAttachmentComposer } from '~/composables/useContextAttachmentComposer';
-import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -166,20 +165,19 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
 import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
 import { getContextAttachmentIcon } from '~/utils/contextFiles/contextAttachmentIcons';
-import {
-  buildAgentDraftContextFileOwner,
-  buildOrgMemberDraftContextFileOwner,
-  buildTeamMemberDraftContextFileOwner,
-} from '~/utils/contextFiles/contextFileOwner';
+import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 
-const activeContextStore = useActiveContextStore();
+const props = defineProps<{
+  target: ComposerTarget | null;
+}>();
+
 const contextFileUploadStore = useContextFileUploadStore();
 const fileExplorerStore = useFileExplorerStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const workspaceStore = useWorkspaceStore();
 
-const activeContext = computed(() => activeContextStore.activeAgentContext);
+const activeContext = computed(() => props.target?.context ?? null);
 const workspaceId = computed(
   () =>
     activeContext.value?.config.workspaceMetadata?.workspaceId ??
@@ -197,28 +195,18 @@ const isContextListExpanded = ref(true);
 const isImageModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
 
-const resolveDraftOwnerForContext = (targetContext: AgentContext | null) => {
-  const target = activeContextStore.activeWorkspaceTarget;
-  if (!targetContext || !target || target.context !== targetContext) return null;
-  // Configured Org drafts remain editable during transport synchronization;
-  // retained task/standalone read-only targets do not acquire upload authority.
-  if (target.access === 'read_only' && target.kind !== 'agent_org_direct_agent'
-    && target.kind !== 'agent_org_team_member') return null;
-  if ('root' in target) return buildOrgMemberDraftContextFileOwner(target.root.orgRunId, target.context.state.runId);
-  if (target.kind === 'standalone_agent') return buildAgentDraftContextFileOwner(target.context.state.runId);
-  return buildTeamMemberDraftContextFileOwner(target.team.rootRunId, target.team.focusedMemberAddress);
-};
-
 const getTargetForContext = (targetContext: AgentContext | null) => {
-  if (!targetContext) {
+  const target = props.target;
+  if (!targetContext || !target) {
     return null;
   }
 
   return {
-    key: targetContext.state.runId,
+    key: target.key,
     subject: targetContext,
     attachments: targetContext.contextFilePaths,
-    draftOwner: resolveDraftOwnerForContext(targetContext),
+    // Upload authority belongs to the target that owns this exact context.
+    draftOwner: target.context === targetContext ? target.draftOwner : null,
   };
 };
 

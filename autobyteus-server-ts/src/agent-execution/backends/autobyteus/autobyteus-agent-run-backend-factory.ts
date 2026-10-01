@@ -26,7 +26,6 @@ import { AgentDefinitionService } from "../../../agent-definition/services/agent
 import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
 import { RuntimeKind, runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentCreationError } from "../../errors.js";
@@ -196,7 +195,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspaceId: built.resolvedRunConfig.workspaceId,
       memoryDir,
       llmConfig: built.resolvedRunConfig.llmConfig,
-      skillAccessMode: built.resolvedRunConfig.skillAccessMode,
       runtimeKind: built.resolvedRunConfig.runtimeKind,
       memberExecutionContext: built.resolvedRunConfig.memberExecutionContext,
       applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
@@ -258,7 +256,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           workspaceId: context.config.workspaceId,
           memoryDir,
           llmConfig: context.config.llmConfig,
-          skillAccessMode: context.config.skillAccessMode,
           runtimeKind: context.config.runtimeKind,
           memberExecutionContext: context.config.memberExecutionContext,
           applicationExecutionContext: context.config.applicationExecutionContext,
@@ -279,7 +276,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       autoExecuteTools,
       workspaceId,
       llmConfig,
-      skillAccessMode,
     } = options;
 
     let agentDef: AgentDefinition | null = null;
@@ -416,7 +412,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
 
     const skillPaths: string[] = [];
-    if (agentDef.skillNames?.length) {
+    if (this.skillService.hasEffectiveSkills(agentDef)) {
       for (const skill of this.skillService.resolveConfiguredSkillsForAgent(agentDef)) {
         skillPaths.push(skill.rootPath);
         logger.info(`Resolved skill '${skill.name}' to path: ${skill.rootPath}`);
@@ -479,7 +475,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         workspaceId: workspaceInstance?.workspaceId ?? null,
         memoryDir: options.memoryDir ?? null,
         llmConfig: llmConfig ?? null,
-        skillAccessMode: skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: effectiveRuntimeKind,
         memberExecutionContext: options.memberExecutionContext ?? null,
         applicationExecutionContext: options.applicationExecutionContext ?? null,
@@ -501,7 +496,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         initialCustomData,
         skillPaths,
         null,
-        skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         memoryCompaction,
         resolveCompactionLineageScope(runId, options.memberExecutionContext),
       ),

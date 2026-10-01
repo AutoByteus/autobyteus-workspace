@@ -1,6 +1,9 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const shellMessages = {
+  'shell.pages.index.redirecting_to_chat': '正在打开对话...',
+  'shell.navigation.chat': '对话',
+  'shell.components.AppLeftPanel.new_chat': '新对话',
   'shell.navigation.agents': '智能体',
   'shell.navigation.agentTeams': '智能体团队',
   'shell.navigation.agentOrgs': '智能体组织',
@@ -8,6 +11,7 @@ const shellMessages = {
   'shell.navigation.skills': '技能',
   'shell.navigation.memory': '记忆',
   'shell.navigation.nodes': '节点',
+  'shell.navigation.projects': '项目',
   'shell.navigation.settings': '设置',
   'shell.rightTabs.files': '文件',
   'shell.rightTabs.team': '团队',

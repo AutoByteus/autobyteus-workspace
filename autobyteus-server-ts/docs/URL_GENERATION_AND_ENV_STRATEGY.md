@@ -16,19 +16,11 @@ Examples:
 
 In TS this is validated and normalized in `src/config/app-config.ts` during `initializeBaseUrl()`.
 
-## Public URL vs Internal Runtime URL
+## Public URL
 
-The server now uses two different URL concepts on purpose:
-
-- Public URL:
-  - Driven by `AUTOBYTEUS_SERVER_HOST`.
-  - Used for Electron clients, remote-node registration, media URLs, and any absolute URL returned to external clients.
-- Internal runtime URL:
-  - Driven by the runtime-only `AUTOBYTEUS_INTERNAL_SERVER_BASE_URL`.
-  - Seeded from the actual bound listen host/port after server startup in `src/server-runtime.ts`.
-  - Used only by colocated managed runtimes such as the managed messaging gateway.
-
-The internal runtime URL is intentionally not persisted to `.env` and is not user-configured.
+The public URL is driven by `AUTOBYTEUS_SERVER_HOST`. It is used for Electron
+clients, remote-node registration, media URLs, and any absolute URL returned to
+external clients.
 
 ## Ownership Model
 
@@ -37,8 +29,6 @@ The caller that launches the server must provide the correct host value:
 - Electron launcher provides the stable embedded loopback public URL.
 - Local dev uses `.env` or CLI environment.
 - Containerized deployments set explicit value in runtime config.
-
-Server startup then derives the colocated internal runtime URL automatically from the bound listen address for managed child-process callbacks.
 
 ## Why Not Dynamic Host Discovery
 
@@ -72,9 +62,8 @@ Because `.env` and runtime paths are coupled, bootstrap must call `appConfigProv
 ## Practical Rules
 
 1. Always set `AUTOBYTEUS_SERVER_HOST` in the launching environment for public client access.
-2. Do not point managed messaging callback traffic at `AUTOBYTEUS_SERVER_HOST`; colocated managed runtimes must use the runtime-only internal URL instead.
-3. If using `--data-dir`, ensure the target directory contains `.env`.
-4. Do not instantiate path-sensitive singleton services before config initialization.
-5. If a test or harness bypasses `src/app.ts` and imports `src/server-runtime.ts` directly, it must initialize config first and seed `AUTOBYTEUS_INTERNAL_SERVER_BASE_URL` explicitly before enabling managed messaging.
-6. For Remote Access/mobile-facing resource URLs, use the client-facing resolver instead of directly concatenating `AUTOBYTEUS_SERVER_HOST`; paired phones should receive the paired private-network base or a safe relative path, not a desktop loopback URL.
-7. For Memory Hub ingestion, persist the user-confirmed advertised hub base URL and require the source-side Test Connection path before relying on it for Docker/Kubernetes/LAN sync.
+2. If using `--data-dir`, ensure the target directory contains `.env`.
+3. Do not instantiate path-sensitive singleton services before config initialization.
+4. If a test or harness bypasses `src/app.ts` and imports `src/server-runtime.ts` directly, it must initialize config first.
+5. For Remote Access/mobile-facing resource URLs, use the client-facing resolver instead of directly concatenating `AUTOBYTEUS_SERVER_HOST`; paired phones should receive the paired private-network base or a safe relative path, not a desktop loopback URL.
+6. For Memory Hub ingestion, persist the user-confirmed advertised hub base URL and require the source-side Test Connection path before relying on it for Docker/Kubernetes/LAN sync.

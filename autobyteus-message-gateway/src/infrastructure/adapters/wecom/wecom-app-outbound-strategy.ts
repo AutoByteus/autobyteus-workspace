@@ -1,4 +1,4 @@
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
+import type { ExternalOutboundEnvelope } from "../../../external-channel/external-outbound-envelope.js";
 import type { ProviderSendResult } from "../../../domain/models/provider-adapter.js";
 
 export type WeComAppOutboundStrategyConfig = {

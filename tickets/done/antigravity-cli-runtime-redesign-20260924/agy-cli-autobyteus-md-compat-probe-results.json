@@ -1,0 +1,32 @@
+{
+  "source": "repository built-in Memory Compactor agent.md",
+  "sourceCopiedByteForByteInVerbatimCases": true,
+  "model": "gemini-3.8-flash-low",
+  "results": {
+    "verbatim_slug": {
+      "exit": 0,
+      "status": "SUCCESS",
+      "responsePrefix": "PLAIN-OK\n",
+      "plainOk": true,
+      "requiredJsonKeysPresent": false,
+      "stderrTail": ""
+    },
+    "verbatim_display_name": {
+      "exit": 0,
+      "status": "SUCCESS",
+      "responsePrefix": "{\n  \"episodes\": [\n    {\n      \"summary\": \"User requested the exact response 'PLAIN-OK' without JSON, while switching model selection to Gemini 3.8 Flash (Low).\"\n    }\n  ],\n  \"critical_issues\": [],\n  \"unresolved_work\": [\n    {\n      \"fact\": \"Respond to user request adhering to the exact required stri",
+      "plainOk": false,
+      "requiredJsonKeysPresent": true,
+      "stderrTail": ""
+    },
+    "adapted_main_agent": {
+      "exit": 0,
+      "status": "SUCCESS",
+      "responsePrefix": "{\n  \"episodes\": [\n    {\n      \"summary\": \"User requested the exact response 'PLAIN-OK' with an instruction not to output JSON, while model selection was updated to Gemini 3.8 Flash (Low).\"\n    }\n  ],\n  \"critical_issues\": [],\n  \"unresolved_work\": [\n    {\n      \"fact\": \"Respond to user with 'PLAIN-OK'",
+      "plainOk": false,
+      "requiredJsonKeysPresent": true,
+      "stderrTail": ""
+    }
+  },
+  "limits": "One source file, one short conflicting prompt per case; model behavior is not parser introspection."
+}

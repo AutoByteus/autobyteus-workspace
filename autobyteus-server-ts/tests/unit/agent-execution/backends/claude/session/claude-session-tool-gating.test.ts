@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
@@ -14,6 +13,7 @@ import { AgentDefinition } from "../../../../../../src/agent-definition/domain/m
 import { composeSharedCarpenterPrompt } from "../../../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
+import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
 
 const {
   buildClaudeSessionMcpServersMock,
@@ -29,14 +29,6 @@ vi.mock(
 );
 
 const PROVIDER_SESSION_ID = "12345678-1234-4234-8234-123456789abc";
-
-const createResultQuery = async function* () {
-  yield {
-    type: "result",
-    session_id: PROVIDER_SESSION_ID,
-    result: "done",
-  };
-};
 
 const createMemberExecutionContext = () =>
   testMemberExecutionContext({
@@ -54,8 +46,8 @@ const createSession = (requestedToolNames: string[] = [], input: {
   memberExecutionContext?: MemberExecutionContext | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
 } = {}) => {
-  const startQueryTurn = vi.fn(async () => createResultQuery());
-  const closeQuery = vi.fn();
+  const sdkClient = createFakeClaudeSdkClient({ providerSessionId: PROVIDER_SESSION_ID });
+  const openStreamingSession = sdkClient.openStreamingSession;
   const memberExecutionContext = input.memberExecutionContext ?? null;
   const supportedAgentToolsMcpNames = new Set([
     "get_handoff_rules",
@@ -65,8 +57,6 @@ const createSession = (requestedToolNames: string[] = [], input: {
     "generate_image",
     "generate_speech",
     "delegate_task",
-    "submit_task_result",
-    "review_task_result",
     "publish_artifacts",
     "db_query",
     "read_application_state",
@@ -95,7 +85,6 @@ const createSession = (requestedToolNames: string[] = [], input: {
       agentDefinitionId: "agent-1",
       llmModelIdentifier: "haiku",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       memberExecutionContext,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
@@ -131,14 +120,10 @@ const createSession = (requestedToolNames: string[] = [], input: {
         appendMessage: vi.fn(),
         migrateSessionMessages: vi.fn(),
       } as any,
-      sdkClient: {
-        startQueryTurn,
-        closeQuery,
-        interruptQuery: vi.fn(async () => undefined),
-      } as any,
-      activeQueriesByRunId: new Map(),
+      sdkClient: sdkClient as any,
       toolingCoordinator: {
         processToolLifecycleChunk: vi.fn(),
+        processToolLifecycleContentBlock: vi.fn(),
         requestToolApprovalDecision: vi.fn(),
         clearPendingToolApprovals: vi.fn(),
       } as any,
@@ -148,9 +133,18 @@ const createSession = (requestedToolNames: string[] = [], input: {
     },
   });
 
+  const submit = async (text: string) => {
+    await session.submitInput(new AgentInputUserMessage(text), { kind: "start_turn" });
+    await flushClaudeSession();
+    sdkClient.current.completeTurn("done");
+    await flushClaudeSession();
+  };
+
   return {
     session,
-    startQueryTurn,
+    sdkClient,
+    submit,
+    openStreamingSession,
     activateForRun,
   };
 };
@@ -162,15 +156,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("preserves configured-only standalone exposure without team defaults", async () => {
-    const { session, startQueryTurn, activateForRun } = createSession(["read_page"], {
+    const { submit, openStreamingSession, activateForRun } = createSession(["read_page"], {
       memberExecutionContext: null,
     });
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -179,9 +169,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: "hello",
         systemPrompt: expect.not.stringContaining("## AgentTeam Addressing"),
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
@@ -190,16 +179,12 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("enables team collaboration defaults and only configured browser tools", async () => {
-    const { session, startQueryTurn } = createSession(
+    const { submit, openStreamingSession } = createSession(
       ["send_message_to", "open_tab", "read_page"],
       { memberExecutionContext: createMemberExecutionContext() },
     );
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -214,9 +199,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: "hello",
         systemPrompt: expect.stringContaining(
           "## AgentTeam Addressing",
         ),
@@ -238,15 +222,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
   it("automatically enables team collaboration tools for exact-run-only contexts", async () => {
     const memberExecutionContext = createMemberExecutionContext();
-    const { session, startQueryTurn } = createSession([], {
+    const { submit, openStreamingSession } = createSession([], {
       memberExecutionContext,
     });
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -255,9 +235,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: "hello",
         systemPrompt: expect.stringContaining(
           "Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.",
         ),
@@ -275,15 +254,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
   it("creates an Agent Tools MCP session with member sender context when send_message_to is configured", async () => {
     const memberExecutionContext = createMemberExecutionContext();
-    const { session, activateForRun } = createSession(["send_message_to"], {
+    const { submit, activateForRun } = createSession(["send_message_to"], {
       memberExecutionContext,
     });
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(activateForRun).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -311,15 +286,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("creates an Agent Tools MCP session with standalone sender context when no team context exists", async () => {
-    const { session, activateForRun } = createSession(["send_message_to"], {
+    const { submit, activateForRun } = createSession(["send_message_to"], {
       memberExecutionContext: null,
     });
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(activateForRun).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -340,15 +311,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       bindingId: "binding-a",
       producer: Object.freeze({ agentRunId: "run-1", displayName: "Claude app agent" }),
     });
-    const { session, activateForRun } = createSession(["read_application_state"], {
+    const { submit, activateForRun } = createSession(["read_application_state"], {
       applicationExecutionContext,
     });
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(activateForRun).toHaveBeenCalledWith(expect.objectContaining({
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
@@ -361,8 +328,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     }));
   });
 
-  it("reuses the live Agent Tools MCP descriptor across configured turns without wall-clock refresh", async () => {
-    const { session, activateForRun } = createSession(["send_message_to"]);
+  it("opens one process whose Agent Tools MCP descriptor serves every later turn", async () => {
+    const { submit, activateForRun, openStreamingSession } = createSession(["send_message_to"]);
     activateForRun
       .mockImplementationOnce((issueInput) => ({
         kind: "active" as const,
@@ -387,20 +354,13 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         },
       }));
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
-    await (session as any).executeTurn({
-      turnId: "turn-2",
-      content: new AgentInputUserMessage("again").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
+    await submit("again");
 
     expect(activateForRun).toHaveBeenCalledTimes(1);
-    expect(buildClaudeSessionMcpServersMock).toHaveBeenNthCalledWith(
-      2,
+    expect(openStreamingSession).toHaveBeenCalledTimes(1);
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledTimes(1);
+    expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         agentToolsMcpDescriptor: expect.objectContaining({
           serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/live",
@@ -410,13 +370,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("enables publish_artifacts only when toolNames explicitly allow it", async () => {
-    const { session, startQueryTurn } = createSession(["publish_artifacts"]);
+    const { submit, openStreamingSession } = createSession(["publish_artifacts"]);
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -425,7 +381,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "publish_artifacts",
@@ -436,13 +392,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("enables media tools and their autobyteus_agent_tools MCP names only when configured", async () => {
-    const { session, startQueryTurn } = createSession(["generate_image", "generate_speech"]);
+    const { submit, openStreamingSession } = createSession(["generate_image", "generate_speech"]);
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -451,7 +403,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "generate_image",
@@ -463,8 +415,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
   });
 
-  it("combines intrinsic Team tools with configured task-result tools", async () => {
-    const { session, startQueryTurn } = createSession(
+  it("combines intrinsic Team tools and ignores removed configured task-result tools", async () => {
+    const { submit, openStreamingSession } = createSession(
       [
         "delegate_task",
         ["mark", "task", "completed"].join("_"),
@@ -477,38 +429,27 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
       { memberExecutionContext: createMemberExecutionContext() },
     );
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         agentToolsMcpDescriptor: expect.objectContaining({
           enabledTools: [
             "delegate_task",
-            "submit_task_result",
-            "review_task_result",
             "get_handoff_rules",
             "send_message_to",
           ],
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: "hello",
         systemPrompt: expect.stringContaining(
-          "Use `delegate_task` to assign a new bounded unit of work",
+          "Use `delegate_task` to start a fresh instance of a mounted Agent or AgentTeam",
         ),
         allowedTools: [
           "delegate_task",
           "mcp__autobyteus_agent_tools__delegate_task",
-          "submit_task_result",
-          "mcp__autobyteus_agent_tools__submit_task_result",
-          "review_task_result",
-          "mcp__autobyteus_agent_tools__review_task_result",
           "get_handoff_rules",
           "mcp__autobyteus_agent_tools__get_handoff_rules",
           "send_message_to",
@@ -519,13 +460,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("creates Agent Tools MCP tooling for configured MCP-only Claude tools", async () => {
-    const { session, startQueryTurn } = createSession(["db_query"]);
+    const { submit, openStreamingSession } = createSession(["db_query"]);
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -534,7 +471,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "db_query",
@@ -545,20 +482,16 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("does not enable artifact publication for old singular-only Claude configs", async () => {
-    const { session, startQueryTurn } = createSession(["publish_artifact"]);
+    const { submit, openStreamingSession } = createSession(["publish_artifact"]);
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
         agentToolsMcpDescriptor: null,
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [],
       }),
@@ -566,13 +499,9 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
   });
 
   it("enables only plural artifact tooling for mixed old/new Claude configs", async () => {
-    const { session, startQueryTurn } = createSession(["publish_artifacts", "publish_artifact"]);
+    const { submit, openStreamingSession } = createSession(["publish_artifacts", "publish_artifact"]);
 
-    await (session as any).executeTurn({
-      turnId: "turn-1",
-      content: new AgentInputUserMessage("hello").content,
-      abortController: new AbortController(),
-    });
+    await submit("hello");
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -581,7 +510,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         }),
       }),
     );
-    expect(startQueryTurn).toHaveBeenCalledWith(
+    expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         allowedTools: [
           "publish_artifacts",

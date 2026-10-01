@@ -7,7 +7,9 @@ import {
 } from "autobyteus-ts";
 import {
   AgentDefinition,
+  normalizeAgentSkillScope,
   type AgentDefinitionDefaultLaunchConfig,
+  type AgentSkillScope,
 } from "../domain/models.js";
 import { AgentDefinitionPersistenceProvider } from "../providers/agent-definition-persistence-provider.js";
 import { CachedAgentDefinitionProvider } from "../providers/cached-agent-definition-provider.js";
@@ -68,6 +70,7 @@ export type AgentDefinitionCreateInput = {
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
   skillNames?: string[];
+  skillScope?: AgentSkillScope;
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
 };
 
@@ -187,6 +190,7 @@ export class AgentDefinitionService {
         this.registries.lifecycle,
       ),
       skillNames: data.skillNames ?? [],
+      skillScope: normalizeAgentSkillScope(data.skillScope),
       defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null,
     });
 
@@ -277,6 +281,9 @@ export class AgentDefinitionService {
           break;
         case "defaultLaunchConfig":
           nextValue = normalizeDefaultLaunchConfigInput(value) ?? null;
+          break;
+        case "skillScope":
+          nextValue = normalizeAgentSkillScope(value);
           break;
         default:
           break;

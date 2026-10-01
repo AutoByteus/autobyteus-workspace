@@ -1,6 +1,5 @@
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import {
@@ -29,6 +28,8 @@ import { testMemberExecutionContext } from "../../../../../fixtures/current-team
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
+const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill,
+  source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } });
 
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
@@ -46,7 +47,6 @@ const createRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       memberExecutionContext: input.memberExecutionContext ?? null,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
@@ -67,7 +67,6 @@ const createRestoreRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
@@ -143,6 +142,7 @@ const createBootstrapper = (input: {
   toolNames?: string[];
   agentToolsDescriptor?: AgentToolMcpDescriptor;
   materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
+  skillScope?: "CONFIGURED" | "ALL_INSTALLED";
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   if (input.materializeImplementation) {
@@ -155,7 +155,7 @@ const createBootstrapper = (input: {
   } as unknown as CodexWorkspaceResolver;
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async () => ({
-      skillNames: (input.bindings ?? input.skills.map((skill) => ({ kind: "resolved" as const, skill })))
+      skillNames: (input.bindings ?? input.skills.map(resolvedBinding))
         .map((binding) => binding.kind === "resolved" ? binding.skill.name : binding.name),
       toolNames: input.toolNames ?? [],
       name: "Codex test agent",
@@ -164,8 +164,8 @@ const createBootstrapper = (input: {
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
-      input.bindings ?? input.skills.map((skill) => ({ kind: "resolved" as const, skill }))),
+    resolveSkillScope: () => input.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
+      input.bindings ?? input.skills.map(resolvedBinding)),
   } as unknown as SkillService;
   const client = {
     request: vi.fn(input.requestImplementation),
@@ -355,7 +355,7 @@ describe("CodexThreadBootstrapper", () => {
     expect(createdRunContext.runtimeContext.codexThreadConfig.sandbox).toBe("read-only");
   });
 
-  it("reconciles configured skills that Codex already discovers by name", async () => {
+  it("reconciles a configured skill when Codex discovers exactly the catalog's copy", async () => {
     const skill = createSkill("installed_skill");
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
       skills: [skill],
@@ -367,7 +367,7 @@ describe("CodexThreadBootstrapper", () => {
               {
                 name: "installed_skill",
                 enabled: true,
-                path: "/Users/normy/.codex/skills/installed_skill/SKILL.md",
+                path: path.join(skill.rootPath, "SKILL.md"),
                 scope: "user",
               },
             ],
@@ -386,26 +386,53 @@ describe("CodexThreadBootstrapper", () => {
         workingDirectory: WORKING_DIRECTORY,
         runId: "run-1",
         requests: [{ kind: "reconcile-discoverable", skill }],
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       }),
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
     expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
   });
 
+  it("exposes the catalog's copy and logs codex-runtime-duplicate when Codex lists another copy (D-19)", async () => {
+    const skill = createSkill("installed_skill");
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
+      skills: [skill],
+      requestImplementation: async () => ({
+        data: [{
+          cwd: WORKING_DIRECTORY,
+          skills: [
+            { name: "installed_skill", enabled: true, path: "/Users/someone/.codex/skills/installed_skill/SKILL.md", scope: "user" },
+            { name: "installed_skill", enabled: true, path: path.join(skill.rootPath, "SKILL.md"), scope: "repo" },
+          ],
+          errors: [],
+        }],
+      }),
+    });
+
+    await bootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ requests: [{ kind: "expose-resolved", skill }] }));
+    const duplicate = warn.mock.calls.map(([message]) => String(message)).find((message) => message.startsWith("codex-runtime-duplicate"));
+    expect(duplicate).toContain("skill='installed_skill'");
+    expect(duplicate).toContain("codexPaths='/Users/someone/.codex/skills/installed_skill'");
+    expect(duplicate).toContain(`chosenPath='${path.resolve(skill.rootPath)}'`);
+    warn.mockRestore();
+  });
+
   it("maps every binding exactly once while discovery changes only resolved request intent", async () => {
     const installed = createSkill("installed_skill");
     const missing = createSkill("missing_skill");
     const bindings: ConfiguredAgentSkillBinding[] = [
-      { kind: "resolved", skill: installed },
+      resolvedBinding(installed),
       { kind: "unresolved", name: "unresolved_skill" },
-      { kind: "resolved", skill: missing },
+      resolvedBinding(missing),
     ];
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
       skills: [installed, missing],
       bindings,
       requestImplementation: async () => ({
-        data: [{ cwd: WORKING_DIRECTORY, skills: [{ name: installed.name, enabled: true }], errors: [] }],
+        data: [{ cwd: WORKING_DIRECTORY, skills: [{ name: installed.name, enabled: true, path: path.join(installed.rootPath, "SKILL.md") }], errors: [] }],
       }),
     });
 
@@ -419,9 +446,23 @@ describe("CodexThreadBootstrapper", () => {
         { kind: "reconcile-unresolved", name: "unresolved_skill" },
         { kind: "expose-resolved", skill: missing },
       ],
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      workspaceCollisionPolicy: "fail",
     });
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+  });
+
+  it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
+    const installed = createSkill("installed_skill");
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
+      skills: [installed],
+      skillScope: "ALL_INSTALLED",
+      requestImplementation: async () => ({ data: [{ cwd: WORKING_DIRECTORY, skills: [], errors: [] }] }),
+    });
+
+    await bootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace", requests: [{ kind: "expose-resolved", skill: installed }] }));
   });
 
   it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {
@@ -509,7 +550,7 @@ describe("CodexThreadBootstrapper", () => {
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
       skills: [skill],
       bindings: [
-        { kind: "resolved", skill },
+        resolvedBinding(skill),
         { kind: "unresolved", name: "still_missing" },
       ],
       requestImplementation: async () => {
@@ -529,7 +570,6 @@ describe("CodexThreadBootstrapper", () => {
           { kind: "expose-resolved", skill },
           { kind: "reconcile-unresolved", name: "still_missing" },
         ],
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       }),
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);

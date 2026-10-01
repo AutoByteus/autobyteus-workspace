@@ -21,10 +21,9 @@ const orgResponse = (id = 'org-history') => ({ data: { listCollaborationRootHist
 const orgInspectionResponse = (id = 'org-history') => {
   const row = buildAgentOrgHistoryRow({ rootRunId:id, workspaceRootPath:'/fixture', definitionName:'History Org' });
   return { data: { getAgentOrgRunInspection: {
-    schema_version: 1, root_subject_kind: 'agent_org', root_run_id: id,
+    root_subject_kind: 'agent_org', root_run_id: id,
     root_org: {
       base_change_sequence: 0, is_active: false, execution_tree: row.org,
-      task_records: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, records: [] },
       communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] },
       agent_statuses: [],
     },

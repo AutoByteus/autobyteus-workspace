@@ -1,0 +1,297 @@
+{
+  "startedAt": "2026-09-26T05:11:47.661Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/fixtures/task-agent-peer-sidebar.page.vue",
+  "scenarios": {
+    "PEER-001": {
+      "result": "Pass",
+      "description": "Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "startedAt": "2026-09-26T05:11:55.897Z",
+      "details": {
+        "initial": {
+          "mode": "live",
+          "focus": "peer-reviewer",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": false,
+            "peer-worker": false,
+            "peer-nested-task": false
+          }
+        },
+        "layout": [
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Agent, Worker, level 1, idle, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Review launch notes, level 1, In progress · Offline, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Check documentation and release readiness, level 1, In progress · Offline, /Worker"
+          }
+        ],
+        "final": {
+          "mode": "live",
+          "focus": "peer-worker",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": true,
+            "peer-task-b": true,
+            "peer-worker": true,
+            "peer-nested-task": false
+          }
+        },
+        "requests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-a",
+            "requestedAt": "2026-09-26T05:11:55.967Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-b",
+            "requestedAt": "2026-09-26T05:11:56.555Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-b",
+            "requestedAt": "2026-09-26T05:11:57.151Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-worker",
+            "requestedAt": "2026-09-26T05:11:57.690Z"
+          }
+        ]
+      }
+    },
+    "PEER-002": {
+      "result": "Fail",
+      "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers",
+      "startedAt": "2026-09-26T05:11:58.259Z",
+      "failure": {
+        "id": "PEER-002",
+        "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers",
+        "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Nested task Agent proof/ }) to be visible\u001b[22m\n",
+        "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Nested task Agent proof/ }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:291:18\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:66:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:287:3"
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-a",
+      "requestedAt": "2026-09-26T05:11:55.967Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-09-26T05:11:56.555Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-09-26T05:11:57.151Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-worker",
+      "requestedAt": "2026-09-26T05:11:57.690Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "Failed to open team member run: Error: PEER_EXPECTED_PROJECTION_FAILURE\n    at selectTreeRunFromHistory (http://127.0.0.1:52753/_nuxt/stores/runHistorySelectionActions.ts:79:52)\n    at async Object.onSelectTeamMember (http://127.0.0.1:52753/_nuxt/composables/useWorkspaceHistorySelectionActions.ts:68:22)"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 12132,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [
+    {
+      "id": "PEER-002",
+      "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers",
+      "message": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Nested task Agent proof/ }) to be visible\u001b[22m\n",
+      "stack": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('treeitem', { name: /Nested task Agent proof/ }) to be visible\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:291:18\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:66:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs:287:3"
+    }
+  ],
+  "port": 52753,
+  "baseUrl": "http://127.0.0.1:52753",
+  "browserVersion": "153.0.8010.54",
+  "failureDom": "Task Agent peer history sidebar probe\nPeer Workspace\nTEAMS\nPeer Team\n(1)\nRequest peer-worker\nnow\nW\nWorker\nnow\nAgent · Worker · /Worker\nTask: Review launch notes\nIn progress · Offline\nTask: Check documentation and release readiness\nIn progress · Offline\nR\nReviewer\nnow\nResearch\nnow\nW\nWorker\nIdle\nYou\nRequest peer-worker\nW\nWorker\n\nCONVERSATION_peer-worker\n\nContext Files (0)\n(drag, paste, or upload)",
+  "result": "Fail",
+  "finishedAt": "2026-09-26T05:12:40.425Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser"
+  }
+}

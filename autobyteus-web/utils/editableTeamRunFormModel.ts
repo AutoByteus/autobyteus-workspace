@@ -18,6 +18,7 @@ import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils'
 
 export const projectEditableTeamRunFormModel = (input: {
   config: Readonly<TeamRunConfig>
+  seedConfig?: Readonly<TeamRunConfig>
   teamDefinition: AgentTeamDefinition
   getTeamDefinitionById: (id: string) => AgentTeamDefinition | null
   repairAddresses: readonly AgentTeamAddress[]
@@ -30,6 +31,7 @@ export const projectEditableTeamRunFormModel = (input: {
     getTeamDefinitionById: input.getTeamDefinitionById,
   })
   const view = resolveTeamRunConfiguration(input.config, memberTree)
+  const seedView = resolveTeamRunConfiguration(input.seedConfig ?? input.config, memberTree)
   const scopeModel = (
     address: AgentTeamAddress,
     inheritedAddress: AgentTeamAddress | null,
@@ -38,6 +40,7 @@ export const projectEditableTeamRunFormModel = (input: {
     if (!scope) throw new Error(`Editable Team view is missing '${address}'.`)
     return Object.freeze({
       mode: 'editable' as const,
+      seedModelIdentifier: seedView.teamsByAddress[address]?.effectiveConfig.llmModelIdentifier ?? null,
       address,
       displayName: scope.displayName,
       effectiveConfig: scope.effectiveConfig,
@@ -60,6 +63,7 @@ export const projectEditableTeamRunFormModel = (input: {
       if (!agent || !baseline) throw new Error(`Editable Team view is missing Agent '${node.address}'.`)
       return Object.freeze({
         mode: 'editable' as const,
+        seedModelIdentifier: seedView.agentsByAddress[node.address]?.effectiveConfig.llmModelIdentifier ?? null,
         kind: 'agent' as const,
         address: node.address,
         displayName: node.displayName,

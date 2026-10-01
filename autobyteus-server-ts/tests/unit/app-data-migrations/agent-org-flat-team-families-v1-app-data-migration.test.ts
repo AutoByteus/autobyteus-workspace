@@ -14,16 +14,21 @@ import { AgentOrgHistoryCandidatePlanner } from "../../../src/app-data-migration
 import { TeamRunExecutionTreeV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/agent-org-run-execution-tree-path.js";
-import { getTaskDelegationRecordsV1Path } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
+import { getTaskDelegationRecordsV1Path } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
+import { getAgentOrgTaskDelegationRecordsV1Path } from "../../../src/app-data-migrations/legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
 import { getTeamCommunicationMessagesV1Path } from "../../../src/services/team-communication/team-communication-v1-store.js";
-import { getAgentOrgTaskDelegationRecordsV1Path } from "../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
 import { getAgentOrgCommunicationMessagesV1Path } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import {
   AtomicRunPackageFileCommitWriter,
 } from "../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
-import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { testAgentNode, testExecutionTree as testCurrentExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2 } from "../../fixtures/released-run-tree-fixtures.js";
+
+// This migration runs on pre-delegator data: seed released Team tree V2 shapes.
+const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
+  toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 
 const tempDirs: string[] = [];
 afterEach(async () => { await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
@@ -301,7 +306,7 @@ describe("AgentOrg flat-Team family startup migration", () => {
     expect(result.errorMessage).not.toContain("require correction and restart");
     await expect(fs.access(source)).rejects.toMatchObject({ code: "ENOENT" });
     await fs.access(getTeamRunExecutionTreePath(target));
-    expect(await new TeamRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
+    expect((await new TeamRunHistoryIndexStore(env.memoryDir).readIndexStrict()).rows).toEqual([]);
     expect(await new AgentOrgRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
   });
 
@@ -448,7 +453,7 @@ describe("AgentOrg flat-Team family startup migration", () => {
     await expect(fs.access(getTeamRunExecutionTreePath(target))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.access(getTaskDelegationRecordsV1Path(target))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.access(getTeamCommunicationMessagesV1Path(target))).rejects.toMatchObject({ code: "ENOENT" });
-    expect(await new TeamRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([]);
+    expect((await new TeamRunHistoryIndexStore(env.memoryDir).readIndexStrict()).rows).toEqual([]);
     expect(await new AgentOrgRunHistoryIndexStore(env.memoryDir).readIndex()).toEqual([expect.objectContaining({ orgRunId: runId, summary: "Preserved summary", terminatedAt: "2026-08-16T00:00:00.000Z" })]);
   });
 

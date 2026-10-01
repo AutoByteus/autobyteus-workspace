@@ -23,6 +23,8 @@ export type ExactAgentMessageInput = Readonly<{
 }>;
 
 export interface ActiveRootMessageBoundary {
+  /** Same-root membership, including shut-down delegated children that delivery can wake. */
+  hasAgentExecution(agentRunId: string): boolean;
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult>;
 }
 
@@ -49,7 +51,7 @@ export class ActiveCollaborationRootDirectory {
     if (this.active.has(key) || this.reserved.has(key)) {
       throw new Error(`Collaboration root '${root.rootSubjectKind}:${root.rootRunId}' is already active or reserved.`);
     }
-    if (!boundary || typeof boundary.deliverExactAgentMessage !== "function") {
+    if (!boundary || typeof boundary.deliverExactAgentMessage !== "function" || typeof boundary.hasAgentExecution !== "function") {
       throw new Error("Active root message boundary is required.");
     }
     this.reserved.add(key);

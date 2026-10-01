@@ -1,0 +1,97 @@
+{
+  "startedAt": "2026-09-25T08:13:21.152Z",
+  "commit": "42ec93de082dde28a26f421cbc3e64dece4a19c7",
+  "environment": {
+    "packageRoot": "/Users/normy/autobyteus_org/autobyteus-agents",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r9-solution-org-n91AyI/server-data",
+    "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r9-solution-org-n91AyI/workspace",
+    "backendUrl": "http://127.0.0.1:59345",
+    "frontendUrl": "http://127.0.0.1:59346",
+    "sourceLinks": {
+      "design-examples.md": {
+        "target": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/shared/design-examples.md",
+        "sha256": "5d378f38fa39b725fb29daed7284e40e8a24a30aa14dc2d9ae42abe8962afc81"
+      },
+      "design-principles.md": {
+        "target": "/Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/shared/design-principles.md",
+        "sha256": "effcd05875da54f55abe1670cc90d11bc679aa5004691709a60049a7ede97aef"
+      }
+    },
+    "package": {
+      "packageId": "local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-agents",
+      "teamLocalAgentCount": 44,
+      "agentTeamCount": 12
+    },
+    "model": "gemini-3.8-flash-low",
+    "browserErrors": []
+  },
+  "cases": {
+    "fullOrg": {
+      "result": "Pass",
+      "orgDefinitionId": "agy-r9-actual-solution-org-c824fd44",
+      "orgRunId": "agy_r9_actual_solution_org_c824fd44_952058478c414d1c88aae67432a44aec",
+      "treeShape": {
+        "root": 1,
+        "teams": 3,
+        "agents": 14
+      },
+      "memberAddress": "/software_engineering_team/solution_designer",
+      "memberRunId": "solution_designer_e4cf6a1afecb4075b16c2881fa7a600b",
+      "definitionRef": "solution-designer"
+    },
+    "firstTurn": {
+      "result": "Pass",
+      "orgRunId": "agy_r9_actual_solution_org_c824fd44_952058478c414d1c88aae67432a44aec",
+      "memberAddress": "/software_engineering_team/solution_designer",
+      "memberRunId": "solution_designer_e4cf6a1afecb4075b16c2881fa7a600b",
+      "providerRunId": "0784e353-e6d3-42b4-921b-a641e9ad57a3",
+      "visibleMarkerCount": 2,
+      "publicProjectionExact": true,
+      "manifestSkillNames": [
+        "solution-designer"
+      ],
+      "copiedLinks": {
+        "design-examples.md": {
+          "sha256": "5d378f38fa39b725fb29daed7284e40e8a24a30aa14dc2d9ae42abe8962afc81",
+          "ordinaryFile": true
+        },
+        "design-principles.md": {
+          "sha256": "effcd05875da54f55abe1670cc90d11bc679aa5004691709a60049a7ede97aef",
+          "ordinaryFile": true
+        }
+      },
+      "workspaceUnchanged": true
+    },
+    "restore": {
+      "result": "Pass",
+      "oldPid": 86146,
+      "newPid": 86240,
+      "memberRunId": "solution_designer_e4cf6a1afecb4075b16c2881fa7a600b",
+      "providerRunId": "0784e353-e6d3-42b4-921b-a641e9ad57a3",
+      "oldVisibleCount": 2,
+      "newVisibleCount": 2,
+      "publicProjectionExact": true,
+      "sameSnapshot": true
+    }
+  },
+  "failures": [],
+  "cleanup": {
+    "backendA": {
+      "pid": 86146,
+      "exitCode": 1,
+      "signalCode": null
+    },
+    "frontend": {
+      "pid": 86172,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "backend": {
+      "pid": 86240,
+      "exitCode": 0,
+      "signalCode": null
+    }
+  },
+  "result": "Pass",
+  "endedAt": "2026-09-25T08:14:19.979Z"
+}

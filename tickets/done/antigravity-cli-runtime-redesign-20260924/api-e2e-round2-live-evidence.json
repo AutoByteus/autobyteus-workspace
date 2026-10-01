@@ -1,0 +1,31 @@
+{
+  "revision": "API-REV-002",
+  "worktreeCommit": "b2e91b83f",
+  "runtime": "antigravity_cli",
+  "team": {
+    "mode": "real GraphQL/WebSocket, real AGY 1.2.10 member processes, no stub delivery",
+    "result": "pass",
+    "assertions": [
+      "two AGY member runs launched",
+      "ping call_mcp_tool send_message_to start and success correlated by invocation ID",
+      "TEAM_COMMUNICATION_MESSAGE exact sender/recipient run IDs and content",
+      "pong attributed TURN_COMPLETED and token in both member projections",
+      "terminate/restore preserves both platform AGY IDs, member run IDs, model/runtime/workspace bindings",
+      "restored pong attributed TURN_COMPLETED and fresh ACK-RESTORED text persisted"
+    ],
+    "logs": ["/tmp/agy-api-r2-team.log", "/tmp/agy-api-r2-team-restore.log", "/tmp/agy-api-r2-team-org-corrected.log"]
+  },
+  "org": {
+    "mode": "real GraphQL create and native /ws/agent-org/:orgRunId",
+    "result": "fail",
+    "create": "success with direct /director and nested /team/worker AGY configs",
+    "frames": ["CONNECTED", "ERROR AGENT_ORG_STREAM_UNAVAILABLE"],
+    "rejectedPath": "root_org.execution_tree.rootOrg.defaultLaunchConfiguration.runtimeKind and direct/nested launch configs",
+    "oldAllowedRuntimeKinds": ["autobyteus", "claude_agent_sdk", "codex_app_server"],
+    "missingRuntimeKind": "antigravity_cli",
+    "source": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts:13",
+    "logs": ["/tmp/agy-api-r2-org-handshake.log", "/tmp/agy-api-r2-org-final.log"],
+    "realMemberTurn": "not reached because snapshot validation closed stream"
+  },
+  "carriedPriorControls": "API-REV-001 browser/live denial DENIED after reload; DONE SUCCESS without invented shell exit; exact standalone restore, selected workspace, skills/collision, non-AGY focused regression. No new browser run in API-REV-002."
+}

@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.91-beta.4 test:e2e:isolated-app /Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web
+> node tests/e2e/isolated-app-lifecycle-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/api-e2e-evidence/repo/R-07-isolated-app-lifecycle
+
+[isolated-app-lifecycle-probe] passed; evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/api-e2e-evidence/repo/R-07-isolated-app-lifecycle/isolated-app-lifecycle-evidence.json

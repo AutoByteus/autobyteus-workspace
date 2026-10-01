@@ -17,6 +17,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Organization | [agent_orgs.md](./agent_orgs.md) |
+| Agent Run Collaboration (collaborators of standalone runs) | [agent_run_collaboration.md](./agent_run_collaboration.md) |
 | Agent Team Execution | [agent_team_execution.md](./agent_team_execution.md) |
 | Agent Tools | [agent_tools.md](./agent_tools.md) |
 | Agent Tools MCP Server | [agent_tools_mcp_server.md](./agent_tools_mcp_server.md) |
@@ -31,9 +32,11 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |
 | File Search | [file_search.md](./file_search.md) |
+| Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |
 | LLM Management | [llm_management.md](./llm_management.md) |
 | MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
+| Projects | [projects.md](./projects.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Search | [search.md](./search.md) |
@@ -68,4 +71,4 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 - [Project Overview](../PROJECT_OVERVIEW.md)
 - [URL Strategy](../URL_GENERATION_AND_ENV_STRATEGY.md)
 - [Startup/Lazy Initialization](../design/startup_initialization_and_lazy_services.md)
-- [Production Data-Migration Conventions](../design/production_data_migration_conventions.md)
+- [Production Data-Migration Conventions](../design/data_migration_guideline.md)

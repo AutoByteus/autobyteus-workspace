@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-10-01T06:41:11.988Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; send adds the collaborator Offline at once; send_message_to briefing; \"From\" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion",
+      "result": "Fail",
+      "ms": 463657,
+      "error": "Timed out waiting for DI-001: coordinator → teammate → coordinator → host",
+      "details": null
+    },
+    "A05": {
+      "title": "AC-006 / design AR-001: viewing a stopped run's collaborator (clicking it, or reloading with it selected) does not restore the host; only a send does",
+      "result": "Pass",
+      "ms": 26975,
+      "details": {
+        "afterReloadHostSelected": false,
+        "afterClickingCollaborator": false,
+        "url": "http://127.0.0.1:58977/chat?id=research_assistant_b3405d1663fb4d2784c71163d790dfa2",
+        "afterReloadWithCollaboratorSelected": false,
+        "rootView": false
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 43426
+    },
+    {
+      "label": "frontend",
+      "pid": 43467
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 43467,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 43426,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-TvruR6"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-TvruR6",
+  "backendUrl": "http://127.0.0.1:58976",
+  "frontUrl": "http://127.0.0.1:58977",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-01T06:49:38.359Z"
+}

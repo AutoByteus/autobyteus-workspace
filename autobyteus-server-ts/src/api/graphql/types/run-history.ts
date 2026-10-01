@@ -9,7 +9,6 @@ import {
   Resolver,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { getAgentRunHistoryService } from "../../../run-history/services/agent-run-history-service.js";
 import { getAgentRunViewProjectionService } from "../../../run-history/services/agent-run-view-projection-service.js";
 import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
@@ -34,6 +33,9 @@ class RunHistoryItemObject {
 
   @Field(() => String, { nullable: true })
   terminatedAt?: string | null;
+
+  @Field(() => Boolean)
+  hasCollaboration!: boolean;
 
   @Field(() => String)
   status!: string;
@@ -199,9 +201,6 @@ class RunMetadataConfigObject {
 
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
-
-  @Field(() => SkillAccessMode, { nullable: true })
-  skillAccessMode?: SkillAccessMode | null;
 
   @Field(() => String)
   runtimeKind!: string;

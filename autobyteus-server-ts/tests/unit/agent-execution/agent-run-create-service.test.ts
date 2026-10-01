@@ -58,7 +58,6 @@ describe("AgentRunService create", () => {
       llmModelIdentifier: "gpt-test",
       autoExecuteTools: false,
       llmConfig: null,
-      skillAccessMode: "PRELOADED_ONLY" as never,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     };
 

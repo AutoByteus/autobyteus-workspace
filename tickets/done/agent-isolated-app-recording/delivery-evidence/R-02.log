@@ -1,0 +1,22 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 10ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (10 tests) 5ms
+ ✓ server/services/__tests__/AppDataService.spec.ts (13 tests) 9ms
+ ✓ updater/__tests__/appUpdater.spec.ts (24 tests) 67ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 91ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 10ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 176ms
+ ✓ server/services/__tests__/HealthChecker.spec.ts (9 tests) 87ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 6ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 4ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 4ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (14 tests) 310ms
+
+ Test Files  13 passed (13)
+      Tests  103 passed (103)
+   Start at  06:39:29
+   Duration  807ms (transform 808ms, setup 0ms, collect 1.73s, tests 780ms, environment 2ms, prepare 1.01s)
+

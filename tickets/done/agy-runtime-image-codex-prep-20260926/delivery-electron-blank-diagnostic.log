@@ -1,0 +1,20 @@
+{
+  "metadata": {
+    "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 61385,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-e2e-mZ4L9z",
+    "ownsDataRoot": true,
+    "clientBaseUrl": "http://127.0.0.1:61385",
+    "healthUrl": "http://127.0.0.1:61385/rest/health"
+  },
+  "url": "file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html",
+  "title": "",
+  "bodyText": "",
+  "bodyHTMLLength": 1052,
+  "errors": [
+    "requestfailed file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/entry.js net::ERR_FILE_NOT_FOUND",
+    "console Failed to load resource: net::ERR_FILE_NOT_FOUND",
+    "requestfailed file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/_nuxt/@vite/client net::ERR_FILE_NOT_FOUND",
+    "console Failed to load resource: net::ERR_FILE_NOT_FOUND"
+  ]
+}

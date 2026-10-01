@@ -1,0 +1,123 @@
+{
+  "enable": {
+    "data": {
+      "setApplicationsEnabled": {
+        "enabled": true,
+        "scope": "BOUND_NODE",
+        "source": "SERVER_SETTING"
+      }
+    }
+  },
+  "import": {
+    "data": {
+      "importApplicationPackage": [
+        {
+          "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fruntime-specific-stopped-model-switch%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fruntime-switch-browser-36286-1790364469635%2Frev004-application-package",
+          "displayName": "rev004-application-package",
+          "applicationCount": 1
+        }
+      ]
+    }
+  },
+  "catalog": {
+    "data": {
+      "listApplications": [
+        {
+          "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570",
+          "name": "REV004 Model Setup",
+          "executionResourceSlots": [
+            {
+              "slotKey": "agentSlot",
+              "required": false
+            },
+            {
+              "slotKey": "draftingTeam",
+              "required": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570",
+  "initialSetup": {
+    "status": 200,
+    "body": {
+      "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570",
+      "slots": [
+        {
+          "slot": {
+            "slotKey": "agentSlot",
+            "name": "Optional Agent",
+            "description": "Saved exact-default Agent",
+            "allowedExecutionResourceKinds": [
+              "AGENT"
+            ],
+            "allowedExecutionResourceSources": [
+              "shared"
+            ],
+            "required": false,
+            "supportedLaunchConfig": {
+              "AGENT": {
+                "llmModelIdentifier": true,
+                "runtimeKind": true,
+                "llmConfig": true,
+                "workspaceRootPath": true
+              }
+            },
+            "defaultExecutionResourceRef": null
+          },
+          "packageBaseline": null,
+          "selectedResourceBaseline": null,
+          "savedOverride": null,
+          "savedOverrideState": "ABSENT",
+          "effectiveConfiguration": null,
+          "issues": [],
+          "canResetToPackageDefaults": false,
+          "updatedAt": null
+        },
+        {
+          "slot": {
+            "slotKey": "draftingTeam",
+            "name": "Optional Team",
+            "description": "Team resource used when Brief Studio launches a new drafting run.",
+            "allowedExecutionResourceKinds": [
+              "AGENT_TEAM"
+            ],
+            "allowedExecutionResourceSources": [
+              "bundle",
+              "shared"
+            ],
+            "required": false,
+            "supportedLaunchConfig": {
+              "AGENT_TEAM": {
+                "llmModelIdentifier": true,
+                "runtimeKind": true,
+                "llmConfig": true,
+                "workspaceRootPath": true,
+                "memberOverrides": {
+                  "llmModelIdentifier": true,
+                  "runtimeKind": true,
+                  "llmConfig": true
+                }
+              }
+            },
+            "defaultExecutionResourceRef": null
+          },
+          "packageBaseline": null,
+          "selectedResourceBaseline": null,
+          "savedOverride": null,
+          "savedOverrideState": "ABSENT",
+          "effectiveConfiguration": null,
+          "issues": [],
+          "canResetToPackageDefaults": false,
+          "updatedAt": null
+        }
+      ],
+      "readiness": {
+        "status": "RUNNABLE",
+        "issues": []
+      }
+    }
+  }
+}

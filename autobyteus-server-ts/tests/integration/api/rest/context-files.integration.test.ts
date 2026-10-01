@@ -1,3 +1,4 @@
+import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../../fixtures/current-attachment-package-fixtures.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -26,7 +27,7 @@ vi.mock("../../../../src/agent-team-execution/services/agent-team-run-manager.js
     AgentTeamRunManager: new Proxy(actual.AgentTeamRunManager, {
       get(target, property, receiver) {
         if (property === "getInstance") {
-          return () => ({ getTeamRun: () => null, listActiveRuns: () => [] });
+          return () => ({ getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] });
         }
         return Reflect.get(target, property, receiver);
       },
@@ -39,7 +40,6 @@ import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memo
 import { ContextFileReadService } from "../../../../src/context-files/services/context-file-read-service.js";
 import {
   testAgentNode,
-  testAgentTeamNode,
   testExecutionTree,
 } from "../../../fixtures/current-team-run-fixtures.js";
 
@@ -54,7 +54,7 @@ type UploadedAttachment = {
   phase: "draft";
 };
 
-type FinalizedAttachment = UploadedAttachment & { phase: "final" };
+type FinalizedAttachment = Omit<UploadedAttachment, "phase"> & { phase: "final" };
 
 const buildMultipartPayload = (parts: MultipartPart[]): { boundary: string; payload: Buffer } => {
   const boundary = "----autobyteus-context-files-boundary";
@@ -85,11 +85,12 @@ const uploadDraftAttachment = async (
   app: FastifyInstance,
   owner: unknown,
   filename: string,
-  content: string,
+  content: string | Buffer,
+  contentType = "text/markdown",
 ): Promise<UploadedAttachment> => {
   const upload = buildMultipartPayload([
     { name: "owner", value: JSON.stringify(owner) },
-    { name: "file", filename, contentType: "text/markdown", content },
+    { name: "file", filename, contentType, content },
   ]);
   const response = await app.inject({
     method: "POST",
@@ -128,29 +129,36 @@ const writeExecutionTree = (input: {
   rootTeamRunId: string;
   rootAgentRunId?: string;
   rootAgents?: Array<{ address: string; agentRunId: string }>;
+  tasks?: Array<{ address: string; agentRunId: string }>;
   nested?: Array<{ address: string; teamRunId: string; agentAddress: string; agentRunId: string }>;
 }): void => {
   const rootAgents = input.rootAgents?.map((entry) => testAgentNode(entry.address, { agentRunId: entry.agentRunId }))
     ?? [testAgentNode("/A", { agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}` })];
-  const nested = (input.nested ?? []).map((entry) => testAgentTeamNode({
-    address: entry.address,
-    teamRunId: entry.teamRunId,
-    coordinatorAddress: entry.agentAddress,
-    children: [testAgentNode(entry.agentAddress, { agentRunId: entry.agentRunId })],
-  }));
   const tree = testExecutionTree({
     rootTeamRunId: input.rootTeamRunId,
     rootTeamDefinitionId: "context-file-team",
     teamDefinitionName: "Context File Team",
     coordinatorAddress: "/A",
-    children: [...rootAgents, ...nested],
+    children: rootAgents,
   });
+  for (const entry of input.nested ?? []) {
+    if (!rootAgents.some(agent => agent.address === entry.address)) rootAgents.push(testAgentNode(entry.address));
+  }
+  const delegatorAgentRunId = rootAgents[0]!.agentRunId;
+  const taskExecutions = [
+    ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null, delegatorAgentRunId,
+      startedAt: "2026-09-01T00:00:00.000Z" })),
+    ...(input.nested ?? []).map(entry => ({ address: entry.address, teamRunId: entry.teamRunId,
+      members: [{ address: entry.agentAddress, agentRunId: entry.agentRunId, platformAgentRunId: null }],
+      taskExecutions: [], delegatorAgentRunId, startedAt: "2026-09-01T00:00:00.000Z" })),
+  ] as typeof tree.rootTeam.taskExecutions;
   const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({
     rootTeamRunId: input.rootTeamRunId,
     ancestorTeamRunIds: [],
   });
   fs.mkdirSync(teamDir, { recursive: true });
-  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify(tree), "utf8");
+  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, members: testExecutionTree({ rootTeamRunId: input.rootTeamRunId, coordinatorAddress: "/A", children: rootAgents }).rootTeam.members, taskExecutions } }), "utf8");
+  writeAttachmentSidecars(teamDir, "team", input.rootTeamRunId);
 };
 
 describe("REST context-files routes", () => {
@@ -162,6 +170,7 @@ describe("REST context-files routes", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-context-files-"));
     memoryDir = path.join(tempDir, "memory");
     appConfigState.root = tempDir;
+    for (const id of ["run-A", "run-display"]) writeAttachmentAgentMetadata(memoryDir, id);
     app = fastify();
     await app.register(multipart, {
       limits: { fileSize: 25 * 1024 * 1024 },
@@ -213,11 +222,11 @@ describe("REST context-files routes", () => {
     const finalized = await finalizeAttachment(
       app,
       draftOwner,
-      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/A" },
+      { kind: "team_member_final", teamRunId: rootTeamRunId, agentRunId: "agent-run-A" },
       uploaded,
     );
     expect(finalized.locator).toBe(
-      `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/${encodeURIComponent(uploaded.storedFilename)}`,
+      `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/${encodeURIComponent(uploaded.storedFilename)}`,
     );
     expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("team member notes");
     const finalDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
@@ -244,33 +253,33 @@ describe("REST context-files routes", () => {
     const finalized = await finalizeAttachment(
       app,
       draftOwner,
-      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/A" },
+      { kind: "team_member_final", teamRunId: rootTeamRunId, agentRunId: "agent-run-A" },
       uploaded,
     );
 
     expect((await app.inject({
       method: "GET",
-      url: `/rest/team-runs/${rootTeamRunId}/members/not-rooted/context-files/${uploaded.storedFilename}`,
+      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/${encodeURIComponent("../unsafe")}/context-files/${uploaded.storedFilename}`,
     })).statusCode).toBe(400);
     expect((await app.inject({
       method: "GET",
-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/${encodeURIComponent("../secret.txt")}`,
+      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/${encodeURIComponent("../secret.txt")}`,
     })).statusCode).toBe(400);
     expect((await app.inject({
       method: "GET",
-      url: `/rest/team-runs/missing-containing-team/members/${encodeURIComponent("/A")}/context-files/${uploaded.storedFilename}`,
+      url: `/rest/team-runs/missing-containing-team/agent-runs/agent-run-A/context-files/${uploaded.storedFilename}`,
     })).statusCode).toBe(404);
     expect((await app.inject({
       method: "GET",
-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/missing")}/context-files/${uploaded.storedFilename}`,
+      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/missing/context-files/${uploaded.storedFilename}`,
     })).statusCode).toBe(404);
     expect((await app.inject({
       method: "GET",
-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/B")}/context-files/${uploaded.storedFilename}`,
+      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-B/context-files/${uploaded.storedFilename}`,
     })).statusCode).toBe(404);
     expect((await app.inject({
       method: "GET",
-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/ctx_missing__exact.md`,
+      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/ctx_missing__exact.md`,
     })).statusCode).toBe(404);
 
     const exact = await app.inject({ method: "GET", url: finalized.locator });
@@ -287,7 +296,7 @@ describe("REST context-files routes", () => {
     try {
       const response = await app.inject({
         method: "GET",
-        url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/ctx_fault__exact.md`,
+        url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/ctx_fault__exact.md`,
       });
 
       expect(response.statusCode).toBe(500);
@@ -297,7 +306,7 @@ describe("REST context-files routes", () => {
     }
   });
 
-  it("finalizes a nested member through its exact containing TeamRun and canonical address", async () => {
+  it("finalizes a nested member through its exact containing TeamRun and canonical execution ID", async () => {
     const rootTeamRunId = "root-team-nested";
     const childTeamRunId = "child-team-C";
     const agentRunId = "agent-run-C-D";
@@ -311,7 +320,7 @@ describe("REST context-files routes", () => {
     const finalized = await finalizeAttachment(
       app,
       draftOwner,
-      { kind: "team_member_final", teamRunId: childTeamRunId, memberAddress: "/C/D" },
+      { kind: "team_member_final", teamRunId: childTeamRunId, agentRunId },
       uploaded,
     );
 
@@ -324,7 +333,7 @@ describe("REST context-files routes", () => {
       .toBe("nested notes");
   });
 
-  it("rejects basename and sibling addresses instead of guessing a nested owner", async () => {
+  it("rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft", async () => {
     const rootTeamRunId = "root-team-exact";
     writeExecutionTree({
       memoryDir,
@@ -336,11 +345,11 @@ describe("REST context-files routes", () => {
     });
 
     for (const finalOwner of [
-      { kind: "team_member_final", teamRunId: "child-C", memberAddress: "/D" },
-      { kind: "team_member_final", teamRunId: "child-C", memberAddress: "/E/D" },
-      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/C/D" },
+      { kind: "team_member_final", teamRunId: "child-C", agentRunId: "missing" },
+      { kind: "team_member_final", teamRunId: "child-C", agentRunId: "agent-E-D" },
+      { kind: "team_member_final", teamRunId: rootTeamRunId, agentRunId: "agent-C-D" },
     ]) {
-      const draftOwner = { kind: "team_member_draft", teamDraftId: `draft-${finalOwner.memberAddress}`, memberAddress: "/C/D" };
+      const draftOwner = { kind: "team_member_draft", teamDraftId: `draft-${finalOwner.agentRunId}`, memberAddress: "/C/D" };
       const uploaded = await uploadDraftAttachment(app, draftOwner, "exact.md", "exact only");
       const response = await app.inject({
         method: "POST",
@@ -353,6 +362,53 @@ describe("REST context-files routes", () => {
       });
       expect(response.statusCode).toBe(400);
       expect(response.json()).toMatchObject({ detail: expect.stringContaining("Unable to resolve context-file owner") });
+      expect((await app.inject({ method: "GET", url: uploaded.locator })).body).toBe("exact only");
+      const retried = await finalizeAttachment(app, draftOwner,
+        { kind: "team_member_final", teamRunId: "child-C", agentRunId: "agent-C-D" }, uploaded);
+      expect((await app.inject({ method: "GET", url: retried.locator })).body).toBe("exact only");
+    }
+  });
+
+  it("rejects old, mixed, missing and malformed final identities before moving draft bytes", async () => {
+    writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured" });
+    const draftOwner = { kind: "team_member_draft", teamDraftId: "retry", memberAddress: "/A" };
+    const uploaded = await uploadDraftAttachment(app, draftOwner, "retry.md", "retained retry bytes");
+    for (const identity of [{}, { memberAddress: "/A" }, { agentRunId: "configured", memberAddress: "/A" },
+      { agentRunId: "" }, { agentRunId: "../configured" }, { agentRunId: null }]) {
+      const response = await app.inject({ method: "POST", url: "/rest/context-files/finalize", payload: {
+        draftOwner, finalOwner: { kind: "team_member_final", teamRunId: "team", ...identity },
+        attachments: [uploaded],
+      } });
+      expect(response.statusCode).toBe(400);
+      expect((await app.inject({ method: "GET", url: uploaded.locator })).body).toBe("retained retry bytes");
+    }
+    expect((await app.inject({ method: "GET",
+      url: `/rest/team-runs/team/members/%2FA/context-files/${uploaded.storedFilename}` })).statusCode).toBe(404);
+    const final = await finalizeAttachment(app, draftOwner,
+      { kind: "team_member_final", teamRunId: "team", agentRunId: "configured" }, uploaded);
+    expect((await app.inject({ method: "GET", url: final.locator })).body).toBe("retained retry bytes");
+  });
+
+  it("isolates image and file bytes for duplicate-address executions even with repeated stored filenames", async () => {
+    writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured",
+      tasks: [{ address: "/A", agentRunId: "task" }] });
+    const draftOwner = { kind: "team_member_draft", teamDraftId: "duplicate", memberAddress: "/A" };
+    for (const input of [
+      { name: "image.png", type: "image/png", bytes: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aS1sAAAAASUVORK5CYII=", "base64") },
+      { name: "notes.txt", type: "text/plain", bytes: Buffer.from("configured file bytes") },
+    ]) {
+      const uploaded = await uploadDraftAttachment(app, draftOwner, input.name, input.bytes, input.type);
+      const otherDir = path.join(memoryDir, "agent_teams", "team", "task", "context_files");
+      fs.mkdirSync(otherDir, { recursive: true });
+      fs.writeFileSync(path.join(otherDir, uploaded.storedFilename), "retained task bytes");
+      const final = await finalizeAttachment(app, draftOwner,
+        { kind: "team_member_final", teamRunId: "team", agentRunId: "configured" }, uploaded);
+      const read = await app.inject({ method: "GET", url: final.locator });
+      expect(read.statusCode).toBe(200);
+      expect(read.headers["content-type"]).toContain(input.type);
+      expect(read.rawPayload).toEqual(input.bytes);
+      const taskRead = await app.inject({ method: "GET", url: final.locator.replace("/configured/", "/task/") });
+      expect(taskRead.body).toBe("retained task bytes");
     }
   });
 

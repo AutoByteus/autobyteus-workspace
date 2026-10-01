@@ -11,6 +11,7 @@ Understanding the system's backbone, how the pieces fit together, and how the ap
 *   **[Agent Execution Architecture](./docs/agent_execution_architecture.md)**: A deep dive into the runtime behavior—how user input flows to agents and how streaming responses are parsed and rendered.
 *   **[Electron Packaging & Server Management](./docs/electron_packaging.md)**: How the web app and Python backend are bundled into a single desktop executable.
 *   **[Testing Strategy](./ARCHITECTURE.md#testing-strategy)**: Our approach to quality assurance, including test colocation and tools.
+*   **[Workspace Testing Guideline](../TESTING.md)**: Which test layer or path to use for a change (browser probes, isolated desktop instances, E2E) and the rules for test runs.
 
 ### Chapter 2: Core Entities (The "Brain")
 The primary actors and capabilities within the system.
@@ -26,6 +27,7 @@ The primary actors and capabilities within the system.
 The tools and environments where agents live and users interact.
 
 *   **[File Explorer](./docs/file_explorer.md)**: The file system interface, workspace management, and real-time synchronization.
+*   **[Projects](./docs/projects.md)**: Node-scoped Projects behind the `ENABLE_PROJECTS` capability: named containers with described links to registered workspaces and description-only Project Tasks shown on a three-column board.
 *   **[Terminal](./docs/terminal.md)**: The integrated terminal emulator for executing system commands.
 *   **[Content Rendering](./docs/content_rendering.md)**: How the system displays rich content like Markdown, Code, and Mermaid diagrams.
 *   **[Settings](./docs/settings.md)**: Application configuration, API key management, and system monitoring.
@@ -42,6 +44,7 @@ The tools and environments where agents live and users interact.
     * `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
 *   Prefer the root helper script to avoid drift:
     * `pnpm release <x.y.z>`: normal new personal release path. It bumps the version, creates the release commit, creates the tag, and pushes branch + tag.
+    * `bash scripts/desktop-release.sh beta [--base <X.Y.Z>]`: beta release path. It computes the next unused `vX.Y.Z-beta.N`, then bumps, commits, tags and pushes without curated notes. The tag is published as a GitHub pre-release with generated notes and is offered only to desktop installs with "Receive beta updates" on.
     * `pnpm release:test --ref personal`: build-only validation path. This does **not** publish a release.
     * `pnpm release:manual-dispatch v<x.y.z> --ref personal`: manual workflow-dispatch path for an **existing** tag or a recovery/retry case.
 *   Canonical new release flow:

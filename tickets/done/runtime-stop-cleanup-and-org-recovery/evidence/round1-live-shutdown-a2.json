@@ -1,0 +1,22 @@
+{
+  "case": "LIVE-SHUTDOWN-A2",
+  "model": "gemini-3.8-flash-high",
+  "agyBefore": [
+    {
+      "pid": 84190,
+      "command": "agy --new-project --agent autobyteus-a92de36ee79d583d --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    },
+    {
+      "pid": 84240,
+      "command": "agy --new-project --agent autobyteus-9253fa257e278fb6 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "appCloseMs": 66,
+  "runDaemonClosedAfterShutdownMs": 0,
+  "orgDaemonClosedAfterShutdownMs": 0,
+  "agyGoneAfterShutdown": [
+    true,
+    true
+  ],
+  "result": "Pass"
+}

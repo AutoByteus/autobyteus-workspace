@@ -39,7 +39,7 @@ import {
   buildTestTeamContext,
   testAgentContext,
   testAgentNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import {
   TeamStreamingService,
@@ -56,8 +56,6 @@ const TEACHER_RUN_ID = 'task-monitor-teacher-run';
 const CONFIGURED_STUDENT_RUN_ID = 'task-monitor-configured-student-run';
 const TASK_AGENT_RUN_ID = 'task-monitor-task-agent-run';
 const TASK_ID = 'task-monitor-task-1';
-const TASK_DESCRIPTION = 'Retained task monitor exact identity proof';
-
 class ProbeWebSocketClient implements IWebSocketClient {
   state = ConnectionState.DISCONNECTED;
   private readonly listeners = new Map<keyof WebSocketClientEvents, Set<(...args: any[]) => void>>();
@@ -105,15 +103,7 @@ const studentNode = testAgentNode('/Student', {
   displayName: 'Student',
   currentStatus: AgentStatus.Offline,
 });
-const taskRecord = testTaskRecord({
-  taskId: TASK_ID,
-  delegatorAgentRunId: TEACHER_RUN_ID,
-  recipientAddress: '/Student',
-  target: { agentRunId: TASK_AGENT_RUN_ID },
-  description: TASK_DESCRIPTION,
-  status: 'active',
-  createdAt: '2026-08-31T12:00:00.000Z',
-});
+const delegation = testDelegation({ delegatorAgentRunId: TEACHER_RUN_ID, recipientAddress: '/Student', target: { agentRunId: TASK_AGENT_RUN_ID }, startedAt: '2026-08-31T12:00:00.000Z' });
 const teacherContext = testAgentContext({
   runId: TEACHER_RUN_ID,
   displayName: 'Teacher',
@@ -139,7 +129,7 @@ const team = buildTestTeamContext({
   coordinatorAddress: '/Teacher',
   focusedAgentRunId: TEACHER_RUN_ID,
   rootChildren: [teacherNode, studentNode],
-  tasks: [taskRecord],
+  delegations: [delegation],
   contexts: [
     { agentRunId: TEACHER_RUN_ID, context: teacherContext },
     { agentRunId: CONFIGURED_STUDENT_RUN_ID, context: studentContext },
@@ -165,7 +155,6 @@ const snapshotMessage = (): Extract<TeamStreamServerMessage, { type: 'TEAM_EXECU
     root_team_run_id: ROOT_TEAM_RUN_ID,
     base_change_sequence: 40,
     execution_tree: team.view.getExecutionTree(),
-    tasks: team.view.listTaskHistoryRows().map((row) => row.task),
     messages: team.view.listCommunicationMessages(),
     agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
       agent_run_id: entry.agentRunId,
@@ -181,7 +170,7 @@ const snapshotMessage = (): Extract<TeamStreamServerMessage, { type: 'TEAM_EXECU
 
 type ProbeControl = {
   admitSnapshot(): void;
-  settleFocusedTask(): void;
+  shutDownFocusedTask(): void;
   state(): Record<string, unknown>;
   ids: Readonly<{
     rootTeamRunId: string;
@@ -196,6 +185,7 @@ const state = () => ({
   focusedAgentRunId: team.view.getFocusedAgentRunId(),
   focusedMemberAddress: team.view.getFocusedMemberAddress(),
   taskVisible: team.view.listNavigationRows().some((row) => row.agentRunId === TASK_AGENT_RUN_ID),
+  taskStatus: taskContext.state.currentStatus,
   taskAuthoritative: isTeamMemberProjectionAuthoritative(team, TASK_AGENT_RUN_ID),
   teacherAuthoritative: isTeamMemberProjectionAuthoritative(team, TEACHER_RUN_ID),
   taskConversationCount: taskContext.state.conversation.messages.length,
@@ -216,15 +206,18 @@ onMounted(() => {
       });
       wsClient.emitMessage(snapshotMessage());
     },
-    settleFocusedTask: () => {
+    shutDownFocusedTask: () => {
+      // Idle shutdown is reported through the standard status channel.
       wsClient.emitMessage({
-        type: 'TASK_DELEGATION_EVENT',
+        type: 'AGENT_STATUS',
         payload: {
-          event_type: 'TASK_EXECUTION_SETTLED',
           change_sequence: 41,
-          execution: { agent_run_id: TASK_AGENT_RUN_ID },
-          task: { ...taskRecord, status: 'accepted' },
-          settled_at: '2026-08-31T12:05:00.000Z',
+          agent_run_id: TASK_AGENT_RUN_ID,
+          status: 'offline',
+          trigger: null,
+          tool_name: null,
+          error_message: null,
+          error_details: null,
         },
       });
     },

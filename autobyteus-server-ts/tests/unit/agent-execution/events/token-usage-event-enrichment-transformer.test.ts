@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { SkillAccessMode } from 'autobyteus-ts/agent/context/skill-access-mode.js';
 import { AgentRunConfig } from '../../../../src/agent-execution/domain/agent-run-config.js';
 import { AgentRunContext } from '../../../../src/agent-execution/domain/agent-run-context.js';
 import { AgentRunEventType } from '../../../../src/agent-execution/domain/agent-run-event.js';
@@ -25,9 +24,9 @@ const runContext = new AgentRunContext({
     llmModelIdentifier: 'gpt-5.4-mini',
     autoExecuteTools: true,
     workspaceId: 'workspace-1',
-    skillAccessMode: SkillAccessMode.NONE,
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     memberExecutionContext: new MemberExecutionContext({
+      teamScoped: true,
       identity: {
         root: createTeamRootExecutionIdentity('team-run-1'),
         memberAddress: '/planner/worker',
@@ -43,7 +42,7 @@ const claudeRunContext = new AgentRunContext({
   runId: 'claude-run-1', runtimeContext: null,
   config: new AgentRunConfig({
     agentDefinitionId: 'agent-def-1', llmModelIdentifier: 'opus[1m]', autoExecuteTools: true,
-    workspaceId: 'workspace-1', skillAccessMode: SkillAccessMode.NONE,
+    workspaceId: 'workspace-1',
     runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   }),
 });

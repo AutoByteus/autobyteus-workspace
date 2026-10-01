@@ -1,0 +1,31 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-ts
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > loads and registers tools from pdf_mcp
+Overwriting existing MCP config with server_id 'pdf-mcp'.
+
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > executes a registered MCP tool via the registry
+Overwriting existing MCP config with server_id 'pdf-mcp-exec'.
+
+ ❯ tests/integration/tools/mcp/tool-registrar.test.ts (3 tests | 3 failed) 110ms
+     × loads and registers tools from pdf_mcp 105ms
+     × executes a registered MCP tool via the registry 2ms
+     × previews tools without registering them 2ms
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (1 test | 1 failed) 195ms
+     × lists tools and executes image_to_pdf_page 194ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer integration (pdf_mcp) > lists tools and executes image_to_pdf_page
+ FAIL  tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > loads and registers tools from pdf_mcp
+ FAIL  tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > executes a registered MCP tool via the registry
+ FAIL  tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > previews tools without registering them
+Error: spawn /opt/homebrew/bin/uv ENOENT
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed (4)
+   Start at  16:46:19
+   Duration  397ms (transform 191ms, setup 44ms, import 190ms, tests 304ms, environment 0ms)
+

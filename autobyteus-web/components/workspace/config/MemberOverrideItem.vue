@@ -25,6 +25,7 @@
       class="mb-3"
       :runtime-kind="node.effectiveConfig.runtimeKind"
       :llm-model-identifier="node.effectiveConfig.llmModelIdentifier"
+      :seed-model-identifier="editableNode?.seedModelIdentifier"
       :llm-config="node.effectiveConfig.llmConfig"
       :runtime-selection-locked="true"
       :model-selection-locked="disabled"
@@ -83,6 +84,7 @@
       <SearchableGroupedSelect
         :model-value="selectedModelIdentifier"
         :options="groupedModelOptions"
+        :selected-display="selectedModelIdentifier === seedModelIdentifier ? currentModel.selectedDisplay.value : null"
         :disabled="isInteractionDisabled"
         :placeholder="modelPlaceholder"
         :search-placeholder="t('workspace.components.workspace.config.MemberOverrideItem.search_models')"
@@ -96,13 +98,18 @@
     </div>
 
     <WorkspaceSelector
-      v-if="existingNode"
+      v-if="existingNode?.workspacePresentation.kind === 'selector'"
       class="mb-3"
-      :model="{ mode: 'stored', workspace: existingNode.storedWorkspace }"
+      :model="existingNode.workspacePresentation.model"
       :disabled="true"
       :historical-value-unavailable-message="historicalUnavailableMessage"
       :auto-select-default="false"
       control-variant="quiet"
+    />
+    <FixedWorkspacePath
+      v-else-if="existingNode?.workspacePresentation.kind === 'fixed-path'"
+      class="mb-3"
+      :root-path="existingNode.effectiveConfig.workspaceRootPath"
     />
 
     <div class="mb-3">
@@ -150,6 +157,7 @@ import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSe
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
+import FixedWorkspacePath from './FixedWorkspacePath.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
 import {
@@ -167,6 +175,7 @@ import {
   type UiModelConfigValidationIssue,
 } from '~/utils/llmConfigSchema'
 import { getThinkingControlState } from '~/utils/llmThinkingConfigAdapter'
+import { loadRuntimeCurrentModelDescriptors, useRuntimeCurrentModelDescriptor } from '~/composables/useRuntimeCurrentModelDescriptor'
 
 const props = defineProps<{
   node: Readonly<TeamFormAgentNode>
@@ -231,11 +240,17 @@ const runtimeCatalogPresentationState = computed(() => {
 const explicitModelIdentifier = computed(() => editableOverride.value?.llmModelIdentifier || '')
 const hasExplicitModelOverride = computed(() => hasExplicitMemberLlmModelOverride(editableOverride.value))
 const globalModelIdentifier = computed(() => baselineConfig.value.llmModelIdentifier || '')
-const inheritedGlobalModelAvailable = computed(() => Boolean(globalModelIdentifier.value && hasModelIdentifier(globalModelIdentifier.value)))
+const seedModelIdentifier = computed(() => editableNode.value?.seedModelIdentifier ?? null)
+const currentModel = useRuntimeCurrentModelDescriptor(effectiveRuntimeKind, seedModelIdentifier)
+const hasCurrentModel = (identifier: string) => Boolean(
+  hasModelIdentifier(identifier) || (identifier === seedModelIdentifier.value && currentModel.descriptor.value),
+)
+const inheritedGlobalModelAvailable = computed(() => Boolean(globalModelIdentifier.value && hasCurrentModel(globalModelIdentifier.value)))
 const isUnresolvedInheritedModel = computed(() => Boolean(
   editableOverride.value?.runtimeKind &&
   !hasExplicitModelOverride.value &&
   globalModelIdentifier.value &&
+  !currentModel.loading.value &&
   !inheritedGlobalModelAvailable.value,
 ))
 const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
@@ -245,7 +260,8 @@ const unresolvedInheritedModelMessage = computed(() => buildUnavailableInherited
 }))
 const effectiveModelIdentifier = computed(() => props.node.effectiveConfig.llmModelIdentifier || '')
 const selectedModelIdentifier = computed(() => existingNode.value ? effectiveModelIdentifier.value : explicitModelIdentifier.value)
-const modelConfigSchema = computed(() => modelConfigSchemaByIdentifier(effectiveModelIdentifier.value))
+const modelConfigSchema = computed(() => modelConfigSchemaByIdentifier(effectiveModelIdentifier.value)
+  || (effectiveModelIdentifier.value === seedModelIdentifier.value ? currentModel.schema.value : null))
 const validationMessage = (issue: UiModelConfigValidationIssue): string => {
   const key = `workspace.runModelConfig.validation.${issue.code}`
   return t(key, issue.expected === undefined ? undefined : { expected: issue.expected })
@@ -281,7 +297,7 @@ watch(
     selectedRuntimeUnavailableReason,
     isUnresolvedInheritedModel,
     effectiveModelIdentifier,
-    () => hasModelIdentifier(effectiveModelIdentifier.value),
+    () => hasCurrentModel(effectiveModelIdentifier.value),
     modelConfigSchema,
     editableModelConfigErrors,
   ],
@@ -289,7 +305,7 @@ watch(
     if (!editableNode.value) return
     if (runtimeEditOperation.value) return
     let state: RuntimeModelConfigSchemaState
-    if (isLoadingModels.value) {
+    if (isLoadingModels.value || (effectiveModelIdentifier.value === seedModelIdentifier.value && currentModel.loading.value)) {
       state = { status: 'loading', message: null }
     } else if (modelLoadError.value || selectedRuntimeUnavailableReason.value) {
       state = {
@@ -302,7 +318,7 @@ watch(
       }
     } else if (!effectiveModelIdentifier.value?.trim()) {
       state = { status: 'invalid', reason: 'model_required', message: t('workspace.runModelConfig.modelRequired') }
-    } else if (isUnresolvedInheritedModel.value || !hasModelIdentifier(effectiveModelIdentifier.value)) {
+    } else if (isUnresolvedInheritedModel.value || !hasCurrentModel(effectiveModelIdentifier.value)) {
       state = { status: 'unavailable', message: isUnresolvedInheritedModel.value
         ? unresolvedInheritedModelMessage.value : t('workspace.runModelConfig.selectedModelUnavailable') }
     } else if (Object.keys(editableModelConfigErrors.value).length) {
@@ -396,8 +412,13 @@ const handleRuntimeChange = async (value: string) => {
     schemaState: { status: 'loading', message: null },
   }
   let nextRows: ProviderWithModels[]
+  let exactCurrent: Awaited<ReturnType<typeof loadRuntimeCurrentModelDescriptors>>
   try {
-    nextRows = await loadRuntimeProviderGroupsForSelection(nextEffectiveRuntimeKind)
+    [nextRows, exactCurrent] = await Promise.all([
+      loadRuntimeProviderGroupsForSelection(nextEffectiveRuntimeKind),
+      loadRuntimeCurrentModelDescriptors(nextEffectiveRuntimeKind,
+        [globalModelIdentifier.value, explicitModelIdentifier.value]),
+    ])
   } catch (cause) {
     runtimeEditOperation.value = {
       phase: 'failed',
@@ -411,10 +432,13 @@ const handleRuntimeChange = async (value: string) => {
     return
   }
   const identifiers = nextRows.flatMap((row) => row.models.map((model) => model.modelIdentifier))
-  const retainedModel = explicitModelIdentifier.value && identifiers.includes(explicitModelIdentifier.value)
+  const retainedModel = explicitModelIdentifier.value &&
+    (identifiers.includes(explicitModelIdentifier.value) || exactCurrent[explicitModelIdentifier.value])
     ? explicitModelIdentifier.value
     : undefined
-  const effectiveModel = retainedModel || (identifiers.includes(globalModelIdentifier.value) ? globalModelIdentifier.value : undefined)
+  const effectiveModel = retainedModel ||
+    (identifiers.includes(globalModelIdentifier.value) || exactCurrent[globalModelIdentifier.value]
+      ? globalModelIdentifier.value : undefined)
   const retainedConfig = !runtimeChanged && retainedModel && hasExplicitMemberLlmConfigOverride(editable.override)
     ? editable.override?.llmConfig ?? null
     : undefined
@@ -430,7 +454,10 @@ const handleRuntimeChange = async (value: string) => {
     effectiveRuntimeKind: nextEffectiveRuntimeKind,
     schemaState: { status: 'loading', message: null },
   }
-  maybeOpenAdvanced(modelConfigSchemaFromRows(nextRows, effectiveModel), retainedConfig ?? editable.baselineConfig.llmConfig)
+  maybeOpenAdvanced(modelConfigSchemaFromRows(nextRows, effectiveModel)
+    || (effectiveModel && exactCurrent[effectiveModel]?.configSchema
+      ? normalizeModelConfigSchema(exactCurrent[effectiveModel]!.configSchema) : null),
+    retainedConfig ?? editable.baselineConfig.llmConfig)
 }
 const emitOverrideWithConfig = (config: Record<string, unknown> | null | undefined) => {
   const editable = editableNode.value

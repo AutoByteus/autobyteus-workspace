@@ -430,6 +430,14 @@ concatenated; when context is present, neutral `[Context]` and `[Message]`
 sections delimit it without changing sender metadata or provider-native tool
 protocol.
 
+An agent-to-agent delivery (`input_origin: inter_agent_delivery`) is recorded
+as an ordinary `user` raw trace plus its sender: `MemoryIngestInputProcessor`
+passes `resolveInterAgentSenderId(metadata)` (the input's `sender_agent_id`) to
+`MemoryManager.ingestUserMessage`, which stores it as the trace's `sender_id`.
+Every other input records no sender. Replay uses it to show the delivery as
+"From <Sender>:" instead of a user message; traces recorded before this field
+keep the user presentation (see the server `run_history.md`).
+
 Both the initial and corrective task messages are finalized and rechecked as
 provider-safe text before child launch. Failure of that completed-prompt
 invariant is typed as `input_construction_failure`: no child or correction run

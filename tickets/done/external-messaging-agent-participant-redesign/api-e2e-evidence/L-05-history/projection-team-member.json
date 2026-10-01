@@ -1,0 +1,24 @@
+{
+  "data": {
+    "getTeamMemberRunProjection": {
+      "agentRunId": "telegram_helper_2eb422f4210e4828b65643a51615937e",
+      "summary": "Professor, name one prime number. One short sentence.",
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Professor, name one prime number. One short sentence.",
+          "media": null,
+          "ts": 1790261584.581
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "Seven.",
+          "media": null,
+          "ts": 1790261586.617
+        }
+      ]
+    }
+  }
+}

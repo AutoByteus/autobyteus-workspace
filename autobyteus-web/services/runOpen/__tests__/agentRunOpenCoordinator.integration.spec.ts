@@ -68,7 +68,6 @@ const buildConfig = (isLocked = true) => ({
   runtimeKind: 'codex_app_server',
   workspaceId: 'ws-1',
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   llmConfig: null,
   isLocked,
 } as any);

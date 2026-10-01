@@ -1,0 +1,3 @@
+{"id":"user-1","trace_type":"user","content":"Keep prose /rest/team-runs/golden-team/members/worker/context-files/image.png","media":{"images":["/rest/team-runs/golden-team/agent-runs/exact-worker-run/context-files/image.png","https://other.example/rest/team-runs/golden-team/members/worker/context-files/image.png"]},"unknown":{"uri":"/rest/team-runs/golden-team/members/worker/context-files/image.png"}}
+  { "id": "assistant-1", "trace_type": "assistant", "content": "Keep whitespace and Unicode: café 世界", "count": 7 }
+{"id":"user-2","trace_type":"user","media":{"images":["https://node.example:8000/rest/team-runs/golden-team/agent-runs/exact-worker-run/context-files/image.png?download=1#preview"]}}

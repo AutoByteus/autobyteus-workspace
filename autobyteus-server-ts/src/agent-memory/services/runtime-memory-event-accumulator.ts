@@ -1,4 +1,5 @@
 import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
+import { resolveInterAgentSenderId } from "autobyteus-ts/agent/message/inter-agent-sender.js";
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
@@ -12,6 +13,7 @@ import {
   extractTurnId,
 } from "./runtime-memory-event-payload.js";
 import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
+import { CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
 
 type SegmentState = {
   id: string;
@@ -59,6 +61,7 @@ export class RuntimeMemoryEventAccumulator {
       ts: payload.forwardedAt.getTime() / 1000,
       media,
       fileAttachments,
+      senderId: resolveInterAgentSenderId(payload.message.metadata),
     });
   }
 
@@ -101,6 +104,9 @@ export class RuntimeMemoryEventAccumulator {
         return;
       case AgentRunEventType.COMPACTION_STATUS:
         this.providerCompactionBoundaryRecorder.record(event);
+        return;
+      case AgentRunEventType.SYSTEM_TASK_NOTIFICATION:
+        this.recordSystemTaskNotification(event);
         return;
       default:
         return;
@@ -226,6 +232,23 @@ export class RuntimeMemoryEventAccumulator {
         this.flushSegment(segment.id, sourceEvent);
       }
     }
+  }
+
+  /** Only Claude background-task notices are recorded; other producers keep their history behavior. */
+  private recordSystemTaskNotification(event: AgentRunEvent): void {
+    const senderId = asString(event.payload.sender_id);
+    const content = typeof event.payload.content === "string" ? event.payload.content : null;
+    if (senderId !== CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID || !content?.trim()) return;
+    const turnId = extractTurnId(event.payload) ?? this.activeTurnId;
+    if (!turnId) return;
+    this.input.writer.appendRawTrace({
+      traceType: "system_task_notification",
+      turnId,
+      content,
+      senderId,
+      sourceEvent: event.eventType,
+      ts: extractTimestamp(event.payload),
+    });
   }
 
   private recordToolCall(event: AgentRunEvent): void {

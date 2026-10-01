@@ -1,3 +1,4 @@
+import { RootRunPackageCurrentValidator } from "../../../../src/run-history/services/root-run-package-current-validator.js";
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -5,10 +6,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../../src/run-history/services/root-run-package-readiness-index.js';
 import { TeamRunExecutionTreeStore } from '../../../../src/run-history/store/team-run-execution-tree-store.js';
-import { TaskDelegationRecordsV1Store } from '../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js';
 import { TeamCommunicationV1Store } from '../../../../src/services/team-communication/team-communication-v1-store.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgTaskDelegationRecordsV1Store } from '../../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js';
 import { AgentOrgCommunicationMessagesV1Store } from '../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
 import { testAgentNode, testExecutionTree } from '../../../fixtures/current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
@@ -36,7 +35,6 @@ const writeTeam = async (memoryDir: string, id: string): Promise<string> => {
     coordinatorAddress: '/coordinator',
     children: [testAgentNode('/coordinator', { agentRunId: `${id}-agent` })],
   }));
-  await new TaskDelegationRecordsV1Store().write(packagePath, { schemaVersion: 1, rootTeamRunId: id, records: [] });
   await new TeamCommunicationV1Store().write(packagePath, { schemaVersion: 1, rootTeamRunId: id, messages: [] });
   return packagePath;
 };
@@ -48,13 +46,12 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
     orgRunId: id,
     members: [testOrgAgentNode('/direct', `${id}-agent`)],
   }));
-  await new AgentOrgTaskDelegationRecordsV1Store().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, records: [] });
   await new AgentOrgCommunicationMessagesV1Store().write(packagePath, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] });
   return packagePath;
 };
 
 describe('RootRunPackageReadinessIndex', () => {
-  it('admits structurally valid Team and Org roots without reading historical raw-trace payloads', async () => {
+  it('admits structurally valid roots without auditing typed trace records', async () => {
     const memoryDir = await temporaryMemory();
     const teamPackage = await writeTeam(memoryDir, 'team-payload-independent');
     const orgPackage = await writeOrg(memoryDir, 'org-payload-independent');
@@ -71,7 +68,8 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(index.listAdmitted('agent_team')).toEqual(['team-payload-independent']);
     expect(index.listAdmitted('agent_org')).toEqual(['org-payload-independent']);
     expect(index.listDiagnostics()).toEqual([]);
-    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toEqual([]);
+    await index.admitCurrent('agent_team', 'team-payload-independent');
+    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toHaveLength(0);
   });
 
   it('lazily shares one strict awaitReady generation across Team and Org facades', async () => {
@@ -88,6 +86,28 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(first.listAdmitted('agent_team')).toEqual(['team-lazy']);
     expect(second.listAdmitted('agent_org')).toEqual(['org-lazy']);
     expect(first.listDiagnostics()).toEqual([]);
+  });
+
+  it('repeats a coalesced structural generation when new-run publication races a rebuild', async () => {
+    const memoryDir = await temporaryMemory(); await writeTeam(memoryDir, 'old');
+    const scan = RootRunPackageCurrentValidator.prototype.scan;
+    let release!: () => void;
+    let discovered!: () => void;
+    const captured = new Promise<void>(resolve => { discovered = resolve; });
+    const barrier = new Promise<void>(resolve => { release = resolve; });
+    let calls = 0;
+    const scanner = vi.spyOn(RootRunPackageCurrentValidator.prototype, 'scan').mockImplementation(async function () {
+      const snapshot = await scan.call(this);
+      if (++calls === 1) { discovered(); await barrier; }
+      return snapshot;
+    });
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    const rebuilding = index.rebuild(); await captured;
+    await writeTeam(memoryDir, 'fresh');
+    const publication = index.admitCurrent('agent_team', 'fresh');
+    release(); await Promise.all([rebuilding, publication]);
+    expect(scanner).toHaveBeenCalledTimes(2);
+    expect(index.listAdmitted('agent_team')).toEqual(['fresh', 'old']);
   });
 
   it('admits exact current Team V2 and Org V1 packages', async () => {
@@ -135,13 +155,31 @@ describe('RootRunPackageReadinessIndex', () => {
   it('rejects strict sidecar correlation mismatch without trying another family', async () => {
     const memoryDir = await temporaryMemory();
     const packagePath = await writeOrg(memoryDir, 'org-mismatch');
-    await fs.writeFile(path.join(packagePath, 'agent_org_task_delegation_records.json'), JSON.stringify({
-      schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'other', records: [],
+    await fs.writeFile(path.join(packagePath, 'agent_org_communication_messages.json'), JSON.stringify({
+      schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'other', messages: [],
     }));
     const index = new RootRunPackageReadinessIndex(memoryDir);
     await index.rebuild();
     expect(index.isAdmitted('agent_org', 'org-mismatch')).toBe(false);
     expect(index.listDiagnostics('agent_org')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED' });
+  });
+
+  it('admits current packages that still carry a retained released records file without reading or touching it', async () => {
+    const memoryDir = await temporaryMemory();
+    const teamPackage = await writeTeam(memoryDir, 'team-retained-records');
+    const orgPackage = await writeOrg(memoryDir, 'org-retained-records');
+    const teamRecords = path.join(teamPackage, 'task_delegation_records.json');
+    const orgRecords = path.join(orgPackage, 'agent_org_task_delegation_records.json');
+    await fs.writeFile(teamRecords, '{"released":true}');
+    await fs.writeFile(orgRecords, '{"released":true}');
+    const before = await Promise.all([teamRecords, orgRecords].map((file) => fs.stat(file)));
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    await index.rebuild();
+    expect(index.isAdmitted('agent_team', 'team-retained-records')).toBe(true);
+    expect(index.isAdmitted('agent_org', 'org-retained-records')).toBe(true);
+    const after = await Promise.all([teamRecords, orgRecords].map((file) => fs.stat(file)));
+    expect(after.map((stat) => stat.mtimeMs)).toEqual(before.map((stat) => stat.mtimeMs));
+    expect(await fs.readFile(teamRecords, 'utf8')).toBe('{"released":true}');
   });
 
   it('rebuilds the native flat Team zero-write cohort without changing bytes or stats', async () => {
@@ -155,7 +193,7 @@ describe('RootRunPackageReadinessIndex', () => {
 });
 
 const authoritySnapshot = async (packagePath: string) => Object.fromEntries(await Promise.all([
-  'team_run_execution_tree.json', 'task_delegation_records.json', 'team_communication_messages.json',
+  'team_run_execution_tree.json', 'team_communication_messages.json',
 ].map(async (name) => {
   const filePath = path.join(packagePath, name);
   const [bytes, stats] = await Promise.all([fs.readFile(filePath, 'base64'), fs.stat(filePath)]);

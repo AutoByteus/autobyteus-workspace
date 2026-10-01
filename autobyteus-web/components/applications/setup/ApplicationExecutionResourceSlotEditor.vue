@@ -155,9 +155,11 @@
 
     <ApplicationAgentLaunchProfileEditor
       v-if="selectedResourceRef?.kind === 'AGENT' && agentDraft"
+      :key="buildResourceRefKey(selectedResourceRef)"
       :slot="view.slot"
       :draft="agentDraft"
       :inherited-profile="agentInheritedProfile"
+      :server-origin-draft="serverOriginAgentDraft"
       :disabled="editorDisabled"
       @update:draft="emit('update:launchProfile', $event)"
       @readiness-change="profileReadiness = $event"
@@ -165,9 +167,11 @@
 
     <ApplicationTeamLaunchProfileEditor
       v-else-if="selectedResourceRef?.kind === 'AGENT_TEAM' && teamDraft"
+      :key="buildResourceRefKey(selectedResourceRef)"
       :slot="view.slot"
       :draft="teamDraft"
       :inherited-profiles="selectedBaseline?.leaves ?? []"
+      :server-origin-draft="serverOriginTeamDraft"
       :preserve-invalid-saved-override="preserveInvalidSavedTeamOverride"
       :disabled="editorDisabled"
       @update:draft="emit('update:launchProfile', $event)"
@@ -236,6 +240,9 @@ const slotResources = computed(() => resourcesForSlot(props.view.slot, props.ava
 const selectedResourceRef = computed(() => resolveEffectiveResourceRef(props.view, props.draft, props.availableResources))
 const agentDraft = computed(() => props.draft.launchProfile?.kind === 'AGENT' ? props.draft.launchProfile as ApplicationAgentLaunchProfileDraft : null)
 const teamDraft = computed(() => props.draft.launchProfile?.kind === 'AGENT_TEAM' ? props.draft.launchProfile as ApplicationTeamLaunchProfileDraft : null)
+const serverOriginProfile = computed(() => isPersistedSelection.value ? buildDraftFromView(props.view).launchProfile : null)
+const serverOriginAgentDraft = computed(() => serverOriginProfile.value?.kind === 'AGENT' ? serverOriginProfile.value : null)
+const serverOriginTeamDraft = computed(() => serverOriginProfile.value?.kind === 'AGENT_TEAM' ? serverOriginProfile.value : null)
 const unavailableSavedSelection = computed(() => {
   const savedRef = props.view.savedOverride?.executionResourceRef ?? null
   if (!savedRef || props.draft.selection !== buildResourceRefKey(savedRef)) return null

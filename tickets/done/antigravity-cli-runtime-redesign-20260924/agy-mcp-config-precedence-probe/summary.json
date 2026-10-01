@@ -1,0 +1,39 @@
+{
+  "exit": 0,
+  "status": "SUCCESS",
+  "response": "CAPSULE-MARKER-3492\n",
+  "capsuleMethods": [
+    "server/discover",
+    "initialize",
+    "notifications/initialized",
+    "tools/list",
+    "tools/call"
+  ],
+  "workspaceMethods": [],
+  "mcpToolEvents": [
+    [
+      "ACTIVE",
+      {
+        "name": "call_mcp_tool",
+        "parameters": {
+          "Arguments": {},
+          "ServerName": "collision-probe",
+          "ToolName": "probe_echo"
+        }
+      }
+    ],
+    [
+      "DONE",
+      {
+        "name": "call_mcp_tool",
+        "parameters": {
+          "Arguments": {},
+          "ServerName": "collision-probe",
+          "ToolName": "probe_echo"
+        },
+        "output": "CAPSULE-MARKER-3492"
+      }
+    ]
+  ],
+  "stderrTail": ""
+}

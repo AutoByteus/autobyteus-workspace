@@ -205,7 +205,6 @@ const {
       getTeamMemberNavigationAncestorRowKeys: vi.fn(() => []),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
-      createDraftRun: vi.fn().mockResolvedValue('temp-2'),
       createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),

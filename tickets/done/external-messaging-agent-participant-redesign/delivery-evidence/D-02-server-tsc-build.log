@@ -1,0 +1,1 @@
+npx tsc -p tsconfig.build.json --noEmit (server, scrubbed env, merged tree b818a6860 pre-commit index): exit=0, no diagnostics

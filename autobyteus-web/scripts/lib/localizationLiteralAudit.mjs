@@ -12,7 +12,7 @@ const MIXED_TEXT_NODE_PATTERN = />\s*([^<\n]*{{[\s\S]*?}}[^<\n]*)\s*</g;
 const TEXT_NODE_PATTERN = />\s*([^<>{\n][^<>{]*?)\s*</g;
 const IGNORED_FILE_PATTERNS = [/\.spec\./, /\.test\./, /\/__tests__\//, /\/tests\//];
 const VUE_SCRIPT_AUDIT_FILE_PATTERN = /components\/(?:app\/AppUpdateNotice|settings\/AboutSettingsManager|settings\/VoiceInputExtensionCard)\.vue$/;
-const TS_FEEDBACK_FILE_PATTERN = /(useRightSideTabs|messaging|appUpdate|extensions|voiceInput).*?\.(?:t|j)sx?$/i;
+const TS_FEEDBACK_FILE_PATTERN = /(useRightSideTabs|appUpdate|extensions|voiceInput).*?\.(?:t|j)sx?$/i;
 const UI_PROPERTY_NAMES = new Set([
   'label',
   'message',

@@ -52,6 +52,6 @@ describe('mobile root entry page', () => {
     await nextTick();
 
     expect(wrapper.find('[data-testid="mobile-remote-access-shell"]').exists()).toBe(false);
-    expect(navigateToMock).toHaveBeenCalledWith('/agents', { replace: true });
+    expect(navigateToMock).toHaveBeenCalledWith('/chat', { replace: true });
   });
 });

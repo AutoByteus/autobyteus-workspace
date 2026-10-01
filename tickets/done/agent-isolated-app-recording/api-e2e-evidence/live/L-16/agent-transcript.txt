@@ -1,0 +1,90 @@
+TR
+Tutorial Recorder - D2F0
+Idle
+You
+Using only your skills, produce a short tutorial clip of a fresh isolated AutoByteus instance started from the existing source worktree build of the repository your isolated-app skill belongs to (do not rebuild). Control port 9333 is already taken by the app you are running in, so use control port 9335. Steps: start the instance, take a screenshot of its window, record a clip of about 10 seconds in which the presentation helper shows a caption and clicks Settings, stop the recording, then stop the instance. Save the outputs in your workspace and report the instance id and the screenshot and MP4 paths.
+TR
+Tutorial Recorder
+run_bash
+· cat "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/skills/autobyteus-isolated-app/SKILL.md"
+run_bash
+· cat "/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/SKILL.md"
+run_bash
+· ROOT="/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording" ls "$ROOT" echo "---" ls "/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation"
+run_bash
+· ROOT="/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording" pnpm --dir "$ROOT" isolated-app start --from-worktree --control-port 9335 2>&1
+run_bash
+· which node npm pnpm 2>&1; echo "---"; ls ~/.nvm/versions/node 2>&1; echo "---"; command -v corepack; echo "---"; echo $PATH
+run_bash
+· find /Users/normy/.cache/node/corepack -maxdepth 4 -iname "pnpm*" 2>&1 | head -20
+run_bash
+· find /Users/normy/.cache/node/corepack/v1/pnpm -maxdepth 3 2>&1 | head -20 npm ls -g corepack 2>&1 npx --yes corepack --version 2>&1 | head -5
+
+Found pnpm. Let’s use it directly via node.
+
+run_bash
+· ROOT="/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording" node /Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/bin/pnpm.cjs --dir "$ROOT" isolated-app start --from-worktree --control-port 9335 2>&1
+
+Instance started: iso-9335-32d8. Now let’s set up browser automation control.
+
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" ls -la "$BROWSER" 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" health-check 2>&1
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" list-tabs 2>&1
+
+Got the tab. Now let’s take a screenshot, then start recording, perform caption+click actions, stop recording.
+
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" WORKDIR="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" screenshot --tab-id "$TAB" --output-file "tutorial-screenshot.png" 2>&1
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" dom-snapshot --tab-id "$TAB" 2>&1 | head -c 3000
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" dom-snapshot --tab-id "$TAB" 2>&1 | python3 -c " import json,sys d=json.load(sys.stdin) for e in d['result']['elements']: if e.get('text') and 'Settings' in e['text']: print(e) "
+
+Settings button confirmed with text “Settings”. Now let’s start recording, run the caption+click sequence with a ~10 second span, then stop.
+
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" start-recording --tab-id "$TAB" --output-file "tutorial-clip.mp4" --fps 25 2>&1
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" run-script --tab-id "$TAB" --script 'async () => { await __abDemo.caption("Let'"'"'s open Settings", {position: "bottom"}); await new Promise(r => setTimeout(r, 3500)); const res = await __abDemo.click({text: "Settings"}); await new Promise(r => setTimeout(r, 3500)); await __abDemo.hideCaption(); return res; }' 2>&1
+
+Click succeeded, URL now shows #/settings. Let’s add a small buffer then stop the recording.
+
+run_bash
+· sleep 2 BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" stop-recording --tab-id "$TAB" 2>&1
+
+The clip came out at ~21s, longer than the ~10s target due to tool round-trip overhead between separate calls. Let me redo this as a single chained bash invocation to keep timing tight.
+
+run_bash
+· rm -f /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-clip.mp4 BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" start-recording --tab-id "$TAB" --output-file "tutorial-clip.mp4" --fps 25 --overwrite 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" run-script --tab-id "$TAB" --script 'async () => { await __abDemo.caption("Let'"'"'s open Settings", {position: "bottom"}); await new Promise(r => setTimeout(r, 3000)); const res = await __abDemo.click({text: "Settings"}); await new Promise(r => setTimeout(r, 3000)); await __abDemo.hideCaption(); return res; }' 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" stop-recording --tab-id "$TAB" 2>&1
+run_bash
+· BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" run-script --tab-id "$TAB" --script '() => { location.hash = "#/agents"; return location.hash; }' 2>&1 sleep 1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" dom-snapshot --tab-id "$TAB" 2>&1 | python3 -c " import json,sys d=json.load(sys.stdin) for e in d['result']['elements']: if e.get('text') and 'Settings' in e['text']: print(e) "
+
+Good, back on Agents page with Settings visible. Now retry the recording sequence.
+
+run_bash
+· rm -f /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-clip.mp4 BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" start-recording --tab-id "$TAB" --output-file "tutorial-clip.mp4" --fps 25 --overwrite 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" run-script --tab-id "$TAB" --script 'async () => { await __abDemo.caption("Let'"'"'s open Settings", {position: "bottom"}); await new Promise(r => setTimeout(r, 3000)); const res = await __abDemo.click({text: "Settings"}); await new Promise(r => setTimeout(r, 3000)); await __abDemo.hideCaption(); return res; }' 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" stop-recording --tab-id "$TAB" 2>&1
+
+Clip is ~7.3s, close to the target. Now let’s stop the isolated instance.
+
+run_bash
+· ROOT="/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording" node /Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/bin/pnpm.cjs --dir "$ROOT" isolated-app stop iso-9335-32d8 2>&1
+
+Instance stopped cleanly. Let’s verify the output files in the workspace.
+
+run_bash
+· ls -la /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-*
+
+Task complete. Summary:
+
+Instance: iso-9335-32d8 (started from the source worktree build via --from-worktree, control port 9335; now stopped and its data root cleaned up)
+
+Outputs (in workspace):
+
+Screenshot: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-screenshot.png
+Tutorial clip: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-clip.mp4 (duration ~7.3s, 182 frames @25fps — the presentation helper shows a caption “Let’s open Settings,” waits, clicks the Settings nav item (navigation confirmed to #/settings), waits again, then hides the caption)
+
+The instance was stopped afterward, releasing its control/server ports and removing its auto-created data root.
+
+Context Files (0)
+(drag, paste, or upload)

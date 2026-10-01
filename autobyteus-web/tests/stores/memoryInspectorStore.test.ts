@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
 import { getApolloClient } from '~/utils/apolloClient';
+import { GET_AGENT_ORG_MEMBER_RUN_MEMORY_VIEW } from '~/graphql/queries/memoryViewQueries';
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }));
 
@@ -85,5 +86,35 @@ describe('memoryInspectorStore', () => {
 
     expect(queryMock.mock.calls[0][0].variables).toMatchObject({ teamRunId: 'team-1', agentRunId: 'member-1' });
     expect(store.memoryView?.runId).toBe('member-1');
+  });
+
+  it('loads an org member memory view with the org view query and compound identity', async () => {
+    const queryMock = vi.fn().mockResolvedValue({ data: { getAgentOrgMemberRunMemoryView: { runId: 'designer-run', workingContext: [], episodic: [], semantic: [], rawTraces: null } } });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+
+    const store = useMemoryInspectorStore();
+    await store.inspect({ kind: 'org_member_run', orgRunId: 'org-run-1', agentRunId: 'designer-run', orgDefinitionName: 'Alpha Org', memberName: 'engineering/solution_designer' });
+
+    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(queryMock.mock.calls[0][0].query).toBe(GET_AGENT_ORG_MEMBER_RUN_MEMORY_VIEW);
+    expect(queryMock.mock.calls[0][0].variables).toMatchObject({ orgRunId: 'org-run-1', agentRunId: 'designer-run', source: { type: 'LOCAL' } });
+    expect(queryMock.mock.calls[0][0].variables).not.toHaveProperty('teamRunId');
+    expect(store.memoryView?.runId).toBe('designer-run');
+  });
+
+  it('keeps the loaded view when re-inspecting the same org member and resets it for another member', async () => {
+    const queryMock = vi.fn().mockResolvedValue({ data: { getAgentOrgMemberRunMemoryView: { runId: 'designer-run' } } });
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    const store = useMemoryInspectorStore();
+    await store.inspect({ kind: 'org_member_run', orgRunId: 'org-run-1', agentRunId: 'designer-run' });
+    store.activeTab = 'semantic';
+
+    await store.inspect({ kind: 'org_member_run', orgRunId: 'org-run-1', agentRunId: 'designer-run' });
+    expect(store.activeTab).toBe('semantic');
+
+    queryMock.mockReturnValueOnce(new Promise(() => undefined));
+    void store.inspect({ kind: 'org_member_run', orgRunId: 'org-run-1', agentRunId: 'ceo-run' });
+    expect(store.activeTab).toBe('working');
+    expect(store.memoryView).toBeNull();
   });
 });

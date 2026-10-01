@@ -1,4 +1,4 @@
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
 import type {
@@ -19,10 +19,18 @@ vi.mock('~/composables/useLocalization', () => ({
   }),
 }))
 
+vi.mock('~/composables/useRuntimeCurrentModelDescriptor', () => ({
+  useRuntimeCurrentModelDescriptor: (_runtime: unknown, identifier: { value: string | null }) => ({
+    descriptor: computed(() => identifier.value === 'default' ? { modelIdentifier: 'default' } : null),
+    selectedDisplay: computed(() => identifier.value === 'default' ? 'Saved Opus' : null),
+    loading: ref(false), error: ref(null),
+  }),
+}))
+
 vi.mock('~/components/agentTeams/SearchableGroupedSelect.vue', () => ({
   default: defineComponent({
     name: 'SearchableGroupedSelect',
-    props: ['modelValue', 'options', 'disabled', 'placeholder', 'searchPlaceholder'],
+    props: ['modelValue', 'options', 'selectedDisplay', 'disabled', 'placeholder', 'searchPlaceholder'],
     emits: ['update:modelValue'],
     template: '<div class="model-selector">{{ modelValue }}</div>',
   }),
@@ -39,9 +47,12 @@ vi.mock('~/components/applications/setup/ApplicationWorkspaceRootSelector.vue', 
 
 vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
   normalizeScopedRuntimeKind: (value: string) => value,
-  useRuntimeScopedModelSelection: () => ({
+  useRuntimeScopedModelSelection: ({ runtimeKind, inheritedRuntimeKind }: {
+    runtimeKind: { value: string | null | undefined }
+    inheritedRuntimeKind: { value: string | null | undefined }
+  }) => ({
     availableProviderGroups: computed(() => ([{ provider: { name: 'OpenAI' }, models: [] }])),
-    effectiveRuntimeKind: computed(() => 'codex_app_server'),
+    effectiveRuntimeKind: computed(() => runtimeKind.value || inheritedRuntimeKind.value || ''),
     groupedModelOptions: computed(() => []),
     hasModelIdentifier: (value: string) => value === 'gpt-5.6-luna',
     normalizedStoredRuntimeKind: computed(() => ''),
@@ -166,6 +177,20 @@ describe('ApplicationAgentLaunchProfileEditor', () => {
       blockingReason: null,
       hasEffectiveResource: true,
     })
+  })
+
+  it('uses exact saved default as current but not a new arbitrary draft value', async () => {
+    const saved = { ...draft('default'), runtimeKind: 'claude_agent_sdk' }
+    const wrapper = mount(ApplicationAgentLaunchProfileEditor, {
+      props: { slot, draft: saved, serverOriginDraft: saved,
+        inheritedProfile: inheritedProfile('gpt-5.6-luna') },
+    })
+    expect(wrapper.getComponent({ name: 'SearchableGroupedSelect' }).props('selectedDisplay')).toBe('Saved Opus')
+    expect(wrapper.emitted('readiness-change')?.at(-1)?.[0]).toMatchObject({ isReady: true })
+
+    await wrapper.setProps({ draft: { ...saved, llmModelIdentifier: 'new-hidden-id' } })
+    expect(wrapper.getComponent({ name: 'SearchableGroupedSelect' }).props('selectedDisplay')).toBeNull()
+    expect(wrapper.emitted('readiness-change')?.at(-1)?.[0]).toMatchObject({ isReady: false })
   })
 
   it('removes llmConfig when the selected slot does not support it', () => {

@@ -1,0 +1,9 @@
+download/messaging-gateway/autobyteus-message-gateway-1.4.0.tgz
+download/other-download.bin
+extensions/messaging-gateway/config/gateway.env
+extensions/messaging-gateway/config/provider-config.json
+extensions/messaging-gateway/runtime-data/inbox/inbox.json
+extensions/messaging-gateway/state/managed-gateway-state.json
+extensions/messaging-gateway/versions/1.4.0/dist/index.js
+extensions/voice-input/models/keep.txt
+logs/messaging-gateway/gateway.log

@@ -1,12 +1,12 @@
 import { randomUUID } from "node:crypto";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
+import { ExternalChannelProvider } from "../../../external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../external-channel/channel-transport.js";
+import { ExternalPeerType } from "../../../external-channel/peer-type.js";
 import {
   parseExternalMessageEnvelope,
   type ExternalMessageEnvelope,
-} from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
+} from "../../../external-channel/external-message-envelope.js";
+import type { ExternalOutboundEnvelope } from "../../../external-channel/external-outbound-envelope.js";
 import type { ProviderSendResult } from "../../../domain/models/provider-adapter.js";
 import type {
   SessionProviderAdapter,

@@ -102,7 +102,6 @@ describe("SkillImprovementImproverSessionService", () => {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "improver-model",
           llmConfig: null,
-          skillAccessMode: "PRELOADED_ONLY",
         })),
       } as any,
     });
@@ -116,6 +115,8 @@ describe("SkillImprovementImproverSessionService", () => {
     expect(first.improverRunId).toBe("improver-run-1");
     expect(second.improverRunId).toBe("improver-run-1");
     expect(agentRunService.createAgentRun).toHaveBeenCalledTimes(1);
+    // A server-internal helper: no Agent collaboration root and no always-on collaboration tools.
+    expect(agentRunService.createAgentRun).toHaveBeenCalledWith(expect.objectContaining({ launchPurpose: "server_helper" }));
     expect(store.getImproverSessionPath(context)).toBe(path.join(context.memoryDir, "skill_improvement", "improver_session.json"));
     expect(first).not.toHaveProperty("targetKey");
     expect(state).toMatchObject({
@@ -218,7 +219,6 @@ describe("SkillImprovementImproverSessionService", () => {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "new-model",
           llmConfig: null,
-          skillAccessMode: "PRELOADED_ONLY",
         })),
       } as any,
     }).activateOrGet(context);

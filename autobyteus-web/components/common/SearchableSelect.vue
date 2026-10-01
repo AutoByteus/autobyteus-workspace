@@ -3,9 +3,14 @@
     <div class="relative" ref="wrapperRef">
       <!-- Display Button -->
       <button
+        ref="triggerRef"
         @click="toggleDropdown"
+        @keydown="handleTriggerKeydown"
         :disabled="disabled || loading"
         type="button"
+        aria-haspopup="listbox"
+        :aria-expanded="isOpen ? 'true' : 'false'"
+        :aria-controls="isOpen ? listboxId : undefined"
         :class="[triggerClass, { 'cursor-not-allowed opacity-50 bg-gray-100': disabled || loading }]"
       >
         <div v-if="loading" class="flex items-center text-gray-500">
@@ -45,7 +50,13 @@
               ref="searchInputRef"
               v-model="searchTerm"
               type="text"
+              role="combobox"
+              aria-autocomplete="list"
+              aria-expanded="true"
+              :aria-controls="listboxId"
+              :aria-activedescendant="activeOptionId"
               :placeholder="searchPlaceholder"
+              @keydown="handleSearchKeydown"
               class="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-gray-400"
             />
           </div>
@@ -60,13 +71,19 @@
           </div>
 
           <!-- Options -->
-          <ul v-else class="py-1">
+          <ul v-else :id="listboxId" role="listbox" class="py-1">
             <li
-              v-for="item in filteredOptions"
+              v-for="(item, index) in filteredOptions"
+              :id="optionId(index)"
               :key="item.id"
+              role="option"
+              :aria-selected="modelValue === item.id ? 'true' : 'false'"
               @click="selectItem(item.id)"
               class="px-3 py-2.5 cursor-pointer transition-colors duration-150 flex items-center hover:bg-blue-50"
-              :class="{ 'bg-blue-50 border-l-2 border-l-blue-500': modelValue === item.id }"
+              :class="{
+                'bg-blue-50 border-l-2 border-l-blue-500': modelValue === item.id,
+                'bg-blue-50 ring-1 ring-inset ring-blue-300': index === activeIndex && modelValue !== item.id,
+              }"
             >
               <span class="i-heroicons-folder-20-solid w-5 h-5 mr-3 flex-shrink-0"
                     :class="modelValue === item.id ? 'text-blue-600' : 'text-gray-400'"></span>
@@ -94,6 +111,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue';
+
+let searchableSelectSequence = 0;
 
 export interface SelectOption {
   id: string;
@@ -126,6 +145,10 @@ const searchTerm = ref('');
 const wrapperRef = ref<HTMLDivElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
 const popoverRef = ref<HTMLDivElement | null>(null);
+const triggerRef = ref<HTMLButtonElement | null>(null);
+const activeIndex = ref(-1);
+const listboxId = `searchable-select-listbox-${++searchableSelectSequence}`;
+const optionId = (index: number) => `${listboxId}-option-${index}`;
 
 const triggerClass = computed(() => [
   'flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left text-sm transition-colors duration-200 focus:outline-none',
@@ -183,16 +206,100 @@ const selectedItem = computed(() => {
   return props.options.find(item => item.id === props.modelValue) || null;
 });
 
+const activeOptionId = computed(() => (
+  activeIndex.value >= 0 && activeIndex.value < filteredOptions.value.length
+    ? optionId(activeIndex.value)
+    : undefined
+));
+
 const toggleDropdown = () => {
   if (props.disabled || props.loading) return;
   isOpen.value = !isOpen.value;
+};
+
+const focusTrigger = () => {
+  triggerRef.value?.focus();
+};
+
+const closeAndFocusTrigger = () => {
+  isOpen.value = false;
+  focusTrigger();
 };
 
 const selectItem = (itemId: string) => {
   emit('update:modelValue', itemId);
   isOpen.value = false;
   searchTerm.value = '';
+  focusTrigger();
 };
+
+const scrollActiveOptionIntoView = () => {
+  nextTick(() => {
+    const option = activeOptionId.value ? document.getElementById(activeOptionId.value) : null;
+    option?.scrollIntoView?.({ block: 'nearest' });
+  });
+};
+
+const moveActive = (step: 1 | -1) => {
+  const count = filteredOptions.value.length;
+  if (count === 0) {
+    activeIndex.value = -1;
+    return;
+  }
+  activeIndex.value = activeIndex.value < 0
+    ? (step === 1 ? 0 : count - 1)
+    : (activeIndex.value + step + count) % count;
+  scrollActiveOptionIntoView();
+};
+
+const handleTriggerKeydown = (event: KeyboardEvent) => {
+  if (isOpen.value || props.disabled || props.loading) return;
+  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+    event.preventDefault();
+    isOpen.value = true;
+  }
+};
+
+const handleSearchKeydown = (event: KeyboardEvent) => {
+  switch (event.key) {
+    case 'ArrowDown':
+    case 'ArrowUp':
+      event.preventDefault();
+      moveActive(event.key === 'ArrowDown' ? 1 : -1);
+      return;
+    case 'Home':
+    case 'End':
+      if (filteredOptions.value.length > 0) {
+        event.preventDefault();
+        activeIndex.value = event.key === 'Home' ? 0 : filteredOptions.value.length - 1;
+        scrollActiveOptionIntoView();
+      }
+      return;
+    case 'Enter': {
+      event.preventDefault();
+      const item = filteredOptions.value[activeIndex.value];
+      if (item) selectItem(item.id);
+      return;
+    }
+    case 'Escape':
+      // Close only this popover; an enclosing dialog must stay open.
+      event.preventDefault();
+      event.stopPropagation();
+      closeAndFocusTrigger();
+      return;
+    case 'Tab':
+      // The popover is teleported outside any enclosing focus scope; hand focus back to the trigger.
+      event.preventDefault();
+      event.stopPropagation();
+      closeAndFocusTrigger();
+      return;
+  }
+};
+
+watch(filteredOptions, (options) => {
+  if (!isOpen.value) return;
+  activeIndex.value = options.length > 0 ? 0 : -1;
+});
 
 const handleClickOutside = (event: MouseEvent) => {
   if (
@@ -206,6 +313,8 @@ const handleClickOutside = (event: MouseEvent) => {
 
 watch(isOpen, (newValue) => {
   if (newValue) {
+    const selectedIndex = filteredOptions.value.findIndex((item) => item.id === props.modelValue);
+    activeIndex.value = selectedIndex >= 0 ? selectedIndex : (filteredOptions.value.length > 0 ? 0 : -1);
     nextTick(() => {
       updatePopoverPosition();
       searchInputRef.value?.focus();
@@ -214,6 +323,7 @@ watch(isOpen, (newValue) => {
     });
   } else {
     searchTerm.value = '';
+    activeIndex.value = -1;
     window.removeEventListener('scroll', updatePopoverPosition, true);
     window.removeEventListener('resize', updatePopoverPosition);
   }

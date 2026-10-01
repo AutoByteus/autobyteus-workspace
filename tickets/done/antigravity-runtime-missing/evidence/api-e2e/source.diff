@@ -1,0 +1,149 @@
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts b/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+index df9ef567b..8aa5fe224 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+@@ -6,8 +6,7 @@ import { AgyAgentRunContext } from "./agy-agent-run-context.js";
+ import { AgyAgentRunBackend } from "./agy-agent-run-backend.js";
+ import { AgyStreamProcess } from "../stream/agy-stream-process.js";
+ import { createAgyRunCapsule, restoreAgyRunCapsule, type AgyRunCapsule } from "../capsule/agy-run-capsule.js";
+-import { discoverAntigravityRuntime, listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
+-import { resolveAgyNativeToolProfile } from "../capsule/agy-native-tool-policy.js";
++import { listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
+ import type { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
+ import type { SkillService } from "../../../../skills/services/skill-service.js";
+ import type { ClaudeWorkspaceResolver } from "../../claude/claude-workspace-resolver.js";
+@@ -28,10 +27,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
+   ) {}
+ 
+   async createBackend(config: AgentRunConfig, runId: string): Promise<AgyAgentRunBackend> {
+-    const runtime = await discoverAntigravityRuntime();
+-    if (!runtime.models.some((model) => model.id === config.llmModelIdentifier))
+-      throw new Error(`AGY_MODEL_UNAVAILABLE: ${config.llmModelIdentifier}`);
+-    const nativeToolProfile = resolveAgyNativeToolProfile(runtime.version);
++    await this.assertAvailable(config);
+     const memoryDir = this.requireMemoryDir(config);
+     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
+     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
+@@ -41,7 +37,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
+     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
+     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
+     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
+-      agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings, nativeToolProfile,
++      agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings,
+       skillAccessMode, mcpDescriptor: descriptor });
+     return this.launch(config, runId, capsule, null);
+   }
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts b/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts
+index a185a830b..32df2f6f0 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts
+@@ -1,20 +1,5 @@
+-/** CLI custom-agent `tools` is an allowlist, not a subtractive denylist.
+- * This profile is pinned to the installed 1.2.11 CLI contract. Never reuse it
+- * for another version without validating the provider's exposed tool names.
+- */
+-const nativeTools1211 = [
++/** CLI custom-agent `tools` is an allowlist, not a subtractive denylist. */
++export const AGY_NATIVE_TOOL_NAMES = [
+   "view_file", "write_to_file", "replace_file_content", "grep_search",
+   "list_dir", "find_by_name", "run_command", "generate_image",
+ ] as const;
+-
+-
+-export type AgyNativeToolProfile = Readonly<{
+-  cliVersion: string;
+-  permittedNativeToolNames: readonly string[];
+-}>;
+-
+-export const resolveAgyNativeToolProfile = (cliVersion: string): AgyNativeToolProfile => {
+-  if (cliVersion !== "1.2.11")
+-    throw new Error("AGY_NATIVE_TOOL_PROFILE_UNSUPPORTED: this Antigravity CLI version requires native-tool compatibility validation.");
+-  return { cliVersion, permittedNativeToolNames: nativeTools1211 };
+-};
+diff --git a/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts b/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts
+index 4cda6b8d1..94dc8ed44 100644
+--- a/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts
++++ b/autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts
+@@ -5,7 +5,7 @@ import type { DetailedConfiguredSkillResolution } from "../../../../skills/domai
+ import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
+ import { materializeAgyMcpConfig } from "./agy-mcp-config-materializer.js";
+ import { materializeAgyConfiguredSkills, type AgySkillSnapshot } from "./agy-configured-skill-materializer.js";
+-import type { AgyNativeToolProfile } from "./agy-native-tool-policy.js";
++import { AGY_NATIVE_TOOL_NAMES } from "./agy-native-tool-policy.js";
+ 
+ const sha256 = (value: string): string => createHash("sha256").update(value).digest("hex");
+ 
+@@ -31,7 +31,6 @@ export const createAgyRunCapsule = async (input: {
+   identity: string;
+   agentDefinitionId: string;
+   configuredSkillBindings: readonly DetailedConfiguredSkillResolution[];
+-  nativeToolProfile: AgyNativeToolProfile;
+   skillAccessMode: "PRELOADED_ONLY" | "NONE";
+   mcpDescriptor: AgentToolMcpDescriptor | null;
+ }): Promise<AgyRunCapsule> => {
+@@ -43,7 +42,7 @@ export const createAgyRunCapsule = async (input: {
+   try {
+     const agentName = `autobyteus-${sha256(input.runId).slice(0, 16)}`;
+     const markdown = [
+-      "---", `name: ${agentName}`, "description: Run-specific AutoByteus main agent.", "mainAgent: true", `tools: [${input.nativeToolProfile.permittedNativeToolNames.join(", ")}]`, "---", "",
++      "---", `name: ${agentName}`, "description: Run-specific AutoByteus main agent.", "mainAgent: true", `tools: [${AGY_NATIVE_TOOL_NAMES.join(", ")}]`, "---", "",
+       input.identity,
+       "", "## Working Environment", `- Agent workspace: \`${workspacePath}\``,
+       "- Resolve task and project locations from the agent workspace unless an explicit target says otherwise.", "",
+diff --git a/autobyteus-server-ts/src/runtime-management/antigravity-cli-capability.ts b/autobyteus-server-ts/src/runtime-management/antigravity-cli-capability.ts
+index 3d84b256e..121435308 100644
+--- a/autobyteus-server-ts/src/runtime-management/antigravity-cli-capability.ts
++++ b/autobyteus-server-ts/src/runtime-management/antigravity-cli-capability.ts
+@@ -18,7 +18,7 @@ export type AgyDiscoveryDiagnostic = Readonly<{ code: AgyDiscoveryDiagnosticCode
+ 
+ const DIAGNOSTICS: Readonly<Record<AgyDiscoveryDiagnosticCode, AgyDiscoveryDiagnostic>> = Object.freeze({
+   AGY_CLI_UNAVAILABLE: { code: "AGY_CLI_UNAVAILABLE", message: "Antigravity CLI is unavailable; install or configure it and retry." },
+-  AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI version or required features are unsupported; update the CLI and retry." },
++  AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI is missing required features; update the CLI and retry." },
+   AGY_MODEL_DISCOVERY_TIMEOUT: { code: "AGY_MODEL_DISCOVERY_TIMEOUT", message: "Antigravity model discovery timed out; check the CLI and retry." },
+   AGY_MODEL_DISCOVERY_FAILED: { code: "AGY_MODEL_DISCOVERY_FAILED", message: "Antigravity model discovery failed; check authentication or network and retry." },
+   AGY_MODEL_CATALOG_INVALID: { code: "AGY_MODEL_CATALOG_INVALID", message: "Antigravity CLI returned an invalid or empty model catalog; check authentication and network and retry." },
+@@ -77,32 +77,7 @@ const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: num
+       : undefined, code === 0 ? undefined : new AgyDiscoveryError("AGY_MODEL_DISCOVERY_FAILED")));
+   });
+ 
+-export const probeAntigravityCli = async (): Promise<{
+-  available: boolean;
+-  reason: string | null;
+-  diagnostic: AgyDiscoveryDiagnostic | null;
+-}> => {
+-  try {
+-    const version = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+-    const match = /\b(\d+)\.(\d+)\.(\d+)\b/.exec(version.stdout);
+-    if (!match || `${match[1]}.${match[2]}.${match[3]}` !== "1.2.11")
+-      throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+-    const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+-    if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
+-      throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+-    return { available: true, reason: null, diagnostic: null };
+-  } catch (error) {
+-    const diagnostic = toAgyDiscoveryDiagnostic(error);
+-    return { available: false, reason: diagnostic.message, diagnostic };
+-  }
+-};
+-
+-export const discoverAntigravityRuntime = async (): Promise<{ version: string; models: { id: string; name: string }[] }> => {
+-  const versionOutput = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+-  const match = /\b(\d+\.\d+\.\d+)\b/.exec(versionOutput.stdout);
+-  if (!match) throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+-  const version = match[1];
+-  if (version !== "1.2.11") throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
++export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> => {
+   const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+   if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
+     throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+@@ -112,8 +87,5 @@ export const discoverAntigravityRuntime = async (): Promise<{ version: string; m
+     return id && /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(id) && name ? { id, name } : null;
+   }).filter((model): model is { id: string; name: string } => model !== null);
+   if (models.length === 0) throw new AgyDiscoveryError("AGY_MODEL_CATALOG_INVALID");
+-  return { version, models };
++  return models;
+ };
+-
+-export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> =>
+-  (await discoverAntigravityRuntime()).models;

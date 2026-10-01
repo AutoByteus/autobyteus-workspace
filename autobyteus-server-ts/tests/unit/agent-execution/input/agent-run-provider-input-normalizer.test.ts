@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -72,10 +73,14 @@ const createNormalizer = async () => {
     storedFilename,
   ));
 
+  await fs.writeFile(path.join(rootTeamDir, "task_delegation_records.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId, records: []}));
+  await fs.writeFile(path.join(rootTeamDir, "team_communication_messages.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId, messages: []}));
+  await fs.writeFile(path.join(memoryDir, "agents", "standalone-run", "run_metadata.json"), JSON.stringify({runId: "standalone-run", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir, llmModelIdentifier: "model", runtimeKind: "autobyteus"}));
+  await new RootRunPackageReadinessIndex(memoryDir).rebuild();
   const normalizer = new AgentRunProviderInputNormalizer(
     new ContextFileLocalPathResolver({
       layout,
-      ownerResolver: new ContextFileOwnerResolver({
+      ownerResolver: new ContextFileOwnerResolver({ memoryDir,
         locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       }),
       baseUrl: "http://studio.example.test:8000",
@@ -87,7 +92,7 @@ const createNormalizer = async () => {
       `/rest/drafts/agent-runs/agent-draft/context-files/${storedFilename}`,
       `/rest/drafts/team-runs/team-draft/members/%2Freviewer/context-files/${storedFilename}`,
       `/rest/runs/standalone-run/context-files/${storedFilename}`,
-      `/rest/team-runs/${rootTeamRunId}/members/%2Freviewer/context-files/${storedFilename}`,
+      `/rest/team-runs/${rootTeamRunId}/agent-runs/${nestedAgentRunId}/context-files/${storedFilename}`,
       `http://studio.example.test:8000/rest/runs/standalone-run/context-files/${storedFilename}`,
       `http://localhost:9999/rest/runs/standalone-run/context-files/${storedFilename}`,
     ],

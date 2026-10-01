@@ -1,0 +1,37 @@
+[
+  {
+    "case": "valid8",
+    "tools": [
+      "view_file",
+      "write_to_file",
+      "replace_file_content",
+      "multi_replace_file_content",
+      "grep_search",
+      "list_dir",
+      "find_by_name",
+      "run_command"
+    ],
+    "exit": 0,
+    "status": "SUCCESS",
+    "response": "OK.\n",
+    "agent": "toolset-probe",
+    "stderrTail": ""
+  },
+  {
+    "case": "invalid_aux",
+    "tools": [
+      "view_file",
+      "write_to_file",
+      "run_command",
+      "call_mcp_tool",
+      "command_status",
+      "send_command_input",
+      "sed_file"
+    ],
+    "exit": 3,
+    "status": "ERROR",
+    "response": "",
+    "agent": "toolset-probe",
+    "stderrTail": "ailed to resolve components: unknown component: tool \"call_mcp_tool\" not found in registry\nunknown component: tool \"command_status\" not found in registry\nunknown component: tool \"send_command_input\" not found in registry\nunknown component: tool \"sed_file\" not found in registry\nAGY_ERROR: {\"short_error\":\"failed to construct executor: failed to resolve components: unknown component: tool \\\"call_mcp_tool\\\" not found in registry\\nunknown component: tool \\\"command_status\\\" not found in registry\\nunknown component: tool \\\"send_command_input\\\" not found in registry\\nunknown component: tool \\\"sed_file\\\" not found in registry\",\"status\":\"UNKNOWN\",\"error_code\":2,\"code_kind\":\"grpc\",\"retryable\":false,\"error_id\":\"788e3c25-f179-4b1b-b035-dfbf2fe0920a-1\"}\n"
+  }
+]

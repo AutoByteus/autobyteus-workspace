@@ -397,4 +397,211 @@ describe('appUpdateStore', () => {
     expect(addToastMock.mock.calls[0][0]).not.toContain('example.invalid');
   });
 
+  describe('updates disabled for this launch', () => {
+    function disabledState() {
+      return {
+        status: 'disabled',
+        currentVersion: '1.4.91',
+        currentVersionIsPrerelease: false,
+        updateChannel: 'stable',
+        updateStaged: false,
+        availableVersion: null,
+        downloadPercent: null,
+        downloadTransferredBytes: null,
+        downloadTotalBytes: null,
+        releaseNotes: null,
+        message: 'Updates are disabled for this app instance.',
+        errorKind: null,
+        errorOperation: null,
+        checkedAt: null,
+      };
+    }
+
+    it('initializes quietly with no notice and no toast', async () => {
+      setElectronApiMock({
+        getAppUpdateState: vi.fn().mockResolvedValue(disabledState()),
+        onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
+      });
+
+      const store = useAppUpdateStore();
+      await store.initialize();
+
+      expect(store.status).toBe('disabled');
+      expect(store.visible).toBe(false);
+      expect(store.shouldShow).toBe(false);
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+
+    it('treats every update action as a no-op', async () => {
+      const api = {
+        getAppUpdateState: vi.fn().mockResolvedValue(disabledState()),
+        onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
+        checkForAppUpdates: vi.fn(),
+        downloadAppUpdate: vi.fn(),
+        installAppUpdateAndRestart: vi.fn(),
+        setAppUpdateChannel: vi.fn(),
+      };
+      setElectronApiMock(api);
+
+      const store = useAppUpdateStore();
+      await store.initialize();
+      await store.checkForUpdates();
+      await store.downloadUpdate();
+      await store.installUpdateAndRestart();
+      await store.setUpdateChannel('beta');
+
+      expect(api.checkForAppUpdates).not.toHaveBeenCalled();
+      expect(api.downloadAppUpdate).not.toHaveBeenCalled();
+      expect(api.installAppUpdateAndRestart).not.toHaveBeenCalled();
+      expect(api.setAppUpdateChannel).not.toHaveBeenCalled();
+      expect(store.status).toBe('disabled');
+      expect(store.shouldShow).toBe(false);
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('update channel', () => {
+    const remoteState = (overrides: Record<string, unknown> = {}) => ({
+      status: 'no-update',
+      currentVersion: '1.4.90-beta.1',
+      currentVersionIsPrerelease: true,
+      updateChannel: 'beta',
+      updateStaged: false,
+      availableVersion: null,
+      downloadPercent: null,
+      downloadTransferredBytes: null,
+      downloadTotalBytes: null,
+      releaseNotes: null,
+      message: 'You already have the latest version.',
+      errorKind: null,
+      errorOperation: null,
+      checkedAt: '2026-09-27T00:00:00.000Z',
+      ...overrides,
+    });
+
+    it('defaults to the stable channel on a stable build', () => {
+      const store = useAppUpdateStore();
+
+      expect(store.updateChannel).toBe('stable');
+      expect(store.currentVersionIsPrerelease).toBe(false);
+    });
+
+    it('mirrors channel, pre-release and staged fields from remote state', async () => {
+      let listener: ((payload: any) => void) | undefined;
+      setElectronApiMock({
+        getAppUpdateState: vi.fn().mockResolvedValue(remoteState({ status: 'idle' })),
+        onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+          listener = callback;
+          return vi.fn();
+        }),
+      });
+
+      const store = useAppUpdateStore();
+      await store.initialize();
+
+      expect(store.updateChannel).toBe('beta');
+      expect(store.currentVersionIsPrerelease).toBe(true);
+      expect(store.updateStaged).toBe(false);
+
+      listener!(remoteState({ status: 'downloaded', updateStaged: true }));
+      listener!(remoteState({ status: 'available', updateStaged: true, availableVersion: '1.4.90-beta.2' }));
+
+      expect(store.status).toBe('available');
+      expect(store.updateStaged).toBe(true);
+    });
+
+    it('keeps channel facts when a manual check IPC call fails', async () => {
+      setElectronApiMock({
+        getAppUpdateState: vi.fn().mockResolvedValue(remoteState({ status: 'downloaded', updateStaged: true })),
+        onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
+        checkForAppUpdates: vi.fn().mockRejectedValue(new Error('ipc boom')),
+      });
+
+      const store = useAppUpdateStore();
+      await store.initialize();
+      await store.checkForUpdates();
+
+      expect(store.status).toBe('error');
+      expect(store.updateChannel).toBe('beta');
+      expect(store.updateStaged).toBe(true);
+      expect(store.currentVersionIsPrerelease).toBe(true);
+    });
+
+    it('applies the returned state when the change is accepted and saved', async () => {
+      const setAppUpdateChannel = vi.fn().mockResolvedValue({
+        accepted: true,
+        persisted: true,
+        state: remoteState(),
+      });
+      setElectronApiMock({ setAppUpdateChannel });
+
+      const store = useAppUpdateStore();
+      await store.setUpdateChannel('beta');
+
+      expect(setAppUpdateChannel).toHaveBeenCalledWith('beta');
+      expect(store.updateChannel).toBe('beta');
+      expect(store.status).toBe('no-update');
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+
+    it('shows a save-failed toast when the change applies but is not persisted', async () => {
+      setElectronApiMock({
+        setAppUpdateChannel: vi.fn().mockResolvedValue({
+          accepted: true,
+          persisted: false,
+          state: remoteState(),
+        }),
+      });
+
+      const store = useAppUpdateStore();
+      await store.setUpdateChannel('beta');
+
+      expect(store.updateChannel).toBe('beta');
+      expect(addToastMock).toHaveBeenCalledTimes(1);
+      expect(addToastMock).toHaveBeenCalledWith(
+        'Couldn’t save the update channel. It applies until AutoByteus restarts.',
+        'error',
+      );
+    });
+
+    it('keeps its state when the main process refuses the change', async () => {
+      setElectronApiMock({
+        setAppUpdateChannel: vi.fn().mockResolvedValue({
+          accepted: false,
+          persisted: false,
+          state: remoteState({ status: 'downloaded', updateChannel: 'stable' }),
+        }),
+      });
+
+      const store = useAppUpdateStore();
+      store.status = 'downloaded';
+      await store.setUpdateChannel('beta');
+
+      expect(store.updateChannel).toBe('stable');
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+
+    it('shows a generic error toast when the IPC call fails', async () => {
+      setElectronApiMock({
+        setAppUpdateChannel: vi.fn().mockRejectedValue(new Error('ipc boom')),
+      });
+
+      const store = useAppUpdateStore();
+      await store.setUpdateChannel('beta');
+
+      expect(store.updateChannel).toBe('stable');
+      expect(addToastMock).toHaveBeenCalledWith(
+        'AutoByteus couldn’t complete the update check. Try again later.',
+        'error',
+      );
+    });
+
+    it('does nothing without the Electron bridge', async () => {
+      const store = useAppUpdateStore();
+      await store.setUpdateChannel('beta');
+
+      expect(store.updateChannel).toBe('stable');
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+  });
 });

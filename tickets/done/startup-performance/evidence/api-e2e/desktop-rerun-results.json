@@ -1,0 +1,22 @@
+[
+  {
+    "variant": "baseline",
+    "startupMs": 30917.661541999998,
+    "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 3443,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop-rerun",
+    "ownsDataRoot": false,
+    "clientBaseUrl": "http://127.0.0.1:3443",
+    "healthUrl": "http://127.0.0.1:3443/rest/health"
+  },
+  {
+    "variant": "candidate",
+    "startupMs": 8621.142207999997,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "port": 3443,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/candidate-desktop-rerun",
+    "ownsDataRoot": false,
+    "clientBaseUrl": "http://127.0.0.1:3443",
+    "healthUrl": "http://127.0.0.1:3443/rest/health"
+  }
+]

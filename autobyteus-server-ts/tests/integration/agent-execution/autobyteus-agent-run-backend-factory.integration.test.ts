@@ -100,6 +100,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
       } as any,
       skillService: {
         getSkill: () => null,
+        hasEffectiveSkills: () => false,
       } as any,
       compactionAgentRunnerFactory,
     });

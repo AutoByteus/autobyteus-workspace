@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
-import { ExternalChannelParseError } from "autobyteus-ts/external-channel/errors.js";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import { ExternalChannelParseError } from "../../external-channel/errors.js";
+import { ExternalChannelProvider } from "../../external-channel/provider.js";
 import type { InboundMessageService } from "../../application/services/inbound-message-service.js";
 import type { InboundHttpRequest } from "../../domain/models/inbound-http-request.js";
 import { toInboundHttpRequest } from "../mappers/http-request-mapper.js";

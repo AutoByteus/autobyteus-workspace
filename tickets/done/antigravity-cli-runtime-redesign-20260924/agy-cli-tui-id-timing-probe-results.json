@@ -1,0 +1,106 @@
+{
+  "version": "1.2.10",
+  "model": "gemini-3.8-flash-low",
+  "inputSubmitted": false,
+  "observations": [
+    {
+      "seconds": 0.39,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 0.39,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 0.44,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 0.44,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 0.95,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 1.31,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 1.81,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 2.32,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 2.49,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 3.0,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 3.51,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 4.02,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 4.53,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 5.04,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 5.55,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    },
+    {
+      "seconds": 6.06,
+      "logExists": true,
+      "createdConversationLine": false,
+      "uuidInLog": true
+    }
+  ],
+  "tuiBytesObserved": true,
+  "tuiContainsConversationId": false,
+  "processExitAfterSigterm": 0
+}

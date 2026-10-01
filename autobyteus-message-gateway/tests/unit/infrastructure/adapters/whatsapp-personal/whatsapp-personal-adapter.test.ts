@@ -1,8 +1,8 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
+import type { ExternalMessageEnvelope } from "../../../../../src/external-channel/external-message-envelope.js";
+import type { ExternalOutboundEnvelope } from "../../../../../src/external-channel/external-outbound-envelope.js";
 import { describe, expect, it } from "vitest";
 import type {
   PersonalConnectionUpdateEvent,

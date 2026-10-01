@@ -1,0 +1,19 @@
+   0.3s command_lifecycle queued 34fe4e2b
+   0.3s command_lifecycle started 34fe4e2b
+   0.3s system/init 
+   3.0s assistant ["thinking"]
+   3.7s assistant ["tool_use:Bash"]
+   4.4s system/background_tasks_changed ["bllagc0fh"]
+   4.4s system/task_started  type=local_bash task=bllagc0fh
+   4.4s user uuid=6d03e1f4
+   5.8s assistant ["thinking"]
+   8.5s system/background_tasks_changed []
+   8.5s system/task_updated 
+   8.5s system/task_notification completed type= task=bllagc0fh
+  14.1s assistant ["# The History of Lighthouses: …(3571 chars)"]
+  14.2s result/success success answers=[34fe4e2b] origin=undefined terminal=completed
+  14.2s command_lifecycle completed 34fe4e2b
+  14.2s system/init 
+  15.4s assistant ["thinking"]
+  15.4s assistant ["NOTED…(5 chars)"]
+  15.4s result/success success answers=[] origin={"kind":"task-notification"} terminal=completed

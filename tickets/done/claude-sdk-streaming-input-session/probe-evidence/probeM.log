@@ -1,0 +1,21 @@
+   0.0s >>> SEND be00af0d Reply only ONE.
+   0.0s >>> SEND 91875750 Reply only TWO.
+   0.3s init
+   4.7s assistant ["thinking"] echo be00af0d
+   5.0s assistant ["Ready to assist with streamprobe. What would you l"] echo -
+   5.0s result success answers ["be00af0d"] completed
+   5.0s init
+   7.3s assistant ["thinking"] echo 91875750
+   8.1s assistant ["1. I understand the Claude Docs MCP instructions—I"] echo -
+   8.1s result success answers ["91875750"] completed
+  11.0s >>> SEND 4f9a1b46 Use Bash in the foreground to run: python3 -c 'import time; 
+  11.0s init
+  12.9s assistant ["thinking"] echo 4f9a1b46
+  13.5s assistant ["tool_use:Bash"] echo -
+  17.0s >>> SEND 9232ff73 Reply only QUEUED-AFTER-INTERRUPT.
+  18.5s interrupt receipt {"still_queued":["9232ff73-4c41-48ed-a2f1-9686d47ab702"]}
+  18.5s result error_during_execution answers ["4f9a1b46"] aborted_tools
+  18.5s init
+  19.6s assistant ["thinking"] echo 9232ff73
+  19.7s assistant ["QUEUED-AFTER-INTERRUPT."] echo -
+  19.7s result success answers ["9232ff73"] completed

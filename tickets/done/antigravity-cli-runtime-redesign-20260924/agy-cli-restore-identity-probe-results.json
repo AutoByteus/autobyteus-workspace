@@ -1,0 +1,31 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "agent": "identity-sentinel",
+  "initialExpectedCode": "IDENTITY-ALPHA",
+  "nonce": "VALET-53",
+  "editedFileCode": "IDENTITY-BETA",
+  "start": {
+    "exit": 0,
+    "id": "0a4f0be4-bc35-42fe-b0b5-72c144f34735",
+    "status": "SUCCESS",
+    "response": "IDENTITY-ALPHA\n",
+    "numTurns": 1,
+    "stderr": ""
+  },
+  "exactResume": {
+    "exit": 0,
+    "id": "0a4f0be4-bc35-42fe-b0b5-72c144f34735",
+    "status": "SUCCESS",
+    "response": "VALET-53\n",
+    "numTurns": 2,
+    "stderr": ""
+  },
+  "resumeAfterAgentFileEdit": {
+    "exit": 0,
+    "id": "0a4f0be4-bc35-42fe-b0b5-72c144f34735",
+    "status": "SUCCESS",
+    "response": "IDENTITY-ALPHA\n",
+    "numTurns": 3,
+    "stderr": ""
+  }
+}

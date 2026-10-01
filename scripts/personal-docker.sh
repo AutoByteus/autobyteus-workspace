@@ -82,17 +82,6 @@ s.close()
 PY
 }
 
-generate_secret() {
-  if command -v openssl >/dev/null 2>&1; then
-    openssl rand -hex 24
-  else
-    python3 - <<'PY'
-import secrets
-print(secrets.token_hex(24))
-PY
-  fi
-}
-
 USED_PORTS=""
 reserve_port() {
   local value="$1"
@@ -140,7 +129,6 @@ load_reserved_ports_from_env() {
   source "${env_file}"
   reserve_port "${AUTOBYTEUS_HOST_BACKEND_PORT:-}"
   reserve_port "${AUTOBYTEUS_HOST_WEB_PORT:-}"
-  reserve_port "${AUTOBYTEUS_HOST_GATEWAY_PORT:-}"
   reserve_port "${AUTOBYTEUS_HOST_VNC_PORT:-}"
   reserve_port "${AUTOBYTEUS_HOST_NOVNC_PORT:-}"
   reserve_port "${AUTOBYTEUS_HOST_CHROME_DEBUG_PORT:-}"
@@ -150,24 +138,18 @@ write_runtime_env() {
   local env_file="$1"
   local backend_port="$2"
   local web_port="$3"
-  local gateway_port="$4"
-  local vnc_port="$5"
-  local novnc_port="$6"
-  local chrome_debug_port="$7"
-  local shared_secret="$8"
-  local admin_token="$9"
+  local vnc_port="$4"
+  local novnc_port="$5"
+  local chrome_debug_port="$6"
 
   cat > "${env_file}" <<EOF_ENV
 AUTOBYTEUS_HOST_BACKEND_PORT=${backend_port}
 AUTOBYTEUS_HOST_WEB_PORT=${web_port}
-AUTOBYTEUS_HOST_GATEWAY_PORT=${gateway_port}
 AUTOBYTEUS_HOST_VNC_PORT=${vnc_port}
 AUTOBYTEUS_HOST_NOVNC_PORT=${novnc_port}
 AUTOBYTEUS_HOST_CHROME_DEBUG_PORT=${chrome_debug_port}
 AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:${backend_port}
 AUTOBYTEUS_VNC_SERVER_HOSTS=127.0.0.1:${novnc_port}
-GATEWAY_SERVER_SHARED_SECRET=${shared_secret}
-GATEWAY_ADMIN_TOKEN=${admin_token}
 EOF_ENV
 }
 
@@ -178,7 +160,6 @@ print_endpoints() {
   cat <<EOF_PORTS
 web:            http://127.0.0.1:${AUTOBYTEUS_HOST_WEB_PORT}
 backend:        http://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}
-gateway:        http://127.0.0.1:${AUTOBYTEUS_HOST_GATEWAY_PORT}
 noVNC:          http://127.0.0.1:${AUTOBYTEUS_HOST_NOVNC_PORT}
 VNC (TigerVNC): 127.0.0.1:${AUTOBYTEUS_HOST_VNC_PORT}
 chrome debug:   127.0.0.1:${AUTOBYTEUS_HOST_CHROME_DEBUG_PORT}
@@ -265,22 +246,16 @@ case "${cmd}" in
       load_reserved_ports_from_env "${env_file}"
       backend_port="$(pick_unique_port)"
       web_port="$(pick_unique_port)"
-      gateway_port="$(pick_unique_port)"
       vnc_port="$(pick_unique_port)"
       novnc_port="$(pick_unique_port)"
       chrome_debug_port="$(pick_unique_port)"
-      shared_secret="${GATEWAY_SERVER_SHARED_SECRET:-$(generate_secret)}"
-      admin_token="${GATEWAY_ADMIN_TOKEN:-$(generate_secret)}"
       write_runtime_env \
         "${env_file}" \
         "${backend_port}" \
         "${web_port}" \
-        "${gateway_port}" \
         "${vnc_port}" \
         "${novnc_port}" \
-        "${chrome_debug_port}" \
-        "${shared_secret}" \
-        "${admin_token}"
+        "${chrome_debug_port}"
       log "Wrote runtime env: ${env_file}"
     else
       log "Reusing runtime env: ${env_file}"

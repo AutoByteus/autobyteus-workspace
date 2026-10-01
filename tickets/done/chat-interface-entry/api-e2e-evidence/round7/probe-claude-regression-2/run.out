@@ -1,0 +1,7 @@
+C03 Pass Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation
+C04 Pass Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model
+C12 Pass Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in
+C19 Fail CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat — locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="agent-workspace-surface"]') to be visible
+

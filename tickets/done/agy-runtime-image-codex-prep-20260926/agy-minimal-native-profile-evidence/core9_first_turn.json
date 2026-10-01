@@ -1,0 +1,24 @@
+{
+  "case": "core9_first_turn",
+  "configured_tools": [
+    "view_file",
+    "write_to_file",
+    "replace_file_content",
+    "multi_replace_file_content",
+    "grep_search",
+    "list_dir",
+    "find_by_name",
+    "run_command",
+    "generate_image"
+  ],
+  "exit": 0,
+  "timed_out": false,
+  "seconds": 6.1,
+  "init_agent_match": true,
+  "status": "SUCCESS",
+  "response_length": 3,
+  "response_has_expected_marker": false,
+  "tool_steps": [],
+  "unknown_names": [],
+  "workspace_files": {}
+}

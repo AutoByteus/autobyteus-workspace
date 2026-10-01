@@ -1,0 +1,58 @@
+[
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"clicked\":\"Run\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"url\":\"http://127.0.0.1:54254/workspace\",\"body\":\"Team Definition\\nBrowser Retest Team\\nRuntime\\nAutoByteus\\nCodex App Server\\nClaude Agent SDK\\nAntigravity CLI\\n\\nSelects the runtime backend used by this team run.\\n\\nDefault LLM Model (Global)\\nSelect a model\\n\\nThis model will be used by all members unless overridden.\\n\\nWorkspace Directory\\nExisting\\nNew\\n📁 Temp Workspace (Default)\\nDefault temporary workspace\\n\\nWorkspace: Temp Workspace\\n\\nAuto approve tools\\n\\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\\n\\nAuto approve tools\\nTeam Members Override (1)\\nRun Team\\n\\nTeam / needs a model before launch.\",\"selects\":[{\"id\":\"team-scope-root-runtime-kind\",\"value\":\"autobyteus\",\"options\":[{\"text\":\"AutoByteus\",\"value\":\"autobyteus\",\"disabled\":false},{\"text\":\"Codex App Server\",\"value\":\"codex_app_server\",\"disabled\":false},{\"text\":\"Claude Agent SDK\",\"value\":\"claude_agent_sdk\",\"disabled\":false},{\"text\":\"Antigravity CLI\",\"value\":\"antigravity_cli\",\"disabled\":false}]},{\"id\":\"override-runtime--coordinator\",\"value\":\"\",\"options\":[{\"text\":\"Global default\",\"value\":\"\",\"disabled\":false},{\"text\":\"AutoByteus\",\"value\":\"autobyteus\",\"disabled\":false},{\"text\":\"Codex App Server\",\"value\":\"codex_app_server\",\"disabled\":false},{\"text\":\"Claude Agent SDK\",\"value\":\"claude_agent_sdk\",\"disabled\":false},{\"text\":\"Antigravity CLI\",\"value\":\"antigravity_cli\",\"disabled\":false}]}]}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"selected\":\"antigravity_cli\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"ready\":true}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"options\":[\"Claude Opus 4.6 (Thinking)\",\"Claude Sonnet 4.6 (Thinking)\",\"Gemini 3.1 Pro (High)\",\"Gemini 3.1 Pro (Low)\",\"Gemini 3.6 Flash (High)\",\"Gemini 3.6 Flash (Low)\",\"Gemini 3.6 Flash (Medium)\",\"Gemini 3.7 Flash (High)\",\"Gemini 3.7 Flash (Low)\",\"Gemini 3.7 Flash (Medium)\",\"Gemini 3.8 Flash (High)\",\"Gemini 3.8 Flash (Low)\",\"Gemini 3.8 Flash (Medium)\",\"GPT-OSS 120B (Medium)\"],\"body\":\"Team Definition\\nBrowser Retest Team\\nRuntime\\nAutoByteus\\nCodex App Server\\nClaude Agent SDK\\nAntigravity CLI\\n\\nSelects the runtime backend used by this team run.\\n\\nDefault LLM Model (Global)\\nSelect a model\\n\\nThis model will be used by all members unless overridden.\\n\\nWorkspace Directory\\nExisting\\nNew\\n📁 Temp Workspace (Default)\\nDefault temporary workspace\\n\\nWorkspace: Temp Workspace\\n\\nAuto approve tools\\n\\nHigh-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.\\n\\nAuto approve tools\\nTeam Members Override (1)\\nRun Team\\n\\nTeam / needs a model before launch.\\n\\nANTIGRAVITY CLI (ANTHROPIC)\\nClaude Opus 4.6 (Thinking)\\nClaude Sonnet 4.6 (Thinking)\\nANTIGRAVITY CLI (GEMINI)\\nGemini 3.1 Pro (High)\\nGemini 3.1 Pro (Low)\\nGemini 3.6 Flash (High)\\nGemini 3.6 Flash (Low)\\nGemini 3.6 Flash (Medium)\\nGemini 3.7 Flash (High)\\nGemini 3.7 Flash (Low)\\nGemini 3.7 Flash (Medium)\\nGemini 3.8 Flash (High)\\nGemini 3.8 Flash (Low)\\nGemini 3.8 Flash (Medium)\\nANTIGRAVITY CLI (OPENAI)\\nGPT-OSS 120B (Medium)\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"selectedModel\":\"Gemini 3.8 Flash (Low)\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"body\":\"Team Definition\\nBrowser Retest Team\\nRuntime\\nAutoByteus\\nCodex App Server\\nClaude Agent SDK\\nAntigravity CLI\\n\\nSelects the runtime backend used by this team run.\\n\\nDefault LLM Model (Global)\\nAntigravity CLI (GEMINI) / Gemini 3.8 Flash (Low)\\n\\nThis model will be used by all members unless overridden.\\n\\nThis model has no adjustable settings.\\n\\nWorkspace Directory\\nExisting\\nNew\\n📁 Temp Workspace (Default)\\nDefault temporary workspace\\n\\nWorkspace: Temp Workspace\\n\\nAuto approve tools\\n\\nHigh-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.\\n\\nAuto approve tools\\nTeam Members Override (1)\\nRun Team\",\"buttons\":[{\"text\":\"Agents\",\"title\":\"Agents\",\"disabled\":false},{\"text\":\"Agent Teams\",\"title\":\"Agent Teams\",\"disabled\":false},{\"text\":\"Agent Orgs\",\"title\":\"Agent Orgs\",\"disabled\":false},{\"text\":\"Skills\",\"title\":\"Skills\",\"disabled\":false},{\"text\":\"Memory\",\"title\":\"Memory\",\"disabled\":false},{\"text\":\"Nodes\",\"title\":\"Nodes\",\"disabled\":false},{\"text\":\"Settings\",\"title\":\"Settings\",\"disabled\":false},{\"text\":\"Antigravity CLI (GEMINI) / Gemini 3.8 Flash (Low)\",\"title\":\"\",\"disabled\":false},{\"text\":\"Existing\",\"title\":\"\",\"disabled\":false},{\"text\":\"New\",\"title\":\"\",\"disabled\":false},{\"text\":\"📁 Temp Workspace (Default)Default temporary workspace\",\"title\":\"\",\"disabled\":false},{\"text\":\"Auto approve tools\",\"title\":\"\",\"disabled\":false},{\"text\":\"Team Members Override (1)\",\"title\":\"\",\"disabled\":false},{\"text\":\"Run Team\",\"title\":\"\",\"disabled\":false},{\"text\":\"Files\",\"title\":\"Files\",\"disabled\":false},{\"text\":\"Terminal\",\"title\":\"Terminal\",\"disabled\":false},{\"text\":\"Activity\",\"title\":\"Activity\",\"disabled\":false},{\"text\":\"Token\",\"title\":\"Token\",\"disabled\":false},{\"text\":\"Artifacts\",\"title\":\"Artifacts\",\"disabled\":false},{\"text\":\"VNC Viewer\",\"title\":\"VNC Viewer\",\"disabled\":false}],\"viewport\":{\"width\":652,\"height\":738}}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"clicked\":\"Run Team\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"body\":\"C\\ncoordinator\\nOffline\\nContext Files (0)\\n(drag, paste, or upload)\",\"inputs\":[{\"tag\":\"TEXTAREA\",\"id\":\"\",\"placeholder\":\"Type a message...\",\"role\":null,\"label\":null}],\"buttons\":[{\"text\":\"Agents\",\"title\":\"Agents\",\"label\":\"Agents\",\"disabled\":false},{\"text\":\"Agent Teams\",\"title\":\"Agent Teams\",\"label\":\"Agent Teams\",\"disabled\":false},{\"text\":\"Agent Orgs\",\"title\":\"Agent Orgs\",\"label\":\"Agent Orgs\",\"disabled\":false},{\"text\":\"Skills\",\"title\":\"Skills\",\"label\":\"Skills\",\"disabled\":false},{\"text\":\"Memory\",\"title\":\"Memory\",\"label\":\"Memory\",\"disabled\":false},{\"text\":\"Nodes\",\"title\":\"Nodes\",\"label\":\"Nodes\",\"disabled\":false},{\"text\":\"Settings\",\"title\":\"Settings\",\"label\":\"Settings\",\"disabled\":false},{\"text\":\"\",\"title\":\"\",\"label\":\"Edit Config\",\"disabled\":false},{\"text\":\"\",\"title\":\"\",\"label\":\"New Agent\",\"disabled\":false},{\"text\":\"\",\"title\":\"Upload files\",\"label\":\"Upload files\",\"disabled\":false},{\"text\":\"\",\"title\":\"Send message\",\"label\":null,\"disabled\":true},{\"text\":\"Files\",\"title\":\"Files\",\"label\":\"Files\",\"disabled\":false},{\"text\":\"Team\",\"title\":\"Team\",\"label\":\"Team\",\"disabled\":false},{\"text\":\"Terminal\",\"title\":\"Terminal\",\"label\":\"Terminal\",\"disabled\":false},{\"text\":\"Activity\",\"title\":\"Activity\",\"label\":\"Activity\",\"disabled\":false},{\"text\":\"Token\",\"title\":\"Token\",\"label\":\"Token\",\"disabled\":false},{\"text\":\"Artifacts\",\"title\":\"Artifacts\",\"label\":\"Artifacts\",\"disabled\":false},{\"text\":\"VNC Viewer\",\"title\":\"VNC Viewer\",\"label\":\"VNC Viewer\",\"disabled\":false}]}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"filled\":true}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"clicked\":\"Send message\",\"at\":\"2026-09-27T09:45:31.491Z\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"body\":\"C\\ncoordinator\\nRunning\\nYou\\nSynthetic validation: reply with RETEST-AGY-OK exactly. Do not use tools or change files.\\nContext Files (0)\\n(drag, paste, or upload)\",\"composer\":\"\",\"buttons\":[{\"text\":\"Agents\",\"title\":\"Agents\",\"label\":\"Agents\",\"disabled\":false},{\"text\":\"Agent Teams\",\"title\":\"Agent Teams\",\"label\":\"Agent Teams\",\"disabled\":false},{\"text\":\"Agent Orgs\",\"title\":\"Agent Orgs\",\"label\":\"Agent Orgs\",\"disabled\":false},{\"text\":\"Skills\",\"title\":\"Skills\",\"label\":\"Skills\",\"disabled\":false},{\"text\":\"Memory\",\"title\":\"Memory\",\"label\":\"Memory\",\"disabled\":false},{\"text\":\"Nodes\",\"title\":\"Nodes\",\"label\":\"Nodes\",\"disabled\":false},{\"text\":\"Settings\",\"title\":\"Settings\",\"label\":\"Settings\",\"disabled\":false},{\"text\":\"\",\"title\":\"\",\"label\":\"Edit Config\",\"disabled\":false},{\"text\":\"\",\"title\":\"\",\"label\":\"New Agent\",\"disabled\":false},{\"text\":\"\",\"title\":\"Upload files\",\"label\":\"Upload files\",\"disabled\":false},{\"text\":\"\",\"title\":\"Stop generation\",\"label\":null,\"disabled\":false},{\"text\":\"Files\",\"title\":\"Files\",\"label\":\"Files\",\"disabled\":false},{\"text\":\"Team\",\"title\":\"Team\",\"label\":\"Team\",\"disabled\":false},{\"text\":\"Terminal\",\"title\":\"Terminal\",\"label\":\"Terminal\",\"disabled\":false},{\"text\":\"Activity\",\"title\":\"Activity\",\"label\":\"Activity\",\"disabled\":false},{\"text\":\"Token\",\"title\":\"Token\",\"label\":\"Token\",\"disabled\":false},{\"text\":\"Artifacts\",\"title\":\"Artifacts\",\"label\":\"Artifacts\",\"disabled\":false},{\"text\":\"VNC Viewer\",\"title\":\"VNC Viewer\",\"label\":\"VNC Viewer\",\"disabled\":false}]}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"body\":\"C\\ncoordinator\\nIdle\\nYou\\nSynthetic validation: reply with RETEST-AGY-OK exactly. Do not use tools or change files.\\nC\\ncoordinator\\n\\nRETEST-AGY-OK\\n\\nContext Files (0)\\n(drag, paste, or upload)\",\"stopVisible\":false,\"at\":\"2026-09-27T09:45:54.178Z\"}"
+  },
+  {
+    "tab_id": "28a5a7",
+    "result_json": "{\"result\":\"Pass\",\"assistantResponse\":\"RETEST-AGY-OK\",\"body\":\"C\\ncoordinator\\nIdle\\nYou\\nSynthetic validation: reply with RETEST-AGY-OK exactly. Do not use tools or change files.\\nC\\ncoordinator\\n\\nRETEST-AGY-OK\\n\\nContext Files (0)\\n(drag, paste, or upload)\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.90 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36\",\"viewport\":{\"width\":652,\"height\":738},\"url\":\"http://127.0.0.1:54254/workspace\"}"
+  }
+]

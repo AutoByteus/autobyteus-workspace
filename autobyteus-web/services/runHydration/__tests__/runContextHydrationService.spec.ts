@@ -21,7 +21,7 @@ const resumeConfig = {
   runId: 'run-1', isActive: false,
   metadataConfig: {
     agentDefinitionId: 'agent-def', llmModelIdentifier: 'model', runtimeKind: 'autobyteus',
-    workspaceRootPath: '/workspace', autoExecuteTools: false, skillAccessMode: 'NONE', llmConfig: null,
+    workspaceRootPath: '/workspace', autoExecuteTools: false, llmConfig: null,
   },
 };
 

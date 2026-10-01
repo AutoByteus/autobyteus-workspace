@@ -7,8 +7,8 @@ import type {
 } from "./team-run-execution-tree-v1-types.js";
 import { TeamExecutionIndex } from "./team-execution-v1-index.js";
 import { addTaskExecutionToTree } from "./team-run-execution-tree-v1-mutator.js";
-import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskUpdate } from "../../../agent-team-execution/task-delegation/task-delegation-record-v1.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
+import type { TaskDelegationRecordV1, TaskDelegationRecordsSnapshot, TaskUpdate } from "../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js";
+import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../../services/team-communication/team-communication-v1-types.js";
 import { validateTeamRunStatePackage } from "./team-run-state-package-v1-validator.js";
 import {

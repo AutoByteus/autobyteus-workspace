@@ -117,6 +117,9 @@ implements ApplicationProviderCredentialReadinessPort {
         });
       case RuntimeKind.CLAUDE_AGENT_SDK:
         return Object.freeze({ kind: "claude_process" });
+      case RuntimeKind.ANTIGRAVITY_CLI:
+      case RuntimeKind.GROK_BUILD:
+        return Object.freeze({ kind: "unsupported", runtime: input.runtimeKind });
       case RuntimeKind.AUTOBYTEUS:
         return this.resolveAutoByteusAuthority(input.model);
     }

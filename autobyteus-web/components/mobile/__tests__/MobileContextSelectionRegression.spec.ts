@@ -78,7 +78,6 @@ function makeAgentRunConfig(agentDefinitionId = "agent-1"): AgentRunConfig {
     workspaceId: "workspace-1",
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: "PRELOADED_ONLY",
     isLocked: false,
   };
 }
@@ -176,6 +175,7 @@ function seedCatalog(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      skillScope: 'CONFIGURED',
       defaultLaunchConfig: {
         runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
         llmModelIdentifier: "test-model",

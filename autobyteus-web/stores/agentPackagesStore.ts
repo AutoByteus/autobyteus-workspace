@@ -12,6 +12,7 @@ import {
 import { useApplicationStore } from '~/stores/applicationStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
+import { readSkillNameConflictError, toSkillNameConflict } from '~/utils/skills/skillNames'
 
 export type AgentPackageSourceKind =
   | 'BUILT_IN'
@@ -147,7 +148,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
       })
       const errorMessage = graphQLErrorMessage(errors)
       if (errorMessage) {
-        throw new Error(errorMessage)
+        throw readSkillNameConflictError(errors) ?? new Error(errorMessage)
       }
 
       if (data?.importAgentPackage) {
@@ -156,6 +157,9 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
 
       await refreshDependentCatalogs()
     } catch (err: any) {
+      // A duplicate skill name is shown by the conflict dialog, not as a store error (D-19).
+      const conflict = toSkillNameConflict(err)
+      if (conflict) throw conflict
       error.value = err.message
       throw err
     } finally {
@@ -203,7 +207,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
       })
       const errorMessage = graphQLErrorMessage(errors)
       if (errorMessage) {
-        throw new Error(errorMessage)
+        throw readSkillNameConflictError(errors) ?? new Error(errorMessage)
       }
 
       if (data?.reloadAgentPackage) {
@@ -212,6 +216,9 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
 
       await refreshDependentCatalogs()
     } catch (err: any) {
+      // A duplicate skill name is shown by the conflict dialog, not as a store error (D-19).
+      const conflict = toSkillNameConflict(err)
+      if (conflict) throw conflict
       error.value = err.message
       throw err
     } finally {
@@ -257,7 +264,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
       })
       const errorMessage = graphQLErrorMessage(errors)
       if (errorMessage) {
-        throw new Error(errorMessage)
+        throw readSkillNameConflictError(errors) ?? new Error(errorMessage)
       }
 
       if (data?.updateAgentPackage) {
@@ -266,6 +273,9 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
 
       await refreshDependentCatalogs()
     } catch (err: any) {
+      // A duplicate skill name is shown by the conflict dialog, not as a store error (D-19).
+      const conflict = toSkillNameConflict(err)
+      if (conflict) throw conflict
       error.value = err.message
       throw err
     } finally {

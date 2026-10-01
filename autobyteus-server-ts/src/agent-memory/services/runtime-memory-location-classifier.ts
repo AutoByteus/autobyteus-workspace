@@ -2,7 +2,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { WORKING_CONTEXT_SNAPSHOT_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
-import { createStoredCollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import {
+  createStoredCollaborationExecutionLocationService,
+  locatedLaunchConfiguration,
+  type LocatedCollaborationAgentExecution,
+} from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import {
   runtimeKindFromString,
   type RuntimeKind,
@@ -26,6 +30,13 @@ export type RuntimeMemoryLocation = {
     | {
         kind: "org_member";
         orgRunId: string;
+        memberAddress: string;
+        agentRunId: string;
+      }
+    | {
+        /** A child of an Agent root: stored under `agents/<hostRunId>/collaboration/`. */
+        kind: "agent_collaboration_member";
+        hostRunId: string;
         memberAddress: string;
         agentRunId: string;
       };
@@ -66,6 +77,17 @@ const pathExists = async (filePath: string): Promise<boolean> => {
   } catch (error) {
     if (isNotFound(error)) return false;
     throw error;
+  }
+};
+
+const memberSubject = (exact: LocatedCollaborationAgentExecution): RuntimeMemoryLocation["subject"] => {
+  switch (exact.rootSubjectKind) {
+    case "agent_org":
+      return { kind: "org_member", orgRunId: exact.rootRunId, memberAddress: exact.memberAddress, agentRunId: exact.agentRunId };
+    case "agent_team":
+      return { kind: "team_member", rootTeamRunId: exact.rootRunId, memberAddress: exact.memberAddress, agentRunId: exact.agentRunId };
+    case "agent":
+      return { kind: "agent_collaboration_member", hostRunId: exact.rootRunId, memberAddress: exact.memberAddress, agentRunId: exact.agentRunId };
   }
 };
 
@@ -154,23 +176,9 @@ export class RuntimeMemoryLocationClassifier {
         itemId: itemIdFor(this.memoryDir, exact.memoryDir),
         memoryDir: path.resolve(exact.memoryDir),
         workingContextSnapshotPath: path.resolve(exact.memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME),
-        runtimeKind: exact.configuredPlacement
-          ? exact.configuredPlacement.launchConfiguration.runtimeKind
-          : null,
+        runtimeKind: locatedLaunchConfiguration(exact)?.runtimeKind ?? null,
         snapshotAgentId: exact.agentRunId,
-        subject: exact.rootSubjectKind === "agent_org"
-          ? {
-              kind: "org_member",
-              orgRunId: exact.rootRunId,
-              memberAddress: exact.memberAddress,
-              agentRunId: exact.agentRunId,
-            }
-          : {
-              kind: "team_member",
-              rootTeamRunId: exact.rootRunId,
-              memberAddress: exact.memberAddress,
-              agentRunId: exact.agentRunId,
-            },
+        subject: memberSubject(exact),
       });
     }
   }

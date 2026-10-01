@@ -11,9 +11,9 @@ import type {
 import type {
   ConfiguredAgentExecutionNode,
   TaskExecution,
-} from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
+} from "../legacy/released-run-package-shapes/team-run-execution-tree-v2.js";
+import type { ReleasedAgentLaunchConfiguration } from "../legacy/released-team-run-config.js";
+import { validateTeamRunExecutionTreePayload } from "../legacy/released-run-package-shapes/team-run-execution-tree-v2-schema.js";
 import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
 import {
   getAtomicRunPackageFileCommitWriter,
@@ -79,7 +79,7 @@ const runtimeKind = (value: AgentLaunchConfigurationV1["runtimeKind"]): RuntimeK
   }
 };
 
-const launchConfiguration = (value: AgentLaunchConfigurationV1): AgentLaunchConfiguration => ({
+const launchConfiguration = (value: AgentLaunchConfigurationV1): ReleasedAgentLaunchConfiguration => ({
   runtimeKind: runtimeKind(value.runtimeKind),
   llmModelIdentifier: value.llmModelIdentifier,
   llmConfig: value.llmConfig ? structuredClone(value.llmConfig) : null,
@@ -95,7 +95,7 @@ type ReleasedConfiguredTeamExecutionNodeV2 = Readonly<{
   description: string | null;
   teamRunId: string;
   coordinatorAddress: string;
-  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  defaultLaunchConfiguration: ReleasedAgentLaunchConfiguration;
   members: readonly ReleasedConfiguredExecutionNodeV2[];
   taskExecutions: readonly TaskExecution[];
 }>;
@@ -112,7 +112,7 @@ type ReleasedTeamRunExecutionTreeFileV2 = Readonly<{
     teamDefinitionName: string;
     teamRunId: string;
     coordinatorAddress: string;
-    defaultLaunchConfiguration: AgentLaunchConfiguration;
+    defaultLaunchConfiguration: ReleasedAgentLaunchConfiguration;
     members: readonly ReleasedConfiguredExecutionNodeV2[];
     taskExecutions: readonly TaskExecution[];
   }>;

@@ -18,10 +18,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 export const flattenE2eConfiguredAgentExecutions = (
   executionTree: Record<string, unknown>,
 ): E2eConfiguredAgentExecution[] => {
-  if (executionTree.schema_version !== 2) {
-    return [];
-  }
-
+  // The public tree carries no schema version (REQ-018); its shape identifies it.
   const rootTeam = isRecord(executionTree.root_team)
     ? executionTree.root_team
     : null;

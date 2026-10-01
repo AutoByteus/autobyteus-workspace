@@ -1,5 +1,6 @@
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
+import { resetCollaborationRunHistoryCatalogState } from "../../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { AgentOrgRunHistoryCatalogService } from "../../../../src/run-history/services/agent-org-run-history-catalog-service.js";
 import type { AgentOrgRunExecutionTreeFileV1 } from "../../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { AgentOrgRunIndexRowRecord } from "../../../../src/run-history/store/agent-org-run-history-index-record-types.js";
@@ -42,6 +43,7 @@ const harness = (options: { active?: boolean; includeSibling?: boolean; removalF
     awaitReady: vi.fn(async () => undefined),
     rebuild: vi.fn(async () => undefined),
     listAdmitted: vi.fn(() => [...treesById.keys()]),
+    isAdmitted: vi.fn((id: string) => treesById.has(id)),
     exclude: vi.fn(),
   };
   const trees = {
@@ -59,6 +61,7 @@ const harness = (options: { active?: boolean; includeSibling?: boolean; removalF
     if (options.removalFails) throw new Error("removal failed");
     treesById.delete(path.basename(orgDirPath));
   });
+  resetCollaborationRunHistoryCatalogState("/unused", "agent_org");
   const catalog = new AgentOrgRunHistoryCatalogService("/unused", manager as never, {
     indexStore: index as never,
     packageCatalog: packages as never,
@@ -73,23 +76,23 @@ const harness = (options: { active?: boolean; includeSibling?: boolean; removalF
 };
 
 describe("AgentOrgRunHistoryCatalogService", () => {
-  it("awaits the current readiness generation once without forcing a rebuild", async () => {
+  it("loads an admitted index once without a tree read or index write", async () => {
     const test = harness();
-    await Promise.all([test.catalog.listRows(), test.catalog.listRows(), test.catalog.initialize()]);
+    await Promise.all([test.catalog.listCatalogRows(), test.catalog.listCatalogRows(), test.catalog.listCatalogRows()]);
 
     expect(test.packages.awaitReady).toHaveBeenCalledTimes(1);
     expect(test.packages.rebuild).not.toHaveBeenCalled();
     expect(test.index.readIndex).toHaveBeenCalledTimes(1);
-    expect(test.packages.listAdmitted).toHaveBeenCalledTimes(1);
-    expect(test.trees.read).toHaveBeenCalledWith(expect.any(String), "org-run");
-    expect(test.index.writeIndex).toHaveBeenCalledTimes(1);
+    expect(test.packages.listAdmitted).not.toHaveBeenCalled();
+    expect(test.trees.read).not.toHaveBeenCalled();
+    expect(test.index.writeIndex).not.toHaveBeenCalled();
   });
 
   it("rejects readiness failures without reading or publishing unvalidated history", async () => {
     const test = harness();
     test.packages.awaitReady.mockRejectedValueOnce(new Error("Strict root readiness failed."));
 
-    await expect(test.catalog.listRows()).rejects.toThrow("Strict root readiness failed.");
+    await expect(test.catalog.listCatalogRows()).rejects.toThrow("Strict root readiness failed.");
     expect(test.packages.rebuild).not.toHaveBeenCalled();
     expect(test.index.readIndex).not.toHaveBeenCalled();
     expect(test.trees.read).not.toHaveBeenCalled();
@@ -98,17 +101,17 @@ describe("AgentOrgRunHistoryCatalogService", () => {
 
   it("serializes first-write attempts and keeps the first enqueued accepted completion", async () => {
     const test = harness();
-    await test.catalog.initialize();
+    await test.catalog.listCatalogRows();
     const firstEnqueued = test.catalog.recordRunSummary({ orgRunId: "org-run", summary: "Second socket completed first" });
     const secondEnqueued = test.catalog.recordRunSummary({ orgRunId: "org-run", summary: "First socket completed later" });
     await Promise.all([firstEnqueued, secondEnqueued]);
-    expect((await test.catalog.listRows())[0]?.summary).toBe("Second socket completed first");
+    expect((await test.catalog.listCatalogRows())[0]?.summary).toBe("Second socket completed first");
     expect(test.persisted[0]?.summary).toBe("Second socket completed first");
   });
 
   it("archives through the inactive manager lane, preserves the package, and keeps one idempotent timestamp", async () => {
     const test = harness({ includeSibling: true });
-    await test.catalog.initialize();
+    await test.catalog.listCatalogRows();
 
     const first = await test.catalog.archiveStored("org-run");
     const archivedTree = test.treesById.get("org-run")!;
@@ -129,7 +132,7 @@ describe("AgentOrgRunHistoryCatalogService", () => {
 
   it("restores the original tree and index when archive index publication fails", async () => {
     const test = harness();
-    await test.catalog.initialize();
+    await test.catalog.listCatalogRows();
     test.failNextIndexWrite();
 
     const result = await test.catalog.archiveStored("org-run");
@@ -137,12 +140,12 @@ describe("AgentOrgRunHistoryCatalogService", () => {
     expect(result.success).toBe(false);
     expect(test.treesById.get("org-run")).toEqual(tree);
     expect(test.persisted).toEqual([rowFor(tree)]);
-    expect((await test.catalog.listRows())[0]).toEqual(rowFor(tree));
+    expect((await test.catalog.listCatalogRows())[0]).toEqual(rowFor(tree));
   });
 
   it("deletes only the exact stopped package and index row after verified readback", async () => {
     const test = harness({ includeSibling: true });
-    await test.catalog.initialize();
+    await test.catalog.listCatalogRows();
 
     const result = await test.catalog.deleteStored("org-run");
 
@@ -151,13 +154,13 @@ describe("AgentOrgRunHistoryCatalogService", () => {
     expect(test.treesById.has("org-run")).toBe(false);
     expect(test.treesById.get("org-sibling")).toEqual(siblingTree);
     expect(test.persisted).toEqual([rowFor(siblingTree)]);
-    expect(await test.catalog.listRows()).toEqual([rowFor(siblingTree)]);
+    expect(await test.catalog.listCatalogRows()).toEqual([rowFor(siblingTree)]);
     expect(test.packages.exclude).toHaveBeenCalledWith("org-run", expect.stringContaining("deleted permanently"));
   });
 
   it("restores the exact index row when package removal fails and the package remains intact", async () => {
     const test = harness({ removalFails: true });
-    await test.catalog.initialize();
+    await test.catalog.listCatalogRows();
 
     const result = await test.catalog.deleteStored("org-run");
 
@@ -170,24 +173,24 @@ describe("AgentOrgRunHistoryCatalogService", () => {
 
   it("rejects active, unknown, and unsafe identities without mutating durable state", async () => {
     const active = harness({ active: true });
-    await active.catalog.initialize();
+    await active.catalog.listCatalogRows();
     await expect(active.catalog.archiveStored("org-run")).resolves.toMatchObject({ success: false, message: expect.stringContaining("active") });
     await expect(active.catalog.deleteStored("org-run")).resolves.toMatchObject({ success: false, message: expect.stringContaining("active") });
     expect(active.trees.write).not.toHaveBeenCalled();
     expect(active.removePackage).not.toHaveBeenCalled();
 
     const inactive = harness();
-    await inactive.catalog.initialize();
+    await inactive.catalog.listCatalogRows();
     await expect(inactive.catalog.archiveStored("missing")).resolves.toMatchObject({ success: false, message: expect.stringContaining("not found") });
     await expect(inactive.catalog.deleteStored("../org-run")).resolves.toMatchObject({ success: false, message: expect.stringContaining("Invalid") });
     await expect(inactive.catalog.archiveStored(" org-run ")).resolves.toMatchObject({ success: false, message: expect.stringContaining("Invalid") });
     expect(inactive.removePackage).not.toHaveBeenCalled();
   });
 
-  it("preserves a committed summary through restore and rebuild projections", async () => {
+  it("preserves a committed summary through restore projections", async () => {
     const test = harness();
     await test.catalog.recordRunSummary({ orgRunId: "org-run", summary: "Stable first message" });
     await test.catalog.recordRestored(tree);
-    expect((await test.catalog.listRows())[0]?.summary).toBe("Stable first message");
+    expect((await test.catalog.listCatalogRows())[0]?.summary).toBe("Stable first message");
   });
 });

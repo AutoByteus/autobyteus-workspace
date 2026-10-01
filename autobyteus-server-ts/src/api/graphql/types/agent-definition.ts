@@ -25,6 +25,13 @@ export enum AgentDefinitionOwnershipScope {
 
 registerEnumType(AgentDefinitionOwnershipScope, { name: "AgentDefinitionOwnershipScope" });
 
+export enum AgentSkillScope {
+  CONFIGURED = "CONFIGURED",
+  ALL_INSTALLED = "ALL_INSTALLED",
+}
+
+registerEnumType(AgentSkillScope, { name: "AgentSkillScope" });
+
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
@@ -73,6 +80,9 @@ export class AgentDefinition {
 
   @Field(() => [String])
   skillNames!: string[];
+
+  @Field(() => AgentSkillScope)
+  skillScope!: AgentSkillScope;
 
   @Field(() => AgentDefinitionOwnershipScope)
   ownershipScope!: AgentDefinitionOwnershipScope;
@@ -146,6 +156,9 @@ export class CreateAgentDefinitionInput {
   @Field(() => [String], { nullable: true })
   skillNames?: string[] | null;
 
+  @Field(() => AgentSkillScope, { nullable: true })
+  skillScope?: AgentSkillScope | null;
+
   @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
 }
@@ -193,6 +206,9 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => [String], { nullable: true })
   skillNames?: string[] | null;
+
+  @Field(() => AgentSkillScope, { nullable: true })
+  skillScope?: AgentSkillScope | null;
 
   @Field(() => GraphqlDefaultLaunchConfigInput, { nullable: true })
   defaultLaunchConfig?: GraphqlDefaultLaunchConfigInput | null;
@@ -284,6 +300,7 @@ export class AgentDefinitionResolver {
         toolInvocationPreprocessorNames: input.toolInvocationPreprocessorNames ?? undefined,
         lifecycleProcessorNames: input.lifecycleProcessorNames ?? undefined,
         skillNames: input.skillNames ?? undefined,
+        skillScope: input.skillScope ?? undefined,
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
       });
       return await AgentDefinitionConverter.toGraphql(domainDefinition);

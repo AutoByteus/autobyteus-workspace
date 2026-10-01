@@ -64,7 +64,6 @@ const createAgentContext = (runId: string, name: string, status = AgentStatus.Of
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     llmConfig: null,
     isLocked: true,
   };
@@ -86,7 +85,6 @@ const launch = {
   llmModelIdentifier: 'test-model',
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY' as const,
   workspaceRootPath: null,
 };
 
@@ -97,7 +95,6 @@ const createOrgView = (
   base_change_sequence: 0,
   is_active: false,
   execution_tree: {
-    schemaVersion: 1,
     subjectKind: 'agent_org',
     createdAt: NOW,
     archivedAt: null,
@@ -121,7 +118,6 @@ const createOrgView = (
       taskExecutions: [],
     },
   },
-  task_records: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId, records: [] },
   communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId, messages: [] },
   agent_statuses: members.map((member) => ({
     member_address: member.address,

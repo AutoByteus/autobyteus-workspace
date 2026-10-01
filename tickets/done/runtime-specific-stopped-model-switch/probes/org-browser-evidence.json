@@ -1,0 +1,824 @@
+{
+  "id": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+  "startedAt": "2026-09-25T15:36:22.546Z",
+  "operations": [
+    {
+      "operationName": "UpdateStoppedAgentOrgRunConfig",
+      "variables": {
+        "input": {
+          "orgRunId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+          "modelPatches": [
+            {
+              "scopeKind": "CONFIGURED_ORG",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/product_design_prototyping_team",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/product_design_prototyping_team/product_prototyper",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/product_design_prototyping_team/prototype_bootstrapper",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/software_engineering_team",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/software_engineering_team/api_e2e_engineer",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/software_engineering_team/architecture_reviewer",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/software_engineering_team/code_reviewer",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/software_engineering_team/delivery_engineer",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/software_engineering_team/implementation_engineer",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/software_engineering_team/solution_designer",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null
+            }
+          ],
+          "teamWorkspacePatches": []
+        }
+      },
+      "query": "mutation UpdateStoppedAgentOrgRunConfig($input: UpdateStoppedAgentOrgRunConfigInput!) {\n  updateStoppedAgentOrgRunConfig(input: $input) {\n    success\n    outcome\n    message\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    canonical\n    __typename\n  }\n}"
+    }
+  ],
+  "before": {
+    "data": {
+      "getAgentOrgRunConfig": {
+        "orgRunId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+        "isActive": false,
+        "executionTree": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "createdAt": "2026-09-25T15:24:56.323Z",
+          "archivedAt": null,
+          "applicationBinding": null,
+          "handoffs": [
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/product_design_prototyping_team/product_prototyper",
+              "rules": [
+                "When Solution Designer classifies the outcome as Product Design Requested because the user explicitly or after clarification asks Product Design & Prototyping to help understand or evolve an experience. This also applies to purpose Result Correction for missing or inconsistent evidence in a returned package from the same user-requested engagement; include the original user-request reference and precise gap without expanding scope. Send the user's requested outcome in the user's own terms, the focused decision, relevant requirement and behavior IDs, established constraints, non-goals, canonical requirements paths, and supplied existing-product context when applicable. Do not prescribe a Product Prototyper mode, Bootstrapper payload, repository, ticket, or implementation procedure; Product Prototyper selects and owns those."
+              ]
+            },
+            {
+              "from": "/product_design_prototyping_team/product_prototyper",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When Product Prototyper classifies the outcome as Requirements Visualization Ready because the interactive visualizer revision, review URL, evidence, and open clarification questions are ready for Solution Designer and user review.",
+                "When Product Prototyper classifies the outcome as Prototype Completed because the user-approved prototype and UI/UX package are ready for requirements integration.",
+                "When Product Prototyper classifies the outcome as Requirement Impact because user feedback or prototype evidence requires a material requirements revision.",
+                "When Product Prototyper classifies the outcome as Not Recommended because a prototype would not materially improve the decision and the rationale/evidence are ready.",
+                "When Product Prototyper classifies the outcome as Blocked because prototype work cannot safely or accurately continue and Solution Designer must decide the next requirements path."
+              ]
+            },
+            {
+              "from": "/product_design_prototyping_team/product_prototyper",
+              "to": "/product_design_prototyping_team/prototype_bootstrapper",
+              "rules": [
+                "When Product Prototyper, in Product Experience Prototyping mode, classifies the outcome as Baseline Needed because an existing frontend has no applicable accepted baseline, has a named current-experience gap, or has an explicitly requested source refresh, send the fixed bootstrap payload defined in the product-prototype-repository-management skill. It must identify the selected source frontend, separate prototype repository/root, Product-owned target worktree, ticket branch, and accepted source/base revision, and must not include future-state requirements or the Product ticket package."
+              ]
+            },
+            {
+              "from": "/product_design_prototyping_team/prototype_bootstrapper",
+              "to": "/product_design_prototyping_team/product_prototyper",
+              "rules": [
+                "When Prototype Bootstrapper classifies a current-experience bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, bootstrap report, source pin, separate prototype repository/root, Product ticket branch and target worktree, and exact comparison evidence to Product Prototyper for acceptance or recovery. Bootstrapper does not finalize the ticket, integrate the branch, or create Product Prototyper's accepted commit."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/software_engineering_team/architecture_reviewer",
+              "rules": [
+                "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When Solution Designer classifies the completed architecture package as Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low. Include the approved requirements, investigation notes, design spec, solution revision record, classification rationale and selected direct implementation route."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/architecture_reviewer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/architecture_reviewer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+                "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/implementation_engineer",
+              "to": "/software_engineering_team/code_reviewer",
+              "rules": [
+                "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+                "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/implementation_engineer",
+              "to": "/software_engineering_team/api_e2e_engineer",
+              "rules": [
+                "When implementation is complete, implementation-scoped validation and the lightweight implementation self-review are complete, the carried classification is task_size=Small or Medium and architectural_risk=Low, and the cumulative package is ready for direct API/E2E validation without Code Reviewer.",
+                "When a direct-route implementation-owned Local Fix requested by delivery engineer is complete, the rechecked classification remains task_size=Small or Medium and architectural_risk=Low, and the updated package is ready for direct API/E2E validation."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/implementation_engineer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/api_e2e_engineer",
+              "rules": [
+                "When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.",
+                "When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.",
+                "When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.",
+                "When post-API/E2E test-code review fails and an API/E2E-owned correction is required."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.",
+                "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+                "When implementation review passes and Implementation Engineer needs the informational pass notification after the primary API/E2E handoff succeeds."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/delivery_engineer",
+              "rules": [
+                "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/api_e2e_engineer",
+              "to": "/software_engineering_team/code_reviewer",
+              "rules": [
+                "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+                "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/api_e2e_engineer",
+              "to": "/software_engineering_team/delivery_engineer",
+              "rules": [
+                "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/delivery_engineer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/delivery_engineer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When delivery discovers a Design Impact, Requirement Gap, or Unclear issue, or final handoff is blocked by a non-deployment issue that requires upstream classification.",
+                "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/api_e2e_engineer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/software_engineering_team/delivery_engineer",
+              "rules": [
+                "When Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence. Send only the specific receipt gap and cumulative package for correction; do not claim Terminal, reopen unchanged requirements or redo delivery work."
+              ]
+            }
+          ],
+          "rootOrg": {
+            "address": "/",
+            "orgDefinitionId": "software-development-department",
+            "orgDefinitionName": "Software Development Department",
+            "orgRunId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.1-pro-high",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+            },
+            "members": [
+              {
+                "address": "/product_design_prototyping_team",
+                "teamDefinitionId": "product-design-prototyping-team",
+                "role": null,
+                "description": null,
+                "teamRunId": "product_design_prototyping_team_541c5c548894416886166ff9e01042e6",
+                "coordinatorAddress": "/product_design_prototyping_team/product_prototyper",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.1-pro-high",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                },
+                "members": [
+                  {
+                    "address": "/product_design_prototyping_team/product_prototyper",
+                    "agentDefinitionId": "team-local-agent:product-design-prototyping-team:product-prototyper",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "product_prototyper_01acb48653414f7ca91ade13ed27761f",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/product_design_prototyping_team/prototype_bootstrapper",
+                    "agentDefinitionId": "team-local-agent:product-design-prototyping-team:prototype-bootstrapper",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "prototype_bootstrapper_d4776f4d67e840279e2c44cff2ac7144",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              },
+              {
+                "address": "/software_engineering_team",
+                "teamDefinitionId": "software-engineering-team",
+                "role": null,
+                "description": null,
+                "teamRunId": "software_engineering_team_0cc74cb4f0804eb3a40b67c96f0a17a5",
+                "coordinatorAddress": "/software_engineering_team/solution_designer",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.1-pro-high",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                },
+                "members": [
+                  {
+                    "address": "/software_engineering_team/solution_designer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "solution_designer_054e5b0a99f941b7b509cf8ca42d0c3b",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/architecture_reviewer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "architecture_reviewer_0a85d4f275cd44d688f656b7764a0fa1",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/implementation_engineer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "implementation_engineer_32918456d36b4e85b109e70f38336aeb",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/code_reviewer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "code_reviewer_7e1593dee9064b1790bff55baf34a6fc",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/api_e2e_engineer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "api_e2e_engineer_ee4b26e8232a48f5bd4d7b61edd6fcc8",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/delivery_engineer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "delivery_engineer_bad08ca380c945308634bfd7a7f71c35",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-high",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              }
+            ],
+            "taskExecutions": []
+          }
+        }
+      }
+    }
+  },
+  "options": [
+    "Claude Opus 4.6 (Thinking)",
+    "Claude Sonnet 4.6 (Thinking)",
+    "Gemini 3.1 Pro (High)",
+    "Gemini 3.1 Pro (Low)",
+    "Gemini 3.6 Flash (High)",
+    "Gemini 3.6 Flash (Low)",
+    "Gemini 3.6 Flash (Medium)",
+    "Gemini 3.7 Flash (High)",
+    "Gemini 3.7 Flash (Low)",
+    "Gemini 3.7 Flash (Medium)",
+    "Gemini 3.8 Flash (High)",
+    "Gemini 3.8 Flash (Low)",
+    "Gemini 3.8 Flash (Medium)",
+    "GPT-OSS 120B (Medium)"
+  ],
+  "after": {
+    "data": {
+      "getAgentOrgRunConfig": {
+        "orgRunId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+        "isActive": false,
+        "executionTree": {
+          "schemaVersion": 1,
+          "subjectKind": "agent_org",
+          "createdAt": "2026-09-25T15:24:56.323Z",
+          "archivedAt": null,
+          "applicationBinding": null,
+          "handoffs": [
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/product_design_prototyping_team/product_prototyper",
+              "rules": [
+                "When Solution Designer classifies the outcome as Product Design Requested because the user explicitly or after clarification asks Product Design & Prototyping to help understand or evolve an experience. This also applies to purpose Result Correction for missing or inconsistent evidence in a returned package from the same user-requested engagement; include the original user-request reference and precise gap without expanding scope. Send the user's requested outcome in the user's own terms, the focused decision, relevant requirement and behavior IDs, established constraints, non-goals, canonical requirements paths, and supplied existing-product context when applicable. Do not prescribe a Product Prototyper mode, Bootstrapper payload, repository, ticket, or implementation procedure; Product Prototyper selects and owns those."
+              ]
+            },
+            {
+              "from": "/product_design_prototyping_team/product_prototyper",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When Product Prototyper classifies the outcome as Requirements Visualization Ready because the interactive visualizer revision, review URL, evidence, and open clarification questions are ready for Solution Designer and user review.",
+                "When Product Prototyper classifies the outcome as Prototype Completed because the user-approved prototype and UI/UX package are ready for requirements integration.",
+                "When Product Prototyper classifies the outcome as Requirement Impact because user feedback or prototype evidence requires a material requirements revision.",
+                "When Product Prototyper classifies the outcome as Not Recommended because a prototype would not materially improve the decision and the rationale/evidence are ready.",
+                "When Product Prototyper classifies the outcome as Blocked because prototype work cannot safely or accurately continue and Solution Designer must decide the next requirements path."
+              ]
+            },
+            {
+              "from": "/product_design_prototyping_team/product_prototyper",
+              "to": "/product_design_prototyping_team/prototype_bootstrapper",
+              "rules": [
+                "When Product Prototyper, in Product Experience Prototyping mode, classifies the outcome as Baseline Needed because an existing frontend has no applicable accepted baseline, has a named current-experience gap, or has an explicitly requested source refresh, send the fixed bootstrap payload defined in the product-prototype-repository-management skill. It must identify the selected source frontend, separate prototype repository/root, Product-owned target worktree, ticket branch, and accepted source/base revision, and must not include future-state requirements or the Product ticket package."
+              ]
+            },
+            {
+              "from": "/product_design_prototyping_team/prototype_bootstrapper",
+              "to": "/product_design_prototyping_team/product_prototyper",
+              "rules": [
+                "When Prototype Bootstrapper classifies a current-experience bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, bootstrap report, source pin, separate prototype repository/root, Product ticket branch and target worktree, and exact comparison evidence to Product Prototyper for acceptance or recovery. Bootstrapper does not finalize the ticket, integrate the branch, or create Product Prototyper's accepted commit."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/software_engineering_team/architecture_reviewer",
+              "rules": [
+                "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When Solution Designer classifies the completed architecture package as Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low. Include the approved requirements, investigation notes, design spec, solution revision record, classification rationale and selected direct implementation route."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/architecture_reviewer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/architecture_reviewer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+                "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/implementation_engineer",
+              "to": "/software_engineering_team/code_reviewer",
+              "rules": [
+                "When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.",
+                "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/implementation_engineer",
+              "to": "/software_engineering_team/api_e2e_engineer",
+              "rules": [
+                "When implementation is complete, implementation-scoped validation and the lightweight implementation self-review are complete, the carried classification is task_size=Small or Medium and architectural_risk=Low, and the cumulative package is ready for direct API/E2E validation without Code Reviewer.",
+                "When a direct-route implementation-owned Local Fix requested by delivery engineer is complete, the rechecked classification remains task_size=Small or Medium and architectural_risk=Low, and the updated package is ready for direct API/E2E validation."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/implementation_engineer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/api_e2e_engineer",
+              "rules": [
+                "When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.",
+                "When a test-code, stale-test, fixture, environment, execution, or reporting Local Fix is complete and API/E2E must rerun the affected validation.",
+                "When API/E2E failure-origin review confirms that the owning problem is in coverage, test code, fixtures, environment, execution, or reporting.",
+                "When post-API/E2E test-code review fails and an API/E2E-owned correction is required."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When source review identifies an implementation-owned Local Fix or packaging defect that must be corrected before executable coverage.",
+                "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+                "When implementation review passes and Implementation Engineer needs the informational pass notification after the primary API/E2E handoff succeeds."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/code_reviewer",
+              "to": "/software_engineering_team/delivery_engineer",
+              "rules": [
+                "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/api_e2e_engineer",
+              "to": "/software_engineering_team/code_reviewer",
+              "rules": [
+                "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+                "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/api_e2e_engineer",
+              "to": "/software_engineering_team/delivery_engineer",
+              "rules": [
+                "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/delivery_engineer",
+              "to": "/software_engineering_team/implementation_engineer",
+              "rules": [
+                "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/delivery_engineer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When delivery discovers a Design Impact, Requirement Gap, or Unclear issue, or final handoff is blocked by a non-deployment issue that requires upstream classification.",
+                "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/api_e2e_engineer",
+              "to": "/software_engineering_team/solution_designer",
+              "rules": [
+                "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route."
+              ]
+            },
+            {
+              "from": "/software_engineering_team/solution_designer",
+              "to": "/software_engineering_team/delivery_engineer",
+              "rules": [
+                "When Solution Designer checks a Delivery Completed receipt and finds missing or inconsistent delivery-owned completion evidence. Send only the specific receipt gap and cumulative package for correction; do not claim Terminal, reopen unchanged requirements or redo delivery work."
+              ]
+            }
+          ],
+          "rootOrg": {
+            "address": "/",
+            "orgDefinitionId": "software-development-department",
+            "orgDefinitionName": "Software Development Department",
+            "orgRunId": "software_development_department_9c15cd0549154193a4afafb3b56bdaf1",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "antigravity_cli",
+              "llmModelIdentifier": "gemini-3.1-pro-low",
+              "llmConfig": null,
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+            },
+            "members": [
+              {
+                "address": "/product_design_prototyping_team",
+                "teamDefinitionId": "product-design-prototyping-team",
+                "role": null,
+                "description": null,
+                "teamRunId": "product_design_prototyping_team_541c5c548894416886166ff9e01042e6",
+                "coordinatorAddress": "/product_design_prototyping_team/product_prototyper",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.1-pro-low",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                },
+                "members": [
+                  {
+                    "address": "/product_design_prototyping_team/product_prototyper",
+                    "agentDefinitionId": "team-local-agent:product-design-prototyping-team:product-prototyper",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "product_prototyper_01acb48653414f7ca91ade13ed27761f",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/product_design_prototyping_team/prototype_bootstrapper",
+                    "agentDefinitionId": "team-local-agent:product-design-prototyping-team:prototype-bootstrapper",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "prototype_bootstrapper_d4776f4d67e840279e2c44cff2ac7144",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              },
+              {
+                "address": "/software_engineering_team",
+                "teamDefinitionId": "software-engineering-team",
+                "role": null,
+                "description": null,
+                "teamRunId": "software_engineering_team_0cc74cb4f0804eb3a40b67c96f0a17a5",
+                "coordinatorAddress": "/software_engineering_team/solution_designer",
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.1-pro-low",
+                  "llmConfig": null,
+                  "autoExecuteTools": false,
+                  "skillAccessMode": "PRELOADED_ONLY",
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                },
+                "members": [
+                  {
+                    "address": "/software_engineering_team/solution_designer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:solution-designer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "solution_designer_054e5b0a99f941b7b509cf8ca42d0c3b",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/architecture_reviewer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:architecture-reviewer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "architecture_reviewer_0a85d4f275cd44d688f656b7764a0fa1",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/implementation_engineer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:implementation-engineer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "implementation_engineer_32918456d36b4e85b109e70f38336aeb",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/code_reviewer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:code-reviewer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "code_reviewer_7e1593dee9064b1790bff55baf34a6fc",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/api_e2e_engineer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:api-e2e-engineer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "api_e2e_engineer_ee4b26e8232a48f5bd4d7b61edd6fcc8",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  },
+                  {
+                    "address": "/software_engineering_team/delivery_engineer",
+                    "agentDefinitionId": "team-local-agent:software-engineering-team:delivery-engineer",
+                    "role": null,
+                    "description": null,
+                    "agentRunId": "delivery_engineer_bad08ca380c945308634bfd7a7f71c35",
+                    "platformAgentRunId": null,
+                    "launchConfiguration": {
+                      "runtimeKind": "antigravity_cli",
+                      "llmModelIdentifier": "gemini-3.1-pro-low",
+                      "llmConfig": null,
+                      "autoExecuteTools": false,
+                      "skillAccessMode": "PRELOADED_ONLY",
+                      "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity"
+                    }
+                  }
+                ],
+                "taskExecutions": []
+              }
+            ],
+            "taskExecutions": []
+          }
+        }
+      }
+    }
+  },
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-codex\nagent-native\norg-antigravity\nORGS\nSoftware Development Department\n(1)\nNew - Software Development Department\n11m\nproduct design prototyping team\nsoftware engineering team\nSD\nsolution designer\nAR\narchitecture reviewer\nIE\nimplementation engineer\nCR\ncode reviewer\nAE\napi e2e engineer\nDE\ndelivery engineer\nteam-claude\nTemp Workspace\nSettings\nAgent Org\nAgent Org\nSoftware Development Department\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nAntigravity CLI\n\nRuntime is fixed for this saved run.\n\nDefault LLM Model (Global)\nAntigravity CLI (GEMINI) / Gemini 3.1 Pro (Low)\n\nChoose any model offered by this runtime. The runtime handles context limits when the run resumes.\n\nLoading replacement models…\n\nThis model has no adjustable settings.\n\nWorkspace Directory\nExisting\nNew\n\nSaved value is unavailable in current options.\n\nWorkspace: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/org-antigravity\n\nAuto approve tools\n\nHigh-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.\n\nAuto approve tools\nMember overrides (8)\n●\nThis Org is stopped. Save model settings and mounted Team workspaces for the next continuation. A Team workspace applies to all its configured Agents; existing files and history stay where they are.\n\nAgentOrg settings saved.\n\nSave\nFiles\nOrg\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+  "status": "Pass"
+}

@@ -1,9 +1,9 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
+  type AgentRunLaunchPurpose,
   type AgentRunMetadata,
 } from "../../run-history/store/agent-run-metadata-types.js";
 import {
@@ -27,13 +27,14 @@ export interface CreateAgentRunInput {
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   llmConfig?: Record<string, unknown> | null;
-  skillAccessMode: SkillAccessMode;
   runtimeKind: string;
   applicationBinding?: {
     applicationId: string;
     bindingId: string;
     displayName: string | null;
   } | null;
+  /** `server_helper` for server-internal helper runs; they keep their narrowed tool rules. */
+  launchPurpose?: AgentRunLaunchPurpose;
 }
 
 export interface CreateAgentRunResult {
@@ -109,9 +110,15 @@ export class AgentRunService {
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
+    // Only an explicit Stop cascades: the Agent root fences and stops every child first,
+    // even when the host's own runtime already died.
+    const rootTerminated = await this.lifecycleService.terminateCollaborationRoot(runId);
     const activeRun = this.agentRunManager.getActiveRun(runId);
     if (!activeRun) {
-      return this.notFound(null);
+      if (rootTerminated) await this.historyCatalogService.recordRunTerminated({ runId });
+      return rootTerminated
+        ? { success: true, message: "Agent run terminated successfully.", route: "runtime", runtimeKind: null }
+        : this.notFound(null);
     }
 
     const route: AgentRunTerminationRoute =

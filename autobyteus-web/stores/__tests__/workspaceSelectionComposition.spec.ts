@@ -55,10 +55,10 @@ const setup = async () => {
   useAgentSelectionStore().selectRun('prior-team', 'team');
   let actions!: ReturnType<typeof useWorkspaceHistorySelectionActions>;
   let execute!: ReturnType<typeof useWorkspaceHistorySubjectActions>['execute'];
-  const History = defineComponent({ emits: ['run-selected', 'run-created'], setup(_, { emit }) {
+  const History = defineComponent({ emits: ['run-selected'], setup(_, { emit }) {
     actions = useWorkspaceHistorySelectionActions({ runHistoryStore: history, selectionStore: useAgentSelectionStore(),
       setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), presentTeamStreamRecoveryFeedback: vi.fn(),
-      emitRunSelected: payload => emit('run-selected', payload), emitRunCreated: payload => emit('run-created', payload) });
+      emitRunSelected: payload => emit('run-selected', payload), startPresetChat: async () => undefined });
     execute = useWorkspaceHistorySubjectActions().execute;
     return () => h('div', ['worker', 'third'].map(id => h('button', { 'data-test': id, onClick: () => actions.onSelectTeamMember(member(id)) }, id)));
   } });
@@ -177,7 +177,7 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     const socket = OrgTestSocket.instances[0];
     const view = rootView(true);
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'publication' } });
-    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: view } });
+    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } });
     await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
     apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'published')));
     await vi.waitFor(() => expect(s.orgs.contextFor('org-run')?.phase).toBe('live'));

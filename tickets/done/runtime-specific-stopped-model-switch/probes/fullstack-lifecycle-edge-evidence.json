@@ -1,0 +1,72 @@
+{
+  "activeBefore": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "isActive": true,
+        "metadataConfig": {
+          "llmModelIdentifier": "gpt-6-luna"
+        }
+      }
+    }
+  },
+  "activeSave": {
+    "data": {
+      "updateStoppedAgentRunModelConfig": {
+        "success": false,
+        "outcome": "RUN_ACTIVE",
+        "canonicalSelection": {
+          "llmModelIdentifier": "gpt-6-luna"
+        }
+      }
+    }
+  },
+  "activeAfter": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "isActive": true,
+        "metadataConfig": {
+          "llmModelIdentifier": "gpt-6-luna"
+        }
+      }
+    }
+  },
+  "archiveBefore": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "gpt-6-astra"
+        }
+      }
+    }
+  },
+  "archive": {
+    "data": {
+      "archiveStoredRun": {
+        "success": true,
+        "message": "Run 'daily_assistant_50fa6a7af32f42a38d86466a9267826d' archived."
+      }
+    }
+  },
+  "archiveSave": {
+    "data": {
+      "updateStoppedAgentRunModelConfig": {
+        "success": false,
+        "outcome": "RUN_ARCHIVED",
+        "canonicalSelection": {
+          "llmModelIdentifier": "gpt-6-astra"
+        }
+      }
+    }
+  },
+  "archiveAfter": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "gpt-6-astra"
+        }
+      }
+    }
+  }
+}

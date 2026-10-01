@@ -1,0 +1,37 @@
+{
+  "id": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+  "stop": {
+    "data": {
+      "terminateAgentRun": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      }
+    }
+  },
+  "files": {
+    "raw_traces_active.jsonl": {
+      "size": 1112,
+      "sha256": "62186ad761726bab6a2a6bffdee1743434fb6cdc3f2c47f261cef6680488c37a"
+    },
+    "run_metadata.json": {
+      "size": 983,
+      "sha256": "b0d368f8a95d598ee91bbfed466c1d5cfef89963a8fcded5cbce57c4ce589319"
+    }
+  },
+  "metadata": {
+    "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+    "agentDefinitionId": "daily-assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-claude-live",
+    "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/memory/agents/daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+    "llmModelIdentifier": "claude-fable-5-1[1m]",
+    "llmConfig": null,
+    "autoExecuteTools": false,
+    "skillAccessMode": "PRELOADED_ONLY",
+    "runtimeKind": "claude_agent_sdk",
+    "platformAgentRunId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+    "preparedAt": "2026-09-25T15:43:38.133Z",
+    "preparedExpiresAt": "2026-09-26T15:43:38.133Z",
+    "startedAt": "2026-09-25T15:43:38.160Z",
+    "applicationExecutionContext": null
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "startedAt": "2026-09-30T23:42:20.183Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "T01": {
+      "title": "UXJ-001 Team run: member-focused menu (VIS-001), send (VIS-004), task Team + task Agent rows (VIS-006), Team tab, C-02 observation",
+      "result": "Fail",
+      "ms": 23517,
+      "error": "F-02: the task Team brought in by @ did not open once with its members listed (UXJ-001 step 7, VIS-004); F-03: task Team row reads \"product_team\" instead of \"product team\" (VIS-004/006); F-01: the member's next send after a mention send fails with \"already has a pending Team message admission\" (the mention send never settles)",
+      "details": {
+        "teamRunId": "review_team_5b9ddf178be442d9979929f51ba7fe71",
+        "options": [
+          "research-assistant",
+          "code-reviewer",
+          "flaky-agent",
+          "analyst",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team"
+        ],
+        "footer": "researcher gets your message and brings them into this run",
+        "collaborators": [
+          {
+            "kind": "agent_team",
+            "address": "/product_team"
+          }
+        ],
+        "taskTeamLabel": "product_team",
+        "taskTeamExpanded": "false",
+        "taskTeamMembersVisible": 0,
+        "teamTabRows": [
+          "Message Oct 1, 01:42 AM to product_prototyper Once you've completed the settings page design, please send your results back to me with the key details of your proposal."
+        ],
+        "teamTabSenders": [
+          "Message | Oct 1, 01:42 AM | "
+        ],
+        "rows": [
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product_team, level 1, offline, Started by researcher, /product_team",
+            "text": "product_team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          }
+        ],
+        "optionsAfter": [
+          "research-assistant",
+          "code-reviewer",
+          "flaky-agent",
+          "analyst"
+        ],
+        "secondSend": "pending-admission-error",
+        "findings": [
+          "F-02: the task Team brought in by @ did not open once with its members listed (UXJ-001 step 7, VIS-004)",
+          "F-03: task Team row reads \"product_team\" instead of \"product team\" (VIS-004/006)",
+          "F-01: the member's next send after a mention send fails with \"already has a pending Team message admission\" (the mention send never settles)"
+        ],
+        "c02": {
+          "targetNotFound": [],
+          "hint": []
+        }
+      }
+    },
+    "T02": {
+      "title": "UXJ-002 Team run: open a task Team member (system task notice, VIS-005) and chat with it directly",
+      "result": "Pass",
+      "ms": 36457,
+      "details": {
+        "expandedManually": true,
+        "title": null,
+        "hasNotice": true,
+        "directChat": "MEMBER-OK received"
+      }
+    },
+    "T03": {
+      "title": "UXJ-003 / VIS-007: a collaborator that cannot be started → red notice, no row, card not failed; dismiss; replaced by next send",
+      "result": "Pass",
+      "ms": 12434,
+      "details": {
+        "teamRunId": "review_team_1ecffad9d621477fb5d8add8fbb21a0e",
+        "deleted": {
+          "success": true,
+          "message": "Agent definition deleted successfully."
+        },
+        "notice": "Couldn’t add Flaky Agent to this run\n\nAgentDefinition 'flaky-agent' cannot be loaded for agent run identity allocation. Nothing was added.",
+        "noticeRole": "alert",
+        "noticeRoleParent": null,
+        "rowsAfter": [],
+        "cards": [
+          {
+            "text": "delegate_task",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "dismissed": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 14511
+    },
+    {
+      "label": "frontend",
+      "pid": 14535
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 14535,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 14511,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-TopokU"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-TopokU",
+  "backendUrl": "http://127.0.0.1:57166",
+  "frontUrl": "http://127.0.0.1:57167",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "flaky": "flaky-agent",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-09-30T23:43:42.126Z"
+}

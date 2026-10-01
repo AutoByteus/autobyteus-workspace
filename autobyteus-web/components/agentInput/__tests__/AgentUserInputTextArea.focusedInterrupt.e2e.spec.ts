@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
@@ -113,7 +114,6 @@ const createAgentContext = (routeKey: string): AgentContext => {
     runtimeKind: 'codex_app_server',
     workspaceId: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     llmConfig: null,
     isLocked: false,
   } as AgentRunConfig;
@@ -178,7 +178,6 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
       root_team_run_id: 'team-1',
       base_change_sequence: 0,
       execution_tree: teamContext.view.getExecutionTree(),
-      tasks: [],
       messages: [],
       agent_statuses: teamContext.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,
@@ -191,7 +190,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
       })),
     });
 
-    const wrapper = mount(AgentUserInputTextArea, {
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), {
       global: {
         mocks: {
           $t: (key: string) => key,

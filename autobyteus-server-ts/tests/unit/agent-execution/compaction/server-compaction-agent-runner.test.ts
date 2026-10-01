@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { CompactionAgentRunnerError } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
 import { ServerCompactionAgentRunner } from "../../../../src/agent-execution/compaction/server-compaction-agent-runner.js";
 import { CompactionRunOutputCollector } from "../../../../src/agent-execution/compaction/compaction-run-output-collector.js";
@@ -103,7 +102,6 @@ const createLaunchResolver = () => ({
     llmModelIdentifier: "codex:gpt-5",
     provider: "openai",
     llmConfig: { reasoning_effort: "medium" },
-    skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   })),
 });
 
@@ -213,8 +211,8 @@ describe("ServerCompactionAgentRunner", () => {
       llmModelIdentifier: "codex:gpt-5",
       autoExecuteTools: false,
       llmConfig: { reasoning_effort: "medium" },
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      launchPurpose: "server_helper",
     });
     expect(launchResolver.resolve).toHaveBeenCalledWith(parentLaunchFallback);
     expect(run.postedMessage).toBeInstanceOf(AgentInputUserMessage);

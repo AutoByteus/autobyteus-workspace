@@ -17,9 +17,7 @@ describe("AgentStreamBroadcaster", () => {
 
     const delivered = broadcaster.publishToRun(
       "run-1",
-      new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        content: "hello from telegram",
-      }),
+      new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, { task_id: "task-1", kind: "shell", description: "sleep 20", status: "running", summary: null, started_at: "2026-09-29T16:48:20.000Z" }),
     );
 
     expect(delivered).toBe(2);
@@ -42,15 +40,11 @@ describe("AgentStreamBroadcaster", () => {
 
     const deliveredFirst = broadcaster.publishToRun(
       "run-1",
-      new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        content: "hello from telegram",
-      }),
+      new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, { task_id: "task-1", kind: "shell", description: "sleep 20", status: "running", summary: null, started_at: "2026-09-29T16:48:20.000Z" }),
     );
     const deliveredSecond = broadcaster.publishToRun(
       "run-1",
-      new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-        content: "follow-up",
-      }),
+      new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, { task_id: "task-1", kind: "shell", description: "sleep 20", status: "completed", summary: "done", started_at: "2026-09-29T16:48:20.000Z" }),
     );
 
     expect(deliveredFirst).toBe(1);

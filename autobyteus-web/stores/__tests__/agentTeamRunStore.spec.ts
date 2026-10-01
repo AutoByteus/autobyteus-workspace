@@ -243,7 +243,6 @@ const configureSelectedFlatLaunchDraft = (): Readonly<{
       llmModelIdentifier: 'gpt-5.4',
       llmConfig: null,
       autoExecuteTools: true,
-      skillAccessMode: 'NONE',
     },
     teamOverrides: {},
     agentOverrides: {
@@ -537,7 +536,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       storedFilename: 'ctx_nested__image.png', displayName: 'image.png', phase: 'draft', type: 'Image',
     }
     const finalImage: ContextAttachment = {
-      ...draftImage, locator: '/rest/team-runs/build-run/members/review-run/context-files/ctx_nested__image.png',
+      ...draftImage, locator: '/rest/team-runs/build-run/agent-runs/review-run/context-files/ctx_nested__image.png',
       phase: 'final',
     }
     contextFileUploadStoreMock.finalizeDraftAttachments.mockResolvedValueOnce([finalImage])
@@ -553,7 +552,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       finalOwner: {
         kind: 'team_member_final',
         teamRunId: 'build-run',
-        memberAddress: '/BuildSquad/review_lead',
+        agentRunId: 'review-run',
       },
       attachments: [draftImage],
     })
@@ -565,6 +564,51 @@ describe('agentTeamRunStore current rooted execution contract', () => {
       expect.objectContaining({ dedupeKey: expect.stringContaining('team-nested-live') }),
     )
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-nested-live')
+  })
+
+  it('finalizes attachments from an explicit source owner (a Team started from a New chat)', async () => {
+    const team = nestedHydratedTeam()
+    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+    setActiveTeam(team)
+    const draftFile: ContextAttachment = {
+      kind: 'uploaded', id: 'chat-file', locator: '/rest/drafts/agent-runs/temp-chat-1/context-files/ctx__notes.txt',
+      storedFilename: 'ctx__notes.txt', displayName: 'notes.txt', phase: 'draft', type: 'Text',
+    }
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('from chat', [draftFile], {
+      attachmentDraftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+    })
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      draftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'build-run', agentRunId: 'review-run' },
+    }))
+  })
+
+  it('keeps attachment ownership and dispatch fixed while focus changes during finalization', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-focus', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+    let finish!: (value: ContextAttachment[]) => void
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockReturnValueOnce(new Promise(resolve => { finish = resolve }))
+    const sending = useAgentTeamRunStore().sendMessageToFocusedMember('captured target', [])
+    await vi.waitFor(() => expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledOnce())
+    team.view.focusAgent('team-focus-coordinator-run')
+    finish([])
+    await sending
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      finalOwner: { kind: 'team_member_final', teamRunId: 'team-focus', agentRunId: 'team-focus-worker-run' },
+    }))
+    expect(mockSendMessage).toHaveBeenCalledWith('captured target', 'team-focus-worker-run', [], [], expect.any(Object))
+    expect(team.view.getAgentContext('team-focus-coordinator-run')!.state.conversation.messages).toEqual([])
+  })
+
+  it('does not send after finalization rejects the selected owner and retains retry input', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-rejected' })
+    setActiveTeam(team)
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockRejectedValueOnce(new Error('wrong Team owner'))
+    await useAgentTeamRunStore().sendMessageToFocusedMember('keep prompt', [])
+    expect(mockSendMessage).not.toHaveBeenCalled()
+    expect(team.view.getAgentContext('team-rejected-worker-run')!.requirement).toBe('keep prompt')
   })
 
   it('rejects a focused Agent with no canonical execution location before admission or dispatch', async () => {
@@ -617,7 +661,7 @@ describe('agentTeamRunStore current rooted execution contract', () => {
 
   it('restores an inactive Team and sends to the unchanged exact execution address', async () => {
     const stale = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: false })
-    const hydrated = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: true })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/coordinator', isActive: true })
     setActiveTeam(stale)
     mockMutate.mockResolvedValue({
       data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-restore' } },
@@ -941,6 +985,10 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     await useAgentTeamRunStore().sendMessageToFocusedMember('FIRST_SEND_EXACT', [])
 
     const target = 'review-run'
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      draftOwner: { kind: 'team_member_draft', teamDraftId: draft.draftId, memberAddress: '/review_lead' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'team-flat-live', agentRunId: target },
+    }))
     expect(mockMutate).toHaveBeenCalledTimes(1)
     expect(mockSendMessage).toHaveBeenCalledTimes(1)
     expect(mockSendMessage).toHaveBeenCalledWith(

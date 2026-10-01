@@ -7,7 +7,6 @@ import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
@@ -286,6 +285,8 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runId,
       }),
       claudeBackendFactory: unusedBackendFactory,
+      agyBackendFactory: unusedBackendFactory,
+      grokBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
@@ -302,7 +303,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         llmConfig: {
           reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
         },
-        skillAccessMode: SkillAccessMode.NONE,
       });
     const candidate = await manager.prepareNewAgentRun({ runId, config });
     const run = candidate.commitPublication();
@@ -494,6 +494,8 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runId,
       }),
       claudeBackendFactory: unusedBackendFactory,
+      agyBackendFactory: unusedBackendFactory,
+      grokBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
@@ -510,7 +512,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       llmConfig: {
         reasoning_effort: process.env.CODEX_MEMORY_E2E_REASONING_EFFORT?.trim() || "low",
       },
-      skillAccessMode: SkillAccessMode.NONE,
     });
     const candidate = await manager.prepareNewAgentRun({ runId, config });
     const run = candidate.commitPublication();
@@ -645,6 +646,8 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         runId,
       }),
       claudeBackendFactory: unusedBackendFactory,
+      agyBackendFactory: unusedBackendFactory,
+      grokBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
@@ -658,7 +661,6 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         workspaceId: "workspace-codex-live-steer-memory",
         memoryDir,
         llmConfig: { reasoning_effort: "medium" },
-        skillAccessMode: SkillAccessMode.NONE,
       });
     const candidate = await manager.prepareNewAgentRun({ runId, config });
     const run = candidate.commitPublication();

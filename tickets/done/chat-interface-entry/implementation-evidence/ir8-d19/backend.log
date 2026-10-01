@@ -1,0 +1,165 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data
+AppConfig instance created.
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51427
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51427
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:80012) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T13:31:52.206Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-29T13:31:52.317Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T13:31:52.317Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1790688712323,"pid":80012,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51433"}
+{"level":30,"time":1790688712347,"pid":80012,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51427"}
+[2026-09-29T13:31:52.347Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51427
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Skill name 'ar13-t2' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t2'.
+Skill name 'ar13-t4' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t4', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/ar13-t4'.
+Skill name 'desk-alpha' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha'.
+Skill name 'resume-designer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/resume-designer'.
+Starting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t4' with max_depth=null
+Directory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t4' completed in 0.0010 seconds.
+Skill name 'ar13-t2' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t2'.
+Skill name 'desk-alpha' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha'.
+Skill name 'resume-designer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/resume-designer'.
+Starting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2' with max_depth=null
+Directory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2' completed in 0.0000 seconds.
+Skill name 'desk-alpha' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha'.
+Skill name 'resume-designer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/resume-designer'.
+{"level":30,"time":1790688712955,"pid":80012,"hostname":"MacBookPro","reqId":"req-k","err":{"type":"GraphQLError","message":"Duplicate skill names: desk-alpha","stack":"GraphQLError: Duplicate skill names: desk-alpha\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at SkillResolver.addSkillSource (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/types/skills.js:314:16)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["addSkillSource"],"locations":[{"line":1,"column":22}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"desk-alpha","existingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha","incomingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/incoming-folder/desk-alpha"}]}},"msg":"Duplicate skill names: desk-alpha"}
+{"level":30,"time":1790688712962,"pid":80012,"hostname":"MacBookPro","reqId":"req-m","err":{"type":"GraphQLError","message":"Duplicate skill names: desk-alpha","stack":"GraphQLError: Duplicate skill names: desk-alpha\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at SkillResolver.createSkill (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/types/skills.js:261:16)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["createSkill"],"locations":[{"line":1,"column":32}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"desk-alpha","existingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha","incomingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/desk-alpha"}]}},"msg":"Duplicate skill names: desk-alpha"}
+Skill name 'codex-only-dup' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/codex-only-dup', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/codex-only-dup'.
+Skill name 'desk-alpha' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha'.
+Skill name 'resume-designer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/resume-designer'.
+{"level":30,"time":1790688712983,"pid":80012,"hostname":"MacBookPro","reqId":"req-r","err":{"type":"GraphQLError","message":"Duplicate skill names: resume-designer","stack":"GraphQLError: Duplicate skill names: resume-designer\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentPackageResolver.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/types/agent-packages.js:217:26)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["importAgentPackage"],"locations":[{"line":1,"column":39}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"resume-designer","existingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer","incomingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/pkg-conflict/agents/dup-agent/skills/resume-designer"}]}},"msg":"Duplicate skill names: resume-designer"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 7 items.
+[2026-09-29T13:31:53.003Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T13:31:53.003Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Skill name 'codex-only-dup' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/codex-only-dup', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/codex-only-dup'.
+Skill name 'desk-alpha' (conflict): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/pkg-ok/agents/ok-agent/skills/desk-alpha'.
+Skill name 'desk-alpha' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha'.
+Skill name 'resume-designer' (shadowed_runtime_default): using '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer', ignoring '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/resume-designer'.
+{"level":30,"time":1790688713010,"pid":80012,"hostname":"MacBookPro","reqId":"req-u","err":{"type":"GraphQLError","message":"Duplicate skill names: desk-alpha","stack":"GraphQLError: Duplicate skill names: desk-alpha\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at async AgentPackageResolver.reloadAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/types/agent-packages.js:227:26)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["reloadAgentPackage"],"locations":[{"line":1,"column":23}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"desk-alpha","existingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha","incomingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/pkg-ok/agents/ok-agent/skills/desk-alpha"}]}},"msg":"Duplicate skill names: desk-alpha"}
+[CodexAppServerClient] stderr: [2m2026-09-29T13:31:53.092835Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/ws-codex-5qe6vE
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/ws-codex-5qe6vE.
+Created and registered workspace ID: agent_ws_ed09c72f9bb74f81f1195809d330a94da665041d3d158d7eff4af1396f1f6b93
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/ws-codex-5qe6vE
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/ws-codex-5qe6vE.
+Reusing registered workspace ID: agent_ws_ed09c72f9bb74f81f1195809d330a94da665041d3d158d7eff4af1396f1f6b93
+[CodexAppServerClient] stderr: [2m2026-09-29T13:31:53.758209Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/config.toml): `features.voice_transcription` is ignored.
+codex-runtime-duplicate: skill='desk-alpha', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha'; exposing the chosen copy in the workspace.
+[CodexAppServerClient] stderr: [2m2026-09-29T13:31:53.836224Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/ws-codex-5qe6vE/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/ws-codex-5qe6vE as a trusted project in /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-29T13:31:53.836275Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'desk_lead_a04b2887dbf9490d9b68cb71807aff6b'.
+[2026-09-29T13:31:55.437Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-29T13:31:55.445Z] [INFO] [server.runtime] Server closed cleanly.

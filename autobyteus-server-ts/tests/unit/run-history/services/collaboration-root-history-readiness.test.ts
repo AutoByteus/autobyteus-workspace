@@ -4,12 +4,13 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
-import { TaskDelegationRecordsV1Store } from "../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
+import { AgentOrgRunHistoryIndexStore } from "../../../../src/run-history/store/agent-org-run-history-index-store.js";
+import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
+import { resetCollaborationRunHistoryCatalogState } from "../../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { AgentOrgRunHistoryCatalogService } from "../../../../src/run-history/services/agent-org-run-history-catalog-service.js";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import {
@@ -30,6 +31,7 @@ afterEach(async () => {
   vi.restoreAllMocks();
   for (const memoryDir of roots.splice(0)) {
     resetTeamRunHistoryCatalogState(memoryDir);
+    resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
     resetRootRunPackageReadinessIndex(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
   }
@@ -58,11 +60,6 @@ describe("first mixed collaboration history after restart", () => {
     await fs.mkdir(teamPackagePath, { recursive: true });
     await Promise.all([
       new TeamRunExecutionTreeStore().write(teamPackagePath, teamTree),
-      new TaskDelegationRecordsV1Store().write(teamPackagePath, {
-        schemaVersion: 1,
-        rootTeamRunId: teamRunId,
-        records: [],
-      }),
       new TeamCommunicationV1Store().write(teamPackagePath, {
         schemaVersion: 1,
         rootTeamRunId: teamRunId,
@@ -88,12 +85,6 @@ describe("first mixed collaboration history after restart", () => {
     await fs.mkdir(orgPackagePath, { recursive: true });
     await Promise.all([
       new AgentOrgRunExecutionTreeStore().write(orgPackagePath, orgTree),
-      new AgentOrgTaskDelegationRecordsV1Store().write(orgPackagePath, {
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        records: [],
-      }),
       new AgentOrgCommunicationMessagesV1Store().write(orgPackagePath, {
         schemaVersion: 1,
         subjectKind: "agent_org",
@@ -101,6 +92,8 @@ describe("first mixed collaboration history after restart", () => {
         messages: [],
       }),
     ]);
+
+    await new AgentOrgRunHistoryIndexStore(memoryDir).writeIndex([projectAgentOrgRunHistoryRow(orgTree)]);
 
     let releaseOrgValidation!: () => void;
     let reportOrgValidationStarted!: () => void;
@@ -123,7 +116,7 @@ describe("first mixed collaboration history after restart", () => {
 
     const teamManager = {
       hasManagedTeamRun: vi.fn(() => false),
-      withUnmanagedHistoryDeletion: vi.fn(),
+      withInactiveHistoryMutation: vi.fn(),
     };
     const teamCatalog = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: teamManager });
     const teamHistory = new TeamRunHistoryService(memoryDir, {

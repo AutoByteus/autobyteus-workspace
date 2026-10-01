@@ -105,3 +105,15 @@ export const ENABLE_SKILL = gql`
     }
   }
 `
+
+/** Copies of a name the catalog ignores (D-19, Skills page banner). */
+export const GET_SKILL_NAME_ISSUES = gql`
+  query GetSkillNameIssues {
+    skillNameIssues {
+      name
+      usedPath
+      ignoredPaths
+      kind
+    }
+  }
+`

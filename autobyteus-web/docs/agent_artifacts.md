@@ -10,17 +10,16 @@ Team-route `send_message_to.reference_files` are no longer owned by the
 Artifacts tab. They are child rows of Team Communication messages in the Team
 tab. The message body stays natural and self-contained; `reference_files` is the
 structured attachment/reference list used to register previewable files under the
-accepted `recipient_address` message that carried them. Direct exact-run
-`send_message_to(target_agent_run_id=...)` messages carry their references in
-the target runtime input/event metadata but intentionally do not create Team
-Communication reference rows.
+accepted `recipient_address` message that carried them. An exact-run
+`send_message_to(target_agent_run_id=...)` to an AgentRun in the sender's own
+root (for example a delegated child) is recorded the same way. An exact-run
+message to an active run outside the sender's root carries its references only
+in the target runtime input/event metadata and creates no Team Communication
+reference rows.
 
-Task-delegation `reference_files` are also outside the Artifacts tab, but they
-are not Team Communication rows. They are task-owned reference rows normalized
-onto persisted `TaskDelegationRecord.referenceFiles`, rendered in the Team tab
-Tasks left navigator, and previewed in the right task detail pane. Live
-`TASK_DELEGATION_EVENT` messages can refresh the records, but the Tasks surface
-is not dependent on transient execution nodes.
+`delegate_task` `reference_files` are listed only in the delegated child's first
+message (the work packet). There is no task-owned reference storage, Tasks
+section, or task reference route.
 
 ## Agent Artifacts
 
@@ -140,52 +139,6 @@ Rules:
   full-screen wrapper and returns to the same message list/focused-member
   context on close. Mobile does not scan message prose for paths.
 
-## Task Delegation References
-
-The Team tab Tasks section owns task-delegation references for delegated task
-records. Reference rows live in the left task navigator, while selected
-reference content renders in the right detail pane:
-
-```ts
-interface TeamReferenceFile {
-  referenceId: string;
-  path: string;
-  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
-  createdAt: string;
-  updatedAt: string;
-}
-```
-
-Rules:
-
-- Task reference rows come from hydrated `TaskDelegationRecord.referenceFiles`,
-  fetched through `getTaskDelegationRecords(teamRunId)`. Live task-delegation
-  events can schedule a records refresh and active execution nodes can enrich
-  display, but the Tasks UI does not parse Team Communication messages, raw
-  Markdown/prose, or transient projection nodes for durable reference paths.
-- The left Tasks navigator is one task-owned conversation. It starts with the
-  assignment and its references, then renders every submission, review, and
-  interruption once in durable record order. Each lifecycle row has a human
-  event label, readable participants or system attribution, timestamp, content
-  preview, and its own reference rows. The assignment also shows the current
-  human task status and last-activity time. The navigator does not duplicate
-  the Workspaces execution hierarchy, actor/member rows, or a separate visible
-  `References` heading.
-- Reference rows use the shared file presentation and a visible selected state.
-  Selecting an assignment or update shows only that item's Markdown detail on
-  the right. Selecting one of its references switches the right pane to the
-  existing file preview; reselecting the owning item returns to its content.
-  The right pane never duplicates the lifecycle or reference navigation.
-- Reference content opens by task-owned identity:
-  `/team-runs/:teamRunId/task-delegations/:taskId/references/:referenceId/content`.
-- Raw task/run ids, task-kind and target metadata, routing JSON, raw arguments,
-  and the former Technical details disclosure are absent from the Tasks UI.
-  Exact ids remain internal selection and reference-routing keys only.
-- Tasks is task-content navigation and readback oriented. It never owns
-  Approve/Deny controls, approval command target construction, execution focus
-  controls, or visible execution-status summary markers; pending approval remains
-  Activity-owned.
-
 ## Data Flow
 
 ```mermaid
@@ -212,16 +165,6 @@ flowchart LR
   P --> V[MobileTeamMessages]
   V --> W[MobileTeamReferenceViewer]
   W --> S
-
-  X[TASK_DELEGATION_EVENT] --> Y[task delegation records refresh]
-  Y --> YA[GraphQL: getTaskDelegationRecords]
-  YA --> YB[taskDelegationStore]
-  YB --> Z[Team tab: Tasks section]
-  Z --> ZA[TeamDelegatedTaskNavigator assignment, update, and reference rows]
-  Z --> AA[TeamDelegatedTaskDetailPane selected item or reference]
-  AA --> AB[TeamTaskReferenceViewer]
-  AB --> AC[TeamReferenceFileViewer]
-  AC --> AD[REST: task reference content route]
 ```
 
 ## Frontend Owners
@@ -241,15 +184,6 @@ flowchart LR
 | Mobile Team messages | `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Renders the focused member's Team Communication messages in the mobile shell and exposes each structured reference file as a tappable phone row. |
 | Mobile Team reference wrapper | `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue` | Wraps `TeamCommunicationReferenceViewer` in a full-screen mobile surface, passes message-owned identity through, and disables rich HTML preview for mobile. |
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
-| Task Delegation store | `autobyteus-web/stores/taskDelegationStore.ts` | Owns hydrated persisted task-delegation records keyed by root team run. |
-| Task Delegation hydration | `autobyteus-web/services/runHydration/taskDelegationHydrationService.ts` | Loads `getTaskDelegationRecords(teamRunId)` for live and historical team runs and supports event-triggered refresh. |
-| Shared Tasks section | `autobyteus-web/components/workspace/collaboration/CollaborationDelegatedTasksSection.vue` | Replaces the Team-only section with root-neutral Tasks facets, split layout, local task/reference selection, resizing, and exact participant navigation for Team and AgentOrg roots. Adapters own record projection and reference routes. |
-| Team Tasks lifecycle projector | `autobyteus-web/utils/teamDelegatedTaskEntries.ts` | Projects strict task records into an ordered assignment/submission/review/interruption conversation with stable item/reference locators, readable participants, result ordinals, current human task status, and item-owned references. |
-| Team Tasks navigator | `autobyteus-web/components/workspace/team/TeamDelegatedTaskNavigator.vue`, `TeamDelegatedTaskLifecycleRow.vue` | Renders the assignment, current human task status, every durable lifecycle update, and each item's reference rows as the complete left-side navigation. It renders no raw ids, routing JSON, execution hierarchy, or Technical details. |
-| Team delegated-task detail pane | `autobyteus-web/components/workspace/team/TeamDelegatedTaskDetailPane.vue`, `TeamDelegatedTaskItemDetail.vue` | Renders exactly one selected assignment/update Markdown detail or task reference. Familiar direction names carry exact participant links; optional identity disclosure replaces the permanent top strip. It does not duplicate left lifecycle/reference navigation or own runtime selection. |
-| Task reference route wrapper | `autobyteus-web/components/workspace/team/TeamTaskReferenceViewer.vue` | Resolves the root-specific content path supplied by the Tasks facet against the bound node's REST base for the selected task reference; it does not assume a Team root. |
-| Task reference preview shell | `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` | Route-agnostic read-only Team reference shell used for task references; delegates raw/preview/media/PDF/CSV/Excel rendering to `FileViewer`. |
-| Generic Team reference type/presentation | `autobyteus-web/types/teamReferenceFile.ts`, `autobyteus-web/utils/teamReferences/*` | Shared task-reference file model and file-type/name/icon presentation for the Tasks surface. |
 
 ## Viewer Resolution
 
@@ -274,13 +208,8 @@ phone-sized full-screen surface, but disables rich HTML preview so mobile
 reference files stay on authorized raw/Markdown/media/PDF/CSV/Excel loading
 paths rather than an unauthenticated static HTML preview path.
 
-Task-delegation reference previews use `TeamTaskReferenceViewer` and
-`TeamReferenceFileViewer`. The route identity is task-owned
-(`teamRunId + taskId + referenceId`), not message-owned, and the preview occupies
-the Tasks right pane until the task navigator selects the task summary or
-another reference. The generic task reference shell uses authorized fetch/object
-URLs and the shared read-only `FileViewer` modes for text/Markdown, protected
-media, PDF, CSV, and Excel content.
+There are no task-owned reference previews; the former task reference route
+and `TeamTaskReferenceViewer` are removed.
 
 
 ## Uploaded Context Files Versus Collaboration References
@@ -288,7 +217,7 @@ media, PDF, CSV, and Excel content.
 Uploaded user context files retain their recorded URI/type/name through raw
 trace, initial/cold/earlier-page projection and shared UserMessage hydration.
 They are not a new task artifact family. Org uploads are owned by root plus
-exact AgentRun; message/task reference URLs remain separately root-owned. Open
+exact AgentRun; message reference URLs remain separately root-owned. Open
 uses saved ownership, not the current viewer or configured source at the same
 address. Separate text/JSON links remain accepted existing presentation.
 

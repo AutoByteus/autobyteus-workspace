@@ -7,6 +7,7 @@
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
 import type { JsonValue } from '@autobyteus/team-stream-contracts';
+import type { BackgroundTaskKind, BackgroundTaskStatus } from '~/types/backgroundTask';
 export type {
   AgentCommandAckPayload,
   InterruptCommandTarget,
@@ -17,8 +18,6 @@ export type {
 } from './agentCommandTypes';
 import type { CompactionStatusPayload } from './compactionTypes';
 export type { CompactionStatusPayload } from './compactionTypes';
-import type { ExternalUserMessagePayload } from './externalUserMessageTypes';
-export type { ExternalUserMessageContextFilePathPayload, ExternalUserMessagePayload } from './externalUserMessageTypes';
 import type { MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
@@ -37,7 +36,6 @@ export type ServerMessageType =
   | 'SEGMENT_START'
   | 'SEGMENT_CONTENT'
   | 'SEGMENT_END'
-  | 'EXTERNAL_USER_MESSAGE'
   | 'MEMBER_INPUT_MESSAGE'
   | 'AGENT_STATUS'
   | 'AGENT_COMMAND_ACK'
@@ -52,7 +50,7 @@ export type ServerMessageType =
   | 'TOOL_EXECUTION_INTERRUPTED'
   | 'TOOL_LOG'
   | 'ASSISTANT_COMPLETE'
-  | 'TODO_LIST_UPDATE'
+  | 'BACKGROUND_TASK_UPDATED'
   | 'INTER_AGENT_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
@@ -152,6 +150,7 @@ export interface ToolExecutionSucceededPayload {
   result?: any;
 }
 
+
 export interface ToolExecutionFailedPayload {
   invocation_id: string;
   tool_name: string;
@@ -190,14 +189,13 @@ export interface TurnLifecyclePayload {
   interrupted?: boolean;
 }
 
-export interface TodoItem {
-  todo_id: string;
+export interface BackgroundTaskUpdatedPayload {
+  task_id: string;
+  kind: BackgroundTaskKind;
   description: string;
-  status: string;
-}
-
-export interface TodoListUpdatePayload {
-  todos: TodoItem[];
+  status: BackgroundTaskStatus;
+  summary: string | null;
+  started_at: string;
 }
 
 export interface InterAgentMessagePayload {
@@ -272,7 +270,6 @@ export type ServerMessage =
   | { type: 'SEGMENT_START'; payload: SegmentStartPayload }
   | { type: 'SEGMENT_CONTENT'; payload: SegmentContentPayload }
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }
-  | { type: 'EXTERNAL_USER_MESSAGE'; payload: ExternalUserMessagePayload }
   | { type: 'MEMBER_INPUT_MESSAGE'; payload: MemberInputMessagePayload }
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
   | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }
@@ -287,7 +284,7 @@ export type ServerMessage =
   | { type: 'TOOL_EXECUTION_INTERRUPTED'; payload: ToolExecutionInterruptedPayload }
   | { type: 'TOOL_LOG'; payload: ToolLogPayload }
   | { type: 'ASSISTANT_COMPLETE'; payload: AssistantCompletePayload }
-  | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
+  | { type: 'BACKGROUND_TASK_UPDATED'; payload: BackgroundTaskUpdatedPayload }
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }
@@ -310,6 +307,8 @@ export interface SendMessagePayload {
   image_urls?: string[];
   message_id?: string;
   dedupe_key?: string;
+  /** `@` mentions of shared Agents and Teams to bring into this run; the server re-validates them. */
+  mentions?: Array<{ kind: 'agent' | 'agent_team'; definition_id: string }>;
 }
 
 export interface ToolActionPayload {

@@ -22,8 +22,13 @@ export interface SendMessageCommandAckPayload {
     | 'RUN_NOT_FOUND'
     | 'ACTIVATION_FAILED'
     | 'RUNTIME_REJECTED'
+    | 'COLLABORATOR_ADD_FAILED'
+    | 'COLLABORATOR_MENTION_INVALID'
+    | 'COLLABORATOR_MENTION_UNAVAILABLE'
     | 'UNKNOWN_ERROR';
   message?: string;
+  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
+  collaborator_name?: string;
   status?: AgentStatusPayload;
 }
 

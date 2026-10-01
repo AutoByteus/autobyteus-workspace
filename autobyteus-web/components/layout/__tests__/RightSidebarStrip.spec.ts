@@ -6,7 +6,7 @@ import RightSidebarStrip from '../RightSidebarStrip.vue'
 const mocks = vi.hoisted(() => ({
   activeTab: null as any,
   visibleTabs: null as any,
-  setActiveTab: vi.fn(),
+  selectTabExplicitly: vi.fn(),
 }))
 
 vi.mock('~/composables/useRightSideTabs', () => ({
@@ -46,7 +46,8 @@ describe('RightSidebarStrip', () => {
 
     await strip.get('button[aria-label="Files"]').trigger('click')
 
-    expect(mocks.setActiveTab).toHaveBeenCalledWith('files')
+    // A strip click is an explicit choice: the panel opens on exactly this tab.
+    expect(mocks.selectTabExplicitly).toHaveBeenCalledWith('files')
     expect(wrapper.emitted('request-open')).toHaveLength(1)
     expect(strip.get('button[aria-label="Files"]').attributes('data-tab-name')).toBe('files')
   })

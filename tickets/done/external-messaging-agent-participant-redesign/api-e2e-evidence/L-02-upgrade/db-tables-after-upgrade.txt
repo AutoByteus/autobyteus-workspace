@@ -1,0 +1,17 @@
+_prisma_migrations
+agent_artifacts
+agent_definitions
+agent_prompt_mappings
+agent_team_definitions
+app_data_migration_records
+mcp_server_configurations
+prompts
+secret_encryption_metadata
+secret_entries
+sqlite_sequence
+sync_tombstones
+token_usage_analytics_coverage
+token_usage_analytics_daily_facets
+token_usage_ledger_events
+token_usage_records
+token_usage_run_records

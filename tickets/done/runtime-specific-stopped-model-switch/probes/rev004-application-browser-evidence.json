@@ -1,0 +1,547 @@
+{
+  "startedAt": "2026-09-25T19:29:54.173Z",
+  "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570",
+  "steps": [
+    {
+      "name": "catalog-to-setup",
+      "status": "Pass",
+      "url": "http://127.0.0.1:54043/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570"
+    },
+    {
+      "name": "agent-selected-baseline",
+      "text": "Optional Agent\nOptional\n\nSaved exact-default Agent\n\nCURRENT SELECTION\n\nNot configured\n\nUsing manifest defaults only\n\nSELECTED RESOURCE BASELINE\n\nREV004 Saved Default Agent · claude_agent_sdk · default\n\nSAVED HOST OVERRIDE\n\nABSENT\n\nNo saved override\n\nExecution resource\nNo resource selected\nMemory Compactor · Shared · Single agent\nRetrospective Skill Improver · Shared · Single agent\nREV004 Saved Default Agent · Shared · Single agent\nAgent Team Architect · Shared · Single agent\nCodex · Shared · Single agent\nDaily Assistant · Shared · Single agent\nProduct Prototyper · Shared · Single agent\nresearch engineer · Shared · Single agent\nResume Designer · Shared · Single agent\nSkill Optimizer · Shared · Single agent\nSoftware Tutorial Video Maker · Shared · Single agent\nDefault runtime\nUse application default runtime\nAutoByteus\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nRuntime is not available in current capabilities.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault w"
+    },
+    {
+      "name": "agent-saved-fresh-reopen",
+      "status": "Pass",
+      "selection": "shared:AGENT:rev004-saved-default-agent",
+      "text": "Optional Agent\nOptional\n\nSaved exact-default Agent\n\nCURRENT SELECTION\n\nREV004 Saved Default Agent · Shared · Single agent\n\nSaved 9/25/2026, 9:30:03 PM\n\nSELECTED RESOURCE BASELINE\n\nREV004 Saved Default Agent · claude_agent_sdk · default\n\nSAVED HOST OVERRIDE\n\nVALID\n\nREV004 Saved Default Agent · Shared · Single agent\n\nEFFECTIVE CONFIGURATION\n\nREV004 Saved Default Agent · claude_agent_sdk · default\nSELECTED_RESOURCE_AGENT_DEFAULT:rev004-saved-default-agent · SELECTED_RESOURCE_AGENT_DEFAULT:rev004-saved-default-agent\nllmConfig: SELECTED_RESOURCE_AGENT_DEFAULT:rev004-saved-default-agent · workspace: APPLICATION_RUNTIME\n\nExecution resource\nNo resource selected\nMemory Compactor · Shared · Single agent\nRetrospective Skill Improver · Shared · Single agent\nREV004 Saved Default Agent · Shared · Single agent\nAgent Team Architect · Shared · Single agent\nCodex · Shared · Single agent\nDaily Assistant · Shared · Single agent\nProduct Prototyper · Shared · Single agent\nresearch engineer · Shared · Single agent\nResume Designer · Shared · Single agent\nSkill Optimizer · Shared · Single agent\nSoftware Tutorial Video Maker · Shared · Single agent\nDefault runtime\nUse application default runtime\nAutoByteus\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nRuntime is not available in current capabilities.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nSave setup\nCancel draft changes\nReset to package defaults"
+    },
+    {
+      "name": "team-selected-baseline",
+      "text": "Optional Team\nOptional\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nNot configured\n\nUsing manifest defaults only\n\nSELECTED RESOURCE BASELINE\n\n/assistant · claude_agent_sdk · default\n\nSAVED HOST OVERRIDE\n\nABSENT\n\nNo saved override\n\nExecution resource\nNo resource selected\nBrief Studio Team · Bundled · Agent team\nREV004 Saved Default Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nEvidence-Driven Delivery Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nProduct Design & Prototyping Team · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nassistant\n\n/assistant\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nClaude Agent SDK\nRuntime is not available in current capabilities.\nMODEL OVERRIDE\nInherit global model\nSave setup\nCancel draft c"
+    },
+    {
+      "name": "team-saved-fresh-reopen",
+      "status": "Pass",
+      "selection": "shared:AGENT_TEAM:rev004-saved-default-team",
+      "text": "Optional Team\nOptional\n\nTeam resource used when Brief Studio launches a new drafting run.\n\nCURRENT SELECTION\n\nREV004 Saved Default Team · Shared · Agent team\n\nSaved 9/25/2026, 9:30:05 PM\n\nSELECTED RESOURCE BASELINE\n\n/assistant · claude_agent_sdk · default\n\nSAVED HOST OVERRIDE\n\nVALID\n\nREV004 Saved Default Team · Shared · Agent team\n\nEFFECTIVE CONFIGURATION\n\n/assistant · claude_agent_sdk · default\nSELECTED_RESOURCE_TEAM_DEFAULT:rev004-saved-default-team · SELECTED_RESOURCE_TEAM_DEFAULT:rev004-saved-default-team\nllmConfig: SELECTED_RESOURCE_TEAM_DEFAULT:rev004-saved-default-team · workspace: APPLICATION_RUNTIME\n\nExecution resource\nNo resource selected\nBrief Studio Team · Bundled · Agent team\nREV004 Saved Default Team · Shared · Agent team\nArticle Writing Team · Shared · Agent team\nClassroom Simulation Team · Shared · Agent team\nEvidence-Driven Delivery Team · Shared · Agent team\nKids Coloring Story Team · Shared · Agent team\nKids Picture Story Team · Shared · Agent team\nManga Video Studio Team · Shared · Agent team\nNarrated Presentation Video Team · Shared · Agent team\nProduct Design & Prototyping Team · Shared · Agent team\nResearch To Deck Team · Shared · Agent team\nSoftware Engineering Team · Shared · Agent team\nSoftware Product Promo Video Team · Shared · Agent team\nSTORM Team · Shared · Agent team\nDefault runtime\nUse application default runtime\nAutoByteus\nClaude Agent SDK\n\nOptional: save a preferred runtime for later launches from inside the application.\n\nDefault model\nSelect a default model\n\nOptional: save a preferred model for later application-owned launches.\n\nDefault workspace root\nLoaded workspaces\nCustom path\n\nEnter or browse for an absolute workspace root path to reuse during application-owned launches.\n\nOptional: save a workspace root path for later launches from inside the application.\n\nTeam member overrides\n\nEach member inherits the shared defaults unless you set a runtime or model override here.\n\nassistant\n\n/assistant\n\nRUNTIME OVERRIDE\nInherit global runtime\nAutoByteus\nClaude Agent SDK\nRuntime is not available in current capabilities.\nMODEL OVERRIDE\nInherit global model\nSave setup\nCancel draft changes\nReset to package defaults"
+    }
+  ],
+  "pageErrors": [],
+  "requests": [
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    }
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:54039/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570/execution-resource-configurations/agentSlot",
+      "status": 200,
+      "body": "{\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570\",\"slots\":[{\"slot\":{\"slotKey\":\"agentSlot\",\"name\":\"Optional Agent\",\"description\":\"Saved exact-default Agent\",\"allowedExecutionResourceKinds\":[\"AGENT\"],\"allowedExecutionResourceSources\":[\"shared\"],\"required\":false,\"supportedLaunchConfig\":{\"AGENT\":{\"llmModelIdentifier\":true,\"runtimeKind\":true,\"llmConfig\":true,\"workspaceRootPath\":true}},\"defaultExecutionResourceRef\":null},\"packageBaseline\":null,\"selectedResourceBaseline\":{\"slotKey\":\"agentSlot\",\"executionResourceRef\":{\"source\":\"shared\",\"kind\":\"AGENT\",\"definitionId\":\"rev004-saved-default-agent\"},\"resourceDefinitionId\":\"rev004-saved-default-agent\",\"resourceKind\":\"AGENT\",\"leaves\":[{\"memberAddress\":null,\"displayName\":\"REV004 Saved Default Agent\",\"agentDefinitionId\":\"rev004-saved-default-agent\",\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"default\",\"llmConfig\":{\"reasoning_effort\":\"high\"},\"provenance\":{\"runtimeKind\":{\"kind\":\"SELECTED_RESOURCE_AGENT_DEFAULT\",\"agentDefinitionId\":\"rev004-saved-default-agent\"},\"llmModelIdentifier\":{\"kind\":\"SELECTED_RESOURCE_AGENT_DEFAULT\",\"agentDefinitionId\":\"rev004-saved-default-agent\""
+    },
+    {
+      "url": "http://127.0.0.1:54039/rest/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570/execution-resource-configurations/draftingTeam",
+      "status": 200,
+      "body": "{\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570\",\"slots\":[{\"slot\":{\"slotKey\":\"agentSlot\",\"name\":\"Optional Agent\",\"description\":\"Saved exact-default Agent\",\"allowedExecutionResourceKinds\":[\"AGENT\"],\"allowedExecutionResourceSources\":[\"shared\"],\"required\":false,\"supportedLaunchConfig\":{\"AGENT\":{\"llmModelIdentifier\":true,\"runtimeKind\":true,\"llmConfig\":true,\"workspaceRootPath\":true}},\"defaultExecutionResourceRef\":null},\"packageBaseline\":null,\"selectedResourceBaseline\":{\"slotKey\":\"agentSlot\",\"executionResourceRef\":{\"source\":\"shared\",\"kind\":\"AGENT\",\"definitionId\":\"rev004-saved-default-agent\"},\"resourceDefinitionId\":\"rev004-saved-default-agent\",\"resourceKind\":\"AGENT\",\"leaves\":[{\"memberAddress\":null,\"displayName\":\"REV004 Saved Default Agent\",\"agentDefinitionId\":\"rev004-saved-default-agent\",\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"default\",\"llmConfig\":{\"reasoning_effort\":\"high\"},\"provenance\":{\"runtimeKind\":{\"kind\":\"SELECTED_RESOURCE_AGENT_DEFAULT\",\"agentDefinitionId\":\"rev004-saved-default-agent\"},\"llmModelIdentifier\":{\"kind\":\"SELECTED_RESOURCE_AGENT_DEFAULT\",\"agentDefinitionId\":\"rev004-saved-default-agent\""
+    }
+  ],
+  "agentAfterSave": {
+    "status": 200,
+    "body": {
+      "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570",
+      "slots": [
+        {
+          "slot": {
+            "slotKey": "agentSlot",
+            "name": "Optional Agent",
+            "description": "Saved exact-default Agent",
+            "allowedExecutionResourceKinds": [
+              "AGENT"
+            ],
+            "allowedExecutionResourceSources": [
+              "shared"
+            ],
+            "required": false,
+            "supportedLaunchConfig": {
+              "AGENT": {
+                "llmModelIdentifier": true,
+                "runtimeKind": true,
+                "llmConfig": true,
+                "workspaceRootPath": true
+              }
+            },
+            "defaultExecutionResourceRef": null
+          },
+          "packageBaseline": null,
+          "selectedResourceBaseline": {
+            "slotKey": "agentSlot",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT",
+              "definitionId": "rev004-saved-default-agent"
+            },
+            "resourceDefinitionId": "rev004-saved-default-agent",
+            "resourceKind": "AGENT",
+            "leaves": [
+              {
+                "memberAddress": null,
+                "displayName": "REV004 Saved Default Agent",
+                "agentDefinitionId": "rev004-saved-default-agent",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  }
+                }
+              }
+            ]
+          },
+          "savedOverride": {
+            "slotKey": "agentSlot",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT",
+              "definitionId": "rev004-saved-default-agent"
+            },
+            "launchOverride": null
+          },
+          "savedOverrideState": "VALID",
+          "effectiveConfiguration": {
+            "slotKey": "agentSlot",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT",
+              "definitionId": "rev004-saved-default-agent"
+            },
+            "resourceDefinitionId": "rev004-saved-default-agent",
+            "resourceKind": "AGENT",
+            "leaves": [
+              {
+                "memberAddress": null,
+                "displayName": "REV004 Saved Default Agent",
+                "agentDefinitionId": "rev004-saved-default-agent",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-36286-1790364469635/applications/bundle-app__rev004-model-setup__cd249755fc5216a56603290975822a6051a689fb07b1f317643d245be7bd0baa/runtime",
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "workspaceRootPath": "APPLICATION_RUNTIME"
+                }
+              }
+            ]
+          },
+          "issues": [],
+          "canResetToPackageDefaults": true,
+          "updatedAt": "2026-09-25T19:30:03.707Z"
+        },
+        {
+          "slot": {
+            "slotKey": "draftingTeam",
+            "name": "Optional Team",
+            "description": "Team resource used when Brief Studio launches a new drafting run.",
+            "allowedExecutionResourceKinds": [
+              "AGENT_TEAM"
+            ],
+            "allowedExecutionResourceSources": [
+              "bundle",
+              "shared"
+            ],
+            "required": false,
+            "supportedLaunchConfig": {
+              "AGENT_TEAM": {
+                "llmModelIdentifier": true,
+                "runtimeKind": true,
+                "llmConfig": true,
+                "workspaceRootPath": true,
+                "memberOverrides": {
+                  "llmModelIdentifier": true,
+                  "runtimeKind": true,
+                  "llmConfig": true
+                }
+              }
+            },
+            "defaultExecutionResourceRef": null
+          },
+          "packageBaseline": null,
+          "selectedResourceBaseline": null,
+          "savedOverride": null,
+          "savedOverrideState": "ABSENT",
+          "effectiveConfiguration": null,
+          "issues": [],
+          "canResetToPackageDefaults": false,
+          "updatedAt": null
+        }
+      ],
+      "readiness": {
+        "status": "RUNNABLE",
+        "issues": []
+      }
+    }
+  },
+  "teamAfterSave": {
+    "status": 200,
+    "body": {
+      "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466175746f6279746575732d7365727665722d747325324674657374732532462e746d7025324672756e74696d652d7377697463682d62726f777365722d33363238362d313739303336343436393633352532467265763030342d6170706c69636174696f6e2d7061636b616765__7265763030342d6d6f64656c2d7365747570",
+      "slots": [
+        {
+          "slot": {
+            "slotKey": "agentSlot",
+            "name": "Optional Agent",
+            "description": "Saved exact-default Agent",
+            "allowedExecutionResourceKinds": [
+              "AGENT"
+            ],
+            "allowedExecutionResourceSources": [
+              "shared"
+            ],
+            "required": false,
+            "supportedLaunchConfig": {
+              "AGENT": {
+                "llmModelIdentifier": true,
+                "runtimeKind": true,
+                "llmConfig": true,
+                "workspaceRootPath": true
+              }
+            },
+            "defaultExecutionResourceRef": null
+          },
+          "packageBaseline": null,
+          "selectedResourceBaseline": {
+            "slotKey": "agentSlot",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT",
+              "definitionId": "rev004-saved-default-agent"
+            },
+            "resourceDefinitionId": "rev004-saved-default-agent",
+            "resourceKind": "AGENT",
+            "leaves": [
+              {
+                "memberAddress": null,
+                "displayName": "REV004 Saved Default Agent",
+                "agentDefinitionId": "rev004-saved-default-agent",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  }
+                }
+              }
+            ]
+          },
+          "savedOverride": {
+            "slotKey": "agentSlot",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT",
+              "definitionId": "rev004-saved-default-agent"
+            },
+            "launchOverride": null
+          },
+          "savedOverrideState": "VALID",
+          "effectiveConfiguration": {
+            "slotKey": "agentSlot",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT",
+              "definitionId": "rev004-saved-default-agent"
+            },
+            "resourceDefinitionId": "rev004-saved-default-agent",
+            "resourceKind": "AGENT",
+            "leaves": [
+              {
+                "memberAddress": null,
+                "displayName": "REV004 Saved Default Agent",
+                "agentDefinitionId": "rev004-saved-default-agent",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-36286-1790364469635/applications/bundle-app__rev004-model-setup__cd249755fc5216a56603290975822a6051a689fb07b1f317643d245be7bd0baa/runtime",
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_AGENT_DEFAULT",
+                    "agentDefinitionId": "rev004-saved-default-agent"
+                  },
+                  "workspaceRootPath": "APPLICATION_RUNTIME"
+                }
+              }
+            ]
+          },
+          "issues": [],
+          "canResetToPackageDefaults": true,
+          "updatedAt": "2026-09-25T19:30:03.707Z"
+        },
+        {
+          "slot": {
+            "slotKey": "draftingTeam",
+            "name": "Optional Team",
+            "description": "Team resource used when Brief Studio launches a new drafting run.",
+            "allowedExecutionResourceKinds": [
+              "AGENT_TEAM"
+            ],
+            "allowedExecutionResourceSources": [
+              "bundle",
+              "shared"
+            ],
+            "required": false,
+            "supportedLaunchConfig": {
+              "AGENT_TEAM": {
+                "llmModelIdentifier": true,
+                "runtimeKind": true,
+                "llmConfig": true,
+                "workspaceRootPath": true,
+                "memberOverrides": {
+                  "llmModelIdentifier": true,
+                  "runtimeKind": true,
+                  "llmConfig": true
+                }
+              }
+            },
+            "defaultExecutionResourceRef": null
+          },
+          "packageBaseline": null,
+          "selectedResourceBaseline": {
+            "slotKey": "draftingTeam",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT_TEAM",
+              "definitionId": "rev004-saved-default-team"
+            },
+            "resourceDefinitionId": "rev004-saved-default-team",
+            "resourceKind": "AGENT_TEAM",
+            "teamScopes": [
+              {
+                "teamAddress": "/",
+                "displayName": "REV004 Saved Default Team",
+                "teamDefinitionId": "rev004-saved-default-team",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  }
+                }
+              }
+            ],
+            "leaves": [
+              {
+                "memberAddress": "/assistant",
+                "displayName": "assistant",
+                "agentDefinitionId": "rev004-saved-default-agent",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  }
+                }
+              }
+            ]
+          },
+          "savedOverride": {
+            "slotKey": "draftingTeam",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT_TEAM",
+              "definitionId": "rev004-saved-default-team"
+            },
+            "launchOverride": {
+              "kind": "AGENT_TEAM",
+              "defaults": null,
+              "memberProfiles": [
+                {
+                  "memberAddress": "/assistant",
+                  "displayName": "assistant",
+                  "agentDefinitionId": "rev004-saved-default-agent"
+                }
+              ]
+            }
+          },
+          "savedOverrideState": "VALID",
+          "effectiveConfiguration": {
+            "slotKey": "draftingTeam",
+            "executionResourceRef": {
+              "source": "shared",
+              "kind": "AGENT_TEAM",
+              "definitionId": "rev004-saved-default-team"
+            },
+            "resourceDefinitionId": "rev004-saved-default-team",
+            "resourceKind": "AGENT_TEAM",
+            "teamScopes": [
+              {
+                "teamAddress": "/",
+                "displayName": "REV004 Saved Default Team",
+                "teamDefinitionId": "rev004-saved-default-team",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-36286-1790364469635/applications/bundle-app__rev004-model-setup__cd249755fc5216a56603290975822a6051a689fb07b1f317643d245be7bd0baa/runtime",
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "workspaceRootPath": "APPLICATION_RUNTIME"
+                }
+              }
+            ],
+            "leaves": [
+              {
+                "memberAddress": "/assistant",
+                "displayName": "assistant",
+                "agentDefinitionId": "rev004-saved-default-agent",
+                "runtimeKind": "claude_agent_sdk",
+                "llmModelIdentifier": "default",
+                "llmConfig": {
+                  "reasoning_effort": "high"
+                },
+                "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-36286-1790364469635/applications/bundle-app__rev004-model-setup__cd249755fc5216a56603290975822a6051a689fb07b1f317643d245be7bd0baa/runtime",
+                "provenance": {
+                  "runtimeKind": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmModelIdentifier": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "llmConfig": {
+                    "kind": "SELECTED_RESOURCE_TEAM_DEFAULT",
+                    "teamDefinitionId": "rev004-saved-default-team"
+                  },
+                  "workspaceRootPath": "APPLICATION_RUNTIME"
+                }
+              }
+            ]
+          },
+          "issues": [],
+          "canResetToPackageDefaults": true,
+          "updatedAt": "2026-09-25T19:30:05.306Z"
+        }
+      ],
+      "readiness": {
+        "status": "RUNNABLE",
+        "issues": []
+      }
+    }
+  },
+  "status": "Pass"
+}

@@ -1,0 +1,54 @@
+{
+  "owned": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-real-catalog-kRBes6",
+  "skillsPaths": "/Users/normy/autobyteus_org/autobyteus-agents,/Users/normy/.codex/skills,/Users/normy/autobyteus_org/autobyteus-skills",
+  "packageRoots": "/Users/normy/autobyteus_org/autobyteus-agents,/Users/normy/autobyteus_org/autobyteus-private-agents",
+  "cases": {
+    "catalog": {
+      "installedRecords": 78,
+      "listSkills": 78,
+      "byOrigin": {
+        "agent_private": 64,
+        "global": 14
+      },
+      "sameNames": true
+    },
+    "regular": {
+      "bindings": 78,
+      "kinds": [
+        "resolved"
+      ],
+      "ms": 14,
+      "hasEffectiveSkills": true,
+      "bundledAgentPrivate": 64
+    },
+    "detailed": {
+      "result": "resolved",
+      "bindings": 78,
+      "kinds": {
+        "resolved": 78
+      },
+      "ms": 155,
+      "invalid": []
+    },
+    "agyCapsuleTempWorkspace": {
+      "result": "materialized",
+      "snapshots": 78,
+      "capsuleBytes": 3123267,
+      "ms": 366
+    },
+    "agyCapsuleRepoWorkspaceWeak": {
+      "workspace": "/tmp/chat-entry-collision-ws-KQLH",
+      "result": "materialized",
+      "snapshots": 77,
+      "capsuleBytes": 3068339,
+      "ms": 338
+    },
+    "agyCapsuleRepoWorkspaceStrong": {
+      "workspace": "/tmp/chat-entry-collision-ws-KQLH",
+      "result": "threw",
+      "error": "AGY_SKILL_NAME_COLLISION: bilingual-author-style-writer",
+      "ms": 25
+    }
+  },
+  "cleanup": "removed owned temp dir"
+}

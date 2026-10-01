@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia';
+import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
+import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
 import { getApolloClient } from '~/utils/apolloClient'
 import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -6,6 +8,7 @@ import {
   AgentStreamingService,
   type InterruptGenerationCommandAckPayload,
   type InterruptCommandTransportFailure,
+  type SendMessageCommandAckPayload,
 } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -24,7 +27,9 @@ import { ConnectionState } from '~/services/agentStreaming';
 import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
+import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
@@ -77,6 +82,16 @@ const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure
 const streamingServices = new Map<string, AgentStreamingService>();
 
 /**
+ * Runs this client sent to while it did not consider them live (a first send or a resume of an
+ * Offline/Error run), until the server confirms activation. History reconcile must not tear such
+ * a run down on a snapshot taken before activation (D-14). Live AGENT_STATUS events never clear
+ * the marker: the server reports `offline` as soon as the stream connects, before SEND_MESSAGE.
+ */
+const activationPendingRunIds = new Set<string>();
+
+const NOT_LIVE_STATUSES = new Set<string>([AgentStatus.Offline, AgentStatus.Error]);
+
+/**
  * @store agentRun
  * @description This store orchestrates single-agent lifecycle and streaming.
  * GraphQL creates new runs; WebSocket handles the first and subsequent messages.
@@ -105,6 +120,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const { config, state } = currentAgent;
       const runId = state.runId;
       const isNewAgent = runId.startsWith('temp-');
+      const isResumeOfStoppedRun = !isNewAgent && NOT_LIVE_STATUSES.has(String(state.currentStatus));
       const resumeConfig = !isNewAgent ? runHistoryStore.getResumeConfig(runId) : null;
       const workspaceId = config.workspaceId;
       const workspaceRootPath = config.workspaceMetadata?.workspaceRootPath || (workspaceId
@@ -135,9 +151,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       if (isNewAgent && !workspaceRootPath) {
         throw new Error("A workspace root path is required for the first message.");
       }
-      if (isNewAgent && !config.skillAccessMode) {
-        throw new Error("A skill access mode is required for the first message.");
-      }
       if (isNewAgent && !config.runtimeKind) {
         throw new Error("A runtime kind is required for the first message.");
       }
@@ -145,16 +158,27 @@ export const useAgentRunStore = defineStore('agentRun', {
       if (isNewAgent) {
         state.conversation.llmModelIdentifier = config.llmModelIdentifier;
       }
-      const messageContent = currentAgent.requirement;
+      const userText = currentAgent.requirement;
+      const messageContent = skillRequestInstruction.compose(currentAgent.requestedSkillNames, userText);
+      // The run summary reads from the user's own words; only a tags-only message uses the instruction.
+      const initialSummary = userText.trim() ? userText : messageContent;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
+      // `@` mentions exist only for an existing run; a first message never carries them.
+      const mentions = isNewAgent ? [] : mentionsPresentInText(userText, currentAgent.requestedMentions);
       const localSubmission = beginLocalUserSubmission(currentAgent, {
         text: messageContent,
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
+        mentions,
       });
 
       let preparedRunId: string | null = null;
+      let activationPendingRunId: string | null = null;
+      if (isResumeOfStoppedRun) {
+        activationPendingRunId = runId;
+        this.markActivationPending(runId);
+      }
       try {
         let finalRunId = runId;
         if (isNewAgent) {
@@ -169,9 +193,8 @@ export const useAgentRunStore = defineStore('agentRun', {
                 llmModelIdentifier: config.llmModelIdentifier,
                 autoExecuteTools: config.autoExecuteTools,
                 llmConfig: config.llmConfig ?? null,
-                skillAccessMode: config.skillAccessMode,
                 runtimeKind: config.runtimeKind,
-                initialSummary: messageContent,
+                initialSummary,
               }
             }
           });
@@ -197,6 +220,8 @@ export const useAgentRunStore = defineStore('agentRun', {
           finalRunId = permanentRunId;
           preparedRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
+          activationPendingRunId = permanentRunId;
+          this.markActivationPending(permanentRunId);
           retargetLocalUserSubmission(localSubmission, {
             kind: 'standalone',
             runId: permanentRunId,
@@ -220,19 +245,27 @@ export const useAgentRunStore = defineStore('agentRun', {
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
         const messageId = createClientMessageId();
-        service.sendMessage(
-          messageContent,
-          submissionPlan.executable.contextFilePaths,
-          submissionPlan.executable.imageUrls,
-          {
-            messageId,
-            dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
-          },
-        );
+        const command = {
+          messageId,
+          dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+          mentions: toCollaboratorMentionDtos(userText, mentions),
+        };
+        localSubmission.message.messageId = command.messageId;
+        localSubmission.message.dedupeKey = command.dedupeKey;
+        if (localSubmission.held) {
+          // A send with mentions is shown only once the run accepts it (AR-007).
+          await service.sendMessageAwaitingAdmission(
+            messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command,
+          );
+          acceptLocalSubmission(localSubmission);
+        } else {
+          service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
+        }
         preparedRunId = null;
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
         console.error('Error sending user input:', error);
+        if (activationPendingRunId) this.clearActivationPending(activationPendingRunId);
         if (preparedRunId) {
           getApolloClient().mutate({
             mutation: CancelPreparedAgentRun,
@@ -240,6 +273,11 @@ export const useAgentRunStore = defineStore('agentRun', {
           }).catch((cancelError: unknown) => {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
+        }
+        // A rejected add posted nothing: the notice shows and the draft stays as typed.
+        if (localSubmission.held && error instanceof CollaboratorAddRejection) {
+          failLocalSubmission(localSubmission, error);
+          return;
         }
         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
         failLocalSubmission(localSubmission, error);
@@ -275,11 +313,27 @@ export const useAgentRunStore = defineStore('agentRun', {
       const service = new AgentStreamingService(wsEndpoint, {
         onInterruptCommandResult: showInterruptCommandResult,
         onInterruptCommandTransportFailure: showInterruptTransportFailure,
+        onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => {
+          // A rejected send never activates the run.
+          if (!ack.accepted) this.clearActivationPending(ack.run_id || runId);
+        },
       });
       streamingServices.set(runId, service);
 
       service.connect(runId, agent);
       return service;
+    },
+
+    markActivationPending(runId: string): void {
+      activationPendingRunIds.add(runId);
+    },
+
+    clearActivationPending(runId: string): void {
+      activationPendingRunIds.delete(runId);
+    },
+
+    isActivationPending(runId: string): boolean {
+      return activationPendingRunIds.has(runId);
     },
 
     isAgentStreamReady(runId: string): boolean {
@@ -373,6 +427,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const context = agentContextsStore.getRun(runId);
 
       const teardownLocalRuntime = () => {
+        this.clearActivationPending(runId);
         if (streamingServices.has(runId)) {
           this.disconnectAgentStream(runId);
         }
@@ -432,6 +487,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       } else {
         this.disconnectAgentStream(runIdToClose);
       }
+      this.clearActivationPending(runIdToClose);
 
       agentContextsStore.removeRun(runIdToClose);
     },

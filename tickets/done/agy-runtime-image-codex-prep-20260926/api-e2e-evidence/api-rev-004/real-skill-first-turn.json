@@ -1,0 +1,88 @@
+{
+  "run_id": "codex_d99775c7702b4caf9fc30854759d74e6",
+  "native_grant_line": "tools: [view_file, write_to_file, replace_file_content, grep_search, list_dir, find_by_name, run_command, generate_image]",
+  "bundled_skill_sha256": "cc01b53c01b62b7e1853f863a48bbd919037310841386b55e38442d73fcaf24d",
+  "selected_package_skill_bytes_match": true,
+  "trace": [
+    {
+      "seq": 1,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "user",
+      "tool_name": null,
+      "tool_call_id": null,
+      "source_event": "AgentRun.postUserMessage"
+    },
+    {
+      "seq": 2,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_call",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-2",
+      "source_event": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "seq": 3,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_result",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-2",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED"
+    },
+    {
+      "seq": 4,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_call",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-4",
+      "source_event": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "seq": 5,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_result",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-4",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED"
+    },
+    {
+      "seq": 6,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_call",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-6",
+      "source_event": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "seq": 7,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_result",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-6",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED"
+    },
+    {
+      "seq": 8,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_call",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-8",
+      "source_event": "TOOL_EXECUTION_STARTED"
+    },
+    {
+      "seq": 9,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "tool_result",
+      "tool_name": "view_file",
+      "tool_call_id": "agy-tool-1c7412f9-66ba-42f6-8c33-6762d07fd42a-8",
+      "source_event": "TOOL_EXECUTION_SUCCEEDED"
+    },
+    {
+      "seq": 10,
+      "turn_id": "1c7412f9-66ba-42f6-8c33-6762d07fd42a",
+      "trace_type": "assistant",
+      "tool_name": null,
+      "tool_call_id": null,
+      "source_event": "SEGMENT_END"
+    }
+  ]
+}

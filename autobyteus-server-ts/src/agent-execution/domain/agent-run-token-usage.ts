@@ -9,11 +9,12 @@ import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-
 import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkMainLoopUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
-export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
+export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | "grok_build" | string;
 export type TokenUsageIngestionKind =
   | "autobyteus_llm_phase"
   | "codex_thread_token_usage"
   | "claude_sdk_result"
+  | "grok_acp_call"
   | string;
 export type TokenUsagePricingStatus = "trusted" | "missing" | "placeholder" | "local_no_api_bill";
 export type TokenUsageApiCostStatus =
@@ -99,6 +100,8 @@ export interface TokenUsageUpdatedPayload {
   claude_sdk_session_id?: string | null;
   claude_sdk_query_kind?: ClaudeSdkQueryKind | null;
   claude_sdk_main_loop_usage?: ClaudeSdkMainLoopUsage | null;
+  /** First emitted observation of a Claude process generation opened with `resume` (SR-012). */
+  claude_sdk_series_restart?: true;
   ingestion_kind: TokenUsageIngestionKind;
   usage_scope: TokenUsageScope;
   snapshot_series_key: string | null;
@@ -326,6 +329,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     claude_sdk_query_kind: isSdk && (source.claude_sdk_query_kind === "create" || source.claude_sdk_query_kind === "resume")
       ? source.claude_sdk_query_kind : isSdk ? "unknown" : null,
     claude_sdk_main_loop_usage: isSdk && sdkIdentityValid ? source.claude_sdk_main_loop_usage as ClaudeSdkMainLoopUsage : null,
+    ...(isSdk && source.claude_sdk_series_restart === true ? { claude_sdk_series_restart: true as const } : {}),
     ingestion_kind: ingestionKind,
     usage_scope: usageScope,
     snapshot_series_key: asString(source.snapshot_series_key),

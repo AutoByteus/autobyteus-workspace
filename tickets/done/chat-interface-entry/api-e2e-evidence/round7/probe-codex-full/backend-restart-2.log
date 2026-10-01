@@ -1,0 +1,156 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/.env
+[dotenv@17.3.1] injecting env (5) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63724
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63724
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:4413) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T15:34:15.888Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-S0SbDP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 8 items.
+Populating agent definition cache for the first time...
+[2026-09-29T15:34:16.020Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T15:34:16.020Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 8 items.
+{"level":30,"time":1790696056026,"pid":4413,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65260"}
+{"level":30,"time":1790696056051,"pid":4413,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63724"}
+[2026-09-29T15:34:16.051Z] [INFO] [server.runtime] Server listening on 127.0.0.1:63724
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent websocket attached for run crew_member_1cb42f8edd2841bc98b1dc671ab27961
+Created agent session acd5bf01-3fb1-48bf-9c2f-82d0eb331106 for run crew_member_1cb42f8edd2841bc98b1dc671ab27961
+Agent WebSocket connected: session=acd5bf01-3fb1-48bf-9c2f-82d0eb331106, run=crew_member_1cb42f8edd2841bc98b1dc671ab27961
+Agent websocket attached for run daily_assistant_5ebf2cd923ad4517a06c02b09f2965e5
+Created agent session f6bfac31-ea57-43da-9b20-2dacc47c7579 for run daily_assistant_5ebf2cd923ad4517a06c02b09f2965e5
+Agent WebSocket connected: session=f6bfac31-ea57-43da-9b20-2dacc47c7579, run=daily_assistant_5ebf2cd923ad4517a06c02b09f2965e5
+Agent websocket attached for run org_writer_26554ec9c21f49d99d93d10710bb1039
+Created agent session 16699d1c-0e68-421f-b6ab-5e9656ad2387 for run org_writer_26554ec9c21f49d99d93d10710bb1039
+Agent WebSocket connected: session=16699d1c-0e68-421f-b6ab-5e9656ad2387, run=org_writer_26554ec9c21f49d99d93d10710bb1039
+Agent websocket attached for run daily_assistant_ec6592e54e5d4243883ea6c2f00f8b0b
+Created agent session 7c10a675-19e9-4c43-9419-f87c8f7d5363 for run daily_assistant_ec6592e54e5d4243883ea6c2f00f8b0b
+Agent WebSocket connected: session=7c10a675-19e9-4c43-9419-f87c8f7d5363, run=daily_assistant_ec6592e54e5d4243883ea6c2f00f8b0b
+Agent websocket attached for run daily_assistant_f0fccd13a02a45398e51fa3f72199915
+Created agent session 86664dd0-8e4c-48f9-aa26-41ec5df00524 for run daily_assistant_f0fccd13a02a45398e51fa3f72199915
+Agent WebSocket connected: session=86664dd0-8e4c-48f9-aa26-41ec5df00524, run=daily_assistant_f0fccd13a02a45398e51fa3f72199915
+Agent websocket attached for run daily_assistant_7d7503ed6ac148c5a4f99090d912069d
+Created agent session 25f047c5-f9f7-4132-8539-0c1baafbbc15 for run daily_assistant_7d7503ed6ac148c5a4f99090d912069d
+Agent WebSocket connected: session=25f047c5-f9f7-4132-8539-0c1baafbbc15, run=daily_assistant_7d7503ed6ac148c5a4f99090d912069d
+Agent websocket attached for run probe_legacy_9cdd97fda49c433cb0cbf0edbce21784
+Created agent session 306cf44d-8e02-4e13-abd2-36c617edb7e3 for run probe_legacy_9cdd97fda49c433cb0cbf0edbce21784
+Agent WebSocket connected: session=306cf44d-8e02-4e13-abd2-36c617edb7e3, run=probe_legacy_9cdd97fda49c433cb0cbf0edbce21784
+Agent websocket attached for run probe_legacy_b994cf2a4536473ea69fa7ef537adfed
+Created agent session 1edf79c4-a59d-432b-b199-30942bc2d0ea for run probe_legacy_b994cf2a4536473ea69fa7ef537adfed
+Agent WebSocket connected: session=1edf79c4-a59d-432b-b199-30942bc2d0ea, run=probe_legacy_b994cf2a4536473ea69fa7ef537adfed
+Closed agent session f6bfac31-ea57-43da-9b20-2dacc47c7579
+Agent WebSocket disconnected: f6bfac31-ea57-43da-9b20-2dacc47c7579
+Closed agent session 25f047c5-f9f7-4132-8539-0c1baafbbc15
+Agent WebSocket disconnected: 25f047c5-f9f7-4132-8539-0c1baafbbc15
+Closed agent session 16699d1c-0e68-421f-b6ab-5e9656ad2387
+Agent WebSocket disconnected: 16699d1c-0e68-421f-b6ab-5e9656ad2387
+Closed agent session 306cf44d-8e02-4e13-abd2-36c617edb7e3
+Agent WebSocket disconnected: 306cf44d-8e02-4e13-abd2-36c617edb7e3
+Closed agent session acd5bf01-3fb1-48bf-9c2f-82d0eb331106
+Agent WebSocket disconnected: acd5bf01-3fb1-48bf-9c2f-82d0eb331106
+Closed agent session 7c10a675-19e9-4c43-9419-f87c8f7d5363
+Agent WebSocket disconnected: 7c10a675-19e9-4c43-9419-f87c8f7d5363
+Closed agent session 1edf79c4-a59d-432b-b199-30942bc2d0ea
+Agent WebSocket disconnected: 1edf79c4-a59d-432b-b199-30942bc2d0ea
+Closed agent session 86664dd0-8e4c-48f9-aa26-41ec5df00524
+Agent WebSocket disconnected: 86664dd0-8e4c-48f9-aa26-41ec5df00524
+[2026-09-29T15:34:16.363Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-29T15:34:16.370Z] [INFO] [server.runtime] Server closed cleanly.

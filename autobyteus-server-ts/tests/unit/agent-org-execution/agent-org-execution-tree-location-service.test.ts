@@ -7,6 +7,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/ag
 import { AgentOrgExecutionTreeLocationService } from "../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../../src/agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
+import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const directories: string[] = [];
@@ -18,6 +19,7 @@ const createStoredOrg = async (memoryDir: string, orgRunId: string) => {
   const tree = testAgentOrgExecutionTree({ orgRunId, members: [direct, team] });
   const directory = new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId);
   await new AgentOrgRunExecutionTreeStore().write(directory, tree);
+  await fs.writeFile(path.join(directory, "agent_org_communication_messages.json"), JSON.stringify({schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: []}));
   return { direct, member, team, tree };
 };
 
@@ -43,8 +45,43 @@ describe("AgentOrg and compound execution locations", () => {
     const resolved = await compound.findAgent({ rootSubjectKind: "agent_org", rootRunId: "org-b", memberAddress: "/shared" });
     expect(resolved).toMatchObject({ rootSubjectKind: "agent_org", rootRunId: "org-b", agentRunId: second.direct.agentRunId });
     expect(teams.findAgent).not.toHaveBeenCalled();
-    const owner = await new ContextFileOwnerResolver({ locations: compound }).resolveFinalOwner({ kind: "org_member_final", orgRunId: "org-b", agentRunId: second.direct.agentRunId });
+    const owner = await new ContextFileOwnerResolver({ memoryDir, locations: compound }).resolveFinalOwner({ kind: "org_member_final", orgRunId: "org-b", agentRunId: second.direct.agentRunId });
     expect(owner).toMatchObject({ kind: "org_member_final", rootSubjectKind: "agent_org", rootRunId: "org-b", agentRunId: second.direct.agentRunId });
+  });
+
+  it("lists one requested root's Agent executions from a single tree read and exposes sorted root IDs", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
+    const second = await createStoredOrg(memoryDir, "org-b"); await createStoredOrg(memoryDir, "org-a");
+    const store = new AgentOrgRunExecutionTreeStore();
+    const read = vi.spyOn(store, "read");
+    const service = new AgentOrgExecutionTreeLocationService({ memoryDir, store });
+
+    expect(await service.listRootRunIds()).toEqual(["org-a", "org-b"]);
+    const scoped = await service.listAgents({ rootRunId: "org-b" });
+    expect(read.mock.calls.map(([, orgRunId]) => orgRunId)).toEqual(["org-b"]);
+    expect(scoped.map((item) => ({ root: item.rootRunId, run: item.agentRunId, configured: item.configuredPlacement !== null }))).toEqual([
+      { root: "org-b", run: second.direct.agentRunId, configured: true },
+      { root: "org-b", run: second.member.agentRunId, configured: true },
+    ]);
+    expect(await service.listAgents({ rootRunId: "missing" })).toEqual([]);
+    expect((await service.listAgents()).map((item) => item.rootRunId)).toEqual(["org-a", "org-a", "org-b", "org-b"]);
+  });
+
+  it("respects root-package admission for a root-scoped listing", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
+    await createStoredOrg(memoryDir, "org-a");
+    await fs.unlink(path.join(memoryDir, "agent_orgs", "org-a", "agent_org_communication_messages.json"));
+    const readiness = new RootRunPackageReadinessIndex(memoryDir);
+    await readiness.rebuild();
+    try {
+      // A required sidecar is absent, so the readiness rebuild excludes the incomplete package.
+      expect(readiness.isAdmitted("agent_org", "org-a")).toBe(false);
+      const service = new AgentOrgExecutionTreeLocationService({ memoryDir });
+      expect(await service.listAgents({ rootRunId: "org-a" })).toEqual([]);
+      expect(await service.listRootRunIds()).toEqual([]);
+    } finally {
+      resetRootRunPackageReadinessIndex(memoryDir);
+    }
   });
 
   it("rejects ambiguous cross-family AgentRun identities", async () => {
@@ -53,9 +90,10 @@ describe("AgentOrg and compound execution locations", () => {
     const service = new CollaborationExecutionLocationService({
       teams: { findAgent: async () => item as never, findAgentSync: () => item as never, listAgents: async () => [item as never], containsRunId: async () => true },
       orgs: { findAgent: async () => org, findAgentSync: () => org, listAgents: async () => [org], containsRunId: async () => true },
+      agents: { findAgent: async () => null, findAgentSync: () => null, listAgents: async () => [], containsRunId: async () => false },
     });
     await expect(service.findAgent({ agentRunId: "duplicate" })).rejects.toThrow("ambiguous across collaboration root families");
     await expect(service.listAgents()).rejects.toThrow("more than one collaboration root");
-    await expect(service.containsRunId("duplicate")).rejects.toThrow("both collaboration root families");
+    await expect(service.containsRunId("duplicate")).rejects.toThrow("more than one collaboration root family");
   });
 });

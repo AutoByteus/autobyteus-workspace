@@ -23,12 +23,13 @@ it('composes independent workspace intentions without repairing distinct childre
   const form = projectExistingAgentOrgRunFormModel({ tree, planner, workspaceDraft: draft,
     isActive: false, modelConfigEditable: true, modelConfigReason: null, saving: false })
   const projected = form.members[2]!
-  expect(form.root.workspaceControl.mode).toBe('stored')
+  expect(form.root.workspacePresentation).toEqual({ kind: 'selector', model: expect.objectContaining({ mode: 'stored' }) })
   expect(projected.kind).toBe('agent_team')
   if (projected.kind !== 'agent_team') throw new Error('fixture')
-  expect(projected.scope.workspaceControl.mode).toBe('editable')
+  expect(projected.scope.workspacePresentation).toEqual({ kind: 'selector', model: expect.objectContaining({ mode: 'editable' }) })
   expect(projected.scope.isCustomized).toBe(true)
-  expect(projected.children.map(child => child.kind === 'agent' && child.storedWorkspace?.rootPath)).toEqual(['/B', '/B'])
+  expect(projected.children.map(child => child.kind === 'agent' && child.workspacePresentation.kind === 'selector'
+    && child.workspacePresentation.model.mode === 'stored' && child.workspacePresentation.model.workspace?.rootPath)).toEqual(['/B', '/B'])
   expect(projected.children[1]?.kind === 'agent' && projected.children[1].effectiveConfig.llmConfig).toEqual({ customized: true })
   draft = updateExistingAgentOrgWorkspaceDraft(draft, '/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: ' ' }, known)
   expect(existingAgentOrgWorkspacesDirty(tree, draft)).toBe(true)

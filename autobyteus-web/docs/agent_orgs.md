@@ -174,7 +174,8 @@ the full scope available without preparing configured workers. After a server
 restart, sending to one retained Agent continues that conversation while
 unrelated direct and mounted-Team Agents stay Offline. Existing history and
 provider bindings are retained, not reset; later legitimate human or peer work
-can activate another member. Assigned task preparation/release remains separate.
+can activate another member. Delegated children start shut down after a
+restart and wake on the next same-root message.
 
 - Selecting a direct Agent focuses that exact Agent.
 - Selecting a Team focuses its direct coordinator.
@@ -202,8 +203,9 @@ Unsent drafts are not persisted across reload/restart, and the existing draft-fi
 TTL is unchanged.
 
 Supported commands are message, interrupt, tool approval, and tool denial.
-Context attachments use exact Org-root plus AgentRun-owned URLs. Message/task
-references keep their separate AgentOrg-rooted reference routes.
+Context attachments use exact Org-root plus AgentRun-owned URLs. Message
+references keep their separate AgentOrg-rooted reference route; the Org task
+reference route is removed.
 Unknown roots, stale AgentRun IDs, wrong member addresses, and cross-root
 targets are rejected rather than guessed.
 
@@ -217,15 +219,16 @@ localized notice instead of remaining indefinitely in **Connecting**. A network
 or inspection failure does not prove that the Org is inactive: retain last-known
 activity until exact-root observation establishes its current state.
 
-A mounted Team uses the same Team workspace panel and task/communication
-presentation as a standalone Team. Its live task monitor continues to update
-without requiring focus-away/refocus.
+A mounted Team uses the same Team workspace panel and communication
+presentation as a standalone Team. A delegated child's monitor continues to
+update without requiring focus-away/refocus.
 
-Every selected retained Org Agent has independent **Messages** and **Tasks**
-facets in the shared collaboration surface. This includes configured direct and
-mounted Agents, fresh task Agents, and Agents inside task Teams; a direct Agent
-does not need a synthetic Team context. `AgentOrgExecutionViewIndex` correlates
-the exact retained AgentRun, physical host, task record, and captured source.
+Every selected Org Agent has a **Messages** facet in the shared collaboration
+surface; there is no Tasks facet. This includes configured direct and mounted
+Agents, delegated task Agents, and Agents inside delegated task Teams; a direct
+Agent does not need a synthetic Team context. `AgentOrgExecutionViewIndex`
+correlates the exact AgentRun, physical host, delegation binding (with its
+nullable `delegatorAgentRunId`), and captured source.
 Logical addresses alone do not identify a task instance: repeated delegations
 to the same address remain separate executions.
 
@@ -238,29 +241,35 @@ is released. Live updates, history, and Restore retain the same root-owned
 identity; there is no second Team ledger or configured-only presentation gate.
 References stay on the AgentOrg-rooted message route.
 
-**Tasks** projects exact durable assignments, submissions, reviews,
-interruptions, and their references. A record is relevant to its exact delegator,
-task Agent, or members of the assigned fresh task Team. Separately delegated
-descendants do not join that roster merely through ancestry. Participant links
-open the exact retained AgentRun, including settled instances, without selecting
-the current configured source at the same address. The shared section owns
-layout and local selection; the Org adapter owns record projection and routes.
+Delegated children appear in the Workspaces Org rows under their plain name;
+there is no visible `Task:` label and no visible "Started by" line. The starter
+("Started by <delegator>") of direct task-Agent and task-Team rows is kept in
+the aria-label. Children without a recorded delegator (created before the
+resource lifecycle) have no starter, and task-Team members have none. Shut-down children use
+the standard `offline` status. Participant links open the exact AgentRun,
+never the configured source at the same address.
+
+A delegated task-Team row (including a nested Team inside a task Team) that has
+members or nested task executions shows the same chevron as a mounted Team row
+and starts expanded. Activating the row by pointer or Enter/Space toggles its
+descendants and inspects its coordinator, as the mounted Team row does. The row
+exposes `aria-expanded` only while it has children. Collapse state is keyed by
+the delegated execution (`rootRunId` + `teamRunId`), not by address. A
+same-named mounted Team and every other delegation of the same Team keep
+independent state. A manual collapse survives live tree updates. The state is
+local UI state that resets on reload, and selecting a hidden member elsewhere
+does not reopen a user-collapsed task Team.
 
 Messages keeps compact readable counterpart/type/direction/time/content and
 reference rows, without a permanent address or Task/ID badge. Exact counterpart
-address, AgentRun and task/host/execution identities remain available in an
-on-demand detail disclosure. Task detail likewise retains its familiar heading,
-status, direction, time and content without the extra participant strip. Agent
-names in the direction line navigate exactly; Team names disclose the complete
-exact assigned roster, including non-coordinators. System lifecycle items reveal
-assignment participants without inventing a named sender. Disclosure state resets
-on item, reference or scope changes; readable labels never replace identity keys.
+address, AgentRun and host/execution identities remain available in an
+on-demand detail disclosure. Disclosure state resets on item, reference or scope
+changes; readable labels never replace identity keys.
 
-Genuine accepted task-system inputs appear in the recipient event monitor, not
-as ordinary Messages. A task record alone never fabricates a notification or
-receipt. A rejected notification leaves the committed task record visible and
-reports the warning truthfully. Fresh message/task/status publications update
-already-mounted facets without refocus; snapshots are the recovery path, not a
+The delegation work packet (the only task-system input) appears in the
+recipient event monitor, not as ordinary Messages. Fresh message/status and
+`task_execution_started` publications update already-mounted views without
+refocus; snapshots are the recovery path, not a
 substitute for normal live publication.
 
 The left **Workspaces** hierarchy remains mounted across configuration, active,
@@ -303,10 +312,13 @@ metadata cannot be loaded, Files shows unavailable feedback rather than the old
 workspace or an unrelated launch draft; reopening Settings retries canonical
 metadata without repeating Save. Existing launch drafts are preserved.
 While the enclosing Org is stopped, explicit **Save** can also change compatible
-same-runtime models (verified
-equal/larger context capacity) and schema-valid parameters across configured
+same-runtime models (all distinct backend-offered external-runtime catalog choices, or verified
+equal/larger context capacity for AutoByteus) and schema-valid parameters across configured
 scopes. Parent-linked scopes follow root or Team edits until directly edited;
 pre-existing and directly edited overrides stay independent.
+The Org picker consumes each scope's backend current/replacement descriptors:
+an exact saved Claude `default` can remain current-only after the backend omits
+its redundant alias from new offers, without rewriting an unaffected scope.
 Active/unknown, archived and application-owned roots stay noneditable; task
 inspection does not acquire configuration editing. A failed or uncertain Save
 never reports success; an uncertain outcome requires explicit canonical refresh.
@@ -360,6 +372,16 @@ does not own polling, lifecycle, focus, readiness, or command authority.
 
 Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.
+A task Agent row shows the member marker (solid status dot and initials); the
+starter is kept in the accessible label, not as a visible line. Collaborators
+(shared Agents and Agent Teams brought in with `@`) are one hosted instance per
+entry in `rootOrg.collaborators`. `AgentOrgExecutionViewIndex` lists them with
+the task-row look (`collaboratorExecutionNodes`), Offline until their first
+message, ahead of the delegated children, and resolves their source from the
+entry. The Org context applies `collaborator_added` in place (no checkpoint
+reload, so the pending mention send keeps its acknowledgement), adds the new
+contexts and invalidates the `@` candidates. An extra copy that `delegate_task`
+starts at a collaborator address is an ordinary task row.
 Status projection walks each structural Team root once and lets that Team own
 recursive descendants; the flat Team directory is not reused as recursive
 status roots, so nested task-Team Agent statuses remain unique.
@@ -435,17 +457,20 @@ browser, unarchive path, migration, or mounted-member lifecycle action is added.
   replace the summary. A failed refresh retains the last authoritative rows and
   family-scoped error.
 
-- Stopped history retains the AgentOrg V1 execution tree, messages, task records,
-  member memory, and provider bindings.
+- Stopped history retains the AgentOrg execution tree (including delegated
+  children), messages, member memory, and provider bindings. Older packages may
+  still hold an untouched, unread task-records file.
 - Read-only inspection uses `getAgentOrgRunInspection` and exact retained
   AgentRun selection. It reads the current strict package without activating,
   restoring, migrating, or repairing it. Missing/unreadable records are errors,
   not fabricated empty history. Configuration comes from the captured launch
   snapshot and projections use the actual execution/provider binding, never a
   same-address configured Agent's transcript or the Org-root memory path.
-- Settled task executions remain inspectable after their live row retires.
-  Retained task inspection is read-only, without composer, tool decisions or
-  interrupt authority. Inactive configured Agents may expose a continuable
+- Delegated children stay in the tree after idle shutdown with `offline`
+  status. In an active Org, sending to a shut-down child wakes it on the
+  server. In an inactive Org, delegated children are read-only (no composer,
+  tool decisions or interrupt authority). Inactive configured Agents may expose
+  a continuable
   composer: inspection itself remains observational, while deliberate Send
   restores the exact root and waits for strict stream readiness before dispatch.
   Inactive contexts initialize offline. Editing a new draft or discarding it
@@ -506,10 +531,17 @@ report for the exact acceptance scope.
 - `agentOrgRunStore.ts`: create/restore/terminate and selected Org.
 - `agentOrgContextsStore.ts`: hydrated execution contexts and owned read-only
   inspection requests.
-- `services/agentOrgExecution/agentOrgExecutionViewIndex.ts`: derived retained
-  execution/task identity index; not another persistence or lifecycle owner.
-- `services/agentOrgExecution/agentOrgTaskPresentation.ts` and
-  `agentOrgCommunicationPerspective.ts`: root-owned Tasks and Messages facets.
+- `services/agentOrgExecution/agentOrgExecutionViewIndex.ts`: derived
+  execution/delegation identity index; not another persistence or lifecycle
+  owner.
+- `services/agentOrgExecution/agentOrgCommunicationPerspective.ts`: root-owned
+  Messages facet.
+- `utils/agentOrgHistoryRows.ts`: Org Workspaces rows, including delegated rows
+  with their delegator (for the accessible label), collaborator rows, and
+  per-`teamRunId` task-Team disclosure
+  (`hasChildren`/`expanded`; descendants are emitted only while expanded).
+- `composables/useWorkspaceHistoryTreeState.ts`: local Org run, mounted-Team
+  (by address) and delegated task-Team (by `teamRunId`) expansion state.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
   hydration.
@@ -521,9 +553,8 @@ report for the exact acceptance scope.
 - `components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue`:
   AgentOrg rows within the unified Workspaces projection. The separate
   `AgentOrgRunHistoryPanel.vue` history owner was removed.
-- `components/workspace/collaboration/CollaborationOverviewPanel.vue` and
-  `CollaborationDelegatedTasksSection.vue`: shared independent facets and Tasks
-  layout, replacing the Team-only Tasks section.
+- `components/workspace/collaboration/CollaborationOverviewPanel.vue`: shared
+  Messages-only collaboration panel.
 - `components/workspace/org/AgentOrgWorkspaceView.vue`: focused/unfocused and
   stopped workspace states plus the enclosing-Org config/Back adapter.
 - `components/workspace/config/AgentOrgRunConfigForm.vue`: shared launch and

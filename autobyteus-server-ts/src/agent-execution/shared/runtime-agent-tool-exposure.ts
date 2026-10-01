@@ -9,11 +9,18 @@ import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/se
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 
-export const AUTOMATIC_TEAM_TOOL_NAMES = [
-  GET_HANDOFF_RULES_TOOL_NAME,
-  SEND_MESSAGE_TO_TOOL_NAME,
-  DELEGATE_TASK_TOOL_NAME,
-] as const;
+/**
+ * Collaboration tools every member context always gets: `send_message_to` and `delegate_task`
+ * for every member, plus `get_handoff_rules` only for Team-scoped members (REQ-012).
+ */
+export const automaticCollaborationToolNames = (
+  context: MemberExecutionContext | null | undefined,
+): readonly string[] => {
+  if (!context) return [];
+  return context.teamScoped
+    ? [GET_HANDOFF_RULES_TOOL_NAME, SEND_MESSAGE_TO_TOOL_NAME, DELEGATE_TASK_TOOL_NAME]
+    : [SEND_MESSAGE_TO_TOOL_NAME, DELEGATE_TASK_TOOL_NAME];
+};
 
 const asTrimmedToolName = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -42,7 +49,7 @@ export const buildRuntimeAgentToolExposure = (
     .filter((value): value is string => Boolean(value));
   const requestedToolNames = Array.from(new Set([
     ...normalizedConfiguredNames,
-    ...(memberExecutionContext ? AUTOMATIC_TEAM_TOOL_NAMES : []),
+    ...automaticCollaborationToolNames(memberExecutionContext),
   ]));
   const requestedToolNameSet = new Set(requestedToolNames);
 

@@ -1,0 +1,20 @@
+PASS absence checks: 27 recorded owned volumes; 37 recorded named containers.
+$ docker image rm autobyteus-cli-api001:default-arm64
+Untagged: autobyteus-cli-api001:default-arm64
+Deleted: sha256:4c0c11c1df531872a0111e92b333dd496ea190b24052ebeda3f41d043a71e1a1
+$ docker image rm autobyteus-cli-api001:zh-arm64
+Untagged: autobyteus-cli-api001:zh-arm64
+Deleted: sha256:3e798ce367f93b34bc465fbd25e16d94028e24cf7fb1e18377a46fc0b8f7bfb6
+$ docker image rm autobyteus-cli-api001:default-amd64
+Untagged: autobyteus-cli-api001:default-amd64
+Deleted: sha256:b4b1b8d28bd5bd17decb69df6bdfa998fef8ac035ccf66894bd187eb4b1942d2
+$ docker image rm autobyteus-cli-api001:zh-amd64
+Untagged: autobyteus-cli-api001:zh-amd64
+Deleted: sha256:8af3a21eb71fb34691101cab703a814e2becadf3bbaf18deafa90769fc2850f9
+$ docker image rm autobyteus-cli-api001:default-arm64-refresh
+Untagged: autobyteus-cli-api001:default-arm64-refresh
+Deleted: sha256:5ede84734d582e21a501746459d08fef464c66e9aae970d8c0f1536b9f57a471
+$ docker image rm autobyteus-cli-ir001-local:arm64
+Untagged: autobyteus-cli-ir001-local:arm64
+Deleted: sha256:8e9f80026d21086b814112e1e150081a94d9a82da77175b9279849896d120e75
+PASS six task-assigned image tags removed. Shared builders, base images, caches, unrelated containers/data untouched.

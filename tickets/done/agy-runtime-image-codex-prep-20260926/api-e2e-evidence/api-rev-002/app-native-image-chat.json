@@ -1,0 +1,119 @@
+{
+  "runId": "agy_native_image_9f13f27b_822d_479d_9864_88eaf13_f9e4ce1a105246cc93b804f3dc047732",
+  "model": "gemini-3.8-flash-low",
+  "nativeGrantLine": "tools: [view_file, write_to_file, replace_file_content, grep_search, list_dir, find_by_name, run_command, generate_image]",
+  "events": [
+    {
+      "type": "CONNECTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "TURN_STARTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "generate_image",
+      "invocation_id": "agy-tool-8083dbe1-df92-4a7b-ba1d-840a55e2bad3-2",
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "generate_image",
+      "invocation_id": "agy-tool-8083dbe1-df92-4a7b-ba1d-840a55e2bad3-2",
+      "provider_state": "DONE",
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "SEGMENT_START",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "SEGMENT_CONTENT",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": "I generated a small, simple blue dog illustration with a clean, flat design using the native `generate_image` tool.\n",
+      "code": null
+    },
+    {
+      "type": "SEGMENT_END",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "TOKEN_USAGE_UPDATED",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    },
+    {
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "provider_state": null,
+      "delta": null,
+      "code": null
+    }
+  ]
+}

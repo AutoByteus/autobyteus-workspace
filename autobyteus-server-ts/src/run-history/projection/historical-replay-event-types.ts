@@ -18,8 +18,13 @@ interface HistoricalReplayMessageEventBase {
 }
 
 export type HistoricalReplayMessageEvent = HistoricalReplayMessageEventBase & (
-  | { role: "user"; fileAttachments?: readonly ContextFileReference[] }
-  | { role: string | null; fileAttachments?: never }
+  | {
+      role: "user";
+      fileAttachments?: readonly ContextFileReference[];
+      /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
+      senderId?: string | null;
+    }
+  | { role: string | null; fileAttachments?: never; senderId?: never }
 );
 
 export interface HistoricalReplayReasoningEvent {
@@ -75,6 +80,16 @@ export interface HistoricalReplayCompactionEvent {
   detailLevel: RunProjectionSourceDetailLevel;
 }
 
+/** A system notice in the conversation (Claude background-task notices). */
+export interface HistoricalReplaySystemTaskNotificationEvent {
+  eventId: string;
+  turnGroupId: string;
+  kind: "system_task_notification";
+  senderId: string | null;
+  content: string;
+  ts: number | null;
+}
+
 export interface HistoricalReplaySystemInstructionEvent {
   eventId: string;
   kind: "system_instruction";
@@ -88,6 +103,7 @@ export type HistoricalReplayEvent =
   | HistoricalReplayReasoningEvent
   | HistoricalReplayToolEvent
   | HistoricalReplayCompactionEvent
+  | HistoricalReplaySystemTaskNotificationEvent
   | HistoricalReplaySystemInstructionEvent;
 
 export type EventMonitorReplayEvent = Exclude<

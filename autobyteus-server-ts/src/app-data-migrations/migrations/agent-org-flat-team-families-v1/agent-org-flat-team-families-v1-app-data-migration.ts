@@ -10,21 +10,21 @@ import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail } from "../../domain/app-data-migration-types.js";
 import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../team-run-execution-tree-v2-app-data-migration.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../../run-history/store/agent-org-run-execution-tree-schema.js";
+import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
 import { getAtomicRunPackageFileCommitWriter, type AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { getTaskDelegationRecordsV1Path } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../../agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
+import { getTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-store.js";
+import { validateTaskDelegationRecordsV1Payload } from "../../legacy/released-run-package-shapes/team-task-delegation-records-v1-schema.js";
 import { getTeamCommunicationMessagesV1Path } from "../../../services/team-communication/team-communication-v1-store.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../services/team-communication/team-communication-v1-schema.js";
-import { getAgentOrgTaskDelegationRecordsV1Path } from "../../../agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
-import { validateAgentOrgTaskDelegationRecordsV1 } from "../../../agent-org-execution/persistence/agent-org-task-delegation-records-v1-schema.js";
+import { getAgentOrgTaskDelegationRecordsV1Path } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-store.js";
+import { validateAgentOrgTaskDelegationRecordsV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1-schema.js";
 import { getAgentOrgCommunicationMessagesV1Path } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
 import { validateAgentOrgCommunicationMessagesV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
 import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
 
-import { validateAgentOrgStatePackage } from "../../../agent-org-execution/services/agent-org-state-package-validator.js";
+import { validateAgentOrgStatePackage } from "../../legacy/released-run-package-shapes/agent-org-state-package-v1-validator.js";
 import { AgentOrgContextFileLocatorTransition } from "./agent-org-context-file-locator-transition.js";
 
 export const AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";

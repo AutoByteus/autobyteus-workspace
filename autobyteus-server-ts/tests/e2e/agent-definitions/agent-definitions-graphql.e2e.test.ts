@@ -237,6 +237,59 @@ describe("Agent definitions GraphQL e2e", () => {
     expect(deleted.deleteAgentDefinition.success).toBe(true);
   });
 
+  it("round-trips skillScope through GraphQL and agent-config.json, defaulting to CONFIGURED", async () => {
+    const unique = uniqueId("agent_skill_scope");
+    const dataDir = appConfigProvider.config.getAppDataDir();
+
+    const created = await execGraphql<{
+      createAgentDefinition: { id: string; skillScope: string; skillNames: string[] };
+    }>(`
+      mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+        createAgentDefinition(input: $input) { id skillScope skillNames }
+      }
+    `, {
+      input: {
+        name: `agent_${unique}`,
+        description: "Skill scope e2e",
+        instructions: "You validate skill scope.",
+      },
+    });
+    const agentId = created.createAgentDefinition.id;
+    const agentDir = path.join(dataDir, "agents", agentId);
+    cleanupPaths.add(agentDir);
+
+    expect(created.createAgentDefinition.skillScope).toBe("CONFIGURED");
+    expect(JSON.parse(await fs.readFile(path.join(agentDir, "agent-config.json"), "utf-8")))
+      .toMatchObject({ skillScope: "CONFIGURED" });
+
+    const updated = await execGraphql<{
+      updateAgentDefinition: { id: string; skillScope: string };
+    }>(`
+      mutation UpdateAgentDefinition($input: UpdateAgentDefinitionInput!) {
+        updateAgentDefinition(input: $input) { id skillScope }
+      }
+    `, { input: { id: agentId, skillScope: "ALL_INSTALLED" } });
+
+    expect(updated.updateAgentDefinition.skillScope).toBe("ALL_INSTALLED");
+    expect(JSON.parse(await fs.readFile(path.join(agentDir, "agent-config.json"), "utf-8")))
+      .toMatchObject({ skillScope: "ALL_INSTALLED" });
+
+    const fetched = await execGraphql<{ agentDefinition: { skillScope: string } | null }>(`
+      query AgentDefinition($id: String!) { agentDefinition(id: $id) { skillScope } }
+    `, { id: agentId });
+    expect(fetched.agentDefinition?.skillScope).toBe("ALL_INSTALLED");
+
+    // Existing data without the field reads as CONFIGURED (no migration).
+    const configPath = path.join(agentDir, "agent-config.json");
+    const { skillScope: _removed, ...configWithoutScope } = JSON.parse(await fs.readFile(configPath, "utf-8"));
+    await fs.writeFile(configPath, JSON.stringify(configWithoutScope, null, 2), "utf-8");
+    await execGraphql(`mutation { refreshAgentDefinitionCatalog }`);
+    const reread = await execGraphql<{ agentDefinition: { skillScope: string } | null }>(`
+      query AgentDefinition($id: String!) { agentDefinition(id: $id) { skillScope } }
+    `, { id: agentId });
+    expect(reread.agentDefinition?.skillScope).toBe("CONFIGURED");
+  });
+
   it("returns GraphQL validation error for removed prompt query", async () => {
     const result = await runGraphql(`query RemovedPromptApi { prompts { id } }`);
     expect(result.errors?.length ?? 0).toBeGreaterThan(0);

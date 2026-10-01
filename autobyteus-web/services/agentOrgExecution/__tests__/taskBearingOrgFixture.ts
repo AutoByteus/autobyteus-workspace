@@ -4,7 +4,6 @@ const launch = {
   llmModelIdentifier: 'gpt-5.6-sol',
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   workspaceRootPath: null,
 }
 
@@ -28,27 +27,10 @@ const status = (member_address: string, agent_run_id: string) => ({
   error_details: null,
 })
 
-export const taskRecord = (
-  taskId: string,
-  recipientAddress: string,
-  taskExecution: { agentRunId: string } | { teamRunId: string },
-) => ({
-  taskId,
-  delegatorAgentRunId: 'agent-director',
-  recipientAddress,
-  taskExecution,
-  description: `Task ${taskId}`,
-  referenceFiles: [],
-  status: 'active' as const,
-  updates: [],
-  createdAt: '2026-09-01T00:00:01.000Z',
-})
-
 export const taskBearingView = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 8,
   is_active: true,
   execution_tree: {
-    schemaVersion: 1,
     subjectKind: 'agent_org',
     createdAt: '2026-09-01T00:00:00.000Z',
     archivedAt: null,
@@ -78,12 +60,13 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
           taskExecutions: [],
         },
       ],
+      collaborators: [],
       taskExecutions: [{
         address: '/worker',
         agentRunId: 'agent-worker-task',
         platformAgentRunId: null,
+        delegatorAgentRunId: 'agent-director',
         startedAt: '2026-09-01T00:00:01.000Z',
-        settledAt: null,
       }, {
         address: '/team',
         teamRunId: 'team-task',
@@ -92,19 +75,10 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
           { address: '/team/worker', agentRunId: 'agent-task-worker', platformAgentRunId: null },
         ],
         taskExecutions: [],
+        delegatorAgentRunId: 'agent-director',
         startedAt: '2026-09-01T00:00:02.000Z',
-        settledAt: null,
       }],
     },
-  },
-  task_records: {
-    schemaVersion: 1,
-    subjectKind: 'agent_org',
-    orgRunId: 'org-run',
-    records: [
-      taskRecord('task-agent', '/worker', { agentRunId: 'agent-worker-task' }),
-      taskRecord('task-team', '/team', { teamRunId: 'team-task' }),
-    ],
   },
   communication_messages: {
     schemaVersion: 1,

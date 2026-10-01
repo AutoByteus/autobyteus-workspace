@@ -1,0 +1,34 @@
+× archives the exact V2 execution tree and derived catalog row together
+× commits one native tree preserving configured identities and task records; later Save uses new baseline
+× derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+× isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+× keeps the current row and package when the candidate index write fails
+× keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+× lists the configured member and its task instance as separate runs
+× migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+× persists root, nested-Team, and exact-Agent configurations and restores them after process restart
+× preserves 'committed' / 'missing' through Team owner, Studio and resolver
+× preserves 'committed' / 'ok' through Team owner, Studio and resolver
+× preserves 'committed' / 'throws' through Team owner, Studio and resolver
+× preserves 'not_renamed' / 'missing' through Team owner, Studio and resolver
+× preserves 'not_renamed' / 'ok' through Team owner, Studio and resolver
+× preserves 'not_renamed' / 'throws' through Team owner, Studio and resolver
+× preserves 'renamed_finalization_indeterminate' / 'missing' through Team owner, Studio and resolver
+× preserves 'renamed_finalization_indeterminate' / 'ok' through Team owner, Studio and resolver
+× preserves 'renamed_finalization_indeterminate' / 'throws' through Team owner, Studio and resolver
+× reads only the requested root's tree when the team run ID is a stored root (REQ-005)
+× records the first summary only and serializes current lifecycle updates
+× rejects a 'blank' 'Agent' runtime before workspace or run side effects
+× rejects a 'blank' 'Team' runtime before workspace or run side effects
+× rejects a 'missing' 'Agent' runtime before workspace or run side effects
+× rejects a 'missing' 'Team' runtime before workspace or run side effects
+× rejects a 'unsupported' 'Agent' runtime before workspace or run side effects
+× rejects a 'unsupported' 'Team' runtime before workspace or run side effects
+× reports a delegated task instance with its own run ID (AC-011)
+× resolves an AgentOrg member's own run inside the requested org root
+× resolves only one exact current address/run match while retaining its configured launch placement
+× restores the exact tree and index snapshot after an archive index failure
+× skips a corrupt root tree with a warning while other roots still list (AC-003)
+× skips a root folder whose tree names a different team run, while other roots still list
+× still resolves a nested team run ID by searching every root
+× validates every native original baseline before writing and does not omit incompatible children

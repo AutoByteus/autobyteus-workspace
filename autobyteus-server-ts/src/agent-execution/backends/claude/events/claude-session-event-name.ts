@@ -3,6 +3,8 @@ export enum ClaudeSessionEventName {
   TURN_STARTED = "turn/started",
   TURN_COMPLETED = "turn/completed",
   TURN_INTERRUPTED = "turn/interrupted",
+  SYSTEM_TASK_NOTIFICATION = "system/taskNotification",
+  BACKGROUND_TASK_UPDATED = "system/backgroundTaskUpdated",
   SESSION_TERMINATED = "session/terminated",
   STATUS_CHANGED = "session/status/changed",
   STATUS_COMPACTING = "session/status/compacting",

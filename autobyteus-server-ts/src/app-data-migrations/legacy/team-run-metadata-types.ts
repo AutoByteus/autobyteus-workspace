@@ -1,16 +1,16 @@
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type {
-  TeamRunAgentNode,
-  TeamRunAgentTeamNode,
-} from "../../agent-team-execution/domain/team-run-config.js";
+  ReleasedTeamRunAgentNode,
+  ReleasedTeamRunAgentTeamNode,
+} from "./released-team-run-config.js";
 
 /** Historical schema-v3 Agent facts, isolated from the current TeamRun runtime model. */
-export type TeamRunAgentMemberMetadata = Readonly<TeamRunAgentNode & {
+export type TeamRunAgentMemberMetadata = Readonly<ReleasedTeamRunAgentNode & {
   applicationExecutionContext: Readonly<Record<string, unknown>> | null;
 }>;
 
 export type TeamRunSubTeamMemberMetadata = Readonly<
-  Omit<TeamRunAgentTeamNode, "children" | "defaultLaunchConfiguration"> & {
+  Omit<ReleasedTeamRunAgentTeamNode, "children" | "defaultLaunchConfiguration"> & {
     children: readonly TeamRunMemberMetadata[];
   }
 >;

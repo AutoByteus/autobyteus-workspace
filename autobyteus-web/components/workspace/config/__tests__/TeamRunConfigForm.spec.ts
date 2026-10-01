@@ -44,7 +44,6 @@ const config = (changes: Partial<TeamRunConfig> = {}): TeamRunConfig => ({
     llmModelIdentifier: 'gpt-5.6-luna',
     llmConfig: { reasoning_effort: 'medium' },
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
   },
   teamOverrides: {}, agentOverrides: {}, isLocked: false,
   ...changes,
@@ -79,7 +78,7 @@ const existingModel = () => {
     testAgentNode('/teacher', {
       runtimeKind: 'codex_app_server', llmModelIdentifier: 'historical-root-model',
       llmConfig: { reasoning_effort: 'high' }, autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace/root',
+      workspaceRootPath: '/workspace/root',
     }),
     testAgentNode('/student_one', {
       runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'historical-student-model',
@@ -119,7 +118,7 @@ describe('TeamRunConfigForm launch and existing-run presentation', () => {
         address: '/',
         workspaceSelection: { mode: 'existing', existingWorkspaceId: 'root-ws', newWorkspacePath: '/workspace/root' },
         effectiveConfig: expect.objectContaining({
-          runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', skillAccessMode: 'PRELOADED_ONLY',
+          runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna',
         }),
       }),
     }))
@@ -127,7 +126,7 @@ describe('TeamRunConfigForm launch and existing-run presentation', () => {
     expect(members.map((member) => member.address)).toEqual(['/teacher', '/student_one', '/student_two'])
     expect(members[1]).toEqual(expect.objectContaining({
       kind: 'agent', address: '/student_one', isCustomized: false,
-      effectiveConfig: expect.objectContaining({ runtimeKind: 'codex_app_server', skillAccessMode: 'PRELOADED_ONLY' }),
+      effectiveConfig: expect.objectContaining({ runtimeKind: 'codex_app_server' }),
     }))
   })
 
@@ -187,6 +186,15 @@ describe('TeamRunConfigForm launch and existing-run presentation', () => {
 
   it('keeps fixed Team facts locked while emitting only existing-run model-config edits', async () => {
     const model = existingModel()
+    expect(model.root.workspacePresentation).toEqual({ kind: 'fixed-path' })
+    expect(model.root.effectiveConfig.workspaceRootPath).toBe('/workspace/root')
+    expect(model.members.map((member) => member.kind === 'agent' && [
+      member.workspacePresentation.kind, member.effectiveConfig.workspaceRootPath,
+    ])).toEqual([
+      ['fixed-path', '/workspace/root'],
+      ['fixed-path', '/workspace/student'],
+      ['fixed-path', '/workspace/root'],
+    ])
     const wrapper = mountForm(model)
     const root = wrapper.findComponent(TeamScopeConfigEditor)
     const tree = wrapper.findComponent(TeamMemberConfigTree)

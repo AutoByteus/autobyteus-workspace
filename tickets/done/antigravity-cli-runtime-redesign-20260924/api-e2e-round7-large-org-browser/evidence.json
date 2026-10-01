@@ -1,0 +1,132 @@
+{
+  "startedAt": "2026-09-25T05:26:12.074Z",
+  "sourceCommit": "40641dfca12d030f438075499e713750acf73574",
+  "environment": {
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data",
+    "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace",
+    "backendUrl": "http://127.0.0.1:49985",
+    "frontendUrl": "http://127.0.0.1:49986",
+    "wrapper": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/agy-wrapper.mjs",
+    "realAgy": "/Users/normy/.local/bin/agy",
+    "chrome": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "model": "gemini-3.8-flash-low",
+    "orgDefinitionId": "agy-r7-large-org-e0476c9a",
+    "browserErrors": [],
+    "treeShapeObserved": {
+      "rootMembers": [
+        {
+          "address": "/agent01",
+          "memberCount": null
+        },
+        {
+          "address": "/agent02",
+          "memberCount": null
+        },
+        {
+          "address": "/team1",
+          "memberCount": 4
+        },
+        {
+          "address": "/team2",
+          "memberCount": 4
+        },
+        {
+          "address": "/team3",
+          "memberCount": 4
+        }
+      ],
+      "directCount": 2,
+      "nestedCount": 3
+    }
+  },
+  "cases": {
+    "largeOrg": {
+      "result": "Pass",
+      "runId": "agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72",
+      "elapsedMs": 6058,
+      "healthLatenciesMs": [
+        2,
+        2,
+        1
+      ],
+      "placementAddresses": [
+        "/",
+        "/agent01",
+        "/agent02",
+        "/team1",
+        "/team1/agent03",
+        "/team1/agent04",
+        "/team1/agent05",
+        "/team1/agent06",
+        "/team2",
+        "/team2/agent07",
+        "/team2/agent08",
+        "/team2/agent09",
+        "/team2/agent10",
+        "/team3",
+        "/team3/agent11",
+        "/team3/agent12",
+        "/team3/agent13",
+        "/team3/agent14"
+      ],
+      "slowModelsCalls": 1,
+      "active": true,
+      "treeShape": {
+        "root": 1,
+        "teams": 3,
+        "agents": 14
+      }
+    },
+    "timeout": {
+      "result": "Pass",
+      "elapsedMs": 16344,
+      "healthLatenciesMs": [
+        1,
+        3,
+        3
+      ],
+      "rendered": "Invalid configuration for '/': Antigravity model discovery timed out; check the CLI and retry.",
+      "buttonText": "Run Agent Org"
+    },
+    "failed": {
+      "result": "Pass",
+      "elapsedMs": 1409,
+      "rendered": "Invalid configuration for '/': Antigravity model discovery failed; check authentication or network and retry.",
+      "buttonText": "Run Agent Org"
+    },
+    "missing": {
+      "result": "Pass",
+      "elapsedMs": 935,
+      "rendered": "Invalid configuration for '/': The selected model is unavailable.",
+      "buttonText": "Run Agent Org"
+    },
+    "persistedTree": {
+      "result": "Pass",
+      "oldBackendPid": 42407,
+      "newBackendPid": 43471,
+      "sameRunId": "agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72",
+      "placementCount": 18,
+      "exactTreeAndIdentityStable": true
+    }
+  },
+  "failures": [],
+  "cleanup": {
+    "backendA": {
+      "pid": 42407,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "frontend": {
+      "pid": 42436,
+      "exitCode": 0,
+      "signalCode": null
+    },
+    "backend": {
+      "pid": 43471,
+      "exitCode": 0,
+      "signalCode": null
+    }
+  },
+  "result": "Pass",
+  "endedAt": "2026-09-25T05:27:10.672Z"
+}

@@ -1,0 +1,196 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58296
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58296
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:87674) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-30T06:05:47.002Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-30T06:05:47.101Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T06:05:47.101Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1790748347107,"pid":87674,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58322"}
+{"level":30,"time":1790748347132,"pid":87674,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58296"}
+[2026-09-30T06:05:47.132Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58296
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/alpha-notes
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/alpha-notes.
+Created and registered workspace ID: agent_ws_c609bfd9f20f1a044742e8cdb552bb589c1d286aaa4c1d1049c7e7f049be146e
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/autobyteus_mcps
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/autobyteus_mcps.
+Created and registered workspace ID: agent_ws_56d2b222d1f20055199e6129ee998b86117b5fc947dbf047fb7182c185a1f2fd
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/MCPS-tools
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/MCPS-tools.
+Created and registered workspace ID: agent_ws_671f6a3653e833e077f2a3980bd897e92203f7dda541fa0a3e24953bfdb72cd7
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/beta-site
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/beta-site.
+Created and registered workspace ID: agent_ws_628e32556fa746ede817ff275098669cfa814cc46de048505dda7771c341a9ea
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/gamma-api
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/gamma-api.
+Created and registered workspace ID: agent_ws_019430d5a9ff5e8453821ec7b66903f62997b11c1698b2b55969d5499f7f0d64
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/delta-infra
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/delta-infra.
+Created and registered workspace ID: agent_ws_66966b816ce391ff5be4a9ce653740420f1ca1c736436379e3a3a10622c51a73
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/epsilon-docs
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/epsilon-docs.
+Created and registered workspace ID: agent_ws_710f432cf8c2570ace7408888d9ad482cfd595095ca0edbee2f808b1320f37e4
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/zeta-mobile
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/zeta-mobile.
+Created and registered workspace ID: agent_ws_76e8b6d863999bfeaffa397f563ca1ba578058a43946665d309c1b0e04d23abb
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/eta-data
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/eta-data.
+Created and registered workspace ID: agent_ws_13723c741d4bf478c075a2220e0b23eac1ece79c0244cf27c4daeda04c9f09e3
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/theta-ml
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/theta-ml.
+Created and registered workspace ID: agent_ws_5dada143f41ba6181b2d89935498281b5b322f3159c48d06c0e71fc6b6cc32df
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/iota-web
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/iota-web.
+Created and registered workspace ID: agent_ws_453abae8d2949c9214ffe13e33c1a7c5587aae6d6eb3895bda44e6f97cd21382
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/kappa-cli
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/kappa-cli.
+Created and registered workspace ID: agent_ws_20132efa802b1a14f07006cfa1e8cbf61e948a89519702df76deb1b2ab031907
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/nested-dir/lambda-sdk
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/nested-dir/lambda-sdk.
+Created and registered workspace ID: agent_ws_fd440f316d17fdfd3baa2a191a81d1bda5edb75b024b6cbbba45e8e497f117c6
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/notes
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-polish-Zmqs6u/workspaces/notes.
+Created and registered workspace ID: agent_ws_9d921853afae3ffbb9e88fe099cd16d3a04b76b8a8b0d803bdf0f7f7eb98efa2
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_ea3eb04151a24d7da178c27852695f63
+Created agent session 4c154c2b-5e30-4b31-9f7d-cca329f3642c for run daily_assistant_ea3eb04151a24d7da178c27852695f63
+Agent WebSocket connected: session=4c154c2b-5e30-4b31-9f7d-cca329f3642c, run=daily_assistant_ea3eb04151a24d7da178c27852695f63
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'daily_assistant_ea3eb04151a24d7da178c27852695f63'.
+(node:87674) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, edit_image, mcp__autobyteus_agent_tools__edit_image, generate_image, mcp__autobyteus_agent_tools__generate_image, generate_speech, mcp__autobyteus_agent_tools__generate_speech. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790748367357,"pid":87674,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_tcmnyrnYx_FkUO38hf3-yFNO_dRgZZTWt7KEuiV6H1o","statusCode":400,"elapsedMs":0.8144169747829437,"msg":"http request completed"}
+Closed agent session 4c154c2b-5e30-4b31-9f7d-cca329f3642c
+Agent WebSocket disconnected: 4c154c2b-5e30-4b31-9f7d-cca329f3642c
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_acd61e30639e4a179566e26735c9dc71
+Created agent session 8c86361f-cf76-4d1f-b955-74118c8f347e for run daily_assistant_acd61e30639e4a179566e26735c9dc71
+Agent WebSocket connected: session=8c86361f-cf76-4d1f-b955-74118c8f347e, run=daily_assistant_acd61e30639e4a179566e26735c9dc71
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'daily_assistant_acd61e30639e4a179566e26735c9dc71'.
+(node:87674) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, edit_image, mcp__autobyteus_agent_tools__edit_image, generate_image, mcp__autobyteus_agent_tools__generate_image, generate_speech, mcp__autobyteus_agent_tools__generate_speech. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790748381037,"pid":87674,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/mcp/agent-tools/agtrun_-U1t6qHOK4NT4oP6PZjdyk9SWq_NhJ9EtcaK9Sl7zqo","statusCode":400,"elapsedMs":0.2672079801559448,"msg":"http request completed"}
+Closed agent session 8c86361f-cf76-4d1f-b955-74118c8f347e
+Agent WebSocket disconnected: 8c86361f-cf76-4d1f-b955-74118c8f347e
+[CodexAppServerClient] stderr: [2m2026-09-30T06:06:29.902155Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T06:06:32.840685Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[2026-09-30T06:06:46.745Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-30T06:06:46.751Z] [INFO] [server.runtime] Server closed cleanly.

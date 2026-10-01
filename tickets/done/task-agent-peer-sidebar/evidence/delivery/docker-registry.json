@@ -1,0 +1,72 @@
+{
+  "checked_at": "2026-09-26T06:07:15.297578+00:00",
+  "repository": "autobyteus/autobyteus-server",
+  "tags": {
+    "1.4.84": {
+      "digest": "sha256:4a5e11b59df27c70df08303443f47d41776a21319ff3ef78f3105688ec783d47",
+      "manifest": {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:0953d9bb4f286a61f1bcd663400b9081a7f58ac9d98b6a53552c8787fce7cc02",
+            "size": 10888,
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:7c187d3be804994aa8353a45f155e78cca252fbcea6bacef02bbad181f41b19b",
+            "size": 10888,
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux"
+            }
+          }
+        ]
+      }
+    },
+    "latest": {
+      "digest": "sha256:4a5e11b59df27c70df08303443f47d41776a21319ff3ef78f3105688ec783d47",
+      "manifest": {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:0953d9bb4f286a61f1bcd663400b9081a7f58ac9d98b6a53552c8787fce7cc02",
+            "size": 10888,
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:7c187d3be804994aa8353a45f155e78cca252fbcea6bacef02bbad181f41b19b",
+            "size": 10888,
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "latest_matches_version": true,
+  "platforms": [
+    {
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    {
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  ],
+  "container_launch": "Not performed"
+}

@@ -13,32 +13,27 @@ const assertDistAssetPresent = async (templateDirName, fileName) => {
   return filePath;
 };
 
-const assertDistTemplateAbsent = async (templateDirName) => {
-  const filePath = path.join(templatesDistDir, templateDirName);
-  await assert.rejects(
-    () => fs.stat(filePath),
-    (error) => error && error.code === "ENOENT",
-    `${filePath} must not exist in built output`,
-  );
-};
-
 const [
   compactorDistAgentMdPath,
   compactorDistAgentConfigPath,
   skillImproverDistAgentMdPath,
   skillImproverDistAgentConfigPath,
+  dailyAssistantDistAgentMdPath,
+  dailyAssistantDistAgentConfigPath,
 ] = await Promise.all([
   assertDistAssetPresent("memory-compactor", "agent.md"),
   assertDistAssetPresent("memory-compactor", "agent-config.json"),
   assertDistAssetPresent("retrospective-skill-improver", "agent.md"),
   assertDistAssetPresent("retrospective-skill-improver", "agent-config.json"),
+  assertDistAssetPresent("daily-assistant", "agent.md"),
+  assertDistAssetPresent("daily-assistant", "agent-config.json"),
 ]);
-await assertDistTemplateAbsent("daily-assistant");
 
 const { bootstrapBuiltInAgents } = await import(
   "../dist/built-in-agents/built-in-agent-bootstrapper.js"
 );
 const {
+  DAILY_ASSISTANT_AGENT_DEFINITION_ID,
   MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } = await import(
@@ -101,7 +96,7 @@ try {
     },
   });
 
-  assert.equal(result.builtInAgents.length, 2);
+  assert.equal(result.builtInAgents.length, 3);
   assert.equal(result.refreshedCache, true);
 
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
@@ -135,6 +130,31 @@ try {
   assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
   assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
   assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+  const dailyAssistantAgentDir = path.join(agentsDir, DAILY_ASSISTANT_AGENT_DEFINITION_ID);
+  assert.equal(
+    await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
+    await fs.readFile(dailyAssistantDistAgentMdPath, "utf8"),
+  );
+  assert.equal(
+    await fs.readFile(path.join(dailyAssistantAgentDir, "agent-config.json"), "utf8"),
+    await fs.readFile(dailyAssistantDistAgentConfigPath, "utf8"),
+  );
+  await fs.writeFile(path.join(dailyAssistantAgentDir, "agent.md"), "user edited daily assistant", "utf8");
+  const resyncResult = await bootstrapBuiltInAgents({
+    agentsDir,
+    agentDefinitionService: fakeAgentDefinitionService,
+    serverSettingsService: fakeServerSettingsService,
+    logger: { info() {}, warn() {} },
+  });
+  const resyncById = new Map(resyncResult.builtInAgents.map((item) => [item.agentDefinitionId, item]));
+  assert.equal(resyncById.get(DAILY_ASSISTANT_AGENT_DEFINITION_ID).syncedAgentMd, true);
+  assert.equal(
+    await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
+    await fs.readFile(dailyAssistantDistAgentMdPath, "utf8"),
+  );
+  assert.ok(
+    JSON.parse(await fs.readFile(path.join(dailyAssistantAgentDir, "agent-config.json"), "utf8")).toolNames.includes("read_file"),
+  );
   const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");
   const standaloneAgentConfig = await fs.readFile(path.join(standaloneAgentDir, "agent-config.json"), "utf8");
   assert.equal(standaloneAgentMd, "standalone local agent");

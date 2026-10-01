@@ -1,0 +1,18 @@
+   0.0s K mode short {"CLAUDE_CODE_MCP_AUTO_BACKGROUND_MS":"4000"}
+   0.0s K >>> SEND 078f1233 Call the slow_echo tool with text 'hi' and seconds 12, then reply with its exact
+   0.4s K command_lifecycle 
+   0.4s K command_lifecycle 
+   0.4s K system init    
+   2.4s K assistant ["thinking"]
+   2.7s K assistant ["tool_use:ToolSearch:{\"query\":\"select:mcp__slow__slow_echo\",\"max_results\":5}"]
+   2.7s K user tool_result:[{"type":"tool_reference","tool_name":"mcp__slow__slow_echo"}]
+   4.2s K assistant ["thinking"]
+   4.3s K assistant ["tool_use:mcp__slow__slow_echo:{\"text\":\"hi\",\"seconds\":12}"]
+   4.3s K: MCP tool call started, sleeping 12
+  16.3s K: MCP tool call finishing
+  16.3s K user tool_result:[{"type":"text","text":"ECHO:hi"}]
+  17.3s K assistant ["thinking"]
+  17.5s K assistant ["Here's the exact output from the slow_echo tool:\n\n```\nECHO:hi\n```"]
+  17.5s K result success origin=undefined answers=[078f1233] terminal=completed
+  17.5s K command_lifecycle 
+  20.8s K STREAM ENDED normally

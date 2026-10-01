@@ -1,4 +1,3 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { Skill } from "../../../../skills/domain/models.js";
 import type { ClaudeSessionConfig } from "../session/claude-session-config.js";
 import type { AgentRunContext as SharedAgentRunContext } from "../../../domain/agent-run-context.js";
@@ -11,7 +10,6 @@ export class ClaudeAgentRunContext {
   readonly runtimeToolExposure: RuntimeAgentToolExposure;
   readonly configuredSkills: Skill[];
   readonly materializedConfiguredSkills: MaterializedWorkspaceSkill[];
-  readonly skillAccessMode: SkillAccessMode | null;
   readonly sessionId: string | null;
   hasCompletedTurn: boolean;
   activeTurnId: string | null;
@@ -22,7 +20,6 @@ export class ClaudeAgentRunContext {
     runtimeToolExposure: RuntimeAgentToolExposure;
     configuredSkills?: Skill[] | null;
     materializedConfiguredSkills?: MaterializedWorkspaceSkill[] | null;
-    skillAccessMode?: SkillAccessMode | null;
     sessionId?: string | null;
     hasCompletedTurn?: boolean;
     activeTurnId?: string | null;
@@ -32,7 +29,6 @@ export class ClaudeAgentRunContext {
     this.runtimeToolExposure = input.runtimeToolExposure;
     this.configuredSkills = input.configuredSkills ?? [];
     this.materializedConfiguredSkills = input.materializedConfiguredSkills ?? [];
-    this.skillAccessMode = input.skillAccessMode ?? null;
     this.sessionId = input.sessionId ?? null;
     this.hasCompletedTurn = input.hasCompletedTurn ?? false;
     this.activeTurnId = input.activeTurnId ?? null;

@@ -52,12 +52,13 @@ This keeps the migration away from the removed frontend build flag clean while p
 
 - `ApplicationCapabilityService` is the only owner allowed to infer initial Applications availability from bundle discovery.
 - `ApplicationBundleService` remains the bundle-discovery owner; it is not the steady-state capability authority.
-- `ServerSettingsService` is only the persisted-setting substrate for the capability; callers above the capability boundary should not reintroduce generic settings-table coupling.
+- `ServerSettingsService` is only the persisted-setting substrate for the capability, accessed through the shared `getBooleanSetting(key)` / `setBooleanSetting(key, enabled)` pair (also used by the Skill Improvement and Projects capabilities). Callers above the capability boundary should not reintroduce generic settings-table coupling.
 - Different windows bound to different nodes can legitimately receive different Applications capability answers.
 
 ## Related Docs
 
 - [`applications.md`](./applications.md)
 - [`application_orchestration.md`](./application_orchestration.md)
+- [`projects.md`](./projects.md)
 - `../../../autobyteus-web/docs/applications.md`
 - `../../../autobyteus-web/docs/settings.md`

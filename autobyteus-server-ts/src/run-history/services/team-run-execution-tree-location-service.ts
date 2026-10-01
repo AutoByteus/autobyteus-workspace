@@ -1,6 +1,9 @@
 import fs from "node:fs";
-import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type {
+  LocatedExecutionGroup,
+  LocatedExecutionKind,
+} from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -19,6 +22,11 @@ export type LocatedTeamAgentExecution = Readonly<{
   agentRunId: string;
   memberAddress: AgentTeamAddress;
   configuredPlacement: ConfiguredAgentExecutionNode | null;
+  executionKind: LocatedExecutionKind;
+  /** Task agents only. */
+  startedAt: string | null;
+  /** Teams from the root (exclusive) down to the containing team, outermost first. */
+  groupPath: readonly LocatedExecutionGroup[];
   memoryDir: string;
   tree: TeamRunExecutionTreeSnapshot;
   isActive: boolean;
@@ -57,11 +65,12 @@ export class TeamRunExecutionTreeLocationService {
     memberAddress?: string | null;
     containingTeamRunId?: string | null;
   }): Promise<LocatedTeamAgentExecution | null> {
+    await this.packageCatalog.awaitReady();
     const active = this.findInActive(input);
     if (active) return active;
     const requestedRoot = input.rootTeamRunId?.trim() || null;
     for (const rootTeamRunId of requestedRoot ? [requestedRoot] : await this.listStoredRootIds()) {
-      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
+      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const tree = await this.readStoredTree(rootTeamRunId);
       const located = tree ? this.findInTree(tree, input, false) : null;
       if (located) return located;
@@ -72,26 +81,28 @@ export class TeamRunExecutionTreeLocationService {
   async listAgents(input: {
     rootTeamRunId?: string | null;
     containingTeamRunId?: string | null;
-    configuredOnly?: boolean;
   } = {}): Promise<LocatedTeamAgentExecution[]> {
+    await this.packageCatalog.awaitReady();
     const requestedRootId = input.rootTeamRunId?.trim() || null;
     const rootIds = requestedRootId ? [requestedRootId] : await this.listRootTeamRunIds();
     const output: LocatedTeamAgentExecution[] = [];
     for (const rootTeamRunId of rootIds) {
+      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
       const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
       if (!tree) continue;
       output.push(...this.listInTree(tree, Boolean(activeRoot)).filter((item) =>
-        (!input.containingTeamRunId || item.containingTeamRunId === input.containingTeamRunId) &&
-        (!input.configuredOnly || item.configuredPlacement !== null)));
+        !input.containingTeamRunId || item.containingTeamRunId === input.containingTeamRunId));
     }
     return output;
   }
 
+  /** Project locations from an already validated root snapshot; no store or manager I/O. */
   async containsRunId(runId: string): Promise<boolean> {
     const normalized = runId.trim();
     if (!normalized) throw new Error("runId is required.");
     for (const rootTeamRunId of await this.listRootTeamRunIds()) {
+      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const activeRoot = this.manager.getManagedTeamRun(rootTeamRunId);
       const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
       if (!tree) continue;
@@ -102,7 +113,8 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   async listRootTeamRunIds(): Promise<string[]> {
-    return [...new Set([...this.manager.listManagedTeamRunIds(), ...await this.listStoredRootIds()])].sort();
+    await this.packageCatalog.awaitReady();
+    return [...this.packageCatalog.listAdmittedRootIds()];
   }
 
   findAgentSync(input: {
@@ -115,7 +127,7 @@ export class TeamRunExecutionTreeLocationService {
     if (active) return active;
     const requestedRoot = input.rootTeamRunId?.trim() || null;
     for (const rootTeamRunId of requestedRoot ? [requestedRoot] : this.listStoredRootIdsSync()) {
-      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
+      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const tree = this.readStoredTreeSync(rootTeamRunId);
       const located = tree ? this.findInTree(tree, input, false) : null;
       if (located) return located;
@@ -124,6 +136,8 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   async readStoredTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
+    await this.packageCatalog.awaitReady();
+    if (!this.packageCatalog.isAdmitted(rootTeamRunId)) return null;
     const rootDir = this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
     return this.store.read(rootDir, rootTeamRunId);
   }
@@ -131,6 +145,8 @@ export class TeamRunExecutionTreeLocationService {
   async readTree(rootTeamRunId: string): Promise<TeamRunExecutionTreeSnapshot | null> {
     const normalized = rootTeamRunId.trim();
     if (!normalized) throw new Error("rootTeamRunId is required.");
+    await this.packageCatalog.awaitReady();
+    if (!this.packageCatalog.isAdmitted(normalized)) return null;
     return this.manager.getManagedTeamRun(normalized)?.getExecutionTreeSnapshot() ?? this.readStoredTree(normalized);
   }
 
@@ -142,6 +158,7 @@ export class TeamRunExecutionTreeLocationService {
   }): LocatedTeamAgentExecution | null {
     const requestedRoot = input.rootTeamRunId?.trim() || null;
     for (const rootTeamRunId of requestedRoot ? [requestedRoot] : this.manager.listManagedTeamRunIds()) {
+      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) continue;
       const root = this.manager.getManagedTeamRun(rootTeamRunId);
       if (!root) continue;
       const located = this.findInTree(root.getExecutionTreeSnapshot(), input, true);
@@ -185,6 +202,13 @@ export class TeamRunExecutionTreeLocationService {
     const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
     const configured = index.getConfiguredPlacement(agent.address);
     const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
+    const groupPath = [...index.listContainingTeamAncestorsForAgent(agent.agentRunId)].reverse().slice(1)
+      .map((team): LocatedExecutionGroup => Object.freeze({
+        teamRunId: team.teamRunId,
+        address: team.address,
+        executionKind: team.executionKind,
+        startedAt: "startedAt" in team.source ? team.source.startedAt : null,
+      }));
     return Object.freeze({
       rootTeamRunId: scope.root.rootRunId,
       containingTeamRunId: agent.containingTeamRunId,
@@ -192,6 +216,9 @@ export class TeamRunExecutionTreeLocationService {
       agentRunId: agent.agentRunId,
       memberAddress: agent.address,
       configuredPlacement,
+      executionKind: agent.executionKind,
+      startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
+      groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getRootedAgentRunDirPath(scope, agent.agentRunId),
       tree,
       isActive,
@@ -199,29 +226,12 @@ export class TeamRunExecutionTreeLocationService {
   }
 
   private async listStoredRootIds(): Promise<string[]> {
-    try {
-      const discovered = (await fsPromises.readdir(this.layout.getTeamRootDirPath(), { withFileTypes: true }))
-        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-      return this.packageCatalog.isInitialized()
-        ? discovered.filter((rootTeamRunId) => this.packageCatalog.isAdmitted(rootTeamRunId))
-        : discovered;
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
-      throw error;
-    }
+    await this.packageCatalog.awaitReady();
+    return this.packageCatalog.listAdmittedRootIds();
   }
 
   private listStoredRootIdsSync(): string[] {
-    try {
-      const discovered = fs.readdirSync(this.layout.getTeamRootDirPath(), { withFileTypes: true })
-        .filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
-      return this.packageCatalog.isInitialized()
-        ? discovered.filter((rootTeamRunId) => this.packageCatalog.isAdmitted(rootTeamRunId))
-        : discovered;
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
-      throw error;
-    }
+    return this.packageCatalog.listAdmittedRootIds();
   }
 
   private readStoredTreeSync(rootTeamRunId: string): TeamRunExecutionTreeSnapshot | null {

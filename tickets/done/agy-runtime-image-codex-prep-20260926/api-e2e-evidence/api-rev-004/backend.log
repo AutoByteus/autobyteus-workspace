@@ -1,0 +1,40 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+App data directory: /tmp/agy-browser-api-rev-004-zw14bL
+AppConfig instance created.
+Config file path: /tmp/agy-browser-api-rev-004-zw14bL/.env
+Loading environment from: /tmp/agy-browser-api-rev-004-zw14bL/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../tmp/agy-browser-api-rev-004-zw14bL/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL
+DB DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/db
+LOGS DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/logs
+DOWNLOAD DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/download
+MEMORY DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/Users/normy/.autobyteus/server-data/db/production.db"
+
+26 migrations found in prisma/migrations
+
+Error: SQLite database error
+database is locked
+   0: sql_schema_connector::sql_migration_persistence::initialize
+           with namespaces=None
+             at schema-engine/connectors/sql-schema-connector/src/sql_migration_persistence.rs:14
+   1: schema_core::state::ApplyMigrations
+             at schema-engine/core/src/state.rs:226
+
+Error running database migrations: Error: Command failed: /opt/homebrew/Cellar/node/26.5.1/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-26T13:47:31.933Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /opt/homebrew/Cellar/node/26.5.1/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /opt/homebrew/Cellar/node/26.5.1/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/prisma/schema.prisma","logPath":"/tmp/agy-browser-api-rev-004-zw14bL/logs/server.log"}

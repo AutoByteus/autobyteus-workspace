@@ -23,7 +23,6 @@ import type {
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
-import { fetchTaskDelegationRecordsForTeam } from './taskDelegationHydrationService';
 import { fetchTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import {
@@ -36,6 +35,7 @@ import {
   collectAgentExecutionLocations,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
+import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -173,8 +173,8 @@ const stageProjection = (input: {
   expectedActivityRevision: number;
 }): ActivityProjectionReplacement | null => {
   if (!input.projection) return null;
-  const configured = findConfiguredAgentByAddress(input.tree, input.address);
-  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured placement.`);
+  const configured = teamAgentSourceAt(input.tree, input.address);
+  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured or collaborator placement.`);
   input.context.state.conversation = buildConversationFromProjection(
     input.agentRunId,
     input.projection.conversation ?? [],
@@ -233,8 +233,7 @@ const hydrateCurrentTeamRunContext = async (
   if (raw.isActive && !input.ensureWorkspaceByRootPath) {
     throw new Error(`Active Team '${input.teamRunId}' requires workspace activation.`);
   }
-  const [tasks, messages, workspaces] = await Promise.all([
-    fetchTaskDelegationRecordsForTeam({ client, teamRunId: input.teamRunId }),
+  const [messages, workspaces] = await Promise.all([
     fetchTeamCommunicationForTeam({ client, teamRunId: input.teamRunId }),
     resolveWorkspaces({
       tree,
@@ -285,7 +284,6 @@ const hydrateCurrentTeamRunContext = async (
     rootTeamRunId: input.teamRunId,
     rootActive: raw.isActive,
     executionTree: tree,
-    tasks,
     messages,
     configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
     initialFocusedAgentRunId,

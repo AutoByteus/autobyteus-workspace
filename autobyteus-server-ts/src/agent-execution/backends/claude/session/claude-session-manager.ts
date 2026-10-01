@@ -13,7 +13,6 @@ import { ClaudeWorkspaceResolver } from "../claude-workspace-resolver.js";
 import {
   ClaudeSdkClient,
   getClaudeSdkClient,
-  type ClaudeSdkQueryLike,
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { ClaudeProviderSessionLifecycle } from "./claude-provider-session-lifecycle.js";
@@ -33,7 +32,6 @@ export class ClaudeSessionManager {
   private workspaceManager: WorkspaceManager;
   private readonly sessions = new Map<string, ClaudeSession>();
   private readonly sessionMessageCache = new ClaudeSessionMessageCache();
-  private readonly activeQueriesByRunId = new Map<string, ClaudeSdkQueryLike>();
   private readonly sdkClient: ClaudeSdkClient;
   private readonly agentToolMcpRunSessions: AgentToolMcpRunSessionActivator;
   private readonly toolingCoordinator = new ClaudeSessionToolUseCoordinator(
@@ -56,10 +54,7 @@ export class ClaudeSessionManager {
     this.workspaceManager = workspaceManager;
     this.sdkClient = sdkClient;
     this.agentToolMcpRunSessions = agentToolMcpRunSessions;
-    this.sessionCleanup = new ClaudeSessionCleanup(
-      this.toolingCoordinator,
-      workspaceSkillMaterializer,
-    );
+    this.sessionCleanup = new ClaudeSessionCleanup(workspaceSkillMaterializer);
   }
 
   async createRunSession(
@@ -106,11 +101,7 @@ export class ClaudeSessionManager {
     if (!state) {
       return;
     }
-    if (state.activeTurnId) {
-      await state.settleActiveTurnForClosure(
-        "Tool approval cancelled because run was closed.",
-      );
-    }
+    await state.closeProcess("Tool approval cancelled because run was closed.");
     state.emitRuntimeEvent({
       method: ClaudeSessionEventName.SESSION_TERMINATED,
       params: {
@@ -126,11 +117,7 @@ export class ClaudeSessionManager {
       return;
     }
     this.sessions.delete(runId);
-    await this.sessionCleanup.cleanupSessionResources({
-      runId,
-      session: state,
-      activeQueriesByRunId: this.activeQueriesByRunId,
-    });
+    await this.sessionCleanup.cleanupSessionResources({ session: state });
   }
 
   async getSessionMessages(
@@ -170,7 +157,6 @@ export class ClaudeSessionManager {
     return {
       sessionMessageCache: this.sessionMessageCache,
       sdkClient: this.sdkClient,
-      activeQueriesByRunId: this.activeQueriesByRunId,
       toolingCoordinator: this.toolingCoordinator,
       agentToolMcpRunSessions: this.agentToolMcpRunSessions,
       isRunSessionActive: () => this.sessions.has(runId),

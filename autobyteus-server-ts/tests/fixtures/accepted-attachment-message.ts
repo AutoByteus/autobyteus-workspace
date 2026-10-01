@@ -4,7 +4,6 @@ import { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-event
 import { MemoryIngestInputProcessor } from "autobyteus-ts/agent/input-processor/memory-ingest-input-processor.js";
 import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRun } from "../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../src/agent-execution/domain/agent-run-context.js";
@@ -25,7 +24,7 @@ export async function recordAcceptedAttachmentMessage(input: {
   const turnId = "attachment-turn";
   const config = new AgentRunConfig({
     runtimeKind: input.runtimeKind, memoryDir: input.memoryDir, agentDefinitionId: "definition",
-    llmModelIdentifier: "bounded", autoExecuteTools: false, skillAccessMode: SkillAccessMode.NONE,
+    llmModelIdentifier: "bounded", autoExecuteTools: false,
   });
   const context = new AgentRunContext({ runId: input.id, config, runtimeContext: null });
   const forwarded = vi.fn();

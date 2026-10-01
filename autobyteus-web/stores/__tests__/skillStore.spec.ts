@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useSkillStore } from '../skillStore'
 import { useSkillSourcesStore } from '../skillSourcesStore'
+import { SkillNameConflictError } from '~/utils/skills/skillNames'
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
@@ -132,5 +133,22 @@ describe('skillStore', () => {
     ])
     expect(skillStore.error).toBe('Reload failed')
     expect(skillStore.reloading).toBe(false)
+  })
+
+  it('createSkill and addSkillSource turn SKILL_NAME_CONFLICT (errors array or thrown) into a typed error (D-19)', async () => {
+    vi.mocked(getApolloClient).mockReturnValue({
+      mutate: vi.fn()
+        .mockResolvedValueOnce({ data: null, errors: [{ message: 'Duplicate skill names: dup', extensions: { code: 'SKILL_NAME_CONFLICT', conflicts: [{ name: 'dup', existingPath: '/skills/dup', incomingPath: '/pkg/agents/a/skills/dup' }] } }] })
+        .mockRejectedValueOnce({ message: 'Duplicate skill names: dup', graphQLErrors: [{ message: 'Duplicate skill names: dup', extensions: { code: 'SKILL_NAME_CONFLICT', conflicts: [{ name: 'dup', existingPath: '/skills/dup', incomingPath: '/pkg/agents/a/skills/dup' }] } }] }),
+    } as any)
+    const skillStore = useSkillStore()
+    const skillSourcesStore = useSkillSourcesStore()
+
+    await expect(skillStore.createSkill({ name: 'dup', description: '', content: '' })).rejects.toBeInstanceOf(SkillNameConflictError)
+    await expect(skillSourcesStore.addSkillSource('/pkg')).rejects.toMatchObject({
+      conflicts: [{ name: 'dup', existingPath: '/skills/dup', incomingPath: '/pkg/agents/a/skills/dup' }],
+    })
+    expect(skillStore.error).toBe('')
+    expect(skillSourcesStore.error).toBe('')
   })
 })

@@ -1,0 +1,98 @@
+{
+ "tools": [
+  "attach_tab",
+  "close_tab",
+  "dom_snapshot",
+  "list_tabs",
+  "navigate_to",
+  "open_tab",
+  "read_page",
+  "run_script",
+  "screenshot",
+  "start_recording",
+  "stop_recording"
+ ],
+ "run_script_params": [
+  "arg",
+  "dialog",
+  "output_file",
+  "overwrite",
+  "prompt_text",
+  "script",
+  "tab_id"
+ ],
+ "navigate_to_params": [
+  "dialog",
+  "prompt_text",
+  "tab_id",
+  "timeout_ms",
+  "url",
+  "wait_until"
+ ],
+ "added": {
+  "tab_id": "B85F84AE69A2D6299C24703D5372873A",
+  "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes",
+  "output_mode": "inline",
+  "result": [
+   "remove-node-remote-04829e86-685b-42c0-952c-b1b6816b76d7"
+  ]
+ },
+ "plain_no_dialog": {
+  "tab_id": "B85F84AE69A2D6299C24703D5372873A",
+  "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes",
+  "output_mode": "inline",
+  "result": 2
+ },
+ "undecided": {
+  "isError": true,
+  "text": "Error executing tool run_script: DIALOG_DECISION_REQUIRED: The page opened a confirm dialog: \"Remove node \"MCP Disposable Node\"?\". It was dismissed only to unblock the page. Re-run the action with --dialog accept or --dialog dismiss (MCP: dialog), plus --prompt-text (MCP: prompt_text) for prompts. details={\"tab_id\":\"B85F84AE69A2D6299C24703D5372873A\",\"dialogs\":[{\"tab_id\":\"B85F84AE69A2D6299C24703D5372873A\",\"type\":\"confirm\",\"message\":\"Remove node \\\"MCP Disposable Node\\\"?\",\"default_value\":\"\",\"outcome\":\"dismissed\",\"decided_by\":\"unblock\"}]}"
+ },
+ "undecided_seconds": 1.19,
+ "present_after_undecided": true,
+ "dismissed": {
+  "tab_id": "B85F84AE69A2D6299C24703D5372873A",
+  "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes",
+  "output_mode": "inline",
+  "result": {
+   "ok": true,
+   "action": "click",
+   "target": {
+    "selector": "[data-testid=remove-node-remote-04829e86-685b-42c0-952c-b1b6816b76d7]"
+   }
+  },
+  "dialogs": [
+   {
+    "tab_id": "B85F84AE69A2D6299C24703D5372873A",
+    "type": "confirm",
+    "message": "Remove node \"MCP Disposable Node\"?",
+    "default_value": "",
+    "outcome": "dismissed",
+    "decided_by": "agent"
+   }
+  ]
+ },
+ "present_after_dismiss": true,
+ "accepted": {
+  "tab_id": "B85F84AE69A2D6299C24703D5372873A",
+  "url": "file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes",
+  "output_mode": "inline",
+  "result": {
+   "ok": true,
+   "action": "click",
+   "target": {
+    "selector": "[data-testid=remove-node-remote-04829e86-685b-42c0-952c-b1b6816b76d7]"
+   }
+  },
+  "dialogs": [
+   {
+    "tab_id": "B85F84AE69A2D6299C24703D5372873A",
+    "type": "confirm",
+    "message": "Remove node \"MCP Disposable Node\"?",
+    "default_value": "",
+    "outcome": "accepted",
+    "decided_by": "agent"
+   }
+  ]
+ },
+ "present_after_accept": false
+}

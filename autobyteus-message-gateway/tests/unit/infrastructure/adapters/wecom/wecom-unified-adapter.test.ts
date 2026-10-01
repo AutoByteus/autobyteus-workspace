@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import { ExternalChannelProvider } from "../../../../../src/external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../../../src/external-channel/channel-transport.js";
 import { WeComAdapter } from "../../../../../src/infrastructure/adapters/wecom/wecom-adapter.js";
 import { WeComAppInboundStrategy } from "../../../../../src/infrastructure/adapters/wecom/wecom-app-inbound-strategy.js";
 import { WeComAppOutboundStrategy } from "../../../../../src/infrastructure/adapters/wecom/wecom-app-outbound-strategy.js";

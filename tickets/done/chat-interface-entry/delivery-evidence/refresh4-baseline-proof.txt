@@ -1,0 +1,1 @@
+Base-proof (2026-09-29, clean origin/personal@39e512edd): team-run-model-selection-save.test.ts 11/11 failed identically; agent-org-run-config.test.ts same NOT_FOUND vs UPDATED failure. Pre-existing upstream; not caused by the chat-interface-entry merge.

@@ -1,3 +1,4 @@
+import { autoExecuteForNewRuntimeSelection } from '~/utils/agentRunRuntimeDraftPolicy'
 import { defineStore } from 'pinia';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
 import { buildAgentRunTemplate } from '~/composables/useDefinitionLaunchDefaults';
@@ -17,6 +18,7 @@ interface WorkspaceLoadingState {
 interface AgentRunConfigState {
   /** Current configuration buffer (primarily for new runs) */
   config: AgentRunConfig | null;
+  seedModelIdentifier: string | null;
   
   /** Whether the Run Config panel is expanded */
   isPanelExpanded: boolean;
@@ -35,6 +37,7 @@ interface AgentRunConfigState {
 export const useAgentRunConfigStore = defineStore('agentRunConfig', {
   state: (): AgentRunConfigState => ({
     config: null,
+    seedModelIdentifier: null,
     isPanelExpanded: true,
     hasFirstMessageSent: false,
     workspaceLoadingState: {
@@ -73,6 +76,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      */
     setTemplate(agentDefinition: AgentDefinition) {
       this.config = buildAgentRunTemplate(agentDefinition);
+      this.seedModelIdentifier = this.config.llmModelIdentifier;
       this.isPanelExpanded = true;
       this.hasFirstMessageSent = false;
       this.clearWorkspaceState();
@@ -82,10 +86,10 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      * Load config from an existing run (Edit Mode).
      */
     setAgentConfig(config: AgentRunConfig) {
+        this.seedModelIdentifier = config.llmModelIdentifier;
         this.config = {
           ...config,
           runtimeKind: config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-          skillAccessMode: config.skillAccessMode ?? 'PRELOADED_ONLY',
         };
         this.isPanelExpanded = true;
         this.hasFirstMessageSent = false;
@@ -102,6 +106,9 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      */
     updateAgentConfig(updates: Partial<AgentRunConfig>) {
       if (this.config) {
+        if (updates.runtimeKind && updates.runtimeKind !== this.config.runtimeKind && !this.config.isLocked) {
+          updates = { ...updates, autoExecuteTools: autoExecuteForNewRuntimeSelection(updates.runtimeKind, this.config.autoExecuteTools) };
+        }
         Object.assign(this.config, updates);
         if ('workspaceId' in updates && !('workspaceMetadata' in updates)) {
           this.config.workspaceMetadata = null;
@@ -196,6 +203,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      */
     clearConfig() {
       this.config = null;
+      this.seedModelIdentifier = null;
       this.isPanelExpanded = true;
       this.hasFirstMessageSent = false;
       this.clearWorkspaceState();

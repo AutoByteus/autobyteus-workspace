@@ -1,0 +1,9 @@
+migrationId=20260924_remove_external_messaging_data
+displayName=Remove external messaging data
+statusSummary={"scannedCount":4,"migratedCount":3,"skippedCount":0,"failedCount":1}
+error=1 external messaging data root could not be removed; the cleanup retries on the next start.
+details=
+{"itemId":"bindingDataDir","filePath":"/private/tmp/emr-e2e/upgrade-fault/external-channel","status":"MIGRATED","message":"Removed."}
+{"itemId":"gatewayInstallDir","filePath":"/private/tmp/emr-e2e/upgrade-fault/extensions/messaging-gateway","status":"MIGRATED","message":"Removed."}
+{"itemId":"gatewayDownloadDir","filePath":"/private/tmp/emr-e2e/upgrade-fault/download/messaging-gateway","status":"FAILED","message":"Could not remove: EPERM: operation not permitted, unlink '/private/tmp/emr-e2e/upgrade-fault/download/messaging-gateway/autobyteus-message-gateway-1.4.0.tgz'"}
+{"itemId":"gatewayLogsDir","filePath":"/private/tmp/emr-e2e/upgrade-fault/logs/messaging-gateway","status":"MIGRATED","message":"Removed."}

@@ -13,11 +13,16 @@ import type { ContextAttachment } from '~/types/conversation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
-import { buildTeamMemberDraftContextFileOwner, buildTeamMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner';
+import {
+  buildTeamMemberDraftContextFileOwner,
+  buildTeamMemberFinalContextFileOwner,
+  type DraftContextFileOwnerDescriptor,
+} from '~/utils/contextFiles/contextFileOwner';
 import { buildTeamMemberTreeFromDefinition, flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
@@ -40,6 +45,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
+import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
@@ -220,7 +226,16 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const team = useAgentTeamContextsStore().activeTeamContext;
       if (team) await this.terminateTeamRun(team.view.getRootTeamRunId());
     },
-    async sendMessageToFocusedMember(text: string, contextAttachments: ContextAttachment[]) {
+    /**
+     * Send to the focused member of the selected Team run or launch draft.
+     * `attachmentDraftOwner` names where the attachments were uploaded when that is not the
+     * team member's own draft (a Team started from a New chat uploads under the chat draft).
+     */
+    async sendMessageToFocusedMember(
+      text: string,
+      contextAttachments: ContextAttachment[],
+      options: { attachmentDraftOwner?: DraftContextFileOwnerDescriptor } = {},
+    ) {
       const contexts = useAgentTeamContextsStore();
       const drafts = useTeamRunConfigStore();
       const selection = useAgentSelectionStore();
@@ -240,6 +255,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       let localSubmission: LocalUserSubmissionHandle | null = null;
       let retryAttachments = contextAttachments.map(cloneContextAttachment);
       let draftOwnerId = draft?.draftId ?? rootTeamRunId;
+      // `@` mentions exist only in a live run; a launch draft's first message never carries them.
+      const mentions = team && !draft && targetAgentRunId
+        ? mentionsPresentInText(text, team.view.getAgentContext(targetAgentRunId)?.requestedMentions ?? [])
+        : [];
       try {
         if (draft) {
           const launched = await this.launchDraft(draft);
@@ -260,7 +279,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           contexts.replaceTeamContext(rootTeamRunId, expectedContext, hydrated.hydratedContext);
           markCommittedTeamRunHydrationAuthority(hydrated);
           team = hydrated.hydratedContext;
-          targetAgentRunId = team.view.getFocusedAgentRunId();
+          // Hydration focus is presentation state, never a replacement send target.
         }
         if (!team || !targetAgentRunId || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
         const member = team.view.getAgentContext(targetAgentRunId);
@@ -271,13 +290,15 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         localSubmission = beginLocalUserSubmission(member, {
           text, attachments: contextAttachments,
           navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
+          mentions,
         });
-        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
+        const draftOwner = options.attachmentDraftOwner
+          ?? buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
         const finalized = await useContextFileUploadStore().finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(
             location.containingTeamRunId,
-            location.memberAddress,
+            targetAgentRunId,
           ),
           attachments: contextAttachments,
         });
@@ -291,12 +312,15 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         useRunHistoryStore().markTeamAsActive(rootTeamRunId);
         void useRunHistoryStore().refreshTreeQuietly();
         const service = await this.ensureTeamStreamConnected(rootTeamRunId);
-        await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey });
+        await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey, mentions: toCollaboratorMentionDtos(text, mentions) });
+        acceptLocalSubmission(localSubmission);
       } catch (error) {
         if (localSubmission) {
-          failLocalSubmission(localSubmission, error);
+          // A rejected add posted nothing: the notice shows and the draft stays as typed.
+          if (failLocalSubmission(localSubmission, error) === 'kept_draft') return;
           localSubmission.context.requirement = text;
           localSubmission.context.contextFilePaths = retryAttachments;
+          localSubmission.context.requestedMentions = [...mentions];
           applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
           return;
         }

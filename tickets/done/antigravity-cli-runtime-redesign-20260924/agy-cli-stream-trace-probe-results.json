@@ -1,0 +1,99 @@
+{
+  "cliExit": 0,
+  "initHasConversationId": true,
+  "initPermissionMode": "request-review",
+  "eventTypes": [
+    "init",
+    "step_update",
+    "step_update",
+    "step_update",
+    "step_update",
+    "step_update",
+    "result"
+  ],
+  "steps": [
+    {
+      "stepIndex": 0,
+      "type": "user_input",
+      "state": "DONE",
+      "toolName": null,
+      "textDelta": null,
+      "toolInfoKeys": [],
+      "toolOutputType": "NoneType",
+      "toolOutputContainsMarker": false,
+      "toolOutputLength": 0,
+      "toolOutputPrefix": "",
+      "toolError": null,
+      "usagePresent": false
+    },
+    {
+      "stepIndex": 1,
+      "type": "agent_response",
+      "state": "DONE",
+      "toolName": null,
+      "textDelta": null,
+      "toolInfoKeys": [],
+      "toolOutputType": "NoneType",
+      "toolOutputContainsMarker": false,
+      "toolOutputLength": 0,
+      "toolOutputPrefix": "",
+      "toolError": null,
+      "usagePresent": true
+    },
+    {
+      "stepIndex": 2,
+      "type": "tool",
+      "state": "ACTIVE",
+      "toolName": "view_file",
+      "textDelta": null,
+      "toolInfoKeys": [
+        "name",
+        "parameters"
+      ],
+      "toolOutputType": "NoneType",
+      "toolOutputContainsMarker": false,
+      "toolOutputLength": 0,
+      "toolOutputPrefix": "",
+      "toolError": null,
+      "usagePresent": false
+    },
+    {
+      "stepIndex": 2,
+      "type": "tool",
+      "state": "DONE",
+      "toolName": "view_file",
+      "textDelta": null,
+      "toolInfoKeys": [
+        "name",
+        "output",
+        "parameters"
+      ],
+      "toolOutputType": "str",
+      "toolOutputContainsMarker": false,
+      "toolOutputLength": 17,
+      "toolOutputPrefix": "2 lines, 17 bytes",
+      "toolError": null,
+      "usagePresent": false
+    },
+    {
+      "stepIndex": 3,
+      "type": "agent_response",
+      "state": "DONE",
+      "toolName": null,
+      "textDelta": "TRACE-MARKER-924\n",
+      "toolInfoKeys": [],
+      "toolOutputType": "NoneType",
+      "toolOutputContainsMarker": false,
+      "toolOutputLength": 0,
+      "toolOutputPrefix": "",
+      "toolError": null,
+      "usagePresent": true
+    }
+  ],
+  "resultStatus": "SUCCESS",
+  "resultResponse": "TRACE-MARKER-924\n",
+  "resultIdMatchesInit": true,
+  "stderrTail": "",
+  "logCreated": true,
+  "logContainsMarker": false
+}

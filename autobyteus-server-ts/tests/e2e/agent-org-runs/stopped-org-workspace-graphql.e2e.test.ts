@@ -39,7 +39,7 @@ const updateConfig = async (server: Server, input: Json) =>
 // Real process + HTTP + current production composition, not an in-process resolver mock.
 // No model turn is requested: this suite proves configuration without requiring credentials.
 describe("stopped Org workspace real GraphQL lifecycle", () => {
-  it("atomically saves every configured child, preserves other scopes, and reads the same v1 package after restart", async () => {
+  it("atomically saves every configured child, preserves other scopes, and reads the same current (version-less Org tree) package after restart", async () => {
     const suffix = `stopped-org-workspace-${process.pid}-${Date.now()}`;
     const target = {
       runtimeRoot: path.join(testRuntimeRoot, suffix),
@@ -91,7 +91,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
       agentOrgDefinitionId: org.createAgentOrgDefinition.id,
       rootConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: model.modelIdentifier,
         llmConfig: { reasoning_effort: "low" }, autoExecuteTools: false,
-        skillAccessMode: "PRELOADED_ONLY", workspaceRootPath: a },
+        workspaceRootPath: a },
       agentOverrides: [{ address: "/team/unused", configuration: {
         llmConfig: { reasoning_effort: "high" }, workspaceRootPath: c,
       } }],
@@ -139,7 +139,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     expect(saved.canonical).toEqual(expected); // Protect every field except approved Team/child paths.
     expect((await readConfig(first, orgRunId)).executionTree).toEqual(expected);
     expect(JSON.parse(await fs.readFile(treeFile, "utf8"))).toEqual(expected);
-    expect(expected.schemaVersion).toBe(1);
+    expect(expected).not.toHaveProperty("schemaVersion");
     for (const member of expected.rootOrg.members) {
       for (const agent of member.members ?? [member]) expect(agent.platformAgentRunId).toBeNull();
     }

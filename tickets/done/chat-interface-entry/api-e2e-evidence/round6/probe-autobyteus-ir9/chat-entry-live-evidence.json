@@ -1,0 +1,67 @@
+{
+  "startedAt": "2026-09-29T14:46:52.644Z",
+  "runtime": "autobyteus",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 5247,
+      "details": {
+        "model": "claude-fable-5",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C23": {
+      "title": "DEC-017a: Agent Org agents use their own skills — org skills on the Skills page and in /, org agent and org team-local agent reply with their skill markers, links point to the org folders",
+      "result": "Fail",
+      "ms": 243338,
+      "error": "page.waitForFunction: Timeout 240000ms exceeded.",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 85909
+    },
+    {
+      "label": "frontend",
+      "pid": 85931
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 85931,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 85909,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-6HbZwi"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-6HbZwi",
+  "backendUrl": "http://127.0.0.1:59929",
+  "frontUrl": "http://127.0.0.1:59930",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T14:51:09.884Z"
+}

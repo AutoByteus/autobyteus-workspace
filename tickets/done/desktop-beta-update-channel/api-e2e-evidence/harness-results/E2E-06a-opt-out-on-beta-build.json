@@ -1,0 +1,159 @@
+{
+  "scenario": "E2E-06a-opt-out-on-beta-build",
+  "appVersion": "1.4.91-beta.1",
+  "code": "new",
+  "steps": [
+    {
+      "op": "window",
+      "arg": null,
+      "bridgeSetChannelType": "function",
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\n  \"channel\": \"beta\"\n}"
+    },
+    {
+      "op": "ipc-check",
+      "arg": null,
+      "state": {
+        "status": "available",
+        "currentVersion": "1.4.91-beta.1",
+        "currentVersionIsPrerelease": true,
+        "updateChannel": "beta",
+        "updateStaged": false,
+        "availableVersion": "1.4.91-beta.2",
+        "message": "Version 1.4.91-beta.2 is available.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\n  \"channel\": \"beta\"\n}"
+    },
+    {
+      "op": "ipc-set",
+      "arg": "stable",
+      "response": {
+        "accepted": true,
+        "persisted": true,
+        "state": {
+          "status": "no-update",
+          "currentVersion": "1.4.91-beta.1",
+          "currentVersionIsPrerelease": true,
+          "updateChannel": "stable",
+          "updateStaged": false,
+          "availableVersion": null,
+          "message": "You already have the latest version.",
+          "errorKind": null
+        }
+      },
+      "policy": {
+        "allowPrerelease": false,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\n  \"channel\": \"stable\"\n}"
+    },
+    {
+      "op": "ipc-check",
+      "arg": null,
+      "state": {
+        "status": "no-update",
+        "currentVersion": "1.4.91-beta.1",
+        "currentVersionIsPrerelease": true,
+        "updateChannel": "stable",
+        "updateStaged": false,
+        "availableVersion": null,
+        "message": "You already have the latest version.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": false,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\n  \"channel\": \"stable\"\n}"
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91-beta.2/beta-mac.yml",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91-beta.2/latest-mac.yml",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v3/repos/AutoByteus/autobyteus-workspace/releases/latest",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.90/latest-mac.yml",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v3/repos/AutoByteus/autobyteus-workspace/releases/latest",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.90/latest-mac.yml",
+      "status": 200
+    }
+  ],
+  "afterInitialize": {
+    "state": {
+      "status": "idle",
+      "currentVersion": "1.4.91-beta.1",
+      "currentVersionIsPrerelease": true,
+      "updateChannel": "beta",
+      "updateStaged": false,
+      "availableVersion": null,
+      "message": "Update status is idle.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": true,
+      "allowDowngrade": false
+    },
+    "channelFile": "{\n  \"channel\": \"beta\"\n}"
+  },
+  "final": {
+    "state": {
+      "status": "no-update",
+      "currentVersion": "1.4.91-beta.1",
+      "currentVersionIsPrerelease": true,
+      "updateChannel": "stable",
+      "updateStaged": false,
+      "availableVersion": null,
+      "message": "You already have the latest version.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": false,
+      "allowDowngrade": false
+    },
+    "channelFile": "{\n  \"channel\": \"stable\"\n}"
+  }
+}

@@ -1,0 +1,8 @@
+GROK_LIVE_DENY_TERMINAL TURN_INTERRUPTED {"turn_id":"0d5bda3e-2c55-4690-bbee-04dabdfcf446"}
+GROK_LIVE_INTERRUPT_LATENCY_MS 103
+GROK_LIVE_STANDALONE {"runId":"grok_live_standalone_5bf17136_103b_4ffe_bd8d_a46_d440dd25efb04359847f4279809d1815","sessionId":"01a0def4-b5e3-7720-9427-888b73e478f0","usageRows":5,"stepAUsageCalls":2,"providerCostUsd":0,"interruptLatencyMs":103}
+     × runs a standalone Grok agent through tools, approvals, interrupt, stop and exact restore (AC-003/004/006/008/009) 19584ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: turn terminal after a denied run_bash: expected 'TURN_INTERRUPTED' to be 'TURN_COMPLETED' // Object.is equality
+    229|     console.info("GROK_LIVE_DENY_TERMINAL", stepBTerminal.type, JSON.s…
+      Tests  1 failed | 2 skipped (3)

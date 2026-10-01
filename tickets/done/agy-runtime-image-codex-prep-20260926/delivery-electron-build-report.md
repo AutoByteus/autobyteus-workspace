@@ -1,0 +1,19 @@
+# Local Electron Test Build — DR-004 corrected artifact
+
+## Current result
+- User reported the DR-003 Electron App opened to a blank boot screen. Delivery reproduced the blank renderer in an isolated packaged Playwright launch while leaving the existing `/Applications/AutoByteus.app` and its data untouched. Backend readiness alone had been a false-positive packaging smoke; DR-003's test artifact is **superseded**.
+- `delivery-electron-blank-diagnostic.log` shows the packaged window's `file://.../dist/renderer/index.html` requested absent `./_nuxt/@vite/client` and an absolute worktree `node_modules/.pnpm/nuxt/.../entry.js`; body text was empty. The generated `dist/renderer/index.html` on disk had the same development-only references. Concurrent Nuxt dev activity during the first build is a likely cause of generated-output contamination, but the observed defect is the bad packaged HTML, not a proven source-code failure.
+- After the power-off no task-owned Nuxt dev process was listening. Delivery ran `pnpm exec nuxt cleanup`, then `pnpm generate:electron` with inherited `APP_ENV`, `DATABASE_URL`, `NUXT_TEST`, `VITEST`, and `ELECTRON_RUN_AS_NODE` unset. The clean generated HTML referenced the production `entry.BWqfUJBH.js` and CSS only.
+- The full README `pnpm build:electron:mac` was then rerun from `autobyteus-web` with the same clean environment, personal flavor, no timestamp/signing/notarization, `publish: never`. **Build completed successfully.** Current log: `delivery-electron-rebuild.log`; intermediate clean-generation log: `delivery-electron-clean-generate.log`.
+- Post-rebuild **static packaged** inspection using `@electron/asar` extracted the actual App's `dist/renderer/index.html`: `@vite/client` absent, absolute Nuxt source path absent, and all three referenced production entry CSS/JS assets present in the ASAR. This is not another Electron GUI launch or a user acceptance claim; the user explicitly requested a rebuild and will run it.
+
+## Rebuilt local artifact
+- App: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.85.dmg`
+- ZIP: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.85.zip`
+- Current DMG SHA-256: `6d4882d977eabf55e89c5dd153cddfdfc07ee980ba6d37e2d955fc61b6b5ffbb` (replaces the DR-003 DMG checksum). Generated App/DMG/ZIP remain unsigned, unnotarized local test artifacts, not a release.
+- Server production code is the already integrated `ee0e2c313` state; the selected Codex skill bundle remains separate at `a140474`, not embedded into the App. The existing `launch-electron-manual-test.sh` points to the rebuilt App and selects that package under an isolated profile. Because the older `/Applications/AutoByteus.app` is currently running, use this direct executable launcher for retest; Finder/`open` may merely activate the older installed instance.
+
+## Boundaries and next action
+- No source/test code, user production data, installed app, target branch, remote, version, or release was changed. The installed `/Applications/AutoByteus.app` is a different older ASAR and was not replaced. The first artifact's blank result is an explicit failed user-verification attempt, not an acceptance signal.
+- Await user retest of the rebuilt App. If it is still blank, capture the specific launch path and Electron renderer errors before further action. Preventing dev/prod generated-output overlap and detecting dev-only assets in future packaging is a potential build-pipeline Local Fix, not silently implemented during this delivery rebuild.

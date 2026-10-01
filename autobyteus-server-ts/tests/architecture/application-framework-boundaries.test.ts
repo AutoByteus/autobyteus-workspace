@@ -1110,7 +1110,7 @@ class ApplicationFrameworkBoundaryChecker {
       let blockSource = block.content;
       let sourceName = importer;
       if (block.src) {
-        const externalSourceEdge: ImportEdge = {
+        const scriptSrcEdge: ImportEdge = {
           specifier: block.src,
           line: block.loc.start.line,
           column: block.loc.start.column,
@@ -1128,16 +1128,16 @@ class ApplicationFrameworkBoundaryChecker {
           }));
           continue;
         }
-        const externalSourceViolation = this.evaluateImport(
+        const scriptSrcViolation = this.evaluateImport(
           policy,
           profile,
           importer,
           importer,
-          externalSourceEdge,
+          scriptSrcEdge,
           resolution,
         );
-        if (externalSourceViolation) {
-          violations.push(externalSourceViolation);
+        if (scriptSrcViolation) {
+          violations.push(scriptSrcViolation);
           continue;
         }
         sourceName = resolution.resolvedPath;
@@ -3015,9 +3015,7 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-tools/agent-team-management/get-agent-team-definition.ts",
       "autobyteus-server-ts/src/agent-tools/agent-team-management/list-agent-team-definitions.ts",
       "autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts",
-      "autobyteus-server-ts/src/api/graphql/types/external-channel-setup/resolver.ts",
       "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
-      "autobyteus-server-ts/src/external-channel/services/channel-binding-team-definition-options-service.ts",
       "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
       "autobyteus-server-ts/src/skill-improvement/services/retrospective-skill-improver-agent-settings-resolver.ts",
       "autobyteus-server-ts/src/skill-improvement/services/skill-improvement-target-context-resolver.ts",
@@ -3050,13 +3048,6 @@ describe("application framework architecture boundaries", () => {
     expect(ambientRunServiceImports).toEqual([
       "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts:getAgentRunService",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
-      "autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts:getAgentRunService",
-      "autobyteus-server-ts/src/external-channel/runtime/channel-binding-run-launcher.ts:getTeamRunService",
-      "autobyteus-server-ts/src/external-channel/runtime/channel-run-output-delivery-runtime.ts:getAgentRunService",
-      "autobyteus-server-ts/src/external-channel/runtime/channel-run-output-delivery-runtime.ts:getTeamRunService",
-      "autobyteus-server-ts/src/external-channel/runtime/channel-team-run-facade.ts:getTeamRunService",
-      "autobyteus-server-ts/src/external-channel/services/channel-binding-service.ts:getTeamRunService",
-      "autobyteus-server-ts/src/external-channel/services/channel-turn-reply-recovery-service.ts:getTeamRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
       "autobyteus-server-ts/src/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts:getAgentRunService",

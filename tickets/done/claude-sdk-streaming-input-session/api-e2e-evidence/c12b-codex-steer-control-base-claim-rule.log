@@ -1,0 +1,148 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T04:01:29.874878Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T04:01:29.971482Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22m[2mCodexAgentRunBackendFactory integration (live transport)[2m > [22m[2msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-26T04:01:34.833591Z[0m [31mERROR[0m [2mcodex_core::tools::router[0m[2m:[0m [3merror[0m[2m=[0mexec_command failed: UnknownProcessId { process_id: 24240 }
+
+ [31m❯[39m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m10 skipped[39m[2m)[22m[33m 5030[2mms[22m[39m
+     [2m[90m↓[39m[22m converts status and assistant text segments for a normal Codex turn
+     [2m[90m↓[39m[22m converts approval, tool execution, and terminal tool events for an approved command
+     [2m[90m↓[39m[22m converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled
+     [2m[90m↓[39m[22m converts denied approval into TOOL_DENIED and preserves post-deny assistant output
+     [2m[90m↓[39m[22m converts tool execution events without approval when autoExecuteTools is enabled
+[31m     [31m×[31m steers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)[39m[33m 5029[2mms[22m[39m
+     [2m[90m↓[39m[22m emits multiple reasoning segment ids when one turn reasons again between two tool calls
+     [2m[90m↓[39m[22m converts raw Codex fileChange activity into segment, lifecycle, and artifact events
+     [2m[90m↓[39m[22m executes open_tab through the live Codex Agent Tools MCP path
+     [2m[90m↓[39m[22m publishes an existing workspace file through the live Codex Agent Tools MCP path
+     [2m[90m↓[39m[22m executes the full browser tool surface through the live Codex Agent Tools MCP path
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts[2m > [22mCodexAgentRunBackendFactory integration (live transport)[2m > [22msteers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)
+[31m[1mAssertionError[22m: expected { accepted: true, turnId: null } to match object { accepted: true, …(1) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "accepted": true,[22m
+[32m-   "turnId": "01a0dbe0-1229-74f1-806a-09c28fa71119",[39m
+[31m+   "turnId": null,[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts:[2m898:22[22m[39m
+    [90m896| [39m        { lifecycleObserver[33m:[39m (fact) [33m=>[39m facts[33m.[39msecond[33m.[39m[34mpush[39m(fact) }[33m,[39m
+    [90m897| [39m      )[33m;[39m
+    [90m898| [39m      [34mexpect[39m(posted)[33m.[39m[34mtoMatchObject[39m({ accepted[33m:[39m [35mtrue[39m[33m,[39m turnId })[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m899| [39m
+    [90m900| [39m      await waitFor(() => facts.first.some(isTerminal) && facts.second…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m10 skipped[39m[90m (11)[39m
+[2m   Start at [22m 06:01:26
+[2m   Duration [22m 8.80s[2m (transform 2.40s, setup 34ms, import 3.31s, tests 5.03s, environment 0ms)[22m
+

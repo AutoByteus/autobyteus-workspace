@@ -1,0 +1,7443 @@
+{
+  "data": {
+    "__schema": {
+      "types": [
+        {
+          "name": "Query",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "health"
+            },
+            {
+              "name": "getServerSettings"
+            },
+            {
+              "name": "getEffectiveStreamingContentFlushIntervalMs"
+            },
+            {
+              "name": "getSearchConfig"
+            },
+            {
+              "name": "getWorkingContextCompactionStrategies"
+            },
+            {
+              "name": "getEffectiveWorkingContextCompactionStrategyId"
+            },
+            {
+              "name": "listApplications"
+            },
+            {
+              "name": "application"
+            },
+            {
+              "name": "applicationsCapability"
+            },
+            {
+              "name": "skills"
+            },
+            {
+              "name": "skill"
+            },
+            {
+              "name": "skillFileTree"
+            },
+            {
+              "name": "skillFileContent"
+            },
+            {
+              "name": "skillSources"
+            },
+            {
+              "name": "agentRunModelOptions"
+            },
+            {
+              "name": "teamRunModelOptions"
+            },
+            {
+              "name": "workspaces"
+            },
+            {
+              "name": "workspaceMetadata"
+            },
+            {
+              "name": "agentDefinition"
+            },
+            {
+              "name": "agentDefinitions"
+            },
+            {
+              "name": "agentTemplates"
+            },
+            {
+              "name": "agentTeamEndpointCatalog"
+            },
+            {
+              "name": "agentTeamDefinition"
+            },
+            {
+              "name": "agentTeamDefinitions"
+            },
+            {
+              "name": "agentTeamTemplates"
+            },
+            {
+              "name": "agentOrgDefinitions"
+            },
+            {
+              "name": "agentOrgDefinition"
+            },
+            {
+              "name": "agentOrgEndpointCatalog"
+            },
+            {
+              "name": "totalCostInPeriod"
+            },
+            {
+              "name": "tokenUsageTaskStatisticsInPeriod"
+            },
+            {
+              "name": "usageStatisticsInPeriod"
+            },
+            {
+              "name": "getAgentRunTokenUsageSummary"
+            },
+            {
+              "name": "getTeamRunTokenUsageSummary"
+            },
+            {
+              "name": "getTeamMemberTokenUsageSummary"
+            },
+            {
+              "name": "getAgentOrgRunConfig"
+            },
+            {
+              "name": "agentOrgRunModelOptions"
+            },
+            {
+              "name": "getAgentOrgRunInspection"
+            },
+            {
+              "name": "getAgentOrgMemberRunProjection"
+            },
+            {
+              "name": "getAgentOrgMemberEventMonitorActiveTracePage"
+            },
+            {
+              "name": "getAgentOrgExecutionCheckpoint"
+            },
+            {
+              "name": "getAgentOrgMemberTokenUsageSummary"
+            },
+            {
+              "name": "tokenUsageAnalytics"
+            },
+            {
+              "name": "availableToolNames"
+            },
+            {
+              "name": "availableOptionalInputProcessorNames"
+            },
+            {
+              "name": "availableOptionalLlmResponseProcessorNames"
+            },
+            {
+              "name": "availableOptionalToolExecutionResultProcessorNames"
+            },
+            {
+              "name": "availableOptionalToolInvocationPreprocessorNames"
+            },
+            {
+              "name": "availableOptionalLifecycleProcessorNames"
+            },
+            {
+              "name": "fileContent"
+            },
+            {
+              "name": "searchFiles"
+            },
+            {
+              "name": "folderChildren"
+            },
+            {
+              "name": "providerCredentialSettings"
+            },
+            {
+              "name": "providerModelCatalogSnapshots"
+            },
+            {
+              "name": "getGeminiSetupConfig"
+            },
+            {
+              "name": "qwenSetupStatus"
+            },
+            {
+              "name": "tools"
+            },
+            {
+              "name": "toolsGroupedByCategory"
+            },
+            {
+              "name": "mcpServers"
+            },
+            {
+              "name": "previewMcpServerTools"
+            },
+            {
+              "name": "listMemoryExplorerSources"
+            },
+            {
+              "name": "listAgentsWithMemory"
+            },
+            {
+              "name": "listAgentRunsWithMemory"
+            },
+            {
+              "name": "listAgentTeamsWithMemory"
+            },
+            {
+              "name": "listAgentTeamRunsWithMemory"
+            },
+            {
+              "name": "getAgentRunMemoryView"
+            },
+            {
+              "name": "getTeamMemberRunMemoryView"
+            },
+            {
+              "name": "getMemorySyncStatus"
+            },
+            {
+              "name": "getMemoryHubConnectionInfo"
+            },
+            {
+              "name": "listMemoryHubUrlCandidates"
+            },
+            {
+              "name": "listMemoryImports"
+            },
+            {
+              "name": "listWorkspaceRunHistory"
+            },
+            {
+              "name": "workspaceRunHistory"
+            },
+            {
+              "name": "getRunProjection"
+            },
+            {
+              "name": "getRunEventMonitorActiveTracePage"
+            },
+            {
+              "name": "getAgentRunResumeConfig"
+            },
+            {
+              "name": "getRunFileChanges"
+            },
+            {
+              "name": "getTeamCommunicationMessages"
+            },
+            {
+              "name": "getTaskDelegationRecords"
+            },
+            {
+              "name": "getTeamRunResumeConfig"
+            },
+            {
+              "name": "getTeamMemberRunProjection"
+            },
+            {
+              "name": "getTeamRunExecutionCheckpoint"
+            },
+            {
+              "name": "getTeamMemberEventMonitorActiveTracePage"
+            },
+            {
+              "name": "runtimeAvailabilities"
+            },
+            {
+              "name": "agentPackages"
+            },
+            {
+              "name": "applicationPackages"
+            },
+            {
+              "name": "applicationPackageDetails"
+            },
+            {
+              "name": "getAppDataMigrations"
+            },
+            {
+              "name": "skillImprovementCapability"
+            },
+            {
+              "name": "skillImprovementStrategyCatalog"
+            },
+            {
+              "name": "getAgentRunSkillImprovementEligibility"
+            },
+            {
+              "name": "getTeamMemberSkillImprovementEligibility"
+            },
+            {
+              "name": "getSkillImprovementRunRecord"
+            },
+            {
+              "name": "getSecretVaultStatus"
+            },
+            {
+              "name": "definitionAdmissionDiagnostics"
+            },
+            {
+              "name": "listCollaborationRootHistory"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "HealthStatus",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "status"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "String",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ServerSetting",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "value"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "isEditable"
+            },
+            {
+              "name": "isDeletable"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "Boolean",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "Int",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "SearchConfig",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "provider"
+            },
+            {
+              "name": "vaultHealth"
+            },
+            {
+              "name": "instructionCode"
+            },
+            {
+              "name": "serperStorageState"
+            },
+            {
+              "name": "serpapiStorageState"
+            },
+            {
+              "name": "vertexAiSearchStorageState"
+            },
+            {
+              "name": "vertexAiSearchServingConfig"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "WorkingContextCompactionStrategyOption",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "Application",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "localApplicationId"
+            },
+            {
+              "name": "packageId"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "iconAssetPath"
+            },
+            {
+              "name": "entryHtmlAssetPath"
+            },
+            {
+              "name": "writable"
+            },
+            {
+              "name": "bundleResources"
+            },
+            {
+              "name": "executionResourceSlots"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ApplicationExecutionResource",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "localId"
+            },
+            {
+              "name": "definitionId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ApplicationExecutionResourceKind",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "AGENT"
+            },
+            {
+              "name": "AGENT_TEAM"
+            }
+          ]
+        },
+        {
+          "name": "ApplicationExecutionResourceSlotSummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "slotKey"
+            },
+            {
+              "name": "required"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ApplicationsCapability",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "scope"
+            },
+            {
+              "name": "settingKey"
+            },
+            {
+              "name": "source"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ApplicationsCapabilityScope",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "BOUND_NODE"
+            }
+          ]
+        },
+        {
+          "name": "ApplicationsCapabilitySource",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SERVER_SETTING"
+            },
+            {
+              "name": "INITIALIZED_FROM_DISCOVERED_APPLICATIONS"
+            },
+            {
+              "name": "INITIALIZED_EMPTY_CATALOG"
+            }
+          ]
+        },
+        {
+          "name": "Skill",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "content"
+            },
+            {
+              "name": "rootPath"
+            },
+            {
+              "name": "fileCount"
+            },
+            {
+              "name": "isReadonly"
+            },
+            {
+              "name": "isDisabled"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "updatedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "SkillSource",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "path"
+            },
+            {
+              "name": "skillCount"
+            },
+            {
+              "name": "isDefault"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunModelOptionsObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "currentModelIdentifier"
+            },
+            {
+              "name": "currentContextTokens"
+            },
+            {
+              "name": "replacements"
+            },
+            {
+              "name": "unavailableReason"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "Float",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunModelOptionObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "contextTokens"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamScopeModelOptionsObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "currentModelIdentifier"
+            },
+            {
+              "name": "currentContextTokens"
+            },
+            {
+              "name": "replacements"
+            },
+            {
+              "name": "unavailableReason"
+            },
+            {
+              "name": "scopeKind"
+            },
+            {
+              "name": "scopeAddress"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "WorkspaceMetadata",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "workspaceId"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "config"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "absolutePath"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "isTemp"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "JSON",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentDefinition",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "role"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "toolNames"
+            },
+            {
+              "name": "inputProcessorNames"
+            },
+            {
+              "name": "llmResponseProcessorNames"
+            },
+            {
+              "name": "toolExecutionResultProcessorNames"
+            },
+            {
+              "name": "toolInvocationPreprocessorNames"
+            },
+            {
+              "name": "lifecycleProcessorNames"
+            },
+            {
+              "name": "skillNames"
+            },
+            {
+              "name": "ownershipScope"
+            },
+            {
+              "name": "ownerTeamId"
+            },
+            {
+              "name": "ownerTeamName"
+            },
+            {
+              "name": "ownerOrgId"
+            },
+            {
+              "name": "ownerOrgName"
+            },
+            {
+              "name": "ownerApplicationId"
+            },
+            {
+              "name": "ownerApplicationName"
+            },
+            {
+              "name": "ownerPackageId"
+            },
+            {
+              "name": "ownerLocalApplicationId"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentDefinitionOwnershipScope",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SHARED"
+            },
+            {
+              "name": "TEAM_LOCAL"
+            },
+            {
+              "name": "AGENT_ORG_OWNED"
+            },
+            {
+              "name": "APPLICATION_OWNED"
+            }
+          ]
+        },
+        {
+          "name": "DefaultLaunchConfig",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "llmConfig"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamDefinitionEndpointCatalog",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "from"
+            },
+            {
+              "name": "to"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamDefinitionEndpoint",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "address"
+            },
+            {
+              "name": "memberName"
+            },
+            {
+              "name": "definitionId"
+            },
+            {
+              "name": "coordinatorAddress"
+            },
+            {
+              "name": "coordinatorMemberName"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamDefinition",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "nodes"
+            },
+            {
+              "name": "coordinatorMemberName"
+            },
+            {
+              "name": "handoffs"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "ownershipScope"
+            },
+            {
+              "name": "ownerTeamId"
+            },
+            {
+              "name": "ownerTeamName"
+            },
+            {
+              "name": "ownerOrgId"
+            },
+            {
+              "name": "ownerOrgName"
+            },
+            {
+              "name": "ownerApplicationId"
+            },
+            {
+              "name": "ownerApplicationName"
+            },
+            {
+              "name": "ownerPackageId"
+            },
+            {
+              "name": "ownerLocalApplicationId"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            },
+            {
+              "name": "revision"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamMember",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "memberName"
+            },
+            {
+              "name": "ref"
+            },
+            {
+              "name": "refScope"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentMemberRefScope",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SHARED"
+            },
+            {
+              "name": "TEAM_LOCAL"
+            },
+            {
+              "name": "APPLICATION_OWNED"
+            }
+          ]
+        },
+        {
+          "name": "AgentTeamHandoff",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "from"
+            },
+            {
+              "name": "to"
+            },
+            {
+              "name": "rules"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamDefinitionOwnershipScope",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SHARED"
+            },
+            {
+              "name": "TEAM_LOCAL"
+            },
+            {
+              "name": "AGENT_ORG_OWNED"
+            },
+            {
+              "name": "APPLICATION_OWNED"
+            }
+          ]
+        },
+        {
+          "name": "AgentOrgDefinition",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "members"
+            },
+            {
+              "name": "handoffs"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            },
+            {
+              "name": "revision"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgMember",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "memberName"
+            },
+            {
+              "name": "ref"
+            },
+            {
+              "name": "refType"
+            },
+            {
+              "name": "refScope"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgMemberType",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "AGENT"
+            },
+            {
+              "name": "AGENT_TEAM"
+            }
+          ]
+        },
+        {
+          "name": "AgentOrgMemberScope",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SHARED"
+            },
+            {
+              "name": "AGENT_ORG_OWNED"
+            },
+            {
+              "name": "APPLICATION_OWNED"
+            }
+          ]
+        },
+        {
+          "name": "AgentOrgHandoff",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "from"
+            },
+            {
+              "name": "to"
+            },
+            {
+              "name": "rules"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DefinitionEndpointCatalog",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "from"
+            },
+            {
+              "name": "to"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DefinitionEndpoint",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "address"
+            },
+            {
+              "name": "memberName"
+            },
+            {
+              "name": "definitionId"
+            },
+            {
+              "name": "coordinatorAddress"
+            },
+            {
+              "name": "coordinatorMemberName"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DateTime",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageTaskStatisticsResultGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "rows"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageTaskStatisticsRowGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "rowId"
+            },
+            {
+              "name": "rowKind"
+            },
+            {
+              "name": "runId"
+            },
+            {
+              "name": "taskId"
+            },
+            {
+              "name": "rootTeamRunId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "createdTimeSource"
+            },
+            {
+              "name": "models"
+            },
+            {
+              "name": "modelDisplayNames"
+            },
+            {
+              "name": "runtimeKinds"
+            },
+            {
+              "name": "aggregate"
+            },
+            {
+              "name": "children"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageCostSummaryAggregateGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "grossInputTokens"
+            },
+            {
+              "name": "standardInputTokens"
+            },
+            {
+              "name": "cacheMissInputTokens"
+            },
+            {
+              "name": "cacheReadInputTokens"
+            },
+            {
+              "name": "cacheCreationInputTokens"
+            },
+            {
+              "name": "cacheCreation5mInputTokens"
+            },
+            {
+              "name": "cacheCreation1hInputTokens"
+            },
+            {
+              "name": "outputTokens"
+            },
+            {
+              "name": "reasoningOutputTokens"
+            },
+            {
+              "name": "billableOutputTokens"
+            },
+            {
+              "name": "totalTokens"
+            },
+            {
+              "name": "cacheReadInputTokenRate"
+            },
+            {
+              "name": "standardInputTokenRate"
+            },
+            {
+              "name": "cacheCreationInputTokenRate"
+            },
+            {
+              "name": "cacheState"
+            },
+            {
+              "name": "estimatedApiInputCost"
+            },
+            {
+              "name": "estimatedApiStandardInputCost"
+            },
+            {
+              "name": "estimatedApiCacheReadInputCost"
+            },
+            {
+              "name": "estimatedApiCacheCreationInputCost"
+            },
+            {
+              "name": "estimatedApiCacheCreation5mInputCost"
+            },
+            {
+              "name": "estimatedApiCacheCreation1hInputCost"
+            },
+            {
+              "name": "estimatedApiOutputCost"
+            },
+            {
+              "name": "estimatedApiReasoningOutputCost"
+            },
+            {
+              "name": "estimatedApiTotalCost"
+            },
+            {
+              "name": "currency"
+            },
+            {
+              "name": "apiCostStatus"
+            },
+            {
+              "name": "missingPriceDimensions"
+            },
+            {
+              "name": "pricingPolicyKey"
+            },
+            {
+              "name": "selectedPricingTierId"
+            },
+            {
+              "name": "unitPrices"
+            },
+            {
+              "name": "usageReportCount"
+            },
+            {
+              "name": "updatedAt"
+            },
+            {
+              "name": "observedRuntimeKinds"
+            },
+            {
+              "name": "observedModelIdentifiers"
+            },
+            {
+              "name": "observedModelProviders"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "SafeInt",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageUnitPricesGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "standardInput"
+            },
+            {
+              "name": "cacheReadInput"
+            },
+            {
+              "name": "cacheCreationInput"
+            },
+            {
+              "name": "cacheCreation5mInput"
+            },
+            {
+              "name": "cacheCreation1hInput"
+            },
+            {
+              "name": "output"
+            },
+            {
+              "name": "reasoningOutput"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageUnitPriceSummaryGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "status"
+            },
+            {
+              "name": "pricePerMillion"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UsageStatistics",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "llmModel"
+            },
+            {
+              "name": "modelDisplayName"
+            },
+            {
+              "name": "inputTokens"
+            },
+            {
+              "name": "promptTokens"
+            },
+            {
+              "name": "cacheReadInputTokens"
+            },
+            {
+              "name": "cacheCreationInputTokens"
+            },
+            {
+              "name": "cacheReadInputTokenRate"
+            },
+            {
+              "name": "cacheState"
+            },
+            {
+              "name": "outputTokens"
+            },
+            {
+              "name": "assistantTokens"
+            },
+            {
+              "name": "thinkingTokens"
+            },
+            {
+              "name": "reasoningTokens"
+            },
+            {
+              "name": "inputCost"
+            },
+            {
+              "name": "promptCost"
+            },
+            {
+              "name": "outputCost"
+            },
+            {
+              "name": "assistantCost"
+            },
+            {
+              "name": "thinkingCost"
+            },
+            {
+              "name": "reasoningCost"
+            },
+            {
+              "name": "totalCost"
+            },
+            {
+              "name": "currency"
+            },
+            {
+              "name": "apiCostStatus"
+            },
+            {
+              "name": "aggregate"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageRunSummaryGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "grossInputTokens"
+            },
+            {
+              "name": "standardInputTokens"
+            },
+            {
+              "name": "cacheMissInputTokens"
+            },
+            {
+              "name": "cacheReadInputTokens"
+            },
+            {
+              "name": "cacheCreationInputTokens"
+            },
+            {
+              "name": "cacheCreation5mInputTokens"
+            },
+            {
+              "name": "cacheCreation1hInputTokens"
+            },
+            {
+              "name": "outputTokens"
+            },
+            {
+              "name": "reasoningOutputTokens"
+            },
+            {
+              "name": "billableOutputTokens"
+            },
+            {
+              "name": "totalTokens"
+            },
+            {
+              "name": "cacheReadInputTokenRate"
+            },
+            {
+              "name": "standardInputTokenRate"
+            },
+            {
+              "name": "cacheCreationInputTokenRate"
+            },
+            {
+              "name": "cacheState"
+            },
+            {
+              "name": "estimatedApiInputCost"
+            },
+            {
+              "name": "estimatedApiStandardInputCost"
+            },
+            {
+              "name": "estimatedApiCacheReadInputCost"
+            },
+            {
+              "name": "estimatedApiCacheCreationInputCost"
+            },
+            {
+              "name": "estimatedApiCacheCreation5mInputCost"
+            },
+            {
+              "name": "estimatedApiCacheCreation1hInputCost"
+            },
+            {
+              "name": "estimatedApiOutputCost"
+            },
+            {
+              "name": "estimatedApiReasoningOutputCost"
+            },
+            {
+              "name": "estimatedApiTotalCost"
+            },
+            {
+              "name": "currency"
+            },
+            {
+              "name": "apiCostStatus"
+            },
+            {
+              "name": "missingPriceDimensions"
+            },
+            {
+              "name": "pricingPolicyKey"
+            },
+            {
+              "name": "selectedPricingTierId"
+            },
+            {
+              "name": "unitPrices"
+            },
+            {
+              "name": "usageReportCount"
+            },
+            {
+              "name": "updatedAt"
+            },
+            {
+              "name": "observedRuntimeKinds"
+            },
+            {
+              "name": "observedModelIdentifiers"
+            },
+            {
+              "name": "observedModelProviders"
+            },
+            {
+              "name": "runId"
+            },
+            {
+              "name": "rootTeamRunId"
+            },
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "workspaceId"
+            },
+            {
+              "name": "latestPromptTokens"
+            },
+            {
+              "name": "effectiveContextWindowTokens"
+            },
+            {
+              "name": "contextWindowUsagePercent"
+            },
+            {
+              "name": "latestModelProvider"
+            },
+            {
+              "name": "latestModelIdentifier"
+            },
+            {
+              "name": "latestRuntimeKind"
+            },
+            {
+              "name": "latestSelectedRawModelId"
+            },
+            {
+              "name": "hasCacheWriteRateAssumption"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRunConfigObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "orgRunId"
+            },
+            {
+              "name": "executionTree"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "editability"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunModelConfigEditabilityObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "editable"
+            },
+            {
+              "name": "reason"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRunModelOptionObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "currentModelIdentifier"
+            },
+            {
+              "name": "currentContextTokens"
+            },
+            {
+              "name": "replacements"
+            },
+            {
+              "name": "unavailableReason"
+            },
+            {
+              "name": "scopeKind"
+            },
+            {
+              "name": "scopeAddress"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgTeamWorkspacePatchInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "teamAddress"
+            },
+            {
+              "name": "workspaceRootPath"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgMemberRunProjectionPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "agentRunId"
+            },
+            {
+              "name": "memberAddress"
+            },
+            {
+              "name": "conversation"
+            },
+            {
+              "name": "activities"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "lastActivityAt"
+            },
+            {
+              "name": "hasEarlierActiveTraceEvents"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorActiveTracePage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "events"
+            },
+            {
+              "name": "beforeCursor"
+            },
+            {
+              "name": "hasEarlier"
+            },
+            {
+              "name": "loadedEarlierCount"
+            },
+            {
+              "name": "activeGeneration"
+            },
+            {
+              "name": "cursorStatus"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorActiveTracePageEvent",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "turnGroupId"
+            },
+            {
+              "name": "occurredAtMs"
+            },
+            {
+              "name": "visuals"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ID",
+          "kind": "SCALAR",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorActiveTracePageVisual",
+          "kind": "UNION",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorUserVisual",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "visualId"
+            },
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "kindOrdinal"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "text"
+            },
+            {
+              "name": "attachments"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorActiveTraceAttachment",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "attachmentId"
+            },
+            {
+              "name": "fileType"
+            },
+            {
+              "name": "fileName"
+            },
+            {
+              "name": "locator"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorAssistantTextVisual",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "visualId"
+            },
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "kindOrdinal"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "content"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorThinkingVisual",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "visualId"
+            },
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "kindOrdinal"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "content"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorToolCardVisual",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "visualId"
+            },
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "kindOrdinal"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "invocationId"
+            },
+            {
+              "name": "cardKind"
+            },
+            {
+              "name": "toolName"
+            },
+            {
+              "name": "statusKey"
+            },
+            {
+              "name": "summaryArgs"
+            },
+            {
+              "name": "errorMessage"
+            },
+            {
+              "name": "approvalTarget"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorToolSummaryArgs",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "path"
+            },
+            {
+              "name": "file_path"
+            },
+            {
+              "name": "filepath"
+            },
+            {
+              "name": "filename"
+            },
+            {
+              "name": "target_path"
+            },
+            {
+              "name": "command"
+            },
+            {
+              "name": "cmd"
+            },
+            {
+              "name": "script"
+            },
+            {
+              "name": "query"
+            },
+            {
+              "name": "prompt"
+            },
+            {
+              "name": "url"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "text"
+            },
+            {
+              "name": "title"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "raw"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorApprovalTarget",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "agentRunId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorMediaVisual",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "visualId"
+            },
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "kindOrdinal"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "mediaType"
+            },
+            {
+              "name": "urls"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "EventMonitorCompactionVisual",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "visualId"
+            },
+            {
+              "name": "eventId"
+            },
+            {
+              "name": "kindOrdinal"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "activityId"
+            },
+            {
+              "name": "phase"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "turnId"
+            },
+            {
+              "name": "rawTraceCount"
+            },
+            {
+              "name": "semanticFactCount"
+            },
+            {
+              "name": "provider"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgExecutionCheckpointPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "orgRunId"
+            },
+            {
+              "name": "changeSequence"
+            },
+            {
+              "name": "hasOpenExecutionWork"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsResultGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "appliedRange"
+            },
+            {
+              "name": "comparisonRange"
+            },
+            {
+              "name": "coverage"
+            },
+            {
+              "name": "comparisonCoverage"
+            },
+            {
+              "name": "appliedFilters"
+            },
+            {
+              "name": "selectedAggregate"
+            },
+            {
+              "name": "selectedCostQuality"
+            },
+            {
+              "name": "comparisonAggregate"
+            },
+            {
+              "name": "comparisonCostQuality"
+            },
+            {
+              "name": "activeDayCount"
+            },
+            {
+              "name": "trendBuckets"
+            },
+            {
+              "name": "comparisonBuckets"
+            },
+            {
+              "name": "breakdownRows"
+            },
+            {
+              "name": "filterOptions"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsAppliedRangeGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "startTime"
+            },
+            {
+              "name": "endTimeExclusive"
+            },
+            {
+              "name": "preset"
+            },
+            {
+              "name": "granularity"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsRangeGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "startTime"
+            },
+            {
+              "name": "endTimeExclusive"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsCoverageGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "status"
+            },
+            {
+              "name": "coverageStart"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsAppliedFiltersGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "providerKey"
+            },
+            {
+              "name": "modelKey"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsCostQualityGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "currency"
+            },
+            {
+              "name": "missingPriceDimensions"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsBucketGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "bucketStart"
+            },
+            {
+              "name": "bucketEndExclusive"
+            },
+            {
+              "name": "aggregate"
+            },
+            {
+              "name": "costQuality"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsBreakdownRowGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "rowKey"
+            },
+            {
+              "name": "identityKey"
+            },
+            {
+              "name": "providerKey"
+            },
+            {
+              "name": "modelKey"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "modelProvider"
+            },
+            {
+              "name": "providerName"
+            },
+            {
+              "name": "providerDisplayName"
+            },
+            {
+              "name": "modelIdentifier"
+            },
+            {
+              "name": "modelValue"
+            },
+            {
+              "name": "modelDisplayName"
+            },
+            {
+              "name": "aggregate"
+            },
+            {
+              "name": "costQuality"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsFilterOptionsGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runtimeKinds"
+            },
+            {
+              "name": "providers"
+            },
+            {
+              "name": "models"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsProviderOptionGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "modelProvider"
+            },
+            {
+              "name": "providerName"
+            },
+            {
+              "name": "displayName"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsModelOptionGraphql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "modelIdentifier"
+            },
+            {
+              "name": "modelValue"
+            },
+            {
+              "name": "displayName"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TokenUsageAnalyticsInputGraphql",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "rangePreset"
+            },
+            {
+              "name": "startTime"
+            },
+            {
+              "name": "endTimeExclusive"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "providerKey"
+            },
+            {
+              "name": "modelKey"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "ProviderCredentialSettingObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "provider"
+            },
+            {
+              "name": "apiKeyConfigured"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CatalogProviderObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "providerType"
+            },
+            {
+              "name": "isCustom"
+            },
+            {
+              "name": "baseUrl"
+            },
+            {
+              "name": "catalogMode"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ProviderModelCatalogSnapshotObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "ownerProvider"
+            },
+            {
+              "name": "sources"
+            },
+            {
+              "name": "llmModels"
+            },
+            {
+              "name": "audioModels"
+            },
+            {
+              "name": "imageModels"
+            },
+            {
+              "name": "videoModels"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ModelSourceStatusObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "modelKind"
+            },
+            {
+              "name": "state"
+            },
+            {
+              "name": "modelCount"
+            },
+            {
+              "name": "successfulUnitCount"
+            },
+            {
+              "name": "failedUnitCount"
+            },
+            {
+              "name": "safeMessage"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ModelDetail",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "modelIdentifier"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "value"
+            },
+            {
+              "name": "canonicalName"
+            },
+            {
+              "name": "providerId"
+            },
+            {
+              "name": "providerName"
+            },
+            {
+              "name": "providerType"
+            },
+            {
+              "name": "runtime"
+            },
+            {
+              "name": "hostUrl"
+            },
+            {
+              "name": "configSchema"
+            },
+            {
+              "name": "maxContextTokens"
+            },
+            {
+              "name": "activeContextTokens"
+            },
+            {
+              "name": "maxInputTokens"
+            },
+            {
+              "name": "maxOutputTokens"
+            },
+            {
+              "name": "metadataProvenance"
+            },
+            {
+              "name": "selectionPresentation"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ModelMetadataProvenance",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "LIVE"
+            },
+            {
+              "name": "CURATED_FALLBACK"
+            },
+            {
+              "name": "CURATED_ONLY"
+            }
+          ]
+        },
+        {
+          "name": "ModelSelectionPresentation",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "recommended"
+            },
+            {
+              "name": "aliasOfModelIdentifier"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GeminiSetupStateObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "activeMode"
+            },
+            {
+              "name": "aiStudioConfigured"
+            },
+            {
+              "name": "vertexExpressConfigured"
+            },
+            {
+              "name": "vertexProject"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GeminiSetupMode",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "AI_STUDIO"
+            },
+            {
+              "name": "VERTEX_EXPRESS"
+            },
+            {
+              "name": "VERTEX_PROJECT"
+            }
+          ]
+        },
+        {
+          "name": "GeminiVertexProjectObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "project"
+            },
+            {
+              "name": "location"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "QwenSetupStatus",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "effectiveBaseUrl"
+            },
+            {
+              "name": "endpointSource"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "QwenEndpointSource",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "DEFAULT"
+            },
+            {
+              "name": "CONFIGURED"
+            }
+          ]
+        },
+        {
+          "name": "ToolDefinitionDetail",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "origin"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "argumentSchema"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ToolOriginEnum",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "LOCAL"
+            },
+            {
+              "name": "MCP"
+            }
+          ]
+        },
+        {
+          "name": "ToolArgumentSchema",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "parameters"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ToolParameterDefinition",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "paramType"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "required"
+            },
+            {
+              "name": "defaultValue"
+            },
+            {
+              "name": "enumValues"
+            },
+            {
+              "name": "jsonSchema"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ToolParameterTypeEnum",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "STRING"
+            },
+            {
+              "name": "INTEGER"
+            },
+            {
+              "name": "FLOAT"
+            },
+            {
+              "name": "BOOLEAN"
+            },
+            {
+              "name": "ENUM"
+            },
+            {
+              "name": "OBJECT"
+            },
+            {
+              "name": "ARRAY"
+            }
+          ]
+        },
+        {
+          "name": "ToolCategoryGroup",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "categoryName"
+            },
+            {
+              "name": "tools"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "McpServerConfigUnion",
+          "kind": "UNION",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "StdioMcpServerConfig",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "serverId"
+            },
+            {
+              "name": "transportType"
+            },
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "toolNamePrefix"
+            },
+            {
+              "name": "command"
+            },
+            {
+              "name": "args"
+            },
+            {
+              "name": "env"
+            },
+            {
+              "name": "cwd"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "McpTransportTypeEnum",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "STDIO"
+            },
+            {
+              "name": "STREAMABLE_HTTP"
+            }
+          ]
+        },
+        {
+          "name": "StreamableHttpMcpServerConfig",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "serverId"
+            },
+            {
+              "name": "transportType"
+            },
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "toolNamePrefix"
+            },
+            {
+              "name": "url"
+            },
+            {
+              "name": "token"
+            },
+            {
+              "name": "headers"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "McpServerInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "serverId"
+            },
+            {
+              "name": "transportType"
+            },
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "toolNamePrefix"
+            },
+            {
+              "name": "stdioConfig"
+            },
+            {
+              "name": "streamableHttpConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "StdioMcpServerConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "command"
+            },
+            {
+              "name": "args"
+            },
+            {
+              "name": "env"
+            },
+            {
+              "name": "cwd"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "StreamableHttpMcpServerConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "url"
+            },
+            {
+              "name": "token"
+            },
+            {
+              "name": "headers"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "MemoryExplorerSourceOption",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "key"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "label"
+            },
+            {
+              "name": "sourceNodeId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "readOnly"
+            },
+            {
+              "name": "lastImportedAt"
+            },
+            {
+              "name": "lastSyncStatus"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryExplorerSourceType",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "LOCAL"
+            },
+            {
+              "name": "IMPORTED"
+            }
+          ]
+        },
+        {
+          "name": "AgentWithMemoryPage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "entries"
+            },
+            {
+              "name": "total"
+            },
+            {
+              "name": "page"
+            },
+            {
+              "name": "pageSize"
+            },
+            {
+              "name": "totalPages"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentWithMemorySummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "attribution"
+            },
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "stableId"
+            },
+            {
+              "name": "runCount"
+            },
+            {
+              "name": "latestMemoryAt"
+            },
+            {
+              "name": "memory"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentMemoryAttribution",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "DEFINITION"
+            },
+            {
+              "name": "UNATTRIBUTED"
+            }
+          ]
+        },
+        {
+          "name": "MemoryAvailabilitySummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "latestMemoryAt"
+            },
+            {
+              "name": "hasWorkingContext"
+            },
+            {
+              "name": "hasEpisodic"
+            },
+            {
+              "name": "hasSemantic"
+            },
+            {
+              "name": "hasRawTraces"
+            },
+            {
+              "name": "hasRawArchive"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryExplorerSourceInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "type"
+            },
+            {
+              "name": "sourceNodeId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentRunMemoryPage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "entries"
+            },
+            {
+              "name": "total"
+            },
+            {
+              "name": "page"
+            },
+            {
+              "name": "pageSize"
+            },
+            {
+              "name": "totalPages"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentRunMemorySummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runId"
+            },
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "agentName"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "lastUpdatedAt"
+            },
+            {
+              "name": "memory"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentWithMemorySelectorInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "attribution"
+            },
+            {
+              "name": "agentDefinitionId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamWithMemoryPage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "entries"
+            },
+            {
+              "name": "total"
+            },
+            {
+              "name": "page"
+            },
+            {
+              "name": "pageSize"
+            },
+            {
+              "name": "totalPages"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamWithMemorySummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "teamDefinitionId"
+            },
+            {
+              "name": "teamDefinitionName"
+            },
+            {
+              "name": "teamRunCount"
+            },
+            {
+              "name": "memberMemoryCount"
+            },
+            {
+              "name": "latestMemoryAt"
+            },
+            {
+              "name": "memory"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamRunMemoryPage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "entries"
+            },
+            {
+              "name": "total"
+            },
+            {
+              "name": "page"
+            },
+            {
+              "name": "pageSize"
+            },
+            {
+              "name": "totalPages"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamRunMemorySummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "teamRunId"
+            },
+            {
+              "name": "teamDefinitionId"
+            },
+            {
+              "name": "teamDefinitionName"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "lastUpdatedAt"
+            },
+            {
+              "name": "memory"
+            },
+            {
+              "name": "memberTargets"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamMemberMemoryTargetSummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "memberAddress"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "agentRunId"
+            },
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "lastUpdatedAt"
+            },
+            {
+              "name": "memory"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentMemoryView",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runId"
+            },
+            {
+              "name": "workingContext"
+            },
+            {
+              "name": "episodic"
+            },
+            {
+              "name": "semantic"
+            },
+            {
+              "name": "rawTraces"
+            },
+            {
+              "name": "rawTraceFiles"
+            },
+            {
+              "name": "selectedRawTraceFileName"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryMessage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "role"
+            },
+            {
+              "name": "content"
+            },
+            {
+              "name": "reasoning"
+            },
+            {
+              "name": "toolPayload"
+            },
+            {
+              "name": "ts"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryTraceEvent",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "scope"
+            },
+            {
+              "name": "id"
+            },
+            {
+              "name": "traceType"
+            },
+            {
+              "name": "sourceEvent"
+            },
+            {
+              "name": "content"
+            },
+            {
+              "name": "toolName"
+            },
+            {
+              "name": "toolCallId"
+            },
+            {
+              "name": "toolArgs"
+            },
+            {
+              "name": "toolResult"
+            },
+            {
+              "name": "toolError"
+            },
+            {
+              "name": "media"
+            },
+            {
+              "name": "fileAttachments"
+            },
+            {
+              "name": "turnId"
+            },
+            {
+              "name": "seq"
+            },
+            {
+              "name": "ts"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryFileAttachment",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "uri"
+            },
+            {
+              "name": "fileType"
+            },
+            {
+              "name": "fileName"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RawTraceFileSummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "fileName"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "recordCount"
+            },
+            {
+              "name": "segmentIndex"
+            },
+            {
+              "name": "firstTimestamp"
+            },
+            {
+              "name": "lastTimestamp"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemorySyncStatusGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "hub"
+            },
+            {
+              "name": "source"
+            },
+            {
+              "name": "connectionInfo"
+            },
+            {
+              "name": "sourceState"
+            },
+            {
+              "name": "imports"
+            },
+            {
+              "name": "oneTimePlaintextToken"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemorySyncHubConfigGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "advertisedHubBaseUrl"
+            },
+            {
+              "name": "updatedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemorySyncSourceConfigGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "sourceNodeId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "hubBaseUrl"
+            },
+            {
+              "name": "hubTokenConfigured"
+            },
+            {
+              "name": "hubTokenPreview"
+            },
+            {
+              "name": "backgroundEnabled"
+            },
+            {
+              "name": "intervalMs"
+            },
+            {
+              "name": "batchSize"
+            },
+            {
+              "name": "updatedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryHubConnectionInfoGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "hubEnabled"
+            },
+            {
+              "name": "advertisedHubBaseUrl"
+            },
+            {
+              "name": "ingestEndpointUrl"
+            },
+            {
+              "name": "healthEndpointUrl"
+            },
+            {
+              "name": "credentials"
+            },
+            {
+              "name": "secureTransportWarning"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryHubCredentialSummaryGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "credentialId"
+            },
+            {
+              "name": "label"
+            },
+            {
+              "name": "boundSourceNodeId"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "lastUsedAt"
+            },
+            {
+              "name": "revokedAt"
+            },
+            {
+              "name": "status"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemorySyncSourceStateGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "jobState"
+            },
+            {
+              "name": "lastSuccessfulSyncAt"
+            },
+            {
+              "name": "lastError"
+            },
+            {
+              "name": "trackedFileCount"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "MemoryImportSummaryGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "sourceNodeId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "lastKnownEndpoint"
+            },
+            {
+              "name": "firstImportedAt"
+            },
+            {
+              "name": "lastImportedAt"
+            },
+            {
+              "name": "lastSyncStatus"
+            },
+            {
+              "name": "lastError"
+            },
+            {
+              "name": "fileCount"
+            },
+            {
+              "name": "totalBytes"
+            },
+            {
+              "name": "lastCommittedBatchId"
+            },
+            {
+              "name": "lastCommittedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ServerAddressCandidateGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "kind"
+            },
+            {
+              "name": "label"
+            },
+            {
+              "name": "baseUrl"
+            },
+            {
+              "name": "source"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "WorkspaceRunHistoryGroupObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "workspaceName"
+            },
+            {
+              "name": "agentDefinitions"
+            },
+            {
+              "name": "teamDefinitions"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunHistoryAgentGroupObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "agentName"
+            },
+            {
+              "name": "runs"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunHistoryItemObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runId"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "archivedAt"
+            },
+            {
+              "name": "terminatedAt"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "shouldConnectStream"
+            },
+            {
+              "name": "statusSource"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "WorkspaceHistoryTeamDefinitionObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "teamDefinitionId"
+            },
+            {
+              "name": "teamDefinitionName"
+            },
+            {
+              "name": "runs"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "WorkspaceHistoryTeamRunItemObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "teamRunId"
+            },
+            {
+              "name": "teamDefinitionId"
+            },
+            {
+              "name": "teamDefinitionName"
+            },
+            {
+              "name": "coordinatorAddress"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "archivedAt"
+            },
+            {
+              "name": "terminatedAt"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "members"
+            },
+            {
+              "name": "rootTeam"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "WorkspaceHistoryTeamRunMemberObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "memberAddress"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "agentRunId"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "workspaceRootPath"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunProjectionPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runId"
+            },
+            {
+              "name": "conversation"
+            },
+            {
+              "name": "activities"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "lastActivityAt"
+            },
+            {
+              "name": "hasEarlierActiveTraceEvents"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunResumeConfigPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runId"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "metadataConfig"
+            },
+            {
+              "name": "modelConfigEditability"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunMetadataConfigObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            },
+            {
+              "name": "autoExecuteTools"
+            },
+            {
+              "name": "skillAccessMode"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "runtimeReference"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "SkillAccessModeEnum",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "PRELOADED_ONLY"
+            },
+            {
+              "name": "NONE"
+            }
+          ]
+        },
+        {
+          "name": "RunRuntimeReferenceObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "sessionId"
+            },
+            {
+              "name": "threadId"
+            },
+            {
+              "name": "metadata"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunFileChangeEntryObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "runId"
+            },
+            {
+              "name": "path"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "sourceTool"
+            },
+            {
+              "name": "sourceInvocationId"
+            },
+            {
+              "name": "content"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "updatedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamCommunicationMessageObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "messageId"
+            },
+            {
+              "name": "senderAgentRunId"
+            },
+            {
+              "name": "receiverAgentRunId"
+            },
+            {
+              "name": "content"
+            },
+            {
+              "name": "messageType"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "referenceFiles"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamCommunicationReferenceFileObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "referenceId"
+            },
+            {
+              "name": "path"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "updatedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TaskDelegationRecordObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "taskId"
+            },
+            {
+              "name": "delegatorAgentRunId"
+            },
+            {
+              "name": "recipientAddress"
+            },
+            {
+              "name": "targetAgentRunId"
+            },
+            {
+              "name": "targetTeamRunId"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "referenceFiles"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "updates"
+            },
+            {
+              "name": "createdAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TaskDelegationReferenceFileObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "referenceId"
+            },
+            {
+              "name": "path"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "createdAt"
+            },
+            {
+              "name": "updatedAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TaskDelegationUpdateObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "submissionId"
+            },
+            {
+              "name": "reviewId"
+            },
+            {
+              "name": "interruptionId"
+            },
+            {
+              "name": "reviewedSubmissionId"
+            },
+            {
+              "name": "decision"
+            },
+            {
+              "name": "content"
+            },
+            {
+              "name": "referenceFiles"
+            },
+            {
+              "name": "createdAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamRunResumeConfigPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "teamRunId"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "executionTree"
+            },
+            {
+              "name": "modelConfigEditability"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamMemberRunProjectionPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "agentRunId"
+            },
+            {
+              "name": "conversation"
+            },
+            {
+              "name": "activities"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "lastActivityAt"
+            },
+            {
+              "name": "hasEarlierActiveTraceEvents"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TeamRunExecutionCheckpointPayload",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "rootTeamRunId"
+            },
+            {
+              "name": "changeSequence"
+            },
+            {
+              "name": "hasOpenExecutionWork"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RuntimeAvailabilityObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "reason"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentPackage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "packageId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "path"
+            },
+            {
+              "name": "sourceKind"
+            },
+            {
+              "name": "source"
+            },
+            {
+              "name": "sharedAgentCount"
+            },
+            {
+              "name": "teamLocalAgentCount"
+            },
+            {
+              "name": "agentTeamCount"
+            },
+            {
+              "name": "applicationCount"
+            },
+            {
+              "name": "isDefault"
+            },
+            {
+              "name": "isRemovable"
+            },
+            {
+              "name": "updateInfo"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentPackageSourceKind",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "BUILT_IN"
+            },
+            {
+              "name": "LOCAL_PATH"
+            },
+            {
+              "name": "GITHUB_REPOSITORY"
+            }
+          ]
+        },
+        {
+          "name": "AgentPackageUpdateInfo",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "status"
+            },
+            {
+              "name": "canCheck"
+            },
+            {
+              "name": "canUpdate"
+            },
+            {
+              "name": "canReload"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "installedRevision"
+            },
+            {
+              "name": "latestRevision"
+            },
+            {
+              "name": "checkedAt"
+            },
+            {
+              "name": "lastError"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentPackageUpdateStatus",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "NOT_APPLICABLE"
+            },
+            {
+              "name": "RELOAD_AVAILABLE"
+            },
+            {
+              "name": "NOT_CHECKED"
+            },
+            {
+              "name": "UNKNOWN"
+            },
+            {
+              "name": "UP_TO_DATE"
+            },
+            {
+              "name": "UPDATE_AVAILABLE"
+            },
+            {
+              "name": "CHECK_FAILED"
+            },
+            {
+              "name": "UPDATE_FAILED"
+            }
+          ]
+        },
+        {
+          "name": "ApplicationPackage",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "packageId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "sourceKind"
+            },
+            {
+              "name": "sourceSummary"
+            },
+            {
+              "name": "applicationCount"
+            },
+            {
+              "name": "isPlatformOwned"
+            },
+            {
+              "name": "isRemovable"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ApplicationPackageSourceKind",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "BUILT_IN"
+            },
+            {
+              "name": "LOCAL_PATH"
+            },
+            {
+              "name": "GITHUB_REPOSITORY"
+            }
+          ]
+        },
+        {
+          "name": "ApplicationPackageDetails",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "packageId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "sourceKind"
+            },
+            {
+              "name": "sourceSummary"
+            },
+            {
+              "name": "rootPath"
+            },
+            {
+              "name": "source"
+            },
+            {
+              "name": "managedInstallPath"
+            },
+            {
+              "name": "bundledSourceRootPath"
+            },
+            {
+              "name": "applicationCount"
+            },
+            {
+              "name": "isPlatformOwned"
+            },
+            {
+              "name": "isRemovable"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AppDataMigrationRecordObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "migrationId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "requiredOnStartup"
+            },
+            {
+              "name": "canRetry"
+            },
+            {
+              "name": "recoveryAction"
+            },
+            {
+              "name": "attempts"
+            },
+            {
+              "name": "startedAt"
+            },
+            {
+              "name": "completedAt"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "errorMessage"
+            },
+            {
+              "name": "logPath"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AppDataMigrationStatus",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "NOT_RUN"
+            },
+            {
+              "name": "RUNNING"
+            },
+            {
+              "name": "SUCCEEDED"
+            },
+            {
+              "name": "FAILED"
+            },
+            {
+              "name": "SUCCEEDED_WITH_WARNINGS"
+            }
+          ]
+        },
+        {
+          "name": "AppDataMigrationRecoveryAction",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "MANUAL_RETRY"
+            },
+            {
+              "name": "RESTART_TO_RETRY"
+            },
+            {
+              "name": "NONE"
+            }
+          ]
+        },
+        {
+          "name": "SkillImprovementCapability",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "settingKey"
+            },
+            {
+              "name": "source"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementStrategyCatalog",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "triggerStrategies"
+            },
+            {
+              "name": "improverStrategies"
+            },
+            {
+              "name": "defaultTriggerStrategy"
+            },
+            {
+              "name": "defaultImproverStrategy"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementStrategyDescriptor",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "label"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "description"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementEligibility",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "eligible"
+            },
+            {
+              "name": "reasons"
+            },
+            {
+              "name": "warnings"
+            },
+            {
+              "name": "skillTargets"
+            },
+            {
+              "name": "effectiveConfig"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementSkillTarget",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "skillName"
+            },
+            {
+              "name": "skillRootPath"
+            },
+            {
+              "name": "skillMdPath"
+            },
+            {
+              "name": "sourceLabel"
+            },
+            {
+              "name": "isWritable"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementEffectiveConfig",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "triggerStrategy"
+            },
+            {
+              "name": "improverStrategy"
+            },
+            {
+              "name": "improverAgentDefinitionId"
+            },
+            {
+              "name": "resolvedAt"
+            },
+            {
+              "name": "sourceTrace"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementConfigSourceTraceEntry",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "source"
+            },
+            {
+              "name": "fields"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementRunRecord",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "improvementRunId"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "requestedAt"
+            },
+            {
+              "name": "completedAt"
+            },
+            {
+              "name": "triggerStrategy"
+            },
+            {
+              "name": "improverStrategy"
+            },
+            {
+              "name": "target"
+            },
+            {
+              "name": "effectiveConfig"
+            },
+            {
+              "name": "sourceRunIds"
+            },
+            {
+              "name": "improverAgentDefinitionId"
+            },
+            {
+              "name": "improverRunId"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "skillTargets"
+            },
+            {
+              "name": "evidenceSummaryHash"
+            },
+            {
+              "name": "notificationSummary"
+            },
+            {
+              "name": "errors"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementTargetRef",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "runId"
+            },
+            {
+              "name": "teamRunId"
+            },
+            {
+              "name": "agentRunId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementNotificationSummary",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "status"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "error"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "SecretVaultStatus",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "health"
+            },
+            {
+              "name": "instructionCode"
+            },
+            {
+              "name": "assurance"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DefinitionAdmissionDiagnostic",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "subjectKind"
+            },
+            {
+              "name": "sourceClass"
+            },
+            {
+              "name": "packageRoot"
+            },
+            {
+              "name": "definitionPath"
+            },
+            {
+              "name": "definitionId"
+            },
+            {
+              "name": "expectedFamily"
+            },
+            {
+              "name": "code"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "dependencyChain"
+            },
+            {
+              "name": "ownerAction"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CollaborationRootHistoryItem",
+          "kind": "UNION",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamRootHistoryObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "root_subject_kind"
+            },
+            {
+              "name": "root_run_id"
+            },
+            {
+              "name": "created_at"
+            },
+            {
+              "name": "archived_at"
+            },
+            {
+              "name": "is_active"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "team"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRootHistoryObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "root_subject_kind"
+            },
+            {
+              "name": "root_run_id"
+            },
+            {
+              "name": "created_at"
+            },
+            {
+              "name": "archived_at"
+            },
+            {
+              "name": "is_active"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "org"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "Mutation",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "updateServerSetting"
+            },
+            {
+              "name": "deleteServerSetting"
+            },
+            {
+              "name": "setSearchConfig"
+            },
+            {
+              "name": "setApplicationsEnabled"
+            },
+            {
+              "name": "createSkill"
+            },
+            {
+              "name": "updateSkill"
+            },
+            {
+              "name": "deleteSkill"
+            },
+            {
+              "name": "uploadSkillFile"
+            },
+            {
+              "name": "deleteSkillFile"
+            },
+            {
+              "name": "disableSkill"
+            },
+            {
+              "name": "enableSkill"
+            },
+            {
+              "name": "reloadSkillCatalog"
+            },
+            {
+              "name": "addSkillSource"
+            },
+            {
+              "name": "removeSkillSource"
+            },
+            {
+              "name": "terminateAgentRun"
+            },
+            {
+              "name": "createAgentRun"
+            },
+            {
+              "name": "prepareAgentRun"
+            },
+            {
+              "name": "cancelPreparedAgentRun"
+            },
+            {
+              "name": "restoreAgentRun"
+            },
+            {
+              "name": "updateStoppedAgentRunModelConfig"
+            },
+            {
+              "name": "approveToolInvocation"
+            },
+            {
+              "name": "createAgentTeamRun"
+            },
+            {
+              "name": "terminateAgentTeamRun"
+            },
+            {
+              "name": "restoreAgentTeamRun"
+            },
+            {
+              "name": "updateStoppedTeamRunModelConfigs"
+            },
+            {
+              "name": "createWorkspace"
+            },
+            {
+              "name": "removeWorkspace"
+            },
+            {
+              "name": "refreshAgentDefinitionCatalog"
+            },
+            {
+              "name": "createAgentDefinition"
+            },
+            {
+              "name": "updateAgentDefinition"
+            },
+            {
+              "name": "deleteAgentDefinition"
+            },
+            {
+              "name": "refreshAgentTeamDefinitionCatalog"
+            },
+            {
+              "name": "createAgentTeamDefinition"
+            },
+            {
+              "name": "updateAgentTeamDefinition"
+            },
+            {
+              "name": "deleteAgentTeamDefinition"
+            },
+            {
+              "name": "createAgentOrgDefinition"
+            },
+            {
+              "name": "updateAgentOrgDefinition"
+            },
+            {
+              "name": "deleteAgentOrgDefinition"
+            },
+            {
+              "name": "updateStoppedAgentOrgRunConfig"
+            },
+            {
+              "name": "createAgentOrgRun"
+            },
+            {
+              "name": "restoreAgentOrgRun"
+            },
+            {
+              "name": "archiveStoredAgentOrgRun"
+            },
+            {
+              "name": "deleteStoredAgentOrgRun"
+            },
+            {
+              "name": "terminateAgentOrgRun"
+            },
+            {
+              "name": "writeFileContent"
+            },
+            {
+              "name": "deleteFileOrFolder"
+            },
+            {
+              "name": "moveFileOrFolder"
+            },
+            {
+              "name": "renameFileOrFolder"
+            },
+            {
+              "name": "createFileOrFolder"
+            },
+            {
+              "name": "ensureProviderModelCatalog"
+            },
+            {
+              "name": "reloadProviderModelCatalog"
+            },
+            {
+              "name": "saveProviderApiKey"
+            },
+            {
+              "name": "saveQwenConfiguration"
+            },
+            {
+              "name": "probeCustomProvider"
+            },
+            {
+              "name": "createCustomProvider"
+            },
+            {
+              "name": "deleteCustomProvider"
+            },
+            {
+              "name": "saveGeminiAiStudio"
+            },
+            {
+              "name": "saveGeminiVertexExpress"
+            },
+            {
+              "name": "saveGeminiVertexProject"
+            },
+            {
+              "name": "useGeminiMode"
+            },
+            {
+              "name": "reloadToolSchema"
+            },
+            {
+              "name": "configureMcpServer"
+            },
+            {
+              "name": "deleteMcpServer"
+            },
+            {
+              "name": "discoverAndRegisterMcpServerTools"
+            },
+            {
+              "name": "importMcpServerConfigs"
+            },
+            {
+              "name": "updateMemoryHubConfig"
+            },
+            {
+              "name": "updateMemorySyncSourceConfig"
+            },
+            {
+              "name": "createMemoryHubSourceCredential"
+            },
+            {
+              "name": "regenerateMemoryHubSourceCredential"
+            },
+            {
+              "name": "revokeMemoryHubSourceCredential"
+            },
+            {
+              "name": "testMemoryHubConnection"
+            },
+            {
+              "name": "startMemorySync"
+            },
+            {
+              "name": "deleteStoredRun"
+            },
+            {
+              "name": "archiveStoredRun"
+            },
+            {
+              "name": "deleteStoredTeamRun"
+            },
+            {
+              "name": "archiveStoredTeamRun"
+            },
+            {
+              "name": "importAgentPackage"
+            },
+            {
+              "name": "removeAgentPackage"
+            },
+            {
+              "name": "reloadAgentPackage"
+            },
+            {
+              "name": "checkAgentPackageUpdates"
+            },
+            {
+              "name": "updateAgentPackage"
+            },
+            {
+              "name": "importApplicationPackage"
+            },
+            {
+              "name": "reloadApplicationPackage"
+            },
+            {
+              "name": "removeApplicationPackage"
+            },
+            {
+              "name": "runAppDataMigration"
+            },
+            {
+              "name": "setSkillImprovementEnabled"
+            },
+            {
+              "name": "startAgentRunSkillImprovement"
+            },
+            {
+              "name": "startTeamMemberSkillImprovement"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateSkillInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "content"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "UpdateSkillInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "content"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "DeleteSkillResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "SkillCatalogReloadResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "skills"
+            },
+            {
+              "name": "skillSources"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TerminateAgentRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "runId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentRunInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "workspaceId"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "autoExecuteTools"
+            },
+            {
+              "name": "llmConfig"
+            },
+            {
+              "name": "skillAccessMode"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "initialSummary"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "PrepareAgentRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "runId"
+            },
+            {
+              "name": "activationState"
+            },
+            {
+              "name": "preparedExpiresAt"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CancelPreparedAgentRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RestoreAgentRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "runId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UpdateStoppedAgentRunModelConfigResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "outcome"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "editability"
+            },
+            {
+              "name": "canonicalSelection"
+            },
+            {
+              "name": "fieldErrors"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunModelSelectionObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RunModelConfigFieldErrorObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "path"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UpdateStoppedAgentRunModelConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "agentRunId"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "ApproveToolInvocationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ApproveToolInvocationInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "agentRunId"
+            },
+            {
+              "name": "invocationId"
+            },
+            {
+              "name": "isApproved"
+            },
+            {
+              "name": "reason"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentTeamRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "teamRunId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentTeamRunInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "teamDefinitionId"
+            },
+            {
+              "name": "teamConfigs"
+            },
+            {
+              "name": "memberConfigs"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "TeamScopeLaunchConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "teamAddress"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "autoExecuteTools"
+            },
+            {
+              "name": "skillAccessMode"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "llmConfig"
+            },
+            {
+              "name": "runtimeKind"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "TeamMemberConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "memberAddress"
+            },
+            {
+              "name": "agentDefinitionId"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "autoExecuteTools"
+            },
+            {
+              "name": "skillAccessMode"
+            },
+            {
+              "name": "workspaceRootPath"
+            },
+            {
+              "name": "llmConfig"
+            },
+            {
+              "name": "runtimeKind"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "TerminateAgentTeamRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RestoreAgentTeamRunResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "teamRunId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UpdateStoppedTeamRunModelConfigsResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "outcome"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "editability"
+            },
+            {
+              "name": "canonicalExecutionTree"
+            },
+            {
+              "name": "fieldErrors"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UpdateStoppedTeamRunModelConfigsInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "teamRunId"
+            },
+            {
+              "name": "patches"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "TeamRunModelConfigPatchInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "scopeKind"
+            },
+            {
+              "name": "scopeAddress"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "CreateWorkspaceInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "rootPath"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "RemoveWorkspaceResultInfo",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "workspaceId"
+            },
+            {
+              "name": "workspaceRootPath"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "RemoveWorkspaceInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "workspaceId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentDefinitionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "role"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "toolNames"
+            },
+            {
+              "name": "inputProcessorNames"
+            },
+            {
+              "name": "llmResponseProcessorNames"
+            },
+            {
+              "name": "toolExecutionResultProcessorNames"
+            },
+            {
+              "name": "toolInvocationPreprocessorNames"
+            },
+            {
+              "name": "lifecycleProcessorNames"
+            },
+            {
+              "name": "skillNames"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "DefaultLaunchConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "llmConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "UpdateAgentDefinitionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "role"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "toolNames"
+            },
+            {
+              "name": "inputProcessorNames"
+            },
+            {
+              "name": "llmResponseProcessorNames"
+            },
+            {
+              "name": "toolExecutionResultProcessorNames"
+            },
+            {
+              "name": "toolInvocationPreprocessorNames"
+            },
+            {
+              "name": "lifecycleProcessorNames"
+            },
+            {
+              "name": "skillNames"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "DeleteAgentDefinitionResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentTeamDefinitionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "nodes"
+            },
+            {
+              "name": "coordinatorMemberName"
+            },
+            {
+              "name": "handoffs"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "TeamMemberInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "memberName"
+            },
+            {
+              "name": "ref"
+            },
+            {
+              "name": "refScope"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentTeamHandoffInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "from"
+            },
+            {
+              "name": "to"
+            },
+            {
+              "name": "rules"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "UpdateAgentTeamDefinitionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "expectedRevision"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "nodes"
+            },
+            {
+              "name": "coordinatorMemberName"
+            },
+            {
+              "name": "handoffs"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "DeleteAgentTeamDefinitionResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentOrgDefinitionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "members"
+            },
+            {
+              "name": "handoffs"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgMemberInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "memberName"
+            },
+            {
+              "name": "ref"
+            },
+            {
+              "name": "refType"
+            },
+            {
+              "name": "refScope"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgHandoffInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "from"
+            },
+            {
+              "name": "to"
+            },
+            {
+              "name": "rules"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "UpdateAgentOrgDefinitionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "expectedRevision"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "instructions"
+            },
+            {
+              "name": "category"
+            },
+            {
+              "name": "members"
+            },
+            {
+              "name": "handoffs"
+            },
+            {
+              "name": "avatarUrl"
+            },
+            {
+              "name": "defaultLaunchConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRunConfigUpdateResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "outcome"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "isActive"
+            },
+            {
+              "name": "editability"
+            },
+            {
+              "name": "canonical"
+            },
+            {
+              "name": "fieldErrors"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UpdateStoppedAgentOrgRunConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "orgRunId"
+            },
+            {
+              "name": "modelPatches"
+            },
+            {
+              "name": "teamWorkspacePatches"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRunModelConfigPatchInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "scopeKind"
+            },
+            {
+              "name": "scopeAddress"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRunMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "agentOrgRunId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateAgentOrgRunInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "agentOrgDefinitionId"
+            },
+            {
+              "name": "rootConfiguration"
+            },
+            {
+              "name": "teamOverrides"
+            },
+            {
+              "name": "agentOverrides"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgRootLaunchConfigurationInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            },
+            {
+              "name": "autoExecuteTools"
+            },
+            {
+              "name": "skillAccessMode"
+            },
+            {
+              "name": "workspaceRootPath"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgPlacementLaunchOverrideInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "address"
+            },
+            {
+              "name": "configuration"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgPlacementLaunchConfigurationInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "runtimeKind"
+            },
+            {
+              "name": "llmModelIdentifier"
+            },
+            {
+              "name": "llmConfig"
+            },
+            {
+              "name": "autoExecuteTools"
+            },
+            {
+              "name": "skillAccessMode"
+            },
+            {
+              "name": "workspaceRootPath"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentOrgStoredRunMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "orgRunId"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "QwenConfigurationCommandResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "setup"
+            },
+            {
+              "name": "credentialSetting"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "QwenConfigurationInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "baseUrl"
+            },
+            {
+              "name": "apiKey"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "CustomProviderProbeResultObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "discoveredModels"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CustomProviderProbeModelObject",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "id"
+            },
+            {
+              "name": "name"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CustomProviderInputObject",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "baseUrl"
+            },
+            {
+              "name": "apiKey"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "DeleteCustomProviderResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "providerId"
+            },
+            {
+              "name": "deleted"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GeminiConfigurationCommandResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "setup"
+            },
+            {
+              "name": "credentialSetting"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ReloadToolSchemaResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "tool"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ConfigureMcpServerResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "savedConfig"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DeleteMcpServerResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DiscoverAndRegisterMcpServerToolsResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "discoveredTools"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ImportMcpServerConfigsResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "importedCount"
+            },
+            {
+              "name": "failedCount"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "UpdateMemoryHubConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "advertisedHubBaseUrl"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "UpdateMemorySyncSourceConfigInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "enabled"
+            },
+            {
+              "name": "sourceNodeId"
+            },
+            {
+              "name": "displayName"
+            },
+            {
+              "name": "hubBaseUrl"
+            },
+            {
+              "name": "hubToken"
+            },
+            {
+              "name": "backgroundEnabled"
+            },
+            {
+              "name": "intervalMs"
+            },
+            {
+              "name": "batchSize"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "MemoryHubCredentialMutationResultGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "credential"
+            },
+            {
+              "name": "plaintextToken"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "CreateMemoryHubCredentialInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "label"
+            },
+            {
+              "name": "boundSourceNodeId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "MemoryHubConnectionTestResultGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "ok"
+            },
+            {
+              "name": "hubEnabled"
+            },
+            {
+              "name": "sourceNodeId"
+            },
+            {
+              "name": "authenticated"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "TestMemoryHubConnectionInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "mode"
+            },
+            {
+              "name": "hubBaseUrl"
+            },
+            {
+              "name": "token"
+            },
+            {
+              "name": "sourceNodeId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "MemoryHubConnectionTestMode",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SAVED"
+            },
+            {
+              "name": "DRAFT"
+            }
+          ]
+        },
+        {
+          "name": "MemorySyncRunResultGql",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "startedAt"
+            },
+            {
+              "name": "finishedAt"
+            },
+            {
+              "name": "scannedFiles"
+            },
+            {
+              "name": "changedFiles"
+            },
+            {
+              "name": "unchangedFiles"
+            },
+            {
+              "name": "deferredFiles"
+            },
+            {
+              "name": "committedBatches"
+            },
+            {
+              "name": "duplicateBatches"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DeleteStoredRunMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ArchiveStoredRunMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "DeleteStoredTeamRunMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ArchiveStoredTeamRunMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "ImportAgentPackageInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "sourceKind"
+            },
+            {
+              "name": "source"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "AgentPackageImportSourceKind",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "LOCAL_PATH"
+            },
+            {
+              "name": "GITHUB_REPOSITORY"
+            }
+          ]
+        },
+        {
+          "name": "ImportApplicationPackageInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "sourceKind"
+            },
+            {
+              "name": "source"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "ApplicationPackageImportSourceKind",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "LOCAL_PATH"
+            },
+            {
+              "name": "GITHUB_REPOSITORY"
+            }
+          ]
+        },
+        {
+          "name": "AppDataMigrationMutationResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "success"
+            },
+            {
+              "name": "message"
+            },
+            {
+              "name": "migration"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "GraphqlSkillImprovementStartResult",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "improvementRunId"
+            },
+            {
+              "name": "improverRunId"
+            },
+            {
+              "name": "record"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "StartAgentRunSkillImprovementInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "runId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "StartTeamMemberSkillImprovementInput",
+          "kind": "INPUT_OBJECT",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "teamRunId"
+            },
+            {
+              "name": "agentRunId"
+            }
+          ],
+          "enumValues": null
+        },
+        {
+          "name": "__Schema",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "description"
+            },
+            {
+              "name": "types"
+            },
+            {
+              "name": "queryType"
+            },
+            {
+              "name": "mutationType"
+            },
+            {
+              "name": "subscriptionType"
+            },
+            {
+              "name": "directives"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "__Type",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "kind"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "specifiedByURL"
+            },
+            {
+              "name": "fields"
+            },
+            {
+              "name": "interfaces"
+            },
+            {
+              "name": "possibleTypes"
+            },
+            {
+              "name": "enumValues"
+            },
+            {
+              "name": "inputFields"
+            },
+            {
+              "name": "ofType"
+            },
+            {
+              "name": "isOneOf"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "__TypeKind",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "SCALAR"
+            },
+            {
+              "name": "OBJECT"
+            },
+            {
+              "name": "INTERFACE"
+            },
+            {
+              "name": "UNION"
+            },
+            {
+              "name": "ENUM"
+            },
+            {
+              "name": "INPUT_OBJECT"
+            },
+            {
+              "name": "LIST"
+            },
+            {
+              "name": "NON_NULL"
+            }
+          ]
+        },
+        {
+          "name": "__Field",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "args"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "isDeprecated"
+            },
+            {
+              "name": "deprecationReason"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "__InputValue",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "defaultValue"
+            },
+            {
+              "name": "isDeprecated"
+            },
+            {
+              "name": "deprecationReason"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "__EnumValue",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "isDeprecated"
+            },
+            {
+              "name": "deprecationReason"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "__Directive",
+          "kind": "OBJECT",
+          "fields": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "description"
+            },
+            {
+              "name": "isRepeatable"
+            },
+            {
+              "name": "locations"
+            },
+            {
+              "name": "args"
+            }
+          ],
+          "inputFields": null,
+          "enumValues": null
+        },
+        {
+          "name": "__DirectiveLocation",
+          "kind": "ENUM",
+          "fields": null,
+          "inputFields": null,
+          "enumValues": [
+            {
+              "name": "QUERY"
+            },
+            {
+              "name": "MUTATION"
+            },
+            {
+              "name": "SUBSCRIPTION"
+            },
+            {
+              "name": "FIELD"
+            },
+            {
+              "name": "FRAGMENT_DEFINITION"
+            },
+            {
+              "name": "FRAGMENT_SPREAD"
+            },
+            {
+              "name": "INLINE_FRAGMENT"
+            },
+            {
+              "name": "VARIABLE_DEFINITION"
+            },
+            {
+              "name": "SCHEMA"
+            },
+            {
+              "name": "SCALAR"
+            },
+            {
+              "name": "OBJECT"
+            },
+            {
+              "name": "FIELD_DEFINITION"
+            },
+            {
+              "name": "ARGUMENT_DEFINITION"
+            },
+            {
+              "name": "INTERFACE"
+            },
+            {
+              "name": "UNION"
+            },
+            {
+              "name": "ENUM"
+            },
+            {
+              "name": "ENUM_VALUE"
+            },
+            {
+              "name": "INPUT_OBJECT"
+            },
+            {
+              "name": "INPUT_FIELD_DEFINITION"
+            }
+          ]
+        }
+      ],
+      "queryType": {
+        "fields": [
+          {
+            "name": "health"
+          },
+          {
+            "name": "getServerSettings"
+          },
+          {
+            "name": "getEffectiveStreamingContentFlushIntervalMs"
+          },
+          {
+            "name": "getSearchConfig"
+          },
+          {
+            "name": "getWorkingContextCompactionStrategies"
+          },
+          {
+            "name": "getEffectiveWorkingContextCompactionStrategyId"
+          },
+          {
+            "name": "listApplications"
+          },
+          {
+            "name": "application"
+          },
+          {
+            "name": "applicationsCapability"
+          },
+          {
+            "name": "skills"
+          },
+          {
+            "name": "skill"
+          },
+          {
+            "name": "skillFileTree"
+          },
+          {
+            "name": "skillFileContent"
+          },
+          {
+            "name": "skillSources"
+          },
+          {
+            "name": "agentRunModelOptions"
+          },
+          {
+            "name": "teamRunModelOptions"
+          },
+          {
+            "name": "workspaces"
+          },
+          {
+            "name": "workspaceMetadata"
+          },
+          {
+            "name": "agentDefinition"
+          },
+          {
+            "name": "agentDefinitions"
+          },
+          {
+            "name": "agentTemplates"
+          },
+          {
+            "name": "agentTeamEndpointCatalog"
+          },
+          {
+            "name": "agentTeamDefinition"
+          },
+          {
+            "name": "agentTeamDefinitions"
+          },
+          {
+            "name": "agentTeamTemplates"
+          },
+          {
+            "name": "agentOrgDefinitions"
+          },
+          {
+            "name": "agentOrgDefinition"
+          },
+          {
+            "name": "agentOrgEndpointCatalog"
+          },
+          {
+            "name": "totalCostInPeriod"
+          },
+          {
+            "name": "tokenUsageTaskStatisticsInPeriod"
+          },
+          {
+            "name": "usageStatisticsInPeriod"
+          },
+          {
+            "name": "getAgentRunTokenUsageSummary"
+          },
+          {
+            "name": "getTeamRunTokenUsageSummary"
+          },
+          {
+            "name": "getTeamMemberTokenUsageSummary"
+          },
+          {
+            "name": "getAgentOrgRunConfig"
+          },
+          {
+            "name": "agentOrgRunModelOptions"
+          },
+          {
+            "name": "getAgentOrgRunInspection"
+          },
+          {
+            "name": "getAgentOrgMemberRunProjection"
+          },
+          {
+            "name": "getAgentOrgMemberEventMonitorActiveTracePage"
+          },
+          {
+            "name": "getAgentOrgExecutionCheckpoint"
+          },
+          {
+            "name": "getAgentOrgMemberTokenUsageSummary"
+          },
+          {
+            "name": "tokenUsageAnalytics"
+          },
+          {
+            "name": "availableToolNames"
+          },
+          {
+            "name": "availableOptionalInputProcessorNames"
+          },
+          {
+            "name": "availableOptionalLlmResponseProcessorNames"
+          },
+          {
+            "name": "availableOptionalToolExecutionResultProcessorNames"
+          },
+          {
+            "name": "availableOptionalToolInvocationPreprocessorNames"
+          },
+          {
+            "name": "availableOptionalLifecycleProcessorNames"
+          },
+          {
+            "name": "fileContent"
+          },
+          {
+            "name": "searchFiles"
+          },
+          {
+            "name": "folderChildren"
+          },
+          {
+            "name": "providerCredentialSettings"
+          },
+          {
+            "name": "providerModelCatalogSnapshots"
+          },
+          {
+            "name": "getGeminiSetupConfig"
+          },
+          {
+            "name": "qwenSetupStatus"
+          },
+          {
+            "name": "tools"
+          },
+          {
+            "name": "toolsGroupedByCategory"
+          },
+          {
+            "name": "mcpServers"
+          },
+          {
+            "name": "previewMcpServerTools"
+          },
+          {
+            "name": "listMemoryExplorerSources"
+          },
+          {
+            "name": "listAgentsWithMemory"
+          },
+          {
+            "name": "listAgentRunsWithMemory"
+          },
+          {
+            "name": "listAgentTeamsWithMemory"
+          },
+          {
+            "name": "listAgentTeamRunsWithMemory"
+          },
+          {
+            "name": "getAgentRunMemoryView"
+          },
+          {
+            "name": "getTeamMemberRunMemoryView"
+          },
+          {
+            "name": "getMemorySyncStatus"
+          },
+          {
+            "name": "getMemoryHubConnectionInfo"
+          },
+          {
+            "name": "listMemoryHubUrlCandidates"
+          },
+          {
+            "name": "listMemoryImports"
+          },
+          {
+            "name": "listWorkspaceRunHistory"
+          },
+          {
+            "name": "workspaceRunHistory"
+          },
+          {
+            "name": "getRunProjection"
+          },
+          {
+            "name": "getRunEventMonitorActiveTracePage"
+          },
+          {
+            "name": "getAgentRunResumeConfig"
+          },
+          {
+            "name": "getRunFileChanges"
+          },
+          {
+            "name": "getTeamCommunicationMessages"
+          },
+          {
+            "name": "getTaskDelegationRecords"
+          },
+          {
+            "name": "getTeamRunResumeConfig"
+          },
+          {
+            "name": "getTeamMemberRunProjection"
+          },
+          {
+            "name": "getTeamRunExecutionCheckpoint"
+          },
+          {
+            "name": "getTeamMemberEventMonitorActiveTracePage"
+          },
+          {
+            "name": "runtimeAvailabilities"
+          },
+          {
+            "name": "agentPackages"
+          },
+          {
+            "name": "applicationPackages"
+          },
+          {
+            "name": "applicationPackageDetails"
+          },
+          {
+            "name": "getAppDataMigrations"
+          },
+          {
+            "name": "skillImprovementCapability"
+          },
+          {
+            "name": "skillImprovementStrategyCatalog"
+          },
+          {
+            "name": "getAgentRunSkillImprovementEligibility"
+          },
+          {
+            "name": "getTeamMemberSkillImprovementEligibility"
+          },
+          {
+            "name": "getSkillImprovementRunRecord"
+          },
+          {
+            "name": "getSecretVaultStatus"
+          },
+          {
+            "name": "definitionAdmissionDiagnostics"
+          },
+          {
+            "name": "listCollaborationRootHistory"
+          }
+        ]
+      },
+      "mutationType": {
+        "fields": [
+          {
+            "name": "updateServerSetting"
+          },
+          {
+            "name": "deleteServerSetting"
+          },
+          {
+            "name": "setSearchConfig"
+          },
+          {
+            "name": "setApplicationsEnabled"
+          },
+          {
+            "name": "createSkill"
+          },
+          {
+            "name": "updateSkill"
+          },
+          {
+            "name": "deleteSkill"
+          },
+          {
+            "name": "uploadSkillFile"
+          },
+          {
+            "name": "deleteSkillFile"
+          },
+          {
+            "name": "disableSkill"
+          },
+          {
+            "name": "enableSkill"
+          },
+          {
+            "name": "reloadSkillCatalog"
+          },
+          {
+            "name": "addSkillSource"
+          },
+          {
+            "name": "removeSkillSource"
+          },
+          {
+            "name": "terminateAgentRun"
+          },
+          {
+            "name": "createAgentRun"
+          },
+          {
+            "name": "prepareAgentRun"
+          },
+          {
+            "name": "cancelPreparedAgentRun"
+          },
+          {
+            "name": "restoreAgentRun"
+          },
+          {
+            "name": "updateStoppedAgentRunModelConfig"
+          },
+          {
+            "name": "approveToolInvocation"
+          },
+          {
+            "name": "createAgentTeamRun"
+          },
+          {
+            "name": "terminateAgentTeamRun"
+          },
+          {
+            "name": "restoreAgentTeamRun"
+          },
+          {
+            "name": "updateStoppedTeamRunModelConfigs"
+          },
+          {
+            "name": "createWorkspace"
+          },
+          {
+            "name": "removeWorkspace"
+          },
+          {
+            "name": "refreshAgentDefinitionCatalog"
+          },
+          {
+            "name": "createAgentDefinition"
+          },
+          {
+            "name": "updateAgentDefinition"
+          },
+          {
+            "name": "deleteAgentDefinition"
+          },
+          {
+            "name": "refreshAgentTeamDefinitionCatalog"
+          },
+          {
+            "name": "createAgentTeamDefinition"
+          },
+          {
+            "name": "updateAgentTeamDefinition"
+          },
+          {
+            "name": "deleteAgentTeamDefinition"
+          },
+          {
+            "name": "createAgentOrgDefinition"
+          },
+          {
+            "name": "updateAgentOrgDefinition"
+          },
+          {
+            "name": "deleteAgentOrgDefinition"
+          },
+          {
+            "name": "updateStoppedAgentOrgRunConfig"
+          },
+          {
+            "name": "createAgentOrgRun"
+          },
+          {
+            "name": "restoreAgentOrgRun"
+          },
+          {
+            "name": "archiveStoredAgentOrgRun"
+          },
+          {
+            "name": "deleteStoredAgentOrgRun"
+          },
+          {
+            "name": "terminateAgentOrgRun"
+          },
+          {
+            "name": "writeFileContent"
+          },
+          {
+            "name": "deleteFileOrFolder"
+          },
+          {
+            "name": "moveFileOrFolder"
+          },
+          {
+            "name": "renameFileOrFolder"
+          },
+          {
+            "name": "createFileOrFolder"
+          },
+          {
+            "name": "ensureProviderModelCatalog"
+          },
+          {
+            "name": "reloadProviderModelCatalog"
+          },
+          {
+            "name": "saveProviderApiKey"
+          },
+          {
+            "name": "saveQwenConfiguration"
+          },
+          {
+            "name": "probeCustomProvider"
+          },
+          {
+            "name": "createCustomProvider"
+          },
+          {
+            "name": "deleteCustomProvider"
+          },
+          {
+            "name": "saveGeminiAiStudio"
+          },
+          {
+            "name": "saveGeminiVertexExpress"
+          },
+          {
+            "name": "saveGeminiVertexProject"
+          },
+          {
+            "name": "useGeminiMode"
+          },
+          {
+            "name": "reloadToolSchema"
+          },
+          {
+            "name": "configureMcpServer"
+          },
+          {
+            "name": "deleteMcpServer"
+          },
+          {
+            "name": "discoverAndRegisterMcpServerTools"
+          },
+          {
+            "name": "importMcpServerConfigs"
+          },
+          {
+            "name": "updateMemoryHubConfig"
+          },
+          {
+            "name": "updateMemorySyncSourceConfig"
+          },
+          {
+            "name": "createMemoryHubSourceCredential"
+          },
+          {
+            "name": "regenerateMemoryHubSourceCredential"
+          },
+          {
+            "name": "revokeMemoryHubSourceCredential"
+          },
+          {
+            "name": "testMemoryHubConnection"
+          },
+          {
+            "name": "startMemorySync"
+          },
+          {
+            "name": "deleteStoredRun"
+          },
+          {
+            "name": "archiveStoredRun"
+          },
+          {
+            "name": "deleteStoredTeamRun"
+          },
+          {
+            "name": "archiveStoredTeamRun"
+          },
+          {
+            "name": "importAgentPackage"
+          },
+          {
+            "name": "removeAgentPackage"
+          },
+          {
+            "name": "reloadAgentPackage"
+          },
+          {
+            "name": "checkAgentPackageUpdates"
+          },
+          {
+            "name": "updateAgentPackage"
+          },
+          {
+            "name": "importApplicationPackage"
+          },
+          {
+            "name": "reloadApplicationPackage"
+          },
+          {
+            "name": "removeApplicationPackage"
+          },
+          {
+            "name": "runAppDataMigration"
+          },
+          {
+            "name": "setSkillImprovementEnabled"
+          },
+          {
+            "name": "startAgentRunSkillImprovement"
+          },
+          {
+            "name": "startTeamMemberSkillImprovement"
+          }
+        ]
+      },
+      "subscriptionType": null
+    }
+  }
+}

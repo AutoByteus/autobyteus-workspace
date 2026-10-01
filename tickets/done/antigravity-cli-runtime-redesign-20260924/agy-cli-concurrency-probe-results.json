@@ -1,0 +1,30 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "sameRealWorkspace": true,
+  "realWorkspaceEntriesBefore": [
+    "marker.txt"
+  ],
+  "realWorkspaceEntriesAfter": [
+    "marker.txt"
+  ],
+  "runs": [
+    {
+      "agent": "probe-a",
+      "expected": "ALPHA-LIME",
+      "exit": 0,
+      "conversationId": "d29920c5-5ac0-436e-8907-468e33f9b0d1",
+      "status": "SUCCESS",
+      "response": "ALPHA-LIME\n",
+      "stderrTail": ""
+    },
+    {
+      "agent": "probe-b",
+      "expected": "BETA-MAUVE",
+      "exit": 0,
+      "conversationId": "d195c777-ecd3-4773-8058-c30e4f5fabf1",
+      "status": "SUCCESS",
+      "response": "BETA-MAUVE\n",
+      "stderrTail": ""
+    }
+  ]
+}

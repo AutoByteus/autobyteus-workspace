@@ -84,7 +84,6 @@ const inheritedConfig: ResolvedTeamRunLaunchConfig = {
   llmModelIdentifier: 'gpt-5.6-sol',
   llmConfig: { reasoning_effort: 'high' },
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
 }
 
 const workspaceSelection: WorkspaceSelectionState = {
@@ -118,6 +117,47 @@ const mountEditor = (props: Record<string, unknown> = {}) => mount(TeamScopeConf
 })
 
 describe('TeamScopeConfigEditor presentation', () => {
+  it('shows an existing root path once as fixed, with no picker or selection event', () => {
+    const wrapper = mountEditor({ isRoot: true, scope: {
+      mode: 'existing', address: '/', displayName: 'Team',
+      effectiveConfig: { ...inheritedConfig, workspaceRootPath: '/saved/team' },
+      isCustomized: false, directlyEdited: false,
+      originalModelIdentifier: 'gpt-5.6-sol',
+      workspacePresentation: { kind: 'fixed-path' },
+    } })
+    expect(wrapper.get('[data-test="fixed-workspace-value"]').text()).toBe('/saved/team')
+    expect(wrapper.get('[data-test="fixed-workspace-value"]').attributes('aria-readonly')).toBe('true')
+    expect(wrapper.findComponent(WorkspaceSelectorStub).exists()).toBe(false)
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Saved value is unavailable')
+    expect(wrapper.emitted('update:workspace-selection')).toBeUndefined()
+  })
+
+  it('preserves the existing Agent Org selector variant', () => {
+    const wrapper = mountEditor({ isRoot: true, scope: {
+      mode: 'existing', address: '/', displayName: 'Org', effectiveConfig: inheritedConfig,
+      isCustomized: false, directlyEdited: false, originalModelIdentifier: 'gpt-5.6-sol',
+      workspacePresentation: { kind: 'selector', model: { mode: 'stored', workspace: null } },
+    } })
+    expect(wrapper.getComponent(WorkspaceSelectorStub).props('model')).toEqual({ mode: 'stored', workspace: null })
+    expect(wrapper.find('[data-test="fixed-workspace-path"]').exists()).toBe(false)
+  })
+
+  it('keeps mounted Agent Org Team workspace selection editable', () => {
+    const wrapper = mountEditor({ scope: {
+      mode: 'existing', address: '/team', displayName: 'Team', effectiveConfig: inheritedConfig,
+      isCustomized: false, directlyEdited: false, originalModelIdentifier: 'gpt-5.6-sol',
+      workspacePresentation: { kind: 'selector', model: {
+        mode: 'editable', selection: workspaceSelection, isLoading: false, error: null,
+      } },
+    } })
+    const selector = wrapper.getComponent(WorkspaceSelectorStub)
+    selector.vm.$emit('update:modelValue', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/org/next' })
+    expect(wrapper.emitted('update:workspace-selection')).toEqual([[
+      '/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/org/next' },
+    ]])
+  })
+
   it('renders the root as the original quiet field sequence without hierarchy chrome', async () => {
     const wrapper = mountEditor({
       scope: {
@@ -312,6 +352,30 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(workspace.props('model')).toEqual(expect.objectContaining({ isLoading: true }))
   })
 
+  it('keeps the AGY default through synchronous runtime, model and config edits, then allows explicit off', async () => {
+    const wrapper = mountEditor()
+    const runtime = wrapper.getComponent(RuntimeModelConfigFieldsStub)
+    runtime.vm.$emit('update:runtimeKind', 'antigravity_cli')
+    runtime.vm.$emit('update:llmModelIdentifier', '')
+    runtime.vm.$emit('update:llmConfig', null)
+
+    const selectionEdits = wrapper.emitted('update-override') ?? []
+    expect(selectionEdits).toHaveLength(3)
+    for (const [patch] of selectionEdits) expect(patch).toEqual(expect.objectContaining({
+      runtimeKind: 'antigravity_cli', autoExecuteTools: true,
+    }))
+    expect(selectionEdits[2]![0]).toEqual(expect.objectContaining({ llmConfig: null }))
+
+    await wrapper.setProps({ scope: {
+      ...(wrapper.props('scope') as EditableTeamScopeFormModel),
+      override: { runtimeKind: 'antigravity_cli', autoExecuteTools: true, llmConfig: null },
+      effectiveConfig: { ...inheritedConfig, runtimeKind: 'antigravity_cli', autoExecuteTools: true, llmConfig: null },
+    } })
+    await wrapper.get('button[aria-expanded]').trigger('click')
+    await wrapper.get('[role="switch"]').trigger('click')
+    expect(wrapper.emitted('update-override')?.at(-1)).toEqual([{ runtimeKind: 'antigravity_cli', llmConfig: null }])
+  })
+
   it('keeps disclosure access while disabling nested edits and omitting stored Reset', async () => {
     const wrapper = mountEditor({
       disabled: true,
@@ -322,12 +386,7 @@ describe('TeamScopeConfigEditor presentation', () => {
         effectiveConfig: { ...inheritedConfig, autoExecuteTools: true },
         isCustomized: true,
         directlyEdited: false,
-        workspaceControl: { mode: 'stored', workspace: {
-          workspaceId: 'temp-workspace',
-          displayName: 'Temp Workspace',
-          rootPath: '/tmp/autobyteus',
-          availability: 'available',
-        } },
+        workspacePresentation: { kind: 'fixed-path' },
       },
     })
     const disclosure = wrapper.get('button[aria-controls="team-scope-StudentStudyGroup-panel"]')
@@ -344,8 +403,8 @@ describe('TeamScopeConfigEditor presentation', () => {
       modelConfigDisabled: true,
       modelConfigReadOnly: true,
     }))
-    expect(wrapper.getComponent(WorkspaceSelectorStub).props('disabled')).toBe(true)
-    expect(wrapper.getComponent(WorkspaceSelectorStub).props('model')).toEqual(expect.objectContaining({ mode: 'stored' }))
+    expect(wrapper.findComponent(WorkspaceSelectorStub).exists()).toBe(false)
+    expect(wrapper.get('[data-test="fixed-workspace-value"]').text()).toBe('/tmp/autobyteus')
     expect(wrapper.get('[role="switch"]').attributes('disabled')).toBeDefined()
   })
 })

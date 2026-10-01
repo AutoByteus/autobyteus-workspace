@@ -24,6 +24,8 @@ type InputEntry = {
   associatedTurnId: string | null;
   observedTurnId: string | null;
   pendingTerminal: InputTerminal | null;
+  /** A turn this entry was proven undeliverable into; it is never appended into it again. */
+  notInto: string | null;
 };
 
 export type AgentRunInputAdmission =
@@ -124,6 +126,7 @@ export class AgentRunInputAdmissionState {
       associatedTurnId: null,
       observedTurnId: null,
       pendingTerminal: null,
+      notInto: null,
     };
     this.entries.push(entry);
     return { accepted: true, entrySequence: entry.sequence };
@@ -151,17 +154,32 @@ export class AgentRunInputAdmissionState {
     return true;
   }
 
+  /**
+   * Claims the next input in FIFO order. Entries already forwarded into the active
+   * IDENTIFIED turn are skipped (they finish at that turn's terminal); any other
+   * non-queued entry ahead stops the walk, which preserves order and reservations.
+   */
   claimNext(selection: AgentRunInputSelection): AgentRunInputDispatchClaim | null {
-    if (this.activeClaim) return null;
-    const entry = this.entries.find((candidate) => candidate.state !== "terminal");
-    if (!entry || entry.state !== "queued" || selection.hasPendingTurnStart) return null;
+    if (this.activeClaim || selection.hasPendingTurnStart) return null;
+    const activeTurnId = selection.activeTurn.kind === "IDENTIFIED" ? selection.activeTurn.turnId : null;
+    let entry: InputEntry | null = null;
+    for (const candidate of this.entries) {
+      if (candidate.state === "terminal") continue;
+      if (candidate.state === "forwarded" && activeTurnId !== null && candidate.associatedTurnId === activeTurnId) {
+        continue;
+      }
+      if (candidate.state === "queued") entry = candidate;
+      break;
+    }
+    if (!entry) return null;
 
     let dispatch: AgentRunBackendInputDispatch;
     if (selection.activeTurn.kind === "NONE") {
       dispatch = { kind: "start_turn", message: entry.message };
     } else if (
       selection.activeTurn.kind === "IDENTIFIED" &&
-      selection.capabilities.activeTurnAppend === "supported"
+      selection.capabilities.activeTurnAppend === "supported" &&
+      entry.notInto !== selection.activeTurn.turnId
     ) {
       dispatch = {
         kind: "append_to_active_turn",
@@ -191,6 +209,19 @@ export class AgentRunInputAdmissionState {
     const entry = this.getActiveClaim(claim);
     if (!entry) return { forwarded: false };
 
+    if (!result.forwarded && result.undeliveredRetryAsStart === true && claim.dispatch.kind === "append_to_active_turn") {
+      // The backend proved nothing reached the provider: keep the entry at its FIFO position.
+      entry.state = "queued";
+      entry.dispatchKind = null;
+      entry.associatedTurnId = null;
+      entry.observedTurnId = null;
+      // A terminal of the targeted turn observed while this claim was in flight belongs to
+      // that turn, not to the later turn this input will be delivered into (CR-001).
+      entry.pendingTerminal = null;
+      entry.notInto = claim.dispatch.turnId;
+      this.clearClaim(entry);
+      return { forwarded: false };
+    }
     if (!result.forwarded) {
       const protocolViolation = entry.observedTurnId !== null;
       this.failEntry(entry, {

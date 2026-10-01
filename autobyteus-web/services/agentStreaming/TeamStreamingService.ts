@@ -25,6 +25,9 @@ import {
   createTeamToolDecisionMessage,
 } from './teamClientMessageFactory';
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
+import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
+import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService';
+import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
 import {
   invalidateTeamMemberProjection,
@@ -66,6 +69,7 @@ const teamSendFailureCodes = new Set([
   'INVALID_TARGET',
   'TEAM_SEND_MESSAGE_REJECTED',
   'TEAM_SEND_MESSAGE_FAILED',
+  COLLABORATOR_ADD_FAILED,
 ]);
 const sendKey = (agentRunId: string, messageId: string, dedupeKey: string): string =>
   `${agentRunId}\0${messageId}\0${dedupeKey}`;
@@ -145,7 +149,7 @@ export class TeamStreamingService {
     this.approvalTracker.clear();
   }
 
-  sendMessage(content: string, agentRunId: string, contextFilePaths: string[] = [], imageUrls: string[] = [], identity: { messageId?: string; dedupeKey?: string } = {}): Promise<void> {
+  sendMessage(content: string, agentRunId: string, contextFilePaths: string[] = [], imageUrls: string[] = [], identity: { messageId?: string; dedupeKey?: string; mentions?: readonly CollaboratorMentionDto[] } = {}): Promise<void> {
     const currentAgentRunId = this.requireCurrentAgentRun(agentRunId);
     const messageId = identity.messageId?.trim() || crypto.randomUUID();
     const dedupeKey = identity.dedupeKey?.trim() || messageId;
@@ -164,7 +168,7 @@ export class TeamStreamingService {
     const pending = Object.freeze({ agentRunId: currentAgentRunId, messageId, dedupeKey, content, promise, resolve, reject });
     this.pendingTeamSends.set(key, pending);
     try {
-      this.wsClient.send(serializeTeamStreamClientMessage(createTeamSendMessage({ content, agentRunId: currentAgentRunId, contextFilePaths, imageUrls, messageId, dedupeKey })));
+      this.wsClient.send(serializeTeamStreamClientMessage(createTeamSendMessage({ content, agentRunId: currentAgentRunId, contextFilePaths, imageUrls, messageId, dedupeKey, mentions: identity.mentions })));
     } catch (error) {
       this.pendingTeamSends.delete(key);
       reject(error instanceof Error ? error : new Error(String(error)));
@@ -296,7 +300,8 @@ export class TeamStreamingService {
       message.payload.dedupe_key,
     );
     const pending = this.pendingTeamSends.get(key);
-    if (!pending || pending.content !== message.payload.content || message.payload.input_origin !== 'user_message') return;
+    // CR-003: settle on identity only; the root may compose the content (the mention note).
+    if (!pending || message.payload.input_origin !== 'user_message') return;
     this.pendingTeamSends.delete(key);
     pending.resolve();
   }
@@ -308,7 +313,7 @@ export class TeamStreamingService {
     );
     if (!entry) return false;
     this.pendingTeamSends.delete(entry[0]);
-    entry[1].reject(new Error(message.payload.message));
+    entry[1].reject(collaboratorAddRejectionOf(message.payload) ?? new Error(message.payload.message));
     return true;
   }
 
@@ -372,6 +377,8 @@ export class TeamStreamingService {
         effect.agentRunIds.forEach((agentRunId) => {
           invalidateTeamMemberProjection(context, agentRunId);
         });
+      } else if (effect.kind === 'collaborators_changed') {
+        collaboratorCandidatesService.invalidate('agent_team', context.view.getRootTeamRunId());
       } else if (effect.kind === 'reconcile_team_navigation') {
         if (this.isMountedContext(context)) {
           useRunHistoryStore().refreshRunNavigationTopology('team-stream-structure');

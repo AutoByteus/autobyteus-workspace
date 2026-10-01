@@ -38,7 +38,7 @@ const envelope = (active: boolean) => {
   const original = taskBearingView()
   const view = { ...original, is_active: active,
     ...(!active ? { agent_statuses: [], base_change_sequence: 0 } : {}) }
-  return { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view }
+  return { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view }
 }
 const inspection = (active: boolean) => ({ data: { getAgentOrgRunInspection: envelope(active) } })
 const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: {
@@ -275,7 +275,7 @@ it.each(['full', 'focused'])('RET-04: successful %s loader recovers an exhausted
   const retained = store.activeTargetFor('org-run')!.context
   mocks.query.mockRejectedValue(new Error('offline server'))
   socket.close(); await vi.advanceTimersByTimeAsync(20000)
-  const history = { refreshRunNavigationTopology: vi.fn(), agentOrgRequestGeneration: 0, historyFamilyErrors: { workspace: null, agentOrg: null }, agentOrgHistory: [], workspaceGroups: [] } as any
+  const history = { refreshRunNavigationTopology: vi.fn(), agentOrgRequestGeneration: 0, workspaceRequestGeneration: 0, historyFamilyErrors: { workspace: null, agentOrg: null }, agentOrgHistory: [], workspaceGroups: [] } as any
   mocks.query.mockImplementation(async ({ query, variables }) => {
     if (query === ListCollaborationRootHistory) return { data: historyData(true) } // stale active row is only a trigger.
     if (query === GetAgentOrgRunInspection) return inspection(false)

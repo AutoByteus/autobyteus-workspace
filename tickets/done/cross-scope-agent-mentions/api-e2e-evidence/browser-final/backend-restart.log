@@ -1,0 +1,292 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:57380
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:57380
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:21366) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-30T23:50:18.943Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 11 items.
+Populating agent definition cache for the first time...
+[2026-09-30T23:50:19.063Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T23:50:19.064Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+Agent definition cache populated with 11 items.
+{"level":30,"time":1790812219070,"pid":21366,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58308"}
+{"level":30,"time":1790812219094,"pid":21366,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57380"}
+[2026-09-30T23:50:19.094Z] [INFO] [server.runtime] Server listening on 127.0.0.1:57380
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agents/research_assistant_cc8360d04439405aa178755efa1ff082/collaboration/product_team_ae0ad159f8054fc48911ea0958d40907/prototype_bootstrapper_928ec066636949e1b8e82bc5eaa00144/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/researcher_b3e635ee2a5643d9b9c901e31acb84c8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/writer_d4e8504106ac4342a915418205816a8c/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_155f87766d8e4b23aecd9047e282aac4
+Created agent session 9507197b-01ac-4b68-9765-a643de4a074d for run review_team_155f87766d8e4b23aecd9047e282aac4
+Agent Team WebSocket connected: session=9507197b-01ac-4b68-9765-a643de4a074d, run=review_team_155f87766d8e4b23aecd9047e282aac4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/researcher_b3e635ee2a5643d9b9c901e31acb84c8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/researcher_b3e635ee2a5643d9b9c901e31acb84c8/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'researcher_b3e635ee2a5643d9b9c901e31acb84c8'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790812530237,"pid":21366,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_wHf__f-Zl9xCud6nm7BiSIGdR861TjcnarVR3JVXHwU","statusCode":400,"elapsedMs":0.7710420191287994,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'product_prototyper_6d7bc46488ed4f19acca82f726ceeb53'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790812542933,"pid":21366,"hostname":"MacBookPro","reqId":"req-k","method":"POST","url":"/mcp/agent-tools/agtrun_0TgIOYRQ22jBb1t3Jk3U2p000nLL0XQn5-y6x6H9w-o","statusCode":400,"elapsedMs":0.2473750114440918,"msg":"http request completed"}
+Closed agent session 9507197b-01ac-4b68-9765-a643de4a074d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/writer_d4e8504106ac4342a915418205816a8c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/product_team_eb6d6df435414fd69e269f3af91f3d90/prototype_bootstrapper_35c5b6beda164bbc867f2c32c3fc6423/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_155f87766d8e4b23aecd9047e282aac4
+Created agent session 5e5c6a5b-f976-4104-9703-2f00801f03fc for run review_team_155f87766d8e4b23aecd9047e282aac4
+Agent Team WebSocket connected: session=5e5c6a5b-f976-4104-9703-2f00801f03fc, run=review_team_155f87766d8e4b23aecd9047e282aac4
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/researcher_ef61ca0d73564489970ad4d4b0ef136a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/writer_076d65b82dda496ca269be251fa806eb/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created agent session afa5ca64-d6e3-41b9-8c13-c718ee9cba0b for run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Agent Team WebSocket connected: session=afa5ca64-d6e3-41b9-8c13-c718ee9cba0b, run=review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/researcher_ef61ca0d73564489970ad4d4b0ef136a/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/researcher_ef61ca0d73564489970ad4d4b0ef136a/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'researcher_ef61ca0d73564489970ad4d4b0ef136a'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790812610307,"pid":21366,"hostname":"MacBookPro","reqId":"req-4g","method":"POST","url":"/mcp/agent-tools/agtrun_8vj7oZ3iZHMplWcGuTdx3gdMVlSsVyM26xly4XyIl0s","statusCode":400,"elapsedMs":0.29637500643730164,"msg":"http request completed"}
+In-memory cache: Removed agent definition with ID flaky-agent.
+Agent Definition with ID flaky-agent deleted successfully.
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 5e5c6a5b-f976-4104-9703-2f00801f03fc
+Closed agent session afa5ca64-d6e3-41b9-8c13-c718ee9cba0b
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/writer_076d65b82dda496ca269be251fa806eb/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created agent session e2f0d8b3-4b82-488a-af37-a4fc9ffed7e1 for run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Agent Team WebSocket connected: session=e2f0d8b3-4b82-488a-af37-a4fc9ffed7e1, run=review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created terminal session 3e18ef7c-b0dd-4db7-912b-3033cfe763f5 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 3e18ef7c-b0dd-4db7-912b-3033cfe763f5
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/writer_d4e8504106ac4342a915418205816a8c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/product_team_eb6d6df435414fd69e269f3af91f3d90/prototype_bootstrapper_35c5b6beda164bbc867f2c32c3fc6423/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_155f87766d8e4b23aecd9047e282aac4
+Created agent session 4171b13a-fe34-4e94-a840-10b40355699e for run review_team_155f87766d8e4b23aecd9047e282aac4
+Agent Team WebSocket connected: session=4171b13a-fe34-4e94-a840-10b40355699e, run=review_team_155f87766d8e4b23aecd9047e282aac4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/analyst_20dfe44e63904cac9f9d62e4c2ea49df/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/researcher_466c211b6f474e23a5cacec55c1c174f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/writer_1d3e496b35c24a8fa0190727d042c3f6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/analyst_20dfe44e63904cac9f9d62e4c2ea49df/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/researcher_466c211b6f474e23a5cacec55c1c174f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/writer_1d3e496b35c24a8fa0190727d042c3f6/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'analyst_20dfe44e63904cac9f9d62e4c2ea49df'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790812631383,"pid":21366,"hostname":"MacBookPro","reqId":"req-6f","method":"POST","url":"/mcp/agent-tools/agtrun_ErhLCdiryZQIDMIdfXAvjrM_XVK2i8xCljIO2gP1x38","statusCode":400,"elapsedMs":0.19766700267791748,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'code_reviewer_690f49fc299b4ed2b2b7998ee5751472'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/researcher_466c211b6f474e23a5cacec55c1c174f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/writer_1d3e496b35c24a8fa0190727d042c3f6/raw_traces_active.jsonl
+{"level":40,"time":1790812636896,"pid":21366,"hostname":"MacBookPro","reqId":"req-77","method":"POST","url":"/mcp/agent-tools/agtrun_Z_SZ8M8CbBN3WA0Fdg_imHeiaIz97m8IqU76tsCMDK4","statusCode":400,"elapsedMs":0.24945899844169617,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'product_prototyper_a50f6d5f710746ed97ccc271ead6eb18'.
+Published claude_agent_sdk agent run 'prototype_bootstrapper_841d5c603665441c9dd889a4e7e3ba8c'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/researcher_466c211b6f474e23a5cacec55c1c174f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/review_team_ce8c9c68af5b43a8bfb21a5b16f03368/writer_1d3e496b35c24a8fa0190727d042c3f6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_orgs/launch_org_df41d39e74c94087b6d84dfae537ff1b/product_team_84f6a9476574416998666709131f0fc7/prototype_bootstrapper_841d5c603665441c9dd889a4e7e3ba8c/raw_traces_active.jsonl
+{"level":40,"time":1790812637543,"pid":21366,"hostname":"MacBookPro","reqId":"req-7h","method":"POST","url":"/mcp/agent-tools/agtrun_7hYvpPzNnzokvOq2KsllBcDpWT7-zdpN7l0OyDtw7qg","statusCode":400,"elapsedMs":0.2535409927368164,"msg":"http request completed"}
+Closed agent session 4171b13a-fe34-4e94-a840-10b40355699e
+Closed agent session e2f0d8b3-4b82-488a-af37-a4fc9ffed7e1
+Closed PTY session 3e18ef7c-b0dd-4db7-912b-3033cfe763f5
+Terminal WebSocket disconnected: 3e18ef7c-b0dd-4db7-912b-3033cfe763f5
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/writer_076d65b82dda496ca269be251fa806eb/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created agent session 451ae07a-fc96-474d-88b8-26a9c8d5dde8 for run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Agent Team WebSocket connected: session=451ae07a-fc96-474d-88b8-26a9c8d5dde8, run=review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/writer_d4e8504106ac4342a915418205816a8c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/product_team_eb6d6df435414fd69e269f3af91f3d90/prototype_bootstrapper_35c5b6beda164bbc867f2c32c3fc6423/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_155f87766d8e4b23aecd9047e282aac4
+Created agent session 1ecd16ce-122b-4b3c-8109-0145fc060b74 for run review_team_155f87766d8e4b23aecd9047e282aac4
+Agent Team WebSocket connected: session=1ecd16ce-122b-4b3c-8109-0145fc060b74, run=review_team_155f87766d8e4b23aecd9047e282aac4
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_85a5d3974d384fa696d4b17cdae80bfe/researcher_fcf49b0ee7294ac09b596c0f205db465/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_85a5d3974d384fa696d4b17cdae80bfe/writer_525e09fe1087452cb50b77885ec6df68/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_85a5d3974d384fa696d4b17cdae80bfe
+Created agent session 71d6d8cd-23b1-44b3-847a-b9bebd9135b0 for run review_team_85a5d3974d384fa696d4b17cdae80bfe
+Agent Team WebSocket connected: session=71d6d8cd-23b1-44b3-847a-b9bebd9135b0, run=review_team_85a5d3974d384fa696d4b17cdae80bfe
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_85a5d3974d384fa696d4b17cdae80bfe/researcher_fcf49b0ee7294ac09b596c0f205db465/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_85a5d3974d384fa696d4b17cdae80bfe/researcher_fcf49b0ee7294ac09b596c0f205db465/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'researcher_fcf49b0ee7294ac09b596c0f205db465'.
+(node:21366) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790812663144,"pid":21366,"hostname":"MacBookPro","reqId":"req-bx","method":"POST","url":"/mcp/agent-tools/agtrun__JDQpMFNZM3Oyvjki7Cv15Lt-cBcBL6VzKHqGbqasQA","statusCode":400,"elapsedMs":0.2690410017967224,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Closed agent session 451ae07a-fc96-474d-88b8-26a9c8d5dde8
+Closed agent session 71d6d8cd-23b1-44b3-847a-b9bebd9135b0
+Closed agent session 1ecd16ce-122b-4b3c-8109-0145fc060b74
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/writer_076d65b82dda496ca269be251fa806eb/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created agent session 760273ed-7eac-427a-9e52-407ea1b085f2 for run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Agent Team WebSocket connected: session=760273ed-7eac-427a-9e52-407ea1b085f2, run=review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created terminal session 6ff339ab-75bf-41c7-bc1a-2af197875a5d using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 6ff339ab-75bf-41c7-bc1a-2af197875a5d
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/writer_d4e8504106ac4342a915418205816a8c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/product_team_eb6d6df435414fd69e269f3af91f3d90/prototype_bootstrapper_35c5b6beda164bbc867f2c32c3fc6423/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_155f87766d8e4b23aecd9047e282aac4
+Created agent session c542cba0-f0fe-4d85-983d-841f69f869a7 for run review_team_155f87766d8e4b23aecd9047e282aac4
+Agent Team WebSocket connected: session=c542cba0-f0fe-4d85-983d-841f69f869a7, run=review_team_155f87766d8e4b23aecd9047e282aac4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_85a5d3974d384fa696d4b17cdae80bfe/writer_525e09fe1087452cb50b77885ec6df68/raw_traces_active.jsonl
+Closed agent session c542cba0-f0fe-4d85-983d-841f69f869a7
+Closed agent session 760273ed-7eac-427a-9e52-407ea1b085f2
+Closed PTY session 6ff339ab-75bf-41c7-bc1a-2af197875a5d
+Terminal WebSocket disconnected: 6ff339ab-75bf-41c7-bc1a-2af197875a5d
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08/writer_076d65b82dda496ca269be251fa806eb/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Created agent session 83846b1b-d18c-40db-a14f-7d601c063a0b for run review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Agent Team WebSocket connected: session=83846b1b-d18c-40db-a14f-7d601c063a0b, run=review_team_6a07d04e0aa2406e84a7f6eb1dcbbe08
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/writer_d4e8504106ac4342a915418205816a8c/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-4CbRYJ/server-data/memory/agent_teams/review_team_155f87766d8e4b23aecd9047e282aac4/product_team_eb6d6df435414fd69e269f3af91f3d90/prototype_bootstrapper_35c5b6beda164bbc867f2c32c3fc6423/raw_traces_active.jsonl
+Agent team websocket attached for team run review_team_155f87766d8e4b23aecd9047e282aac4
+Created agent session 586d591c-7093-4acd-8320-2c5bf23c43f9 for run review_team_155f87766d8e4b23aecd9047e282aac4
+Agent Team WebSocket connected: session=586d591c-7093-4acd-8320-2c5bf23c43f9, run=review_team_155f87766d8e4b23aecd9047e282aac4
+Closed agent session 83846b1b-d18c-40db-a14f-7d601c063a0b
+Closed agent session 586d591c-7093-4acd-8320-2c5bf23c43f9
+[2026-10-01T00:03:10.993Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Claude process for run 'researcher_b3e635ee2a5643d9b9c901e31acb84c8' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'code_reviewer_690f49fc299b4ed2b2b7998ee5751472' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'researcher_ef61ca0d73564489970ad4d4b0ef136a' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+Claude process for run 'analyst_20dfe44e63904cac9f9d62e4c2ea49df' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at Socket.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5073)
+    at Object.onceWrapper (node:events:634:26)
+    at Socket.emit (node:events:531:35)
+    at Pipe.<anonymous> (node:net:347:12)
+    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)
+[2026-10-01T00:03:11.526Z] [INFO] [server.runtime] Server closed cleanly.

@@ -27,9 +27,21 @@ const visitTeams = (
   return false;
 };
 
+/** The root TeamRun and each collaborator TeamRun (which hosts its members' delegations). */
+const hostTeams = (rootTeam: TeamRunExecutionTreeDto['root_team']): MutableTeam[] => [
+  rootTeam as unknown as MutableTeam,
+  ...(rootTeam.collaborators ?? []).flatMap((entry) => entry.kind === 'agent_team'
+    ? [{ team_run_id: entry.team_run_id, members: [], task_executions: entry.task_executions } as unknown as MutableTeam]
+    : []),
+];
+
 const executionIds = (tree: TeamRunExecutionTreeDto): ReadonlySet<string> => {
   const ids = new Set<string>([tree.root_team.team_run_id]);
-  visitTeams(structuredClone(tree.root_team) as unknown as MutableTeam, (team) => {
+  for (const entry of tree.root_team.collaborators ?? []) {
+    if (entry.kind === 'agent') ids.add(entry.agent_run_id);
+    else entry.members.forEach((member) => ids.add(member.agent_run_id));
+  }
+  for (const host of hostTeams(structuredClone(tree.root_team))) visitTeams(host, (team) => {
     ids.add(team.team_run_id);
     for (const member of team.members) {
       if (member.kind === 'configured_agent' || member.kind === 'task_team_agent') ids.add(member.agent_run_id);
@@ -73,40 +85,15 @@ export const insertTaskExecution = (input: {
   }
   const candidate = structuredClone(input.tree) as TeamRunExecutionTreeDto;
   let inserted = false;
-  visitTeams(candidate.root_team as unknown as MutableTeam, (team) => {
-    if (team.team_run_id !== input.parentTeamRunId) return false;
-    team.task_executions.push(structuredClone(input.execution));
-    inserted = true;
-    return true;
-  });
-  if (!inserted) throw new Error(`Task execution parent TeamRun '${input.parentTeamRunId}' is missing.`);
-  return teamRunExecutionTreeDtoSchema.parse(candidate);
-};
-
-export const settleTaskExecution = (input: {
-  tree: TeamRunExecutionTreeDto;
-  execution: Readonly<{ agent_run_id: string } | { team_run_id: string }>;
-  settledAt: string;
-}): TeamRunExecutionTreeDto => {
-  const candidate = structuredClone(input.tree) as TeamRunExecutionTreeDto;
-  const expectedId = 'agent_run_id' in input.execution
-    ? input.execution.agent_run_id
-    : input.execution.team_run_id;
-  let matches = 0;
-  visitTeams(candidate.root_team as unknown as MutableTeam, (team) => {
-    team.task_executions.forEach((execution, index) => {
-      const runId = execution.kind === 'task_agent' ? execution.agent_run_id : execution.team_run_id;
-      if (runId !== expectedId) return;
-      team.task_executions.splice(index, 1, {
-        ...execution,
-        settled_at: input.settledAt,
-      });
-      matches += 1;
+  for (const host of hostTeams(candidate.root_team)) {
+    if (inserted) break;
+    visitTeams(host, (team) => {
+      if (team.team_run_id !== input.parentTeamRunId) return false;
+      team.task_executions.push(structuredClone(input.execution));
+      inserted = true;
+      return true;
     });
-    return false;
-  });
-  if (matches !== 1) {
-    throw new Error(`Task execution '${expectedId}' resolved ${matches} times in the Team execution tree.`);
   }
+  if (!inserted) throw new Error(`Task execution parent TeamRun '${input.parentTeamRunId}' is missing.`);
   return teamRunExecutionTreeDtoSchema.parse(candidate);
 };

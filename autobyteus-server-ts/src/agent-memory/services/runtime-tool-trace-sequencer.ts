@@ -8,6 +8,7 @@ import {
 } from "autobyteus-ts/memory/models/tool-call-identity.js";
 import type { ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import {
+  asRecord,
   extractError,
   extractInvocationId,
   extractReason,
@@ -142,7 +143,13 @@ export class RuntimeToolTraceSequencer {
           ? extractError(event.payload) ?? extractReason(event.payload) ?? "Tool execution interrupted."
           : null;
     const result = denied
-      ? { status: "denied", reason: extractReason(event.payload) ?? error }
+      ? {
+          status: "denied",
+          reason: extractReason(event.payload) ?? error,
+          ...(event.payload.provider_state === "ERROR" || event.payload.provider_state === "DONE"
+            ? { provider_state: event.payload.provider_state, output: asRecord(extractToolResult(event.payload))?.output ?? null }
+            : {}),
+        }
       : interrupted ? null : extractToolResult(event.payload);
     this.persistToolResult(
       tool,

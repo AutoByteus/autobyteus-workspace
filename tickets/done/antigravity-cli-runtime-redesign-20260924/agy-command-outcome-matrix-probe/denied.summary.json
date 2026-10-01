@@ -1,0 +1,39 @@
+{
+  "case": "denied",
+  "requestedCommand": "printf DENIAL-CONTROL-7513",
+  "autoApprove": false,
+  "processExit": "timeout",
+  "resultStatus": "SUCCESS",
+  "resultResponse": "",
+  "deniedActions": [
+    {
+      "action": "command",
+      "display_name": "RunCommand"
+    }
+  ],
+  "tools": [
+    {
+      "state": "ACTIVE",
+      "info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "printf DENIAL-CONTROL-7513"
+        }
+      }
+    },
+    {
+      "state": "ERROR",
+      "info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "printf DENIAL-CONTROL-7513"
+        },
+        "error": {
+          "type": "TOOL_ERROR",
+          "message": "permission check failed for unsandboxed \"printf DENIAL-CONTROL-7513\": user denied permission to run command:\nprintf DENIAL-CONTROL-7513\nDo not attempt to circumvent this denial by rephrasing the command, using alternative tools/scripts (e.g. python, sh, curl), or accessing the same target resource. Proceed without performing this action."
+        }
+      }
+    }
+  ],
+  "stderrTail": "jetski: no output produced \u2014 a tool required the \"command\" permission that headless mode cannot prompt for, so it was auto-denied. Add an allow-rule under permissions.allow in settings.json (e.g. command(<target>)). Alternatively, re-run with --dangerously-skip-permissions to auto-approve all tools.\n"
+}

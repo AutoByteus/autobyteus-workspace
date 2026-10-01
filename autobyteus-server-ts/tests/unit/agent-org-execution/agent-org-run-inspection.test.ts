@@ -4,7 +4,6 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentOrgRunManager } from '../../../src/agent-org-execution/services/agent-org-run-manager.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
-import { AgentOrgTaskDelegationRecordsV1Store } from '../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js';
 import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history/services/agent-org-member-run-view-projection-service.js';
@@ -20,29 +19,27 @@ const fixture = async () => {
     { ...testOrgAgentNode('/assistant', 'configured'), platformAgentRunId: 'configured-provider' },
   ] }));
   tree.rootOrg.taskExecutions = [{ address: '/assistant', agentRunId: 'task-run', platformAgentRunId: 'task-provider',
-    startedAt: tree.createdAt, settledAt: '2026-09-01T00:01:00.000Z' }];
-  const tasks = { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', records: [{
-    taskId: 'task', delegatorAgentRunId: 'configured', recipientAddress: '/assistant', taskExecution: { agentRunId: 'task-run' },
-    description: 'Inspect retained work', referenceFiles: [], status: 'interrupted', updates: [{
-      interruptionId: 'stop', reason: 'Root stopped', createdAt: '2026-09-01T00:01:00.000Z',
-    }], createdAt: tree.createdAt,
-  }] };
+    delegatorAgentRunId: 'configured', startedAt: tree.createdAt }];
   const messages = { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] };
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
-  await new AgentOrgTaskDelegationRecordsV1Store().write(dir, tasks as never);
   await new AgentOrgCommunicationMessagesV1Store().write(dir, messages as never);
   const build = vi.fn();
   const manager = new AgentOrgRunManager({ memoryDir, scopeBuilder: { build } as never });
-  return { memoryDir, dir, tree, tasks, manager, build };
+  return { memoryDir, dir, tree, messages, manager, build };
 };
 
 describe('strict read-only Org inspection', () => {
-  it('reads retained tasks without repair, activation, or writes and emits offline base-zero truth', async () => {
+  it('reads retained delegated executions without repair, activation, or writes and emits offline base-zero truth', async () => {
     const f = await fixture();
     const before = await Promise.all((await fs.readdir(f.dir)).map(async (name) => [name, await fs.readFile(path.join(f.dir, name), 'utf8')]));
     const result = await f.manager.getInspection('org');
     const dto = projectAgentOrgExecutionSnapshot(result);
-    expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, snapshot: { tasks: f.tasks } });
+    expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, snapshot: { messages: f.messages } });
+    expect(result.snapshot).not.toHaveProperty('tasks');
+    expect(dto.root_org.execution_tree.rootOrg.taskExecutions).toEqual([expect.objectContaining({
+      agentRunId: 'task-run', delegatorAgentRunId: 'configured',
+    })]);
+    expect(await fs.readdir(f.dir)).not.toContain('agent_org_task_delegation_records.json');
     expect(dto.root_org.agent_statuses).toEqual([]);
     expect(f.manager.getActive('org')).toBeNull();
     expect(f.build).not.toHaveBeenCalled();
@@ -52,7 +49,7 @@ describe('strict read-only Org inspection', () => {
   it('rejects unavailable/corrupt packages instead of manufacturing an empty inspection', async () => {
     const f = await fixture();
     await expect(f.manager.getInspection('missing')).rejects.toThrow('unavailable');
-    const file = (await fs.readdir(f.dir)).find((name) => name.includes('task'))!;
+    const file = (await fs.readdir(f.dir)).find((name) => name.includes('communication'))!;
     await fs.writeFile(path.join(f.dir, file), '{broken');
     await expect(f.manager.getInspection('org')).rejects.toThrow();
     expect(await fs.readFile(path.join(f.dir, file), 'utf8')).toBe('{broken');
@@ -64,7 +61,8 @@ describe('strict read-only Org inspection', () => {
     const locations = new AgentOrgExecutionTreeLocationService({ memoryDir: f.memoryDir,
       manager: { getActive: () => ({ getExecutionTreeSnapshot: () => f.tree }), listActiveOrgRunIds: () => ['org'] } as never });
     const exact = await locations.findAgent({ rootRunId: 'org', agentRunId: 'task-run', memberAddress: '/assistant' });
-    expect(exact).toMatchObject({ agentRunId: 'task-run', platformAgentRunId: 'task-provider', isActive: false,
+    // Location activity follows the root; a delegated child's liveness is runtime-only.
+    expect(exact).toMatchObject({ agentRunId: 'task-run', platformAgentRunId: 'task-provider', isActive: true,
       configuredPlacement: { agentRunId: 'configured', platformAgentRunId: 'configured-provider' },
       memoryDir: path.join(f.dir, 'task-run') });
     const getRequiredProjectionFromMetadata = vi.fn(async (input) => ({ runId: input.runId, conversation: [], activities: [],
@@ -91,7 +89,7 @@ it('serializes inspection behind pending termination and never starts another sc
   let active = true;
   const openPackageSnapshotConnection = vi.fn();
   const build = vi.fn(async () => ({ orgRunId: 'org', rootIdentity: createAgentOrgRootExecutionIdentity('org'),
-    isActive: () => active, openPackageSnapshotConnection, deliverExactAgentMessage: vi.fn(),
+    isActive: () => active, openPackageSnapshotConnection, hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
     terminate: async () => { enter(); await held; active = false; return { accepted: true }; },
   }));
   const manager = new AgentOrgRunManager({ memoryDir: f.memoryDir, scopeBuilder: { build } as never,

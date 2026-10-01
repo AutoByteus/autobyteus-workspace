@@ -1,0 +1,93 @@
+{
+  "startedAt": "2026-09-29T03:40:48.464Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 15,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 6711,
+      "details": {
+        "model": "opus",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 12311,
+      "details": {
+        "runId": "daily_assistant_7cfe11a182234704af9c86b29c7c8cc3",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "claude-opus-5-5 · Claude SDK",
+        "triggerFirstSeen": "opus",
+        "triggerSettledAfterMs": 1580
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 74189
+    },
+    {
+      "label": "frontend",
+      "pid": 74221
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 74221,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 74189,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-8spxuA"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-8spxuA",
+  "backendUrl": "http://127.0.0.1:55719",
+  "frontUrl": "http://127.0.0.1:55720",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T03:41:41.636Z"
+}

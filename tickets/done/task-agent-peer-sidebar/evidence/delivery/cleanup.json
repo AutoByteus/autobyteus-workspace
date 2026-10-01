@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-09-26T06:13:03.832200+00:00",
+  "worktrees_removed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar-release"
+  ],
+  "local_branches_deleted": [
+    "codex/task-agent-peer-sidebar",
+    "delivery/task-agent-peer-sidebar-release"
+  ],
+  "prune": "completed",
+  "remote_ticket_branch": "retained for audit",
+  "unrelated_outputs": "untouched"
+}

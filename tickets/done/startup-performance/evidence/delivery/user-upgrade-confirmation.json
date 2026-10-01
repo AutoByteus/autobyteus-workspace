@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-09-27T08:35:07.125921+00:00",
+  "userConfirmation": "the release is done. i already upgraded",
+  "installedVersion": "1.4.89",
+  "installedApp": "/Applications/AutoByteus.app",
+  "health": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "migration": [
+    "SUCCEEDED_WITH_WARNINGS",
+    3,
+    1790485286025,
+    1790485440870
+  ],
+  "installedByDelivery": false,
+  "taskWorktreeProcesses": "None at cleanup preflight",
+  "productionDataModifiedByDelivery": false
+}

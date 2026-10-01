@@ -1,6 +1,5 @@
 import path from 'path';
 import { SkillRegistry } from '../../skills/registry.js';
-import { SkillAccessMode, resolveSkillAccessMode } from '../context/skill-access-mode.js';
 import type { AgentContextLike } from '../context/agent-context-like.js';
 
 export const appendConfiguredSkillsCatalog = (
@@ -10,16 +9,6 @@ export const appendConfiguredSkillsCatalog = (
   const agentId = context.agentId;
   const registry = new SkillRegistry();
   const configuredSkills = context.config?.skills ?? [];
-  const skillAccessMode = resolveSkillAccessMode(
-    context.config?.skillAccessMode,
-    configuredSkills.length
-  );
-
-  if (skillAccessMode === SkillAccessMode.NONE) {
-    console.info(`Agent '${agentId}': Skill access mode is NONE. Skipping skill catalog.`);
-    return systemPrompt;
-  }
-
   if (configuredSkills.length === 0) {
     console.info(`Agent '${agentId}': No configured skills. Skipping skill catalog.`);
     return systemPrompt;
@@ -70,7 +59,7 @@ ${catalogEntries.join('\n')}
 `;
 
   console.info(
-    `Agent '${agentId}': Added ${catalogEntries.length} configured skill catalog entries with paths. mode='${skillAccessMode}'.`
+    `Agent '${agentId}': Added ${catalogEntries.length} configured skill catalog entries with paths.`
   );
   return systemPrompt + skillsBlock;
 };

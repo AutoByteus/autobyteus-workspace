@@ -1,0 +1,42 @@
+{
+  "release_asset_count": 17,
+  "curated_notes_match": true,
+  "updater_metadata": [
+    {
+      "metadata": "latest-linux-arm64.yml",
+      "version": "1.4.84",
+      "assets": [
+        "AutoByteus_personal_linux-arm64-1.4.84.AppImage"
+      ],
+      "all_assets_present": true
+    },
+    {
+      "metadata": "latest-linux.yml",
+      "version": "1.4.84",
+      "assets": [
+        "AutoByteus_personal_linux-x64-1.4.84.AppImage"
+      ],
+      "all_assets_present": true
+    },
+    {
+      "metadata": "latest-mac.yml",
+      "version": "1.4.84",
+      "assets": [
+        "AutoByteus_personal_macos-arm64-1.4.84.zip",
+        "AutoByteus_personal_macos-arm64-1.4.84.dmg",
+        "AutoByteus_personal_macos-x64-1.4.84.zip",
+        "AutoByteus_personal_macos-x64-1.4.84.dmg"
+      ],
+      "all_assets_present": true
+    },
+    {
+      "metadata": "latest.yml",
+      "version": "1.4.84",
+      "assets": [
+        "AutoByteus_personal_windows-1.4.84.exe"
+      ],
+      "all_assets_present": true
+    }
+  ],
+  "binary_download_or_installed_app_smoke": "Not performed"
+}

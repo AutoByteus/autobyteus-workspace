@@ -3,7 +3,7 @@ import { TeamStreamingService } from '../TeamStreamingService';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const createHarness = (state = 'connected') => {
@@ -20,8 +20,8 @@ const createHarness = (state = 'connected') => {
   const team = buildTestTeamContext({
     teamRunId: 'team-1', coordinatorAddress: '/worker',
     rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
-    tasks: [testTaskRecord({
-      taskId: 'task-1', delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
+    delegations: [testDelegation({
+      delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
       target: { agentRunId: 'task-agent-run-1' },
     })],
   });
@@ -34,7 +34,6 @@ const createHarness = (state = 'connected') => {
       root_team_run_id: 'team-1',
       base_change_sequence: 0,
       execution_tree: team.view.getExecutionTree(),
-      tasks: team.view.listTaskHistoryRows().map((row) => row.task),
       messages: [],
       agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,
@@ -119,6 +118,43 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
       },
     }));
     await expect(admission).rejects.toThrow('runtime is stopping');
+  });
+
+  it('CR-003: settles a mention send on identity although the root composed its content', async () => {
+    const { callbacks, service } = createHarness();
+    const admission = service.sendMessage('Ask @Product Team', 'worker-run', [], [], {
+      messageId: 'message-mention', dedupeKey: 'dedupe-mention',
+      mentions: [{ kind: 'agent_team', definition_id: 'product-team' }],
+    });
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'MEMBER_INPUT_MESSAGE', payload: {
+        change_sequence: 1, recipient_agent_run_id: 'worker-run',
+        message_id: 'message-mention', dedupe_key: 'dedupe-mention',
+        content: 'Ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team',
+        input_origin: 'user_message', received_at: '2026-09-01T00:00:00.000Z', context_file_paths: [],
+        sender_agent_run_id: null, parent_communication_message_id: null,
+      },
+    }));
+    await expect(admission).resolves.toBeUndefined();
+    // The next send from the same member is admitted (nothing is left pending).
+    expect(() => service.sendMessage('next', 'worker-run', [], [], { messageId: 'next', dedupeKey: 'next' })).not.toThrow();
+  });
+
+  it('rejects a mention send whose collaborator could not be added with the name and reason', async () => {
+    const { callbacks, service } = createHarness();
+    const admission = service.sendMessage('Ask @Marketing Team', 'worker-run', [], [], {
+      messageId: 'message-failed-add', dedupeKey: 'dedupe-failed-add',
+      mentions: [{ kind: 'agent_team', definition_id: 'marketing-team' }],
+    });
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'ERROR', payload: {
+        code: 'COLLABORATOR_ADD_FAILED', message: 'Its model is not available.', collaborator_name: 'Marketing Team',
+        change_sequence: null, agent_run_id: 'worker-run', error_scope: null, error_effect: null, turn_id: null,
+      },
+    }));
+    await expect(admission).rejects.toMatchObject({
+      name: 'CollaboratorAddRejection', collaboratorName: 'Marketing Team', reason: 'Its model is not available.',
+    });
   });
 
   it('rejects pending Team admission on disconnect and never sends a second in-flight prompt to the target', async () => {

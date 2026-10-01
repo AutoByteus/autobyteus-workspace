@@ -8,7 +8,6 @@ const launch = {
   llmModelIdentifier: 'gpt-5.6-sol',
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   workspaceRootPath: '/tmp/org',
 };
 
@@ -35,11 +34,11 @@ const team: AgentOrgConfiguredTeamNode = {
   taskExecutions: [
     {
       address: '/design/lead', agentRunId: 'direct-task-agent', platformAgentRunId: null,
-      startedAt: '2026-09-01T00:00:00.000Z', settledAt: null,
+      delegatorAgentRunId: 'configured-researcher', startedAt: '2026-09-01T00:00:00.000Z',
     },
     {
       address: '/design', teamRunId: 'task-team', startedAt: '2026-09-01T00:00:00.000Z',
-      settledAt: null,
+      delegatorAgentRunId: 'configured-researcher',
       members: [
         { address: '/design/lead', agentRunId: 'task-team-lead', platformAgentRunId: null },
         {
@@ -47,13 +46,13 @@ const team: AgentOrgConfiguredTeamNode = {
           members: [{ address: '/design/review/reviewer', agentRunId: 'nested-reviewer', platformAgentRunId: null }],
           taskExecutions: [{
             address: '/design/review/reviewer', agentRunId: 'nested-child-task',
-            platformAgentRunId: null, startedAt: '2026-09-01T00:00:00.000Z', settledAt: null,
+            platformAgentRunId: null, delegatorAgentRunId: 'nested-reviewer', startedAt: '2026-09-01T00:00:00.000Z',
           }],
         },
       ],
       taskExecutions: [{
         address: '/design/lead', agentRunId: 'task-team-child-task', platformAgentRunId: null,
-        startedAt: '2026-09-01T00:00:00.000Z', settledAt: null,
+        delegatorAgentRunId: 'task-team-lead', startedAt: '2026-09-01T00:00:00.000Z',
       }],
     },
   ],

@@ -196,9 +196,10 @@ export class MemoryManager {
     return current;
   }
 
-  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[]): void {
+  /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
+  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null): void {
     const trace = buildNativeUserMessageTrace(llmUserMessage, {
-      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments,
+      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId,
     });
     this.store.add([trace]);
   }

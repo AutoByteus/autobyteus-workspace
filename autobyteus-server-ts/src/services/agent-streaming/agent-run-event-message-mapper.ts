@@ -118,8 +118,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.TOOL_EXECUTION_INTERRUPTED, payload);
       case AgentRunEventType.TOOL_LOG:
         return new ServerMessage(ServerMessageType.TOOL_LOG, payload);
-      case AgentRunEventType.TODO_LIST_UPDATE:
-        return new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, payload);
+      case AgentRunEventType.BACKGROUND_TASK_UPDATED:
+        return new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, payload);
       case AgentRunEventType.INTER_AGENT_MESSAGE:
         return new ServerMessage(ServerMessageType.INTER_AGENT_MESSAGE, payload);
       case AgentRunEventType.TEAM_COMMUNICATION_MESSAGE:

@@ -92,7 +92,10 @@ const createToolEvent = (
     media: terminal?.media ?? anchor.media ?? null,
     ts: terminal?.ts ?? anchor.ts ?? null,
     activityType: inferActivityType(toolName, toolArgs),
-    status: interaction.status === ToolInteractionStatus.ERROR
+    status: asRecord(interaction.result)?.status === "denied" &&
+      ["ERROR", "DONE"].includes(String(asRecord(interaction.result)?.provider_state))
+      ? "denied"
+      : interaction.status === ToolInteractionStatus.ERROR
       ? "error"
       : interaction.status === ToolInteractionStatus.SUCCESS ? "success" : "parsed",
     contextText: resolveContextText(toolName, toolArgs),
@@ -177,7 +180,8 @@ export const buildHistoricalReplayEvents = (
         ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
         kind: "message",
         ...(trace.traceType === "user" ? { role: "user" as const,
-          ...(trace.fileAttachments?.length ? { fileAttachments: trace.fileAttachments } : {})
+          ...(trace.fileAttachments?.length ? { fileAttachments: trace.fileAttachments } : {}),
+          ...(trace.senderId ? { senderId: trace.senderId } : {}),
         } : { role: "assistant" as const }),
         content: trace.content ?? null,
         media: trace.media ?? null,
@@ -193,6 +197,18 @@ export const buildHistoricalReplayEvents = (
         media: trace.media ?? null,
         ts: trace.ts ?? null,
       });
+      continue;
+    }
+    if (trace.traceType === "system_task_notification") {
+      if (trace.content?.trim()) {
+        events.push({
+          ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
+          kind: "system_task_notification",
+          senderId: trace.senderId ?? null,
+          content: trace.content,
+          ts: trace.ts ?? null,
+        });
+      }
       continue;
     }
     if (trace.traceType === "provider_compaction_boundary") {

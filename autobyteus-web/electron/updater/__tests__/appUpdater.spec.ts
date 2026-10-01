@@ -1,5 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { APP_UPDATE_STATE_CHANNEL, AppUpdater } from '../appUpdater';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AppUpdater } from '../appUpdater';
+import { APP_UPDATE_STATE_CHANNEL } from '../appUpdateController';
 
 const {
   appMock,
@@ -16,6 +20,8 @@ const {
   type AutoUpdaterMock = {
     autoDownload: boolean;
     autoInstallOnAppQuit: boolean;
+    allowPrerelease: boolean;
+    allowDowngrade: boolean;
     logger?: unknown;
     checkForUpdates: ReturnType<typeof vi.fn>;
     downloadUpdate: ReturnType<typeof vi.fn>;
@@ -28,6 +34,8 @@ const {
   const autoUpdaterEmitter: AutoUpdaterMock = {
     autoDownload: false,
     autoInstallOnAppQuit: false,
+    allowPrerelease: true,
+    allowDowngrade: true,
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
     quitAndInstall: vi.fn(),
@@ -52,6 +60,7 @@ const {
     appMock: {
       isPackaged: true,
       getVersion: vi.fn(() => '1.1.9'),
+      getPath: vi.fn((_name: string) => ''),
     },
     ipcHandlers: handlers,
     ipcMainMock: {
@@ -103,20 +112,35 @@ function getIpcHandler(channel: string): (...args: any[]) => any {
   return handler;
 }
 
+let userDataDir = '';
+
 describe('AppUpdater', () => {
   beforeEach(() => {
     vi.useRealTimers();
+    userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'app-updater-spec-'));
+    appMock.getPath.mockImplementation(() => userDataDir);
+    appMock.getVersion.mockImplementation(() => '1.1.9');
+    autoUpdaterMock.allowPrerelease = true;
+    autoUpdaterMock.allowDowngrade = true;
+    autoUpdaterMock.checkForUpdates.mockReset();
+    // Like electron-updater, a completed check emits its result event.
+    autoUpdaterMock.checkForUpdates.mockImplementation(async () => {
+      autoUpdaterMock.emit('update-not-available', {});
+    });
     appMock.isPackaged = true;
     sendMock.mockReset();
     ipcHandlers.clear();
     autoUpdaterMock.removeAllListeners();
-    autoUpdaterMock.checkForUpdates.mockClear();
     autoUpdaterMock.downloadUpdate.mockClear();
     autoUpdaterMock.quitAndInstall.mockClear();
     loggerMock.info.mockClear();
     loggerMock.warn.mockClear();
     loggerMock.error.mockClear();
     loggerMock.debug.mockClear();
+  });
+
+  afterEach(() => {
+    fs.rmSync(userDataDir, { recursive: true, force: true });
   });
 
   it('registers IPC handlers and broadcasts initial state on initialize', async () => {
@@ -305,5 +329,276 @@ describe('AppUpdater', () => {
     expect(state.message).toContain('could not restart to install');
     expect(state.error).toBeUndefined();
     expect(loggerMock.error.mock.calls.at(-1)?.[0]).toContain('install boom');
+  });
+
+  describe('update channel', () => {
+    const channelFile = () => path.join(userDataDir, 'app-update-channel.v1.json');
+    const readSavedChannel = () => JSON.parse(fs.readFileSync(channelFile(), 'utf8')).channel;
+    const setChannel = (channel: unknown) => getIpcHandler('app-update:set-channel')({}, channel);
+
+    it('defaults to stable without a saved preference and applies the stable policy', async () => {
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      const state = await getIpcHandler('app-update:get-state')();
+      expect(state.updateChannel).toBe('stable');
+      expect(state.currentVersionIsPrerelease).toBe(false);
+      expect(autoUpdaterMock.allowPrerelease).toBe(false);
+      expect(autoUpdaterMock.allowDowngrade).toBe(false);
+      expect(ipcMainMock.handle).toHaveBeenCalledWith('app-update:set-channel', expect.any(Function));
+    });
+
+    it('loads a saved beta preference on initialize', async () => {
+      fs.writeFileSync(channelFile(), JSON.stringify({ channel: 'beta' }));
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      expect(updater.getState().updateChannel).toBe('beta');
+      expect(autoUpdaterMock.allowPrerelease).toBe(true);
+      expect(autoUpdaterMock.allowDowngrade).toBe(false);
+    });
+
+    it('flags a running pre-release build', () => {
+      appMock.getVersion.mockImplementation(() => '1.4.90-beta.3');
+      const updater = new AppUpdater();
+
+      expect(updater.getState().currentVersionIsPrerelease).toBe(true);
+      expect(updater.getState().currentVersion).toBe('1.4.90-beta.3');
+    });
+
+    it('re-applies the channel policy before every check', async () => {
+      const policyAtCheck: Array<{ allowPrerelease: boolean; allowDowngrade: boolean }> = [];
+      autoUpdaterMock.checkForUpdates.mockImplementation(async () => {
+        policyAtCheck.push({
+          allowPrerelease: autoUpdaterMock.allowPrerelease,
+          allowDowngrade: autoUpdaterMock.allowDowngrade,
+        });
+        autoUpdaterMock.emit('update-not-available', {});
+      });
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      autoUpdaterMock.allowPrerelease = true;
+      autoUpdaterMock.allowDowngrade = true;
+      await getIpcHandler('app-update:check')();
+      await setChannel('beta');
+      autoUpdaterMock.allowDowngrade = true;
+      await getIpcHandler('app-update:check')();
+
+      expect(policyAtCheck).toEqual([
+        { allowPrerelease: false, allowDowngrade: false },
+        { allowPrerelease: true, allowDowngrade: false },
+        { allowPrerelease: true, allowDowngrade: false },
+      ]);
+    });
+
+    it('persists, applies and re-checks when switching to beta while idle', async () => {
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      const result = await setChannel('beta');
+
+      expect(result.accepted).toBe(true);
+      expect(result.persisted).toBe(true);
+      expect(result.state.updateChannel).toBe('beta');
+      expect(readSavedChannel()).toBe('beta');
+      expect(autoUpdaterMock.allowPrerelease).toBe(true);
+      expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(1);
+      expect(sendMock).toHaveBeenCalledWith(
+        APP_UPDATE_STATE_CHANNEL,
+        expect.objectContaining({ updateChannel: 'beta' }),
+      );
+
+      // Survives a restart (a fresh updater reads the saved file).
+      const restarted = new AppUpdater();
+      restarted.initialize();
+      expect(restarted.getState().updateChannel).toBe('beta');
+    });
+
+    it('replaces a beta offer with the stable result when switching back to stable', async () => {
+      fs.writeFileSync(channelFile(), JSON.stringify({ channel: 'beta' }));
+      autoUpdaterMock.checkForUpdates.mockImplementation(async () => {
+        if (autoUpdaterMock.allowPrerelease) {
+          autoUpdaterMock.emit('update-available', { version: '1.2.0-beta.1' });
+        } else {
+          autoUpdaterMock.emit('update-not-available', {});
+        }
+      });
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      await getIpcHandler('app-update:check')();
+      expect(updater.getState().status).toBe('available');
+      expect(updater.getState().availableVersion).toBe('1.2.0-beta.1');
+
+      const result = await setChannel('stable');
+
+      expect(result.accepted).toBe(true);
+      expect(result.state.updateChannel).toBe('stable');
+      expect(result.state.status).toBe('no-update');
+      expect(result.state.availableVersion).toBeNull();
+      expect(autoUpdaterMock.allowPrerelease).toBe(false);
+      expect(autoUpdaterMock.allowDowngrade).toBe(false);
+      expect(readSavedChannel()).toBe('stable');
+    });
+
+    it('re-checks after an error state', async () => {
+      const updater = new AppUpdater();
+      updater.initialize();
+      autoUpdaterMock.checkForUpdates.mockRejectedValueOnce(new Error('net::ERR_CONNECTION_CLOSED'));
+      await getIpcHandler('app-update:check')();
+      expect(updater.getState().status).toBe('error');
+
+      const result = await setChannel('beta');
+
+      expect(result.accepted).toBe(true);
+      expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(2);
+    });
+
+    it('refuses a change while checking, downloading, downloaded or installing', async () => {
+      vi.useFakeTimers();
+      let finishCheck: () => void = () => {};
+      autoUpdaterMock.checkForUpdates.mockImplementation(
+        () => new Promise<void>((resolve) => {
+          finishCheck = resolve;
+        }),
+      );
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      const expectRefused = async (status: string) => {
+        expect(updater.getState().status).toBe(status);
+        const result = await setChannel('beta');
+        expect(result).toEqual({ accepted: false, persisted: false, state: expect.objectContaining({ status }) });
+        expect(result.state.updateChannel).toBe('stable');
+        expect(autoUpdaterMock.allowPrerelease).toBe(false);
+        expect(fs.existsSync(channelFile())).toBe(false);
+      };
+
+      const pendingCheck = getIpcHandler('app-update:check')();
+      await expectRefused('checking');
+      finishCheck();
+      await pendingCheck;
+
+      autoUpdaterMock.emit('download-progress', { percent: 10, transferred: 10, total: 100 });
+      await expectRefused('downloading');
+
+      autoUpdaterMock.emit('update-downloaded', { version: '1.2.0' });
+      await expectRefused('downloaded');
+
+      await getIpcHandler('app-update:install')();
+      await expectRefused('installing');
+
+      expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(1);
+    });
+
+    it('starts with no staged update and marks one staged on update-downloaded', () => {
+      const updater = new AppUpdater();
+      updater.initialize();
+      expect(updater.getState().updateStaged).toBe(false);
+
+      autoUpdaterMock.emit('update-downloaded', { version: '1.2.0' });
+
+      expect(updater.getState().updateStaged).toBe(true);
+      expect(sendMock).toHaveBeenCalledWith(
+        APP_UPDATE_STATE_CHANNEL,
+        expect.objectContaining({ status: 'downloaded', updateStaged: true }),
+      );
+    });
+
+    it.each([
+      ['available', async () => { autoUpdaterMock.emit('update-available', { version: '1.2.0' }); }],
+      ['no-update', async () => { autoUpdaterMock.emit('update-not-available', {}); }],
+      ['error', async () => { throw new Error('net::ERR_CONNECTION_CLOSED'); }],
+    ])('keeps the channel locked after a staged download and a manual check ending in %s', async (endStatus, checkOutcome) => {
+      fs.writeFileSync(channelFile(), JSON.stringify({ channel: 'beta' }));
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      autoUpdaterMock.emit('update-downloaded', { version: '1.2.0-beta.1' });
+      autoUpdaterMock.checkForUpdates.mockImplementationOnce(checkOutcome);
+      await getIpcHandler('app-update:check')();
+      expect(updater.getState().status).toBe(endStatus);
+      expect(updater.getState().updateStaged).toBe(true);
+      autoUpdaterMock.checkForUpdates.mockClear();
+
+      const result = await setChannel('stable');
+
+      expect(result.accepted).toBe(false);
+      expect(result.persisted).toBe(false);
+      expect(result.state.updateChannel).toBe('beta');
+      expect(result.state.updateStaged).toBe(true);
+      expect(updater.getState().updateChannel).toBe('beta');
+      expect(autoUpdaterMock.allowPrerelease).toBe(true);
+      expect(readSavedChannel()).toBe('beta');
+      expect(autoUpdaterMock.checkForUpdates).not.toHaveBeenCalled();
+    });
+
+    it('refuses an invalid channel value', async () => {
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      for (const value of ['nightly', '', null, 42, { channel: 'beta' }]) {
+        const result = await setChannel(value);
+        expect(result.accepted).toBe(false);
+        expect(result.persisted).toBe(false);
+      }
+      expect(updater.getState().updateChannel).toBe('stable');
+      expect(fs.existsSync(channelFile())).toBe(false);
+      expect(autoUpdaterMock.checkForUpdates).not.toHaveBeenCalled();
+    });
+
+    it('still applies the channel for the session when saving fails', async () => {
+      const updater = new AppUpdater();
+      updater.initialize();
+      appMock.getPath.mockImplementation(() => path.join(userDataDir, 'missing', 'dir'));
+
+      const result = await setChannel('beta');
+
+      expect(result.accepted).toBe(true);
+      expect(result.persisted).toBe(false);
+      expect(result.state.updateChannel).toBe('beta');
+      expect(autoUpdaterMock.allowPrerelease).toBe(true);
+      expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(1);
+      expect(loggerMock.error).toHaveBeenCalledWith(
+        '[updater] Failed to save the update channel preference.',
+        expect.anything(),
+      );
+    });
+
+    it('does not re-check in an unpackaged runtime', async () => {
+      appMock.isPackaged = false;
+      const updater = new AppUpdater();
+      updater.initialize();
+
+      const result = await setChannel('beta');
+
+      expect(result.accepted).toBe(true);
+      expect(result.persisted).toBe(true);
+      expect(result.state.status).toBe('idle');
+      expect(autoUpdaterMock.checkForUpdates).not.toHaveBeenCalled();
+    });
+
+    it('never assigns autoUpdater.channel', async () => {
+      const channelSetter = vi.fn();
+      Object.defineProperty(autoUpdaterMock, 'channel', {
+        configurable: true,
+        get: () => null,
+        set: channelSetter,
+      });
+      try {
+        fs.writeFileSync(channelFile(), JSON.stringify({ channel: 'beta' }));
+        const updater = new AppUpdater();
+        updater.initialize();
+        await getIpcHandler('app-update:check')();
+        expect((await setChannel('stable')).accepted).toBe(true);
+        expect((await setChannel('beta')).accepted).toBe(true);
+
+        expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(3);
+        expect(channelSetter).not.toHaveBeenCalled();
+      } finally {
+        delete (autoUpdaterMock as { channel?: unknown }).channel;
+      }
+    });
   });
 });

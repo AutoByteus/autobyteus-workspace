@@ -1,4 +1,3 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 
 export type ConfiguredAgentExecutionSpec = Readonly<{
@@ -6,7 +5,6 @@ export type ConfiguredAgentExecutionSpec = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   runtimeKind: RuntimeKind;
   workspaceRootPath: string | null;
   platformAgentRunId: string | null;

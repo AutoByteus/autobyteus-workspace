@@ -1,16 +1,11 @@
-import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
-import type {
-  CommittedTaskSettlement,
-  PreparedTaskSettlement,
-} from "../domain/prepared-task-settlement.js";
 import type {
   RunPackageDirectoryFinalizationStage,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 
-export type TeamRunFileRole = "execution_tree" | "task_records" | "communication_messages";
+export type TeamRunFileRole = "execution_tree" | "communication_messages";
 type TeamRunDirectoryFinalizationStage = RunPackageDirectoryFinalizationStage;
 
 export class TeamRunPersistenceFinalizationIndeterminateError extends RootTaskPersistenceFinalizationIndeterminateError {
@@ -36,50 +31,18 @@ export type PreparedTaskActivationCommit = Readonly<{
   commitAfterDurability(): void;
 }>;
 
-export type PreparedTaskMutationCommit =
-  | Readonly<{
-      kind: "activation";
-      activation: PreparedTaskActivationCommit;
-      prepareAgainstCurrent(): Readonly<{
-        nextTree: TeamRunExecutionTreeSnapshot;
-        nextTasks: TaskDelegationRecordsSnapshot;
-      }>;
-    }>
-  | Readonly<{
-      kind: "record_transition";
-      nextTasks: TaskDelegationRecordsSnapshot;
-      cancelBeforeDurability(): void;
-      commitAfterDurability(): void;
-    }>;
-
-export type PreparedTaskSettlementCommit = Readonly<{
-  settlement: PreparedTaskSettlement;
-  prepareAgainstCurrent(): Readonly<{
-    nextTree: TeamRunExecutionTreeSnapshot;
-    commitTreeAndEvent(settlement: CommittedTaskSettlement): void;
-  }>;
+/** Task-execution activation is one execution-tree write (execution + delegator). */
+export type PreparedTaskActivationMutation = Readonly<{
+  activation: PreparedTaskActivationCommit;
+  prepareAgainstCurrent(): Readonly<{ nextTree: TeamRunExecutionTreeSnapshot }>;
 }>;
 
-export type TaskMutationCommitResult =
-  | Readonly<{
-      outcome: "not_committed";
-      failedFile: TeamRunFileRole;
-      treeOrphanMayExist: boolean;
-      cause: Error;
-    }>
+export type ExecutionTreeCommitResult =
+  | Readonly<{ outcome: "not_committed"; cause: Error }>
   | Readonly<{ outcome: "committed" }>
   | Readonly<{
       outcome: "finalization_indeterminate";
       file: TeamRunFileRole;
-      stage: TeamRunDirectoryFinalizationStage;
-    }>;
-
-export type TaskSettlementCommitResult =
-  | Readonly<{ outcome: "not_committed"; cause: Error }>
-  | Readonly<{ outcome: "committed"; settlement: CommittedTaskSettlement }>
-  | Readonly<{
-      outcome: "finalization_indeterminate";
-      file: "execution_tree";
       stage: TeamRunDirectoryFinalizationStage;
     }>;
 

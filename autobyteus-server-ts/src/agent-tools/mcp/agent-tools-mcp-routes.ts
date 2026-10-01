@@ -93,9 +93,12 @@ const handleAgentToolsMcpRequest = async (input: {
     return sendMethodNotAllowed(reply);
   }
   if (request.method === "GET") {
-    if (!accepts(request, ["text/event-stream"])) {
+    // AGY 1.2.10 probes GET first and treats a successful SSE response as a
+    // legacy standalone stream. Its run-scoped header selects Streamable HTTP.
+    if (readSingleHeader(request.headers["x-autobyteus-mcp-transport"]) === "streamable-http")
+      return sendMethodNotAllowed(reply);
+    if (!accepts(request, ["text/event-stream"]))
       return sendHttpError(reply, 406, "not_acceptable", "Not Acceptable");
-    }
     return sendSseCompatibilityResponse(reply);
   }
 

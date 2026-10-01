@@ -21,7 +21,6 @@ export type SkillImprovementTargetContext = {
   runtimeKind: RuntimeKind | string | null;
   llmModelIdentifier: string | null;
   llmConfig: Record<string, unknown> | null;
-  skillAccessMode?: string | null;
   effectiveConfig: SkillImprovementEffectiveConfig | null;
   targetMetadata: AgentRunMetadata | ConfiguredAgentExecutionNode;
 };
@@ -63,7 +62,6 @@ export class SkillImprovementTargetContextResolver {
       runtimeKind: metadata.runtimeKind,
       llmModelIdentifier: metadata.llmModelIdentifier,
       llmConfig: metadata.llmConfig ?? null,
-      skillAccessMode: metadata.skillAccessMode ?? null,
       effectiveConfig: null,
       targetMetadata: metadata,
     };
@@ -94,7 +92,6 @@ export class SkillImprovementTargetContextResolver {
       runtimeKind: member.launchConfiguration.runtimeKind,
       llmModelIdentifier: member.launchConfiguration.llmModelIdentifier,
       llmConfig: member.launchConfiguration.llmConfig as Record<string, unknown> | null,
-      skillAccessMode: member.launchConfiguration.skillAccessMode ?? null,
       effectiveConfig: null,
       targetMetadata: member,
     };

@@ -27,7 +27,7 @@ vi.mock('~/stores/runHistoryStore', () => ({
 
 import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 
-import { taskBearingView, taskRecord } from './taskBearingOrgFixture'
+import { taskBearingView } from './taskBearingOrgFixture'
 
 const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org:org-run',
@@ -40,18 +40,12 @@ const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem 
   executionTree: view.execution_tree,
 })
 
-const settledEvent = (
-  taskId: string,
-  recipientAddress: string,
-  taskExecution: { agentRunId: string } | { teamRunId: string },
-): AgentOrgExecutionEventDto => ({
-  kind: 'task',
-  event: {
-    kind: 'settled',
-    settledAt: '2026-09-01T00:05:00.000Z',
-    task: { ...taskRecord(taskId, recipientAddress, taskExecution), status: 'accepted' },
-  },
-})
+const offlineEvent = (memberAddress: string, agentRunId: string): AgentOrgExecutionEventDto => ({
+  kind: 'agent_presentation', member_address: memberAddress, agent_run_id: agentRunId,
+  message: { type: 'AGENT_STATUS', payload: {
+    status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null,
+  } },
+} as AgentOrgExecutionEventDto)
 
 describe('staged AgentOrg context hydration and publication', () => {
   beforeEach(() => {
@@ -74,7 +68,8 @@ describe('staged AgentOrg context hydration and publication', () => {
       .toEqual(['agent-worker-configured', 'agent-worker-task'])
     expect(entries.filter((entry) => entry.memberAddress === '/team/lead').map((entry) => entry.agentRunId))
       .toEqual(['agent-lead-configured', 'agent-task-lead'])
-    expect(context.view.task_records.records).toHaveLength(2)
+    expect(context.executionTree.rootOrg.taskExecutions.map((task) => task.delegatorAgentRunId))
+      .toEqual(['agent-director', 'agent-director'])
     expect(context.changeSequence).toBe(8)
 
     context.select('/team')
@@ -145,13 +140,13 @@ describe('staged AgentOrg context hydration and publication', () => {
     expect(useAgentActivityStore().getActivities('agent-task-lead')).toEqual([])
   })
 
-  it('projects a live settled task Agent to retained offline hierarchy truth without reload', async () => {
+  it('projects an idle-shutdown task Agent as offline while its hierarchy row stays visible', async () => {
     const view = taskBearingView()
     const context = await hydrateAgentOrgExecutionContext({
       orgRunId: 'org-run',
       view,
     })
-    context.getAgentContext('agent-worker-task')!.state.currentStatus = AgentStatus.Running
+    context.getAgentContext('agent-worker-task')!.state.currentStatus = AgentStatus.Idle
     const run = liveHistoryRun(view)
     const taskRowStatus = () => {
       const row = projectAgentOrgHistoryRows({
@@ -164,52 +159,55 @@ describe('staged AgentOrg context hydration and publication', () => {
       return row?.kind === 'task_agent' ? row.status : undefined
     }
 
-    expect(taskRowStatus()).toBe(AgentStatus.Running)
-    expect(context.applyEvent(
-      9,
-      settledEvent('task-agent', '/worker', { agentRunId: 'agent-worker-task' }),
-    )).toBe('applied')
+    expect(taskRowStatus()).toBe(AgentStatus.Idle)
+    expect(context.applyEvent(9, offlineEvent('/worker', 'agent-worker-task'))).toBe('applied')
 
-    expect(context.view.task_records.records[0]).toMatchObject({
-      taskId: 'task-agent',
-      status: 'accepted',
-    })
     expect(context.executionTree.rootOrg.taskExecutions[0]).toMatchObject({
       agentRunId: 'agent-worker-task',
-      settledAt: '2026-09-01T00:05:00.000Z',
+      delegatorAgentRunId: 'agent-director',
     })
-    expect(context.view.agent_statuses.some((status) => status.agent_run_id === 'agent-worker-task')).toBe(false)
+    expect(context.executionTree.rootOrg.taskExecutions[0]).not.toHaveProperty('settledAt')
     expect(context.getAgentContext('agent-worker-task')!.state.currentStatus).toBe(AgentStatus.Offline)
-    expect(taskRowStatus()).toBeUndefined()
+    expect(taskRowStatus()).toBe(AgentStatus.Offline)
     expect(context.changeSequence).toBe(9)
     expect(context.phase).toBe('live')
     expect(context.error).toBeNull()
   })
 
-  it('projects every Agent in a settled task Team scope to offline current-context truth', async () => {
+  it('projects every Agent in an idle-shutdown task Team to offline without removing the execution', async () => {
     const view = taskBearingView()
     const context = await hydrateAgentOrgExecutionContext({
       orgRunId: 'org-run',
       view,
     })
-    context.getAgentContext('agent-task-lead')!.state.currentStatus = AgentStatus.Running
-    context.getAgentContext('agent-task-worker')!.state.currentStatus = AgentStatus.Running
 
-    expect(context.applyEvent(
-      9,
-      settledEvent('task-team', '/team', { teamRunId: 'team-task' }),
-    )).toBe('applied')
+    expect(context.applyEvent(9, offlineEvent('/team/lead', 'agent-task-lead'))).toBe('applied')
+    expect(context.applyEvent(10, offlineEvent('/team/worker', 'agent-task-worker'))).toBe('applied')
 
-    expect(context.executionTree.rootOrg.taskExecutions[1]).toMatchObject({
-      teamRunId: 'team-task',
-      settledAt: '2026-09-01T00:05:00.000Z',
-    })
-    expect(context.view.agent_statuses.filter((status) =>
-      ['agent-task-lead', 'agent-task-worker'].includes(status.agent_run_id))).toEqual([])
+    expect(context.executionTree.rootOrg.taskExecutions[1]).toMatchObject({ teamRunId: 'team-task' })
     expect(context.getAgentContext('agent-task-lead')!.state.currentStatus).toBe(AgentStatus.Offline)
     expect(context.getAgentContext('agent-task-worker')!.state.currentStatus).toBe(AgentStatus.Offline)
     expect(context.phase).toBe('live')
     expect(context.error).toBeNull()
+  })
+
+  it('hosts a collaborator Team in place on collaborator_added: Offline contexts and an opened Team row (no reload)', async () => {
+    const view = taskBearingView()
+    const context = await hydrateAgentOrgExecutionContext({ orgRunId: 'org-run', view })
+    const launch = view.execution_tree.rootOrg.defaultLaunchConfiguration
+    expect(context.applyEvent(9, { kind: 'collaborator_added', collaborator: {
+      kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
+      coordinatorAddress: '/product_team/product_prototyper',
+      members: [{ address: '/product_team/product_prototyper', agentDefinitionId: 'prototyper', agentRunId: 'pp-run', platformAgentRunId: null }],
+      handoffs: [], defaultLaunchConfiguration: launch, taskExecutions: [], addedAt: view.execution_tree.createdAt, addedViaAgentRunId: 'agent-director',
+    } } as AgentOrgExecutionEventDto)).toBe('applied')
+    expect(context.phase).toBe('live')
+    expect(context.getAgentContext('pp-run')).toMatchObject({ config: { agentDefinitionId: 'prototyper', agentDefinitionName: 'product prototyper' } })
+    expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Offline)
+    const rows = projectAgentOrgHistoryRows({ run: liveHistoryRun({ ...view, execution_tree: context.executionTree } as never), context, isTeamExpanded: () => true })
+      .map((item) => item.row)
+    expect(rows.find((row) => row.kind === 'task_team' && row.teamRunId === 'product-run')).toBeTruthy()
+    expect(rows.find((row) => 'agentRunId' in row && row.agentRunId === 'pp-run')).toBeTruthy()
   })
 })
 

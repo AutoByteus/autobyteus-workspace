@@ -1,10 +1,8 @@
-import type { CollaborationTasksContextView } from './collaborationTasksContextView'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { ContextFilePath } from '~/types/conversation'
 import type { ToolApprovalTarget } from '~/types/segments'
 import type { EventMonitorActiveTraceBrowseSubject } from '~/services/eventMonitor/eventMonitorActiveTracePageService'
-import type { CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation'
 import type { CollaborationMessagesContextView } from './collaborationMessagesContextView'
 
 export interface AgentInteractionPort {
@@ -28,7 +26,6 @@ export interface TeamWorkspaceContextView {
   readonly focusedMemberAddress: AgentTeamAddress
   readonly focusedAgentRunId: string
   readonly focusedAgentContext: AgentContext
-  focusedTaskPresentation(): CollaborationTaskHeadingPresentation | null
   isFocusedProjectionAuthoritative(): boolean
   listMembers(): readonly Readonly<{
     address: AgentTeamAddress
@@ -49,18 +46,21 @@ type WorkspaceTargetCore = WorkspaceAccess & Readonly<{
 
 export type ActiveAgentWorkspaceTarget =
   | (WorkspaceTargetCore & Readonly<{ kind: 'standalone_agent' }>)
+  /** A standalone run with task children: its Team tab lists messages with them. */
+  | (WorkspaceTargetCore & Readonly<{
+      kind: 'standalone_agent'
+      collaborationMessages: CollaborationMessagesContextView
+    }>)
   | (WorkspaceTargetCore & Readonly<{
       kind: 'standalone_team_member'
       team: TeamWorkspaceContextView
       collaborationMessages: CollaborationMessagesContextView
-      collaborationTasks: CollaborationTasksContextView
     }>)
   | (WorkspaceTargetCore & Readonly<{
       kind: 'agent_org_direct_agent'
       root: Readonly<{ orgRunId: string }>
       address: AgentTeamAddress
       collaborationMessages: CollaborationMessagesContextView
-      collaborationTasks: CollaborationTasksContextView
     }>)
   | (WorkspaceTargetCore & Readonly<{
       kind: 'agent_org_team_member'
@@ -68,23 +68,32 @@ export type ActiveAgentWorkspaceTarget =
       team: TeamWorkspaceContextView
       address: AgentTeamAddress
       collaborationMessages: CollaborationMessagesContextView
-      collaborationTasks: CollaborationTasksContextView
     }>)
 
   | (WorkspaceTargetCore & Readonly<{
       kind: 'agent_org_task_agent'
       root: Readonly<{ orgRunId: string }>
       address: AgentTeamAddress
-      task: CollaborationTaskHeadingPresentation
       collaborationMessages: CollaborationMessagesContextView
-      collaborationTasks: CollaborationTasksContextView
     }>)
   | (WorkspaceTargetCore & Readonly<{
       kind: 'agent_org_task_team_member'
       root: Readonly<{ orgRunId: string }>
       team: TeamWorkspaceContextView
       address: AgentTeamAddress
-      task: CollaborationTaskHeadingPresentation
       collaborationMessages: CollaborationMessagesContextView
-      collaborationTasks: CollaborationTasksContextView
+    }>)
+  /** A task Agent brought into a standalone run (directly under the run). */
+  | (WorkspaceTargetCore & Readonly<{
+      kind: 'agent_run_task_agent'
+      host: Readonly<{ hostRunId: string }>
+      address: AgentTeamAddress
+      collaborationMessages: CollaborationMessagesContextView
+    }>)
+  /** A member of a task Team brought into a standalone run. */
+  | (WorkspaceTargetCore & Readonly<{
+      kind: 'agent_run_task_team_member'
+      host: Readonly<{ hostRunId: string }>
+      address: AgentTeamAddress
+      collaborationMessages: CollaborationMessagesContextView
     }>)

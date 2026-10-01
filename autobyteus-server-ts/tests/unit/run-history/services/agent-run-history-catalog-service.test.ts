@@ -25,7 +25,6 @@ const buildMetadata = (runId: string, overrides: Partial<AgentRunMetadata> = {})
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: "PRELOADED_ONLY" as never,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
   preparedAt: "2026-03-26T10:00:00.000Z",
@@ -83,6 +82,11 @@ describe("AgentRunHistoryCatalogService", () => {
     const { AgentRunHistoryCatalogService } = await import(
       "../../../../src/run-history/services/agent-run-history-catalog-service.js"
     );
+    for (const row of initialRows) {
+      const dir = path.join(memoryDir, "agents", row.runId);
+      await fs.mkdir(dir, {recursive: true});
+      await fs.writeFile(path.join(dir, "run_metadata.json"), JSON.stringify(buildMetadata(row.runId, {memoryDir: dir})));
+    }
     let index: AgentRunHistoryIndexFileRecord = initialRows.map((row) => ({ ...row }));
     const writeFailures: Error[] = [];
     const indexStore = {
@@ -183,6 +187,7 @@ describe("AgentRunHistoryCatalogService", () => {
 
     await expect(service.commitRunModelConfig({
       runId: "run-1",
+      llmModelIdentifier: "model-1",
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
       kind: "committed",
@@ -321,6 +326,70 @@ describe("AgentRunHistoryCatalogService", () => {
     await expect(service.getCatalogRow("run-1")).resolves.toMatchObject({ runId: "run-1" });
     await expect(fs.access(runDirPath)).resolves.toBeUndefined();
     expect(getPersistedIndex()).toEqual([row]);
+  });
+
+  describe("a run whose host is down but whose Agent root lingers (CR-001/CR-002)", () => {
+    const setup = async (options: { hostActive?: boolean; endFails?: boolean } = {}) => {
+      const row = buildIndexRow();
+      const { indexStore } = await buildServiceWithIndexStore([row]);
+      const runDir = path.join(memoryDir, "agents", "run-1");
+      const childMemory = path.join(runDir, "collaboration", "child-run", "raw_traces_active.jsonl");
+      await fs.mkdir(path.dirname(childMemory), { recursive: true });
+      await fs.writeFile(childMemory, "");
+      const { AgentRunHistoryCatalogService } = await import(
+        "../../../../src/run-history/services/agent-run-history-catalog-service.js"
+      );
+      const state = { rootRegistered: true, filesPresentWhenEnded: [] as boolean[] };
+      const endRoot = vi.fn(async () => {
+        state.filesPresentWhenEnded.push(await fs.access(childMemory).then(() => true, () => false));
+        if (options.endFails) throw new Error("a child did not stop");
+        state.rootRegistered = false;
+      });
+      const service = new AgentRunHistoryCatalogService(memoryDir, {
+        indexStore: indexStore as never,
+        agentDefinitionService: { getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }) } as never,
+        agentRunManager: { hasActiveRun: vi.fn().mockReturnValue(options.hostActive ?? false) },
+        collaborationRoots: { hasRoot: vi.fn(() => state.rootRegistered), endRoot },
+      });
+      return { service, state, endRoot, runDir, childMemory };
+    };
+
+    it("delete ends the root (children stop) before removing anything, then deletes", async () => {
+      const f = await setup();
+      await expect(f.service.deleteRun("run-1")).resolves.toMatchObject({ success: true });
+      expect(f.endRoot).toHaveBeenCalledWith("run-1");
+      expect(f.state.filesPresentWhenEnded).toEqual([true]);
+      await expect(fs.access(f.runDir)).rejects.toThrow();
+    });
+
+    it("archive ends the root first, then archives", async () => {
+      const f = await setup();
+      await expect(f.service.archiveRun("run-1")).resolves.toMatchObject({ success: true });
+      expect(f.endRoot).toHaveBeenCalledWith("run-1");
+      await expect(fs.access(f.childMemory)).resolves.toBeUndefined();
+    });
+
+    it("refuses delete and archive, keeping every file, when the root cannot be ended", async () => {
+      const f = await setup({ endFails: true });
+      await expect(f.service.deleteRun("run-1")).resolves.toEqual({
+        success: false, message: "Run is active. Terminate it before deleting history.",
+      });
+      await expect(f.service.archiveRun("run-1")).resolves.toMatchObject({ success: false });
+      await expect(fs.access(f.childMemory)).resolves.toBeUndefined();
+    });
+
+    it("refuses while the host itself is active, without touching the root", async () => {
+      const f = await setup({ hostActive: true });
+      await expect(f.service.deleteRun("run-1")).resolves.toMatchObject({ success: false });
+      expect(f.endRoot).not.toHaveBeenCalled();
+    });
+
+    it("a run without a root deletes directly", async () => {
+      const f = await setup();
+      f.state.rootRegistered = false;
+      await expect(f.service.deleteRun("run-1")).resolves.toMatchObject({ success: true });
+      expect(f.endRoot).not.toHaveBeenCalled();
+    });
   });
 
   it("rolls back cancel state and leaves prepared metadata when the index flush fails", async () => {

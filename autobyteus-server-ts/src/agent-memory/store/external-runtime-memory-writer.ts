@@ -50,12 +50,17 @@ export class ExternalRuntimeMemoryWriter {
         toolResult: input.toolResult === undefined ? null : input.toolResult,
         toolError: input.toolError ?? null,
       });
+    } else if (input.traceType === "system_task_notification") {
+      options.senderId = input.senderId;
     } else if (input.traceType === "provider_compaction_boundary") {
       if (input.toolResult !== undefined) options.toolResult = input.toolResult;
       options.correlationId = input.correlationId;
     } else {
       options.media = input.media;
-      if (input.traceType === "user") options.fileAttachments = input.fileAttachments;
+      if (input.traceType === "user") {
+        options.fileAttachments = input.fileAttachments;
+        if (input.senderId) options.senderId = input.senderId;
+      }
       options.correlationId = input.correlationId;
     }
     const trace = new RawTraceItem(options);

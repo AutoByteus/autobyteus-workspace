@@ -1,0 +1,4 @@
+[31m   [31m×[31m calls real scoped AutoByteus MCP send_message_to from an AGY team member[39m[33m 1508[2mms[22m[39m
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Cannot inspect AGY MCP collision at '/Users/normy/.gemini/config/mcp_config.json': SyntaxError: Unexpected end of JSON input[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m2 skipped[39m[90m (3)[39m

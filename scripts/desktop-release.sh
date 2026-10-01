@@ -4,15 +4,16 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WEB_PACKAGE_JSON="$REPO_ROOT/autobyteus-web/package.json"
-GATEWAY_PACKAGE_JSON="$REPO_ROOT/autobyteus-message-gateway/package.json"
 RELEASE_NOTES_OUTPUT_PATH="$REPO_ROOT/.github/release-notes/release-notes.md"
 RELEASE_NOTES_OUTPUT_REL=".github/release-notes/release-notes.md"
+RELEASE_VERSIONS_HELPER="$SCRIPT_DIR/release_versions.py"
 DEFAULT_BRANCH="personal"
 
 usage() {
   cat <<'USAGE'
 Usage:
   scripts/desktop-release.sh release <version> --release-notes <file> [--branch <branch>] [--no-push]
+  scripts/desktop-release.sh beta [--base <X.Y.Z>] [--branch <branch>] [--no-push]
   scripts/desktop-release.sh test [--ref <git-ref>]
   scripts/desktop-release.sh manual-dispatch <tag> [--ref <git-ref>] [--prerelease]
 
@@ -20,6 +21,10 @@ Commands:
   release   Bump autobyteus-web/package.json version, sync curated release notes,
             commit, and create matching tag.
             Defaults: --branch personal, push enabled. Pushing the tag starts the real release workflow.
+  beta      Release the next beta (vX.Y.Z-beta.N) without curated notes. The tag is published
+            as a GitHub pre-release with generated notes and is offered only to desktop installs
+            with "Receive beta updates" on. Base defaults to the next patch after the highest
+            stable tag; N is the next unused beta number (max 98). Other options as for release.
   test      Trigger release-desktop workflow for build-only validation (no GitHub release publish).
   manual-dispatch
             Trigger release-desktop workflow manually for an existing tag.
@@ -28,6 +33,8 @@ Commands:
 Examples:
   scripts/desktop-release.sh release 1.2.7 --release-notes tickets/done/my-ticket/release-notes.md
   scripts/desktop-release.sh release 1.2.7 --release-notes tickets/done/my-ticket/release-notes.md --no-push
+  scripts/desktop-release.sh beta
+  scripts/desktop-release.sh beta --base 1.5.0
   scripts/desktop-release.sh test --ref personal
   scripts/desktop-release.sh manual-dispatch v1.2.7 --ref personal
 USAGE
@@ -155,17 +162,84 @@ run_release() {
   require_cmd node
   validate_release_notes_file "$release_notes_file"
   ensure_clean_worktree
+  ensure_on_branch "$branch"
 
+  local tag="v$version"
+  ensure_tag_absent "$tag"
+  bump_package_version "$version"
+  sync_release_notes_file "$release_notes_file"
+  commit_tag_and_push "$version" "$branch" "$push_enabled" \
+    .github/release-notes/release-notes.md \
+    autobyteus-web/package.json
+}
+
+run_beta() {
+  local branch="$DEFAULT_BRANCH"
+  local push_enabled="true"
+  local base=""
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --)
+        shift
+        ;;
+      --base)
+        base="${2:-}"
+        if [[ -z "$base" ]]; then
+          echo "Error: --base requires a version like 1.5.0." >&2
+          exit 1
+        fi
+        shift 2
+        ;;
+      --branch)
+        branch="${2:-}"
+        shift 2
+        ;;
+      --no-push)
+        push_enabled="false"
+        shift
+        ;;
+      *)
+        echo "Error: unknown option for beta: $1" >&2
+        usage
+        exit 1
+        ;;
+    esac
+  done
+
+  require_cmd git
+  require_cmd node
+  require_cmd python3
+  ensure_clean_worktree
+  ensure_on_branch "$branch"
+
+  git -C "$REPO_ROOT" fetch --tags origin
+
+  local next_beta_args=(next-beta)
+  if [[ -n "$base" ]]; then
+    next_beta_args+=(--base "$base")
+  fi
+  local version
+  version="$(cd "$REPO_ROOT" && python3 "$RELEASE_VERSIONS_HELPER" "${next_beta_args[@]}")"
+
+  local tag="v$version"
+  ensure_tag_absent "$tag"
+  bump_package_version "$version"
+  commit_tag_and_push "$version" "$branch" "$push_enabled" autobyteus-web/package.json
+}
+
+ensure_on_branch() {
+  local branch="$1"
   local current_branch
   current_branch="$(get_current_branch)"
   if [[ "$current_branch" != "$branch" ]]; then
     echo "Error: current branch is '$current_branch'. Switch to '$branch' first." >&2
     exit 1
   fi
+}
 
-  local tag="v$version"
-  ensure_tag_absent "$tag"
-
+bump_package_version() {
+  local version="$1"
   local current_web_version
   current_web_version="$(get_package_version "$WEB_PACKAGE_JSON")"
   if [[ "$current_web_version" == "$version" ]]; then
@@ -173,24 +247,19 @@ run_release() {
     exit 1
   fi
 
-  local current_gateway_version
-  current_gateway_version="$(get_package_version "$GATEWAY_PACKAGE_JSON")"
-
   echo "Updating autobyteus-web/package.json: $current_web_version -> $version"
   set_package_version "$WEB_PACKAGE_JSON" "$version"
-  echo "Updating autobyteus-message-gateway/package.json: $current_gateway_version -> $version"
-  set_package_version "$GATEWAY_PACKAGE_JSON" "$version"
-  sync_release_notes_file "$release_notes_file"
-  echo "Syncing managed messaging release manifest to $tag"
-  node "$REPO_ROOT/autobyteus-message-gateway/scripts/build-runtime-package.mjs" \
-    --sync-manifest-only \
-    --release-tag "$tag"
+}
 
-  git -C "$REPO_ROOT" add \
-    .github/release-notes/release-notes.md \
-    autobyteus-message-gateway/package.json \
-    autobyteus-web/package.json \
-    autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+# Shared release tail: commit the given paths, create the annotated tag and push.
+commit_tag_and_push() {
+  local version="$1"
+  local branch="$2"
+  local push_enabled="$3"
+  shift 3
+  local tag="v$version"
+
+  git -C "$REPO_ROOT" add "$@"
   git -C "$REPO_ROOT" commit -m "chore(release): bump workspace release version to $version"
   git -C "$REPO_ROOT" tag -a "$tag" -m "Release $tag"
 
@@ -294,6 +363,9 @@ main() {
         exit 1
       fi
       run_release "$@"
+      ;;
+    beta)
+      run_beta "$@"
       ;;
     test)
       test_release_workflow "$@"

@@ -3,11 +3,11 @@ import { createExistingAgentOrgModelConfigDraft, planExistingAgentOrgModelConfig
 
 const launch = (model: string, config: Record<string, unknown> | null = { effort: 'low' }) => ({
   runtimeKind: 'codex_app_server', llmModelIdentifier: model, llmConfig: config,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace',
+  autoExecuteTools: false, workspaceRootPath: '/workspace',
 })
 const tree = (overrides: Partial<Record<'root'|'direct'|'team'|'nested', ReturnType<typeof launch>>> = {}) => ({
-  schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
-  applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org',
+  subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
+  applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org',
     defaultLaunchConfiguration: overrides.root ?? launch('root'), taskExecutions: [], members: [
       { address: '/direct', agentDefinitionId: 'a', role: 'Direct', description: null, agentRunId: 'direct', platformAgentRunId: null,
         launchConfiguration: overrides.direct ?? launch('root') },

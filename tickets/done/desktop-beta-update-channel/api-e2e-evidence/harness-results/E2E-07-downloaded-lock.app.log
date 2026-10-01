@@ -1,0 +1,14 @@
+[2026-09-27T10:21:14.250Z] [INFO] [electron] Application started
+[2026-09-27T10:21:14.481Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:14.484Z] [INFO] [electron] [updater] Generated new staging user ID: 76ffadf2-d8f8-519b-b080-07b57bad3d49
+[2026-09-27T10:21:14.493Z] [INFO] [electron] [updater] Found version 1.4.91-beta.1 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip)
+[2026-09-27T10:21:14.494Z] [INFO] [electron] [updater] Downloading update from AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:14.498Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+[2026-09-27T10:21:14.501Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+[2026-09-27T10:21:14.506Z] [INFO] [electron] [updater] Unable to locate previous update.zip for differential download (is this first install?), falling back to full download
+[2026-09-27T10:21:14.649Z] [INFO] [electron] [updater] New version 1.4.91-beta.1 has been downloaded to /Users/normy/Library/Caches/abx-e2e-updater/pending/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:14.772Z] [INFO] [electron] [updater] / requested
+[2026-09-27T10:21:14.776Z] [INFO] [electron] [updater] /8c56b65d3b8314abfed06be6bddb6275fdc4af06782922aa45cc9fe74c70bb6f119c8f7924c3a41d9d2696077d900e129d2bb2d20573acd242172717df5e43a6.zip requested
+[2026-09-27T10:21:14.776Z] [INFO] [electron] [updater] /8c56b65d3b8314abfed06be6bddb6275fdc4af06782922aa45cc9fe74c70bb6f119c8f7924c3a41d9d2696077d900e129d2bb2d20573acd242172717df5e43a6.zip requested by Squirrel.Mac, pipe /Users/normy/Library/Caches/abx-e2e-updater/pending/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:15.121Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:15.124Z] [INFO] [electron] [updater] Found version 1.4.91-beta.1 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip)

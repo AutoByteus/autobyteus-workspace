@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ReleasedSkillAccessMode } from "../legacy/released-skill-access-mode.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -10,11 +10,10 @@ import type {
 
 const MIGRATION_ID = "20260706_remove_global_skill_discovery_mode";
 const LEGACY_MODE = "GLOBAL_DISCOVERY";
-const TARGET_MODE = SkillAccessMode.PRELOADED_ONLY;
+const TARGET_MODE: ReleasedSkillAccessMode = "PRELOADED_ONLY";
 const CANDIDATE_JSON_FILE_NAMES = new Set([
   "run_metadata.json",
   "team_run_metadata.json",
-  "bindings.json",
 ]);
 
 type CandidateFile = {
@@ -145,16 +144,12 @@ export class RemoveGlobalSkillDiscoveryModeMigration implements AppDataMigration
   readonly description = "Rewrites persisted GLOBAL_DISCOVERY skill access values to configured-only behavior.";
   readonly requiredOnStartup = true;
 
-  constructor(
-    private readonly memoryDir: string,
-    private readonly appDataDir: string,
-  ) {}
+  constructor(private readonly memoryDir: string) {}
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
     const candidates = [
       ...(await collectCandidateFiles(path.join(this.memoryDir, "agents"), "agent")),
       ...(await collectCandidateFiles(path.join(this.memoryDir, "agent_teams"), "team")),
-      ...(await collectCandidateFiles(path.join(this.appDataDir, "external-channel"), "external-channel")),
     ].sort((left, right) => left.filePath.localeCompare(right.filePath));
     const details: AppDataMigrationItemDetail[] = [];
 

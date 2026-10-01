@@ -1,0 +1,5 @@
+{"jsonrpc": "2.0", "id": 1, "method": "server/discover", "params": {"_meta": {"io.modelcontextprotocol/clientCapabilities": {"elicitation": {"form": {}, "url": {}}, "roots": {"listChanged": true}}, "io.modelcontextprotocol/clientInfo": {"name": "antigravity-client", "version": "v1.0.0"}, "io.modelcontextprotocol/protocolVersion": "2026-07-28"}}}
+{"jsonrpc": "2.0", "id": 2, "method": "initialize", "params": {"clientInfo": {"name": "antigravity-client", "version": "v1.0.0"}, "protocolVersion": "2025-11-25", "capabilities": {"elicitation": {"form": {}, "url": {}}, "roots": {"listChanged": true}}}}
+{"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}}
+{"jsonrpc": "2.0", "id": 3, "method": "tools/list", "params": {}}
+{"jsonrpc": "2.0", "id": 4, "method": "tools/call", "params": {"_meta": {"antigravity.google/artifacts_dir": "/Users/normy/.gemini/antigravity-cli/brain/7003503e-2ec3-49f4-8956-ae94e9f5e621", "antigravity.google/conversation_id": "7003503e-2ec3-49f4-8956-ae94e9f5e621", "progressToken": "fe469ded-a29f-4b00-9482-05394bdd8960:4"}, "name": "probe_echo", "arguments": {}}}

@@ -1,6 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   CompactionAgentRunnerError,
 } from "autobyteus-ts/memory/compaction/compaction-agent-runner.js";
@@ -76,8 +75,8 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
         llmModelIdentifier: resolved.llmModelIdentifier,
         autoExecuteTools: false,
         llmConfig: resolved.llmConfig,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: resolved.runtimeKind,
+        launchPurpose: "server_helper",
       });
       runId = created.runId;
       const run = this.requireCreatedRun(agentRunService, runId);

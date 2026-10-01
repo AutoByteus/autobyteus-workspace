@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, isReactive } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import ApplicationLaunchSetupPanel from '../ApplicationLaunchSetupPanel.vue'
+import ApplicationExecutionResourceSlotEditor from '../setup/ApplicationExecutionResourceSlotEditor.vue'
 
 const fetchMock = vi.fn()
 vi.stubGlobal('fetch', fetchMock)
@@ -95,6 +96,7 @@ const ApplicationExecutionResourceSlotEditorStub = defineComponent({
               agentDefinitionId: 'shared-writer',
               runtimeKind: '',
               llmModelIdentifier: 'host-writer-model',
+              llmConfig: { effort: 'high' },
             },
           ],
         }),
@@ -245,6 +247,7 @@ const savedLaunchOverride = {
       displayName: 'writer',
       agentDefinitionId: 'shared-writer',
       llmModelIdentifier: 'host-writer-model',
+      llmConfig: { effort: 'high' },
     },
   ],
 }
@@ -353,6 +356,67 @@ describe('ApplicationLaunchSetupPanel', () => {
       phase: 'ready',
       isLaunchReady: true,
     })
+
+    wrapper.unmount()
+    fetchMock.mockResolvedValueOnce(okJson(savedView)).mockResolvedValueOnce(okJson(resources))
+    const reopened = mount(ApplicationLaunchSetupPanel, {
+      props: { applicationId: 'brief-app', presentation: 'panel' },
+      global: { stubs: { ApplicationAgentLaunchProfileEditor: true, ApplicationTeamLaunchProfileEditor: true } },
+    })
+    await flushPromises()
+    const editor = reopened.getComponent(ApplicationExecutionResourceSlotEditor)
+    expect(isReactive(editor.props('view'))).toBe(true)
+    expect(isReactive(editor.props('view').savedOverride.executionResourceRef)).toBe(true)
+    expect((editor.get('select').element as HTMLSelectElement).value)
+      .toBe('shared:AGENT_TEAM:shared-writing-team')
+    expect(reopened.getComponent({ name: 'ApplicationTeamLaunchProfileEditor' }).props('serverOriginDraft'))
+      .toMatchObject({ kind: 'AGENT_TEAM', memberProfiles: [
+        { memberAddress: '/researcher' },
+        { memberAddress: '/writer', llmConfig: { effort: 'high' } },
+      ] })
+    expect(reopened.text()).toContain('VALID')
+  })
+
+  it('reopens a saved Claude exact-default Agent resource through the real slot editor', async () => {
+    const agentRef = { source: 'shared' as const, kind: 'AGENT' as const, definitionId: 'saved-claude-agent' }
+    const agentSlot = { ...slot, slotKey: 'primaryAgent', name: 'Primary Agent',
+      allowedExecutionResourceKinds: ['AGENT'], defaultExecutionResourceRef: null,
+      supportedLaunchConfig: { AGENT: { runtimeKind: true, llmModelIdentifier: true, workspaceRootPath: true } } }
+    const leaf = { memberAddress: null, displayName: 'Primary Agent', agentDefinitionId: agentRef.definitionId,
+      runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', llmConfig: null,
+      provenance: { runtimeKind: { kind: 'SELECTED_RESOURCE_AGENT_DEFAULT', agentDefinitionId: agentRef.definitionId },
+        llmModelIdentifier: { kind: 'SELECTED_RESOURCE_AGENT_DEFAULT', agentDefinitionId: agentRef.definitionId }, llmConfig: null } }
+    const selectedResourceBaseline = { slotKey: agentSlot.slotKey, executionResourceRef: agentRef,
+      resourceDefinitionId: agentRef.definitionId, resourceKind: 'AGENT', leaves: [leaf] }
+    const effectiveConfiguration = { ...selectedResourceBaseline, leaves: [{ ...leaf,
+      workspaceRootPath: '/runtime/brief-app',
+      provenance: { ...leaf.provenance, workspaceRootPath: 'APPLICATION_RUNTIME' } }] }
+    const agentView = { applicationId: 'brief-app', slots: [{ slot: agentSlot,
+      packageBaseline: null, selectedResourceBaseline,
+      savedOverride: { slotKey: agentSlot.slotKey, executionResourceRef: agentRef,
+        launchOverride: { kind: 'AGENT', runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default',
+          llmConfig: { effort: 'high' } } },
+      savedOverrideState: 'VALID', effectiveConfiguration,
+      issues: [], canResetToPackageDefaults: true, updatedAt: '2026-09-25T00:00:00.000Z' }],
+      readiness: { status: 'RUNNABLE', issues: [] } }
+    const agentResources = [{ source: 'shared', kind: 'AGENT', localId: null,
+      definitionId: agentRef.definitionId, name: 'Saved Claude Agent', applicationId: null }]
+    fetchMock.mockResolvedValueOnce(okJson(agentView)).mockResolvedValueOnce(okJson(agentResources))
+
+    const wrapper = mount(ApplicationLaunchSetupPanel, {
+      props: { applicationId: 'brief-app', presentation: 'panel' },
+      global: { stubs: { ApplicationAgentLaunchProfileEditor: true, ApplicationTeamLaunchProfileEditor: true } },
+    })
+    await flushPromises()
+    const editor = wrapper.getComponent(ApplicationExecutionResourceSlotEditor)
+    expect(isReactive(editor.props('view'))).toBe(true)
+    expect(isReactive(editor.props('view').savedOverride.executionResourceRef)).toBe(true)
+    expect((editor.get('select').element as HTMLSelectElement).value)
+      .toBe('shared:AGENT:saved-claude-agent')
+    expect(wrapper.getComponent({ name: 'ApplicationAgentLaunchProfileEditor' }).props('serverOriginDraft'))
+      .toMatchObject({ llmModelIdentifier: 'default', llmConfig: { effort: 'high' } })
+    expect(wrapper.text()).toContain('default')
+    expect(wrapper.text()).toContain('VALID')
   })
 
   it('uses DELETE for explicit Reset and restores the package-selected view', async () => {

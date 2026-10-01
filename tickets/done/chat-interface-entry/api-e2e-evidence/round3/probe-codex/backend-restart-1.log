@@ -1,0 +1,159 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:52763
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:52763
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:53512) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T03:32:56.734Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-29T03:32:56.903Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T03:32:56.904Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1790652776911,"pid":53512,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:54028"}
+{"level":30,"time":1790652776942,"pid":53512,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52763"}
+[2026-09-29T03:32:56.942Z] [INFO] [server.runtime] Server listening on 127.0.0.1:52763
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent websocket attached for run daily_assistant_31f03584779b40948959b2ed5dc6e8f6
+Created agent session eb454ef1-e465-4257-bd20-e248496c758a for run daily_assistant_31f03584779b40948959b2ed5dc6e8f6
+Agent WebSocket connected: session=eb454ef1-e465-4257-bd20-e248496c758a, run=daily_assistant_31f03584779b40948959b2ed5dc6e8f6
+Agent websocket attached for run daily_assistant_ba358875520f4dfcad6e2ea520bcec83
+Created agent session 71be7808-f243-4954-af9a-0183ee351396 for run daily_assistant_ba358875520f4dfcad6e2ea520bcec83
+Agent WebSocket connected: session=71be7808-f243-4954-af9a-0183ee351396, run=daily_assistant_ba358875520f4dfcad6e2ea520bcec83
+Agent websocket attached for run daily_assistant_221b0919ad984a9aaf2d0b92604f2655
+Created agent session e9ff58bb-329f-4863-864b-f55e1ee6e225 for run daily_assistant_221b0919ad984a9aaf2d0b92604f2655
+Agent WebSocket connected: session=e9ff58bb-329f-4863-864b-f55e1ee6e225, run=daily_assistant_221b0919ad984a9aaf2d0b92604f2655
+Agent websocket attached for run daily_assistant_022e1db36f1c44d4901ffe2048bc78d6
+Created agent session d29872fb-d0f0-4c87-828f-f2c0f183acdf for run daily_assistant_022e1db36f1c44d4901ffe2048bc78d6
+Agent WebSocket connected: session=d29872fb-d0f0-4c87-828f-f2c0f183acdf, run=daily_assistant_022e1db36f1c44d4901ffe2048bc78d6
+Agent websocket attached for run daily_assistant_e8f4c13215ff4de5bc0cc7386c4ac3c7
+Created agent session 1b0d7f99-51a6-42a2-9512-0549d46eb142 for run daily_assistant_e8f4c13215ff4de5bc0cc7386c4ac3c7
+Agent WebSocket connected: session=1b0d7f99-51a6-42a2-9512-0549d46eb142, run=daily_assistant_e8f4c13215ff4de5bc0cc7386c4ac3c7
+Agent websocket attached for run daily_assistant_53b4dc6990a64e0cbdb387e4b3b84323
+Created agent session 53eb188b-3b16-408e-a2b7-06c2f9e685be for run daily_assistant_53b4dc6990a64e0cbdb387e4b3b84323
+Agent WebSocket connected: session=53eb188b-3b16-408e-a2b7-06c2f9e685be, run=daily_assistant_53b4dc6990a64e0cbdb387e4b3b84323
+Agent team websocket attached for team run probe_team_ce5eff11ceff4b2aa01b6872d3cb890e
+Agent websocket attached for run probe_legacy_718b26953c154b698469921436111f53
+Created agent session 995c46df-c9f3-443e-aac5-9483066e72b0 for run probe_legacy_718b26953c154b698469921436111f53
+Agent WebSocket connected: session=995c46df-c9f3-443e-aac5-9483066e72b0, run=probe_legacy_718b26953c154b698469921436111f53
+Created agent session c3136e6e-cfc1-441e-ab8a-09f66705a6d0 for run probe_team_ce5eff11ceff4b2aa01b6872d3cb890e
+Agent Team WebSocket connected: session=c3136e6e-cfc1-441e-ab8a-09f66705a6d0, run=probe_team_ce5eff11ceff4b2aa01b6872d3cb890e
+Created WorkspaceFileExplorer for temp_ws_default (file-explorer-websocket).
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-ffCfZu/server-data/temp_workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+[2026-09-29T03:32:57.298Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Failed to start file watcher: Error: FileSystemWatcher not available: Error: Watcher runtime exited unexpectedly: code=null signal=SIGTERM
+File explorer websocket attached for workspace temp_ws_default
+Closed agent session eb454ef1-e465-4257-bd20-e248496c758a
+Agent WebSocket disconnected: eb454ef1-e465-4257-bd20-e248496c758a
+Closed agent session e9ff58bb-329f-4863-864b-f55e1ee6e225
+Agent WebSocket disconnected: e9ff58bb-329f-4863-864b-f55e1ee6e225
+Closed agent session 71be7808-f243-4954-af9a-0183ee351396
+Agent WebSocket disconnected: 71be7808-f243-4954-af9a-0183ee351396
+Closed agent session 1b0d7f99-51a6-42a2-9512-0549d46eb142
+Agent WebSocket disconnected: 1b0d7f99-51a6-42a2-9512-0549d46eb142
+Closed agent session d29872fb-d0f0-4c87-828f-f2c0f183acdf
+Agent WebSocket disconnected: d29872fb-d0f0-4c87-828f-f2c0f183acdf
+Closed agent session 995c46df-c9f3-443e-aac5-9483066e72b0
+Agent WebSocket disconnected: 995c46df-c9f3-443e-aac5-9483066e72b0
+Closed agent session c3136e6e-cfc1-441e-ab8a-09f66705a6d0
+Closed agent session 53eb188b-3b16-408e-a2b7-06c2f9e685be
+Agent WebSocket disconnected: 53eb188b-3b16-408e-a2b7-06c2f9e685be
+[2026-09-29T03:32:57.312Z] [INFO] [server.runtime] Server closed cleanly.

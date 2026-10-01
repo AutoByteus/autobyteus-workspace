@@ -24,6 +24,7 @@ import {
 } from "../../../../agent-tools/mcp/mcp-tool-source.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
 import { parseSystemInstructionsSuppliedPayload } from "../../../domain/system-instructions-supplied-event.js";
+import { buildBackgroundTaskUpdatedPayload, parseBackgroundTaskUpdatedPayload } from "../../../domain/agent-background-task.js";
 import { isAgentSegmentType } from "../../../domain/agent-segment.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import {
@@ -241,6 +242,20 @@ export class ClaudeSessionEventConverter {
         return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_INTERRUPTED, {
           ...(turnId ? { turnId } : {}),
         });
+      case ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION: {
+        const senderId = asString(payload.sender_id);
+        const content = asNonEmptyRawString(payload.content);
+        if (!senderId || !content) {
+          throw new Error("Claude system task notification event has an invalid payload.");
+        }
+        return [this.createEvent(claudeEventName, AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
+          sender_id: senderId,
+          content,
+          ...(turnId ? { turn_id: turnId } : {}),
+        })];
+      }
+      case ClaudeSessionEventName.BACKGROUND_TASK_UPDATED: // not turn activity: statusHint stays null
+        return [this.createEvent(claudeEventName, AgentRunEventType.BACKGROUND_TASK_UPDATED, buildBackgroundTaskUpdatedPayload(parseBackgroundTaskUpdatedPayload(payload)))];
       case ClaudeSessionEventName.SESSION_TERMINATED:
       case ClaudeSessionEventName.STATUS_CHANGED:
         return [this.createStatusEvent(claudeEventName)];

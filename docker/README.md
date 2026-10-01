@@ -4,7 +4,6 @@ This setup provides:
 
 - `autobyteus-server-ts`
 - `autobyteus-web`
-- `autobyteus-message-gateway`
 - optional remote `autobyteus-server-ts` containers for node registration and remote-access validation
 
 ## Quick Start
@@ -90,7 +89,6 @@ Main container logs are persisted under:
 
 - `/home/autobyteus/data/logs/server.log`
 - `/home/autobyteus/data/logs/web.log`
-- `/home/autobyteus/data/logs/gateway.log`
 
 Quick checks:
 

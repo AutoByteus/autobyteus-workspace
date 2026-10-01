@@ -25,7 +25,18 @@ export type TeamMemberAgentMemoryLocation = AgentMemoryScope & {
   memoryDir: string;
 };
 
+export type AgentOrgMemberAgentMemoryLocation = {
+  kind: "agent_org_member";
+  orgRunId: string;
+  ancestorTeamRunIds: readonly string[];
+  memberAddress: AgentTeamAddress;
+  agentRunId: string;
+  configuredPlacement: ConfiguredAgentExecutionNode | null;
+  memoryDir: string;
+};
+
 export type AgentMemoryLocation =
   | StandaloneAgentMemoryLocation
   | TeamAgentRunMemoryLocation
-  | TeamMemberAgentMemoryLocation;
+  | TeamMemberAgentMemoryLocation
+  | AgentOrgMemberAgentMemoryLocation;
