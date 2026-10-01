@@ -1,0 +1,198 @@
+{
+  "base": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur",
+  "workspacePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace",
+  "capsulePath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/memory/agy-project",
+  "init": {
+    "event": "init",
+    "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+    "init": {
+      "model": "gemini-3.8-flash-low",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/memory/agy-project",
+      "agent": "autobyteus-a2af855ef632f4a9",
+      "tools": [
+        "ask_custom_permission",
+        "ask_permission",
+        "ask_question",
+        "browser_click_element",
+        "browser_drag_pixel_to_pixel",
+        "browser_get_dom",
+        "browser_get_network_request",
+        "browser_input",
+        "browser_list_network_requests",
+        "browser_mouse_down",
+        "browser_mouse_up",
+        "browser_move_mouse",
+        "browser_press_key",
+        "browser_refresh_page",
+        "browser_resize_window",
+        "browser_scroll",
+        "browser_scroll_dom",
+        "browser_select_option",
+        "browser_subagent",
+        "call_mcp_tool",
+        "capture_browser_console_logs",
+        "capture_browser_screenshot",
+        "click_browser_pixel",
+        "command_status",
+        "define_subagent",
+        "delete_knowledge",
+        "execute_browser_javascript",
+        "find_by_name",
+        "finish",
+        "generate_image",
+        "grep_search",
+        "invoke_subagent",
+        "list_browser_pages",
+        "list_dir",
+        "list_permissions",
+        "list_resources",
+        "manage_inbox",
+        "manage_subagents",
+        "manage_task",
+        "multi_replace_file_content",
+        "notebook_edit",
+        "notebook_execution",
+        "open_browser_url",
+        "read_browser_page",
+        "read_resource",
+        "read_url_content",
+        "replace_file_content",
+        "run_command",
+        "run_workflow",
+        "schedule",
+        "search_web",
+        "sed_file",
+        "send_command_input",
+        "send_message",
+        "view_file",
+        "wait",
+        "wait_5_seconds",
+        "write_to_file"
+      ],
+      "permission_mode": "always-proceed"
+    }
+  },
+  "identity": {
+    "event": "result",
+    "result": {
+      "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+      "status": "SUCCESS",
+      "response": "AGY-ID-8614\n",
+      "duration_seconds": 2.040065,
+      "num_turns": 1,
+      "usage": {
+        "input_tokens": 7543,
+        "output_tokens": 9,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 7552
+      }
+    }
+  },
+  "file": {
+    "event": "result",
+    "result": {
+      "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+      "status": "SUCCESS",
+      "response": "The file has been created at:\n[`generic-file.txt`](file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace/generic-file.txt)\n",
+      "duration_seconds": 5.701214,
+      "num_turns": 2,
+      "usage": {
+        "input_tokens": 23149,
+        "output_tokens": 225,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 23374
+      }
+    }
+  },
+  "shell": {
+    "event": "result",
+    "result": {
+      "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+      "status": "SUCCESS",
+      "response": "The file has been created at:\n[`generic-shell.txt`](file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace/generic-shell.txt)\n",
+      "duration_seconds": 8.931063,
+      "num_turns": 3,
+      "usage": {
+        "input_tokens": 39679,
+        "output_tokens": 484,
+        "thinking_tokens": 0,
+        "cache_read_tokens": 0,
+        "total_tokens": 40163
+      }
+    }
+  },
+  "toolEvents": [
+    {
+      "event": "step_update",
+      "step_update": {
+        "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+        "step_index": 4,
+        "state": "ACTIVE",
+        "step_type": "tool",
+        "tool_name": "write_to_file",
+        "tool_info": {
+          "name": "write_to_file",
+          "parameters": {
+            "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace/generic-file.txt"
+          }
+        }
+      }
+    },
+    {
+      "event": "step_update",
+      "step_update": {
+        "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+        "step_index": 4,
+        "state": "DONE",
+        "step_type": "tool",
+        "tool_name": "write_to_file",
+        "duration_seconds": 0.02859,
+        "tool_info": {
+          "name": "write_to_file",
+          "parameters": {
+            "TargetFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace/generic-file.txt"
+          }
+        }
+      }
+    },
+    {
+      "event": "step_update",
+      "step_update": {
+        "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+        "step_index": 8,
+        "state": "ACTIVE",
+        "step_type": "tool",
+        "tool_name": "run_command",
+        "tool_info": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "echo -n \"SHELL-MARKER-9172\" > /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace/generic-shell.txt"
+          }
+        }
+      }
+    },
+    {
+      "event": "step_update",
+      "step_update": {
+        "conversation_id": "6c6f56ef-b926-4739-a454-fe9d43af960e",
+        "step_index": 8,
+        "state": "DONE",
+        "step_type": "tool",
+        "tool_name": "run_command",
+        "duration_seconds": 0.028705,
+        "tool_info": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "echo -n \"SHELL-MARKER-9172\" > /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-up21ur/real-workspace/generic-shell.txt"
+          }
+        }
+      }
+    }
+  ],
+  "workspaceFile": "FILE-MARKER-9172\n",
+  "capsuleFile": null,
+  "workspaceShell": "SHELL-MARKER-9172",
+  "capsuleShell": null
+}

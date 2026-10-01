@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { randomUUID } from "node:crypto";
-import { writeFileSync } from "node:fs";
+import { appendFileSync, lstatSync, readdirSync, readFileSync, readlinkSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import readline from "node:readline";
 
 const arg = process.argv[2];
+const argValue = (name) => process.argv.includes(name) ? process.argv[process.argv.indexOf(name) + 1] : null;
 if (arg === "--version") {
   process.stdout.write("agy version 1.2.11\n");
 } else if (arg === "--help") {
@@ -11,14 +13,20 @@ if (arg === "--version") {
 } else if (arg === "models") {
   process.stdout.write("gemini-3.8-flash-low\tGemini test\n");
 } else {
+  // Optional launch log so a test can assert the exact argv the server used (one JSON line per launch).
+  if (process.env.AGY_FAKE_ARGV_LOG) {
+    appendFileSync(process.env.AGY_FAKE_ARGV_LOG, JSON.stringify({ argv: process.argv.slice(2), cwd: process.cwd() }) + "\n");
+  }
+  const linkedSkills = process.env.AGY_FAKE_CASE === "linked_skills";
   // Native image DONE uses a UUID conversation; the test owns that conversation's (temporary) AGY brain files.
   const imageDone = process.env.AGY_FAKE_CASE === "image_done";
-  const conversation_id = imageDone
-    ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
+  const conversation_id = linkedSkills ? argValue("--conversation") || randomUUID()
+    : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
-  emit({ event: "init", conversation_id, init: { agent: process.argv[process.argv.indexOf("--agent") + 1],
-    model: process.argv[process.argv.indexOf("--model") + 1], cwd: process.cwd(),
-    permission_mode: "always-proceed", tools: [] } });
+  // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
+  const permission_mode = process.argv.includes("--dangerously-skip-permissions") ? "always-proceed" : "request-review";
+  emit({ event: "init", conversation_id, init: { agent: argValue("--agent"),
+    model: argValue("--model"), cwd: process.cwd(), permission_mode, tools: [] } });
   // AGY never reports DONE for a daemon step; later steps and result still arrive (AGY 1.2.12, probe P1).
   let turns = 0;
   const daemonStep = (step_index) => emit({ event: "step_update", step_update: { conversation_id, step_index,
@@ -26,8 +34,49 @@ if (arg === "--version") {
     tool_info: { parameters: { CommandLine: "python3 -m http.server 5199", IsDaemon: true } } } });
   const reply = (step_index, text_delta) => emit({ event: "step_update", step_update: { conversation_id, step_index,
     step_type: "agent_response", state: "DONE", text_delta } });
-  readline.createInterface({ input: process.stdin }).on("line", () => {
+  // linked_skills: reads the capsule's skills from this process's cwd (as AGY does) or calls the
+  // AutoByteus agent-tools MCP server named in the capsule's mcp_config.json (as an AGY agent does).
+  const readCapsuleSkills = () => {
+    const root = path.join(process.cwd(), ".agents", "skills");
+    let names = [];
+    try { names = readdirSync(root).sort(); } catch { /* No skills folder: report none. */ }
+    return names.map((name) => {
+      const entry = path.join(root, name);
+      const symlink = lstatSync(entry).isSymbolicLink();
+      const read = (file) => {
+        try { return readFileSync(path.join(entry, file), "utf8").trim(); } catch (error) { return `UNREADABLE:${error.code}`; }
+      };
+      return { name, symlink, target: symlink ? readlinkSync(entry) : null, skillMd: read("SKILL.md"), marker: read("marker.md") };
+    });
+  };
+  const callAgentTool = async (name, args) => {
+    const config = JSON.parse(readFileSync(path.join(process.cwd(), ".agents", "mcp_config.json"), "utf8"));
+    const server = config.mcpServers?.autobyteus_agent_tools;
+    if (!server) throw new Error("autobyteus_agent_tools is not configured for this run");
+    const { Client } = await import("@modelcontextprotocol/sdk/client/index.js");
+    const { StreamableHTTPClientTransport } = await import("@modelcontextprotocol/sdk/client/streamableHttp.js");
+    const client = new Client({ name: "agy-fake-cli", version: "1.0.0" });
+    await client.connect(new StreamableHTTPClientTransport(new URL(server.serverUrl),
+      { requestInit: { headers: server.headers ?? {} } }));
+    try { return await client.callTool({ name, arguments: args }); } finally { await client.close(); }
+  };
+  const linkedSkillsTurn = async (line) => {
+    let content = "";
+    try { content = String(JSON.parse(line)?.message?.content ?? ""); } catch { /* Not a user event. */ }
+    const delegation = /DELEGATE:(\{.*\})/s.exec(content);
+    const text = content.includes("READ_SKILLS") ? `SKILLS:${JSON.stringify(readCapsuleSkills())}`
+      : delegation ? `DELEGATED:${JSON.stringify(await callAgentTool("delegate_task", JSON.parse(delegation[1])))}`
+        : "OK";
+    reply(turns * 10, text);
+    emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: text } });
+  };
+  readline.createInterface({ input: process.stdin }).on("line", (line) => {
     turns += 1;
+    if (linkedSkills) {
+      linkedSkillsTurn(line).catch((error) => emit({ event: "result", result: { conversation_id, status: "ERROR",
+        error: String(error?.message ?? error), response: "" } }));
+      return;
+    }
     if (process.env.AGY_FAKE_CASE === "daemon_background" && turns === 1) {
       daemonStep(2);
       const echo = { conversation_id, step_index: 3, step_type: "tool", tool_name: "run_command" };

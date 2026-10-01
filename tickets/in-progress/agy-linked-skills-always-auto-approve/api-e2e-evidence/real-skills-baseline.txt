@@ -1,0 +1,40 @@
+## git status --porcelain
+?? bilingual-author-style-writer/optimization-analysis.md
+?? deep-research-article/optimization-analysis.md
+## HEAD
+23990784aa21a4eaa5a14f217eee3bf1a038dc3b
+## browser-automation
+29fb5d3a1a73ee409586a1bd636eece9f17a0ab3e6ce5cfd352f5205874f5ffa  browser-automation/SKILL.md
+lrwxr-xr-x@ 1 normy  staff  82 Sep 29 19:17 browser-automation/.venv/bin/python -> /Users/normy/.local/share/uv/python/cpython-3.13-macos-aarch64-none/bin/python3.13
+lrwxr-xr-x@ 1 normy  staff   6 Sep 29 19:17 browser-automation/.venv/bin/python3 -> python
+lrwxr-xr-x@ 1 normy  staff   6 Sep 29 19:17 browser-automation/.venv/bin/python3.13 -> python
+Sep 29 19:17:51 2026 browser-automation/.venv
+browser-automation
+browser-automation/tickets
+browser-automation/uv.lock
+browser-automation/pyproject.toml
+browser-automation/tests
+browser-automation/agents
+browser-automation/.venv
+browser-automation/scripts
+browser-automation/src
+AGENTS.md
+README.md
+bilingual-author-style-writer
+browser-automation
+deep-research-article
+docs
+emotion-metaphor-image-prompting
+infographic-powerpoint-deck
+infographics
+llm-fine-tuning-skill
+product-prototyping
+product-ui-prototyping
+shell-first-operating-practice
+skill-optimizer
+software-engineering-workflow-skill
+tickets
+tmp
+ux-journey-definition
+video-audio-editing
+web-ui-automation

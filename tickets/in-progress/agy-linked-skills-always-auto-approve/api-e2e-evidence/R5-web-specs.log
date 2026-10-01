@@ -1,0 +1,833 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve/autobyteus-web
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFiles.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/RunConfigPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/AgentRunConfigForm.spec.ts (11 tests) 110ms
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > loads unloaded folder children through the workspace store before entering the folder
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > keeps the user in the current folder and shows a retryable error when folder loading fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > shows selected-run workspace unavailable instead of falling back to another workspace
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/missing'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > keeps workspace inactive on root load failure and retries into a successful file list
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > uses workspace-wide file search results instead of only filtering the loaded tree
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > opens tapped files through the file explorer read-only preview state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > consumes a matching Event Monitor request and presents it inline without Attach
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > clears a pending request when the mobile context changes before consumption
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFiles.spec.ts > MobileFiles > does not commit a preview when context changes during async opening
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (8 tests) 91ms
+ ✓ components/mobile/__tests__/MobileFiles.spec.ts (9 tests) 128ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (15 tests) 201ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders placeholder when nothing selected
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Agent Form when Agent Template set
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders a saved Claude exact-default definition seed in the Agent Run form
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders Team Form when Team Template set
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > triggers team run on button click when launch readiness passes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > renders the selected draft read-only and rejects duplicate launch/edit/workspace actions while its owner reports pending
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > loads a pending New workspace path before creating an agent run
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > blocks agent run creation when pending New workspace loading fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > allows Run Agent with a non-empty pending New path even before it is preloaded
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the controlled New workspace across mutable Agent buffer edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Agent for an active empty New workspace while retaining the canonical Temp config
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit an Agent workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > rehydrates the controlled Agent workspace only when the Agent draft identity changes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > hands two active New Team workspace commands to the draft owner and launches the exact current draft once
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root runtime' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root model' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root reasoning and fast controls' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/' New workspace across immutable same-draft 'root auto-execute' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'explicit nested Team override' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > preserves the '/Research' New workspace across immutable same-draft 'exact nested Agent override' edits
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/config/__tests__/AgentOrgOwnedLaunch.spec.ts (16 tests) 268ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run and shows the blocking message when mixed-runtime readiness fails
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables team run when workspace is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'root Team' workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > does not admit a missing 'nested Team' workspace from an inactive New-path buffer in Existing mode
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'root Team'
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables Run Team for an active empty New workspace on the 'nested Team'
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > disables agent run when workspace is missing
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft agent configuration editable for workspace selection events
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > keeps draft team configuration editable for workspace selection events
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > returns to event view from selection-mode config header action
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > routes selected existing runs through the specialized stopped-run editor
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigPanel.spec.ts (12 tests) 390ms
+stderr | components/workspace/config/__tests__/RunConfigPanel.spec.ts > RunConfigPanel > edits a selected temp-* draft locally (DraftRunConfigEditor), never through the existing-run store
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/config/__tests__/RunConfigPanel.spec.ts (32 tests) 311ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (15 tests) 249ms
+ ✓ components/workspace/config/__tests__/AgentOrgSeededLaunch.spec.ts (10 tests) 887ms
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatThinkingControl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/mobile/__tests__/MobileUxRefinement.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatThinkingControl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/ChatThinkingControl.spec.ts (9 tests) 74ms
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 99ms
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/chat/__tests__/ChatModelMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (22 tests) 87ms
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts (3 tests) 95ms
+stderr | components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts > MobileArtifacts content viewer integration > fetches selected text, PDF, and SVG artifact content through the active mobile credential
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileArtifacts context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-mobile-credential'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-22T14:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps context visibility adjacent to the mobile composer send decision
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileComposerContextTray context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} > 
+  at <Anonymous key=0 conversation= {
+  id: [32m'run-1'[39m,
+  messages: [],
+  createdAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  updatedAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  agentDefinitionId: [32m'agent-1'[39m
+} run-id="run-1"  ... > 
+  at <MobileChat context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > keeps mobile Files browse-first while preserving secondary filters and deliberate deep search
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders Activity as a compact digest without secondary issue filters or redundant headers
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileActivityDigest context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} onChooseWork=fn > 
+  at <MobileActivity context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > renders compaction rows in the mobile run Activity list and count
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileActivityDigest context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} onChooseWork=fn > 
+  at <MobileActivity context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > opens mobile Files from run root-path metadata with an empty workspace store
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts (1 test) 62ms
+stderr | components/mobile/__tests__/MobileUxRefinement.spec.ts > mobile Round 4 UX refinements > releases the mobile Files live session when the visible context changes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFiles context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/mobile/__tests__/MobileUxRefinement.spec.ts (15 tests) 162ms
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > routes non-run file attachments to mobile draft state instead of the stale selected run
+[Vue warn]: inject() can only be used inside setup() or functional components.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > shows composer attachments from the current mobile context only
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileComposerContextTray context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > keeps pending team run attachments visible across focus changes and flushes them to the focused leaf before send
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileComposerContextTray context= {
+  kind: [32m'team-run'[39m,
+  teamRunId: [32m'team-run-1'[39m,
+  teamDefinitionId: [32m'team-1'[39m,
+  title: [32m'Software Team'[39m,
+  summary: [32m'Existing team run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  focusedAgentRunId: [32m'lead-run'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/mobile/__tests__/MobileTeamMessages.spec.ts (2 tests) 56ms
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts > mobile context selection stale-run regression > does not leak stale run or tool activity into non-run mobile activity contexts
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileRunActivityList context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/mobile/__tests__/MobileContextSelectionRegression.spec.ts (11 tests) 91ms
+stdout | components/chat/__tests__/ChatModelMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/ChatModelMenu.spec.ts (5 tests) 62ms
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatMessageInput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.candidates.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 51ms
+stderr | components/chat/__tests__/ChatApprovalToggle.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+ ✓ components/workspace/config/__tests__/TeamScopeConfigEditor.spec.ts (10 tests) 46ms
+stdout | components/chat/__tests__/ChatMessageInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.candidates.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.candidates.spec.ts (4 tests) 27ms
+ ✓ components/chat/__tests__/ChatMessageInput.spec.ts (3 tests) 34ms
+stdout | components/workspace/config/__tests__/TeamRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Image workspace files through the shared read-only FileViewer
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'pic.png'[39m, path: [32m'images/pic.png'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Image workspace files through the shared read-only FileViewer
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'diagram.svg'[39m, path: [32m'images/diagram.svg'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Audio workspace files through the shared read-only FileViewer
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'clip.mp3'[39m, path: [32m'audio/clip.mp3'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Video workspace files through the shared read-only FileViewer
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'demo.mp4'[39m, path: [32m'video/demo.mp4'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected PDF workspace files through the shared read-only FileViewer
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'spec.pdf'[39m, path: [32m'docs/spec.pdf'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > renders protected Excel workspace files through the shared read-only FileViewer
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'data.csv'[39m, path: [32m'sheets/data.csv'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts > MobileFileViewer > keeps HTML workspace files in raw read-only mode on mobile instead of static iframe preview
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileFileViewer node= { name: [32m'page.html'[39m, path: [32m'docs/page.html'[39m, is_file: [33mtrue[39m } workspaceId="workspace-1" context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+}  ... > 
+  at <VTUROOT>
+
+ ✓ components/mobile/__tests__/MobileFileViewer.spec.ts (7 tests) 44ms
+ ✓ components/workspace/config/__tests__/MemberOverridesDisclosure.spec.ts (2 tests) 19ms
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > lists active agent-run artifacts newest first and selects the newest artifact
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileArtifacts context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > passes selected artifacts to the shared viewer and refreshes on reselection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileArtifacts context= {
+  kind: [32m'agent-run'[39m,
+  runId: [32m'run-1'[39m,
+  agentDefinitionId: [32m'agent-1'[39m,
+  title: [32m'Builder Agent'[39m,
+  summary: [32m'Existing run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > does not leak stale artifacts into non-run mobile contexts
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileArtifacts context= {
+  kind: [32m'workspace'[39m,
+  workspaceId: [32m'workspace-1'[39m,
+  title: [32m'Project Workspace'[39m,
+  rootPath: [32m'/Users/normy/project'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts > MobileArtifacts > uses the focused team member run id when team focus changes
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <MobileArtifacts context= {
+  kind: [32m'team-run'[39m,
+  teamRunId: [32m'team-run-1'[39m,
+  teamDefinitionId: [32m'team-1'[39m,
+  title: [32m'Software Team'[39m,
+  summary: [32m'Existing team run'[39m,
+  workspaceRootPath: [32m'/Users/normy/project'[39m,
+  focusedAgentRunId: [32m'lead-run'[39m,
+  isActive: [33mtrue[39m,
+  lastActivityAt: [32m'2026-05-18T16:00:00.000Z'[39m,
+  statusLabel: [32m'Running'[39m
+} ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/mobile/__tests__/MobileArtifacts.spec.ts (4 tests) 44ms
+ ✓ components/workspace/config/__tests__/TeamRunConfigForm.spec.ts (6 tests) 29ms
+stdout | components/chat/__tests__/ChatApprovalToggle.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/ChatApprovalToggle.spec.ts (2 tests) 15ms
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatThinkingMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatComposerMenus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 12ms
+ ✓ components/mobile/__tests__/MobileLaunchRunOptionsCard.spec.ts (2 tests) 10ms
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatThinkingMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/chatThinkingMenu.spec.ts (9 tests) 6ms
+stdout | components/chat/__tests__/chatComposerMenus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/chat/__tests__/chatComposerMenus.spec.ts (4 tests) 3ms
+stdout | utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/agentRunRuntimeDraftPolicy.spec.ts (4 tests) 3ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (7 tests) 7ms
+
+ Test Files  33 passed (33)
+      Tests  290 passed (290)
+   Start at  22:53:00
+   Duration  14.94s (transform 5.13s, setup 96.54s, collect 11.11s, tests 3.78s, environment 7.54s, prepare 4.56s)
+
