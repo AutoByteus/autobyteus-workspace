@@ -22,6 +22,7 @@ import { buildTeamMemberTreeFromDefinition, flattenLeafAgentMemberNodes } from '
 import { projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
@@ -312,9 +313,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         void useRunHistoryStore().refreshTreeQuietly();
         const service = await this.ensureTeamStreamConnected(rootTeamRunId);
         await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey, mentions: toCollaboratorMentionDtos(text, mentions) });
+        acceptLocalSubmission(localSubmission);
       } catch (error) {
         if (localSubmission) {
-          failLocalSubmission(localSubmission, error);
+          // A rejected add posted nothing: the notice shows and the draft stays as typed.
+          if (failLocalSubmission(localSubmission, error) === 'kept_draft') return;
           localSubmission.context.requirement = text;
           localSubmission.context.contextFilePaths = retryAttachments;
           localSubmission.context.requestedMentions = [...mentions];

@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
 } from '../localUserSubmission';
+import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const { applyRunNavigationEffectMock } = vi.hoisted(() => ({
@@ -189,6 +191,66 @@ describe('localUserSubmission', () => {
       teamRunId: 'team-1',
       memberRouteKey: 'worker',
       summary: 'will fail',
+    });
+  });
+
+  describe('a send with @ mentions is held until the root accepts it (AR-007)', () => {
+    const mention = { name: 'Product Team', kind: 'agent_team', definitionId: 'product-team' } as const;
+
+    it('shows nothing and keeps the composer until acceptance, then shows the message once', () => {
+      const context = buildContext();
+      context.collaboratorAddFailure = { name: 'Old', reason: 'old' };
+      const handle = beginLocalUserSubmission(context, {
+        text: 'Ask @Product Team', attachments: [], navigationTarget: { kind: 'standalone', runId: 'run-1' }, mentions: [mention],
+      });
+      expect(handle.held).toBe(true);
+      expect(context.state.conversation.messages).toHaveLength(0);
+      expect(context.requirement).toBe('draft text');
+      expect(context.submissionPending).toBe(true);
+      // The next send replaces the previous notice.
+      expect(context.collaboratorAddFailure).toBeNull();
+      expect(applyRunNavigationEffectMock).not.toHaveBeenCalled();
+
+      handle.message.messageId = 'm-1';
+      acceptLocalSubmission(handle);
+      acceptLocalSubmission(handle);
+      expect(context.state.conversation.messages).toEqual([expect.objectContaining({ type: 'user', text: 'Ask @Product Team', mentionNames: ['Product Team'] })]);
+      expect(context.requirement).toBe('');
+      expect(applyRunNavigationEffectMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('merges into the accepted echo when it arrived first (same identity)', () => {
+      const context = buildContext();
+      const handle = beginLocalUserSubmission(context, {
+        text: 'Ask @Product Team', attachments: [], navigationTarget: null, mentions: [mention],
+      });
+      handle.message.messageId = 'm-1';
+      context.state.conversation.messages.push({ type: 'user', text: 'Ask @Product Team\n\n[Mentioned collaborators]…', messageId: 'm-1', timestamp: new Date() });
+      acceptLocalSubmission(handle);
+      expect(context.state.conversation.messages).toHaveLength(1);
+      expect(context.state.conversation.messages[0]).toMatchObject({ messageId: 'm-1', mentionNames: ['Product Team'] });
+    });
+
+    it('a rejected add keeps the draft as typed, posts nothing and shows the notice (VIS-007)', () => {
+      const context = buildContext();
+      const handle = beginLocalUserSubmission(context, {
+        text: 'Ask @Marketing Team', attachments: [], navigationTarget: null, mentions: [{ ...mention, name: 'Marketing Team' }],
+      });
+      expect(failLocalSubmission(handle, new CollaboratorAddRejection('Marketing Team', 'Its model is not available.'))).toBe('kept_draft');
+      expect(context.state.conversation.messages).toHaveLength(0);
+      expect(context.requirement).toBe('draft text');
+      expect(context.submissionPending).toBe(false);
+      expect(context.collaboratorAddFailure).toEqual({ name: 'Marketing Team', reason: 'Its model is not available.' });
+    });
+
+    it('any other failure of a held send shows the message with its error, as before', () => {
+      const context = buildContext();
+      const handle = beginLocalUserSubmission(context, {
+        text: 'Ask @Product Team', attachments: [], navigationTarget: null, mentions: [mention],
+      });
+      expect(failLocalSubmission(handle, new Error('socket closed'))).toBe('failed');
+      expect(context.state.conversation.messages.map((message: { type: string }) => message.type)).toEqual(['user', 'ai']);
+      expect(context.collaboratorAddFailure ?? null).toBeNull();
     });
   });
 });

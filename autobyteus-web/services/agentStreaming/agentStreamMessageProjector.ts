@@ -146,7 +146,8 @@ const dispatchToHandler = (
           conversationResult(result.conversationEffect !== 'NONE', result.conversationEffect),
         );
       }
-      if (!message.payload.accepted) {
+      // A rejected add posted nothing: the notice above the composer reports it, not the conversation.
+      if (!message.payload.accepted && message.payload.code !== 'COLLABORATOR_ADD_FAILED') {
         const eventMonitor = handleError({
           code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
           message: message.payload.message ?? 'Agent command was not accepted.',

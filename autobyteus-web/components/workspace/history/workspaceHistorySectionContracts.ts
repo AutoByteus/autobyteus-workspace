@@ -27,11 +27,13 @@ export interface WorkspaceHistorySectionState {
     workspaceId: string,
     teamRunId: string,
     memberAddress: string,
+    openByDefault?: boolean,
   ) => boolean;
   toggleTeamMember: (
     workspaceId: string,
     teamRunId: string,
     memberAddress: string,
+    openByDefault?: boolean,
   ) => void;
   isAgentOrgDefinitionExpanded?: (workspaceId: string, definitionId: string) => boolean;
   toggleAgentOrgDefinition?: (workspaceId: string, definitionId: string) => void;

@@ -1,4 +1,5 @@
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { CollaboratorRootKind } from '~/services/collaborators/collaboratorCandidatesService'
 
 /** The live run a composer belongs to, for `@` mentions. */
@@ -12,8 +13,7 @@ export type RunMentionScope = Readonly<{
 const TEMPORARY_RUN_ID_PREFIX = 'temp-'
 
 /** `/research_team/product_manager` → `product manager`. */
-export const memberNameOfAddress = (address: string): string =>
-  address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') ?? address
+export const memberNameOfAddress = memberDisplayName
 
 /**
  * `@` is offered in every sendable live-run composer: a standalone Agent run, a Team member, an

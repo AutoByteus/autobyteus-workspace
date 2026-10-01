@@ -7,6 +7,7 @@ import {
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
+import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 
 export interface BeginLocalUserSubmissionOptions {
   text: string;
@@ -28,6 +29,11 @@ export type LocalUserSubmissionNavigationTarget =
 export interface LocalUserSubmissionHandle {
   context: AgentContext;
   message: UserMessage;
+  /**
+   * A send with `@` mentions is held (AR-007): the composer keeps the draft and the message is
+   * not shown until the root accepts it, because admission may reject the whole send.
+   */
+  held: boolean;
   // Null keeps local composer/conversation effects without optimistic history navigation.
   navigationTarget: LocalUserSubmissionNavigationTarget | null;
 }
@@ -72,22 +78,46 @@ export const beginLocalUserSubmission = (
     contextFilePaths: [...options.attachments],
     ...(options.mentions?.length ? { mentionNames: options.mentions.map((mention) => mention.name) } : {}),
   });
+  const handle: LocalUserSubmissionHandle = {
+    context,
+    message: submittedMessage,
+    navigationTarget: options.navigationTarget,
+    held: Boolean(options.mentions?.length),
+  };
+  // A new send replaces the notice of the previous one.
+  context.collaboratorAddFailure = null;
+  context.submissionPending = true;
+  if (!handle.held) showSubmittedMessage(handle, occurredAt);
+  return handle;
+};
 
-  context.state.conversation.messages.push(submittedMessage);
+/** Shows the submitted message and clears the composer (immediately, or on acceptance when held). */
+const showSubmittedMessage = (handle: LocalUserSubmissionHandle, occurredAt: string): void => {
+  const { context } = handle;
+  const messages = context.state.conversation.messages;
+  // The accepted echo of a held send may already be in the conversation (same identity).
+  const echoed = handle.message.messageId
+    ? messages.find((message) => message.type === 'user' && message.messageId === handle.message.messageId)
+    : undefined;
+  if (echoed && echoed.type === 'user') {
+    if (handle.message.mentionNames) echoed.mentionNames = handle.message.mentionNames;
+  } else {
+    messages.push(handle.message);
+  }
   commitRecentEventMonitorEffect(context, 'STRUCTURAL');
   context.state.conversation.updatedAt = occurredAt;
   context.requirement = '';
   context.contextFilePaths = [];
   context.requestedSkillNames = [];
   context.requestedMentions = [];
-  context.submissionPending = true;
-  applyLocalSubmissionNavigation(context, options.navigationTarget, occurredAt);
+  applyLocalSubmissionNavigation(context, handle.navigationTarget, occurredAt);
+};
 
-  return {
-    context,
-    message: submittedMessage,
-    navigationTarget: options.navigationTarget,
-  };
+/** The root accepted a held send: show it and clear the composer. No effect for an ordinary send. */
+export const acceptLocalSubmission = (handle: LocalUserSubmissionHandle): void => {
+  if (!handle.held) return;
+  handle.held = false;
+  showSubmittedMessage(handle, nowIso());
 };
 
 export const retargetLocalUserSubmission = (
@@ -104,16 +134,28 @@ export const finalizeLocalSubmissionAttachments = (
   if (attachmentsEqual(handle.message.contextFilePaths, attachments)) return false;
   const occurredAt = nowIso();
   handle.message.contextFilePaths = [...attachments];
+  if (handle.held) return true;
   commitRecentEventMonitorEffect(handle.context, 'PRESENTATION');
   handle.context.state.conversation.updatedAt = occurredAt;
   applyLocalSubmissionNavigation(handle.context, handle.navigationTarget, occurredAt);
   return true;
 };
 
+/**
+ * A failed send. A held send rejected because a collaborator could not be added shows the
+ * notice and keeps the draft as typed (nothing was posted); returns `'kept_draft'` then.
+ * Any other failure shows the message with an error, as before.
+ */
 export const failLocalSubmission = (
   handle: LocalUserSubmissionHandle,
   error: unknown,
-): void => {
+): 'kept_draft' | 'failed' => {
+  if (handle.held && error instanceof CollaboratorAddRejection) {
+    handle.context.submissionPending = false;
+    handle.context.collaboratorAddFailure = error.failure;
+    return 'kept_draft';
+  }
+  acceptLocalSubmission(handle);
   const occurredAt = nowIso();
   const message = toErrorMessage(error);
   handle.context.submissionPending = false;
@@ -132,4 +174,5 @@ export const failLocalSubmission = (
   commitRecentEventMonitorEffect(handle.context, 'STRUCTURAL');
   handle.context.state.conversation.updatedAt = occurredAt;
   applyLocalSubmissionNavigation(handle.context, handle.navigationTarget, occurredAt);
+  return 'failed';
 };

@@ -100,6 +100,34 @@ export const collaboratorTeamSourceAt = (
     : null
 }
 
-/** Display name of a collaborator from its address (`/code_reviewer` → `code reviewer`). */
-export const collaboratorDisplayName = (address: string): string =>
-  address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') ?? address
+/** A collaborator's hosted executions in the delegated-child node shape (Org and Agent roots). */
+export type CollaboratorExecutionNode =
+  | Readonly<{ address: string; agentRunId: string; platformAgentRunId: string | null; delegatorAgentRunId?: string; startedAt: string }>
+  | Readonly<{
+      address: string
+      teamRunId: string
+      members: readonly Readonly<{ address: string; agentRunId: string; platformAgentRunId: string | null }>[]
+      taskExecutions: Extract<CollaboratorEntryDto, { kind: 'agent_team' }>['taskExecutions']
+      delegatorAgentRunId?: string
+      startedAt: string
+    }>
+
+/**
+ * Collaborators shown with the product's task rows (approved look): an Agent as a delegated
+ * Agent at the root, a Team as a delegated Team with its members and its own delegations. The
+ * user's send added it, so `addedViaAgentRunId` is its starter.
+ */
+export const collaboratorExecutionNodes = (collaborators: readonly CollaboratorEntryDto[]): CollaboratorExecutionNode[] =>
+  collaborators.map((entry): CollaboratorExecutionNode => entry.kind === 'agent'
+    ? Object.freeze({
+        address: entry.address, agentRunId: entry.agentRunId, platformAgentRunId: entry.platformAgentRunId,
+        delegatorAgentRunId: entry.addedViaAgentRunId, startedAt: entry.addedAt,
+      })
+    : Object.freeze({
+        address: entry.address, teamRunId: entry.teamRunId,
+        members: entry.members.map((member) => Object.freeze({
+          address: member.address, agentRunId: member.agentRunId, platformAgentRunId: member.platformAgentRunId,
+        })),
+        taskExecutions: entry.taskExecutions,
+        delegatorAgentRunId: entry.addedViaAgentRunId, startedAt: entry.addedAt,
+      }))

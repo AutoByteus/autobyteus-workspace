@@ -124,4 +124,15 @@ describe('InterAgentMessageSegment', () => {
     expect(wrapper.find('a').exists()).toBe(false);
     expect(wrapper.find('.katex').exists()).toBe(false);
   });
+
+  it('RD-004: names the sender of a delivery with the shared formatter (address or name)', () => {
+    const byAddress = mount(InterAgentMessageSegment, { props: { segment: {
+      ...baseSegment, senderAgentRunId: 'pp-run', senderAddress: '/product_team/product_prototyper', recipientRoleName: '',
+    } } });
+    expect(byAddress.text()).toContain('From Product Prototyper:');
+    const byName = mount(InterAgentMessageSegment, { props: { segment: {
+      ...baseSegment, senderAgentRunId: 'ra-run', senderName: 'research_assistant', recipientRoleName: '',
+    } } });
+    expect(byName.text()).toContain('From Research Assistant:');
+  });
 });

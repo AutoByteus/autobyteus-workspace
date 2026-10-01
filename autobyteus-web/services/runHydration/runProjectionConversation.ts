@@ -1,6 +1,7 @@
 import type { ContextAttachment, Conversation, AIMessage, UserMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { parseInterAgentDelivery } from '~/utils/collaboration/interAgentDelivery';
 import { enforceRecentConversationWindow } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 export interface RunProjectionConversationEntry {
@@ -15,6 +16,9 @@ export interface RunProjectionConversationEntry {
   media?: Record<string, string[]> | null;
   fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }>;
   senderId?: string | null;
+  /** `inter_agent_message`: an agent-to-agent delivery (RD-004). */
+  senderAgentRunId?: string | null;
+  senderAddress?: string | null;
   ts?: number | null;
 }
 
@@ -313,6 +317,23 @@ export const buildConversationFromProjection = (
     const timestamp = toDate(entry.ts);
 
     if (entry.kind === 'compaction') {
+      return;
+    }
+
+    if (entry.kind === 'inter_agent_message') {
+      // An agent-to-agent delivery opens the receiving agent's message block with "From <Sender>:".
+      flushPendingAIMessage();
+      const delivery = parseInterAgentDelivery(entry.content || '');
+      pendingAIMessage = createAIMessage(timestamp);
+      pendingAIMessage.segments.push({
+        type: 'inter_agent_message',
+        senderAgentRunId: entry.senderAgentRunId || delivery.senderAgentRunId || '',
+        senderAddress: entry.senderAddress ?? null,
+        senderName: delivery.senderName,
+        recipientRoleName: '',
+        messageType: 'agent_message',
+        content: delivery.body,
+      });
       return;
     }
 

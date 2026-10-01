@@ -32,6 +32,8 @@ export interface TeamExecutionNavigationRow {
   readonly focusable: boolean;
   readonly expandable: boolean;
   readonly coordinator: boolean;
+  /** A collaborator Team row: the tree opens it once when it appears (F-02). */
+  readonly opensOnAppear?: boolean;
 }
 
 export interface TeamAgentContextEntry {

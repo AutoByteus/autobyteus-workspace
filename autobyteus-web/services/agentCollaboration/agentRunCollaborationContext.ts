@@ -1,4 +1,5 @@
 import { reactive, shallowReactive } from 'vue'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type {
   AgentRunCollaborationEventDto,
   AgentRunCollaborationViewDto,
@@ -16,6 +17,9 @@ import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection'
+import { createChildContext } from './agentRunCollaborationChildContextFactory'
+import { collaboratorExecutionNodes } from '~/services/collaborators/agentSourceSelectors'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent } from './agentRunCollaborationIndex'
 
@@ -31,8 +35,7 @@ export type AgentRunTaskTreeRow = Readonly<{
   hasFollowingSibling: boolean
 }>
 
-const nameAt = (address: string): string =>
-  address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
+const nameAt = memberDisplayName
 
 /**
  * The client view of one standalone run's collaboration root: its task children (with one
@@ -111,12 +114,15 @@ export class AgentRunCollaborationContext {
       // A new child needs its own context and projection; reload the view.
       return 'checkpoint_required'
     } else if (event.kind === 'collaborator_added') {
+      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
+      // place (no reload) so a pending send that added it keeps its acknowledgement.
       const tree = this.view.execution_tree
       if (tree.collaborators.some((entry) => entry.address === event.collaborator.address)) {
         this.requireReopen(`Collaborator address '${event.collaborator.address}' is already in use.`)
         throw new Error(this.error!)
       }
       this.commitTree({ ...tree, collaborators: [...tree.collaborators, event.collaborator] })
+      this.addContextsForNewChildren()
       collaboratorCandidatesService.invalidate('agent', this.hostRunId)
     } else {
       this.assertMessagesCorrelated([event.message])
@@ -156,6 +162,26 @@ export class AgentRunCollaborationContext {
     }
   }
 
+  /** Offline contexts for indexed children without one (a collaborator's new executions). */
+  private addContextsForNewChildren(): void {
+    for (const child of this.index.agents.values()) {
+      if (this.contexts.has(child.agentRunId)) continue
+      const rootPath = child.source.launchConfiguration.workspaceRootPath
+      const known = [...this.contexts.values()].map((context) => context.config.workspaceMetadata)
+        .find((metadata) => metadata && metadata.workspaceRootPath === rootPath) ?? null
+      const context = reactive(createChildContext(child, this.view.execution_tree.createdAt, known))
+      context.state = reactive(context.state)
+      this.contexts.set(child.agentRunId, context)
+      if (!known && rootPath) {
+        void useRunHistoryStore().resolveWorkspaceMetadataByRootPath(rootPath).then((metadata) => {
+          if (metadata && !context.config.workspaceMetadata) {
+            context.config = { ...context.config, workspaceMetadata: metadata, workspaceId: metadata.workspaceId }
+          }
+        }).catch(() => undefined)
+      }
+    }
+  }
+
   /** The task rows under the run row: task Agents and task Teams with their members. */
   listTaskRows(isTeamExpanded: (teamRunId: string) => boolean): AgentRunTaskTreeRow[] {
     const flat: RunHistoryTransientExecutionRow[] = []
@@ -185,7 +211,8 @@ export class AgentRunCollaborationContext {
       })
       if (isTeamExpanded(node.teamRunId)) children.forEach((child) => visit(child, depth + 1))
     }
-    this.view.execution_tree.taskExecutions.forEach((task) => visit(task, 0))
+    ;[...collaboratorExecutionNodes(this.view.execution_tree.collaborators) as Node[], ...this.view.execution_tree.taskExecutions]
+      .forEach((task) => visit(task, 0))
     const hasSibling = (index: number, depth: number): boolean => {
       for (let next = index + 1; next < flat.length; next += 1) {
         if (flat[next]!.depth < depth) return false

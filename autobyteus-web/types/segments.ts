@@ -88,6 +88,9 @@ export interface InterAgentMessageSegment {
   recipientRoleName: string;
   messageType: string;
   content: string;
+  /** The sender's address when the root resolved it (replay); its display name otherwise. */
+  senderAddress?: string | null;
+  senderName?: string | null;
 }
 
 export interface MediaSegment {

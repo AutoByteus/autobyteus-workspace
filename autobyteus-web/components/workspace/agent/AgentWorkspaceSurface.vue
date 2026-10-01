@@ -37,6 +37,7 @@
         :has-earlier-active-trace-events="target.context.state.hasEarlierActiveTraceEvents"
         :browse-subject="target.browse"
         :skill-tagging="skillTagging"
+        :composer-placeholder="composerPlaceholder"
         class="h-full"
       >
         <template v-if="skillTarget" #composerContext>
@@ -66,7 +67,9 @@ const props = withDefaults(defineProps<{
   recoveryNotice?: string | null
   /** `/` skill tags in the box; supplied only for standalone agent runs. */
   skillTagging?: SkillTaggingCapability | null
-}>(), { showHeaderActions: false, recoveryNotice: null, skillTagging: null })
+  /** Composer placeholder for a target without skill tags. */
+  composerPlaceholder?: string | null
+}>(), { showHeaderActions: false, recoveryNotice: null, skillTagging: null, composerPlaceholder: null })
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()

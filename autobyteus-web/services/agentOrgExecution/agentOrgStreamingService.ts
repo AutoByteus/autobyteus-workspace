@@ -1,4 +1,5 @@
 import { readAgentOrgRunInspection } from './agentOrgRunInspection'
+import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures'
 import type { OrgWorkspaceSelection } from './agentOrgExecutionViewIndex'
 import {
   CollaborationStreamServerMessageSchema,
@@ -381,7 +382,8 @@ export class AgentOrgStreamingService {
           console.error('Accepted AgentOrg message history refresh could not be requested.', cause)
         }
       }
-    } else command.reject(new Error(message.payload.message ?? message.payload.code ?? 'AgentOrg command rejected.'))
+    } else command.reject(collaboratorAddRejectionOf(message.payload)
+      ?? new Error(message.payload.message ?? message.payload.code ?? 'AgentOrg command rejected.'))
   }
 
   private failClosed(cause: unknown, generation: StreamGeneration): void {

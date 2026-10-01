@@ -8,6 +8,7 @@ import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/servic
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
 import { readAgentRunCollaboration, stageAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
@@ -74,6 +75,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       publish: (context, commit) => publish(hostRunId, context, commit),
       onInactive: () => { services.delete(hostRunId) },
       reportError: (message) => { errors[hostRunId] = message },
+      onCollaboratorAdded: (context) => openNewTaskTeams(hostRunId, context),
     })
     services.set(hostRunId, service)
     service.connect()
@@ -163,8 +165,10 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
       }
       await service.sendMessage({ agentRunId, content, attachments, messageId, dedupeKey,
         mentions: toCollaboratorMentionDtos(content, mentions) })
+      acceptLocalSubmission(submission)
     } catch (cause) {
-      failLocalSubmission(submission, cause)
+      // A rejected add posted nothing: the notice shows and the draft stays as typed.
+      if (failLocalSubmission(submission, cause) === 'kept_draft') return
       context.requirement = content
       context.contextFilePaths = attachments
       context.requestedMentions = [...mentions]

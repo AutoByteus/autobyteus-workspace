@@ -9,7 +9,7 @@ import {
   type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
 import { foldTeamAggregateStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
-import { collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { collaboratorExecutionNodes, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 
 export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
@@ -54,6 +54,12 @@ type StatusSource = Readonly<{
   isTaskTeamExpanded(teamRunId: string): boolean
 }>
 
+/** Root-level delegated children as the tree shows them: collaborators first, then extra copies. */
+const rootTaskExecutions = (rootOrg: AgentOrgRunHistoryItem['executionTree']['rootOrg']): readonly AgentOrgTaskExecutionNode[] => [
+  ...collaboratorExecutionNodes(rootOrg.collaborators ?? []) as AgentOrgTaskExecutionNode[],
+  ...rootOrg.taskExecutions,
+]
+
 const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): ReadonlyMap<string, string> => {
   const addresses = new Map<string, string>()
   const visitTaskMembers = (members: readonly AgentOrgTaskTeamMember[]) => {
@@ -75,7 +81,7 @@ const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): R
       visitTasks(member.taskExecutions)
     }
   }
-  visitTasks(tree.rootOrg.taskExecutions)
+  visitTasks(rootTaskExecutions(tree.rootOrg))
   return addresses
 }
 
@@ -215,7 +221,7 @@ export const projectAgentOrgHistoryRows = (input: Readonly<{
     })))
     for (const task of member.taskExecutions) rows.push(...flattenTask(task, 1, source))
   }
-  for (const task of tree.rootOrg.taskExecutions) rows.push(...flattenTask(task, 0, source))
+  for (const task of rootTaskExecutions(tree.rootOrg)) rows.push(...flattenTask(task, 0, source))
 
   const hasSibling = (index: number, depth: number): boolean => {
     for (let next = index + 1; next < rows.length; next += 1) {

@@ -317,14 +317,24 @@ export const createTeamExecutionViewState = (
         }
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'COLLABORATOR_ADDED') {
-        // An entry precedes any task execution at its address; it has no run of its own.
+        // One hosted instance per entry: its executions are placed (Offline) with the entry.
         const collaborators = publication.value.tree.root_team.collaborators ?? [];
         if (collaborators.some((entry) => entry.address === message.payload.collaborator.address)) {
           throw new Error(`Duplicate collaborator address '${message.payload.collaborator.address}'.`);
         }
         const nextTree = structuredClone(publication.value.tree);
         nextTree.root_team = { ...nextTree.root_team, collaborators: [...collaborators, structuredClone(message.payload.collaborator)] };
-        publication.value = { ...publication.value, tree: nextTree, changeSequence: sequence ?? publication.value.changeSequence };
+        const nextLocations = collectValidatedLocations(nextTree);
+        const planned = planContextAssociations(nextTree, nextLocations);
+        publication.value = { ...publication.value, tree: nextTree, locations: nextLocations,
+          contexts: prepareContextAssociations(planned), changeSequence: sequence ?? publication.value.changeSequence };
+        if (planned.length > 0) {
+          effects.push({
+            kind: 'invalidate_team_member_projection',
+            agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
+          });
+        }
+        effects.push({ kind: 'reconcile_team_navigation' });
         effects.push({ kind: 'collaborators_changed' });
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
         if (publication.value.messages.some((entry) => entry.message_id === message.payload.message.message_id)) {

@@ -27,6 +27,7 @@ import {
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService';
+import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
 import {
   invalidateTeamMemberProjection,
@@ -68,6 +69,7 @@ const teamSendFailureCodes = new Set([
   'INVALID_TARGET',
   'TEAM_SEND_MESSAGE_REJECTED',
   'TEAM_SEND_MESSAGE_FAILED',
+  COLLABORATOR_ADD_FAILED,
 ]);
 const sendKey = (agentRunId: string, messageId: string, dedupeKey: string): string =>
   `${agentRunId}\0${messageId}\0${dedupeKey}`;
@@ -298,7 +300,8 @@ export class TeamStreamingService {
       message.payload.dedupe_key,
     );
     const pending = this.pendingTeamSends.get(key);
-    if (!pending || pending.content !== message.payload.content || message.payload.input_origin !== 'user_message') return;
+    // CR-003: settle on identity only; the root may compose the content (the mention note).
+    if (!pending || message.payload.input_origin !== 'user_message') return;
     this.pendingTeamSends.delete(key);
     pending.resolve();
   }
@@ -310,7 +313,7 @@ export class TeamStreamingService {
     );
     if (!entry) return false;
     this.pendingTeamSends.delete(entry[0]);
-    entry[1].reject(new Error(message.payload.message));
+    entry[1].reject(collaboratorAddRejectionOf(message.payload) ?? new Error(message.payload.message));
     return true;
   }
 

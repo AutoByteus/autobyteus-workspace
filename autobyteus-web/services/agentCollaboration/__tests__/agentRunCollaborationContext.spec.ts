@@ -60,19 +60,23 @@ describe('AgentRunCollaborationContext', () => {
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 
-  it('applies sequenced events: collaborator added, messages, and a reload for a new child', () => {
+  it('applies sequenced events: a collaborator added in place (Offline), messages, and a reload for an extra copy', () => {
     const context = build()
     expect(context.applyEvent(5, { kind: 'collaborator_added', collaborator: {
-      kind: 'agent', address: '/code_reviewer', agentDefinitionId: 'code-reviewer', launchConfiguration: launch, addedAt: created, addedViaAgentRunId: 'host-run',
+      kind: 'agent', address: '/code_reviewer', agentDefinitionId: 'code-reviewer', agentRunId: 'cr-run', platformAgentRunId: null,
+      launchConfiguration: launch, addedAt: created, addedViaAgentRunId: 'host-run',
     } })).toBe('applied')
     expect(invalidate).toHaveBeenCalledWith('agent', 'host-run')
     expect(context.view.execution_tree.collaborators).toHaveLength(3)
+    // The new instance has its context at once, Offline, and a row under the run.
+    expect(context.getAgentContext('cr-run')?.state.currentStatus).toBe('offline')
+    expect(context.listTaskRows(() => false).map((entry) => entry.row.displayName)).toContain('code reviewer')
     expect(context.applyEvent(6, { kind: 'communication', message: {
       messageId: 'm2', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'thanks', messageType: 'direct_message', referenceFiles: [], createdAt: created,
     } })).toBe('applied')
     expect(context.view.communication_messages.messages).toHaveLength(2)
     expect(context.applyEvent(7, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
-      address: '/code_reviewer', agentRunId: 'cr-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
+      address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
     } })).toBe('checkpoint_required')
     expect(() => context.applyEvent(9, { kind: 'communication', message: {
       messageId: 'm3', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'gap', messageType: 'direct_message', referenceFiles: [], createdAt: created,

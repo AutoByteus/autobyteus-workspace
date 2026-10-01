@@ -16,7 +16,7 @@
       >
         <SkillTagChips :names="requestedSkillNames" @remove="removeSkill" />
       </div>
-      <AgentUserInputTextArea :target="target" :before-send="beforeSend" :skill-tagging="skillTagging" />
+      <AgentUserInputTextArea :target="target" :before-send="beforeSend" :skill-tagging="skillTagging" :placeholder="placeholder" />
     </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ const props = defineProps<{
   beforeSend?: () => void | Promise<void>;
   /** `/` skill tags and their chip row; supplied only for standalone agent runs. */
   skillTagging?: SkillTaggingCapability | null;
+  placeholder?: string | null;
 }>();
 
 const target = useComposerTarget();

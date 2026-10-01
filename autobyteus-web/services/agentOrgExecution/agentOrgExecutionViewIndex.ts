@@ -2,6 +2,7 @@ import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
   collaboratorAgentSourceAt,
+  collaboratorExecutionNodes,
   collaboratorTeamSourceAt,
   type CollaborationAgentSource,
   type CollaborationTeamSource,
@@ -73,7 +74,9 @@ export class AgentOrgExecutionViewIndex {
       if ('agentRunId' in member) this.addAgent(member, rootHost, null, true, 'configured')
       else this.addTeam(member, null, true)
     }
-    root.taskExecutions.forEach((task) => this.addTask(task, rootHost, true))
+    // Collaborators are hosted by the root and shown with the delegated-child rows.
+    ;[...collaboratorExecutionNodes(root.collaborators ?? []) as OrgTaskExecution[], ...root.taskExecutions]
+      .forEach((task) => this.addTask(task, rootHost, true))
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegation?.delegatorAgentRunId
       if (delegator && !this.agents.has(delegator)) {

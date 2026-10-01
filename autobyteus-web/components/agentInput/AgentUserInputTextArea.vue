@@ -11,7 +11,7 @@
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
           maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
         }"
-        :placeholder="skillTagging?.placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
+        :placeholder="skillTagging?.placeholder || placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
         :role="hasMenus ? 'combobox' : undefined"
         :aria-autocomplete="hasMenus ? 'list' : undefined"
         :aria-expanded="hasMenus ? (activeMenu ? 'true' : 'false') : undefined"
@@ -107,6 +107,7 @@ const props = defineProps<{
   beforeSend?: () => void | Promise<void>;
   /** `/` skill tags; supplied only for standalone agent runs. */
   skillTagging?: SkillTaggingCapability | null;
+  placeholder?: string | null;
 }>();
 
 const contextFileUploadStore = useContextFileUploadStore();

@@ -120,6 +120,43 @@ describe('TeamStreamingService exact AgentRun command selection', () => {
     await expect(admission).rejects.toThrow('runtime is stopping');
   });
 
+  it('CR-003: settles a mention send on identity although the root composed its content', async () => {
+    const { callbacks, service } = createHarness();
+    const admission = service.sendMessage('Ask @Product Team', 'worker-run', [], [], {
+      messageId: 'message-mention', dedupeKey: 'dedupe-mention',
+      mentions: [{ kind: 'agent_team', definition_id: 'product-team' }],
+    });
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'MEMBER_INPUT_MESSAGE', payload: {
+        change_sequence: 1, recipient_agent_run_id: 'worker-run',
+        message_id: 'message-mention', dedupe_key: 'dedupe-mention',
+        content: 'Ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team',
+        input_origin: 'user_message', received_at: '2026-09-01T00:00:00.000Z', context_file_paths: [],
+        sender_agent_run_id: null, parent_communication_message_id: null,
+      },
+    }));
+    await expect(admission).resolves.toBeUndefined();
+    // The next send from the same member is admitted (nothing is left pending).
+    expect(() => service.sendMessage('next', 'worker-run', [], [], { messageId: 'next', dedupeKey: 'next' })).not.toThrow();
+  });
+
+  it('rejects a mention send whose collaborator could not be added with the name and reason', async () => {
+    const { callbacks, service } = createHarness();
+    const admission = service.sendMessage('Ask @Marketing Team', 'worker-run', [], [], {
+      messageId: 'message-failed-add', dedupeKey: 'dedupe-failed-add',
+      mentions: [{ kind: 'agent_team', definition_id: 'marketing-team' }],
+    });
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'ERROR', payload: {
+        code: 'COLLABORATOR_ADD_FAILED', message: 'Its model is not available.', collaborator_name: 'Marketing Team',
+        change_sequence: null, agent_run_id: 'worker-run', error_scope: null, error_effect: null, turn_id: null,
+      },
+    }));
+    await expect(admission).rejects.toMatchObject({
+      name: 'CollaboratorAddRejection', collaboratorName: 'Marketing Team', reason: 'Its model is not available.',
+    });
+  });
+
   it('rejects pending Team admission on disconnect and never sends a second in-flight prompt to the target', async () => {
     const { callbacks, service, wsClient } = createHarness();
     const admission = service.sendMessage('first prompt', 'worker-run', [], [], {

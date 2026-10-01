@@ -16,7 +16,7 @@ import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOr
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
-import { beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
+import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
 import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -223,8 +223,10 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       }
       await service.sendPrepared({ agentRunId, content, attachments, messageId, dedupeKey,
         mentions: toCollaboratorMentionDtos(content, mentions) })
+      acceptLocalSubmission(submission)
     } catch (cause) {
-      failLocalSubmission(submission, cause)
+      // A rejected add posted nothing: the notice shows and the draft stays as typed.
+      if (failLocalSubmission(submission, cause) === 'kept_draft') return
       if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments; context.requestedMentions = [...mentions] }
       throw cause
     } finally {

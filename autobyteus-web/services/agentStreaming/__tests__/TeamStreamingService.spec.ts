@@ -282,8 +282,10 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       parent_communication_message_id: 'team-message-1',
     });
 
+    // RD-004: an agent-to-agent delivery shows its sender ("From <Sender>:"), not a user bubble.
     expect(taskStudent.state.conversation.messages.at(-1)).toMatchObject({
-      type: 'user', messageId: 'member-input-1', text: 'TASK_SCOPED_PEER_MESSAGE',
+      type: 'ai',
+      segments: [{ type: 'inter_agent_message', messageId: 'member-input-1', senderAgentRunId: teacherRunId, content: 'TASK_SCOPED_PEER_MESSAGE' }],
     });
     expect(persistentStudent.state.conversation.messages).toHaveLength(0);
     expect(teacher.state.conversation.messages).toHaveLength(0);

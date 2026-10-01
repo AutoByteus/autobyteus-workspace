@@ -34,7 +34,7 @@
       <!-- A collaborator that could not be brought into this run (REQ-008); hidden otherwise. -->
       <CollaboratorAddFailureNotice />
       <slot name="composer">
-        <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" />
+        <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" :placeholder="composerPlaceholder" />
       </slot>
     </div>
   </div>
@@ -69,6 +69,8 @@ const props = defineProps<{
   browseSubject: EventMonitorActiveTraceBrowseSubject;
   /** `/` skill tags in the box; standalone agent runs only. */
   skillTagging?: SkillTaggingCapability | null;
+  /** Composer placeholder when there are no skill tags (e.g. "Message code reviewer…"). */
+  composerPlaceholder?: string | null;
 }>();
 
 const activityStore = useAgentActivityStore();

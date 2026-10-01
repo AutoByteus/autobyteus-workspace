@@ -61,6 +61,23 @@ describe('AgentStreamingService', () => {
         };
     });
 
+    it('holds a mention send until its ack: resolves on acceptance, rejects a failed add without an error segment', async () => {
+        service.connect('test-agent-id', mockAgentContext);
+        const ack = (messageId: string, extra: Record<string, unknown>) => (service as any).handleMessage(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: { command_type: 'SEND_MESSAGE', run_id: 'test-agent-id', message_id: messageId, dedupe_key: messageId, duplicate: false, ...extra },
+        }));
+        const accepted = service.sendMessageAwaitingAdmission('Ask @Product Team', [], [], { messageId: 'm-ok', dedupeKey: 'm-ok' });
+        ack('m-ok', { state: 'accepted', accepted: true });
+        await expect(accepted).resolves.toBeUndefined();
+
+        const rejected = service.sendMessageAwaitingAdmission('Ask @Marketing Team', [], [], { messageId: 'm-no', dedupeKey: 'm-no' });
+        ack('m-no', { state: 'rejected', accepted: false, code: 'COLLABORATOR_ADD_FAILED', message: 'Its model is not available.', collaborator_name: 'Marketing Team' });
+        await expect(rejected).rejects.toMatchObject({ name: 'CollaboratorAddRejection', collaboratorName: 'Marketing Team' });
+        // Nothing was posted, so the conversation gets no error message (the notice reports it).
+        expect(mockConversation.messages).toEqual([]);
+    });
+
     it('should initialize with disconnected state', () => {
         expect((service as any).wsClient).toBeDefined();
     });

@@ -157,6 +157,7 @@
 </template>
 
 <script setup lang="ts">
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import { Icon } from '@iconify/vue'
 import StatusDot from '~/components/workspace/common/StatusDot.vue'
 import TeamAggregateStatusDot from './TeamAggregateStatusDot.vue'
@@ -186,7 +187,7 @@ const isTerminating = (rootRunId: string) => props.state.isAgentOrgTerminating?.
 const isDeleting = (rootRunId: string) => props.state.isAgentOrgDeleting?.(rootRunId) ?? false
 const isArchiving = (rootRunId: string) => props.state.isAgentOrgArchiving?.(rootRunId) ?? false
 const terminationError = (rootRunId: string) => props.state.agentOrgTerminationError?.(rootRunId) ?? null
-const label = (address: string) => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
+const label = memberDisplayName
 const initials = (address: string) => label(address).split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('')
 const startedBy = (delegator: AgentOrgHistoryDelegator) =>
   t('workspace.members.started_by', { name: delegator.address ? label(delegator.address) : delegator.agentRunId })

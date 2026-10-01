@@ -1,5 +1,5 @@
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
-import { memberAddressBasename } from '~/types/agent/AgentTeamAddress'
 import type {
   CollaborationMessageMemberIdentity,
   CollaborationMessagePerspectiveRow,
@@ -55,7 +55,8 @@ export const projectAgentOrgMessageIdentity = (
   index: AgentOrgExecutionViewIndex, agentRunId: string,
 ): CollaborationMessageMemberIdentity => {
   const agent = index.requireAgent(agentRunId)
-  const common = { address: agent.address, label: memberAddressBasename(agent.address) }
+  // F-03: one display-name rule for tab senders in every root.
+  const common = { address: agent.address, label: memberDisplayName(agent.address) }
   return agent.delegation ? Object.freeze({ ...common, kind: 'delegated',
     hostRunId: agent.host.runId, executionRunId: agent.delegation.executionRunId })
     : Object.freeze({ ...common, kind: 'configured' })

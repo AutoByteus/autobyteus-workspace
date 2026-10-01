@@ -1,3 +1,5 @@
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+import { createChildContext } from './agentRunCollaborationChildContextFactory'
 import {
   AgentRootExecutionViewDtoSchema,
   type AgentRunCollaborationViewDto,
@@ -26,8 +28,7 @@ type Projection = Readonly<{
   hasEarlierActiveTraceEvents: boolean
 }>
 
-const nameAt = (address: string): string =>
-  address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
+const nameAt = memberDisplayName
 
 /** The stored or live view of a standalone run's collaboration root; null when it has none. Never restores. */
 export const readAgentRunCollaboration = async (hostRunId: string): Promise<AgentRunCollaborationViewDto | null> => {
@@ -64,27 +65,6 @@ const resolveWorkspace = async (root: string | null, active: boolean): Promise<W
   return history.resolveWorkspaceMetadataByRootPath(root)
 }
 
-const createChildContext = (child: AgentRootChildAgent, createdAt: string, workspace: WorkspaceMetadata | null): AgentContext => {
-  const launch = child.source.launchConfiguration
-  const config: AgentRunConfig = {
-    agentDefinitionId: child.source.agentDefinitionId,
-    agentDefinitionName: nameAt(child.address),
-    llmModelIdentifier: launch.llmModelIdentifier,
-    runtimeKind: launch.runtimeKind,
-    workspaceId: workspace?.workspaceId ?? null,
-    workspaceMetadata: workspace,
-    autoExecuteTools: launch.autoExecuteTools,
-    llmConfig: launch.llmConfig ? structuredClone(launch.llmConfig) : null,
-    isLocked: true,
-  }
-  const state = new AgentRunState(child.agentRunId, {
-    id: child.agentRunId, messages: [], createdAt, updatedAt: createdAt,
-    agentDefinitionId: child.source.agentDefinitionId, agentName: nameAt(child.address),
-    llmModelIdentifier: launch.llmModelIdentifier,
-  })
-  initializeRuntimeStatusState(state, AgentStatus.Offline)
-  return new AgentContext(config, state)
-}
 
 /**
  * Builds the client context of an Agent root from a view: one AgentContext per child with its

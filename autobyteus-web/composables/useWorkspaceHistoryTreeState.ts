@@ -256,13 +256,15 @@ export const useWorkspaceHistoryTreeState = (params: {
     setTeamExpanded(teamRunId, !isTeamExpanded(teamRunId));
   };
 
+  /** `openByDefault`: a row that opens once when it appears (F-02) until the user collapses it. */
   const isTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
     rowKey: string,
+    openByDefault = false,
   ): boolean => {
     const key = teamMemberKey(workspaceId, teamRunId, rowKey);
-    return key ? expandedTeamMembers.value[key] ?? false : false;
+    return key ? expandedTeamMembers.value[key] ?? openByDefault : false;
   };
 
   const setTeamMemberExpanded = (
@@ -286,12 +288,13 @@ export const useWorkspaceHistoryTreeState = (params: {
     workspaceId: string,
     teamRunId: string,
     rowKey: string,
+    openByDefault = false,
   ): void => {
     setTeamMemberExpanded(
       workspaceId,
       teamRunId,
       rowKey,
-      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey),
+      !isTeamMemberExpanded(workspaceId, teamRunId, rowKey, openByDefault),
     );
   };
 

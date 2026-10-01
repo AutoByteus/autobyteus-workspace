@@ -2,6 +2,7 @@ import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-str
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
   collaboratorAgentSourceAt,
+  collaboratorExecutionNodes,
   collaboratorTeamSourceAt,
   type CollaborationAgentSource,
 } from '~/services/collaborators/agentSourceSelectors'
@@ -33,8 +34,9 @@ export type AgentRootChildTeam = Readonly<{
 }>
 
 /**
- * Children of an Agent root, indexed by run ID. Every source comes from a collaborator entry;
- * the host is the implicit delegator of top-level children and is not indexed.
+ * Children of an Agent root, indexed by run ID: the collaborators (one hosted instance each,
+ * shown as delegated rows) and the extra copies. Every source comes from a collaborator entry;
+ * the host is not indexed.
  */
 export class AgentRunCollaborationIndex {
   readonly agents = new Map<string, AgentRootChildAgent>()
@@ -45,7 +47,9 @@ export class AgentRunCollaborationIndex {
   constructor(readonly tree: Tree) {
     this.hostRunId = tree.host.agentRunId
     this.hostAddress = parseAgentTeamAddress(tree.host.address)
-    tree.taskExecutions.forEach((task) => this.addTask(task, null))
+    // Collaborators (hosted by the root) first, then extra copies and other delegated children.
+    ;[...collaboratorExecutionNodes(tree.collaborators) as TaskExecution[], ...tree.taskExecutions]
+      .forEach((task) => this.addTask(task, null))
     for (const identity of [...this.agents.values(), ...this.teams.values()]) {
       const delegator = identity.delegatorAgentRunId
       if (delegator && delegator !== this.hostRunId && !this.agents.has(delegator)) {

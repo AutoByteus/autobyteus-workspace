@@ -1,3 +1,4 @@
+import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures'
 import {
   CollaborationStreamServerMessageSchema,
   type CollaborationStreamClientMessage,
@@ -49,6 +50,8 @@ export class AgentRunCollaborationStreamingService {
     publish(context: AgentRunCollaborationContext, commitActivities: () => void): void
     onInactive(): void
     reportError(message: string): void
+    /** A collaborator was added in place (its new Team opens once). */
+    onCollaboratorAdded?(context: AgentRunCollaborationContext): void
   }>) {}
 
   connect(): void {
@@ -199,6 +202,8 @@ export class AgentRunCollaborationStreamingService {
         // A new child: reconnect for a fresh snapshot that includes its context.
         this.closeSocket('Agent collaboration reload')
         this.connect()
+      } else if (message.payload.event.kind === 'collaborator_added') {
+        this.options.onCollaboratorAdded?.(this.context)
       }
       return
     }
@@ -218,7 +223,8 @@ export class AgentRunCollaborationStreamingService {
     clearTimeout(command.timeout)
     this.pending.delete(message.payload.command_id)
     if (message.payload.state === 'accepted') command.resolve()
-    else command.reject(new Error(message.payload.message ?? message.payload.code ?? 'Agent collaboration command rejected.'))
+    else command.reject(collaboratorAddRejectionOf(message.payload)
+      ?? new Error(message.payload.message ?? message.payload.code ?? 'Agent collaboration command rejected.'))
   }
 
   private scheduleRecovery(detail: string): void {

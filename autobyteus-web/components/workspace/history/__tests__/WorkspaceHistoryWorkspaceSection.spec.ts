@@ -482,7 +482,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(childRow().exists()).toBe(false);
     await nestedRow().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run');
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run', false);
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
     expect(childRow().exists()).toBe(true);
     await childRow().trigger('click');
@@ -560,7 +560,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await dot.trigger('click');
     expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
     expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
+      'workspace:/ws/a', 'team-run-1', 'team:product-team-run', false,
     );
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });

@@ -20,6 +20,7 @@ import {
 } from './protocol';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
+import { collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import {
   drainPendingInterruptTransportFailures,
@@ -59,6 +60,8 @@ export class AgentStreamingService {
   private wsEndpoint: string;
   private runId: string | null = null;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
+  /** Held sends (with `@` mentions) waiting for their admission ack, by message ID. */
+  private readonly pendingAdmissions = new Map<string, { resolve(): void; reject(error: Error): void }>();
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
   private readonly onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => void;
@@ -147,6 +150,37 @@ export class AgentStreamingService {
   }
 
   /**
+   * Sends and waits for the root's admission (a send with `@` mentions, AR-007): resolves when
+   * the send is accepted; rejects with `CollaboratorAddRejection` when a mentioned collaborator
+   * could not be added (nothing was posted), or with an error for any other rejection.
+   */
+  sendMessageAwaitingAdmission(
+    content: string,
+    contextFilePaths: string[],
+    imageUrls: string[],
+    command: { messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] },
+  ): Promise<void> {
+    const admission = new Promise<void>((resolve, reject) => {
+      this.pendingAdmissions.set(command.messageId, { resolve, reject });
+    });
+    try {
+      this.sendMessage(content, contextFilePaths, imageUrls, command);
+    } catch (error) {
+      this.pendingAdmissions.delete(command.messageId);
+      return Promise.reject(error);
+    }
+    return admission;
+  }
+
+  private settleAdmission(ack: SendMessageCommandAckPayload): void {
+    const pending = this.pendingAdmissions.get(ack.message_id);
+    if (!pending) return;
+    this.pendingAdmissions.delete(ack.message_id);
+    if (ack.accepted) pending.resolve();
+    else pending.reject(collaboratorAddRejectionOf(ack) ?? new Error(ack.message ?? ack.code ?? 'The message was not accepted.'));
+  }
+
+  /**
    * Approve a tool invocation.
    */
   approveTool(invocationId: string, reason?: string): void {
@@ -207,6 +241,7 @@ export class AgentStreamingService {
         return;
       }
       if (message.type === 'AGENT_COMMAND_ACK' && message.payload.command_type === 'SEND_MESSAGE') {
+        this.settleAdmission(message.payload);
         this.onSendMessageCommandAck(message.payload);
       }
       this.logMessage(message);
@@ -225,6 +260,10 @@ export class AgentStreamingService {
     this.drainPendingInterruptCommands(
       reason || 'Interrupt result was lost because the stream disconnected.',
     );
+    for (const pending of this.pendingAdmissions.values()) {
+      pending.reject(new Error(reason || 'Message admission was interrupted because the stream disconnected.'));
+    }
+    this.pendingAdmissions.clear();
   };
 
   private handleError = (error: Error): void => {

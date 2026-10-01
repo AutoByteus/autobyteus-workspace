@@ -100,6 +100,7 @@ export const buildRunHistoryTeamExecutionRows = (
       displayName: execution.displayName,
       currentStatus: execution.currentStatus,
       delegatedBy: execution.delegatedBy,
+      ...(execution.opensOnAppear ? { opensOnAppear: true } : {}),
       depth,
       hasChildren,
     };

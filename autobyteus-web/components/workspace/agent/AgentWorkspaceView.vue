@@ -2,8 +2,9 @@
   <AgentWorkspaceSurface
     v-if="target"
     :target="target"
-    :show-header-actions="isHost"
+    :show-header-actions="true"
     :skill-tagging="skillTagging"
+    :composer-placeholder="childPlaceholder"
     @new-agent="startNewChatForRun"
     @edit-config="openSelectedRunConfig"
   />
@@ -28,7 +29,8 @@ import { useLocalization } from '~/composables/useLocalization'
 
 /**
  * The standalone agent run view (the chat run view, D-17): the product run header with ⚙ and ＋,
- * the conversation, and the product box with `/` skill tags.
+ * the conversation, and the product box with `/` skill tags. A collaborator of the run (F-04)
+ * has the same header controls and a box that names it.
  */
 const { t } = useLocalization()
 const router = useRouter()
@@ -56,6 +58,12 @@ const skillTagging = computed<SkillTaggingCapability | null>(() => {
       ? t('chat.run.placeholderDefault')
       : t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }),
   }
+})
+
+/** F-04: a collaborator view names its agent in the box, like the Org's delegated-Agent view. */
+const childPlaceholder = computed(() => {
+  const config = target.value?.context.config
+  return config && !isHost.value ? t('chat.run.placeholderAgent', { agent: config.agentDefinitionName || '' }) : null
 })
 
 /** ＋ starts a New chat preset to this run's agent and workspace (UIS-013 R3). */

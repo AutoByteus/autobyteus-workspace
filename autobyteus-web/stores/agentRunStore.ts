@@ -27,7 +27,9 @@ import { ConnectionState } from '~/services/agentStreaming';
 import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
+import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
@@ -243,16 +245,22 @@ export const useAgentRunStore = defineStore('agentRun', {
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
         const messageId = createClientMessageId();
-        service.sendMessage(
-          messageContent,
-          submissionPlan.executable.contextFilePaths,
-          submissionPlan.executable.imageUrls,
-          {
-            messageId,
-            dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
-            mentions: toCollaboratorMentionDtos(userText, mentions),
-          },
-        );
+        const command = {
+          messageId,
+          dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+          mentions: toCollaboratorMentionDtos(userText, mentions),
+        };
+        localSubmission.message.messageId = command.messageId;
+        localSubmission.message.dedupeKey = command.dedupeKey;
+        if (localSubmission.held) {
+          // A send with mentions is shown only once the run accepts it (AR-007).
+          await service.sendMessageAwaitingAdmission(
+            messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command,
+          );
+          acceptLocalSubmission(localSubmission);
+        } else {
+          service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
+        }
         preparedRunId = null;
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
@@ -265,6 +273,11 @@ export const useAgentRunStore = defineStore('agentRun', {
           }).catch((cancelError: unknown) => {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
+        }
+        // A rejected add posted nothing: the notice shows and the draft stays as typed.
+        if (localSubmission.held && error instanceof CollaboratorAddRejection) {
+          failLocalSubmission(localSubmission, error);
+          return;
         }
         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
         failLocalSubmission(localSubmission, error);

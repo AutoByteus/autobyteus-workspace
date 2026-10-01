@@ -68,7 +68,7 @@
       data-testid="inter-agent-details"
       class="ml-7 mt-0.5 text-[0.6875rem] leading-5 text-slate-500 dark:text-slate-400"
     >
-      {{ segment.messageType }} · Intended role: {{ segment.recipientRoleName }}
+      {{ segment.messageType }}<template v-if="segment.recipientRoleName"> · Intended role: {{ segment.recipientRoleName }}</template>
     </div>
   </div>
 </template>
@@ -77,6 +77,7 @@
 import { computed, ref } from 'vue';
 import type { InterAgentMessageSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
+import { memberTitleName } from '~/utils/collaboration/memberDisplayName';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
 const props = withDefaults(defineProps<{
@@ -124,6 +125,9 @@ const toReadableSenderName = (value: string): string => {
 };
 
 const displaySender = computed(() => {
+  // RD-004 deliveries carry the sender's address or name: one shared formatter (F-03).
+  const sender = props.segment.senderAddress?.trim() || props.segment.senderName?.trim();
+  if (sender) return memberTitleName(sender);
   const explicitName = props.senderDisplayName?.trim();
   if (explicitName) {
     return toReadableSenderName(explicitName);
