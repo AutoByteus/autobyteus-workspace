@@ -59,3 +59,51 @@ describe('PendingCompactionExecutor direct path', () => {
     expect(collectMessageRawTraceIds(resumed.getWorkingContextMessages()).length).toBeGreaterThan(0);
   });
 });
+
+describe('terminal activity is scoped to an authorized executor call', () => {
+  it.each(['resolve', 'reject'])('emits stopped before an ignoring provider settles (%s), never commits late', async (mode) => {
+    const h = setup(); const before = h.snapshotStore.read('agent');
+    let resolve!: (value: string) => void; let reject!: (reason: Error) => void;
+    h.compress.mockImplementationOnce(() => new Promise((yes, no) => { resolve = yes; reject = no; }));
+    const execution = h.executor.executeIfAuthorized(h.input);
+    const failed = expect(execution).rejects.toThrow();
+    h.controller.abort();
+    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'stopped']);
+    expect(h.emitStatus.mock.calls.at(-1)?.[0]).toMatchObject({ compaction_operation_id: h.operationId,
+      requested_turn_id: 'turn-request', execution_turn_id: 'execute-1', selected_block_count: expect.any(Number) });
+    if (mode === 'resolve') resolve(summary); else reject(new Error('late provider failure'));
+    await failed;
+    expect(h.snapshotStore.read('agent')).toEqual(before);
+    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'stopped']);
+  });
+  it('reports an already aborted owner once without invoking the provider and removes the listener', async () => {
+    const h = setup(); h.controller.abort();
+    const removed = vi.spyOn(h.input.signal, 'removeEventListener');
+    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
+    expect(h.compress).not.toHaveBeenCalled();
+    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['stopped']);
+    expect(removed).toHaveBeenCalledWith('abort', expect.any(Function));
+  });
+  it('latches committed success before a synchronous observer abort, even if that observer throws', async () => {
+    const h = setup();
+    h.emitStatus.mockImplementation((status) => {
+      if (status.phase === 'completed') { h.controller.abort(); throw new Error('observer'); }
+    });
+    await expect(h.executor.executeIfAuthorized(h.input)).resolves.toBe(true);
+    expect(h.manager.hasPendingCompaction()).toBe(false);
+    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'completed']);
+  });
+  it('does not infer stopped from a provider error string or emit it after a failed call has ended', async () => {
+    const h = setup(); h.compress.mockRejectedValueOnce(new Error('cancelled timeout abort'));
+    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow('cancelled timeout abort');
+    h.controller.abort();
+    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'failed']);
+  });
+  it('allows a genuinely authorized fresh execution of the pending gate after stopped', async () => {
+    const h = setup(); h.compress.mockImplementationOnce(async () => { h.controller.abort(); return summary; });
+    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
+    expect(h.manager.authorizeCompactionRetry({ block: h.manager.getCompactionRecovery()!, userAdmissionId: 'fresh' })).toBe('accepted');
+    await expect(h.executor.executeIfAuthorized({ ...h.input, signal: new AbortController().signal })).resolves.toBe(true);
+    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'stopped', 'started', 'completed']);
+  });
+});

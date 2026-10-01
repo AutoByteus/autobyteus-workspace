@@ -57,8 +57,14 @@ export type AutoByteusAgentLike = {
 
 type AutoByteusAgentRunBackendOptions = {
   isActive: () => boolean;
-  removeAgent: (runId: string) => Promise<boolean>;
+  removeAgent: (runId: string, shutdownTimeout: number) => Promise<boolean>;
   pendingSystemInstructionCapture?: SystemInstructionTraceRecord | null;
+};
+
+type StreamSession = {
+  stream: AgentEventStream;
+  pump: Promise<void>;
+  disposed: boolean;
 };
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
@@ -86,8 +92,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   private readonly eventConverter: AutoByteusStreamEventConverter;
   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
-  private stream: AgentEventStream | null = null;
-  private isStreamClosed = true;
+  private session: StreamSession | null = null;
   private lifecycleState: "active" | "terminating" | "terminated" = "active";
   private terminationPromise: Promise<AgentOperationResult> | null = null;
   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
@@ -127,12 +132,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   }
 
   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+    if (this.lifecycleState !== "active") return () => {};
     this.sourceListeners.add(listener);
     this.ensureSubscribed();
     return () => {
       this.sourceListeners.delete(listener);
       if (this.sourceListeners.size === 0) {
-        this.closeStream();
+        this.disposeSession(this.session);
       }
     };
   }
@@ -236,15 +242,36 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
 
     this.lifecycleState = "terminating";
+    const session = this.session;
+    const deadline = Date.now() + 10_000;
+    const expired = Symbol("shutdown deadline");
+    let timer: ReturnType<typeof setTimeout>;
+    const timeout = new Promise<typeof expired>((resolve) => {
+      timer = setTimeout(() => resolve(expired), Math.max(0, deadline - Date.now()));
+    });
     this.terminationPromise = (async () => {
       try {
-        this.closeStream();
-        await this.options.removeAgent(this.runId);
+        const removed = await Promise.race([
+          this.options.removeAgent(this.runId, Math.max(0, deadline - Date.now()) / 1000), timeout,
+        ]);
+        if (removed === expired) throw new Error("Native shutdown deadline exceeded.");
+        if (!removed && this.options.isActive()) throw new Error("Native run remains registered.");
+        // Resource shutdown succeeded. Projection delivery cannot undo that result.
         this.lifecycleState = "terminated";
+        if (session) {
+          const drained = await Promise.race([
+            session.stream.close().then(() => session.pump).catch((error) => {
+              console.warn(`Native event drain failed for '${this.runId}'.`, error);
+            }), timeout,
+          ]);
+          if (drained === expired) console.warn(`Native event drain deadline exceeded for '${this.runId}'.`);
+        }
         return { accepted: true };
       } catch (error) {
         return buildCommandFailure("terminate run", error);
       } finally {
+        clearTimeout(timer!);
+        this.disposeSession(session);
         this.terminationPromise = null;
       }
     })();
@@ -252,45 +279,35 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   }
 
   private ensureSubscribed(): void {
-    if (!this.isStreamClosed) {
-      return;
-    }
-
-    const stream = new AgentEventStream(this.agent as any);
-    this.stream = stream;
-    this.isStreamClosed = false;
-
-    void (async () => {
+    if (this.session || this.lifecycleState !== "active") return;
+    const session: StreamSession = {
+      stream: new AgentEventStream(this.agent as any), pump: Promise.resolve(), disposed: false,
+    };
+    this.session = session;
+    session.pump = (async () => {
       try {
-        for await (const event of stream.allEvents()) {
-          if (this.isStreamClosed) {
-            break;
-          }
+        for await (const event of session.stream.allEvents()) {
+          if (session.disposed) break;
           const convertedEvent = this.eventConverter.convert(event);
-          if (!convertedEvent) {
-            continue;
-          }
+          if (!convertedEvent) continue;
           for (const listener of this.sourceListeners) {
-            await listener([convertedEvent]);
+            if (session.disposed) break;
+            try { await listener([convertedEvent]); }
+            catch (error) { console.warn(`Native event listener failed for '${this.runId}'.`, error); }
           }
         }
-      } catch {
-        // Ignore transport shutdown races; callers observe disconnection through inactivity.
+      } catch (error) {
+        console.warn(`Native event pump failed for '${this.runId}'.`, error);
       } finally {
-        if (!this.isStreamClosed) {
-          this.closeStream();
-        }
+        this.disposeSession(session);
       }
     })();
   }
 
-  private closeStream(): void {
-    if (this.isStreamClosed) {
-      return;
-    }
-    this.isStreamClosed = true;
-    const stream = this.stream;
-    this.stream = null;
-    void stream?.close().catch(() => {});
+  private disposeSession(session: StreamSession | null): void {
+    if (!session || session.disposed) return;
+    session.disposed = true;
+    if (this.session === session) this.session = null;
+    void session.stream.close().catch(() => {});
   }
 }

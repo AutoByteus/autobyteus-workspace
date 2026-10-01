@@ -1,3 +1,4 @@
+import { isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
 import type { RunActivity } from '~/types/activity/RunActivity';
 import type { ToolInvocationStatus } from '~/types/segments';
 import { assertUnreachableRunActivity } from './runActivityPresentation';
@@ -16,7 +17,7 @@ export const isRunActivityComplete = (activity: RunActivity): boolean => {
     case 'system_instruction':
       return true;
     case 'compaction':
-      return activity.phase === 'completed' || activity.phase === 'failed';
+      return isCompleteCompactionPhase(activity.phase);
     case 'tool':
       return TERMINAL_TOOL_STATUSES.has(activity.status);
     default:

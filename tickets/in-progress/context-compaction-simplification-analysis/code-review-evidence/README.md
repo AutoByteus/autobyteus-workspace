@@ -1,4 +1,14 @@
+# Code review evidence index
+
+**Latest source result: CRR-008 Pass /9.40 — IR005 text strategy and live recovery.** See [crr-008/README.md](crr-008/README.md); canonical `../code-review-report.md` and revision record remain authoritative. Source Pass is not API/semantic/rendered/Delivery acceptance. Earlier entries below are historical.
+
 # CRR-001 independent review evidence
+
+> Latest focused result: **CRR-004 Unclear → solution-owner investigation**. [crr-004/README.md](crr-004/README.md) confirms API-F005 semantic failure, retains API-F004 uncertainty and closes API-F001. Prior source Pass is not live-quality approval.
+
+> Latest focused result: **CRR-003 Local Fix — API/E2E-owned API-F001**. See [crr-003/README.md](crr-003/README.md). CRR-002 source Pass remains unchanged; live harness prerequisite requires correction and execution.
+
+> Latest source re-review: **CRR-002 Pass**. See [crr-002/README.md](crr-002/README.md) for current delta checks and the retained facade prerequisite. The evidence below is CRR-001 history, not current deleted-template behavior.
 
 Canonical decision: `../code-review-report.md`; history: `../code-review-revision-record.md`. Date 2026-09-26. Source reviewed at `3eb43f0dc457fb5d5960eee62618d8d497e42e9b`, base `046279298f53fb98d7688ee9dc2b2ba0fa827685`. No production or durable test changes by reviewer.
 
@@ -62,3 +72,15 @@ Missing Antigravity ticket fixtures are absent in both checkout/extraction; this
 ## Limits / scope
 
 No live calls, paid model use, private history inspection, semantic-quality benchmark, API/E2E approval, power-loss/process-crash experiment, full repository test pass, source fix or delivery action. No independent browser session; upstream synthetic render report/fixture reviewed with limits. No reimplementation of upstream research or second source authority. Both supported normal and explicit-edge contracts are documented in the canonical report before findings; arbitrary corruption or contrived concurrent workflows cannot drive review deductions.
+
+## CRR-005 — IR-003 structural re-review
+
+Current source structural review and refreshed-base seam checks: [crr-005/README.md](crr-005/README.md).494 selected tests pass;83 released-classifier comparisons match. Actual unfinished-writer preservation and separate normal repair verified. Semantic API-F005 Fail, unresolved API-F004, API-owned OBS-001 and later nine-path test review remain separate holds. Canonical report/record govern result and routing.
+
+## CRR-006 — API-REV-003 focused delta/origin review
+
+[crr-006/README.md](crr-006/README.md): current wrapper prerequisite independently resolved (2targeted testsPass); exact DeepSeek positive pair/wire consistency accepted within its sample. API-F005 actual Qwen failure and API-F004 missing-cause continuation remain Open/Unclear remedy. No broad source rescore, live replay or successful nine-path test-code review; canonical report/record govern upstream routing.
+
+## CRR-007 — API-REV-004 focused assertion origin/correction
+
+[crr-007/README.md](crr-007/README.md): API-F006 confirmed API-owned invalid global glyph assertion; user-directed correction independently verified (3 offline tests Pass). Bounded earlier test-readiness review gap acknowledged, no production defect/rescore. Original full-flow Fail and unexecuted snapshot checks retained. SR-020 now makes F005 accepted non-blocking/not fixed; Qwen stopped. F004 historical cause unknown. API owner resumes remaining valid validation; no new provider permission, successful nine-path review or Delivery.

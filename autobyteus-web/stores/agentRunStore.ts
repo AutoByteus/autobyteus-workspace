@@ -1,3 +1,4 @@
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { defineStore } from 'pinia';
 import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
 import { getApolloClient } from '~/utils/apolloClient'
@@ -410,6 +411,16 @@ export const useAgentRunStore = defineStore('agentRun', {
       const agentContextsStore = useAgentContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const context = agentContextsStore.getRun(runId);
+      const state = context?.state;
+      const instance = state?.inputProjection?.runInstanceId;
+      const service = streamingServices.get(runId);
+      const binding = useWindowNodeContextStore().bindingRevision;
+      const activities = useAgentActivityStore();
+      const activityIds = activities.getNativeCompactionActivityIds(runId);
+      const ownsRequest = () => agentContextsStore.getRun(runId) === context
+        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId) === service
+        && useWindowNodeContextStore().bindingRevision === binding
+        && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);
 
       const teardownLocalRuntime = () => {
         this.clearActivationPending(runId);
@@ -444,6 +455,11 @@ export const useAgentRunStore = defineStore('agentRun', {
           throw new Error(result?.message || `Failed to terminate run '${runId}'.`);
         }
 
+        if (!ownsRequest()) return false;
+        if (context?.config.runtimeKind === 'autobyteus' && state) {
+          state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
+            [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
+        }
         teardownLocalRuntime();
         runHistoryStore.markRunAsInactive(runId);
         runHistoryStore.refreshTreeQuietly();

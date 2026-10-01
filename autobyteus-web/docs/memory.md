@@ -21,6 +21,19 @@ navigates immediately and issues exactly one data request for the target view;
 detail views show `Loading runs…` until their own data arrives and never show a
 previous selection's runs.
 
+## Current Native Compaction And Historical Categories
+
+Current native compaction stores a six-section Markdown summary inside Working
+Context, whose versionless snapshot is the continuation authority. It does not
+append new Episodic/Semantic records or depend on a lineage head. Existing category
+files remain historical inspection data; an empty category tab is not evidence
+that current compaction failed. Raw traces/archives remain original work evidence.
+Normal reopen uses snapshot decode, active-raw tool repair, validation and save;
+it does not generate another summary. Imported memory remains an inspection
+corpus, not automatic native continuation state.
+
+See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md).
+
 ## Memory Home
 
 Memory Home starts directly with the functional browser panel rather than a repeated page title. It has three tabs:

@@ -1,6 +1,7 @@
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 
 export interface CompactionStatusPayload {
-  phase?: 'requested' | 'started' | 'completed' | 'failed' | null;
+  phase?: CompactionStatusPhase | null;
   kind?: string | null;
   status?: string | null;
   turn_id?: string | null;

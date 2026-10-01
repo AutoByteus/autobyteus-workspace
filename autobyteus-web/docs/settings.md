@@ -110,35 +110,36 @@ contracts.
 
 ## Server Settings: Working-Context Compaction
 
-Settings -> Server Settings -> Basics contains the global Compaction card. Its
-strategy selector is registry-backed and node-bound:
+Settings -> Server Settings -> Basics contains the node-bound Compaction card:
 
-- `getWorkingContextCompactionStrategies` supplies available `{ id, name }`
-  options from the bound server;
-- `getEffectiveWorkingContextCompactionStrategyId` supplies the normalized ID
-  runtime will attempt and is the card's clean baseline; and
-- generic server settings supply trigger ratio, active-context token override,
-  and detailed-log values.
+- optional model selection and generation configuration are one persisted JSON
+  tuple, `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` (`modelIdentifier`, `llmConfig`);
+- null/missing model means the then-current parent model identifier; null config
+  means selected-model defaults, not a copy of the parent's mutable LLM instance;
+- trigger ratio, active-context token override and detailed logs remain separate
+  existing settings.
 
-Absent or blank strategy configuration is returned as effective
-`structured-json` without writing that default merely because the card loaded or
-another field was saved. An explicit unknown ID remains visible as unavailable
-until the user selects a catalog option. Catalog or effective-read failures keep
-strategy selection unavailable and expose Retry rather than guessing from a web
-constant or catalog order.
+Reading an absent tuple or saving unrelated controls does not materialize model
+settings. Editing/saving or clearing model selection is explicit. Model/config
+validation follows the bound server catalog; stale node responses must not
+replace current drafts. A failed initial settings read exposes Retry rather than
+claiming a clean usable configuration.
 
-Save builds a deterministic list of changed valid fields and awaits the existing
-one-setting mutation for each key. It stops on the first failure; prior successful
-writes remain authoritative, while the failed and unsent drafts stay dirty for a
-remaining-only retry. The card never claims transactionality or whole-card
-success after a partial failure. Initial settings-read failure is owned by the
-Server Settings manager and also provides an accessible Retry path.
+Save sends changed valid fields sequentially through the existing per-setting
+mutation, stopping on the first failure. Prior successful writes remain saved;
+failed/unsent fields stay dirty for remaining-only retry. This is not a transaction
+across all controls. The model/config pair is saved as a single setting value.
 
-The Compaction card does not fetch agent definitions or expose a compactor-agent
-selector. `structured-json` uses the server's fixed built-in Memory Compactor and
-inherits its blank runtime/model launch fields from the parent run. The card
-stacks navigation/content and uses full-width controls on narrow screens while
-retaining the desktop sidebar row.
+There is no strategy or compactor-agent selector. The server creates a fresh
+isolated tool-free LLM for each direct summary attempt and enforces its prompt,
+output cap and request controls; credential-bearing values are not accepted as
+arbitrary model overrides. The active-context token override has an explicit
+public numeric-setting exception; other credential-name checks stay in force.
+Old strategy settings and old Memory Compactor files are not imported/deleted.
+The card retains full-width controls and stacked navigation on narrow screens.
+
+See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md) for
+summary format, retry ownership and current storage boundaries.
 
 ## Server Migrations: Status Evidence
 
@@ -607,33 +608,10 @@ for a socket close or a later history reload to infer that transition.
 
 ### Compaction Lifecycle Activity And Center Feed
 
-Native AutoByteus memory compaction status is projected as Activity lifecycle
-state first. The right-side Activity panel should retain the full compaction
-operation identity and phase progression, including requested/queued,
-execution, terminal success/failure, timestamps, and surrounding tool-result
-detail. That lifecycle row is diagnostic/runtime feedback; it must not become
-LLM-facing text and must not replace the backend memory artifact contract.
-
-The center conversation feed is narrower. Requested/queued compaction phases are
-internal scheduling states and stay out of the center feed so a pending
-tool-call turn is not split before tool results arrive. The first
-center-eligible execution phase for a compaction operation marks the current
-frontend assistant visual block complete, allowing the `Memory compacted` row to
-appear after the tool-call/result block and before the post-compaction assistant
-continuation. Completed/failed execution rows may be shown in the center feed;
-requested/queued rows must not.
-
-Historical run reopen uses the backend replay bundle as the display source for
-actual user, assistant, reasoning, and tool trace content. Normal Event Monitor
-projection reads only the active raw-trace file, reconstructs its lifecycle
-evidence, and selects its newest 100 canonical replay events; it does not open
-archived raw-trace segments. Native compaction projection cards are
-intentionally live-only center feedback in this slice: reopened historical
-conversations should replay that active-file recent window and should not
-synthesize center compaction cards from compaction lifecycle/status entries.
-Archived segments and manifests remain unchanged and directly usable by their
-own storage lifecycle. The Event Monitor never pages into those archives; its
-explicit earlier-browsing path is bounded to the current active trace.
+See the canonical [execution architecture](./agent_execution_architecture.md#compaction-lifecycle-activity-and-center-feed)
+for Activity versus center-feed phases, active-raw history windows, and bounded
+retention of already-loaded native terminal rows. These rows are not LLM input
+or durable native cold-replay evidence.
 
 Native AutoByteus memory ingestion persists every non-empty completed reasoning
 value as a distinct replay-authoritative `reasoning` raw trace immediately
@@ -1390,7 +1368,7 @@ Incoming events are routed based on their `type`:
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
 | `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
 | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
-| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
+| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
 | `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain concrete task-agent run id and logical member route/path, while task-team scoped approvals retain task-team run id plus relative child selector for card-level approve/deny routing. |
@@ -1558,18 +1536,10 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 
 ### Run-Level Compaction Activity
 
-Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
-visible history is projected through `AgentActivityStore` as `CompactionActivity`
-rows.
-
-- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
-- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
-- AutoByteus semantic compaction uses backend-owned `compaction_operation_id` as the parent Activity identity across deferred lifecycle states. A request may be queued on one turn and executed on a later turn; `requested_turn_id` and `execution_turn_id` are lifecycle metadata, while child `compaction_run_id` and `compaction_task_id` enrich the same row instead of replacing its identity.
-- Provider-native compaction boundaries remain a separate identity family from AutoByteus semantic compaction operations, so provider boundary keys/operation ids do not collide with backend-owned semantic `compaction_operation_id` rows.
-- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
-- Frontend compaction rows animate the arrow-path/sync icon only for the active `started` phase using motion-safe animation classes; queued, completed, and failed states stay visually still.
-- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces and AutoByteus semantic compaction events carrying stable operation identity; the frontend does not fabricate rows from latest status alone.
-- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
+The canonical [execution/activity contract](./agent_execution_architecture.md#run-level-compaction-activity)
+covers requested/started/completed/failed/stopped phases, held-input recovery,
+identity-scoped termination and retained terminal rows. Native retained in-memory
+activity is not durable native cold replay; provider-boundary rows remain separate.
 
 ---
 

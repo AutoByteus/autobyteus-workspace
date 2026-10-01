@@ -41,16 +41,16 @@ Common files/directories:
   including strict run-scoped `system_instruction` rows when the exact runtime
   handoff was captured.
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
-- `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
-- `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
-- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs, the optional preceding compaction, and execution/prompt audit metadata; it does not identify a raw archive.
-- `working_context_snapshot.json` — native AutoByteus continuation state: strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field. Codex and Claude recording no longer creates or updates this file.
+- `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
+- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
+- `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
+- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
 
-There is no current `compacted_memory_manifest.json` or compaction-state/pointer
-file. The destructive `20260730_reset_pre_lineage_memory` path is removed.
-Normal runtime never reads old episodic/semantic/manifest state or a pre-v5
-snapshot; eligible historical native snapshots are handled only by the
-forward-only startup migration described below.
+There is no current compacted-memory manifest or pointer. The destructive
+`20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts
+current known fields with zero/one compacted region independently of historical
+category/lineage presence. It performs ordinary active-raw unmatched-tool repair
+before full validation and normal save; it does not generate a new summary.
 
 Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
 
@@ -86,6 +86,15 @@ candidate is validated before replacement; only afterward are obsolete
 Raw traces, manifests, archives, and lineage are never mutated. Warning/failure
 results are recorded and retryable while ordinary server startup continues.
 
+The registered native converter is frozen historical code, not the normal
+versionless reader. Its migration-owned shape guard first preserves an exact
+current versionless successor and the entire location byte-for-byte, including
+valid pending tool intents, partial tool batches and raw-ahead recovery states.
+Invalid versionless-current data fails the item unchanged rather than being
+converted to empty historical data. The guard does not run full request-ready
+validation; ordinary bootstrap owns repair. No new migration or successful-ledger
+reset is required for the direct-summary cutover.
+
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
 ## Conversation Activity Classification For Restore
@@ -113,198 +122,46 @@ runtime memory provider.
 
 ## Runtime Ownership
 
-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
+Native AutoByteus runs use the core `MemoryManager`. The canonical
+[core memory design](../../../autobyteus-ts/docs/agent_memory_design.md) owns
+planning, provider-safe content construction, direct `compress(content)` output,
+validation, snapshot publication and repair. Server composition uses
+`src/agent-execution/compaction/compaction-llm-factory.ts` to construct an isolated
+tool-free LLM per attempt, not a visible child agent. There is no strategy catalog,
+registered algorithm selector, category-output projector or live lineage head.
 
-Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, and builds a complete accepted candidate whose lineage record is finalized before commit. Commit then executes exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. The archive is an independent command: `RawTraceArchiveManager` owns its descriptor and filename, and neither is returned into the candidate or lineage. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+`AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` is the optional current model/config tuple.
+Missing/null selection uses the then-current parent model identifier and selected-
+model defaults without a settings write. Controlled prompt/tool/transport fields
+are excluded; the parent instance and its ordinary retry policy stay unchanged.
+The existing trigger-ratio, active-context override and diagnostic settings remain.
+Old built-in Memory Compactor definitions/settings are not imported or deleted.
 
-The built-in Memory Compactor chooses the natural number of episodes and
-semantic facts needed for safe continuation. Accepted output requires at least
-one episode, but no fixed total episode/fact cap is imposed during parsing,
-normalization, publication, lineage read/write, or current-head projection.
-Per-entry bounds, structural validation, cleanup,
-deduplication, and positive salience remain enforced.
+One strategy execution permits at most three isolated generation attempts.
+Planning/input construction happens before generation. Exhaustion retains the
+same pending operation and exposes a fresh failure epoch. A later accepted user
+message supplies one retry permit; pre-failure queued input and agent/system
+messages do not. At a pre-parent gate A stays held, then B can authorize recovery
+so A dispatches before B once each. Post-response failure is a next-turn gate.
+These are live-queue semantics, not durable workflow replay after restart.
 
-Each requested operation captures one immutable trigger-aligned planning budget.
-For effective input budget `B` and trigger threshold `T`, the post-compaction
-target is the non-negative smaller of `floor(0.35 * B)` and `T` minus headroom
-`max(256, ceil(0.10 * T))`. Planning reserves replacement-memory space, required
-system content, observed-but-untracked prompt overhead, and any complete final
-tool-protocol group before retaining the newest complete natural units. An
-unattainable target or absent settled raw-backed compactable prefix fails before
-the compactor runs; accepted output is re-estimated and must fit the same target.
+The committer prepares/copies archive evidence while active raw remains intact,
+atomically replaces the versionless snapshot as the commit point, installs the
+owned context and clears the pending operation, then prunes. Prune failure may
+leave active duplicates and cannot reverse committed success. No category or
+lineage write occurs. Per-file atomicity does not promise whole-machine power-loss
+safety or transactionality across every memory file.
 
-The proactive threshold uses actual normalized prompt observations. Missing
-usage or missing prompt tokens leaves threshold state unchanged, while numeric
-zero is a real below-threshold observation. After success, a process-local
-episode suppresses another proactive request until an actual observation falls
-below the same threshold. The first still-high observation emits one inadequate-
-reduction diagnostic; later high observations remain suppressed. Budget-key
-change resets the episode, and hard-input-cap pressure can still request an
-operation. This removes the former independent fixed-retention/repeated-success
-loop without turning the configurable ratio into a hard context-window resize.
-
-The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
-natural-sizing guidance, and exact six-array response schema. The initial
-operation message identifies the conversation history as belonging to the target
-agent, surrounds it with one plain-text target-agent `START` / `END` separator
-pair, and contains exactly one canonical
-`<target_agent_conversation_history>` block with nothing after the end separator.
-The renderer reuses `WorkingContextFinalizer`, so compatible prior-memory and
-current-user regions become one natural User turn and assistant/Tool boundaries
-remain ordered. It omits reasoning, backend IDs, duplicated schema/count policy,
-and platform internals while preserving redaction, explicit value bounds, and
-renamed-boundary escaping.
-
-Compaction rendering normalizes only derived provider-facing copies: CR/CRLF
-becomes LF, non-useful C0 controls are removed while newline/tab remain, lone
-UTF-16 surrogates become U+FFFD, and valid pairs plus multilingual text, paths,
-code, symbols, and emoji remain intact. Middle omission and accepted-entry end
-clamps use surrogate-safe boundaries. Canonical raw traces, tool payloads,
-archives, stored memory, and lineage are never rewritten by this policy.
-
-The complete initial and correction task prompts are finalized and checked
-again before `ServerCompactionAgentRunner` can launch a child. An invariant
-failure is `input_construction_failure`: zero child/correction calls, zero target
-dispatch, zero canonical mutation, and the same retained USER-authorized gate.
-
-`UserInputContextBuildingProcessor` no longer applies generic `[User
-Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, or `[System
-Notification]` headings. Authored message content passes through unchanged when
-no readable context is concatenated; a combined payload uses only neutral
-`[Context]` and `[Message]` sections. Sender metadata, provider-native tool
-protocol, and source-specific carrier builders retain their existing ownership.
-
-The parser evaluates exact, fenced, and balanced JSON-object candidates against
-all six required arrays and accepts exactly one distinct host-consumed result
-with at least one non-empty episode. Harmless extra fields and unusable
-blank/non-string entries are ignored; unrelated JSON objects cannot mask a later
-valid object, and multiple distinct valid objects fail as ambiguous.
-
-The server child collector returns usable final assistant output or a typed
-runner failure. Error completion, interruption, terminal error, timeout, tool
-approval, task rejection, launch failure, and collection failure retain their
-kind and available child run/task metadata and never enter the JSON parser.
-
-Only a typed returned-content validation failure triggers one corrective child
-run with a new task/run identity. Its deterministic prefix records the validation
-stage, restates the six-array shape, and resends the same target history. The
-initial and optional correction are disabled siblings owned by the same parent
-operation, not a recursive parent/child chain; neither writes child lineage or
-raw archives. Repair success yields one parent completed lifecycle and one
-canonical commit. Repair exhaustion yields one parent failed lifecycle, retains
-the pending operation, and leaves archives, output rows, lineage,
-WorkingContext, and snapshot unchanged. A runner/provider/transport/timeout
-failure is terminal for the current attempt, bypasses response repair, and
-introduces no fallback model.
-
-A new pending operation receives one automatic initial attempt. Any final
-failure moves it to `awaiting_user_retry` and stops the current target-agent turn
-before further model dispatch. Each distinct `user`-origin turn can authorize
-one new attempt; `agent` and `system` turn starts remain queued and invoke neither the
-compactor nor target model. The core scheduler may select the earliest queued
-user behind those entries without removing them. Retry success clears the
-operation, dispatches that user turn, and then restores normal relative FIFO;
-retry failure retains the same gate. The compactor remains zero-tool.
-
-The native exposure resolver enforces that least-authority boundary by exact
-built-in definition ID before ordinary native defaults or team tools are
-composed, so the final Memory Compactor `AgentConfig.tools` is empty. Ordinary
-native agents still receive `run_bash`, `read_file`, `edit_file`, and
-`write_file` as their runtime-derived baseline.
-
-New successful lineage records use `promptContractVersion: 3`. Existing
-immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
-valid, and unsupported values reject without rewriting or compatibility
-decoding.
-
-Existing schema-v1 rows that contain the former `rawTraceArchiveFile` extra field
-remain directly readable through recognized-field normalization. The stored
-field is ignored without a data rewrite, version branch, or output-to-raw origin
-interpretation; new rows omit it.
-
-Explicit existing-run restore requires a strict-v5 snapshot; no raw-history
-projector or pre-v5 runtime reader remains. `LLMRequestAssembler` completes any
-pending compaction before capturing the request-recovery checkpoint and captures
-immediately before current request mutation. Assembly/provider failures restore
-that stable base, while final output, real Tool ingestion, and supported retained
-interruption release it exactly once. Accepted archive/output/lineage state is
-never rolled back.
-
-An otherwise current schema-v5 snapshot whose native assistant tool call lacks
-a matching result is repaired during bootstrap before strict message/provenance
-validation. The bootstrapper validates the v5 envelope and run identity, asks
-the native `MemoryManager` protocol-safety owner to correlate calls by
-`(turn_id, tool_call_id)`, and then requires the repaired snapshot to pass the
-ordinary strict validator. When no committed result exists, repair appends one
-canonical raw `tool_result` first, preserving the original tool name and
-arguments while recording `tool_result: null` plus a deterministic non-empty
-`tool_error`; the working-context snapshot is then rebuilt from raw authority.
-Repeated restore is idempotent and does not append another result. Only a
-malformed final physical record in the active raw JSONL file may be truncated as
-a partial-write tail; earlier malformed records and unrelated snapshot
-corruption remain integrity failures.
-
-There is no server or GraphQL direct/recursive episode/semantic-to-raw origin
-service. Current output projection reads the lineage tail, loads exactly its
-episode/semantic membership in stored order, and treats malformed/unsupported
-lineage or missing/misordered output rows as integrity errors without opening a
-raw archive.
-
-### Global Compaction Strategy Setting
-
-`AUTOBYTEUS_COMPACTION_STRATEGY` selects the strategy for subsequent native compaction operations. Blank values normalize to `structured-json`, the only production registration. `ServerSettingsService` validates updates against registry metadata and persists them through the normal `.env` plus current-process environment path, so already-created native agents resolve the new value on their next compaction. This is process-local convergence; no cross-process broadcast or provider-session reconciliation is added.
-
-GraphQL keeps option discovery and effective selection separate:
-
-- `getWorkingContextCompactionStrategies` projects only registry `{ id, name }` metadata;
-- `getEffectiveWorkingContextCompactionStrategyId` applies the same normalizer as runtime, so absent/blank selects `structured-json` while an explicit unknown ID stays explicit for truthful recovery UI.
-
-Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
-
-The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
-
-### Automatic-Compaction Composition
-
-Core memory owns a closed `MemoryCompactionConfiguration`: `disabled` has no
-policy or strategy runner, while `enabled` carries one current
-`CompactionPolicy` and its required runner. `AgentConfig` supplies that complete
-value to `AgentFactory` and `MemoryManager`; neither factory nor manager infers
-or constructs an independent second policy. Direct core construction without an
-explicit value defaults to disabled.
-
-`AutoByteusAgentRunBackendFactory` selects disabled for the exact built-in
-Memory Compactor definition on create and restore and does not invoke the runner
-factory. Ordinary native agents receive enabled composition with a fresh current
-policy and runner; runner construction failure/null is an agent-composition
-failure, not a silent disabled fallback.
-
-The generic LLM phase still resolves provider/model request capacity for both
-variants. Enabled agents then derive threshold/hard-cap planning and use the
-existing strategy, executor, pending-operation, observation, and status path.
-Disabled compactor children skip all of that work even when their reported
-prompt usage exceeds the proactive threshold or policy hard cap; their original
-assistant/tool completion remains the runner result. A provider-admissible task
-therefore produces exactly one initial child plus at most one host-owned
-correction sibling and no descendant compactor. A task that exceeds actual
-provider capacity fails through planning/pre-launch or typed runner handling
-instead of recursively compacting its own task. The configuration is runtime
-only; no agent-definition, memory, snapshot, or lineage migration is required.
-
-`ServerCompactionAgentRunner` allows an ordinarily constructed compactor child
-up to 300,000 ms (five minutes) to return its final output. This is a
-runner-owned omitted-option default, not an application setting:
-`ServerCompactionAgentRunnerOptions.timeoutMs` remains the authoritative
-explicit override for tests or custom construction. On timeout or another
-failure, the existing typed error projection, event unsubscription, and child
-run termination still apply; unrelated process, server-start, and test timeout
-policies are not derived from this value.
-
-Compaction status metadata includes stable `compaction_strategy_id` and
-`compaction_strategy_name` in addition to operation/turn and current runner
-diagnostics. Requested, execution, child run, and child task identities remain
-distinct. A resolver, strategy, planning, typed runner, response-repair,
-validation, or replacement failure preserves the pending request and does not
-emit a false completed state.
+Native lifecycle phases include `requested`, `started`, `completed`, `failed` and
+`stopped`, correlated by operation/requested-turn/execution-turn identities.
+Termination aborts execution and drains the concrete backend event pump before
+close within its bounded policy. Late summary output cannot reopen a stopped
+operation. Root Team/Org shutdown freezes its known member scope and coordinates
+preparation before teardown. This is not a new universal immediate-preparation
+latency guarantee: first-auto preparation/quiescence timeout coverage remains a
+separate unproved diagnostic boundary. Client reconciliation retains terminal
+native rows for loaded contexts; it is not durable native cold replay. See
+[frontend execution](../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity).
 
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 

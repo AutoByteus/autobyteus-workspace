@@ -1,5 +1,5 @@
 import type { AgentExternalEventNotifier } from '../events/notifiers.js';
-export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed';
+export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed' | 'stopped';
 
 export type CompactionStatusPayload = {
   phase: CompactionStatusPhase;

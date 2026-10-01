@@ -4,7 +4,7 @@ import type {
   SystemInstructionActivity,
   ToolActivity,
 } from '~/types/activity/RunActivity';
-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { ToolInvocationStatus } from '~/types/segments';
 import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
 
@@ -93,8 +93,7 @@ const isToolInvocationStatus = (value: unknown): value is ToolInvocationStatus =
   value === 'denied' ||
   value === 'interrupted';
 
-const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
-  value === 'requested' || value === 'started' || value === 'completed' || value === 'failed';
+import { isCompactionPhase, isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
 
 const inferActivityType = (
   toolName: string,
@@ -191,7 +190,7 @@ const toCompactionActivity = (entry: RunProjectionCompactionActivityEntry): Comp
   const phase = isCompactionPhase(entry.phase) ? entry.phase : 'completed';
   const timestamp = toDate(entry.ts);
   const message =
-    typeof entry.message === 'string' && entry.message.trim().length > 0
+    phase === 'stopped' ? 'Stopped' : typeof entry.message === 'string' && entry.message.trim().length > 0
       ? entry.message.trim()
       : getCompactionMessage({
           phase,
@@ -230,7 +229,7 @@ const toCompactionActivity = (entry: RunProjectionCompactionActivityEntry): Comp
     timestamp,
     updatedAt: toDate(entry.updatedTs ?? entry.ts),
     centerTimelineTimestamp:
-      phase === 'started' || phase === 'completed' || phase === 'failed'
+      phase === 'started' || isCompleteCompactionPhase(phase)
         ? timestamp
         : null,
   };

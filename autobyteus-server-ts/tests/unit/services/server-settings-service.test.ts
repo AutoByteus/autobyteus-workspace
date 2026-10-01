@@ -40,6 +40,7 @@ describe("ServerSettingsService", () => {
     mockConfig.getConfigData.mockReset();
     mockConfig.get.mockReset();
     mockConfig.set.mockReset();
+    mockConfig.setDurably.mockClear();
     mockConfig.delete.mockReset();
     mockReloadMediaToolSchemas.mockReset();
     mockConfig.get.mockImplementation((key: string) => mockConfig.getConfigData.mock.results.at(-1)?.value?.[key]);
@@ -143,6 +144,53 @@ describe("ServerSettingsService", () => {
       isEditable: true,
       isDeletable: false,
     });
+  });
+
+  it("saves and reads the nonsecret numeric context override, including clearing it", () => {
+    const key = "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE";
+    const data: Record<string, string> = {};
+    mockConfig.getConfigData.mockReturnValue(data);
+    mockConfig.get.mockImplementation((name: string) => data[name]);
+    mockConfig.set.mockImplementation((name: string, value: string) => { data[name] = value; });
+    const service = new ServerSettingsService();
+
+    expect(service.updateSetting(key, "16000")[0]).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith(key, "16000");
+    expect(new ServerSettingsService().getAvailableSettings()).toContainEqual(
+      expect.objectContaining({ key, value: "16000", isEditable: true, isDeletable: false }),
+    );
+    expect(service.updateSetting(key, "")[0]).toBe(true);
+    expect(service.getAvailableSettings()).toContainEqual(
+      expect.objectContaining({ key, value: "" }),
+    );
+    expect(service.deleteSetting(key)[0]).toBe(false);
+    expect(mockConfig.delete).not.toHaveBeenCalled();
+    expect(mockConfig.setDurably).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    "OPENAI_API_KEY",
+    "CUSTOM_APIKEY",
+    "CUSTOM_API-KEY",
+    "CUSTOM_ACCESS_TOKEN",
+    "customPassword",
+    "CUSTOM_SECRET",
+    "CUSTOM_PRIVATE_KEY",
+    "CUSTOM_PRIVATE-KEY",
+    "CUSTOM_CREDENTIAL",
+    "CUSTOM_TOKENS",
+    "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE_SECRET",
+    "PREFIX_AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+  ])("keeps credential-like setting %s write-only and absent from ordinary reads", (key) => {
+    mockConfig.getConfigData.mockReturnValue({ [key]: "synthetic-not-a-credential" });
+    const service = new ServerSettingsService();
+
+    expect(service.updateSetting(key, "replacement")).toEqual([
+      false, "Sensitive settings must use their write-only credential editor.",
+    ]);
+    expect(service.getAvailableSettings().find((setting) => setting.key === key)).toBeUndefined();
+    expect(mockConfig.set).not.toHaveBeenCalled();
+    expect(mockConfig.setDurably).not.toHaveBeenCalled();
   });
 
   it("exposes Codex sandbox mode as predefined editable metadata", () => {

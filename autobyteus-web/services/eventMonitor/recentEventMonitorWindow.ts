@@ -1,3 +1,4 @@
+import { isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
 import type { AIMessage, Conversation } from '~/types/conversation';
 import type { AIResponseSegment } from '~/types/segments';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
@@ -160,7 +161,7 @@ export const buildRecentEventMonitorPresentation = (
   const conversationDescriptors = flattenConversation(conversation);
   const compactionDescriptors: CompactionDescriptor[] = compactions
     .filter((activity) => Boolean(activity.centerTimelineTimestamp)
-      && (activity.phase === 'started' || activity.phase === 'completed' || activity.phase === 'failed'))
+      && (activity.phase === 'started' || isCompleteCompactionPhase(activity.phase)))
     .map((activity, index) => ({
       source: 'compaction', activity,
       completed: isRecentEventMonitorActivityComplete(activity),

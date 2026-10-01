@@ -1,12 +1,16 @@
+> SR-028 authority: this source/proposal supplement is retained for rationale and provenance. Current approved requirements and complete technical architecture are in requirements-doc.md and design-spec.md. Text-to-text strategy, three internal attempts, numeric target removal and held-A-then-B are all settled; prior pending questions/interfaces in this supplement are historical, not current implementation instructions.
+
+> SR-023 documentation clarification: comparisons removed. Exact prompt-v5 remains approved and unchanged; current intent is in requirements SR-023 and ASM-022-01. Historical proposal-stage wording below is not the current approval/readiness state.
+
 # Single-call continuation checkpoint — prompt proposal
 
 > Current approval: included in the SR-012 scope explicitly approved by the user (“Correct. approve”), captured in SR-013. Historical proposal labels below describe earlier rounds; implementation remains pending.
 
 - Package / revision: `context-compaction-simplification-analysis` / `SR-008/prompt-v5`.
 - Owner: Solution Designer. Date: 2026-09-26.
-- Status: proposed prompt and integration feasibility, **not an implementation-ready design spec**. User explicitly approved the single-call direction and requested this prompt. SR-005 established the carefully tuned original as the baseline. The latest user request in SR-007 authorizes targeted additions for important gaps found in upstream prompts, without discarding that baseline. SR-008 additionally proposes explicit output framing and corrects bullet-count pressure after user feedback; these are draft refinements. Full requirements preservation boundary is awaiting confirmation.
+- Status: proposed prompt and integration feasibility, **not an implementation-ready design spec**. User explicitly approved the single-call direction and requested this prompt. SR-005 established the carefully tuned original as the baseline. The latest user request in SR-007 authorizes targeted additions for important continuation requirements, without discarding that baseline. SR-008 additionally proposes explicit output framing and corrects bullet-count pressure after user feedback; these are draft refinements. Full requirements preservation boundary is awaiting confirmation.
 - Authority: `requirements-doc.md` REQ-001–006/008; REQ-007 transition not decided by this document.
-- Evidence: `upstream-compaction-research.md`, canonical investigation SR-003, and `design-investigation-probes/`.
+- Evidence: canonical investigation SR-003 and `design-investigation-probes/`.
 
 ## Model-facing output
 
@@ -26,7 +30,7 @@ The original is already a continuation-summary prompt, not a poor summary prompt
 
 The coupling lies in the episode/fact-specific instructions (14–16) and rigid six-array JSON output contract (20–37). Runtime then parses, stores and reprojects that structure. Rewriting the useful continuation paragraphs is not necessary to separate those concerns. No model-quality evidence shows that the broader SR-003 rewrite is better than these original instructions.
 
-**Recommendation: preserve the original and make targeted continuity improvements.** The original task, rolling-summary, salience and factuality guidance remains. The earlier JSON/category output adaptation is unchanged. At the user’s explicit SR-007 request, five focused points now make unresolved user requests, persistent constraints, truthful work state, exact references and source-only summarization more explicit. [Refinement notes](prompt-refinement-notes.md) distinguish actual gaps from existing implicit coverage and identify the source for each choice. No fixed token-target prose, extra output sections or platform-specific mechanisms are imported. Runtime input selection, no-tools capability and budget enforcement remain separate responsibilities; prompt wording does not replace them.
+**Recommendation: preserve the original and make targeted continuity improvements.** The original task, rolling-summary, salience and factuality guidance remains. The earlier JSON/category output adaptation is unchanged. At the user’s explicit SR-007 request, five focused points now make unresolved user requests, persistent constraints, truthful work state, exact references and source-only summarization more explicit. [Refinement notes](prompt-refinement-notes.md) distinguish actual gaps from existing implicit coverage and explain each choice against our continuation requirements. No fixed token-target prose or extra output sections are needed. Runtime input selection, no-tools capability and budget enforcement remain separate responsibilities; prompt wording does not replace them.
 
 Historical proposals are retained read-only at `history/compaction-prompt-proposal.sr003.md` and `history/compaction-prompt-proposal.sr004.md`; this file is the sole current proposal. The user confirmed preserving the tuned original and subsequently requested selective additions of important missing points. This authorizes the focused refinement work, not approval of unrelated data policy or every newly authored word. Existing REQ/AC outcomes remain unchanged. The exact preceding literal is retained at `history/proposed-compaction-prompt.sr005.md`; the added lines are visible in `history/prompt-v3-to-v4.diff`.
 
@@ -39,17 +43,7 @@ The original task, rolling-summary, salience and factuality guidance remains. Th
 
 ## Source input, separate from the prompt
 
-The runtime selects an immutable compaction window and supplies:
-
-```text
-Previous checkpoint:
-[previous checkpoint, or an explicit indication that this is the first pass]
-
-Newly compactable history, in chronological order:
-[role-labelled user, assistant and tool history, with relevant artifact references]
-```
-
-Bracketed lines are explanatory placeholders, not production literals. This is not a new serialized API or parser protocol. The runtime already owns typed messages and provenance. Extract the previous checkpoint from its marked constituent, **not** by guessing from Markdown headings. Do not duplicate it inside the newer-history portion.
+The runtime supplies one immutable selected-history prefix, already containing the previous checkpoint once when present. The first pass contains ordinary older history; a later pass contains the current checkpoint and newly eligible older messages. Do not pass a second copy of the prior summary or a numeric summary-size target. The runtime owns typed messages, selection and provenance; the strategy produces one replacement Markdown body.
 
 The summarizer gets the older selected span, not a made-up latest user turn. Keep the required head and recent/tool-safe tail outside the replacement. Do not blindly apply the current per-item character cap to user instructions or the prior summary: the read-only probes show it can remove a middle constraint. Input preparation must fit the summarization model's actual request budget; selecting a smaller settled prefix is preferable to pretending omitted user constraints were summarized. Large tool evidence may need explicit bounded excerpts; no multi-agent chunking system is implied.
 
@@ -65,19 +59,9 @@ current governing instructions and the more recent messages that follow.
 
 This wrapper is runtime-owned, outside the model output. Its exact final placement must preserve the existing provenance/finalizer and provider message contracts. No new visible user action is introduced.
 
-## What was learned from the five projects
+## Rationale within this product
 
-These are source-pinned observations, not claims about every version or hosted deployment.
-
-| Reference | Useful lesson adopted | Deliberately not copied |
-| --- | --- | --- |
-| [Hermes](https://github.com/NousResearch/hermes-agent/blob/9fc7f17906eab1dd81ddfdf8a1edeecac1e79940/agent/context_compressor.py) | Prior checkpoint is explicitly updated; record actual action outcomes, corrections and active state; history is input data. | Its extensive section inventory, optional memory-provider coordination, and fallback machinery are not necessary to define our one-call output. |
-| [OpenCode prompt construction](https://github.com/anomalyco/opencode/blob/696f41bc8e7586657375d53390925fc54c25d34c/packages/core/src/session/compaction.ts) and [agent prompt](https://github.com/anomalyco/opencode/blob/696f41bc8e7586657375d53390925fc54c25d34c/packages/opencode/src/agent/prompt/compaction.txt) | Compact Markdown organization; deliberate carry-forward of prior constraints; summarizer must not resume the task itself. | Exact-heading parsing or a new agent lifecycle merely because an upstream prompt is named an agent prompt. |
-| [DSH](https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/compaction/compaction-basic/src/summarizer.ts) | Exact continuation references and user corrections; one consolidated replacement; distinguish checkpoint background from newer conversation. | Its cache-replay and streaming infrastructure are not assumed to fit AutoByteus without investigation. |
-| [ZCode](https://github.com/zai-org/ZCode/blob/29628c9acdb81b703bbd4080c207a0e7ce5e276e/apps/zcode-cli/packages/core/src/compact/prompt.ts) | Avoid resurrecting completed/tangential work; keep important user restrictions precise. | Requested reasoning block, summary tags, exhaustive user-message inventory and broad full-code inclusion would add output/bloat we do not need. |
-| [Codex local prompt](https://github.com/openai/codex/blob/25270df2615eb4da5b9d4a9a392226933fb096c5/codex-rs/prompts/templates/compact/prompt.md) | The purpose is a concise task handoff centered on progress, constraints, remaining work and key references. | No claim that Codex's opaque remote compaction is the same algorithm or always plain text. |
-
-Prompt-v5 deliberately retains the original AutoByteus wording and adds only the selected continuity clarifications. The upstream observations above justify specific additions, not replacement of good existing instructions. AutoByteus is not coding-only: files/tests are examples when relevant, not mandatory content for every run.
+The prompt preserves the tuned original's continuation purpose and information-selection guidance. Explicit handling of pending requests, constraints, work status, exact references and source-only summarization follows REQ-001/006/009 and the supported first/repeated-compaction scenarios. Files and tests are relevant examples, not mandatory content for every kind of task. The natural-compression assumption ASM-022-01 explains why the model receives no numeric summary-length target; provider/runtime safeguards remain separate.
 
 ## Lean integration direction — feasibility, not final architecture
 

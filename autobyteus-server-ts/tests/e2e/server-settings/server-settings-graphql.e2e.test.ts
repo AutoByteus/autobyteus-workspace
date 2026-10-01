@@ -23,6 +23,8 @@ import {
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../../../src/config/streaming-content-flush-interval-setting.js";
 
+import { COMPACTION_MODEL_SETTINGS_KEY } from "../../../src/config/compaction-model-settings.js";
+
 const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
 
 describe("Server settings GraphQL e2e", () => {
@@ -34,6 +36,8 @@ describe("Server settings GraphQL e2e", () => {
   let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalStreamParserEnv: string | undefined;
   let originalStreamingContentFlushIntervalEnv: string | undefined;
+  let originalCompactionModelEnv: string | undefined;
+  let originalInitializationEnv: Record<string, string | undefined>;
   let originalMediaModelEnv: Record<string, string | undefined>;
 
   beforeAll(async () => {
@@ -47,7 +51,12 @@ describe("Server settings GraphQL e2e", () => {
 
   beforeEach(() => {
     appConfigProvider.resetForTests();
+    originalInitializationEnv = Object.fromEntries(
+      ["APP_ENV", "DB_TYPE", "DATABASE_URL", "AUTOBYTEUS_MEMORY_DIR"].map(key => [key, process.env[key]]),
+    );
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
+    originalCompactionModelEnv = process.env[COMPACTION_MODEL_SETTINGS_KEY];
+    delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
@@ -77,6 +86,12 @@ describe("Server settings GraphQL e2e", () => {
 
   afterEach(() => {
     appConfigProvider.resetForTests();
+    for (const [key, value] of Object.entries(originalInitializationEnv)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    if (originalCompactionModelEnv === undefined) delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
+    else process.env[COMPACTION_MODEL_SETTINGS_KEY] = originalCompactionModelEnv;
     if (originalServerHostEnv === undefined) {
       delete process.env.AUTOBYTEUS_SERVER_HOST;
     } else {
@@ -628,6 +643,111 @@ describe("Server settings GraphQL e2e", () => {
     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
       CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
     );
+  });
+
+  const initializeOwnedSettingsConfig = () => {
+    // Durable writes require the same initialized AppConfig used by the server.
+    process.env.APP_ENV = "test";
+    process.env.DB_TYPE = "sqlite";
+    process.env.DATABASE_URL = `file:${path.join(tempDir, "db", "test.db")}`;
+    process.env.AUTOBYTEUS_MEMORY_DIR = path.join(tempDir, "memory");
+    appConfigProvider.config.initialize();
+  };
+
+  it("lists inherited compaction without persisting a default selection", async () => {
+    initializeOwnedSettingsConfig();
+    const before = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
+    const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string }> }>(
+      "{ getServerSettings { key value } }",
+    );
+    expect(listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
+    expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(before);
+    expect(before).not.toContain(COMPACTION_MODEL_SETTINGS_KEY);
+  });
+
+  it("durably round-trips the current compaction tuple, including inherit and an unavailable explicit model", async () => {
+    initializeOwnedSettingsConfig();
+    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
+    const query = `{ getServerSettings { key value isEditable isDeletable } }`;
+    for (const selection of [
+      { modelIdentifier: null, llmConfig: null },
+      { modelIdentifier: " unavailable-fixture-model ", llmConfig: { temperature: 0.2, max_tokens: 4096 } },
+      { modelIdentifier: null, llmConfig: null, schema_version: 999, obsolete: "ignored" },
+    ]) {
+      const expected = { modelIdentifier: selection.modelIdentifier?.trim() ?? null, llmConfig: selection.llmConfig };
+      const updated = await execGraphql<{ updateServerSetting: string }>(mutation, {
+        key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(selection),
+      });
+      expect(updated.updateServerSetting).toContain("updated successfully");
+      const beforeRestart = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
+      expect(beforeRestart).toContain(COMPACTION_MODEL_SETTINGS_KEY);
+      // Reload from persisted AppConfig, not process.env or a mocked settings store.
+      appConfigProvider.resetForTests();
+      delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
+      appConfigProvider.config.setCustomAppDataDir(tempDir);
+      initializeOwnedSettingsConfig();
+      const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string; isEditable: boolean; isDeletable: boolean }> }>(query);
+      const current = listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY);
+      expect(current).toMatchObject({ isEditable: true, isDeletable: false });
+      expect(JSON.parse(current!.value)).toEqual(expected);
+      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(beforeRestart);
+    }
+  });
+
+  it("rejects invalid compaction tuples without changing the durable baseline or exposing retired strategy queries", async () => {
+    initializeOwnedSettingsConfig();
+    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
+    const baseline = JSON.stringify({ modelIdentifier: "fixture-model", llmConfig: { temperature: 0.1 } });
+    expect((await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value: baseline })).updateServerSetting).toContain("updated successfully");
+    const persisted = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
+    for (const value of ["not-json", "{}", JSON.stringify({ modelIdentifier: null, llmConfig: { api_key: "synthetic-not-a-secret" } })]) {
+      const result = await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value });
+      expect(result.updateServerSetting).toContain("Invalid AUTOBYTEUS_COMPACTION_MODEL_SETTINGS");
+      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
+      expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBe(baseline);
+    }
+    const deleted = await execGraphql<{ deleteServerSetting: string }>(
+      `mutation Delete($key: String!) { deleteServerSetting(key: $key) }`, { key: COMPACTION_MODEL_SETTINGS_KEY },
+    );
+    expect(deleted.deleteServerSetting).toContain("managed by the system");
+    expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getWorkingContextCompactionStrategies");
+    expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getEffectiveWorkingContextCompactionStrategyId");
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
+  });
+
+  it("saves the numeric compaction context ceiling through ordinary settings", async () => {
+    const key = "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE";
+    const originalValue = process.env[key];
+    delete process.env[key];
+    try {
+      initializeOwnedSettingsConfig();
+      const updated = await execGraphql<{ updateServerSetting: string }>(
+        `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,
+        { key, value: "16000" },
+      );
+      expect(updated.updateServerSetting).toContain("updated successfully");
+      const listed = await execGraphql<{
+        getServerSettings: Array<{ key: string; value: string; isEditable: boolean }>;
+      }>("{ getServerSettings { key value isEditable } }");
+      expect(listed.getServerSettings.find(setting => setting.key === key)).toMatchObject({
+        value: "16000", isEditable: true,
+      });
+    } finally {
+      if (originalValue === undefined) delete process.env[key];
+      else process.env[key] = originalValue;
+    }
+  });
+
+  it("keeps credential-like settings out of the ordinary numeric-control write path", async () => {
+    initializeOwnedSettingsConfig();
+    const updated = await execGraphql<{ updateServerSetting: string }>(
+      `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,
+      { key: "API5_SYNTHETIC_API_KEY", value: "not-a-real-credential" },
+    );
+    expect(updated.updateServerSetting).toContain("write-only credential editor");
+    expect(appConfigProvider.config.get("API5_SYNTHETIC_API_KEY")).toBeUndefined();
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain("API5_SYNTHETIC_API_KEY");
   });
 
 });

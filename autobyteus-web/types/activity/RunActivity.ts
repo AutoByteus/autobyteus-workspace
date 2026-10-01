@@ -1,4 +1,4 @@
-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
 
 export type RunActivityKind = 'tool' | 'compaction' | 'system_instruction';

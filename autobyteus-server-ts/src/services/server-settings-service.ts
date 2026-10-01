@@ -65,7 +65,11 @@ type ServerSettingValueValidation = {
 };
 
 const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
+const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE";
 const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
+const isSensitiveSettingName = (key: string): boolean =>
+  // This exact public key counts context tokens; it does not contain an access token.
+  key !== ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY && SENSITIVE_SETTING_NAME.test(key);
 export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
@@ -131,7 +135,7 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+      ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY,
       "Optional effective context ceiling override in tokens for compaction budgeting",
     );
 
@@ -236,7 +240,7 @@ export class ServerSettingsService {
     const visibleKeys = new Set<string>();
 
     for (const key of Object.keys(configData)) {
-      if (!SENSITIVE_SETTING_NAME.test(key)) {
+      if (!isSensitiveSettingName(key)) {
         visibleKeys.add(key);
       }
     }
@@ -289,7 +293,7 @@ export class ServerSettingsService {
 
   updateSetting(key: string, value: string): [boolean, string] {
     try {
-      if (SENSITIVE_SETTING_NAME.test(key)) {
+      if (isSensitiveSettingName(key)) {
         return [false, "Sensitive settings must use their write-only credential editor."];
       }
       const metadata = this.settingsInfo.get(key);

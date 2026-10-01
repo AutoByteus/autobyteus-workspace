@@ -2,326 +2,301 @@
 
 ## Review Round Meta
 
-- Package: `context-compaction-simplification-analysis`.
-- Reviewer/date: Architecture Reviewer / 2026-09-26.
-- Canonical task directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis`.
-- Upstream Requirements Doc: `requirements-doc.md`, approved SR-012 baseline captured in SR-013.
-- Upstream Investigation Notes: `investigation-notes.md`, including E13-1–6.
-- Upstream Solution Revision Record: `solution-revision-record.md`.
-- Reviewed Design Spec: `design-spec.md`, SR-013 Ready.
-- Supplemental Task Artifacts Reviewed: literal prompt/output contract; prompt rationale/refinement; simplification direction; upstream research and prompt/experiment indexes; persistence probe script/results/source inventory; historical assessment and solution result. See supplement table below. Historical documents are context, not alternate current authorities.
-- Relevant Solution Revision IDs: **SR-012, SR-013**; prompt lineage SR-005/007/008 and clean-replacement decision SR-010.
+- Package / reviewer / date: `context-compaction-simplification-analysis` / Architecture Reviewer / 2026-10-01.
+- Canonical ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis`. Ticket-relative references below resolve here; source paths resolve at the isolated worktree root.
+- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR033**, SR028 REQ001–012/AC001–017 plus REQ013/AC018/BEH007/SCN006. Requirements and approved supplements unchanged during this round.
+- Upstream Investigation Notes / Solution Revision Record: `investigation-notes.md` E33/E34 and retained investigations; `solution-revision-record.md`.
+- Reviewed Design Spec: `design-spec.md`, **Ready SR034**, refining the SR033 terminal-activity delta and preserving the reviewed SR030 baseline.
+- Trigger: `architecture-review-handoff.sr033.md`, followed by in-round `architecture-review-clarification.sr034.md` addressing ARCH-F003.
+- Supplemental Task Artifacts Reviewed: approval JSON; exact v5/output/held-input/acceptance supplements; SR031 premise clarification; superseded SR032 proposal; SR033/034 source/delta/audit evidence; current IR006/CRR010 and API006 checkpoint plus its explicit evidence-provenance correction. Complete cumulative reference chain: `solution-recovery-evidence/sr034/reference-index.json` -> SR033 -> API006/prior rounds. Older unaffected review evidence is reused within its scope, not claimed reread or rerun in full. Product/DR N/A—not requested.
+- Relevant Solution Revision IDs: SR012/017/020/022/024/026/028 approvals, SR029/030 reviewed lifecycle/boundary corrections, SR031 rejected same-ID premise, SR033 approval and SR034 technical correction.
 - Architecture Review Revision Record: `architecture-review-revision-record.md`.
-- Current Architecture Review Revision ID: **ARCH-REV-001**.
-- Current Review Round: **1**.
-- Trigger: Solution Designer's Architecture Design Complete handoff.
-- Prior Review Round Reviewed: **None** for this package/basis. No result imported from the superseded external three-output package.
-- Latest Authoritative Round: **ARCH-REV-001**; this report is authoritative.
-- Current-State Evidence Basis: independent source inspection at `046279298f53fb98d7688ee9dc2b2ba0fa827685`, isolated branch `codex/context-compaction-simplification-analysis`; six unchanged-source persistence probes rerun, **6 PASS**. No production edits, implementation verification, live-model quality claim, or delivery action.
-- Evidence directory: `architecture-review-evidence/`; input/source hashes, rerun results/log and reproducibility/limits are retained there. All relative artifact paths in this report are relative to the canonical task directory; source paths are worktree-relative.
+- Current Revision / Round / Latest Authoritative Round: **ARCH-REV-004 / 4 / 4**.
+- Prior Result Reviewed: **ARCH-REV-003 Pass**, SR030 only. ARCH-F001/F002 remain resolved; prior Pass did not approve SR033.
+- Current-State Evidence Basis: HEAD `6908ccff483f1eca522caa65bfaaf6dcfcc26750`, current pending worktree, last-refreshed `origin/personal` base `8caa610ff438c288d9aca9f2efe2c33924fbf517`. No fresh remote check.
 
-### Independent evidence index
+### Independent evidence and limits
 
-| ID | Source / check | Review observation |
+| Anchor | Independently checked basis | Scope |
 | --- | --- | --- |
-| AR-E1 | Core `agent/loop/llm-phase.ts`, `agent/llm-request-assembler.ts`, `memory/compaction/pending-compaction-executor.ts`, window planner, builder, coordinator | Automatic trigger and explicit user-origin retry already have owners. Planner selects previous summary plus newly settled raw-backed history; request recovery is captured after successful compaction, not before it. |
-| AR-E2 | Core `memory/store/{run-memory-file-store,raw-trace-archive-manager,working-context-snapshot-store}.ts`, context controller/committer, `memory/restore/working-context-snapshot-bootstrapper.ts` | Current archive-and-prune precedes snapshot write; controller install copies. Target must change both. Archive copying, complete-boundary membership and corpus ID deduplication already exist. Restore actually loads snapshot text and uses category output only as a separate gate. |
-| AR-E3 | Core BaseLLM, LLMFactory, model identity/capacity, RPA adapter/discovery; server `available-llm-construction.ts` and old compactor launch resolver | Factory clones effective config and constructs a fresh adapter. Availability/secrets remain server-owned. RPA requires distinct logical conversation identity and cleanup; current response boundary supplies no universal terminal assurance. |
-| AR-E4 | Server AppConfig, settings service, application-platform preparation, builtin bootstrapper/config, definition provider | Durable setting write updates memory only after persistence. Builtin bootstrap copies the old config, so migration-before-bootstrap ordering is meaningful. Old default launch override is a concrete bounded source; no run scan is necessary. |
-| AR-E5 | Shared `agent-presentation-message-dtos.ts`; server presentation projectors/history references; web `compactionActivityProjection.ts`, settings card; `AgentMemoryService` | Live status schema is strict. Historical category/current-context readers are independent. Web currently uses `provider` as a provider-native lifecycle discriminator; preserve that meaning when adding direct-model diagnostics. |
-| AR-E6 | Reviewer rerun of `design-investigation-probes/sr013-persistence-probes.cjs` | Six existing feasibility cases pass; includes reproducing the current obsolete gate, not fixing it. Synthetic fixtures and source primitives do not prove the future whole commit/restore implementation. |
-| AR-E7 | Approved prompt hash and cross-artifact read | Literal SHA-256 `2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7`; single tagged body/six headings, one logical call, preserved history and clean removal align. |
+| R4-E1 | Requirements/approval, canonical SR033 then SR034, E33/E34, source/reference audits | Exact Stopped; no spinner; retained facts/card within the existing in-memory history boundary; no provider-result fiction |
+| R4-E2 | Executor, reporter, turn abort race, worker/factory, AgentEventStream FIFO/sentinel, native backend and serialized AgentRun | Actual owner abort can precede provider settlement; current close-before-stop/shared-discard hazard; target per-call emission and ordered bounded drain |
+| R4-E3 | Standalone Terminate UI/store/GraphQL/service/manager; shared event and activity projection | Successful response and event receipt are separate; reconcile before owned listener removal, not generic Offline cleanup |
+| R4-E4 | Team/Org exposed controls, stores, root/frozen termination, configured handle; Org stage/commit/adopt and activity-store replacement | Supported root omission identified; SR034 completes response/inspection paths without a new root owner |
+| R4-E5 | Native reporter and recorder exclusion, raw replay/provider boundary, local projection/hydration, corrected API006 provenance | No native cold activity replay established; no migration/persistence inferred from authored reload strings |
+| R4-E6 | Current unchanged-source tests | **7 files / 85 Pass**: core2/15, server1/11, web4/59; characterization only, not target proof |
 
-Provider evidence spot checks use primary [Anthropic stop-reason documentation](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons), [Gemini response contract](https://ai.google.dev/api/generate-content), [Ollama chat contract](https://docs.ollama.com/api/chat), and [Mistral chat contract](https://docs.mistral.ai/api/endpoint/chat). These support adapter-owned termination checks, not semantic completeness. Detailed installed-SDK/source mapping and RPA evidence remain in investigation E13-2.
+Evidence: `architecture-review-evidence/arch-rev-004/README.md`, input/final audits, source crosschecks, root-termination-premise and test logs. All48 SR033 source hashes and all43 SR034 source hashes matched; ten API durable paths matched. This does not mean91 distinct sources. No production/durable-test changes, live/provider calls, private history/credentials, desktop/browser journey, full-suite/typecheck or crash campaign. No source/API confidence rescore.
 
 ## Routing Classification Review
 
-- Task size: **Large**.
-- Architectural risk: **High**.
-- Classification rationale reviewed: broad core/provider/server/settings/shared-contract cleanup; changed persistence commit point and restore invariant; bounded configuration migration and removed public surfaces.
-- Independent Architecture Review required by the classification: **Yes**.
-- Classification evidence or correction required: AR-E1–5 confirm structural scope, not merely a prompt edit. No correction.
+- **Large / High; independent Architecture Review required: Yes.** Cumulative text-strategy/attempt/FIFO/restore scope remains Large/High. The terminal delta is bounded but crosses abort/commit timing, native stream ownership, root command responses and atomic renderer projection.
+- Classification rationale is evidence-backed, not based on document count. No routing correction required.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: **Confirmed**.
-- Approved requirements / intended behavior understood: REQ-001–009 / AC-001–011; explicit “Correct. approve” captured in requirements/SR-013 after first/repeated-compaction clarification.
-- Relevant existing behavior and evidence confirmed: automatic/repeated compaction, explicit retry, strict-v5 resume, Memory Inspector and settings paths; AR-E1–5.
-- Scope guardrail confirmed: UC-001–003; no manual summary entry, new long-term-memory subsystem, alternate compactor, broad history conversion, unsupported-version support, arbitrary corruption recovery, or concurrent old/new writers.
-- Approved change, preserved behavior, and outside scope understood: replace child/category/strategy runtime while preserving planner/tool/budget/raw-evidence, usable controls, supported resume and historical access. Keeping historical data is not keeping the old execution path.
-- Every prospective blocking Design Impact finding is traceable to approved REQ/AC/BEH: **Yes — no blockers remain**.
-- Remaining material ambiguity: **None**. Model-quality and provider observability limits are explicit risks, not unresolved intended behavior.
+- Overall Basis Status: **Confirmed**, after independently verifying SR034's correction.
+- Approved intended behavior: confirmed termination leaves unresolved native activity visibly **Stopped**, without animation, while retaining factual metadata and already-known completed/failed outcomes. A connection loss is not termination. Later work has its own identity; cancelled input cannot resume or commit late.
+- Existing behavior confirmed: native event is not a persisted activity trace; frontend stores hold current cards; normal saved projections can replace them. Team/Org controls terminate member AgentRuns through existing frozen scopes, not standalone UI orchestration. Org retires its listener before the request and then inspects.
+- Scope guardrail confirmed: UC001–004 and SCN006's terminal display correction, including native members under existing root controls. Preserve current snapshot/raw/category inspection, no-import/default-parent, three attempts, fresh-user recovery and original input identity. Exclude new native activity durability, cold reconstruction, outbox/ledger, provider-wide shutdown framework, broad UI redesign, unsupported same-ID replay and arbitrary corruption/power-loss guarantees.
+- Review authority: technical compliance with approved behavior, not business reapproval. The corrected history boundary is explicit; missing durable native cards are not repaired by inventing history.
+- Blocking Design Impact traceability: **Yes**. In-round ARCH-F003 protects REQ013/AC018/BEH007; now resolved at design level. No remaining approved-intent ambiguity.
 
-| Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
+| Behavior ID | Kind | Design Alignment | Approved Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System | Pass | Pass — ordinary continued native run reaches threshold/hard-cap gate; AR-E1 | Pass — DS-001 reaches valid parent dispatch through one direct generation and owned commit | Confirmed | Execute planned lifecycle, input and retained-context tests |
-| BEH-002 | User | Pass | Pass — Memory Inspector and current settings controls; AR-E4/5 | Pass — DS-003 independent readers; DS-005 model settings without algorithm/agent workflow | Confirmed | Verify old historical views and current controls |
-| BEH-003 | System | Pass | Pass — later normal threshold crossing; planner excludes old summary from retained natural suffix; AR-E1 | Pass — DS-001 replaces the old summary once, not cumulative summary messages | Confirmed | First/repeated fixtures and semantic evaluation |
-| BEH-004 | User | Pass | Pass — ordinary saved-run resume and strict-v5 bootstrap; AR-E2/6 | Pass — DS-002 uses saved text and meaningful identity/protocol checks without category prerequisite or generation | Confirmed | Target old/new snapshot resume integration |
-| BEH-005 | System / user retry | Pass | Pass — unusable provider output/precommit rejection and existing user-origin retry gate; REQ-004/AC-005, AR-E1/2 | Pass — baseline until snapshot commit; no false rollback after commit; DS-001/004 | Confirmed | Target cancellation and commit-fault tests |
+| BEH007 | User, supported explicit termination edge | Pass | Pass—normal standalone, Team and Org Terminate controls | Pass—DS011/T/O, DS012 and DS013 now reach retained member cards | Confirmed | Implement all three owners together; test actual response/inspection paths |
+| BEH005 | User/system | Pass | Pass—owner interrupt/termination during authorized compression or hold | Pass—per-call stopped fact, existing abort/commit fences and fresh-user gate unchanged | Confirmed | Cancellation, no-late-commit/no-cancelled-dispatch regressions |
+| BEH004/002 | User/operational | Pass | Pass—normal existing saved projection/restore and memory inspection | Pass—bounded terminal-native retention; no invented cold activity or migration | Confirmed | Real reopen/action/response evidence; retain older restore tests |
+| BEH001/003/006 | System/engineering contract | Pass | Pass—prior ARCH003 basis and unchanged source/design boundaries | Pass—prepared text strategy/three attempts/exact v5/fit unchanged | Confirmed | Reuse scoped prior evidence; do not treat this review as semantic acceptance |
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
+| Artifact | Purpose/Scope Clear | Linked | Complete | Consistent | Status/Approval Clear | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `proposed-compaction-prompt.md`, `output-format-and-coverage.md` | Pass | Pass | Pass | Pass | Pass | Preserve approved literal; format checks are not a completeness oracle |
-| `compaction-prompt-proposal.md`, `prompt-refinement-notes.md` | Pass | Pass | Pass | Pass | Pass | Read technical suggestions as historical where superseded by final design |
-| `simplification-design-direction.md` | Pass | Pass | Pass | Pass | Pass | Explicit final-design supersession governs pending wording below its banner |
-| `upstream-compaction-research.md`, `upstream-prompts/README.md`, `upstream-experiments/` | Pass | Pass | Pass | Pass | Pass | Comparative evidence only; no new dependency or live quality claim |
-| `design-investigation-probes/` | Pass | Pass | Pass | Pass | Pass | Preserve distinction between feasibility/current-defect reproduction and future implementation tests |
-| `analysis-report.md`, `history/`, solution history/result | Pass | Pass | Pass | Pass | Pass | Historical approvals/holds are not current status; optional editorial cleanup noted below |
-| External three-output WIP / Product | N/A | N/A | N/A | N/A | Pass | External package read-only and superseded; Product not requested |
-
-The cumulative inventory in investigation plus its SR-013 additions identifies all still-relevant supplements. Current requirements/design/result unambiguously establish final approval and supersession. No competing current output or storage contract remains.
+| SR033 approval + requirements; SR034 clarification/E34/delta | Pass | Pass | Pass | Pass | Pass | None; user approval unchanged |
+| Exact v5/output, SR027 input hold, SR020 disposition | Pass | Pass | Pass | Pass | Pass | Preserve existing limits; v6 excluded |
+| API006 evidence clarification and original checkpoint | Pass | Pass | Pass | Pass | Pass | Correction supersedes older reconnect/reopen/interim-score claims; do not erase original evidence |
+| IR006/CRR010 and prior architecture histories | Pass | Pass | Pass | Pass | Pass | Prior scope only; no stopped implementation approval inferred |
+| SR031 and historical SR032/older research | Pass | Pass | Pass | Pass | Pass | Same-ID machinery withdrawn; SR032 approval hold superseded; older proposals not current authority |
+| Cumulative inventory/index chain | Pass | Pass | Pass | Pass | Pass | Carry complete references to implementation; index is navigation, not proof every artifact was rerun |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Explicit Behavior Change / Refactor / Cleanup | None |
-| Root-cause classification is explicit and evidence-backed | Pass | Category generation -> rows -> re-rendered text; strategy and child lifecycle coupling; AR-E1/2 | None |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Refactor now; future memory/RPA protocol/global settings excluded | None |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Single summarizer/proposal/snapshot, staged commit, bounded settings transition and explicit deletion map | Implement the complete replacement, not another strategy |
+| Current posture assessed | Pass | Bounded approved behavior correction over existing lifecycle owners | None |
+| Root-cause classification explicit/evidenced | Pass | Missing terminal invariant; consumer disposed before final producer event; native source coverage mismatch during projection replacement | Do not attribute all observations to unmeasured packet loss |
+| Refactor decision explicit | Pass | Narrow native pump lifetime and frontend phase/reconciliation policy | No general lifecycle/history framework |
+| Decision reflected concretely | Pass | SR034 rules1–9, DS011/T/O–013, exact file/removal/test map | Implement source and projection changes together |
 
 ## Spine Inventory Verdict
 
-| Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary automatic/repeated compaction and continuation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Primary supported resume | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Primary historical/current inspection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004 | Return/event and retry admission | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 | Primary settings to next model construction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-006 | Bounded startup settings transition | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-001 local details | Existing attempt gate; fresh-call lifecycle; bounded synchronous commit | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+All listed spines have readable narrative, concrete naming, governing owner and off-spine separation (Pass); no facade is mistaken for the lifecycle authority.
 
-Primary paths expose real initiating surfaces/events, authoritative owners, critical dependencies and meaningful outcomes. Local sequences add detail rather than replacing end-to-end spines.
+| Spine ID | Scope / start -> end | Governing Owner / Narrative | Verdict |
+| --- | --- | --- | --- |
+| DS011 | Standalone Terminate -> API/service -> prepared AgentRun -> native stop -> confirmed response -> card | Existing runtime shutdown; store applies confirmed evidence before teardown | Pass |
+| DS011T | Team panel/history Terminate -> root frozen member scope -> successful response -> exact member reconciliation -> disconnect/Offline | Team root lifecycle server-owned; Team store owns view sequencing | Pass |
+| DS011O | Org history Stop -> stopAndInspect/early retire -> frozen direct/team scope -> success -> reconciliation -> inspection/commit/adopt | Org contexts store owns command/view sequence; transport facade does not adopt policy | Pass |
+| DS012 | AbortSignal -> executor/reporter -> core FIFO -> backend/AgentRun -> adapters -> activity store -> row | Observed execution fact; separate successful-response reconciliation covers absent/late receipt | Pass |
+| DS012a | Register abort -> compress/validate/commit or stop -> one local terminal emission -> detach | Executor owns an authorized call, not a global operation ledger | Pass |
+| DS012b | Shutdown producer -> sentinel -> queued events/listeners -> concrete pump disposal | Native backend, outside dispatch lock, one remaining deadline | Pass |
+| DS013 | Saved inspection -> actual raw projection -> guarded activity replacement -> context adoption -> render | Projection owns saved facts; activity store retains uncovered terminal native facts already present | Pass |
+| DS001–010 | Existing selection/strategy/commit, restore/inspection/settings, held/consumed recovery and live queue/status | Prior ARCH003 owner/spine conclusions retained; no new call site/retry policy | Pass—reused unaffected evidence |
 
 ## Boundary Encapsulation Verdict
 
-| Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
+| Boundary / Owner | Public Entry Clear | Internals Internal | Bypass Controlled | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| MemoryManager / coordinator | Pass | Pass | Pass | Pass | Capture/prepare/commit own authorization/fingerprint/context; executor does not write files |
-| DirectLlmCompactionSummarizer | Pass | Pass | Pass | Pass | Generation candidate only; no tools, AgentRun ownership or persistence |
-| Accepted builder / committer | Pass | Pass | Pass | Pass | Pure context construction versus ordered persistence; no inference at storage boundary |
-| Server model construction | Pass | Pass | Pass | Pass | Existing availability/secret-aware factory, not direct secret/client access |
-| Settings / migration | Pass | Pass | Pass | Pass | Current codec/runtime reads separated from historical startup translation |
-| Inspection/history | Pass | Pass | Pass | Pass | Independent read access; no compaction prerequisite |
+| Native lifecycle / AgentRun | Pass | Pass | Pass | Pass | Backend wait remains outside serialized event queue; no UI call to factory/memory |
+| Executor/reporting | Pass | Pass | Pass | Pass | Signal/commit fact originates in core; observer cannot change acceptance or retry |
+| Root command stores | Pass | Pass | Pass | Pass | Exact existing Team/Org owners; no compaction coordinator above them |
+| Activity store | Pass | Pass | Pass | Pass | Public confirmation and guarded replacement; pure reconciliation below store, never a second caller boundary |
+| Saved projection | Pass | Pass | Pass | Pass | Reads stored facts only; no history-derived retry/runtime resurrection |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
-| Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
+| Owner / Boundary | Allowed Clear | Forbidden Explicit | Direction Coherent | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Core compaction | Pass | Pass | Pass | Pass | Core message/LLM abstractions only; no server/GraphQL/run-manager import |
-| Executor / MemoryManager | Pass | Pass | Pass | Pass | No direct snapshot/category/archive mutation above owner |
-| Provider adapters | Pass | Pass | Pass | Pass | Normalize terminal metadata; no compactor switch on native reason strings |
-| Server factory / startup | Pass | Pass | Pass | Pass | Runtime new setting only; old builtin config read solely in migration |
-| UI/history | Pass | Pass | Pass | Pass | No parsing/migration in UI; live and historical metadata roles kept distinct |
+| Core -> reporter/notifier -> stream | Pass | Pass | Pass | Pass | No server/Vue dependency; persistence remains memory owner |
+| Backend -> factory/core and source listeners | Pass | Pass | Pass | Pass | No browser ACK/extra queue; concrete session cleanup cannot close replacement |
+| Command owner -> public activity store -> pure reconciliation/type | Pass | Pass | Pass | Pass | Pure helper has no Pinia/network/root imports; callers do not mix store with internals |
+| Hydration -> atomic store replacement -> existing context adoption | Pass | Pass | Pass | Pass | No clear/reinsert workaround, post-publication side patch or shadow cache |
 
 ## Interface Boundary Verdict
 
-| Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
+| Interface | Subject Clear | Singular Responsibility | Explicit Identity | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| summarize(input) / fresh createLlm callback | Pass | Pass | Pass | Low | Pass |
-| MemoryManager capture/prepare/commit | Pass | Pass | Pass | Low | Pass |
-| prepareCompactionArchive / guarded prune | Pass | Pass | Pass | Low | Pass |
-| Compound model setting | Pass | Pass | Pass | Low | Pass |
-| CompleteResponse terminal metadata | Pass | Pass | Pass | Low | Pass |
-| Current COMPACTION_STATUS / historical presentation seams | Pass | Pass | Pass | Medium | Pass |
-| Existing run-memory inspection API | Pass | Pass | Pass | Low | Pass |
-
-The medium status risk is coordinated contract implementation, not a missing architecture: preserve existing provider-native field meaning and operation correlation as explicitly required; do not confuse the summarizer's model provider with the provider-native compaction discriminator (AR-E5).
+| Existing terminate APIs/root result | Pass | Pass | Pass—typed run/root IDs and actual accepted/success response | Low | Pass |
+| executeIfAuthorized/report status | Pass | Pass | Pass—operation/requested/execution turn IDs and signal | Low | Pass |
+| Native pump/session + remaining timeout | Pass | Pass | Pass—concrete backend instance/session | Low | Pass |
+| applyConfirmedNativeTermination (example public action) | Pass | Pass | Pass—run + eligible exact native IDs + existing current status | Low | Pass |
+| replaceProjectionActivitiesIfRevisions | Pass | Pass | Pass—per-run revision and activity identities; all-run check before publish | Low | Pass |
+| CompressionStrategy/frozen migration interfaces | Pass | Pass | Pass | Low | Pass—unchanged prior review |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
-| Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
+| Need | Existing Area Checked | Reuse Sound | New Piece Justified | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Selection/head/tail/tool/budget | Pass | Pass | N/A | Pass | Retain planner/finalizer/validator; fix natural-text clipping at renderer |
-| Direct generation | Pass | Pass | Pass | Pass | BaseLLM reused; focused summarizer/parser/literal replace orchestration |
-| Snapshot/evidence | Pass | Pass | Pass | Pass | Extend existing stores for copy-before-prune, no new persistence authority |
-| Model construction/settings | Pass | Pass | Pass | Pass | Existing catalogue/secrets/settings; small codec/factory and isolated migration |
-| Completion/status | Pass | Pass | Pass | Pass | Existing adapters and presentation contract, no new provider framework |
+| Prompt stopped fact | Pass | Pass | N/A | Pass | Existing scoped executor/reporter, not a cancellation service |
+| Final native events | Pass | Pass | N/A | Pass | Existing AgentEventStream FIFO/sentinel and backend pump |
+| Root confirmation | Pass | Pass | N/A | Pass | Existing root response/view owners and activity store |
+| Shared phase/native reconciliation | Pass | Pass | Pass | Pass | Actual duplicated phase checks and one concrete native presentation policy, not generic helpers |
+| Saved history | Pass | Pass | N/A | Pass | Existing revision-guarded replacement and100-item window; no writer/store addition |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
+| Subsystem | Ownership Clear | Reuse/Extend Sound | Right Spine Owners | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Core memory/compaction | Pass | Pass | Pass | Pass | Attempt transformation/control, not a long-term-memory product |
-| Core memory/store and restore | Pass | Pass | Pass | Pass | Evidence/snapshot and saved-run lifecycle |
-| Core llm/api | Pass | Pass | Pass | Pass | Provider-specific requests/completion/cleanup |
-| Server compaction/config/startup | Pass | Pass | Pass | Pass | Construction and settings transition |
-| Web/settings and presentation/history | Pass | Pass | Pass | Pass | Existing user controls/visibility, no new workflow |
+| Core compaction/turn | Pass | Pass | Pass | Pass | Execution truth and cancellation/commit fence |
+| Native server backend | Pass | Pass | Pass | Pass | Session lifetime/drain; root orchestration preserved |
+| Web command/context owners | Pass | Pass | Pass | Pass | Successful response correlation and local sequencing |
+| Web activity capability | Pass | Pass | Pass | Pass | Displayed record mutation, source-aware replacement, phase vocabulary |
+| Memory/history/migration | Pass | Pass | Pass | Pass | Existing meaning preserved; no new persisted responsibility |
 
 ## Reusable Owned Structures Verdict
 
-| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
+| Repeated Structure / Logic | Extraction Evaluated | Shared File Sound | Ownership Clear | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Proposal/accepted context | Pass | Pass | Pass | Pass | Existing proposal file tightened; no category bundle |
-| Execution diagnostics | Pass | Pass | Pass | Pass | compaction-execution.ts replaces types trapped in removed strategy/runner |
-| Terminal status | Pass | Pass | Pass | Pass | CompleteResponse owns normalization contract |
-| Archive preparation identity | Pass | Pass | Pass | Pass | Existing storage contracts, not a public summary DTO |
+| Five phase values/predicates | Pass | Pass | Pass | Pass | types/activity/compactionPhase.ts replaces unions/guards |
+| Native identity + confirmed terminal transform + retained-source composition | Pass | Pass | Pass | Pass | services/activity/nativeCompactionActivityReconciliation.ts, pure under store |
+| Root request ownership | Pass | N/A | Pass | Pass | Bounded captures in existing distinct owners; no shared registry/ambiguous root-ID service |
 
 ## Shared Structure / Data Model Tightness Verdict
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
+| Structure | One Meaning Per Field | Redundancy Removed | Overlap Controlled | Variant Choice Sound | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Summary proposal / accepted result | Pass | Pass | Pass | Pass | Pass | Proposal summary; accepted finalized context; no second category/summary authority |
-| Invocation metadata | Pass | Pass | Pass | Pass | Pass | Actual per-attempt metadata, not child runtime IDs or mutable previous-attempt metadata |
-| Completion status + native reason | Pass | Pass | Pass | Pass | Pass | Normalized acceptance signal versus diagnostic provenance |
-| Model settings | Pass | Pass | Pass | Pass | Pass | Model + config are one atomic setting; credentials stay elsewhere |
-| Live/historical status shapes | Pass | Pass | Pass | Pass | Pass | Old view-only metadata is not retained live execution authority; AR-E5 watchpoint applies |
+| stopped phase | Pass | Pass | Pass | Pass | Pass | Terminal execution presentation, not a new retry/gate state |
+| Operation/turn/request identity | Pass | Pass | Pass | Pass | Pass | No latest-row/reset-turn fallback for confirmation |
+| Native versus provider-boundary activity | Pass | Pass | Pass | Pass | Pass | Exact operation identity; provider markers excluded; summarizerProvider remains native metadata |
+| Current status and store record | Pass | Pass | Pass | Pass | Pass | Store returns matching existing status projection; no independent receipt cache |
+| Call-local confirmation capture | Pass | Pass | Pass | Pass | Pass | Existing context/state/stream/runtime identities, no retained command ledger |
 
 ## File Responsibility Mapping Verdict
 
-| File | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
+Paths relative to worktree; C=autobyteus-ts/src, S=autobyteus-server-ts/src, W=autobyteus-web.
+
+| File | Singular Responsibility | Matches Boundary | Retightened After Extraction | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| direct-llm-compaction-summarizer / summary-parser / summary-prompt / compaction-execution | Pass | Pass | Pass | Pass | Invocation, extraction, literal and metadata separated without another registry |
-| pending executor / proposal / accepted builder / validator | Pass | Pass | Pass | Pass | Clear plan/invoke/construct/validate responsibilities |
-| accepted committer / manager coordinator / context controller | Pass | Pass | Pass | Pass | Snapshot commit point and preallocated no-copy install explicitly change current ordering |
-| base/file/run-memory stores / raw archive manager | Pass | Pass | Pass | Pass | Existing owner gains staged archive API and retained-ID pruning guard |
-| snapshot bootstrap / provenance | Pass | Pass | Pass | Pass | Generic 0/1 summary invariant, no category read |
-| response-types / direct adapters / RPA client | Pass | Pass | Pass | Pass | Additive terminal information and bounded cleanup |
-| server compaction factory / setting codec / startup migration | Pass | Pass | Pass | Pass | Current construction versus historical translation |
-| shared DTO / server projectors / web adapters and settings | Pass | Pass | Pass | Pass | Explicit coupled producer-consumer cleanup |
-| independent history readers / tests/docs/assets | Pass | Pass | Pass | Pass | Preserve historical display; remove obsolete live harness expectations |
+| C/memory/compaction/pending-compaction-executor.ts; agent/compaction/compaction-runtime-reporter.ts | Pass | Pass | Pass | Pass | Scoped terminal observation and publication; unchanged memory authority |
+| S/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts; factory.ts | Pass | Pass | Pass | Pass | Concrete pump/deadline; factory forwards remaining budget only if needed |
+| W/types/activity/compactionPhase.ts | Pass | Pass | Pass | Pass | Vocabulary/predicates only |
+| W/services/activity/nativeCompactionActivityReconciliation.ts | Pass | Pass | Pass | Pass | Pure native presentation policy; replaces unimplemented terminalization helper proposal |
+| W/stores/agentRunStore.ts; agentTeamRunStore.ts; agentOrgContextsStore.ts | Pass | Pass | Pass | Pass | Their own supported command/view ownership; call public activity boundary |
+| W/stores/agentActivityStore.ts | Pass | Pass | Pass | Pass | Existing revisions/window; confirmed mutation and atomic source-aware composition |
+| W/services/agentStreaming/handlers/{compactionActivityProjection,agentStatusHandler}.ts | Pass | Pass | Pass | Pass | Normal event identity/projected status |
+| W/services/activity/runActivityWindowPolicy.ts; services/runHydration/runProjectionActivityHydration.ts | Pass | Pass | Pass | Pass | Shared predicates; no new history decoder |
+| W/utils/compactionActivityPresentation.ts; components/workspace/agent/CompactionStatusRow.vue | Pass | Pass | Pass | Pass | Exact one-word neutral/static display |
+| AgentRun/root adapters/contracts/hydration orchestration | Pass | Pass | N/A | Pass | Verification-only unless necessary typing; no generic rewrite |
 
 ## Subsystem / Folder / File Placement Verdict
 
-| Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
+| Path / Item | Placement Clear | Folder Matches Owner | Mixed/Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Existing core memory/compaction, store, restore | Pass | Pass | Low | Pass | Focused existing owners; no one-folder-per-step framework |
-| Core llm/api and clients | Pass | Pass | Low | Pass | Provider semantics remain below compaction |
-| Server agent-execution/compaction, config, startup | Pass | Pass | Low | Pass | Construction, current schema and historical translation remain separate |
-| Shared contracts and existing web/settings/history | Pass | Pass | Low | Pass | Existing product boundaries reused |
+| Core executor/reporter; native backend | Pass | Pass | Low | Pass | Existing capabilities extended |
+| Web activity type + pure reconciliation | Pass | Pass | Low | Pass | Two concrete reusable concerns; no generic support layer |
+| Existing root stores and activity store | Pass | Pass | Low | Pass | Sequencing stays with distinct owners; no root polymorphic facade added |
+| Existing tests by core/server/web boundary | Pass | Pass | Low | Pass | Add target assertions near actual owners, including stage/commit/adopt |
 
 ## Removal / Decommission Completeness Verdict
 
-| Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
+| Item | Obsolete Piece Named | Replacement Clear | Scope Explicit | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Child runner/collector/launch resolver/template | Pass | Pass | Pass | Pass | Direct fresh invocation; remove builtin automatic registration, preserve stored data |
-| Six-array parser/normalizer/correction/result | Pass | Pass | Pass | Pass | One marked body parser, no repair call |
-| Algorithm strategy/registry/resolver/settings/catalogue | Pass | Pass | Pass | Pass | Executor directly invokes retained planner and concrete summarizer |
-| Category projection/lineage active code/config | Pass | Pass | Pass | Pass | Snapshot text and independent integrity checks |
-| Exports, shared live status, asset checks, tests/docs/live E2E | Pass | Pass | Pass | Pass | Full-map audit required; no deprecated aliases |
-| Historical category/child-run/lineage files and independent readers | Pass | N/A | Pass | Pass | Intentionally not deleted; no current writer/algorithm dependency |
+| Abort-as-failed presentation | Pass | Pass | Pass | Pass | Actual signal produces stopped; ordinary failures stay failed |
+| Close-before-stop/shared-discard graceful path | Pass | Pass | Pass | Pass | Concrete stream lifetime/sentinel/drain |
+| Repeated phase unions/guards | Pass | Pass | Pass | Pass | One frontend vocabulary |
+| Standalone-only reconciliation / projection-complete assumption | Pass | Pass | Pass | Pass | SR034 all owners + source-aware atomic retention |
+| Unimplemented compactionActivityTerminalization.ts proposal | Pass | Pass | Pass | Pass | Do not create beside nativeCompactionActivityReconciliation.ts |
+| Prior category/child/legacy/unsupported same-ID machinery | Pass | Pass | Pass | Pass | Prior clean-cut removals/rejections retained; no reintroduction |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
+| Area | Compatibility/Dual Runtime Path | Clean-Cut Removal | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Target compaction runtime | No | Pass | Pass | No selectable old path, JSON fallback or hidden child retry |
-| v5 snapshot reader | No | Pass | Pass | Same meaningful text/provenance, no old/new heading switch |
-| Historical memory/status readers | No | Pass | Pass | Existing approved product reads, not legacy compaction execution |
-| Isolated configuration migration | No | Pass | Pass | Historical decoding belongs only to startup boundary |
-| Unrelated raw archive compatibility | Yes — pre-existing, outside replacement scope | Pass | Pass | Not newly introduced or used to justify compaction compatibility machinery |
+| Native terminal presentation | No | Pass | Pass | One current phase meaning; no old error-text heuristic |
+| Retained native activity composition | No | Pass | Pass | Current source-coverage difference, not old-version decoding or a second authoritative cache |
+| Persisted current snapshot/frozen released upgrader | No runtime legacy branch | Pass | Pass | ARCH002/003 boundary preserved; isolated historical converter not runtime compatibility |
+| Provider-native activity | No new fallback | Pass | Pass | Separate supported subject, not impersonated by native stopped cards |
 
-## Persisted-Data Transition Verdict
+## Persisted-Data Transition Verdict (When Applicable)
 
-| Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
+| Area / Stored Subject | Decision | Reader/Semantic Evidence Sufficient | Choice Proportionate | Migration Safety | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Supported v5 working-context snapshot | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing text/provenance adequate; restore removes category gate, not identity/tool validation; AR-E2/6 |
-| Historical episodic/semantic files | Not Affected in shape | Pass | Pass | N/A | Pass | Independent service reads retained; new compaction stops writing |
-| Historical lineage | Untouched historical data, inactive | Pass | Pass | N/A | Pass | No conversion/deletion or runtime membership prerequisite |
-| Raw records/segments/manifest | Not Affected in schema | Pass | Pass | N/A | Pass | Ordering changes; copy verified before snapshot; prune only archived, nonretained IDs |
-| Old builtin model/config override | Migration Required — one bounded setting | Pass | Pass | Pass | Pass | Isolated before bootstrap; current setting wins; durable compound write is marker; deterministic restart/source retained |
+| SR033/034 native activity | Not Affected—no persisted format change | Pass | Pass | N/A | Pass | Reporter logs/notifies; external recorder excludes native; raw replay recognizes provider boundaries only. Retain existing memory records, never invent absent cold records |
+| Snapshot/raw/archive/settings | Preserved prior Directly Usable / frozen existing migration dispositions | Pass—reused ARCH002/003 and unchanged boundaries | Pass | Pass—existing scope retained | Pass | No new migration ID/history campaign/import/readiness gate; current meanings unchanged |
 
-Production history volume was not sampled. That does not block a transition that traverses no histories and rewrites no snapshots during upgrade. The one-setting migration has fixed scope. Existing per-file atomic rename is not an fsync/power-loss guarantee; the design does not claim otherwise.
+Migration guideline's availability/current-reader/isolation principles remain satisfied. No installed private-data census or new persistence requirement follows from the withdrawn API reload claim. Explicit clear, normal100-item eviction and process lifetime still bound native card retention; this is not guaranteed durable activity history.
 
 ## Change / Refactor Safety Verdict
 
-| Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
+| Area | Sequence Realistic | Temporary Seams Explicit | Cleanup Explicit | Verdict |
 | --- | --- | --- | --- | --- |
-| Core/provider contracts -> summarizer/executor | Pass | Pass | Pass | Pass |
-| Builder/coordinator/commit and restore | Pass | Pass | Pass | Pass |
-| Startup migration / server construction / settings UI | Pass | Pass | Pass | Pass |
-| Shared DTO / server / web / old API removal | Pass | Pass | Pass | Pass |
-| Coordinated deployment and rollback planning | Pass | Pass | Pass | Pass |
+| Add stopped + per-call latch/listener | Pass | Pass | Pass | Pass |
+| Refine concrete native pump under existing deadline | Pass | Pass | Pass | Pass |
+| Shared phases/store policy and all three command owners together | Pass | Pass | Pass | Pass |
+| Atomic retained-source replacement before context adoption | Pass | Pass | Pass | Pass |
+| Preserve cancellation/FIFO/SDK/persistence and verify strict transport | Pass | Pass | Pass | Pass |
 
-Intermediate compile seams are allowed only during implementation; no dual runtime remains at handoff. Old binaries must not write new-compaction runs. Delivery owns release/backup/rollback planning, not a runtime legacy path.
+Mandatory target tests are concrete: already-aborted/backoff/late result/commit-before-abort, reporting failure, final event order and remaining deadline, no self-await/resubscribe/cross-session cleanup, response-before-event, stale/failing root response, all exact members, Org success then inspection failure, actual staged replacement/adoption, multi-run revision-conflict atomicity, no absent-card creation/provider pollution, dedupe/window and genuine live retry. They remain pending implementation; baseline green is not their substitute.
 
 ## Example Adequacy Verdict
 
-| Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
+| Topic | Example Needed | Present/Clear | Avoided Shape Explained | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| First/repeated rolling summary | Yes | Pass | Pass | Pass | Old checkpoint plus eligible newer history; retained tail separate |
-| Output framing | Yes | Pass | Pass | Pass | Exterior prose versus missing/multiple/known-incomplete result |
-| Existing saved text | Yes | Pass | Pass | Pass | Old category headings remain ordinary text, not a version switch |
-| Commit boundaries | Yes | Pass | Pass | Pass | Before snapshot versus after snapshot/before pruning |
-| Settings migration | Yes | Pass | Pass | Pass | Concrete source/current JSON, default/current-wins/failure/restart cases |
+| Org early-retire/success/empty-native projection | Yes | Pass | Pass | Pass | OperationX retained Stopped through actual commit/adopt; laterY separate |
+| Actual failure vs stopped vs committed | Yes | Pass | Pass | Pass | Per-call latch, successful synchronous commit wins, known results preserved |
+| History boundary | Yes | Pass | Pass | Pass | Cold empty store does not inventX; in-memory retention is not durable replay |
+| Root scope/correlation | Yes | Pass | Pass | Pass | All retained exact members, not focused row/turn-number/Offline guess |
+| Prior held/consumed recovery and successor preservation | Yes | Pass—retained | Pass | Pass | No new safe point or approval reopening |
 
-## Material Premise Validation
+## Material Premise Validation (Only When Needed)
 
-The ordinary scenarios are established in BEH-001–005 above. The following records clarify the reachability behind material transition reasoning and prevent expanding the scope from synthetic probes.
+### MP008 — Owner abort may precede underlying compression settlement
+- Authority / behavior: REQ005/013, AC013/018, BEH005/007; Supported Explicit Edge Scenario.
+- Initiating basis: **User**, normal Terminate during native compaction (also existing Stop generation under preserved cancellation contract).
+- Support/forward path: exposed control -> existing server prepared termination/interrupt -> native active turn signal -> TurnExecutionScope Promise.race; underlying strategy/provider promise can settle later. Worker/factory shutdown and native event stream are separate owners.
+- Lifecycle/consequence: waiting only for the turn or moving close alone does not guarantee its eventual async catch emits a timely terminal card; owner abort is already known.
+- Reachability: **Reachable**. Per-call signal listener/latch plus existing commit fence is proportionate; no new cancellation ledger/provider wait.
 
-### MP-001 — Snapshot write can reject before a new continuation commits
+### MP009 — Team successful response can precede final event receipt
+- Authority / behavior: REQ013/AC018/BEH007, SCN006; Supported Explicit Edge Scenario.
+- Initiating basis: **User**, TeamMembersPanel Terminate+confirm or history Team Terminate while a native member compacts.
+- Forward path: panel/history -> agentTeamRunStore.terminateTeamRun -> GraphQL/service/manager -> frozen root member shutdown -> success; client disconnects Team stream then marks members Offline. It does not call standalone terminateRun. Separate HTTP/WebSocket channels have no renderer receipt ordering guarantee.
+- Lifecycle/consequence: an already-displayed native member card can remain active despite confirmed root termination unless this actual command owner reconciles it.
+- Reachability: **Reachable**. ARCH-F003; SR034 adds exact-member successful-response reconciliation under existing owner, not a root shutdown framework.
 
-- Related approved authority: REQ-003/004; AC-004/005 explicitly calls for safe replacement and commit tests.
-- Relevant behavior: BEH-001/005.
-- Initiating basis kind: **Contract**.
-- Independent governing contract: an automatic compaction must not claim success or lose its valid baseline before usable replacement commit; this applies to the executor's actual persistence call, not merely generation validation.
-- Support evidence/path: ordinary continued run -> threshold/assembler -> executor -> MemoryManager -> committer -> archive copy -> snapshot store write; current AR-E2 shows throwing synchronous file operations and unsafe prune-before-write ordering.
-- Lifecycle/consequence: a failed replacement write must leave old snapshot plus its active raw tool facts usable. Copy-before-prune meets this contract without a distributed transaction or journal.
-- Scenario validity: **Supported Explicit Edge Scenario** under the approved replacement contract.
-- Reachability: **Reachable** through the governed persistence operation; no manual file editing or claim of production incidence.
-- Review consequence: accept bounded staged-copy design; target injected-write failure test remains necessary.
+### MP010 — Org stop-and-inspect misses live terminal events and replaces uncovered cards
+- Authority / behavior: REQ013/AC018/BEH007, related REQ007; Supported Explicit Edge Scenario.
+- Initiating basis: **User**, visible Org history Terminate to stop and inspect its member conversation.
+- Forward path: WorkspaceAgentRunsTreePanel -> useWorkspaceHistorySubjectActions(stop) -> stopAndInspect retires stream BEFORE request -> Org/frozen direct+Team shutdown -> successful response -> markHistorical/readInspection -> stage -> commitActivities -> adoptLocalContexts.
+- Lifecycle/consequence: no old listener remains for stopped; native saved projection contains no native phase record; current replacement drops the retained card. Context adoption cannot preserve activity-store records.
+- Reachability: **Reachable**. Same ARCH-F003; SR034 settles before inspection and retains actual terminal native records within the existing revision-guarded store boundary. No new persistence.
 
-### MP-002 — Best-effort prune after commit leaves duplicate evidence
+### MP011 — The earlier authored reload label proves native durable card replay
+- Authority / behavior: REQ007/013, BEH004/007; inspect/reopen itself is supported, but the claimed evidence is not.
+- Initiating basis: **User**, reopen/reconnect was claimed by API006; retained run-script outputs contain only authored labels, without submitted script/navigation/context-reset/projection response.
+- Forward checked source: native reporter -> notifier, not a raw activity writer; recorder excludes native; local raw replay maps provider_compaction_boundary only. API-owned synthetic raw captures contain no native status records.
+- Lifecycle/consequence: the alleged completed renderer-reload/durable-native-card provenance is **Unclear as an observation**; **Not Reachable through the inspected current native raw replay path**. Do not turn it into a persistence finding or a native history journal.
+- Review consequence: API owner withdrew those proof/score claims. Separate real reopen verification remains required; SR034 uses only already-present in-memory records and actual confirmed response evidence. No design mechanism depends on the unproved claim.
 
-- Related approved authority: REQ-003/004/007; AC-004/005/008.
-- Relevant behavior: BEH-001/004/005.
-- Initiating basis kind: **Contract**.
-- Independent governing contract: once usable continuation is committed, ancillary cleanup cannot erase source evidence or misreport rollback; a later normal resume must use that committed context.
-- Support evidence/path: ordinary compaction -> accepted snapshot atomic replacement -> local install/completion -> active-file prune; AR-E2 verifies ID-deduplicating corpus read and snapshot-based resume. User later reopens the run through normal resume.
-- Lifecycle/consequence: prune write rejection leaves active/archive copies while the snapshot remains authoritative. Protected retained IDs must not be pruned. Old tool facts do not become a request history replay.
-- Scenario validity: **Supported Explicit Edge Scenario** within the approved safe replacement contract.
-- Reachability: **Reachable** at the actual postcommit cleanup boundary.
-- Review consequence: retain warning-only cleanup and designed provenance guard; no archive-wide startup sweep, retry scheduler or replacement journal required.
-
-### MP-003 — Arbitrarily deleting historical category files requires a recovery subsystem
-
-- Related authority: scope expressly excludes arbitrary manual corruption recovery; REQ-007 preserves currently supported runs.
-- Relevant behavior: BEH-004.
-- Initiating basis kind: **User**, proposed but unsupported.
-- Independent product-supported trigger: **None for deleting internal lineage/category files.** Supported action is reopening a saved run through the run-history surface.
-- Forward path/evidence: supported resume -> strict snapshot bootstrap -> current category gate. No inspected resume/Inspector action manually removes these files. The missing-lineage synthetic probe isolates a dependency; it does not establish a user-operated deletion journey.
-- Lifecycle/consequence: a hypothetical hand-edited old run does not authorize new corruption recovery or new version support. New target compactions legitimately have no new category artifacts, which separately justifies removing the gate.
-- Scenario validity: **Technically Possible but Unsupported/Contrived**.
-- Reachability: **Not Reachable** as a supported deletion/recovery scenario.
-- Review consequence: no finding or extra recovery machinery; preserve supported snapshot semantics using the same reader.
+Prior MP004 preservation remains supported; MP005 pre-tool-continuation and MP006 user reservation/release mechanisms remain rejected; MP007 post-response gate correction remains. SR031 test-injected identical-ID Team/Org retransmission is not promoted to a supported producer/ledger requirement. Full current root witness: `architecture-review-evidence/arch-rev-004/root-termination-premise.md`.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-**None.** There is no missing authority or production-path evidence blocking this architecture. Post-implementation verification remains outstanding by design.
+**None blocking this architecture result.** Exact API006 lost-packet attribution, real renderer reconnect/saved hydration, full Team/Org UI and target execution remain validation gaps, not assumed successful evidence or unapproved behavior. A new durable-native-history expectation would require upstream requirements/design work, not implicit scope expansion.
 
 ## Review Decision
 
-**Pass.** The approved behavior basis is confirmed and the package is actionable in the inspected codebase. The simplification removes redundant execution/data representations while retaining necessary ownership, safety and preserved user outcomes. No in-scope machinery depends on an unsupported material premise.
-
-This is an architecture decision only, not an implementation, quality, release or delivery pass.
+**Pass — ARCH-REV-004**, Approved SR033 / design SR034. Basis Confirmed; material-premise gate Pass. SR034 resolves the in-round root response/inspection omission. Ready for implementation of this bounded delta; not implementation/source review, API acceptance or Delivery.
 
 ## Findings
 
-**None.** No blocking Design Impact, Requirement Gap or Unclear finding.
+**None unresolved.** Prior ARCH-F001/F002 remain resolved. In-round **ARCH-F003 — Medium / Design Impact**:
+- Protected authority: REQ013/AC018/BEH007, SCN006; **Within Approved Scope**, no approved-behavior change or renewed approval required.
+- Defect in initial SR033 design: standalone-only success reconciliation did not cover existing Team/Org command owners; Org's mandatory inspection would erase even a pre-inspection settled card.
+- Evidence: MP009/010; independently inspected exposed controls, actual teardown/inspection path and atomic replacement; review-entry SR033 retained.
+- Proportionate correction: existing root owners supply confirmed evidence to the existing activity-store public boundary; preserve uncovered terminal native facts in its guarded replacement. No new lifecycle authority, durable history or side cache.
+- **Resolved at design level by SR034**, independently verified in rules6/8/9, DS011T/O and DS013, full file/removal/target test map. Implementation/validation still required. Reuse ARCH-F003 if this same design gap returns.
 
 ## Classification
 
-**Pass — no failure classification.** Preserve `task_size=Large`, `architectural_risk=High`.
+**N/A — Pass.** Resolved in-round classification was Design Impact, not Requirement Gap.
 
 ## Recommended Recipient
 
-**/implementation_engineer**, the exact primary Pass recipient returned by `get_handoff_rules`. Handoff confirmed `accepted=true / DELIVERED` to `implementation_engineer_d565b3adf8074d59878dc089de6d3df1`. Single-rule routing applied; no duplicate recipient notification. See ARCH-REV-001 for routing record.
+Fresh `get_handoff_rules` selected **/implementation_engineer**, the primary architecture Pass recipient. One cumulative package under the governing single-most-specific-recipient rule; no duplicate informational/API/Delivery forwarding. Handoff confirmed accepted=true / DELIVERED to implementation_engineer_d565b3adf8074d59878dc089de6d3df1;1,148 cumulative references attached. Receipt and selection retained in reviewer evidence and revision history.
 
 ## Residual Risks
 
-1. **Semantic quality remains unproven.** Parser correctness, headings and deterministic probes cannot establish preservation of all facts/approvals. Execute the planned first/repeated controlled-history evaluation separately from plumbing tests.
-2. **Provider/request limits differ.** Unknown terminal status (especially RPA), estimated tokens and a smaller selected summarizer may produce ordinary explicit failures. Do not invent truncation certainty, silent clipping or fallback generation. Verify controlled request fields after effective defaults/overrides are composed and before adapter construction.
-3. **Commit correctness still needs target tests.** Preserve actual archive membership, retained raw IDs, preallocation before I/O, no-copy/no-callback postcommit installation, and reporter isolation. Six feasibility reruns do not certify these unimplemented invariants.
-4. **Presentation integration needs precise field meaning.** AR-E5 shows `provider` currently selects provider-native lifecycle/correlation in `compactionActivityProjection.ts:68–176`. The final design already requires preservation of those unrelated fields. Carry direct summarizer-provider diagnostics without repurposing that discriminator; test native operation-ID correlation across failure/retry, alongside unchanged provider-native statuses and historical display. This implements the design's stated boundary, not a new product requirement.
-5. **Coordinated rollout and breaking API removal.** External deep import users are unenumerated. Document removed exports/endpoints, stop old writers, rebuild all shared-contract consumers, and use Delivery-owned rollback planning. No compatibility shim is authorized.
-6. **Non-blocking editorial residue.** Investigation's bootstrap status sentence still contains earlier approval-hold wording, and historical supplements retain old readiness paragraphs. Their current approval banners, final design precedence and latest result resolve the authority. Solution Designer may simplify these labels later; this does not reopen approved intent or block implementation.
+- SR033/034 is not implemented. Abort timing, one-terminal-per-call, postcommit reporting, remaining-deadline drainage, queue lock order and correct root/member correlation need target tests and independent source review. Preserve existing three-attempt ceiling and no late commit/cancelled dispatch.
+- Native activity retention remains bounded in memory, not durable after process/browser loss. Actual saved reopen/reconnect must record real actions/projection responses and distinguish absent cold activity from retained presentation. No invented success from authored labels.
+- **API006 incomplete; latest completed API005 Fail78.6**, API004 Fail90.7 historical. API006 interim90.7 withdrawn, no replacement score. F007 actual Settings closure and346 selected repository Pass remain scoped; this review's85 are separate baseline checks, not additive confidence.
+- Ten API durable paths still require eventual successful proportional test-code review. Inherited14 / baseline-contract7 / web typecheck6836 / full suite, current semantic fidelity, full Team/Org UI, physical drag, consumed-tool full UI, crash, Delivery and explicit user-verification gates remain unwaived.
+- F005 accepted known/nonblocking, not fixed/Pass; Qwen stopped. F004 original cause unknown; F006 corrected. SR022 exhausted diagnostics retain1 fidelityFail/3 scoped usable; candidate-v6 unapproved/excluded. No new provider campaign/budget/default/support change authorized.
+- Preserve pending work/backups/stash and external artifacts. No stage/commit/push/merge/release or cleanup performed. Eventual origin/personal finalization remains Delivery-owned.
 
 ## Latest Authoritative Result
 
-- Review Decision: **Pass — ARCH-REV-001**.
+- Review Decision: **Pass — ARCH-REV-004**, design SR034 against Approved SR033.
 - Material-Premise Gate: **Pass**.
-- Notes: SR-013 design against approved SR-012 requirements and prompt-v5/output contract; no findings. Six unchanged-source feasibility cases rerun successfully. Proceed only through the configured result-based handoff; implementation and downstream validation remain required.
+- Notes: ARCH-F003 resolved in-round; prior findings remain resolved. Review is structural readiness only. Canonical report authoritative; revision history and evidence preserve the delta and limits. No delivery advancement.

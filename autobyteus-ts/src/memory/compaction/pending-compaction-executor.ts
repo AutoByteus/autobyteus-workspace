@@ -42,12 +42,21 @@ export class PendingCompactionExecutor {
     });
     if (!begin.authorized) throw new CompactionPreparationError(`Memory compaction execution was not authorized (${begin.code}).`);
     const pending = begin.request;
-    this.publishRecovery();
     let status: Omit<CompactionStatusPayload, 'phase'> = {
       turn_id: input.turnId, compaction_operation_id: pending.operationId,
       requested_turn_id: pending.requestedTurnId, execution_turn_id: input.turnId,
     };
+    let terminal = false;
+    const finish = (payload: CompactionStatusPayload) => {
+      if (terminal) return;
+      terminal = true;
+      this.emit(payload);
+    };
+    const onAbort = () => finish({ ...status, phase: 'stopped' });
+    input.signal.addEventListener('abort', onAbort, { once: true });
     try {
+      if (input.signal.aborted) onAbort();
+      this.publishRecovery();
       input.signal.throwIfAborted();
       const baseline = this.memoryManager.captureCompactionBaseline();
       const source = baseline.context.copy();
@@ -66,6 +75,7 @@ export class PendingCompactionExecutor {
             completion_status: metadata.completionStatus, completion_reason: metadata.completionReason };
         },
       });
+      input.signal.throwIfAborted();
       const result = await strategy.compress(content);
       input.signal.throwIfAborted();
       const summary = validateCompactionSummaryBody(result);
@@ -78,16 +88,18 @@ export class PendingCompactionExecutor {
       });
       this.validator.assertValid(baseline.context, source, accepted, plan);
       this.memoryManager.commitAcceptedCompaction(accepted, input.signal);
+      // Latch durable success before observers can synchronously abort the owner.
+      finish({ ...status, phase: 'completed', compacted_block_count: status.selected_block_count });
     } catch (error) {
       const kind = (error as { code?: string }).code ?? 'execution_failure';
       this.memoryManager.retainCompactionFailure(pending.operationId, input.turnId, kind, input.executionSite);
       const message = `Memory compaction failed before dispatch [${kind}]: ${error instanceof Error ? error.message : String(error)}`;
-      this.emit({ ...status, phase: 'failed', error_message: message });
+      finish({ ...status, phase: 'failed', error_message: message });
       throw new CompactionPreparationError(message, error);
+    } finally {
+      input.signal.removeEventListener('abort', onAbort);
     }
     this.publishRecovery(previousRecovery);
-    // Outside the failure path: durable success cannot become a semantic retry.
-    this.emit({ ...status, phase: 'completed', compacted_block_count: status.selected_block_count });
     return true;
   }
 

@@ -88,6 +88,13 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
             addCorrelationIssue(context, `AgentOrg communication message '${message.messageId}' identity mismatch.`);
         }
     }
+    const inputIds = new Set();
+    for (const input of value.root_org.agent_input_states) {
+        if (!statusRequiredAgentRunIds.has(input.agent_run_id) || inputIds.has(input.agent_run_id)) {
+            addCorrelationIssue(context, 'AgentOrg input-state identity mismatch.');
+        }
+        inputIds.add(input.agent_run_id);
+    }
     const statusRunIds = new Set();
     for (const status of value.root_org.agent_statuses) {
         if (statusRunIds.has(status.agent_run_id))

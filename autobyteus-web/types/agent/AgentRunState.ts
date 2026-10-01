@@ -3,7 +3,7 @@ import type { Conversation, Message, AIMessage } from '~/types/conversation';
 import { generateBaseInvocationId } from '~/utils/toolUtils';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
-export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 
 export interface AgentCompactionStatus {
   phase: CompactionStatusPhase;

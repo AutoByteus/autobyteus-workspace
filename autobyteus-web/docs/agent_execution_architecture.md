@@ -594,33 +594,22 @@ for a socket close or a later history reload to infer that transition.
 
 ### Compaction Lifecycle Activity And Center Feed
 
-Native AutoByteus memory compaction status is projected as Activity lifecycle
-state first. The right-side Activity panel should retain the full compaction
-operation identity and phase progression, including requested/queued,
-execution, terminal success/failure, timestamps, and surrounding tool-result
-detail. That lifecycle row is diagnostic/runtime feedback; it must not become
-LLM-facing text and must not replace the backend memory artifact contract.
+Native compaction projects one Activity row per operation with requested/start
+and terminal completed/failed/stopped phases, timestamps and diagnostic facts.
+It is runtime feedback, not LLM-facing text or a replacement memory artifact.
+Requested/queued phases stay out of the center feed so pending tool protocol is
+not split; execution starts a new visual boundary after the preceding tool
+block. Terminal rows may remain visible, with failure details or neutral Stopped
+presentation as appropriate.
 
-The center conversation feed is narrower. Requested/queued compaction phases are
-internal scheduling states and stay out of the center feed so a pending
-tool-call turn is not split before tool results arrive. The first
-center-eligible execution phase for a compaction operation marks the current
-frontend assistant visual block complete, allowing the `Memory compacted` row to
-appear after the tool-call/result block and before the post-compaction assistant
-continuation. Completed/failed execution rows may be shown in the center feed;
-requested/queued rows must not.
-
-Historical run reopen uses the backend replay bundle as the display source for
-actual user, assistant, reasoning, and tool trace content. Normal Event Monitor
-projection reads only the active raw-trace file, reconstructs its lifecycle
-evidence, and selects its newest 100 canonical replay events; it does not open
-archived raw-trace segments. Native compaction projection cards are
-intentionally live-only center feedback in this slice: reopened historical
-conversations should replay that active-file recent window and should not
-synthesize center compaction cards from compaction lifecycle/status entries.
-Archived segments and manifests remain unchanged and directly usable by their
-own storage lifecycle. The Event Monitor never pages into those archives; its
-explicit earlier-browsing path is bounded to the current active trace.
+Historical conversation content is sourced from the backend replay bundle. Event
+Monitor reads the active-raw recent window (newest 100 canonical replay events)
+and does not page archives. Hydration may retain uncovered terminal native
+Activity already loaded in memory under guarded replacement; it must not invent
+native compaction cards on cold reopen from Offline or latest status alone.
+Provider compaction-boundary traces remain their separate durable evidence family.
+See [Run-Level Compaction Activity](#run-level-compaction-activity) for identity,
+termination, retention and recovery rules.
 
 ### System Instruction Activity
 
@@ -1447,7 +1436,7 @@ Incoming events are routed based on their `type`:
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
 | `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
 | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
-| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
+| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |
 | `SYSTEM_INSTRUCTIONS_SUPPLIED` | `systemInstructionActivityHandler.handleSystemInstructionsSupplied` | Upserts one completed `kind: 'system_instruction'` Activity row by raw trace ID without mutating conversation, Event Monitor, or lifecycle. |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
@@ -1649,18 +1638,37 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 
 ### Run-Level Compaction Activity
 
-Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
-visible history is projected through `AgentActivityStore` as `CompactionActivity`
-rows.
+`AgentRunState` holds latest status; `AgentActivityStore` holds operation rows.
 
-- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
-- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
-- AutoByteus semantic compaction uses backend-owned `compaction_operation_id` as the parent Activity identity across deferred lifecycle states. A request may be queued on one turn and executed on a later turn; `requested_turn_id` and `execution_turn_id` are lifecycle metadata, while child `compaction_run_id` and `compaction_task_id` enrich the same row instead of replacing its identity.
-- Provider-native compaction boundaries remain a separate identity family from AutoByteus semantic compaction operations, so provider boundary keys/operation ids do not collide with backend-owned semantic `compaction_operation_id` rows.
-- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
-- Frontend compaction rows animate the arrow-path/sync icon only for the active `started` phase using motion-safe animation classes; queued, completed, and failed states stay visually still.
-- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces and AutoByteus semantic compaction events carrying stable operation identity; the frontend does not fabricate rows from latest status alone.
-- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
+- The shared `compactionPhase` contract has `requested`, `started`, `completed`,
+  `failed`, `stopped`. Native operation identity is `compaction_operation_id`;
+  requested/execution turn IDs and isolated LLM invocation metadata enrich it.
+  There is no child compactor run/task identity in the direct strategy.
+- Provider-native boundary identities remain separate. Run-scoped Activity keys
+  use actual run IDs, not display conversation IDs or parsed Team route strings.
+- Only `started` animates. `stopped` is neutral/static; known completed/failed
+  outcomes and accumulated diagnostic facts are retained, not reclassified.
+- A confirmed terminate action reconciles only unresolved native operations for
+  the exact captured context/service/generation/node/member identities. Team/Org
+  reconciliation covers all loaded retained members of the root, not just the
+  selected member. Retired/replaced contexts and failed commands cannot mutate
+  successors. Org retires its stream before the mutation and reconciles success
+  before historical marking/inspection refresh; it cannot depend on a late event.
+- Backend terminal latching/pump drain and client reconciliation are complementary.
+  A late summary cannot resurrect a stopped row or produce a false completion.
+- Projection replacement is revision-guarded and atomic within the Activity store.
+  It preserves uncovered terminal native rows already held in memory and applies
+  the existing bounded 100-item window. This is not durable native cold replay.
+  Cold readers must not synthesize a native compaction event from Offline.
+- Failure uses backend recovery facts to display `Compaction failed — send a
+  message to retry`. Accepted A held before parent dispatch keeps its content,
+  identity and attachments. Later user B can permit the exact failed epoch;
+  successful recovery dispatches A then B once each. Stale permits, agent/system
+  input and input queued before failure are not retry authority. A failure after
+  visible final output gates the next turn, without replaying consumed work.
+- Queue ownership is live-runtime only; no same-ID replay across backend restart,
+  universal model success or immediate preparation/shutdown latency is promised.
+  Detailed budget figures remain runtime diagnostics, not a live debug panel.
 
 ---
 

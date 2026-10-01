@@ -1,3 +1,4 @@
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
 import { CreateAgentTeamRun, RestoreAgentTeamRun, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
@@ -203,11 +204,35 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
       const team = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRunId] || (team && !team.view.isRootTeamActive())) return false;
+      const view = team?.view;
+      const service = teamStreamingServices.get(rootTeamRunId);
+      const binding = useWindowNodeContextStore().bindingRevision;
+      const activities = useAgentActivityStore();
+      const members = new Map(view?.listAgentContextEntries().map((entry) => [entry.agentRunId, {
+        ...entry, state: entry.agentContext.state,
+        instance: entry.agentContext.state.inputProjection?.runInstanceId,
+        ids: activities.getNativeCompactionActivityIds(entry.agentRunId),
+      }]));
       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTeamRunId]: true };
       try {
         const { data, errors } = await getApolloClient().mutate<TerminatePayload>({ mutation: TerminateAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         if (!data?.terminateAgentTeamRun?.success) throw new Error(data?.terminateAgentTeamRun?.message || 'Team termination failed.');
+        if (useAgentTeamContextsStore().getTeamContextById(rootTeamRunId) !== team
+          || team?.view !== view || teamStreamingServices.get(rootTeamRunId) !== service
+          || useWindowNodeContextStore().bindingRevision !== binding) return false;
+        const entries = view?.listAgentContextEntries() ?? [];
+        if (entries.some((entry) => entry.agentContext.state.runId !== entry.agentRunId)) return false;
+        if ([...members.values()].some((old) => !entries.some((entry) =>
+          entry.agentRunId === old.agentRunId && entry.memberAddress === old.memberAddress
+          && entry.agentContext === old.agentContext && entry.agentContext.state === old.state
+          && (!old.state.inputProjection?.runInstanceId || old.state.inputProjection.runInstanceId === old.instance)))) return false;
+        for (const { agentRunId, agentContext } of entries) {
+          if (agentContext.config.runtimeKind !== 'autobyteus') continue;
+          agentContext.state.compactionStatus = activities.applyConfirmedNativeTermination(agentRunId,
+            [...(members.get(agentRunId)?.ids ?? []), ...activities.getNativeCompactionActivityIds(agentRunId)],
+            agentContext.state.compactionStatus);
+        }
         this.disconnectTeamStream(rootTeamRunId);
         team?.view.setRootTeamActive(false);
         team?.view.listAgentContextEntries().forEach(({ agentContext }) => {

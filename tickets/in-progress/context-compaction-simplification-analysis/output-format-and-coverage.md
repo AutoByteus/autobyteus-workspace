@@ -1,3 +1,7 @@
+> SR-029 representation clarification: the tags frame the direct LLM response only. CompressionStrategy returns the untagged six-heading body. Direct parsing validates/extracts that body; the host uses a shared body-only validator, never parses the returned body for tags. Canonical design specifies the exact split; prompt and intended output are unchanged.
+
+> SR-028 approval alignment: exact v5/output format remains approved. The current `requirements-doc.md` and `design-spec.md` own three strategy-internal attempts and held-A-then-B recovery; older single-call/failure wording here describes the original format proposal, not a competing execution policy. Numeric target removal is approved; provider hard cap remains.
+
 # Output extraction and sufficient detail
 
 > Current approval: included in the SR-012 scope explicitly approved by the user (“Correct. approve”), captured in SR-013. Historical proposal labels below describe earlier rounds; implementation remains pending.
@@ -30,7 +34,7 @@ Keep one Markdown summary, but place it inside exactly one `<compaction_summary>
 
 The runtime would extract one complete, unambiguous, nonempty block and ignore prose outside it. A missing closing marker, empty body or multiple/ambiguous blocks is a failed candidate, not an invitation to guess or silently accept the whole response. Existing failure/retry behavior and the prior valid context are preserved. The heading/output-budget checks remain small format/context checks; there is no six-category normalization, storage or projection stage.
 
-A closing marker is **not** proof of complete generation or adequate factual coverage. Provider-reported truncation must still be rejected where surfaced; the earlier completion-metadata investigation remains relevant. Exact extraction/validation implementation is architecture work, not code delivered by this document. No repair-agent loop or new retry policy is introduced.
+A closing marker is **not** proof of complete generation or adequate factual coverage. Provider-reported truncation must still be rejected where surfaced; the earlier completion-metadata investigation remains relevant. Exact extraction/validation implementation is architecture work, not code delivered by this document. No repair-agent loop is introduced by this format contract. The approved SR-028 retry policy is specified by the canonical requirements/design, not by this output-format supplement.
 
 If stronger provider-enforced structure is later preferred, a single JSON `summary` string containing Markdown is another possible transport envelope; it would not imply episodic/semantic storage. It is not selected in this draft, and provider-wide structured-output availability has not been verified. Do not introduce two output modes or restore the old six-array pipeline on that basis.
 
@@ -53,3 +57,10 @@ The six headings and existing coverage instructions still provide a checklist. T
 5. A previous summary carries a still-applicable restriction: it remains across subsequent compaction.
 
 These are ordinary variations of SCN-001/003/005, not new user-operated summary submission or file-corruption scenarios. No implementation or model-output experiment was performed this round.
+
+
+## SR-022 approved request-envelope clarification
+
+The approved system prompt-v5 text and output/tag/detail contract stay byte-identical. User explicitly removes the additional numeric target line from the history request: delete `Summary budget: ${input.summaryBudgetTokens} tokens.\n\n`, pass the existing rendered history without it. Do not replace it with a numeric word target or minimum/maximum bullet count. Provider hard output cap, known-incomplete rejection and host full-context budget validation remain. This supplement describes approved future request behavior; current source has not yet been changed. The unapproved semantic-fidelity v6 candidate is unrelated and stays parked.
+
+Rationale: the expanded ASM-022-01 in requirements/design explains the expected natural compression of long histories, the removal of repetition and intermediate detail, and the user’s practical experience. Summary detail follows continuation needs rather than a numeric quota. Provider hard cap and existing fit/completion safeguards remain separate.

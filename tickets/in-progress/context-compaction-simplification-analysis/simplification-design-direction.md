@@ -1,3 +1,5 @@
+> SR-028 authority: this source/proposal supplement is retained for rationale and provenance. Current approved requirements and complete technical architecture are in requirements-doc.md and design-spec.md. Text-to-text strategy, three internal attempts, numeric target removal and held-A-then-B are all settled; prior pending questions/interfaces in this supplement are historical, not current implementation instructions.
+
 # Simplification design direction
 
 > Finalization: user approved the consolidated SR-012 scope (“Correct. approve”). The complete SR-013 `design-spec.md` now supersedes the tentative technical details and open-decision wording below. This document preserves the earlier design-direction discussion.

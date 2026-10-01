@@ -70,6 +70,24 @@ export declare const agentPresentationPayloadSchemas: {
         error: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
     readonly AGENT_STATUS: z.ZodObject<{
+        recoverableBlock: z.ZodNullable<z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+            position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"held_turn">;
+                turnId: z.ZodString;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"next_turn">;
+                failedTurnId: z.ZodString;
+            }, z.core.$strict>], "kind">;
+            state: z.ZodEnum<{
+                awaiting_user: "awaiting_user";
+                authorized: "authorized";
+                recovering: "recovering";
+            }>;
+            code: z.ZodString;
+            message: z.ZodString;
+        }, z.core.$strict>>;
         status: z.ZodEnum<{
             error: "error";
             offline: "offline";
@@ -111,6 +129,98 @@ export declare const agentPresentationPayloadSchemas: {
         trigger: z.ZodNullable<z.ZodString>;
         pre_tokens: z.ZodNullable<z.ZodNumber>;
         rotation_eligible: z.ZodNullable<z.ZodBoolean>;
+    }, z.core.$strict>;
+    readonly COMPACTION_BLOCKED: z.ZodObject<{
+        block: z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+        }, z.core.$strict>;
+        recovery: z.ZodNullable<z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+            position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"held_turn">;
+                turnId: z.ZodString;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"next_turn">;
+                failedTurnId: z.ZodString;
+            }, z.core.$strict>], "kind">;
+            state: z.ZodEnum<{
+                awaiting_user: "awaiting_user";
+                authorized: "authorized";
+                recovering: "recovering";
+            }>;
+            code: z.ZodString;
+            message: z.ZodString;
+        }, z.core.$strict>>;
+    }, z.core.$strict>;
+    readonly COMPACTION_RESUMED: z.ZodObject<{
+        block: z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+        }, z.core.$strict>;
+        recovery: z.ZodNullable<z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+            position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"held_turn">;
+                turnId: z.ZodString;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"next_turn">;
+                failedTurnId: z.ZodString;
+            }, z.core.$strict>], "kind">;
+            state: z.ZodEnum<{
+                awaiting_user: "awaiting_user";
+                authorized: "authorized";
+                recovering: "recovering";
+            }>;
+            code: z.ZodString;
+            message: z.ZodString;
+        }, z.core.$strict>>;
+    }, z.core.$strict>;
+    readonly AGENT_INPUT_STATE: z.ZodObject<{
+        run_instance_id: z.ZodString;
+        revision: z.ZodNumber;
+        entries: z.ZodArray<z.ZodObject<{
+            sequence: z.ZodNumber;
+            message_id: z.ZodNullable<z.ZodString>;
+            dedupe_key: z.ZodNullable<z.ZodString>;
+            turn_id: z.ZodNullable<z.ZodString>;
+            state: z.ZodEnum<{
+                queued: "queued";
+                held: "held";
+                forwarded: "forwarded";
+            }>;
+            content: z.ZodString;
+            sender_type: z.ZodEnum<{
+                user: "user";
+                agent: "agent";
+                system: "system";
+            }>;
+            file_attachments: z.ZodArray<z.ZodObject<{
+                uri: z.ZodString;
+                file_type: z.ZodString;
+                file_name: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>>;
+        }, z.core.$strict>>;
+        recoverableBlock: z.ZodNullable<z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+            position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"held_turn">;
+                turnId: z.ZodString;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"next_turn">;
+                failedTurnId: z.ZodString;
+            }, z.core.$strict>], "kind">;
+            state: z.ZodEnum<{
+                awaiting_user: "awaiting_user";
+                authorized: "authorized";
+                recovering: "recovering";
+            }>;
+            code: z.ZodString;
+            message: z.ZodString;
+        }, z.core.$strict>>;
     }, z.core.$strict>;
     readonly TOKEN_USAGE_UPDATED: z.ZodObject<{
         usage_event_id: z.ZodString;

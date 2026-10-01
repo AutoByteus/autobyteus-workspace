@@ -1,229 +1,99 @@
-# Implementation Handoff — IR-003
+# Implementation Handoff — IR-007
 
-## Upstream Artifact Package
+## Current result / upstream package
 
-**Current result: structural implementation complete for independent source
-review. Not acceptance, semantic-quality Pass or Delivery.** Architecture
-**ARCH-REV-002 Pass** selects SR-018 as corrected by SR-019 against approved
-SR-012 plus explicit SR-017 no-import/default-parent requirements
-(REQ-001–009 / AC-001–012). Independent architecture/source review is applicable,
-not N/A. Current code and this handoff supersede the IR-002 current-state text;
-prior outcomes remain in the cumulative records.
+**Completed approved SR033/SR034 implementation delta for independent SOURCE REVIEW; not API/E2E acceptance or Delivery.** Current worktree + this handoff are authoritative. IR005/006 source remains in place; IR007 adds31 bounded source/test changes. This is a new reviewed-design implementation round, not a repeat of the already corrected F007 Local Fix.
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr018.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr019.md`
+- Approved intended behavior **SR033** (SR028 retained): `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md`; canonical investigation `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md`; cumulative history `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md`.
+- Ready design **SR034** correcting SR033, with SR028–031 retained: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr034.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr033.md`.
+- Trigger **architecture_reviewer / ARCH-REV-004 Pass**: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-004/README.md`. ARCH-F003's all-root/Org atomic-publication correction was resolved at design level in that review and is implemented here for source verification; structural7files/85Pass were characterization only, not target proof. ARCH-F001/F002 retained.
+- Relevant supplements include exact `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md`, `output-format-and-coverage.md`, `input-hold-proposal.sr027.md`, `acceptance-disposition.sr020.md`, `production-scenario-clarification.sr031.md`, `terminal-compaction-activity.sr032.md` as historical decision input, and SR033 approval/SR034 clarification evidence; all absolute paths carried in the full index.
+- Prior code-review authority **CRR010 source Pass** for IR006; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md`, `code-review-revision-record.md`. It does not review IR007. Earlier CRR009 F007 failure and corrected readiness rationale retained historically, not current reopen-work instructions.
+- Current executable authority `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-case-ledger.md`, and API006 SR033 evidence-clarification. **API006 incomplete; latest completed API005 Fail78.6**. API004 Fail90.7 historical. F007 actual Settings save/readback/reopen closure and346 scoped repository Pass are API-owned and retained with their limits; not newly executed here.
+- Full cumulative received/current absolute package: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/reference-index.json`; existence audit `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/reference-check.json`. Independent architecture/source review applicable, not N/A. Product Design/DR **N/A — not requested/not reached**.
 
-Full cumulative absolute supplement inventory:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/reference-index.json` (extends
-`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr018/reference-index.json`).
-This includes active exact prompt-v5/output contract, prompt rationale/direction,
-research, literal sources/licenses, historical experiments, design investigation,
-review evidence, implementation/code/API histories and SR-018/019 recovery
-context. Their authority/evidence limits remain as recorded upstream. Candidate-v6
-is indexed only as **unapproved/excluded**. Product supplements **N/A—not
-requested**; external three-output WIP remains excluded/read-only and untouched.
+## Revision / classification
 
-Triggering evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-002/README.md`;
-SR-019 actual-writer characterization is feasibility evidence, not target proof.
-Current local evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/README.md`.
-Code review `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md` / `code-review-revision-record.md`
-and API `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md`
-remain active context, not newly rescored results.
+Rework **IR-007**; record `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md` keeps IR001 baseline and IR002–006. Related SR012/017–020/022/024–031/033/034; ARCHREV001–004; CRR001–010; APIREV001–006 +SR022 diagnostics; DR N/A. Triggering design finding **ARCH-F003**, previously resolved structurally, not self-closed as implementation evidence.
 
-## Current Implementation Summary
+**task_size=Large / architectural_risk=High — Confirmed unchanged.** Design section “SR033/SR034 Tradeoffs, risks and completed classification” remains valid: core/server/frontend cancellation/commit, concrete pump lifetime, root response ordering and multi-run atomic hydration are High risk within cumulative Large scope. Markdown count does not determine classification. Independent **Code Review** required, not direct API/E2E. Direct-route lightweight review **N/A**; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-self-check.md` is bounded implementation self-check, not approval. New design/requirement impact **None in the implemented delta**; broader standalone preparatory-quiescence diagnostic explicitly retained below, no policy change made.
 
-- Cycle: **Rework / approved-design revision**. Current **IR-003** in
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md`.
-- Related SR-012/013 baseline, SR-014–016 recovery/base context, **SR-017/018/019**
-  current amendment/design; **ARCH-REV-001/002**, **CRR-001–004**,
-  **API-REV-001/002**, delivery **DR: N/A**.
-- Trigger: ARCH-REV-002 Pass; **ARCH-F001** design correction implemented for
-  independent verification. Separate open API-F004/API-F005/SR018-OBS-001 are
-  not closure claims. New bounded implementation finding **IR003-LF001** below.
-- Development commit **`ebaf3a78eff2d3147dc3f4f2eb63bf119d6547ad`**, 23 owned
-  source/test/fixture paths. Entry HEAD `9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e`;
-  refreshed base `8caa610ff438c288d9aca9f2efe2c33924fbf517`.
-- Workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`, branch `codex/context-compaction-simplification-analysis`.
-  Pending owner files retained, not staged into this source commit. No push,
-  merge, release, backup disposal, external WIP integration or private data use.
-  Later Delivery finalization target remains **origin/personal**.
-- Cumulative implementation retains one fresh direct LLM call with the exact
-  approved tagged Markdown prompt, planner/head/recent/tool/budget behavior,
-  explicit retry and provider completion/isolated cleanup. No child AgentRun,
-  strategy selection, categories, repair generation or second summary store.
-- Snapshot commit remains validated/preallocated candidate → archive COPY without
-  active prune → atomic snapshot commit → no-fallible-I/O/no-copy install and
-  completion → guarded best-effort prune → safe status. Current snapshot codec
-  now projects known fields and ordinarily writes exactly `{agent_id,messages}`.
-- Retired builtin compactor settings importer, startup call and importer tests
-  removed. No replacement migration, initialization write/gate, old-config read
-  or deletion. Existing current tuple saves remain usable; absence uses actual
-  current parent model and existing credential/availability owners per attempt.
-- Released native-v5 classifier/target isolated in one migration-owned frozen
-  shape file. Existing migration preserves recognized versionless locations
-  before raw loading/conversion/cleanup, including unfinished tool batches;
-  unrecognized versionless payloads are unchanged and scoped FAILED. No new
-  migration ID, history rewrite campaign, ledger reset/replay or runtime decoder.
+## IR007 reviewed behavior / actual production trace
 
-## Routing Classification
+Paths relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`: C=autobyteus-ts/src, S=autobyteus-server-ts/src, W=autobyteus-web.
 
-**task_size=Large; architectural_risk=High — confirmed, unchanged.** Design
-classification and reviewed persistence/ownership boundary remain valid: this
-is a cumulative cross-core/provider/server/web contract and storage change,
-not merely an importer deletion. Independent source review cannot be bypassed.
-
-- Selected route: **Code Review**. `get_handoff_rules` selected the implementation-complete Large/High rule, exact recipient **/code_reviewer**; only this recipient receives the outcome. Selection persisted in `implementation-evidence/ir-003/handoff-rule-selection.json`.
-- Lightweight direct-route self-review: **N/A**; local self-checks do not replace
-  independent Code Reviewer.
-- New design impact: **None identified**. The raw-success null handling fix
-  enforces SR-019's explicitly required committed-fact preservation, without
-  adding behavior or a repair mechanism. Review that bounded delta explicitly.
-
-## Reviewed Behavior Implementation Trace
-
-Production paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`.
-
-| Behavior | Approved / preserved outcome | Actual path and result |
+| Behavior / spine | Actual implementation path | Outcome / boundary |
 | --- | --- | --- |
-| BEH-001 | REQ-001–006/008/009, AC-001/003–007/010–012; automatic direct compaction | Existing `agent/loop/llm-phase-compaction.ts` → `memory/compaction/pending-compaction-executor.ts` → direct summarizer → finalizer/validator → MemoryManager commit retained. Server `agent-execution/compaction/compaction-llm-factory.ts` rechecks current tuple and delegates current parent/availability/credentials each attempt; no old importer. Mechanical local checks pass; semantic acceptance not claimed. |
-| BEH-003 | REQ-001/003/006/009, AC-002/004/007/011; one rolling replacement | Existing planner/summarizer/provenance and one-summary invariant retained, prompt unchanged. **API-F005 semantic failure remains open**, not “quality unverified” or a green result. |
-| BEH-005 | REQ-004/005/008, AC-005/006/010/011; safe failure, explicit retry | Existing coordinator/executor/committer/reporter and shared/server/web status unchanged; core fault/cancel/commit/stream local checks rerun. `provider` native discriminator and separate summarizer diagnostics remain intact. |
-| BEH-004 | REQ-007, AC-008; supported saved-run resume | `working-context-snapshot-serializer.ts` projects current fields → bootstrap exact identity → existing active-raw repair → full validation/final ordinary save. `working-context-tool-protocol-repairer.ts` now preserves a committed success's null error. Existing migration and frozen shapes preserve actual writer cuts before destructive work; historical fixed-v5 conversion remains independently classified. |
-| BEH-002 | REQ-007/008, AC-009/010/012; historic inspection and optional current controls | Historical AgentMemoryService/category/raw/Event Monitor readers unchanged and locally checked. Settings codec tolerates root extras, exact tuple save remains durable; startup composition no longer imports old preferences. No new frontend surface or reorganization. |
+| BEH007 +BEH005; REQ005/013, AC013/018; DS012a | Actual owner AbortSignal -> C/memory/compaction/pending-compaction-executor -> agent/compaction/compaction-runtime-reporter -> existing notifier/stream | Call-local terminal latch emits stopped promptly before provider settlement, once per authorized call; completed synchronous commit wins later abort. Listener removed; ordinary failure remains failed; retry/hold/commit authority unchanged. Fresh authorized same-gate execution may start again. |
+| BEH007/005; DS011/012b/012 | Normal Terminate -> existing service/root/AgentRun -> S/agent-execution/backends/autobyteus/{autobyteus-agent-run-backend,autobyteus-agent-run-backend-factory} -> core stop -> FIFO sentinel -> retained pump/source listeners -> AgentRun queue/projectors | Concrete session/pump lifetime; one existing10s budget across removal and drain, remaining seconds forwarded. Backend await stays outside AgentRun dispatch lock. Actual shutdown success is not undone by projection drain loss; resource failure is not success. No new queue/ACK/lifecycle coordinator. |
+| BEH007; DS011 +DS011T | Existing standalone Terminate / TeamMembersPanel or workspace-history Terminate -> W/stores/{agentRunStore,agentTeamRunStore} -> actual matching success -> public agentActivityStore action -> owned teardown/history | Exact context/state/member address/run ID, available runtime instance, service and node-binding guards. All retained eligible native Team members (including task/new same-owner members), not only selection. Received completed/failed preserved; reject stale/rejected/partial confirmation; no absent card invention. |
+| BEH007; DS011O | History Org Terminate -> existing stopAndInspect in W/stores/agentOrgContextsStore -> intentional early stream retirement -> agentOrgRunStore/server success -> public activity action -> markHistorical -> readInspection | Preserve existing stop exclusion/generation retirement. Success guard expects transport absent, exact current root/member/context/binding. Reconcile before identity cleanup; inspection failure keeps truthful stopped historical state. No transport-facade redesign. |
+| BEH004/007; REQ007/013; DS013 | Existing projection fetch -> runProjectionActivityHydration -> agentActivityStore.replaceProjectionActivitiesIfRevisions -> pure services/activity/nativeCompactionActivityReconciliation -> normal atomic publish/adopt | All-run revision/duplicate guard still precedes publication. Preserve only already-held uncovered completed/failed/stopped native records by exact identity, stable chronology/dedupe/normal100window. Tools/provider/system remain projection-owned; no retention of unresolved cards from Offline, no cold reconstruction/persistence/cache. Actual Org stage/commit/adopt exercised locally. |
+| BEH007; DS012 return/render | Existing standalone/Team/Org phase transport -> shared W/types/activity/compactionPhase -> live/hydration/event-monitor/window projection -> utils/compactionActivityPresentation -> CompactionStatusRow and CompactionActivityItem | One five-phase vocabulary; strict adapter admits stopped. Exact one-word Stopped primary+badge, neutral/static icon, no spinner; identity/known model/count metadata retained. Existing completed/failed presentation preserved. |
 
-Scope Guardrail: **Yes**, UC-001–003 and preserved behavior only. No new history
-support, snapshot missing-fact fabrication, provider/default/support change,
-manual summary workflow or candidate-v6 adoption.
+Scope Guardrail **Yes**. Full IR007 path/action/hash/line inventory: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-inventory.json`; isolated round patch `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source.patch`.22 production +9 implementation-test paths; no API-owned durable test adaptations. AgentRun, server root authority, activity hydration/adoption orchestration, persistence, settings and exact-v5 are unchanged unless explicitly listed above.
 
-## Key Files / Bounded Delta
+## Cumulative implementation retained (IR005/006)
 
-Exact inventory/hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/source-inventory.json`.
+These retained paths/results are not a claim of a fresh whole-product run. IR007 final checks below state precisely what ran.
 
-- `autobyteus-ts/src/memory/migration/native-working-context-snapshot-shapes.ts`:
-  frozen released classifier/writer and separate pure preservation predicate;
-  no evolving runtime codec/validator imports. Base/source hashes and83 literal
-  classifier cases captured in `tests/fixtures/memory/released-native-snapshot-shapes.json`.
-- Existing core converter and server native-v5 migration use the frozen target.
-  Existing versioned conversion/omission/lineage/missing/obsolete dispositions
-  preserved. Versionless guard returns before raw-fact loading/converter/write/
-  cleanup; no cross-message completeness admission in that guard.
-- Current serializer, snapshot controller and bootstrap remove runtime version
-  API/checks, safely validate known fields without filtering/coercion, and
-  preserve open arguments/results/native context/domain metadata.
-- Server importer file and obsolete tests removed; platform bootstrap call
-  removed; current compaction settings codec projects only tuple fields.
-- Durable local tests cover released classifier/output independence, current
-  projection/invalid facts, actual writer cuts, entire-location bytes and
-  forbidden calls, independent resume, terminal runner skip, startup no-import,
-  current tuple and fresh parent/credential delegation.
+Paths below are relative to isolated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`; C=autobyteus-ts/src, S=autobyteus-server-ts/src, W=autobyteus-web.
 
-### IR003-LF001 — existing raw-ahead success mislabeled interrupted
+| Behavior / spine | Actual implementation path | Result |
+| --- | --- | --- |
+| BEH001/003/006, DS001/008; REQ001/005/009–011 | C/memory/compaction/{compaction-content-builder,compression-strategy,direct-llm-compression-strategy,pending-compaction-executor,compaction-summary-parser}; memory-compaction-configuration; S/agent-execution/compaction/compaction-llm-factory | Prepared text -> one host compress call -> untagged validated six-heading body. Direct-only envelope parser, exact v5, no numeric target, prior summary once. Three strategy attempts max, fresh model/identity per attempt, bounded cleanup/delay/abort, host acceptance/commit never retry generation. |
+| BEH001/005, DS005/008; REQ003/005/008 | C/llm/base and api/{openai-compatible,openai-responses,anthropic,mistral,gemini}; utils/gemini-helper | Single-attempt invocation-local SDK policy; Gemini isolated client. Parent defaults unchanged. Fresh current parent/settings/credentials per attempt; input capacity/hard cap/reserve/final fit retained. |
+| BEH005, DS009; REQ004/012 | C/memory/memory-manager-compaction-coordinator; agent/compaction/compaction-recovery-controller; agent/runtime/{agent-runtime,agent-worker}; agent/loop/{agent-turn-runner,llm-phase}; agent/llm-request-assembler | Original unsent A keeps its turn/prepared input; server B stays queued. Exact epoch permit, no origin/different-turn fallback or queued/during-cycle credit. Same A continues after commit; no tool-continuation compaction safe point. |
+| BEH005, DS010; AC017 | Same native phase/worker and status derivation; S/agent-execution/input/agent-run-compaction-recovery, domain/agent-run | Consumed A answer/hooks/completion once, run ERROR/pending gate survives with no active turn. Later C authorizes oldest prequeued B then C. Grant before A settles latches; cancelled/undelivered input revokes permission; uncertain delivery pins claim, never replay. |
+| BEH005, DS004/009/010 | S/agent-execution/{domain/agent-run,input/agent-run-input-admission-state,input/agent-run-input-lifecycle,services/agent-run-command-registry}; native backend, lifecycle projector | Existing FIFO, identified high-water admission, provider control outside serialized queue, ACK/snapshot reconciliation, early lifecycle buffering; HELD remains outstanding. Recoverable-block termination/root fences interrupt before waiting; ordinary standalone preparation retains its existing quiescence policy (IR007 diagnostic disclosed). No queue/ledger/outbox duplication. Explicit native supported capability, other backends unsupported. |
+| BEH001/005, DS004; AC014/017 | Shared agent-presentation/team/collaboration contracts; S live snapshots/projectors through ConfiguredHandle/Team/Org; W agentInputStateHandler/agentStatusHandler, agentRuntimeStatusState, stores and localUserSubmission | Strict correlated DTOs; live instance/revision queue view. Optimistic IDs before send; real text/recording attachments merge; no pending replay after restart. Error state does not reactivate backend or finish held answer. Provider-native compaction discriminator retained. |
+| BEH005, DS004 | W/components/conversation/UserMessage.vue; components/agentInput/AgentUserInputTextArea.vue; en/zh-CN catalogs | Held/queued badges, explicit send-to-retry guidance; existing busy interrupt behavior preserved. Earlier component/state evidence retained; IR007 browser feedback covers only terminal compaction row/card, not this input journey. |
+| BEH002/004, DS002/003/007; REQ007/008 | Existing memory restore/inspection and frozen released migration/current preservation guard; current settings factory | No new schema/migration/import/default write/category/child behavior. Versionless current restore, writer-cut preservation and historical readers retained. Prior focused memory/migration/settings evidence retained; not rerun in IR007. No actual crash/data-history campaign. |
 
-SR-019's target raw-ahead test exposed `completed?.toolError ?? syntheticError`
-in the existing repairer. A committed success with a null error was restored
-with its actual result **and a false interrupted error**. Unchanged released-base
-reproduction and hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/released-raw-ahead-defect.json`;
-script and limitations in evidence README. Existing structural validation did
-not detect this semantic corruption of the tool result.
+Scope guardrail: **Yes**. No new product scenario, durability contract, broad busy-send feature, default/model/support or historical-data changes. Application SDK stream remains its existing minimal closed event contract; it does not acquire pending user-content exposure. Its projector tests pass; normal desktop standalone/Team/Org live routes own pending UI.
 
-The one-line fix selects `completed.toolError` whenever that completed fact
-exists. No new recovery owner/lifecycle is introduced. Regression assertions
-cover successful raw reuse, while genuinely unfinished calls keep existing
-interrupted-result treatment. This is **not evidence about the original
-API-F004 continuation cause**, nor a fix for model-summary fidelity.
+IR006 BEH001/005/REQ008/AC010 Settings correction remains: `S/services/server-settings-service.ts` uses one exact public numeric-context exception to unchanged credential-name protection for read/write, ordinary metadata/validation/AppConfig semantics retained. Existing service unit and isolated AppConfig integration remain. CRR010 reviewed it; API006 independently closed normal Settings use. No new F007 edit or regression-test rewrite in IR007.
 
-## Important Assumptions / Known Risks
+## Design health / removal / persistence / source pressure
 
-- Coordinated current core/server/contracts/web deployment is still required;
-  concurrent old/new writers are out of scope. Deep removed APIs have no shim.
-- Existing current message semantics/provenance remain required. A root version
-  never admits missing facts. Frozen historical classifier quirks are not an
-  alternate runtime reader or current admission rule.
-- Existing per-file atomic replacement and archive commit semantics retained;
-  no new fsync/power-loss guarantee or all-files transaction.
-- **API-F005 remains actual semantic Fail**: invented completed plan/checkpoint
-  work. **API-F004 remains unisolated** despite later positive runs. Neither
-  local tests nor this raw-result bug prove a remedy/cause for those findings.
-- **SR018-OBS-001** remains API-owned `ContextFileOwnerResolver.memoryDir` /
-  owner-readiness wrapper reconciliation. All nine API-owned durable paths
-  unchanged; later proportional successful-test review still required.
-- Historical source Pass9.40 and API-REV-002 Fail82.9 not rescored. Candidate-v6
-  unapproved/excluded, no further exhausted diagnostic generations authorized.
-  RPA termination remains unknown; no silent clipping/fallback agent.
-- No full repository suite, standalone full test-tree typecheck, live semantic
-  comparison, real crash campaign or installed-data census this round.
-  Prior residuals remain scoped historical evidence, not blanket waivers.
+- Reviewed posture **bounded behavior clarification/lifecycle correctness**, root cause **Missing Invariant / Boundary Or Ownership Issue**; narrow refactor required. Implemented same owners and public boundaries. Pure native reconciliation is below activity store; callers never import both store and helper. No alternate root owner, shared mixed-concern base, ledger or native history cache.
+- Superseded abort-as-failed presentation, graceful close-before-stop/discard-before-drain and duplicate frontend phase unions/guards replaced cleanly. Unimplemented SR033 helper not added alongside SR034 replacement. No compatibility wrappers/feature flags/old-new dualpath or dead alternate in scope.
+- Stored formats **Not Affected** per SR034; no migration/current-reader fallback/raw rewrite/native status persistence. Prior approved versionless current restore and frozen released conversion boundaries retained. In-memory terminal retention is not cold durable replay.
+- All22 modified/added production files <=500 effective nonempty lines; no IR007 delta>220 changed lines (`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-size-check.json`). Tests exempt. Canonical design principles reapplied; no unapproved refactor pressure.
+- Exact v5 SHA256 `2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7` retained. No v6/provider/default/support/attempt ceiling or SDK modifications.
 
-## Task Design Health / Removal / Size Checks
+## Fresh local implementation checks / diagnostics
 
-- Posture: Behavior Change / Refactor / Cleanup. Root cause and refactor decision
-  remain the reviewed category/child/strategy duplication and current-reader /
-  released-upgrader dependency coupling. **Implementation matches assessment**.
-- Backward compatibility mechanisms introduced: **None in current runtime**.
-  One frozen migration boundary belongs to the already-released upgrader, as
-  designed; no generalized registry/fallback/framework.
-- Superseded importer/startup call/tests removed, old files inert and untouched;
-  current shared structures remain tight. Shared guidance reapplied.
-- Source guardrails **PASS**: max499 effective lines in the already-existing
-  converter; new frozen file190; no source delta above220 changed lines.
-  `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/source-size-check.json`. Captured test fixtures are excluded from the
-  source-file limit, not used to downgrade task/risk classification.
+Commands/logs/results `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/README.md` and `check-results.json`:
+- **312 Pass /27 files**: core106/6, server39/6, web167/15 (final disjoint groups; overlapping iterations not added). Real core executor, native stream/AgentRun queue and actual root stores/Org staging covered using local fixtures. Not live inference or API/E2E signoff.
+- Final core/server production `tsc --noEmit -p tsconfig.build.json` **exit0**, owned diff whitespace **exit0**. No generated output build or fullsuite claim.
+- Web plain `tsc --noEmit -p tsconfig.json` default-heap OOM,8GB retry **exit2/7078 diagnostics**. Five changed-test `.vue` resolution diagnostics; no changed production TS path diagnostic. Plain tsc is **not Vue SFC typecheck**, not comparable to inherited6836, not a broad Pass.
+- Initial broader characterization included **8 failures in untouched retainedActivityTermination.spec.ts** at strict Team snapshot setup (missing recoverableBlock/agent_input_states) before command. This fixture/schema was not changed; source-traced setup mismatch, **not executed baseline evidence or waived**. Separate three Team mock failures were fixed via its new public action adapter and final suite passes. Full diagnostic history remains.
+- Initial first-auto-compaction/never-settling-provider Terminate timed out during unchanged preparatory quiescence **before backend shutdown**; not a pump-drain Pass or hidden failure. `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/shutdown-preparation-diagnostic.md` +source hashes describes it. SR033 is post-confirmation display, SR034 forbids general shutdown redesign; no immediate-preparation-interrupt guarantee is newly claimed. Final actual held-A/recovering-on-B test proves the reviewed recovery witness, events before command return/no late commit/no cancelled dispatch. Review must retain this broader boundary limitation; changed policy would require Solution Designer adjudication.
 
-## Persisted Data Transition Check
+## Frontend rendered feedback
 
-**Directly Usable — No Migration** for current snapshot projection; retired
-settings carry-forward intentionally removed. SR-018/019 migration-guideline
-closure implemented. Versionless current writer and old valid-v5 direct reads
-preserve message meaning without startup rewrite. Ordinary saves only remove
-obsolete envelope/provenance fields according to current contracts.
+`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/rendered-result-check.md`: initially CUA native pipe unavailable, but available browser connector permitted an owned **actual-component** Vite preview with project Tailwind and Iconify. Inspected conversation row and progress card, changed phase states, highlight and360px width. Observed Stopped/static neutral icons, no stale primary error, metadata retained; completed/failed/queued colors preserved, no horizontal overflow in checked states. Corrected missing gray-tone mapping in adjacent progress card found by mounted ActivityFeed. Preview locale/title and data synthetic. Direct DOM interaction plus image inspection, not screenshot-only proof.
 
-Existing migration dependency isolation/preservation is **not a new migration**:
-strict-v5 output/classifier pinned; recognized current locations entirely skipped;
-invalid versionless preserved with scoped failure; old terminal records not
-replayed. No ID registration, migration marker, ledger reset, old config reads,
-category reconstruction or history sweep. No deviation from approved transition.
+This is **bounded renderer feedback**, not full desktop/Team/Org control journeys, actual backend response timing, real reconnect/saved hydration/no-generation or accessibility/device matrix. API006 provenance withdrawal remains binding. Only owned preview PID88003 and tab e11144 stopped/closed; other tabs/user services untouched. No isolated desktop or provider campaign launched.
 
-## Environment / Local Implementation Checks
+## Ownership / environment
 
-Exact commands, logs and authoring failures: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/README.md`.
-Final local checks: **core48 files/377 tests PASS**, **server6/72 PASS** plus
-preserved-reader/lifecycle **5/28 PASS**; core and server production builds PASS,
-including shared builds, Prisma generation and sanitized builtin startup smoke.
-Counts do not add overlapping reruns. All use test-owned files/database and
-mocked providers. No API/E2E sign-off, public/private model call or user data.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`; branch codex/context-compaction-simplification-analysis; **HEAD unchanged6908ccff483f1eca522caa65bfaaf6dcfcc26750**. No stage/commit/fetch/push/merge/release/finalization or external cleanup. Last-refreshed origin/personal8caa610ff438c288d9aca9f2efe2c33924fbf517 remains historical. Delivery owns eventual origin/personal finalization.
 
-Entry owner file hashes:272 unchanged in `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/pending-owner-preservation.json`.
-Generated dist outputs excluded from that claim; ordinary build outputs retained.
-Pending authority/evidence/API edits and backups are not discarded or committed
-as implementation-owned changes. Old IR commit IDs remain historical; refreshed
-replayed IR-002 source is `ca0552721`, and entry documentation is `9f3b7984a`.
+Entry1736 pending/reference pins, full current audit `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/final-audit.json`; all ten API durable paths byte-identical to intake including numeric positive/security negative/versionless restore correction. API owner acknowledged no conflicting edits and no validation restart; not IR007 approval. SDK/generated/source WIP/backups/stash and other-owner artifacts preserved. Owned preview artifacts confined to E7; source/test inventory excludes them.
 
-## Frontend Rendered-Result Check
+## Unwaived downstream gates / coverage hints
 
-**Not Applicable for IR-003** — no rendered frontend implementation or interaction
-changed. Existing optional controls/status presentation remain. Prior IR-001
-synthetic self-check and API browser limits retain their own scope; no new visual
-or full saved-run UI acceptance claim.
+1. Independent source review of IR007 including all three command owners, terminal latch/commit race, deadline/session/dispatch lock, actual atomic Org commit/adopt and shared strict phase transport; then **API/E2E**, never direct Delivery. Reviewer determines implementation finding closure.
+2. Actual normal standalone/Team/Org Terminate during recovering compaction: exact Stopped/no spinner/facts, no cancelled dispatch/latecommit; event and successful response captured separately. Rejected/stale/partial responses must not qualify replacement/absent activity. Broader first-operation preparation latency is not proven by the scoped recovery test.
+3. **Actually execute** renderer reconnect and saved selection/hydration with navigation/execution-context and projection-response evidence; establish no generation on inspect and separate identity on later new runtime. Do not use authored “reload” text, skip hydration, delete cards or claim cold native durability. Full heldA/attachment/queuedB/retry/cancel/postresponse/resume/semantic verification and fullTeamOrgUI remain incomplete.
+4. API006 **incomplete**, interim90.7/reconnect/hydration/durable-native claims withdrawn; **API005 Fail78.6** latest completed; API004Fail90.7 historical. F007 product closure/346 repository Pass retained only as attributed scoped evidence. Ten cumulative API durable-path successful-test review pending. No new provider budget.
+5. F005 SR020 accepted known/nonblocking **NOT fixed/Pass**, Qwen STOPPED; F004 historical unknown; F006 corrected; SR022 exhausted1fidelityFail/3scopedusable;v6unapproved. Unsupported same-ID Team/Org diagnostic remains Fail/not scored; no withdrawn machinery restored.
+6. Other14 residuals,7baselinecontract failures, historical webtypecheck6836 plus this round's non-green plain tsc and8fixture failures, fullsuite/current fidelity/physicaldrag/consumed-toolfullUI/crash/Delivery/docs/user gates unwaived. No new acceptance score.
 
-## Downstream Coverage / Work Still Required
+Fresh result-based routing/receipt is recorded in IR007 evidence after package persistence. No duplicate outcome forwarding.
 
-1. Independent **source review of IR-003** on the cumulative approved package,
-   especially frozen historical semantics, versionless no-destructive-fallthrough,
-   actual cut-point tests, no-import composition and IR003-LF001. ARCH-F001 remains
-   a named downstream verification item, not self-certified reviewer closure.
-2. API/E2E owns broader startup/resume/continuation, provider semantics and saved
-   override/durable store flows; no broadened live generations without a separately
-   authorized bounded plan. Preserve separate structural versus semantic results.
-3. API-F005/F004 recovery stays with normal accountable owners and approval rules;
-   no prompt/config/model/support remedy invented here. API owner reconciles
-   SR018-OBS-001 and its nine paths without weakening owner/readiness guards;
-   reviewer later performs proportional successful-test review.
-4. No Delivery advancement until all required gates, including actual semantic
-   fidelity, pass. Delivery alone owns final integration to origin/personal.
+IR007 routing: fresh get_handoff_rules selected solely the completed Large/High approved-design implementation rule to **/code_reviewer**. The older LocalFix request is already disposed by IR006; no direct API/SD/Delivery outcome handoff. Confirmation is recorded only after accepted send_message_to.
+
+IR007 handoff confirmed **accepted=true / DELIVERED** to sole /code_reviewer (code_reviewer_7bd4b2c09af543088c0238d792d0fd98),1483 cumulative/current references attached at send. Receipt: implementation-evidence/ir-007/handoff-receipt.json. Stage stopped; no duplicate outcome handoff or validation restart.

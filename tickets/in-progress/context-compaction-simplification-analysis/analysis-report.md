@@ -1,88 +1,23 @@
-> Historical SR-001/SR-002 assessment. Current approval, prompt proposal and next action are in `requirements-doc.md` (SR-003) and `solution-progress-result.md`; earlier open-decision statements below are retained as historical context.
+# Context-compaction simplification — current rationale
 
-# AutoByteus context-compaction simplification assessment
+Documentation revision SR-028. This explanatory document does not supersede `requirements-doc.md`, the exact prompt, or `design-spec.md`. The complete earlier assessment is preserved in `history/analysis-report.md.before-sr023.md`; its former research comparisons are not current rationale.
 
-**Status:** Original analysis and `SR-002` comparative research complete; requirements remain Draft. No complete changed-behavior baseline is approved and no implementation/design handoff is authorized.  
-**Package:** `context-compaction-simplification-analysis`; current solution revision `SR-002`.  
-**Evidence baseline:** `origin/personal` @ `a2694ed453e353550d8b345fa82ef489634dcaf2`, inspected 2026-09-25 in `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis` on `codex/context-compaction-simplification-analysis`. Finalization target if later authorized: `origin/personal`.  
-**Original request:** Analyze whether context compression is over-engineered by asking the compactor to create episodic/semantic JSON, then rendering both back into one prompt message; compare summary-based systems. No source changes requested.
+## Why simplify
 
-## Conclusion
+The original implementation asked a child compactor to produce categorized JSON, constructed episodic/semantic records, and rendered those records back into one prompt-facing continuation checkpoint. The next parent request needed the checkpoint, not the intermediate categorization. Historical inspection remains useful but does not require every new compaction to produce long-term-memory records.
 
-The concern is substantially right **about the output model**. The currently shipped/native path asks the compactor for six arrays in JSON, transforms them into episodic and categorized semantic records, writes two JSONL stores, then renders those records back into **one** prompt-facing compacted-memory user message. For the immediate goal of continuing a run with fewer prompt tokens, the two intermediate memory taxonomies do not appear necessary. A single rolling continuation summary/checkpoint is the simpler default.
+The approved direction is one direct LLM summary over selected settled history, producing one replacement Markdown checkpoint. Long-term memory is separate future work. Preserve historical read access and supported saved runs; do not delete history or require a model call merely to reopen a valid run.
 
-This does **not** imply that all compaction machinery should be removed. Selecting a safe prefix, retaining recent messages and complete tool interactions, protecting the system prompt, enforcing the post-compaction token budget, preserving trace/lineage, and committing a coherent snapshot are distinct and useful responsibilities.
+## What remains outside summary generation
 
-## Actual current path
+The runtime owns the trigger, prefix selection, protected head/recent tail and complete tool interactions, input preparation, candidate validation, failure admission, safe persistence and parent continuation. A simple output does not remove these responsibilities. Current work also defines an implementation-neutral summary-production boundary, without reintroducing a strategy registry or a second production algorithm.
 
-1. Provider-observed prompt usage and a resolved budget trigger a pending compaction; the runtime executes it before further provider dispatch as required (`autobyteus-ts/src/memory/memory-manager.ts`, `src/memory/compaction/pending-compaction-executor.ts`).
-2. The window planner identifies old compactable units, a recent retained suffix, and a protected trailing tool-protocol unit (`working-context-message-window-planner.ts`). The previous provenance-marked compacted-memory message is not chosen as a *recent suffix*; the partition puts it in the compactable prefix on subsequent passes, so previous content is re-summarized with new history rather than simply appended (`working-context-message-unit-builder.ts`, `working-context-message-window-planner.ts:54-67,134-146`).
-3. `StructuredJsonCompactionStrategy` sends selected units through `AgentCompactionSummarizer`. The renderer places the history **inline** in the helper's task prompt, and the compactor template requires `episodes`, `critical_issues`, `unresolved_work`, `durable_facts`, `user_preferences`, and `important_artifacts` (`structured-json-compaction-strategy.ts`, `working-context-compaction-prompt-builder.ts`, `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md`).
-4. The parser accepts/rejects the JSON shape; a bad result gets one corrective attempt. The normalizer collapses/deduplicates facts and assigns category salience (`compaction-response-parser.ts`, `agent-compaction-summarizer.ts`, `compaction-result-normalizer.ts`). This is additional operational failure surface generated by the intermediate representation, not a proven quality improvement.
-5. `AcceptedCompactionBuilder` makes `EpisodicItem` and `SemanticItem`, then immediately gives both to `CompactedMemoryMessageBuilder` to create the prompt text. `AcceptedCompactionCommitter` archives selected raw traces, persists the two record kinds and lineage, installs a new working context/snapshot, then clears the pending request (`accepted-compaction-builder.ts`, `accepted-compaction-committer.ts`). The new context is system head + one synthetic compacted-memory user message + retained recent messages. The finalizer can merge adjacent user messages while preserving constituent provenance (`working-context-finalizer.ts`).
+## Why there is no numeric summary target
 
-**Independent consumers:** The server's Memory Inspector API and web UI expose episodic and semantic records as separate tabs (`autobyteus-server-ts/src/agent-memory/services/agent-memory-service.ts`, `autobyteus-web/components/memory/MemoryInspector.vue`). Thus they are not *literally* unused. However, the source search found no current production runtime caller of the generic `Retriever`; the next-run continuation uses the synthesized message/snapshot. The UI's inspection value alone does not establish that the runtime needs two LLM-authored memory categories. This is a code-search observation, not proof no external integrations exist.
+ASM-022-01 in `requirements-doc.md` and `design-spec.md` records the operating assumption: long conversation histories naturally condense into substantially shorter task-continuation summaries. Repetition, obsolete intermediate detail and verbose evidence need not be reproduced; selected tool results are already excerpted. Essential continuation information determines useful detail. The user's practical experience supports relying on this behavior without an explicit token quota.
 
-## Concepts to separate
+Remove the numeric prompt target and its strategy argument. Keep qualitative conciseness and fidelity guidance, the provider hard output cap, incomplete-output rejection and final-context fit checks. The selected prefix already contains any prior summary once; repeated compaction yields one updated replacement.
 
-| Concern | Needed for | Assessment |
-| --- | --- | --- |
-| Raw trace / archived trace | Audit, reconstruction, tool evidence | Keep distinct from compaction output. |
-| Working-context checkpoint | Let the same run continue under a token budget | One current rolling summary is sufficient as a default representation. |
-| Long-term memory extraction | Cross-task recall, preferences, factual retrieval/search | Episodic/semantic categorization may be valuable, but only with an explicit independent product consumer and update/retention policy. It should not be a mandatory by-product of every context compaction. |
-| Working-context snapshot | Runtime prompt-state recovery | Keep framework-owned, not equate it with the summary itself. |
-| Lineage/metadata | Identify versions, source boundary, and successful commits | Keep a small machine-owned contract, not model-authored six-array content. |
+## Current state
 
-The current design conflates the second and third rows. Naming everything `memory` makes that harder to see.
-
-## External comparison (primary sources, checked 2026-09-25)
-
-- [Hermes context-compression docs](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/context-compression-and-caching.md) describe a structured **natural-language checkpoint** (goal, progress, decisions, next steps), preserved tail, tool-pair alignment, and iterative re-compression of the previous summary. [Hermes persistent-memory docs](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/memory.md) describe a separate bounded `MEMORY.md`/`USER.md` memory facility. This supports the conceptual separation, not a claim that Hermes has a trivial implementation; its own compactor is sophisticated and has trade-offs.
-- [Codex CLI's `compact.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/compact.rs) builds replacement history with a generated summary and preserved user messages; its persistence, metadata, and error handling are still substantial. [OpenAI API compaction](https://developers.openai.com/api/docs/guides/compaction) may produce an *opaque* compaction item, so it is not evidence that every Codex/OpenAI implementation uses a plain user-readable summary.
-- The names “dsh” and “zcode” in the spoken request could not be identified confidently. No claims about those systems are made.
-
-## Recommendation, with limits
-
-If the user chooses to change the product behavior, make **context compaction** produce one complete, bounded, human-readable continuation checkpoint. On each pass the compactor should receive the previous checkpoint plus the newly compactable settled history, and return a replacement checkpoint (not a delta). The runtime should inject that single checkpoint with retained recent messages, while the framework owns IDs, timestamps, source boundaries, validation, commit/recovery, and trace linkage. A Markdown structure like goal, decisions/constraints, progress, open work, and relevant artifacts is useful; six strict JSON arrays and separate episodic/semantic authoring need not be mandatory.
-
-Avoid a false simplification: blindly summarize the full transcript or drop the old checkpoint. Preserve the current protected head/tail and tool-call/result safety, verify the output is nonempty and fits the target budget, and retain the pre-compaction state on failure. A plain-text output does **not** solve the current inline-history prompt-capacity issue or potential helper-run recursion by itself; those are separate execution-boundary concerns recorded in the earlier `compression-current-behavior` investigation.
-
-The active, unintegrated `memory-compaction-file-backed-redesign` package currently specifies **three** canonical Markdown outputs—`episodic.md`, `semantic.md`, and `compacted_memory.md`—and a migration of existing JSONL data. That architecture may improve transport and commit safety, but its triple-output premise conflicts with the proposed simplification. It should be deliberately revised or superseded only after a new user decision; its prior approval cannot be assumed to approve this change. Existing JSONL records and Memory Inspector/API consumers require an explicit continuity decision, not silent deletion.
-
-## Decision requested only if work should continue beyond analysis
-
-1. **Recommended:** Make one rolling checkpoint the sole output of *context compaction*; treat episodic/semantic extraction as a separate future/optional feature. Preserve existing run data read-only or through a defined migration until its fate is approved.
-2. Keep episodic and semantic as independent canonical long-term memories, but stop making them a prerequisite for the prompt checkpoint; this retains more product scope and complexity.
-3. Keep the current split/merge design if there is a concrete required consumer or quality evidence we have not found.
-
-The user also needs to decide whether this is a revision of the in-progress file-backed redesign. No authoritative requirements, design spec, implementation, or migration changes should follow until that behavior/data decision is explicit.
-
-## Evidence/validation limits and next action
-
-- The original 2026-09-25 assessment was static source/public-source analysis. SR-002 later added targeted mocked tests/source probes as documented below; no live-model quality/latency benchmark or production-data change was performed.
-- No claim is made about exact failure frequency, actual token savings, or loss of recall across repeated passes. A later approved design should compare repeated-compaction recall, format failures, token reduction, latency, and restart continuity on representative histories.
-- Requirements status remains Draft; `design-spec.md`, architecture review, implementation, and delivery artifacts are **N/A — not applicable** for this analysis-only request. No Product Design request was made.
-- Next expected action: user decides data-continuity and existing-design scope. Solution Designer then completes requirements and seeks explicit approval before architecture design.
-- Handoff-rule result: `get_handoff_rules` checked 2026-09-25; no rule matches analysis-only/Draft requirements. Return the assessment to the user; no specialist handoff sent.
-
-## User clarification after the assessment (2026-09-25)
-
-The user articulated that episodic and semantic memory belong to long-term memory management, while context compaction should create a good summary for the agent to continue. This strengthens the recommended conceptual boundary: a continuation checkpoint may *contain* decisions, facts, preferences and progress, but producing those as separately maintained long-term-memory records should not be a mandatory step of context compaction. This is recorded as proposed intent, **not** approval to alter the active file-backed redesign or existing persisted-data/API behavior. The core `DEC-001` direction is clear; `DEC-002`–`DEC-003` remain open for scope and continuity approval; no specialist route is applicable at this stage.
-
-## Second user clarification and Draft requirements baseline (2026-09-25)
-
-The user reiterated that compaction iteratively reduces large working evidence to smaller continuation context, explicitly said an agent may perform compaction, and rejected introducing episodic/semantic memory into that operation as overkill. `SR-001` now records this core direction as Draft `REQ-001`–`REQ-004` and `AC-001`–`AC-005` in `requirements-doc.md`. This resolves the core concept but not `DEC-002` (legacy stored records and Memory Inspector/API) or `DEC-003` (how to revise the existing file-backed redesign). The complete requirements baseline has not been approved; no design or implementation handoff is authorized. The next useful user decision is the continuity policy, not another reconfirmation of the core conceptual distinction.
-
-Handoff rules rechecked after `SR-001`: no rule matches a Draft requirements clarification. Return to the user for the open product/data decision; no specialist message sent.
-
-## SR-002 — upstream code and contract experiments (2026-09-26)
-
-The user explicitly requested hands-on comparisons before further product decisions. Complete result/context: [upstream-compaction-research.md](upstream-compaction-research.md); evidence and reproducibility: [upstream-experiments](upstream-experiments/README.md).
-
-All five requested projects were cloned into `/tmp/autobyteus-compaction-research-20260926.kVSGz5` and pinned. Hermes, OpenCode, Z.ai ZCode, DSH basic compaction and Codex's local path emit one continuation-oriented text result, without mandatory episodic/semantic records. Hermes can coordinate with a separate memory provider; Codex also supports opaque remote compaction, so neither should be described as universally isolated/plain-text-only. Runtime JSON/typed metadata is distinct from an LLM JSON output requirement.
-
-Executed: 42 targeted Hermes upstream tests and 19 isolated source-declaration/mock-provider probes passed. The first Hermes collection attempt lacked a dependency; the retained log and successful rerun are disclosed. Codex was statically inspected only; Rust unavailable. No live-model quality, cost or recall comparison was performed.
-
-The evidence strengthens the recommendation to simplify the model-facing contract to one structured continuation checkpoint, potentially Markdown, while retaining safety/continuity machinery. It is not proof that Markdown improves summary quality, nor approval to change existing data/Inspector behavior. Requirements remain Draft and design/review/implementation are N/A. This round returns research to the user rather than pressing for approval of a change they have not yet requested to implement.
-
-SR-002 handoff-rule lookup completed on 2026-09-26: no matching rule for evidence-only/Draft requirements. Research returned directly to user; no specialist handoff sent.
+SR-028 requirements are Approved and design is Ready for independent architecture review. Content is prepared before `CompressionStrategy.compress(content)`; it returns compressed text and owns three total internal attempts. No numeric target, new migration or strategy selector. The existing run queue holds A on pre-parent compaction failure; a later admitted B authorizes recovery; continue A then B without resubmission. The target keeps A's native turn paused at its blocked phase, not a new queue/replay ledger. No source implementation or new API acceptance result in this design round. See canonical requirements/design and `solution-progress-result.md` for authority and remaining gates.

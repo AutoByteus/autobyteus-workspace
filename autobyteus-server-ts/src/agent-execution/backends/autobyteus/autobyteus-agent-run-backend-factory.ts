@@ -458,7 +458,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     const pendingSystemInstructionCapture = agent.context?.state.takePendingSystemInstructionCapture() ?? null;
     return new AutoByteusAgentRunBackend(context, agent, {
       isActive: () => this.resolveAutoByteusAgent(agent.agentId) !== null,
-      removeAgent: async (runId: string) => this.agentFactory.removeAgent(runId),
+      removeAgent: async (runId: string, shutdownTimeout: number) => this.agentFactory.removeAgent(runId, shutdownTimeout),
       pendingSystemInstructionCapture,
     });
   }

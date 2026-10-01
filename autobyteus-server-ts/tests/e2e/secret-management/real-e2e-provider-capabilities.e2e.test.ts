@@ -138,7 +138,6 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           directSummaryTaskFramingVerified: true,
           directSummarySourceToolTailVerified: true,
           directSummaryProviderSafeUnicodeVerified: true,
-          directSummaryShieldOmissionPressureVerified: true,
           noCategoryArtifactsVerified: true,
           unicodeShieldSourceImmutableVerified: true,
         });

@@ -1,3 +1,4 @@
+import { isCompactionPhase, type CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { JsonValue } from '@autobyteus/team-stream-contracts';
 import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts';
 import type { ServerMessage } from './protocol';
@@ -14,8 +15,8 @@ const requiredJsonObject = (value: JsonValue, boundary: string): Record<string, 
   if (!object) throw new Error(`${boundary} requires one JSON object.`);
   return object;
 };
-const compactionPhase = (value: string | null): 'requested' | 'started' | 'completed' | 'failed' | null => {
-  if (value === null || value === 'requested' || value === 'started' || value === 'completed' || value === 'failed') return value;
+const compactionPhase = (value: string | null): CompactionStatusPhase | null => {
+  if (value === null || isCompactionPhase(value)) return value;
   throw new Error(`Unsupported Team Agent compaction phase '${value}'.`);
 };
 

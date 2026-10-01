@@ -13,7 +13,7 @@
             <span class="truncate text-sm font-bold text-gray-800">{{ $t('workspace.components.progress.CompactionActivityItem.memory_compaction') }}</span>
             <span class="font-mono text-xs text-gray-600">#{{ shortId }}</span>
           </div>
-          <p class="mt-0.5 line-clamp-2 text-xs text-gray-600">{{ activity.message }}</p>
+          <p class="mt-0.5 line-clamp-2 text-xs text-gray-600">{{ activity.phase === 'stopped' ? 'Stopped' : activity.message }}</p>
         </div>
       </div>
       <span class="shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide shadow-sm" :class="statusChipClasses">
@@ -47,6 +47,12 @@ const presentation = computed(() => getCompactionPhasePresentation(props.activit
 const shortId = computed(() => props.activity.activityId.slice(-6));
 
 const toneClasses = {
+  gray: {
+    icon: 'text-gray-500',
+    chip: 'bg-gray-100 text-gray-700 border-gray-200',
+    border: 'border-gray-200 hover:border-gray-300',
+    highlight: 'ring-2 ring-gray-500 ring-inset bg-gray-50/60 border-transparent',
+  },
   amber: {
     icon: 'text-amber-500',
     chip: 'bg-amber-100 text-amber-700 border-amber-200',

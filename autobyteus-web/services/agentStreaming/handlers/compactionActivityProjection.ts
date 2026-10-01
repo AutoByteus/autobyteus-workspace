@@ -1,15 +1,15 @@
-import type { AgentCompactionStatus, CompactionStatusPhase } from '~/types/agent/AgentRunState';
+import type { AgentCompactionStatus } from '~/types/agent/AgentRunState';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
 import type { CompactionStatusPayload } from '../protocol/messageTypes';
 import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
 
-const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
-  value === 'requested' || value === 'started' || value === 'completed' || value === 'failed';
+import { isCompactionPhase, isActiveCompactionPhase, isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
 
 export const isCenterFeedCompactionPhase = (
   phase: CompactionStatusPhase | null | undefined,
 ): boolean =>
-  phase === 'started' || phase === 'completed' || phase === 'failed';
+  phase === 'started' || isCompleteCompactionPhase(phase);
 
 const normalizeText = (value: unknown): string | null =>
   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
@@ -61,9 +61,6 @@ export const normalizeCompactionPhase = (payload: CompactionStatusPayload): Comp
 
 const getTurnId = (payload: CompactionStatusPayload): string | null =>
   normalizeText(payload.turn_id) ?? normalizeText(payload.turnId);
-
-const isActiveCompactionPhase = (phase: CompactionStatusPhase | null | undefined): boolean =>
-  phase === 'requested' || phase === 'started';
 
 const isProviderCompactionPayload = (payload: CompactionStatusPayload): boolean =>
   payload.kind === 'provider_compaction_boundary' ||

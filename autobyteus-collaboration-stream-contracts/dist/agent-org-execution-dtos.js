@@ -1,3 +1,4 @@
+import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
 import { agentAddressSchema, agentPresentationMessageSchema, jsonValueSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
 const timestamp = nonEmptyStringSchema;
@@ -66,11 +67,13 @@ export const agentOrgAgentStatusDtoSchema = z.object({
     member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,
     status: z.enum(["offline", "initializing", "idle", "running", "error"]),
     trigger: nullableText, tool_name: nullableText, error_message: nullableText, error_details: nullableText,
+    recoverableBlock: compactionRecoveryBlockSchema.nullable(),
 }).strict();
 export const agentOrgExecutionViewDtoSchema = z.object({
     base_change_sequence: z.number().int().nonnegative(), is_active: z.boolean(),
     execution_tree: agentOrgExecutionTreeDtoSchema,
     communication_messages: agentOrgCommunicationMessagesDtoSchema, agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
+    agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
 }).strict();
 export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),
