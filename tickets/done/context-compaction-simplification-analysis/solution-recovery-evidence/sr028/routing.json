@@ -1,0 +1,13 @@
+{
+  "result": "Architecture Design Complete",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval.",
+    "recipient_address": "/architecture_reviewer"
+  },
+  "other_rules": "Not applicable: not Small/Medium Low and not a Delivery receipt.",
+  "recipients": [
+    "/architecture_reviewer"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-01T14:37:34.298666+00:00",
+  "endpoint": "http://127.0.0.1:63335/graphql",
+  "request": {
+    "query": "mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id name}}",
+    "variables": {
+      "input": {
+        "name": "SR036 Reviewer",
+        "description": "Owned SR036 fresh reproduction",
+        "instructions": "SR036 fixture. Acknowledge latest input. No external work.",
+        "toolNames": [
+          "read_file"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405"
+        }
+      }
+    }
+  },
+  "response": {
+    "data": {
+      "createAgentDefinition": {
+        "id": "sr036-reviewer",
+        "name": "SR036 Reviewer"
+      }
+    }
+  }
+}

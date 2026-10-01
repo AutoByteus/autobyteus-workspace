@@ -1,0 +1,319 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/services/server-settings-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > saves and reads the nonsecret numeric context override, including clearing it
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting OPENAI_API_KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_APIKEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_API-KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_ACCESS_TOKEN write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting customPassword write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_SECRET write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_PRIVATE_KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_PRIVATE-KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_CREDENTIAL write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_TOKENS write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE_SECRET write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting PREFIX_AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes and validates the live response update interval
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists the compound model/config with the durable setting writer
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_MODEL_SETTINGS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 22 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads a boolean setting as true, false, or null for the requested key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists a boolean setting as normalized strings for the requested key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > registers ENABLE_PROJECTS as an editable predefined setting
+Initialized server settings service with 22 predefined settings
+
+ ❯ tests/unit/services/server-settings-service.test.ts (44 tests | 1 failed) 16ms
+     ✓ lists available settings excluding API keys 3ms
+     ✓ sorts settings by key 0ms
+     ✓ includes predefined settings from effective runtime values even when not persisted in config data 0ms
+     ✓ exposes compaction predefined settings with typed descriptions 1ms
+     × saves and reads the nonsecret numeric context override, including clearing it 4ms
+     ✓ keeps credential-like setting OPENAI_API_KEY write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_APIKEY write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_API-KEY write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_ACCESS_TOKEN write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting customPassword write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_SECRET write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_PRIVATE_KEY write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_PRIVATE-KEY write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_CREDENTIAL write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting CUSTOM_TOKENS write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE_SECRET write-only and absent from ordinary reads 0ms
+     ✓ keeps credential-like setting PREFIX_AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE write-only and absent from ordinary reads 0ms
+     ✓ exposes Codex sandbox mode as predefined editable metadata 0ms
+     ✓ exposes media default model settings as predefined editable metadata 0ms
+     ✓ exposes and validates the live response update interval 0ms
+     ✓ updates settings successfully 0ms
+     ✓ persists the compound model/config with the durable setting writer 0ms
+     ✓ rejects invalid predefined Codex sandbox values before persistence 0ms
+     ✓ preserves custom setting values without predefined normalization 0ms
+     ✓ persists dynamic media model identifiers without static allowed-value validation 0ms
+     ✓ exposes featured catalog items as predefined editable metadata 0ms
+     ✓ normalizes valid featured catalog settings before persistence 0ms
+     ✓ rejects duplicate featured catalog identities before persistence 0ms
+     ✓ rejects invalid featured catalog JSON before persistence 0ms
+     ✓ reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL 0ms
+     ✓ reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL 0ms
+     ✓ reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL 0ms
+     ✓ does not reload media tool schemas after successful unrelated setting updates 0ms
+     ✓ does not reload media tool schemas when an update fails before persistence 0ms
+     ✓ does not reload media tool schemas when media default persistence fails 0ms
+     ✓ returns error when update fails 0ms
+     ✓ rejects updating system-managed settings 0ms
+     ✓ accepts any setting key 0ms
+     ✓ deletes custom settings successfully 0ms
+     ✓ rejects deleting predefined settings 0ms
+     ✓ returns error when deleting missing settings 0ms
+     ✓ reads a boolean setting as true, false, or null for the requested key 0ms
+     ✓ persists a boolean setting as normalized strings for the requested key 0ms
+     ✓ registers ENABLE_PROJECTS as an editable predefined setting 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/server-settings-service.test.ts > ServerSettingsService > saves and reads the nonsecret numeric context override, including clearing it
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/services/server-settings-service.test.ts:157:52
+    155|     const service = new ServerSettingsService();
+    156| 
+    157|     expect(service.updateSetting(key, "16000")[0]).toBe(true);
+       |                                                    ^
+    158|     expect(mockConfig.set).toHaveBeenCalledWith(key, "16000");
+    159|     expect(new ServerSettingsService().getAvailableSettings()).toConta…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 43 passed (44)
+   Start at  23:32:10
+   Duration  2.49s (transform 1.20s, setup 14ms, import 1.99s, tests 16ms, environment 0ms)
+

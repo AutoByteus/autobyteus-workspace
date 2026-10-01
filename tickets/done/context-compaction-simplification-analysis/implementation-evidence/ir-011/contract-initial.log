@@ -1,0 +1,60 @@
+
+> @autobyteus/agent-presentation-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: accepts a strict root-neutral message and rejects root identity
+ok 1 - accepts a strict root-neutral message and rejects root identity
+  ---
+  duration_ms: 9.955666
+  type: 'test'
+  ...
+# Subtest: accepts a background-task snapshot and rejects the removed to-do message
+ok 2 - accepts a background-task snapshot and rejects the removed to-do message
+  ---
+  duration_ms: 3.19775
+  type: 'test'
+  ...
+# Subtest: compaction carries direct diagnostics separately from provider-native identity
+ok 3 - compaction carries direct diagnostics separately from provider-native identity
+  ---
+  duration_ms: 3.629417
+  type: 'test'
+  ...
+# Subtest: composes the note after the user's text and parses it back
+ok 4 - composes the note after the user's text and parses it back
+  ---
+  duration_ms: 1.185791
+  type: 'test'
+  ...
+# Subtest: a mention-only message is the note alone
+ok 5 - a mention-only message is the note alone
+  ---
+  duration_ms: 0.222875
+  type: 'test'
+  ...
+# Subtest: no collaborators leaves the text unchanged; foreign text is not parsed
+ok 6 - no collaborators leaves the text unchanged; foreign text is not parsed
+  ---
+  duration_ms: 0.146125
+  type: 'test'
+  ...
+# Subtest: mentions are at most 8 and unique by kind and definition
+ok 7 - mentions are at most 8 and unique by kind and definition
+  ---
+  duration_ms: 1.192375
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118.24275

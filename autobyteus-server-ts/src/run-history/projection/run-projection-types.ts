@@ -38,6 +38,8 @@ export interface RunProjectionConversationEntry {
   toolError?: string | null;
   media?: Record<string, string[]> | null;
   fileAttachments?: readonly ContextFileReference[];
+  messageId?: string;
+  dedupeKey?: string;
   senderId?: string | null;
   /** `inter_agent_message` only: the sender AgentRun and, when its root can resolve it, its address. */
   senderAgentRunId?: string | null;

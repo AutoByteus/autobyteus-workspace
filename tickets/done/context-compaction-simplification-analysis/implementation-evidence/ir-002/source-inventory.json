@@ -1,0 +1,53 @@
+{
+  "base": "3538fe75c",
+  "files": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+      "sha256": "9eba3c530f03af5c0edc04dd680f969e3e97040a972bf82101ab87d4f99a3961",
+      "nonEmptyLines": 310,
+      "classification": "test support or test"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "783ae2c49be8f796166afbf7704c68150a0e8f147c34d6629466667fb69e7a52",
+      "nonEmptyLines": 72,
+      "classification": "test support or test"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "69667e309f4cccb2126253bb18792f08b88da3e3fe8ae0c6edf1c6d1c8e9bbac",
+      "nonEmptyLines": 412,
+      "classification": "test support or test"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "sha256": "51216e0f474022ff62eaf0dc730c20c25c40fd343dd7dbce6a560f1f8ff0df6b",
+      "nonEmptyLines": 79,
+      "classification": "production"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+      "sha256": "d849436d40f5a9d53f73a48ccca4a7882a93ad4636e94e642bde2419e3fa2507",
+      "nonEmptyLines": 252,
+      "classification": "production"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/streaming/events/stream-event-payloads.test.ts",
+      "sha256": "404ff4683f597cbb3eb1845203073a139c0e3e188143f44158295a0d8de8f4c6",
+      "nonEmptyLines": 138,
+      "classification": "test support or test"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/streaming/streams/agent-event-stream.test.ts",
+      "sha256": "c9fddddf8780543025f1006fc1eb556b115fb6004a4baa1bf986c0f1c5065b79",
+      "nonEmptyLines": 197,
+      "classification": "test support or test"
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "9b9a81b0d146669618ef8b0f93a6b24f7b7107a33c713c0e62e2c216d2a8b209",
+      "nonEmptyLines": 1219,
+      "classification": "test support or test"
+    }
+  ]
+}

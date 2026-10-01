@@ -1,0 +1,34 @@
+[
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentTeamRunStore.ts",
+    "sha256": "04b13f076f27c3bcd2635e9892b05586c7c92dff15b17319f87cae1c9c120bfd"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentOrgRunStore.ts",
+    "sha256": "8c48a9f4b6e40b9ea0e876b816518bb935d8ba3bc889d41da8ad7ea4d9c25889"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentOrgContextsStore.ts",
+    "sha256": "675aa834310bf3f5ea12da80d3c255964527935276b74ddbe9c0d5c876d5d8d4"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/composables/useWorkspaceHistorySubjectActions.ts",
+    "sha256": "90a367678c489032fa6e0233258455fc070b995264cfb09b9343ca9eea3f6a20"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/components/workspace/team/TeamMembersPanel.vue",
+    "sha256": "a62f397d66f30f182b5bc09a41d478b12353bc75ba162fa5cff2def3587e0af4"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue",
+    "sha256": "fbffbd9b5f44aad4bd668b7f33d0aeaafabdb7b35915b414ba3134d759cda1bb"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+    "sha256": "871005ec0b6f3e7c64eac8a6f9a355e3ea923098c3ad511f10934b54c4d090f7"
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+    "sha256": "b99107838194b016cf432dccebc6ecc8f6f5159536e9b015061e13cb786d7409"
+  }
+]

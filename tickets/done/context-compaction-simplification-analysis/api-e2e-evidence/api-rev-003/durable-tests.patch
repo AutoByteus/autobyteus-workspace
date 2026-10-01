@@ -1,0 +1,491 @@
+diff --git a/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+index 593fada44..2f166ac17 100644
+--- a/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+@@ -23,6 +23,8 @@ import {
+   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+ } from "../../../src/config/streaming-content-flush-interval-setting.js";
+ 
++import { COMPACTION_MODEL_SETTINGS_KEY } from "../../../src/config/compaction-model-settings.js";
++
+ const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
+ 
+ describe("Server settings GraphQL e2e", () => {
+@@ -34,6 +36,8 @@ describe("Server settings GraphQL e2e", () => {
+   let originalFeaturedCatalogItemsEnv: string | undefined;
+   let originalStreamParserEnv: string | undefined;
+   let originalStreamingContentFlushIntervalEnv: string | undefined;
++  let originalCompactionModelEnv: string | undefined;
++  let originalInitializationEnv: Record<string, string | undefined>;
+   let originalMediaModelEnv: Record<string, string | undefined>;
+ 
+   beforeAll(async () => {
+@@ -47,7 +51,12 @@ describe("Server settings GraphQL e2e", () => {
+ 
+   beforeEach(() => {
+     appConfigProvider.resetForTests();
++    originalInitializationEnv = Object.fromEntries(
++      ["APP_ENV", "DB_TYPE", "DATABASE_URL", "AUTOBYTEUS_MEMORY_DIR"].map(key => [key, process.env[key]]),
++    );
+     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
++    originalCompactionModelEnv = process.env[COMPACTION_MODEL_SETTINGS_KEY];
++    delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
+     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
+     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
+     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+@@ -77,6 +86,12 @@ describe("Server settings GraphQL e2e", () => {
+ 
+   afterEach(() => {
+     appConfigProvider.resetForTests();
++    for (const [key, value] of Object.entries(originalInitializationEnv)) {
++      if (value === undefined) delete process.env[key];
++      else process.env[key] = value;
++    }
++    if (originalCompactionModelEnv === undefined) delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
++    else process.env[COMPACTION_MODEL_SETTINGS_KEY] = originalCompactionModelEnv;
+     if (originalServerHostEnv === undefined) {
+       delete process.env.AUTOBYTEUS_SERVER_HOST;
+     } else {
+@@ -630,4 +645,75 @@ describe("Server settings GraphQL e2e", () => {
+     );
+   });
+ 
++  const initializeOwnedSettingsConfig = () => {
++    // Durable writes require the same initialized AppConfig used by the server.
++    process.env.APP_ENV = "test";
++    process.env.DB_TYPE = "sqlite";
++    process.env.DATABASE_URL = `file:${path.join(tempDir, "db", "test.db")}`;
++    process.env.AUTOBYTEUS_MEMORY_DIR = path.join(tempDir, "memory");
++    appConfigProvider.config.initialize();
++  };
++
++  it("lists inherited compaction without persisting a default selection", async () => {
++    initializeOwnedSettingsConfig();
++    const before = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
++    const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string }> }>(
++      "{ getServerSettings { key value } }",
++    );
++    expect(listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
++    expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
++    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(before);
++    expect(before).not.toContain(COMPACTION_MODEL_SETTINGS_KEY);
++  });
++
++  it("durably round-trips the current compaction tuple, including inherit and an unavailable explicit model", async () => {
++    initializeOwnedSettingsConfig();
++    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
++    const query = `{ getServerSettings { key value isEditable isDeletable } }`;
++    for (const selection of [
++      { modelIdentifier: null, llmConfig: null },
++      { modelIdentifier: " unavailable-fixture-model ", llmConfig: { temperature: 0.2, max_tokens: 4096 } },
++      { modelIdentifier: null, llmConfig: null, schema_version: 999, obsolete: "ignored" },
++    ]) {
++      const expected = { modelIdentifier: selection.modelIdentifier?.trim() ?? null, llmConfig: selection.llmConfig };
++      const updated = await execGraphql<{ updateServerSetting: string }>(mutation, {
++        key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(selection),
++      });
++      expect(updated.updateServerSetting).toContain("updated successfully");
++      const beforeRestart = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
++      expect(beforeRestart).toContain(COMPACTION_MODEL_SETTINGS_KEY);
++      // Reload from persisted AppConfig, not process.env or a mocked settings store.
++      appConfigProvider.resetForTests();
++      delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
++      appConfigProvider.config.setCustomAppDataDir(tempDir);
++      initializeOwnedSettingsConfig();
++      const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string; isEditable: boolean; isDeletable: boolean }> }>(query);
++      const current = listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY);
++      expect(current).toMatchObject({ isEditable: true, isDeletable: false });
++      expect(JSON.parse(current!.value)).toEqual(expected);
++      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(beforeRestart);
++    }
++  });
++
++  it("rejects invalid compaction tuples without changing the durable baseline or exposing retired strategy queries", async () => {
++    initializeOwnedSettingsConfig();
++    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
++    const baseline = JSON.stringify({ modelIdentifier: "fixture-model", llmConfig: { temperature: 0.1 } });
++    expect((await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value: baseline })).updateServerSetting).toContain("updated successfully");
++    const persisted = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
++    for (const value of ["not-json", "{}", JSON.stringify({ modelIdentifier: null, llmConfig: { api_key: "synthetic-not-a-secret" } })]) {
++      const result = await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value });
++      expect(result.updateServerSetting).toContain("Invalid AUTOBYTEUS_COMPACTION_MODEL_SETTINGS");
++      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
++      expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBe(baseline);
++    }
++    const deleted = await execGraphql<{ deleteServerSetting: string }>(
++      `mutation Delete($key: String!) { deleteServerSetting(key: $key) }`, { key: COMPACTION_MODEL_SETTINGS_KEY },
++    );
++    expect(deleted.deleteServerSetting).toContain("managed by the system");
++    expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getWorkingContextCompactionStrategies");
++    expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getEffectiveWorkingContextCompactionStrategyId");
++    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
++  });
++
+ });
+diff --git a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+index fc2fedd1e..11016d0a4 100644
+--- a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
++++ b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+@@ -1,5 +1,5 @@
+ import fs from 'node:fs/promises';
+-import { afterEach, describe, expect, it, vi } from 'vitest';
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from 'autobyteus-ts/llm/utils/messages.js';
+ import { LLMConfig } from 'autobyteus-ts/llm/utils/llm-config.js';
+ import { LLMModel } from 'autobyteus-ts/llm/models.js';
+@@ -10,8 +10,15 @@ import { AutoByteusAgentRunBackendFactory } from '../../../src/agent-execution/b
+ import * as availableLlm from '../../../src/agent-execution/backends/autobyteus/available-llm-construction.js';
+ import { appConfigProvider } from '../../../src/config/app-config-provider.js';
+ import { inspectDirectSummaryRequest, LiveE2eScenarioExecution } from '../../../../test-support/live-e2e/live-e2e-harness.js';
++import { assertNoInventedPlanChanges } from '../../../../test-support/live-e2e/compaction-quality-checks.js';
+ import { liveE2eScenarios } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
+ 
++import { defaultToolRegistry } from 'autobyteus-ts/tools/registry/tool-registry.js';
++
++let toolSnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
++beforeEach(() => { toolSnapshot = defaultToolRegistry.snapshot(); defaultToolRegistry.clear(); });
++afterEach(() => defaultToolRegistry.restore(toolSnapshot));
++
+ const fixtureUrl = new URL('../../../../autobyteus-ts/tests/fixtures/memory/compaction-unicode-shield-tool-trace.json', import.meta.url);
+ afterEach(() => vi.restoreAllMocks());
+ 
+@@ -34,6 +41,9 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
+       const backend = vi.spyOn(AutoByteusAgentRunBackendFactory.prototype, 'createBackend')
+         .mockImplementation(async function (this: any, config) {
+           expect(config.llmModelIdentifier).toBe('fixture-parent');
++          for (const name of ['read_file', 'write_file', 'edit_file', 'run_bash']) {
++            expect(defaultToolRegistry.getToolDefinition(name)?.name).toBe(name);
++          }
+           await this.compactionLlmFactory({ parentModelIdentifier: config.llmModelIdentifier });
+           throw reached; // Stop at setup; no parent or summarizer generation/network.
+         });
+@@ -73,3 +83,23 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
+       .toThrow('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
+   });
+ });
++
++
++describe('controlled repeated-summary planned/completed quality alarm', () => {
++  it('accepts inventory completion with the checkpoint still pending', () => {
++    expect(() => assertNoInventedPlanChanges(
++      '## Completed work\n- Inventory phase completed; 12 tables found.\n## Open work and next steps\n- Add checkpoint `APPROVAL-73` to the plan; implementation approval remains pending.',
++    )).not.toThrow();
++  });
++  it('does not classify explicit non-completion as an update', () => {
++    expect(() => assertNoInventedPlanChanges(
++      '## Completed work\n- No plan was modified; checkpoint APPROVAL-73 has not been added.\n## Open work and next steps\n- Add the checkpoint after review.',
++    )).not.toThrow();
++  });
++  it.each([
++    '## Completed work\n- Updated plan with retention policy (30 days) and checkpoint `APPROVAL-73`.\n## Current state\n- Risk assessment active.',
++    '## Decisions and findings\n- Checkpoint `APPROVAL-73` added to the plan to track owner review.\n## Completed work\n- Inventory phase completed.',
++  ])('rejects invented plan completion: %s', (summary) => {
++    expect(() => assertNoInventedPlanChanges(summary)).toThrow('LIVE_E2E_QUALITY_PLANNED_WORK_REPORTED_COMPLETE');
++  });
++});
+diff --git a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+index 97e537933..1b6f0b3f6 100644
+--- a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
++++ b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+@@ -6,6 +6,12 @@ import {
+   supportedModelDefinitions,
+ } from 'autobyteus-ts/llm/supported-model-definitions.js';
+ import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
++import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
++import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
++import { AgentRunMetadataStore } from '../../../src/run-history/store/agent-run-metadata-store.js';
++import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../src/run-history/services/root-run-package-readiness-index.js';
++import { ContextFileLayout } from '../../../src/context-files/store/context-file-layout.js';
++import type { AgentRunBackendInputDispatch } from '../../../src/agent-execution/input/agent-run-input-contract.js';
+ import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
+ import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
+ import {
+@@ -78,12 +84,40 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+     expect(databaseTargetsMatch(application, tracked)).toBe(true);
+   });
+ 
+-  it('adapts the raw product backend through the canonical AgentRun event facade', async () => {
++  it.each([true, false])('adapts the actual facade with admitted attachment owner=%s', async (admitted) => {
+     const runId = 'live-e2e-adapter-run';
++    const appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'live-e2e-facade-'));
++    cleanup.push(() => fs.rmSync(appDataDir, { recursive: true, force: true }));
++    const environment = { appDataDir, memoryDir: path.join(appDataDir, 'memory'), baseUrl: 'http://127.0.0.1:32123' };
++    const layout = new ContextFileLayout(environment);
++    cleanup.push(() => resetRootRunPackageReadinessIndex(environment.memoryDir));
++    if (admitted) {
++      await new AgentRunMetadataStore(environment.memoryDir).writeMetadata(runId, {
++        runId,
++        agentDefinitionId: 'live-e2e-agent-flow',
++        workspaceRootPath: appDataDir,
++        memoryDir: environment.memoryDir,
++        llmModelIdentifier: 'deepseek-v4-flash',
++        llmConfig: null,
++        autoExecuteTools: false,
++        runtimeKind: RuntimeKind.AUTOBYTEUS,
++        platformAgentRunId: null,
++      });
++    }
++    const storedPath = layout.getFinalFilePath({ kind: 'agent_final', runId }, 'notes.txt');
++    fs.mkdirSync(path.dirname(storedPath), { recursive: true });
++    fs.writeFileSync(storedPath, 'Synthetic context for provider normalization.');
++    // Real package scan, not a mocked admission flag. A file alone cannot admit an owner.
++    const readiness = new RootRunPackageReadinessIndex(environment.memoryDir);
++    await readiness.awaitReady();
++    expect(readiness.isAdmitted('agent', runId)).toBe(admitted);
++    const locator = `${environment.baseUrl}/rest/runs/${runId}/context-files/notes.txt`;
++    const original = new AgentInputUserMessage('ping', undefined, [new ContextFile(locator)]);
++    let dispatched: AgentRunBackendInputDispatch | undefined;
+     const context = new AgentRunContext({
+       runId,
+       config: new AgentRunConfig({
+-        runtimeKind: 'autobyteus',
++        runtimeKind: RuntimeKind.AUTOBYTEUS,
+         agentDefinitionId: 'live-e2e-agent-flow',
+         llmModelIdentifier: 'deepseek-v4-flash',
+         autoExecuteTools: false,
+@@ -112,7 +146,8 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+           sourceListener = null;
+         };
+       },
+-      dispatchUserInput: async () => {
++      dispatchUserInput: async (input: AgentRunBackendInputDispatch) => {
++        dispatched = input;
+         void sourceListener?.([
+           {
+             eventType: AgentRunEventType.TURN_STARTED,
+@@ -139,16 +174,25 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+       terminate,
+     };
+-    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never);
++    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never, environment);
++    cleanup.push(async () => { await run.terminate(); });
+     const observed: AgentRunEventType[] = [];
+     run.subscribeToEvents((event) => observed.push(event.eventType));
+ 
+-    await expect(run.postUserMessage(new AgentInputUserMessage('ping')))
++    await expect(run.postUserMessage(original))
+       .resolves.toEqual({ accepted: true, turnId: null });
+     expect(observed).toContain(AgentRunEventType.AGENT_STATUS);
+     await vi.waitFor(() => {
+       expect(observed).toContain(AgentRunEventType.ASSISTANT_COMPLETE);
++      expect(observed).toContain(AgentRunEventType.TURN_COMPLETED);
+     });
++    expect(dispatched?.kind).toBe('start_turn');
++    expect(dispatched?.message).not.toBe(original);
++    expect(dispatched?.message.content).toBe('ping');
++    expect(dispatched?.message.contextFiles?.[0]?.uri).toBe(admitted ? storedPath : locator);
++    // Unadmitted locators stay opaque under the existing normalizer contract; no local path leaks.
++    expect(dispatched?.message.recordingFileAttachments?.[0]?.uri).toBe(locator);
++    expect(original.contextFiles?.[0]?.uri).toBe(locator);
+     await expect(run.terminate()).resolves.toEqual({ accepted: true });
+     expect(terminate).toHaveBeenCalledTimes(1);
+   });
+diff --git a/test-support/live-e2e/live-e2e-harness.ts b/test-support/live-e2e/live-e2e-harness.ts
+index 7d77b54b4..47ebac4cb 100644
+--- a/test-support/live-e2e/live-e2e-harness.ts
++++ b/test-support/live-e2e/live-e2e-harness.ts
+@@ -1,3 +1,4 @@
++import { describeLiveE2eError } from './live-e2e-safe-error.js';
+ import fs from 'node:fs/promises';
+ import { createHash, randomUUID } from 'node:crypto';
+ import os from 'node:os';
+@@ -34,6 +35,7 @@ import {
+ import { AudioClientFactory } from '../../autobyteus-ts/src/multimedia/audio/audio-client-factory.js';
+ import { ImageClientFactory } from '../../autobyteus-ts/src/multimedia/image/image-client-factory.js';
+ import { SearchClientFactory } from '../../autobyteus-ts/src/tools/search/factory.js';
++import { registerTools } from '../../autobyteus-ts/src/tools/register-tools.js';
+ import { SearchProvider } from '../../autobyteus-ts/src/tools/search/providers.js';
+ import { appConfigProvider } from '../../autobyteus-server-ts/src/config/app-config-provider.js';
+ import { SecretManagementProviderApiKeyResolver } from '../../autobyteus-server-ts/src/secret-management/resolution/secret-management-provider-api-key-resolver.js';
+@@ -51,6 +53,13 @@ import { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-def
+ import { AutoByteusAgentRunBackendFactory } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
+ import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
+ import { AgentRun } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run.js';
++import { AgentRunProviderInputNormalizer } from '../../autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.js';
++import { ContextFileLayout } from '../../autobyteus-server-ts/src/context-files/store/context-file-layout.js';
++import { ContextFileOwnerResolver } from '../../autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.js';
++import { ContextFileLocalPathResolver } from '../../autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.js';
++import { createStoredTeamRunExecutionTreeLocationService } from '../../autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.js';
++import { AgentOrgExecutionTreeLocationService } from '../../autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
++import { CollaborationExecutionLocationService } from '../../autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.js';
+ import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
+ import {
+   AgentRunEventType,
+@@ -90,10 +99,22 @@ type LiveE2eAgentBackendFactory = {
+ 
+ export const wrapProductAgentBackendForLiveE2e = (
+   backend: AgentRunBackend,
+-): LiveE2eAgentBackend => new AgentRun({
+-  context: backend.getContext(),
+-  backend,
+-});
++  environment: { appDataDir: string; memoryDir: string; baseUrl: string },
++): LiveE2eAgentBackend => {
++  // Match production composition, but resolve only within the scenario's owned storage.
++  const locations = new CollaborationExecutionLocationService({
++    teams: createStoredTeamRunExecutionTreeLocationService(environment.memoryDir),
++    orgs: new AgentOrgExecutionTreeLocationService({ memoryDir: environment.memoryDir }),
++  });
++  const providerInputNormalizer = new AgentRunProviderInputNormalizer(
++    new ContextFileLocalPathResolver({
++      layout: new ContextFileLayout(environment),
++      ownerResolver: new ContextFileOwnerResolver({ locations, memoryDir: environment.memoryDir }),
++      baseUrl: environment.baseUrl,
++    }),
++  );
++  return new AgentRun({ context: backend.getContext(), backend, providerInputNormalizer });
++};
+ 
+ export type LiveE2eAgentFlowResult = {
+   scenarioId: string;
+@@ -537,6 +558,7 @@ export class LiveE2eScenarioExecution {
+     const backendFactory: LiveE2eAgentBackendFactory = {
+       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
+         await productBackendFactory.createBackend(config, runId),
++        { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
+       ),
+     };
+ 
+@@ -561,6 +583,8 @@ export class LiveE2eScenarioExecution {
+       throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_SCENARIO_INVALID');
+     }
+ 
++    // This flow runs in the test worker, separate from the bootstrapped server.
++    registerTools();
+     const ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'live-e2e-compaction-agent-flow-'));
+     const workspaceDirectory = path.join(ownedRoot, 'workspace');
+     const memoryDirectory = path.join(ownedRoot, 'memory');
+@@ -601,13 +625,13 @@ export class LiveE2eScenarioExecution {
+     }
+     await fs.writeFile(
+       evidenceAPath,
+-      buildCompactionEvidence('A', partA, localModelScenario ? 170 : 180),
++      buildCompactionEvidence('A', partA, localModelScenario ? 20 : 180),
+       'utf8',
+     );
+     await fs.writeFile(unicodeBoundaryEvidencePath, unicodeShieldSource, 'utf8');
+     await fs.writeFile(
+       evidenceBPath,
+-      buildCompactionEvidence('B', partB, localModelScenario ? 20 : 570),
++      buildCompactionEvidence('B', partB, localModelScenario ? 170 : 570),
+       'utf8',
+     );
+ 
+@@ -668,6 +692,7 @@ export class LiveE2eScenarioExecution {
+     const backendFactory: LiveE2eAgentBackendFactory = {
+       createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
+         await productBackendFactory.createBackend(config, id),
++        { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
+       ),
+     };
+     const runId = `live_e2e_compaction_agent_${randomUUID().replace(/-/g, '')}`;
+@@ -680,6 +705,8 @@ export class LiveE2eScenarioExecution {
+     }> = [];
+     let completedTurns = 0;
+     let observerError: unknown = null;
++    let operationError: unknown = null;
++    let observationStage = 'backend-construction';
+ 
+     try {
+       backend = await backendFactory.createBackend(new AgentRunConfig({
+@@ -716,8 +743,10 @@ export class LiveE2eScenarioExecution {
+       });
+ 
+       const postAndWait = async (content: string, expectedTurnCount: number): Promise<void> => {
++        observationStage = `post-turn-${expectedTurnCount}`;
+         const result = await backend!.postUserMessage(new AgentInputUserMessage(content));
+         if (!result.accepted) throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_SEND_REJECTED');
++        observationStage = `wait-turn-${expectedTurnCount}`;
+         await waitForLiveCondition(() =>
+           observerError !== null
+           || events.some(({ terminalError }) => terminalError)
+@@ -763,6 +792,16 @@ export class LiveE2eScenarioExecution {
+         `"${newConstraint}". Do not write Markdown.`;
+       await postAndWait(finalInstruction, 4);
+ 
++      // Retain synthetic-only provider evidence before file assertions can fail.
++      const capturedParent = invocationCapture as InvocationCaptureExtension | null;
++      process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_continuation_probe',
++        parentResponses: capturedParent?.responses.map(({ content, reasoning, usage, completionStatus, completionReason }) =>
++          ({ content, reasoningCharacters: reasoning?.length ?? 0, usage, completionStatus, completionReason })),
++        summaryResponses: summaryCaptures.flatMap(({ responses }) => responses.map(({ content, completionStatus, completionReason }) =>
++          ({ content, completionStatus, completionReason }))),
++        lastParentRequest: capturedParent?.invocations.at(-1),
++      })}\n`);
++      observationStage = 'final-artifact-read';
+       const finalContent = await fs.readFile(finalArtifactPath, 'utf8');
+       const finalArtifact = JSON.parse(finalContent) as Record<string, unknown>;
+       const expectedArtifact = {
+@@ -777,6 +816,7 @@ export class LiveE2eScenarioExecution {
+         throw new Error('LIVE_E2E_COMPACTION_EXACT_ARTIFACT_MISMATCH');
+       }
+ 
++      observationStage = 'final-assertions';
+       const compactionEvents = events
+         .filter(({ eventType }) => eventType === AgentRunEventType.COMPACTION_STATUS)
+         .map(({ payload }) => payload);
+@@ -854,6 +894,8 @@ export class LiveE2eScenarioExecution {
+         throw new Error('LIVE_E2E_DIRECT_SUMMARY_EXECUTION_METADATA_INVALID');
+       }
+       const requestInspections = summaryRequests.map(inspectDirectSummaryRequest);
++      process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_direct_source_probe',
++        requestInspections, summaryResponses: summaryResponses.map(({ content, completionStatus }) => ({ content, completionStatus })) })}\n`);
+       if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)
+           || !requestInspections.some(({ shieldOmissionPressureVerified }) => shieldOmissionPressureVerified)) {
+         throw new Error('LIVE_E2E_DIRECT_SUMMARY_SOURCE_EVIDENCE_MISSING');
+@@ -999,6 +1041,7 @@ export class LiveE2eScenarioExecution {
+         throw new Error('LIVE_E2E_COMPACTION_PROJECTED_CONTINUATION_QUALITY_INVALID');
+       }
+ 
++      observationStage = 'passed';
+       return {
+         scenarioId: this.scenarioId,
+         capability: 'agent-compaction-turns',
+@@ -1030,11 +1073,34 @@ export class LiveE2eScenarioExecution {
+         qualityEvidence: { snapshotSummary, nextRequestSummary, nextCurrentUserRegion },
+         managedSecretResolverUsed: this.scenario.requiredSecretId !== null,
+       };
++    } catch (error) {
++      operationError = error;
++      throw error;
+     } finally {
++      // Runs on post/wait/assertion failure, before termination, deletion or outer safe wrapping.
++      // Only this synthetic fixture is observed; arbitrary error text/reasoning is never emitted.
++      const capture = invocationCapture as InvocationCaptureExtension | null;
++      const safeResponses = (responses: CompleteResponse[]) => responses.map(({ content, usage, completionStatus, completionReason }) =>
++        ({ content, usage, completionStatus, completionReason }));
++      const observation = {
++        event: 'managed_compaction_all_exit', stage: observationStage, completedTurns,
++        error: operationError ? describeLiveE2eError(operationError) : null,
++        parentRequests: capture?.invocations ?? [], parentResponses: safeResponses(capture?.responses ?? []),
++        summaryRequests: summaryCaptures.flatMap(({ invocations }) => invocations),
++        summaryResponses: summaryCaptures.flatMap(({ responses }) => safeResponses(responses)),
++        events: events.map(({ eventType, terminalError, payload }) => ({ eventType, terminalError,
++          toolName: ['read_file', 'write_file'].includes(String(payload.tool_name)) ? payload.tool_name : null,
++          phase: ['requested', 'started', 'completed', 'failed'].includes(String(payload.phase)) ? payload.phase : null })),
++      };
++      try {
++        evidenceObserver?.(observation);
++        process.stdout.write(`${JSON.stringify(observation)}\n`);
++      } finally {
+       unsubscribe();
+       if (backend) await backend.terminate().catch(() => undefined);
+       await workspace.close();
+       await fs.rm(ownedRoot, { recursive: true, force: true });
++      }
+     }
+   }
+ 
+diff --git a/test-support/live-e2e/run-live-e2e.mjs b/test-support/live-e2e/run-live-e2e.mjs
+index d8085b590..7ae46b48b 100644
+--- a/test-support/live-e2e/run-live-e2e.mjs
++++ b/test-support/live-e2e/run-live-e2e.mjs
+@@ -34,6 +34,7 @@ try {
+       'vitest',
+       'run',
+       'tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts',
++      'tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts',
+       '--no-watch',
+     ],
+     cwd: serverRoot,

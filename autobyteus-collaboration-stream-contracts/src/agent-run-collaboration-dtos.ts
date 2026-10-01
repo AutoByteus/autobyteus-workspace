@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   agentAddressSchema,
+  agentInputStateSchema,
   agentPresentationMessageSchema,
   nonEmptyStringSchema,
 } from "@autobyteus/agent-presentation-contracts";
@@ -43,6 +44,7 @@ export const agentRunCollaborationViewDtoSchema = z.object({
   execution_tree: agentRunCollaborationTreeDtoSchema,
   communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,
   agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
+  agent_input_states: z.array(z.object({ agent_run_id: nonEmptyStringSchema, state: agentInputStateSchema }).strict()),
 }).strict();
 
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [

@@ -1,3 +1,4 @@
+import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
@@ -50,4 +51,14 @@ describe('CompactionActivityItem', () => {
 
     wrapper.unmount();
   });
+});
+
+it('shows stopped with neutral static treatment and exact terminal message', () => {
+  const wrapper = mountItem('stopped');
+  expect(wrapper.get('p').text()).toBe('Stopped');
+  expect(getCompactionPhasePresentation('stopped').icon).toBe('heroicons:stop-circle-solid');
+  const icon = wrapper.get('[data-testid="compaction-activity-icon"]');
+  expect(icon.classes()).toContain('text-gray-500');
+  expect(icon.classes()).not.toContain('motion-safe:animate-spin');
+  wrapper.unmount();
 });

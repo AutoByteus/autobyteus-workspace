@@ -1,0 +1,144 @@
+{
+  "entryHead": "9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e",
+  "implementationCommit": "ebaf3a78eff2d3147dc3f4f2eb63bf119d6547ad",
+  "paths": [
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts",
+      "status": "present",
+      "sha256": "498d0ee1760e95351e0b5392d49f8f7aad38c93e6aa878668ef823763d2be4ed",
+      "effectiveNonemptyLines": 259
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts",
+      "status": "present",
+      "sha256": "adaa81779f93d3e6068abc900454f808b2d19a8b60635658d037ad05903d60a3",
+      "effectiveNonemptyLines": 302
+    },
+    {
+      "path": "autobyteus-server-ts/src/config/compaction-model-settings.ts",
+      "status": "present",
+      "sha256": "7b857bca0f42c4b4990cafe07bc53d099a3f0f99d69707a4bd4a397ce6c0d2ef",
+      "effectiveNonemptyLines": 27
+    },
+    {
+      "path": "autobyteus-server-ts/src/startup/compaction-model-settings-migration.ts",
+      "status": "deleted",
+      "sha256": null,
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-parent-credentials.test.ts",
+      "status": "present",
+      "sha256": "35553ac0359336ae31edbd9bbcc9e90a4b5605da42446e8361646da06c43dd0c",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+      "status": "present",
+      "sha256": "213de9dc3f4f9a5023812a4e86946f2de52418e9d21e24a8afd8c29f463a74ca",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+      "status": "present",
+      "sha256": "b7f37f92131d0286098d5684df5d3c75e3972ec6e125886c5961554ad04ce31c",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/config/compaction-model-settings.test.ts",
+      "status": "present",
+      "sha256": "278eea5d6eff7403b6c510134bf6ade9adb38aa17b1eb51c8eb58bd69f4b10cb",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/startup/compaction-model-settings-migration.test.ts",
+      "status": "deleted",
+      "sha256": null,
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts",
+      "status": "present",
+      "sha256": "c3e09bfae8312041b807efdf19723f54147f520c4ef02886f44bf920d476dc20",
+      "effectiveNonemptyLines": 253
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts",
+      "status": "present",
+      "sha256": "6bc9dc7419eb673c5eb68be7277a9507a099f78f0a3645cb84bc9c381b88ea41",
+      "effectiveNonemptyLines": 75
+    },
+    {
+      "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-shapes.ts",
+      "status": "present",
+      "sha256": "4bb7045c9fbe11260266691445da17b255644a6c9f2e9e73ba19b352e658653b",
+      "effectiveNonemptyLines": 190
+    },
+    {
+      "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts",
+      "status": "present",
+      "sha256": "8f5affdf1781c65ab4a7d35fcf92e1ef6599550369ec5ee3b1db03daca685e9e",
+      "effectiveNonemptyLines": 499
+    },
+    {
+      "path": "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts",
+      "status": "present",
+      "sha256": "c4c6cfb94b08f41d529b3d1293d69c4a9a0ef6bf0a5955f2f81ea2d47ed29278",
+      "effectiveNonemptyLines": 55
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts",
+      "status": "present",
+      "sha256": "5c0f00a4f15bc0bc884d078b8732eeb6271c84fdc960423bc6dc3b0954b4dd8a",
+      "effectiveNonemptyLines": 133
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts",
+      "status": "present",
+      "sha256": "887e0facc2ccadd3beed2483d450ada8e175a2482df5f0e6216aeb45afd6ff24",
+      "effectiveNonemptyLines": 193
+    },
+    {
+      "path": "autobyteus-ts/tests/fixtures/memory/released-native-snapshot-shapes.json",
+      "status": "present",
+      "sha256": "db971b177312d34e37f96c7f33750e5972a526b82b2de789ce7594c8efd9c14f",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts",
+      "status": "present",
+      "sha256": "36673f8a1d3dd37918e2776270d8dcd2171550a3ce61ac35feda1a7be0bd27ea",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/native-working-context-snapshot-shapes.test.ts",
+      "status": "present",
+      "sha256": "7eb7d179db2b9962f90977cba31be79ae15ed0609306f4cdfff7353b4e662163",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts",
+      "status": "present",
+      "sha256": "6e7d8b81f7982c0471c5f401ba4ac8d3d17ab3b0b1497eda44db0d70dd0461a8",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts",
+      "status": "present",
+      "sha256": "bafb1d26307f2d74d36743a66a9c55ebbe511051c81a6aa47bca97b351b493a8",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-snapshot-serializer.test.ts",
+      "status": "present",
+      "sha256": "c779f95b095bc1a412c67d03caa5404aeb7ec13420d6c7e118f8b2c5ac8a4776",
+      "effectiveNonemptyLines": null
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-tool-protocol-repairer.test.ts",
+      "status": "present",
+      "sha256": "85e37d2f3301df07932d2d04173a3d3ab9982858c6749ad1153c791eff334d0d",
+      "effectiveNonemptyLines": null
+    }
+  ]
+}

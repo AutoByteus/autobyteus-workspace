@@ -1,0 +1,27 @@
+{
+  "result": "Pass",
+  "documentTimeOrigins": [
+    1790878010930.6,
+    1790879844700,
+    1790879909835.6
+  ],
+  "nativeReloads": 2,
+  "sentinelsLost": 2,
+  "backendPid": 92623,
+  "agentAndTeamNativeInstancesUnchanged": true,
+  "heldAQueuedBOneCopyEach": true,
+  "attachmentOriginalNameRetained": true,
+  "rawAndProjectionUnchanged": true,
+  "providerCountsUnchanged": {
+    "armed": false,
+    "mode": "disarm",
+    "requests": 24,
+    "parent": 6,
+    "compaction": 18,
+    "phase": 2,
+    "closed": false,
+    "held": 0
+  },
+  "outboundOnInstrumentedHydrationConnections": 0,
+  "limit": "Post-load wire observer starts after boot; unchanged native/raw/provider boundaries supplement that observation gap."
+}

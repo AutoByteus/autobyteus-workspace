@@ -1,3 +1,8 @@
+import { countCompactedMemoryRegions, collectMessageRawTraceIds } from '../working-context-provenance.js';
+import type { MessageCompactionPlan } from './working-context-message-unit.js';
+import { WorkingContextFinalizer } from '../working-context-finalizer.js';
+import { WorkingContextMessageUnitBuilder } from './working-context-message-unit-builder.js';
+import { withoutAnthropicThinkingInMessage } from '../../llm/utils/provider-native-assistant-turn.js';
 import { isDeepStrictEqual } from 'node:util';
 import {
   Message,
@@ -11,8 +16,11 @@ import { WorkingContext } from '../working-context.js';
 import type { AcceptedWorkingContextCompaction } from './working-context-compaction-proposal.js';
 
 export type WorkingContextCompactionOutputInvariantCode =
+  | 'changed-retained-context'
+  | 'invalid-summary-region'
+  | 'invalid-selected-traces'
   | 'aliased-context'
-  | 'mutated-strategy-input'
+  | 'mutated-source-input'
   | 'changed-required-head'
   | 'invalid-message-shape'
   | 'invalid-tool-protocol'
@@ -31,31 +39,32 @@ export class WorkingContextCompactionOutputValidationError extends Error {
 export class WorkingContextCompactionOutputValidator {
   assertValid(
     baseline: WorkingContext,
-    strategyInput: WorkingContext,
+    sourceInput: WorkingContext,
     accepted: AcceptedWorkingContextCompaction,
+    plan: MessageCompactionPlan,
   ): void {
     const next = accepted.finalizedContext;
     if (!(next instanceof WorkingContext)) {
       throw new WorkingContextCompactionOutputValidationError(
         'invalid-message-shape',
-        'Compaction strategy must return a WorkingContext.',
+        'Compaction must return a WorkingContext.',
       );
     }
-    if (next === strategyInput) {
+    if (next === sourceInput) {
       throw new WorkingContextCompactionOutputValidationError(
         'aliased-context',
-        'Compaction strategy returned its input WorkingContext instance.',
+        'Compaction returned its input WorkingContext instance.',
       );
     }
 
     const baselineMessages = baseline.buildMessages();
     if (!isDeepStrictEqual(
       baselineMessages.map((message) => message.toDict()),
-      strategyInput.buildMessages().map((message) => message.toDict()),
+      sourceInput.buildMessages().map((message) => message.toDict()),
     )) {
       throw new WorkingContextCompactionOutputValidationError(
-        'mutated-strategy-input',
-        'Compaction strategy mutated its WorkingContext input.',
+        'mutated-source-input',
+        'Compaction mutated its WorkingContext input.',
       );
     }
     const nextMessages = next.buildMessages();
@@ -77,8 +86,24 @@ export class WorkingContextCompactionOutputValidator {
     ) {
       throw new WorkingContextCompactionOutputValidationError(
         'changed-required-head',
-        'Compaction strategy changed or removed the required leading system-message run.',
+        'Compaction changed or removed the required leading system-message run.',
       );
+    }
+
+    if (countCompactedMemoryRegions(nextMessages) !== 1) {
+      throw new WorkingContextCompactionOutputValidationError('invalid-summary-region', 'Expected one replacement summary.');
+    }
+    const units = new WorkingContextMessageUnitBuilder().build(nextMessages);
+    const retained = units.filter((unit) => unit.kind !== 'system' && unit.kind !== 'compacted_memory').flatMap((unit) => unit.messages);
+    const expected = new WorkingContextFinalizer().markNaturalUserMessagesRetained(plan.retainedMessages).map(withoutAnthropicThinkingInMessage);
+    const natural = (messages: Message[]) => new WorkingContextMessageUnitBuilder().build(messages).flatMap((unit) => unit.messages).map((message) => message.toDict());
+    if (!isDeepStrictEqual(natural(retained), natural(expected))) {
+      throw new WorkingContextCompactionOutputValidationError('changed-retained-context', 'Protected retained content changed.');
+    }
+    const selected = accepted.selectedNewRawTraceIds;
+    const retainedIds = new Set(collectMessageRawTraceIds(nextMessages));
+    if (selected.some((id) => retainedIds.has(id)) || !isDeepStrictEqual([...selected].sort(), [...plan.rawTraceIdsToArchive].sort())) {
+      throw new WorkingContextCompactionOutputValidationError('invalid-selected-traces', 'Selected evidence differs from the planned source set.');
     }
 
     const finalizedTokens = accepted.budgetAssessment.estimatedFinalizedContextTokens;
@@ -97,8 +122,13 @@ export class WorkingContextCompactionOutputValidator {
 export const assertWorkingContextMessagesStructurallyValid = (
   messages: readonly Message[],
 ): void => {
-  messages.forEach((message, index) => assertValidMessage(message, index));
+  assertWorkingContextMessageShapesValid(messages);
   assertCompleteToolProtocol(messages);
+};
+
+// Safe snapshot decode admits unfinished batches; dispatch validation above does not.
+export const assertWorkingContextMessageShapesValid = (messages: readonly Message[]): void => {
+  messages.forEach((message, index) => assertValidMessage(message, index));
 };
 
 const takeLeadingSystemMessages = (messages: Message[]): Message[] => {

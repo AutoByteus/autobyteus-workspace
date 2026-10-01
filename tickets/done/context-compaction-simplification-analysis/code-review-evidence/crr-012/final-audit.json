@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-01T07:13:14.151081+00:00",
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "pinned": 2512,
+  "missing": [],
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md"
+  ],
+  "allowedChanged": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md"
+  ],
+  "sourceReportUnchanged": true,
+  "unexpectedChanges": []
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts",
+    "tests/unit/agent-team-execution/team-root-collaborators.test.ts",
+    "tests/unit/agent-execution/root-recovery-command.test.ts",
+    "tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets",
+  "exit": 1,
+  "finished": "2026-10-01T12:39:27.811501+00:00"
+}

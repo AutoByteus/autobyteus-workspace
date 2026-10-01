@@ -1,0 +1,13 @@
+# IR-011 — SR038 accepted-input identity implementation
+
+Current authority: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md and current working source, not an earlier pass. Approved SR033 / Ready SR038 / ARCH-REV006; Large / High. Trigger IR010-DI001 and CRR015/API009-F001. Source and integrated API closure pending.
+
+- `entry-*`: fresh received authority/git/pin snapshot; 9,777 pins / 4,398 incoming references (reviewer's 4,397 send plus receipt).
+- `source-before/`, `source-delta.patch`, `source-inventory.json`: bounded source/test delta against actual unstaged entry, NOT HEAD/staged merge alone.
+- `derived-before/core-contract-dist.tar.gz`: preemit core + presentation-contract build outputs. `derived-delta.json` excludes tar-generated macOS AppleDouble metadata, not source files. 1,772 real file members compared;19 existing derived files changed;4 new contract-helper outputs.
+- Logs keep unsuccessful checks as well as final results. Initial native test failures were wrong explicit-memory path, wrong A-state expectation during active retry, and treating attachment-expanded native text as literal A. Assertions corrected to actual storage/defined lifecycle/accepted identity, not code behavior weakened. First sender control used noncanonical user+sender shape; corrected to the actual inter-agent saved shape; exact sender negatives remain.
+- `native-captures/`: outputs of the new native integration test with original accepted metadata, actual file bytes, normal projection and real pending FIFO snapshots. Not patched historical captures. Optional capture env only emits evidence; tests produce their own oracle on every run and do not read captures.
+- `renderer-preview/`: actual UserMessage component + production saved builder/pending handler; test-owned fresh captures, file-opening stores stubbed. No backend/model calls. Browser card widths410/360 CSS pixels, not a full packaged desktop journey. `renderer-interactions*.json`, screenshots and `rendered-result-check.md` scope observations.
+- `final-preservation.json`: entry pin allowlist and exact Git equality; separate derived audit and protected API list. New source/test paths enumerated explicitly. Merge/stash/backups/API-owned evidence unchanged.
+
+No migration/backfill/old-live-input retrofit. No raw ID/turn/correlation meaning changes. No queue/dispatch/authorization/provider/prompt changes. No new provider budget, confidence score, app build, commit, push, release or Delivery acceptance.

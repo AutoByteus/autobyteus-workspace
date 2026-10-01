@@ -1,3 +1,4 @@
+import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity, type AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { UserMessage } from '~/types/conversation';
 import type { UserMessageProjectionPayload } from '../protocol/messageTypes';
@@ -16,33 +17,18 @@ const toTimestamp = (value?: string | null): Date => {
   return parsed;
 };
 
-const normalizeIdentity = (value?: string | null): string => value?.trim() || '';
-
 const findExistingMessageIndex = (
-  messages: AgentContext['conversation']['messages'],
-  messageId: string,
-  dedupeKey: string,
+  messages: AgentContext['conversation']['messages'], identity: UserMessage,
 ): number => {
-  if (!messageId && !dedupeKey) {
-    return -1;
-  }
-  return messages.findIndex((message) => {
-    if (message.type !== 'user') {
-      return false;
-    }
-    const candidate = message as UserMessage;
-    return Boolean(
-      (messageId && candidate.messageId === messageId) ||
-      (dedupeKey && candidate.dedupeKey === dedupeKey),
-    );
-  });
+  const key = acceptedInputIdentityKey(identity);
+  return key === null ? -1 : messages.findIndex(message =>
+    message.type === 'user' && acceptedInputIdentityKey(message) === key);
 };
 
 export const buildUserMessageFromProjectionPayload = (
   payload: UserMessageProjectionPayload,
 ): UserMessage => {
-  const messageId = normalizeIdentity(payload.message_id);
-  const dedupeKey = normalizeIdentity(payload.dedupe_key);
+  const identity = normalizeAcceptedInputIdentity({ messageId: payload.message_id, dedupeKey: payload.dedupe_key });
   const contextFilePaths = (payload.context_file_paths ?? [])
     .filter((item) => typeof item?.path === 'string' && item.path.trim().length > 0)
     .map((item) =>
@@ -57,8 +43,7 @@ export const buildUserMessageFromProjectionPayload = (
     text: payload.content ?? '',
     timestamp: toTimestamp(payload.received_at),
     contextFilePaths,
-    ...(messageId ? { messageId } : {}),
-    ...(dedupeKey ? { dedupeKey } : {}),
+    ...identity,
   };
 };
 
@@ -70,8 +55,7 @@ export const upsertUserMessageByIdentity = (input: {
   const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
   const existingIndex = findExistingMessageIndex(
     context.conversation.messages,
-    userMessage.messageId ?? '',
-    userMessage.dedupeKey ?? '',
+    userMessage,
   );
   if (existingIndex >= 0) {
     const existing = context.conversation.messages[existingIndex];
@@ -84,6 +68,10 @@ export const upsertUserMessageByIdentity = (input: {
     const nextMessage = {
       ...existing,
       ...userMessage,
+      ...normalizeAcceptedInputIdentity({
+        messageId: normalizeAcceptedInputIdentity(userMessage).messageId ?? (existing.type === 'user' ? existing.messageId : undefined),
+        dedupeKey: normalizeAcceptedInputIdentity(userMessage).dedupeKey ?? (existing.type === 'user' ? existing.dedupeKey : undefined),
+      }),
       contextFilePaths,
     };
     if (JSON.stringify(existing) === JSON.stringify(nextMessage)) return false;
@@ -115,4 +103,52 @@ const mergeMemberEchoContextFiles = (
     seen.add(identity);
     return true;
   });
+};
+
+/** Live pending state overlays saved presentation, not an accepted-echo attachment replacement. */
+export const upsertPendingUserMessage = (
+  context: AgentContext, entry: AgentInputStateDto['entries'][number], runInstanceId: string,
+): void => {
+  const identity = normalizeAcceptedInputIdentity({ messageId: entry.message_id, dedupeKey: entry.dedupe_key });
+  if (entry.sender_type !== 'user' || acceptedInputIdentityKey(identity) === null) return;
+  const message = buildUserMessageFromProjectionPayload({
+    content: entry.content, message_id: identity.messageId, dedupe_key: identity.dedupeKey,
+  });
+  message.contextFilePaths = entry.file_attachments.map(file => hydrateContextAttachment({
+    locator: file.uri, type: file.file_type, displayName: file.file_name,
+  }));
+  message.pendingInput = { runInstanceId, state: entry.state };
+  const index = findExistingMessageIndex(context.conversation.messages, message);
+  const existing = context.conversation.messages[index];
+  if (existing?.type !== 'user') {
+    context.conversation.messages.push(message);
+    return;
+  }
+  context.conversation.messages[index] = {
+    ...existing, ...message,
+    ...normalizeAcceptedInputIdentity({
+      messageId: identity.messageId ?? existing.messageId,
+      dedupeKey: identity.dedupeKey ?? existing.dedupeKey,
+    }),
+    timestamp: existing.timestamp,
+    contextFilePaths: mergePendingContextFiles(existing.contextFilePaths ?? [], message.contextFilePaths ?? []),
+  };
+};
+
+const mergePendingContextFiles = (
+  existing: NonNullable<UserMessage['contextFilePaths']>, incoming: NonNullable<UserMessage['contextFilePaths']>,
+): NonNullable<UserMessage['contextFilePaths']> => {
+  const merged: NonNullable<UserMessage['contextFilePaths']> = [];
+  for (const attachment of [...existing, ...incoming]) {
+    const index = merged.findIndex(saved => saved.locator.trim() === attachment.locator.trim() && saved.type === attachment.type);
+    if (index < 0) merged.push(attachment);
+    else {
+      const saved = merged[index];
+      const generatedName = hydrateContextAttachment({ locator: saved.locator, type: saved.type }).displayName;
+      if (!saved.displayName || saved.displayName === generatedName) {
+        merged[index] = { ...saved, displayName: attachment.displayName || saved.displayName };
+      }
+    }
+  }
+  return merged;
 };

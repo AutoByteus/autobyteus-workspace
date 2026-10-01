@@ -1,0 +1,40 @@
+Auto-merging autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts
+Auto-merging autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js
+Auto-merging autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map
+Auto-merging autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts
+Auto-merging autobyteus-agent-presentation-contracts/tests/agent-presentation-contracts.test.mjs
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/tests/agent-presentation-contracts.test.mjs
+Auto-merging autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+CONFLICT (content): Merge conflict in autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts
+Auto-merging autobyteus-server-ts/src/api/graphql/schema.ts
+Auto-merging autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts
+Auto-merging autobyteus-server-ts/src/services/server-settings-service.ts
+Auto-merging autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts
+Auto-merging autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts deleted in aec405901 (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts deleted in aec405901 (refactor: simplify context compaction to one direct summary) and modified in HEAD.  Version HEAD of autobyteus-server-ts/tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts left in tree.
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+Auto-merging autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+Auto-merging autobyteus-web/generated/graphql.ts
+Auto-merging autobyteus-web/localization/messages/en/settings.ts
+Auto-merging autobyteus-web/localization/messages/zh-CN/settings.ts
+Auto-merging autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Auto-merging autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
+Rebasing (1/4)error: could not apply aec405901... refactor: simplify context compaction to one direct summary
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Could not apply aec405901... # refactor: simplify context compaction to one direct summary

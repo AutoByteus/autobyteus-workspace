@@ -1,0 +1,44 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "plans": [
+    [
+      "C02-R",
+      [
+        "pnpm",
+        "-C",
+        "autobyteus-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/memory",
+        "tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+        "tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+        "--no-watch"
+      ]
+    ],
+    [
+      "C05-R",
+      [
+        "pnpm",
+        "-C",
+        "autobyteus-server-ts",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+        "tests/e2e/memory/memory-view-graphql.e2e.test.ts",
+        "tests/e2e/memory/memory-explorer-graphql.e2e.test.ts",
+        "--no-watch"
+      ]
+    ],
+    [
+      "C07-R",
+      [
+        "node",
+        "--test",
+        "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs"
+      ]
+    ]
+  ],
+  "remote": 0
+}

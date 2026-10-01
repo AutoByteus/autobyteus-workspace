@@ -1,0 +1,34 @@
+{
+  "finding": "API-F007",
+  "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+  "preliminary": "Local Fix; production settings service, not requirement/design gap",
+  "base_runtime_rerun": false,
+  "evidence": [
+    {
+      "ref": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "updateGuard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "blockSha256": "61e4aadb56cdedeb2464f9f8641b8969ec030f16ee2d3222d99749dcf0b5ea76",
+      "matchesTokenSubstring": true
+    },
+    {
+      "ref": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "updateGuard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "blockSha256": "61e4aadb56cdedeb2464f9f8641b8969ec030f16ee2d3222d99749dcf0b5ea76",
+      "matchesTokenSubstring": true
+    },
+    {
+      "ref": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "updateGuard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "blockSha256": "61e4aadb56cdedeb2464f9f8641b8969ec030f16ee2d3222d99749dcf0b5ea76",
+      "matchesTokenSubstring": true
+    }
+  ],
+  "sameGuardAcrossRefs": true,
+  "limit": "Identical baseline guard is source evidence, not an executed full baseline build or waiver. Current real UI, HTTP and schema test reproduce failure."
+}

@@ -1,0 +1,29 @@
+--- entry/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
++++ current/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+@@ -5,7 +5,7 @@
+ import { LLMModel } from 'autobyteus-ts/llm/models.js';
+ import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+ import { COMPACTION_SUMMARY_PROMPT } from 'autobyteus-ts/memory/compaction/compaction-summary-prompt.js';
+-import { WorkingContextCompactionPromptBuilder } from 'autobyteus-ts/memory/compaction/working-context-compaction-prompt-builder.js';
++import { CompactionContentBuilder } from 'autobyteus-ts/memory/compaction/compaction-content-builder.js';
+ import { AutoByteusAgentRunBackendFactory } from '../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
+ import * as availableLlm from '../../../src/agent-execution/backends/autobyteus/available-llm-construction.js';
+ import { appConfigProvider } from '../../../src/config/app-config-provider.js';
+@@ -68,7 +68,7 @@
+         fixture.tool_call_id, 'read_file', JSON.stringify(fixture.tool_result, null, 2),
+       ) }),
+     ];
+-    const history = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([{
++    const history = new CompactionContentBuilder().build([{
+       id: 'assistant', kind: 'message', startIndex: 0, endIndex: 0,
+       rawTraceIds: ['assistant'], messages: [new Message(MessageRole.ASSISTANT, { content: assistantText })],
+     }, {
+@@ -78,7 +78,7 @@
+     }], { maxItemChars: 2_000 });
+     const invocation = { messages: [
+       { role: MessageRole.SYSTEM, content: COMPACTION_SUMMARY_PROMPT, toolPayload: null, provenance: null },
+-      { role: MessageRole.USER, content: `Summary budget: 2000 tokens.\n\n${history}`, toolPayload: null, provenance: null },
++      { role: MessageRole.USER, content: history, toolPayload: null, provenance: null },
+     ] };
+     expect(inspectDirectSummaryRequest(invocation)).toEqual({
+       sourceToolTailVerified: true,

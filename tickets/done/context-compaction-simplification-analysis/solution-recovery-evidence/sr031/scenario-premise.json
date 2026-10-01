@@ -1,0 +1,62 @@
+{
+  "revision": "SR031",
+  "user_clarification": "real production path means that real user scenerios or real system behaviro could be triggered by real usage",
+  "classification": "Unclear\u2014not established supported initiating scenario for identical Team/Org resend; mechanically possible only so far",
+  "production_source_sha256": {
+    "autobyteus-web/stores/agentTeamRunStore.ts": "04b13f076f27c3bcd2635e9892b05586c7c92dff15b17319f87cae1c9c120bfd",
+    "autobyteus-web/stores/agentOrgContextsStore.ts": "675aa834310bf3f5ea12da80d3c255964527935276b74ddbe9c0d5c876d5d8d4",
+    "autobyteus-web/services/agentStreaming/TeamStreamingService.ts": "485d4fc313f2bd4ff0be8e277df9d0484863b6bdfe508269352b6d04f77fad01",
+    "autobyteus-web/services/agentStreaming/transport/WebSocketClient.ts": "6483a75d18cbc006da35761566b3363f5c044bd009023653fbbf9a4eaafb11fe",
+    "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts": "aaad2c55c677d8a59282e2ef18963290c5e2395a4a6e9d4ff1e50096ccdfe1f0",
+    "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts": "d078c1e76c57764f6118d0cd00bdd734f0a0abbb2373e6a51b4c6f0c3f314db8",
+    "autobyteus-server-ts/docs/modules/agent_execution.md": "539741004321ae4298eac38549d9f5115796b3d65efc9ed1be9f67150c42b720",
+    "autobyteus-server-ts/docs/modules/agent_streaming.md": "23797a53899602288c401b198c12f439a5ea86dbadf2540cea050b898fd5855b",
+    "autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md": "3eef5ade983b3f72096debb2e925b5f962b1e633a68740594bc1c259bac62537"
+  },
+  "forward_trace": [
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "anchor": "send action: messageId=buildClientMessageId; await service.sendMessage once; catch restores draft/attachments, no command replay",
+      "conclusion": "A later user send creates another identity, not identical B."
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "anchor": "submit: crypto.randomUUID; pending guards; await service.sendPrepared once; catch restores draft; finally deletes pending submission",
+      "conclusion": "Normal Org action does not reuse previous B identity."
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/TeamStreamingService.ts",
+      "anchor": "sendMessage existing pendingTeamSends returns existing.promise; send once; handleDisconnect/drainPendingTeamSends clears and rejects; handleConnect only changes synchronization",
+      "conclusion": "In-flight duplicates are coalesced client-side; reconnect does not automatically resend B."
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/transport/WebSocketClient.ts",
+      "anchor": "setupEventListeners, scheduleReconnect, send",
+      "conclusion": "Automatic connection re-establishment, no outbound message buffer/replay loop."
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+      "anchor": "commandRoot fresh command UUID; command one socket.send, timeout removes/rejects; failClosed rejects pending; transparent recovery reopens snapshot/socket",
+      "conclusion": "Transport/view recovery is not SEND_MESSAGE retry."
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "anchor": "handles a synchronous transport failure and retires its pending command",
+      "conclusion": "Existing test explicitly documents no automatic retry and subsequent ordinary user send. Read only; not rerun."
+    },
+    {
+      "path": "autobyteus-server-ts/docs/modules/agent_execution.md",
+      "anchor": "Standalone Command Lifecycle",
+      "conclusion": "Explicit (runId,message_id) idempotency and at-least15minute retention apply to standalone; no evidence here of a Team/Org retry producer."
+    }
+  ],
+  "limits": [
+    "Source/read-only investigation, no UI/runtime execution or new test rerun.",
+    "Search did not establish another supported producer or Team/Org retransmission contract; absence of evidence is not universal impossibility.",
+    "IR004 root host is test-owned, LLM/strategy synthetic; actual strict handlers/configured/native queue used.",
+    "Missing initial agent_org_execution.md path corrected by inspecting actual streaming/Org source; no governing document inferred."
+  ],
+  "candidate_disposition": "Unhanded shared-command architecture withdrawn; archived exact candidate. No implementation authorized from it.",
+  "tests": 0,
+  "provider_calls": 0
+}

@@ -1,0 +1,141 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+    "sha256": "67811fdb7d7369f7bd8f7cc262be553cd1d319f8f8a7e7c9eba1586a9fad8997",
+    "excerpts": [
+      {
+        "start": 51,
+        "end": 68,
+        "text": "51: export class ServerSettingDescription {\n52:   constructor(\n53:     public readonly key: string,\n54:     public readonly description: string,\n55:     public readonly isEditable: boolean = true,\n56:     public readonly isDeletable: boolean = false,\n57:     public readonly valueValidation: ServerSettingValueValidation | null = null,\n58:   ) {}\n59: }\n60: \n61: type ServerSettingValueValidation = {\n62:   readonly allowedValues?: readonly string[];\n63:   readonly normalizeForPersistence?: (value: string) => [true, string] | [false, string];\n64:   readonly trimBeforePersist?: boolean;\n65: };\n66: \n67: const CUSTOM_SETTING_DESCRIPTION = \"Custom user-defined setting\";\n68: const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;"
+      },
+      {
+        "start": 133,
+        "end": 136,
+        "text": "133:     this.registerPredefinedSetting(\n134:       \"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE\",\n135:       \"Optional effective context ceiling override in tokens for compaction budgeting\",\n136:     );"
+      },
+      {
+        "start": 235,
+        "end": 248,
+        "text": "235:   private getVisibleSettingKeys(configData: Record<string, string>): string[] {\n236:     const visibleKeys = new Set<string>();\n237: \n238:     for (const key of Object.keys(configData)) {\n239:       if (!SENSITIVE_SETTING_NAME.test(key)) {\n240:         visibleKeys.add(key);\n241:       }\n242:     }\n243: \n244:     for (const key of this.settingsInfo.keys()) {\n245:       const value = appConfigProvider.config.get(key);\n246:       if (typeof value === \"string\" && value.trim().length > 0) {\n247:         visibleKeys.add(key);\n248:       }"
+      },
+      {
+        "start": 290,
+        "end": 326,
+        "text": "290:   updateSetting(key: string, value: string): [boolean, string] {\n291:     try {\n292:       if (SENSITIVE_SETTING_NAME.test(key)) {\n293:         return [false, \"Sensitive settings must use their write-only credential editor.\"];\n294:       }\n295:       const metadata = this.settingsInfo.get(key);\n296:       if (metadata && !metadata.isEditable) {\n297:         return [false, `Server setting '${key}' is managed by the system and cannot be updated here.`];\n298:       }\n299: \n300:       const [isValueValid, normalizedValueOrError] = this.normalizeSettingValueForPersistence(\n301:         key,\n302:         value,\n303:         metadata,\n304:       );\n305:       if (!isValueValid) {\n306:         return [false, normalizedValueOrError];\n307:       }\n308: \n309:       const config = appConfigProvider.config;\n310:       if (key === COMPACTION_MODEL_SETTINGS_KEY) config.setDurably(key, normalizedValueOrError);\n311:       else config.set(key, normalizedValueOrError);\n312:       this.refreshDependentSettingsAfterUpdate(key);\n313: \n314:       if (!this.settingsInfo.has(key)) {\n315:         this.settingsInfo.set(\n316:           key,\n317:           new ServerSettingDescription(key, CUSTOM_SETTING_DESCRIPTION, true, true),\n318:         );\n319:         logger.info(`Added new custom server setting: ${key}`);\n320:       }\n321: \n322:       logger.info(`Server setting '${key}' updated`);\n323:       return [true, `Server setting '${key}' has been updated successfully.`];\n324:     } catch (error) {\n325:       logger.error(`Error updating server setting '${key}'`);\n326:       return [false, \"Error updating server setting: SERVER_SETTING_UPDATE_REJECTED\"];"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/server-settings.ts",
+    "sha256": "d22f79daaa2ab9607e46a1faf96966c43bf9d1533bd0a5cb74bee7d1efb46620",
+    "excerpts": [
+      {
+        "start": 57,
+        "end": 66,
+        "text": "57:   @Query(() => [ServerSetting])\n58:   getServerSettings(): ServerSetting[] {\n59:     const settings = this.serverSettingsService.getAvailableSettings();\n60:     return settings.map((setting) => ({\n61:       key: setting.key,\n62:       value: setting.value,\n63:       description: setting.description,\n64:       isEditable: setting.isEditable,\n65:       isDeletable: setting.isDeletable,\n66:     }));"
+      },
+      {
+        "start": 79,
+        "end": 85,
+        "text": "79:   @Mutation(() => String)\n80:   updateServerSetting(\n81:     @Arg(\"key\", () => String) key: string,\n82:     @Arg(\"value\", () => String) value: string,\n83:   ): string {\n84:     const [, message] = this.serverSettingsService.updateSetting(key, value);\n85:     return message;"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/components/settings/CompactionConfigCard.vue",
+    "sha256": "7a71b287c6cb3fad8afd0061b38999c623114955e30de96a59babe2df58475f0",
+    "excerpts": [
+      {
+        "start": 65,
+        "end": 80,
+        "text": "65:       <div>\n66:         <label for=\"compaction-context-override-input\" class=\"mb-1 block text-sm font-medium text-gray-900\">\n67:           {{ t('settings.components.settings.CompactionConfigCard.effectiveContextOverride') }}\n68:         </label>\n69:         <input\n70:           id=\"compaction-context-override-input\"\n71:           v-model=\"activeContextTokensOverride\"\n72:           type=\"number\"\n73:           min=\"1\"\n74:           class=\"h-11 w-full rounded-lg border border-gray-300 bg-white px-3\"\n75:           :disabled=\"universalControlsDisabled\"\n76:           :aria-invalid=\"settingsReady && !overrideValid\"\n77:           :placeholder=\"t('settings.components.settings.CompactionConfigCard.leaveBlankToDisable')\"\n78:           data-testid=\"compaction-context-override-input\"\n79:         >\n80:         <p v-if=\"settingsReady && !overrideValid\" class=\"mt-1 text-sm text-red-700\" role=\"alert\" data-testid=\"compaction-override-error\">"
+      },
+      {
+        "start": 136,
+        "end": 157,
+        "text": "136: const currentTriggerRatioPercent = computed(() => ratioPercentFromSetting(settingsStore.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value))\n137: const currentActiveContextTokensOverride = computed(() => normalizeText(settingsStore.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value))\n138: const currentDetailedLogsEnabled = computed(() => parseDetailedLogs(settingsStore.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value))\n139: const currentRevision = computed(() => windowNodeContextStore.bindingRevision)\n140: const settingsReady = computed(() => settingsStore.settingsBindingRevision === currentRevision.value)\n141: const universalControlsDisabled = computed(() => !settingsReady.value || isSaving.value)\n142: \n143: const ratioValid = computed(() => {\n144:   const value = Number(triggerRatioPercent.value)\n145:   return Number.isFinite(value) && value >= 1 && value <= 100\n146: })\n147: const overrideValid = computed(() => {\n148:   const value = normalizeText(activeContextTokensOverride.value)\n149:   if (!value) return true\n150:   const numeric = Number(value)\n151:   return Number.isInteger(numeric) && numeric > 0\n152: })\n153: const modelDirty = computed(() => JSON.stringify(modelSettings.value) !== JSON.stringify(currentModelSettings.value))\n154: const isDirty = computed(() => modelDirty.value ||\n155:   normalizeText(triggerRatioPercent.value) !== currentTriggerRatioPercent.value ||\n156:   normalizeText(activeContextTokensOverride.value) !== currentActiveContextTokensOverride.value ||\n157:   detailedLogsEnabled.value !== currentDetailedLogsEnabled.value)"
+      },
+      {
+        "start": 213,
+        "end": 251,
+        "text": "213: const buildChanges = (): ReadonlyArray<Readonly<{ key: string; value: string }>> => {\n214:   const changes: Array<Readonly<{ key: string; value: string }>> = []\n215:   if (modelDirty.value) {\n216:     changes.push({ key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(modelSettings.value) })\n217:   }\n218:   if (normalizeText(triggerRatioPercent.value) !== currentTriggerRatioPercent.value) {\n219:     changes.push({ key: COMPACTION_TRIGGER_RATIO_KEY, value: String(Number(triggerRatioPercent.value) / 100) })\n220:   }\n221:   if (normalizeText(activeContextTokensOverride.value) !== currentActiveContextTokensOverride.value) {\n222:     changes.push({ key: ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY, value: normalizeText(activeContextTokensOverride.value) })\n223:   }\n224:   if (detailedLogsEnabled.value !== currentDetailedLogsEnabled.value) {\n225:     changes.push({ key: COMPACTION_DEBUG_LOGS_KEY, value: detailedLogsEnabled.value ? 'true' : 'false' })\n226:   }\n227:   return changes\n228: }\n229: \n230: const save = async (): Promise<void> => {\n231:   if (!canSave.value) return\n232: \n233:   isSaving.value = true\n234:   statusMessage.value = ''\n235:   const savingRevision = currentRevision.value\n236:   let completed = false\n237:   try {\n238:     for (const change of buildChanges()) {\n239:       if (savingRevision !== currentRevision.value) throw new Error(t('settings.components.settings.CompactionConfigCard.nodeChanged'))\n240:       await settingsStore.updateServerSetting(change.key, change.value)\n241:     }\n242:     completed = true\n243:   } catch (error: any) {\n244:     const errorDetail = error?.message ?? t('settings.components.settings.CompactionConfigCard.saveError')\n245:     statusMessage.value = t('settings.components.settings.CompactionConfigCard.saveErrorWithDetail', {\n246:       error: errorDetail,\n247:     })\n248:   } finally {\n249:     isSaving.value = false\n250:     if (completed && savingRevision === currentRevision.value) syncFromStore()\n251:   }"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-web/stores/serverSettings.ts",
+    "sha256": "e88f4a5c8ac7b4ba0e9c603aa85354fb65835a98e33909e53d9738bf961c0b38",
+    "excerpts": [
+      {
+        "start": 386,
+        "end": 421,
+        "text": "386:     async updateServerSetting(key: string, value: string) {\n387:       this.isUpdating = true\n388:       this.error = null\n389:       \n390:       const client = getApolloClient()\n391:       try {\n392:         const { data, errors } = await client.mutate({\n393:           mutation: UPDATE_SERVER_SETTING,\n394:           variables: { key, value }\n395:         })\n396:         \n397:         if (errors && errors.length > 0) {\n398:           throw new Error(errors.map((e: any) => e.message).join(', '))\n399:         }\n400:         \n401:         const responseMessage = data?.updateServerSetting\n402:         \n403:         if (responseMessage && responseMessage.includes(\"successfully\")) {\n404:           convergeModelCatalogAfterSettingCommit(key)\n405:           // Reload settings from server to ensure state is consistent\n406:           await this.reloadServerSettings();\n407:           const useCapabilityStore = CAPABILITY_STORE_BY_SETTING_KEY[key.trim().toUpperCase()]\n408:           if (useCapabilityStore) {\n409:             await useCapabilityStore().refresh()\n410:           }\n411:           return true\n412:         }\n413:         \n414:         this.error = responseMessage || 'Failed to update server setting'\n415:         throw new Error(responseMessage || 'Failed to update server setting')\n416:       } catch (error: any) {\n417:         this.error = error.message\n418:         console.error(`Failed to update server setting ${key}:`, error)\n419:         throw error\n420:       } finally {\n421:         this.isUpdating = false"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/src/config/app-config.ts",
+    "sha256": "eec29ec87f38b1c52854f7c3096e3604720af95b1c71772d4ced78bb70b06f35",
+    "excerpts": [
+      {
+        "start": 470,
+        "end": 495,
+        "text": "470:   get(key: string, defaultValue?: string): string | undefined {\n471:     if (key === \"DATABASE_URL\" && this.operationalDatabaseLocation) {\n472:       return this.operationalDatabaseLocation.databaseUrl;\n473:     }\n474:     return process.env[key] ?? this.configData[key] ?? defaultValue;\n475:   }\n476: \n477:   getConfigData(): Record<string, string> {\n478:     return { ...this.configData };\n479:   }\n480: \n481:   set(key: string, value: string): void {\n482:     this.assertGenericSettingAllowed(key, \"written\");\n483:     this.configData[key] = value;\n484:     process.env[key] = value;\n485: \n486:     if (this.configFile) {\n487:       try {\n488:         updateEnvironmentAssignmentFile(this.configFile, key, value);\n489:       } catch (error) {\n490:         console.info(\n491:           `Could not update config file ${this.configFile}: ${String(error)}. ` +\n492:             \"Changes will only be valid for the current session.\",\n493:         );\n494:       }\n495:     }"
+      },
+      {
+        "start": 549,
+        "end": 557,
+        "text": "549:   private assertGenericSettingAllowed(key: string, operation: \"written\" | \"removed\"): void {\n550:     if (operation === \"written\" && retiredSettingNames.has(key)) {\n551:       throw new AppConfigError(`Server setting '${key}' has been retired and cannot be set.`);\n552:     }\n553:     if (forbiddenGenericSettingNames.has(key)) {\n554:       throw new AppConfigError(\n555:         `Sensitive values must be ${operation} through a subject-specific secret service.`,\n556:       );\n557:     }"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts",
+    "sha256": "77b3ec877c7fc4287e36bf3ca2a9d66d4bb367a000b3a507e27da3c8e6efc58d",
+    "excerpts": [
+      {
+        "start": 27,
+        "end": 43,
+        "text": "27:   return Math.min(1, parsed);\n28: };\n29: \n30: const parsePositiveInteger = (value: string | undefined): number | null => {\n31:   if (typeof value !== 'string') {\n32:     return null;\n33:   }\n34:   const normalized = value.trim();\n35:   if (!normalized) {\n36:     return null;\n37:   }\n38: \n39:   const parsed = Number(normalized);\n40:   if (!Number.isFinite(parsed) || parsed <= 0) {\n41:     return null;\n42:   }\n43: "
+      },
+      {
+        "start": 54,
+        "end": 62,
+        "text": "54: export class CompactionRuntimeSettingsResolver {\n55:   resolve(env: NodeJS.ProcessEnv = process.env): CompactionRuntimeSettings {\n56:     return {\n57:       triggerRatioOverride: parseRatio(env[AUTOBYTEUS_COMPACTION_TRIGGER_RATIO]),\n58:       activeContextTokensOverride: parsePositiveInteger(env[AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE]),\n59:       detailedLogsEnabled: parseBoolean(env[AUTOBYTEUS_COMPACTION_DEBUG_LOGS])\n60:     };\n61:   }\n62: }"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+    "sha256": "d38d0ce310c2be7ed9ab9625296cee2d441f5ae70e0983bf0fb679ecd76cc45d",
+    "excerpts": [
+      {
+        "start": 80,
+        "end": 95,
+        "text": "80:     const completeImageUrls: string[] = [];\n81:     const completeAudioUrls: string[] = [];\n82:     const completeVideoUrls: string[] = [];\n83: \n84:     const runtimeSettingsResolver = new CompactionRuntimeSettingsResolver();\n85:     const runtimeSettings = runtimeSettingsResolver.resolve();\n86:     const automaticCompaction = memoryManager.getAutomaticCompactionConfiguration();\n87:     const requestCapacity = resolveLlmRequestCapacity(\n88:       llmInstance.model,\n89:       llmInstance.config,\n90:       runtimeSettings,\n91:       automaticCompaction.kind === 'enabled'\n92:         ? automaticCompaction.policy.safetyMarginTokens\n93:         : undefined,\n94:     );\n95:     const compactionTokenBudget = automaticCompaction.kind === 'enabled' && requestCapacity"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-ts/src/agent/token-budget.ts",
+    "sha256": "9e1a2e1b9237f4d2a46e356f926a29c201c096f557c532eb68f6d1505d0378f6",
+    "excerpts": [
+      {
+        "start": 43,
+        "end": 67,
+        "text": "43: export const resolveLlmRequestCapacity = (\n44:   model: LLMModel,\n45:   config: LLMConfig,\n46:   runtimeSettings?: Pick<CompactionRuntimeSettings, 'activeContextTokensOverride'> | null,\n47:   fallbackSafetyMarginTokens = DEFAULT_LLM_REQUEST_SAFETY_MARGIN_TOKENS,\n48: ): LlmRequestCapacity | null => {\n49:   const overrideContext = normalizePositiveInteger(runtimeSettings?.activeContextTokensOverride);\n50:   const effectiveContextCapacity = overrideContext\n51:     ?? normalizePositiveInteger(model.activeContextTokens)\n52:     ?? normalizePositiveInteger(model.maxContextTokens);\n53: \n54:   const reservedOutputTokens = minPositive(config.maxTokens, model.maxOutputTokens)\n55:     ?? normalizePositiveInteger(config.maxTokens)\n56:     ?? normalizePositiveInteger(model.maxOutputTokens)\n57:     ?? 0;\n58: \n59:   const contextDerivedInputCapTokens = effectiveContextCapacity === null\n60:     ? null\n61:     : Math.max(0, effectiveContextCapacity - reservedOutputTokens);\n62: \n63:   const providerInputCapTokens = normalizePositiveInteger(model.maxInputTokens);\n64: \n65:   let effectiveInputCapacity: number | null;\n66:   if (contextDerivedInputCapTokens !== null && providerInputCapTokens !== null) {\n67:     effectiveInputCapacity = Math.min(contextDerivedInputCapTokens, providerInputCapTokens);"
+      }
+    ]
+  },
+  {
+    "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "sha256": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+    "excerpts": [
+      {
+        "start": 719,
+        "end": 755,
+        "text": "719:   it(\"saves the numeric compaction context ceiling through ordinary settings\", async () => {\n720:     const key = \"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE\";\n721:     const originalValue = process.env[key];\n722:     delete process.env[key];\n723:     try {\n724:       initializeOwnedSettingsConfig();\n725:       const updated = await execGraphql<{ updateServerSetting: string }>(\n726:         `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,\n727:         { key, value: \"16000\" },\n728:       );\n729:       expect(updated.updateServerSetting).toContain(\"updated successfully\");\n730:       const listed = await execGraphql<{\n731:         getServerSettings: Array<{ key: string; value: string; isEditable: boolean }>;\n732:       }>(\"{ getServerSettings { key value isEditable } }\");\n733:       expect(listed.getServerSettings.find(setting => setting.key === key)).toMatchObject({\n734:         value: \"16000\", isEditable: true,\n735:       });\n736:     } finally {\n737:       if (originalValue === undefined) delete process.env[key];\n738:       else process.env[key] = originalValue;\n739:     }\n740:   });\n741: \n742:   it(\"keeps credential-like settings out of the ordinary numeric-control write path\", async () => {\n743:     initializeOwnedSettingsConfig();\n744:     const updated = await execGraphql<{ updateServerSetting: string }>(\n745:       `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,\n746:       { key: \"API5_SYNTHETIC_API_KEY\", value: \"not-a-real-credential\" },\n747:     );\n748:     expect(updated.updateServerSetting).toContain(\"write-only credential editor\");\n749:     expect(appConfigProvider.config.get(\"API5_SYNTHETIC_API_KEY\")).toBeUndefined();\n750:     expect(fs.readFileSync(path.join(tempDir, \".env\"), \"utf8\")).not.toContain(\"API5_SYNTHETIC_API_KEY\");\n751:   });\n752: \n753: });"
+      }
+    ]
+  }
+]

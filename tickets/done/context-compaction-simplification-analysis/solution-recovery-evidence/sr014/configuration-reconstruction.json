@@ -1,0 +1,38 @@
+{
+  "kind": "No-provider reconstruction from current source and synthetic discovery metadata; not failed-run wire capture",
+  "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "defaultTemperature": 0.7,
+  "defaultMaxTokens": null,
+  "effectiveTemperature": 0.7,
+  "effectiveMaxTokens": 8192,
+  "requestKeys": [
+    "model",
+    "messages",
+    "temperature",
+    "max_completion_tokens"
+  ],
+  "requestControls": {
+    "temperature": 0.7,
+    "max_completion_tokens": 8192
+  },
+  "providerOwnedUnobserved": [
+    "top_p",
+    "top_k",
+    "min_p",
+    "seed",
+    "chat-template",
+    "thinking-mode",
+    "quantization",
+    "backend-version"
+  ],
+  "parentFixture": {
+    "temperature": 0,
+    "maxTokens": 1024
+  },
+  "isolatedOverrideSupported": {
+    "temperature": 0,
+    "maxTokens": 8192
+  },
+  "realNetworkCalls": 0,
+  "limitations": "Does not recover historical wire bytes or server-side defaults; does not demonstrate temperature caused or fixes semantic failure."
+}

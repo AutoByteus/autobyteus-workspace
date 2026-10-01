@@ -1,0 +1,18 @@
+{
+  "result": "Completed implementation-owned Local Fix",
+  "revision": "IR-006",
+  "finding": "API-F007",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "why": "Most-specific completed Local Fix requested by Code Reviewer; general completion rule also matches but is less specific.",
+  "sole_recipient": "/code_reviewer",
+  "not_selected": [
+    "/api_e2e_engineer",
+    "/solution_designer",
+    "/delivery_engineer"
+  ]
+}

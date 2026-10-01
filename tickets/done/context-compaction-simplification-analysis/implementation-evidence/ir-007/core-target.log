@@ -1,0 +1,13 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stderr | tests/unit/memory/pending-compaction-executor.test.ts > PendingCompactionExecutor direct path > treats postcommit prune/reporter failure as committed and restores from that same snapshot
+Compaction committed; raw archive cleanup failed. Active duplicates retained. { operationId: 'compaction_operation_mup0qtqy_1' }
+
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (13 tests) 451ms
+
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+   Start at  06:13:05
+   Duration  806ms (transform 203ms, setup 16ms, import 255ms, tests 451ms, environment 0ms)
+

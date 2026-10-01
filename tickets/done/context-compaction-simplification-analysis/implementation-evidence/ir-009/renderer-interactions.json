@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"tab_id\": \"fa9d12\",\n  \"result_json\": \"{\\\"observations\\\":[{\\\"phase\\\":\\\"started\\\",\\\"text\\\":[\\\"Conversation row\\\\nCompacting memory…\\\\nCOMPACTING\\\\nTurn: turn-12 · 84 raw traces\\\",\\\"Activity panel\\\\nMemory compaction\\\\n#ve-009\\\\n\\\\nCompacting memory…\\\\n\\\\nCOMPACTING\\\\nTurn\\\\nturn-12\\\\nModel\\\\ndeepseek-chat\\\\nSummarizer provider\\\\nDeepSeek\\\\nRaw traces\\\\n84\\\"],\\\"spinners\\\":0},{\\\"phase\\\":\\\"failed\\\",\\\"text\\\":[\\\"Conversation row\\\\nCompaction failed — see logs\\\\nFAILED\\\\nTurn: turn-12 · 84 raw traces\\\",\\\"Activity panel\\\\nMemory compaction\\\\n#ve-009\\\\n\\\\nCompaction failed — see logs\\\\n\\\\nFAILED\\\\nTurn\\\\nturn-12\\\\nModel\\\\ndeepseek-chat\\\\nSummarizer provider\\\\nDeepSeek\\\\nRaw traces\\\\n84\\\"],\\\"spinners\\\":0},{\\\"phase\\\":\\\"completed\\\",\\\"text\\\":[\\\"Conversation row\\\\nMemory compacted\\\\nCOMPLETED\\\\nTurn: turn-12 · 84 raw traces\\\",\\\"Activity panel\\\\nMemory compaction\\\\n#ve-009\\\\n\\\\nMemory compacted\\\\n\\\\nCOMPLETED\\\\nTurn\\\\nturn-12\\\\nModel\\\\ndeepseek-chat\\\\nSummarizer provider\\\\nDeepSeek\\\\nRaw traces\\\\n84\\\"],\\\"spinners\\\":0},{\\\"phase\\\":\\\"stopped\\\",\\\"text\\\":[\\\"Conversation row\\\\nStopped\\\\nSTOPPED\\\\nTurn: turn-12 · 84 raw traces\\\",\\\"Activity panel\\\\nMemory compaction\\\\n#ve-009\\\\n\\\\nStopped\\\\n\\\\nSTOPPED\\\\nTurn\\\\nturn-12\\\\nModel\\\\ndeepseek-chat\\\\nSummarizer provider\\\\nDeepSeek\\\\nRaw traces\\\\n84\\\"],\\\"spinners\\\":0}],\\\"width\\\":435,\\\"overflow\\\":false,\\\"stoppedSpinners\\\":0}\"\n}"
+    }
+  ]
+}

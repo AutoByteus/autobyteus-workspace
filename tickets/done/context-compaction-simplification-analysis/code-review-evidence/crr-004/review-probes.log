@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ✓ ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-probes.test.ts (2 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  23:28:27
+   Duration  171ms (transform 64ms, setup 0ms, import 80ms, tests 5ms, environment 0ms)
+

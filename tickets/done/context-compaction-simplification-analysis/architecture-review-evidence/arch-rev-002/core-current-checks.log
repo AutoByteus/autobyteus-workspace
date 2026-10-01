@@ -1,0 +1,13 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/working-context-snapshot-serializer.test.ts (5 tests) 12ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts (11 tests) 12ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (5 tests) 13ms
+ ✓ tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts (3 tests) 12ms
+
+ Test Files  4 passed (4)
+      Tests  24 passed (24)
+   Start at  13:00:49
+   Duration  386ms (transform 593ms, setup 113ms, import 797ms, tests 49ms, environment 0ms)
+

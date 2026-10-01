@@ -1,0 +1,121 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "source": "ebaf3a78eff2d3147dc3f4f2eb63bf119d6547ad",
+  "durablePaths": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "85a783c562221bc90f071eaafccad2ea8a25e8fe3f8854f2ffd6fcdfa113c341",
+      "reviewEntrySha256": "ee6896e22f266b40cb3169340eb14728e32bca5bb11e23ca43f34dfbb5affb07",
+      "changedThisRound": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "reviewEntrySha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "changedThisRound": false
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "reviewEntrySha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "changedThisRound": false
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "reviewEntrySha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "changedThisRound": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "reviewEntrySha256": "63d58433150b8d1a889e5c2d2fadd25f275c1846bdc8f4a76cf6f1111f717e1c",
+      "changedThisRound": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "reviewEntrySha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "changedThisRound": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "reviewEntrySha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "changedThisRound": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "reviewEntrySha256": "7a6d08326f41b84f92fdcd35380781d12ed27711a1e87b09cdfc45f863b7cf91",
+      "changedThisRound": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "reviewEntrySha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "changedThisRound": false
+    }
+  ],
+  "currentRoundDurableChanged": 3,
+  "cumulativeDurableCount": 9,
+  "IR003InventoryChecked": 23,
+  "inventoryMismatches": [],
+  "productionDiffFromHead": [],
+  "entryOwnerFilesChecked": 273,
+  "entryChangedPaths": [
+    "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md",
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "test-support/live-e2e/live-e2e-harness.ts",
+    "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md"
+  ],
+  "unexpectedOwnerChanges": [],
+  "otherOwnerChanges": "Solution Designer coordination/history updates and reviewer entry\u2192CRR005 report/index changes attributed, not edited by API owner",
+  "ownedPidsNoLongerLive": [
+    12902,
+    16008,
+    16021,
+    16029,
+    22929
+  ],
+  "ownedAlive": [],
+  "removedResources": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-structural": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db.secret.key": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db-wal": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db-shm": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db-journal": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-deepseek.db": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-deepseek.db.secret.key": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-deepseek.db-wal": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-deepseek.db-shm": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-deepseek.db-journal": true
+  },
+  "syntaxCheck": "node --check test-support/live-e2e/run-live-e2e.mjs passed",
+  "diffCheck": "git diff --check passed",
+  "repositoryFinalTests": 534,
+  "temporaryObserverTests": 3,
+  "livePreflightTests": 1,
+  "liveQualityTests": 1,
+  "actualGenerationRequests": 2,
+  "localLmstudioGenerationRequestsThisRound": 0,
+  "overallResult": "Fail",
+  "confidence": 82.9,
+  "openFailures": [
+    "API-F005",
+    "API-F004"
+  ],
+  "noCommitPushMergeRelease": true
+}

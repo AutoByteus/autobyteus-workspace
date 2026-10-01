@@ -1,0 +1,18 @@
+[
+  "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+  "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+  "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+  "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+  "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+  "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+  "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+  "autobyteus-server-ts/src/api/graphql/schema.ts",
+  "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+  "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+  "autobyteus-server-ts/src/services/server-settings-service.ts",
+  "autobyteus-ts/src/agent/context/agent-config.ts",
+  "autobyteus-web/localization/messages/en/settings.ts",
+  "autobyteus-web/localization/messages/zh-CN/settings.ts",
+  "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+  "autobyteus-web/stores/serverSettings.ts"
+]

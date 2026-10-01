@@ -1,0 +1,9 @@
+{
+  "source_changed": [],
+  "api_owned_changed": [],
+  "unexpected_preexisting_ticket_changes": [],
+  "prompt_unchanged": true,
+  "production_diff_unchanged": true,
+  "tests_executed": 0,
+  "provider_calls": 0
+}

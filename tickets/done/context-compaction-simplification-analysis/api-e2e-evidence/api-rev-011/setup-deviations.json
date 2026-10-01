@@ -1,0 +1,32 @@
+[
+  {
+    "type": "Setup error",
+    "action": "setServerSetting mutation",
+    "observed": "HTTP400 before any update; request name incorrect",
+    "correction": "Read current schema, used updateServerSetting scalar; set-loopback-corrected.api.json"
+  },
+  {
+    "type": "UI helper targets",
+    "action": "Model selection before filtering; main textarea on initial chat",
+    "observed": "OBSCURED / SCRIPT_FAILED; no model generation",
+    "correction": "Observed actual DOM, filtered models and selected local fixture; used observed textarea"
+  },
+  {
+    "type": "Native UI tool",
+    "action": "Exact app path initial getApp",
+    "observed": "Correct isolated app AX displayed once. Later getAX/getApp cgWindowNotFound repeatedly; reset, focus/title recovery ineffective; bundle id ambiguous and refused; mac launch_app unavailable; executable path invalid",
+    "impact": "Native file picker and View menu unavailable. No unrelated app chosen."
+  },
+  {
+    "type": "Attachment fixture",
+    "action": "DOM File/DataTransfer change on observed existing input",
+    "observed": "Real upload/finalization/composer and native writer used; no injected identity/history/private store",
+    "limit": "Not native file-picker gesture proof"
+  },
+  {
+    "type": "Reload probe",
+    "action": "async script schedules window.location.reload",
+    "observed": "timeOrigin and sentinel unchanged; explicitly NOT a reload proof",
+    "evidence": "script-reload-attempt.json and script-reload-observe.json"
+  }
+]

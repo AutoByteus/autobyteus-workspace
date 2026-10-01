@@ -1,0 +1,19 @@
+# API007-C08-M — manual source/output adjudication
+API/E2E engineer, 2026-10-01. **Scoped Pass — current DeepSeek samples usable.** All three complete outputs read against full prepared source and current source fixture, not a keyword/heading/test-exit-only judgment. Sources: flow-summary-source.txt, flow-wire.jsonl, managed_compaction_all_exit.json, semantic_first.json, semantic_repeated.json, quality-wire.jsonl and current real-e2e-compaction-quality.e2e.test.ts.
+
+## Actual threshold-triggered flow
+Ordinary actual three file reads crossed49,936 token threshold at58,807 prompt tokens, with earlier below-threshold observations.5% is test-only; no default change.
+Full prepared source9151chars includes A/Unicode/B tool-tail excerpts. Summary4785chars retains all8 exact anchors, absolute source references, tool counts, A+Unicode completed, B tool already successful but final confirmation pending at the selected prefix. No file write falsely marked completed. New final user instruction is later and authoritative.
+Unicode/Vue remains ordinary evidence, not instructions; no new approval or forbidden action adopted. Emoji/shield retention is allowed by F006 correction. Summary says 'responding only with' for already-completed Unicode request while actual request said 'respond concisely with': minor historical wording imprecision retained, not a critical pending obligation or invented authorization.
+Repeated anchors/references and sequence endpoints could be more concise. Needed continuation state remains; no material false completion/omission observed. Actual3read_file+1write_file, source files deleted before final task, exact9fieldartifact/eightnativecall-resultpairs/no replay. Persisted summary equals next-parent summary; current-user request separate.
+
+## First ordinary semantic fixture
+INC-042/audit/planning-only, no deploy/push/customerexport, MiraChen,7days, exact plan/inventory paths and command retained. Inventory completed12tables vs risk activeunfinished distinguished; implementation approvalpending, commandNOTRUN, duplicate-keyrisk, ask-beforeimplementation and pendingplanwork preserved. No approval/completedimplementation invented. 'Recorded12tables' follows supplied assistant finding, not claim of plan edit. 'Plan not finalized' consistent with active risk work.
+793chars source→2097chars summary. Repetition/expansion visible, not masked or proof of compression efficiency for this tiny fixture. ASM02201 concerns long histories and sets no fixedlength/ratio target; fidelity is oracle here.
+
+## Repeated fixture
+Actual first response appears exactly once in second preparedsource.30days explicitly replaces7; cloudexport cancelled, not merely unapproved. Inventorycomplete12tables/riskactive/implementationpending/verificationunrun all preserved. APPROVAL-73 expressly 'still needs to be added'/'checkpoint to add', NOT completed plan edit. Rollbackcomparison remains unresolved, analysis-only. Exactreferences/name/incident/constraints and duplicate-keyrisk retained; no active7daycontradiction or resurrected inventory work.
+2935chars preparedsource→2698chars output, visible duplication but useful current-state checkpoint. Two distinct real compactor factory/adapter/parser invocations/complete-stop. Pair proves semantic transformation, not second automatic host threshold/commit; repeated replacement repo tests prove that distinct boundary.
+
+## Limits
+One current three-summary sample set is not universal quality or fix for F005/SR022-Q01. F005acceptedknown/nonblocking/notfixed; SR0221Fail/3scopedusable, F004unknown,F006corrected unchanged. NoQwen/v6. Response model label deepseek-flash retained alongside requested deepseek-v4-flash. Hidden reasoning text not captured; usagecounts metadata only. Capture excludes authheaders; evidence scannerpassed. Repository-owned synthetic fixture content only, including its recorded illustrative path.

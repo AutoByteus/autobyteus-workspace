@@ -1,0 +1,8 @@
+{
+  "outcome": "Fail",
+  "confidence": 82.9,
+  "selectedWhen": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+  "recipient_address": "/code_reviewer",
+  "soleOutcomeRecipient": true,
+  "successfulTestReview": "not requested; still required on eventual Pass"
+}

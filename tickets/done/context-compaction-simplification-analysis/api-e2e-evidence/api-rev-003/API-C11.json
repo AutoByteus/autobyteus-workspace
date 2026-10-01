@@ -1,0 +1,347 @@
+{
+  "case": "API-C11",
+  "started": "2026-09-30T12:24:51.362Z",
+  "runtimeRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-structural",
+  "database": {
+    "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db",
+    "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db",
+    "rootKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-structural.db.secret.key"
+  },
+  "pids": [
+    16008,
+    16021,
+    16029
+  ],
+  "checkpoints": [
+    {
+      "label": "history before resume cut-zero",
+      "details": {
+        "getAgentRunMemoryView": {
+          "runId": "cut-zero",
+          "workingContext": [
+            {
+              "role": "system",
+              "content": "Synthetic system"
+            },
+            {
+              "role": "user",
+              "content": "Keep checkpoint 🧠; approval pending."
+            },
+            {
+              "role": "assistant",
+              "content": null
+            }
+          ],
+          "rawTraces": [
+            {
+              "toolCallId": "a",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolResult": null,
+              "toolError": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "history before resume cut-partial",
+      "details": {
+        "getAgentRunMemoryView": {
+          "runId": "cut-partial",
+          "workingContext": [
+            {
+              "role": "system",
+              "content": "Synthetic system"
+            },
+            {
+              "role": "user",
+              "content": "Keep checkpoint 🧠; approval pending."
+            },
+            {
+              "role": "assistant",
+              "content": null
+            },
+            {
+              "role": "tool",
+              "content": null
+            }
+          ],
+          "rawTraces": [
+            {
+              "toolCallId": "a",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "a",
+              "toolResult": {
+                "committed": 0
+              },
+              "toolError": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "history before resume cut-complete",
+      "details": {
+        "getAgentRunMemoryView": {
+          "runId": "cut-complete",
+          "workingContext": [
+            {
+              "role": "system",
+              "content": "Synthetic system"
+            },
+            {
+              "role": "user",
+              "content": "Keep checkpoint 🧠; approval pending."
+            },
+            {
+              "role": "assistant",
+              "content": null
+            },
+            {
+              "role": "tool",
+              "content": null
+            },
+            {
+              "role": "tool",
+              "content": null
+            }
+          ],
+          "rawTraces": [
+            {
+              "toolCallId": "a",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "a",
+              "toolResult": {
+                "committed": 0
+              },
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolResult": {
+                "committed": 1
+              },
+              "toolError": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "history before resume cut-raw-ahead",
+      "details": {
+        "getAgentRunMemoryView": {
+          "runId": "cut-raw-ahead",
+          "workingContext": [
+            {
+              "role": "system",
+              "content": "Synthetic system"
+            },
+            {
+              "role": "user",
+              "content": "Keep checkpoint 🧠; approval pending."
+            },
+            {
+              "role": "assistant",
+              "content": null
+            }
+          ],
+          "rawTraces": [
+            {
+              "toolCallId": "a",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolResult": null,
+              "toolError": null
+            },
+            {
+              "toolCallId": "a",
+              "toolResult": {
+                "committed": 0
+              },
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolResult": {
+                "committed": 1
+              },
+              "toolError": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "history before resume released-v5",
+      "details": {
+        "getAgentRunMemoryView": {
+          "runId": "released-v5",
+          "workingContext": [
+            {
+              "role": "user",
+              "content": "Keep checkpoint 🧠; approval pending."
+            }
+          ],
+          "rawTraces": [
+            {
+              "toolCallId": null,
+              "toolResult": null,
+              "toolError": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "label": "fresh built startup + HTTP absence/no default persistence + writer/v5 byte preservation",
+      "details": {
+        "legacyHash": "3cfcd7b9b7eefc7e312d18f84b4ba0b870f23f8d6cd00c355e899a08f88b20a9"
+      }
+    },
+    {
+      "label": "normal bootstrap separately repairs all actual writer cuts and projects released v5",
+      "details": [
+        {
+          "id": "cut-zero",
+          "results": [
+            {
+              "toolCallId": "a",
+              "toolName": "inspect",
+              "toolResult": null,
+              "toolError": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'a')."
+            },
+            {
+              "toolCallId": "b",
+              "toolName": "inspect",
+              "toolResult": null,
+              "toolError": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'b')."
+            }
+          ]
+        },
+        {
+          "id": "cut-partial",
+          "results": [
+            {
+              "toolCallId": "a",
+              "toolName": "inspect",
+              "toolResult": {
+                "committed": 0
+              },
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolName": "inspect",
+              "toolResult": null,
+              "toolError": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'b')."
+            }
+          ]
+        },
+        {
+          "id": "cut-complete",
+          "results": [
+            {
+              "toolCallId": "a",
+              "toolName": "inspect",
+              "toolResult": {
+                "committed": 0
+              },
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolName": "inspect",
+              "toolResult": {
+                "committed": 1
+              },
+              "toolError": null
+            }
+          ]
+        },
+        {
+          "id": "cut-raw-ahead",
+          "results": [
+            {
+              "toolCallId": "a",
+              "toolName": "inspect",
+              "toolResult": {
+                "committed": 0
+              },
+              "toolError": null
+            },
+            {
+              "toolCallId": "b",
+              "toolName": "inspect",
+              "toolResult": {
+                "committed": 1
+              },
+              "toolError": null
+            }
+          ]
+        },
+        {
+          "id": "released-v5",
+          "results": []
+        }
+      ]
+    },
+    {
+      "label": "second real process reloads exact explicit tuple and repaired versionless history; legacy unchanged",
+      "details": {}
+    },
+    {
+      "label": "third real process retains explicit inherit tuple without old preference import",
+      "details": {}
+    }
+  ],
+  "result": "Pass",
+  "seedHashes": {
+    "agents/cut-complete/raw_traces_active.jsonl": "4eddedf5213c7e7adb54d4f0480ffbdea1dfa3800d3900dcace37f34b7e46792",
+    "agents/cut-complete/run_metadata.json": "a41e36ef3d2fa7341913da0e0980a1709fabd87c0d2a18c3e28f521aeda4f75c",
+    "agents/cut-complete/working_context_snapshot.json": "6bb9210088cb453298186d87a0dc3abaa65a749e06bb187e5c55339b74ec773f",
+    "agents/cut-partial/raw_traces_active.jsonl": "855fa308e54ec568d10bc14256b3c9c427c991e6060bd622581ceb724932fe6f",
+    "agents/cut-partial/run_metadata.json": "64801c13df506ce31b24b00c611d899f05020480a5103c685155945a1a949b01",
+    "agents/cut-partial/working_context_snapshot.json": "13c107f49e8430aa32f2862d55c2b7868ed9c8d3e1dfd99d6b76e3177af14688",
+    "agents/cut-raw-ahead/raw_traces_active.jsonl": "770c33752370dddf2f47eb8663e95667d1d3ec520ea058914b29670f36223a7e",
+    "agents/cut-raw-ahead/run_metadata.json": "08bd563de140acc909e505164bf36f9a94387cb03c0d5333856c5b23714685e8",
+    "agents/cut-raw-ahead/working_context_snapshot.json": "c4a927648851fe0eba8d752b8a0bd2a44a0f451dcfdc8d2a2405c76565658083",
+    "agents/cut-zero/raw_traces_active.jsonl": "54444abf722d26736e3cbfd00b0013f4f806ffab62aafcb853001b1fd45373f6",
+    "agents/cut-zero/run_metadata.json": "6ed679223d418e272e25b2def44f68f1af7f70f380d5b61231a80377607eb70c",
+    "agents/cut-zero/working_context_snapshot.json": "d7edcfea14280c307bc9a93537ad1258a1a7b203a0c40782bb8eff4c7f70a9cb",
+    "agents/released-v5/raw_traces_active.jsonl": "e402761b6b3b7d65cbf4542b8ce98de553d1ee0c309b07e830b87133a621a0ba",
+    "agents/released-v5/run_metadata.json": "b6e288a44a3a70a20dbcbb69a83b55154b85579261377921afe9eeacae4ceb96",
+    "agents/released-v5/working_context_snapshot.json": "a63f7baab769660e5aa84a9cdf3dabbc1b46ee7d03ce5a4986f38925e4b0151b"
+  },
+  "serverUrl": "http://127.0.0.1:59917",
+  "cleanup": {
+    "runtimeRemoved": true,
+    "databaseRemoved": true,
+    "keyRemoved": true
+  },
+  "finished": "2026-09-30T12:24:55.838Z"
+}

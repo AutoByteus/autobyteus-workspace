@@ -88,6 +88,7 @@ export class AutobyteusLLM extends BaseLLM {
     const tokenUsage = toTokenUsage(responseRecord.token_usage, this.model);
 
     return new CompleteResponse({
+      completionStatus: 'unknown', completionReason: null,
       content: assistantMessage,
       usage: tokenUsage
     });
@@ -145,12 +146,12 @@ export class AutobyteusLLM extends BaseLLM {
     return { ...(this.config.extraParams ?? {}) };
   }
 
-  async cleanup(): Promise<void> {
+  async cleanup(options: { signal?: AbortSignal } = {}): Promise<void> {
     let cleanupError: unknown = null;
     for (const conversationId of this.usedConversationIds) {
       try {
         const client = await this.getClient();
-        await client.cleanup(conversationId);
+        await client.cleanup(conversationId, options);
       } catch (error) {
         cleanupError ??= error;
       }

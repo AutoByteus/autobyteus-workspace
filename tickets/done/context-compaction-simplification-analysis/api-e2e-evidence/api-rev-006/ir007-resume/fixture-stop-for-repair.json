@@ -1,0 +1,15 @@
+{
+  "pid": 45034,
+  "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/loopback-provider.mjs",
+  "state": {
+    "armed": true,
+    "mode": "hold_success",
+    "requests": 17,
+    "parent": 3,
+    "compaction": 14,
+    "phase": 4,
+    "closed": true,
+    "held": 0
+  },
+  "stopped": true
+}

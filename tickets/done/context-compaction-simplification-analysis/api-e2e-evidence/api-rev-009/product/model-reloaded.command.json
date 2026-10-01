@@ -1,0 +1,12 @@
+{
+  "time": "2026-10-01T12:57:28.324611+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "read-page",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8"
+  ],
+  "controlPort": 56935
+}

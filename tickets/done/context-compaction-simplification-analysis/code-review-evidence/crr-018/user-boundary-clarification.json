@@ -1,0 +1,8 @@
+{
+  "revision": "CRR-018",
+  "date": "2026-10-01",
+  "user_constraint": "Web must never be directly dependent on the core. The existing boundary guard is intentional and cannot be removed.",
+  "reviewer_response": "Preserve the guard and architecture; no weakening, exemptions, regex evasion or dependency laundering. Remove the offending dependency from web-owned test setup while preserving valid native-history coverage at an appropriate boundary.",
+  "supersedes": "CRR017 optional guard-policy-correction wording",
+  "scope": "Clarification of required local-fix response, not a new implementation/source validation or changed product behavior."
+}

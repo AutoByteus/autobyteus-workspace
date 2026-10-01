@@ -155,9 +155,9 @@ describe('RunMemoryFileStore', () => {
     const store = await makeNativeSelectionStore();
     const reversedInputStore = await makeNativeSelectionStore();
 
-    expect(store.archiveCompactedRawTraces(['rt-selected-b', 'rt-selected-a'])).toBeUndefined();
-    expect(reversedInputStore.archiveCompactedRawTraces(['rt-selected-a', 'rt-selected-b']))
-      .toBeUndefined();
+    expect(store.prepareCompactionArchive(['rt-selected-b', 'rt-selected-a'])).toBeDefined();
+    expect(reversedInputStore.prepareCompactionArchive(['rt-selected-a', 'rt-selected-b']))
+      .toBeDefined();
 
     const selectionDigest = createHash('sha256')
       .update(JSON.stringify(['rt-selected-a', 'rt-selected-b']), 'utf8')
@@ -173,7 +173,7 @@ describe('RunMemoryFileStore', () => {
       }),
     ]);
     expect(reversedInputSegments[0]?.boundary_key).toBe(segments[0]?.boundary_key);
-    expect(store.listRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-keep']);
+    expect(store.listRawTraceDicts().map((trace) => trace.id)).toEqual(['rt-selected-b', 'rt-keep', 'rt-selected-a']);
     expect(store.readCompleteArchiveRawTraceDicts().map((trace) => trace.id)).toEqual([
       'rt-selected-b',
       'rt-selected-a',
@@ -184,7 +184,7 @@ describe('RunMemoryFileStore', () => {
     const store = await makeNativeSelectionStore();
     const activeBefore = store.listRawTraceDicts();
 
-    expect(() => store.archiveCompactedRawTraces(['rt-selected-a', 'rt-missing']))
+    expect(() => store.prepareCompactionArchive(['rt-selected-a', 'rt-missing']))
       .toThrow('Selected raw traces are missing from active storage: rt-missing.');
 
     expect(store.listRawTraceDicts()).toEqual(activeBefore);

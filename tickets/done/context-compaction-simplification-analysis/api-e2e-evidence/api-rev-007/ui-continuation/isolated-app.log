@@ -1,0 +1,1285 @@
+[2026-10-01T06:35:48.258Z] [INFO] [electron] Application started
+[2026-10-01T06:35:48.533Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-10-01T06:35:48.534Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-10-01T06:35:48.534Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/db
+[2026-10-01T06:35:48.534Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/logs
+[2026-10-01T06:35:48.535Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/download
+
+DevTools listening on ws://127.0.0.1:58629/devtools/browser/8f42f62a-2a84-4552-8b75-0bfd81f2ec2d
+[2026-10-01T06:35:48.726Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:58637
+[2026-10-01T06:35:48.827Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-01T06:35:48.827Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-01T06:35:48.828Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-01T06:35:48.828Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data
+[2026-10-01T06:35:48.828Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-10-01T06:35:48.829Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/.env
+[2026-10-01T06:35:48.830Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-10-01T06:35:48.831Z] [INFO] [electron.server.base-server-manager] Port 58630 is free.
+[2026-10-01T06:35:48.831Z] [INFO] [electron] Server entrypoint: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/.local"
+Run `unset npm_config_prefix` to unset it.
+[2026-10-01T06:35:51.661Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-01T06:35:51.661Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.bin:/Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/dist/node-gyp-bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.159.2-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0CkJqaH:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-10-01T06:35:51.661Z] [INFO] [electron] Using PATH from login shell
+[2026-10-01T06:35:51.662Z] [INFO] [electron] Starting server with port: 58630
+[2026-10-01T06:35:51.662Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:58630
+[2026-10-01T06:35:51.662Z] [INFO] [electron] Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-01T06:35:51.662Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data
+[2026-10-01T06:35:51.662Z] [INFO] [electron] Executing: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 58630 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data
+[2026-10-01T06:35:51.666Z] [INFO] [electron] Server process spawned with PID: 20973
+[2026-10-01T06:35:51.909Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-01T06:35:51.909Z] [INFO] [electron.embedded-server.stdout] App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-01T06:35:51.909Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data
+[2026-10-01T06:35:51.909Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-10-01T06:35:51.909Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/.env
+[2026-10-01T06:35:51.909Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/.env
+[2026-10-01T06:35:51.911Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (2) from ../../../../../../../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[2026-10-01T06:35:51.911Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-01T06:35:51.911Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:58630
+[2026-10-01T06:35:51.912Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-01T06:35:51.912Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-10-01T06:35:51.912Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:58630
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/db
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/logs
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/download
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-01T06:35:51.913Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-10-01T06:35:54.908Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-01T06:35:55.486Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-01T06:35:55.493Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-10-01T06:35:56.046Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-01T06:35:56.051Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/db/production.db"
+[2026-10-01T06:35:56.124Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/db/production.db
+[2026-10-01T06:35:56.148Z] [INFO] [electron.embedded-server.stdout] 26 migrations found in prisma/migrations
+[2026-10-01T06:35:56.161Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-10-01T06:35:56.172Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-10-01T06:35:56.180Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-10-01T06:35:56.185Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-10-01T06:35:56.187Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-10-01T06:35:56.190Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-10-01T06:35:56.192Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-10-01T06:35:56.205Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-10-01T06:35:56.208Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-10-01T06:35:56.214Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-10-01T06:35:56.215Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-10-01T06:35:56.217Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-10-01T06:35:56.226Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-10-01T06:35:56.228Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-10-01T06:35:56.232Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-10-01T06:35:56.243Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-10-01T06:35:56.248Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-10-01T06:35:56.250Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-10-01T06:35:56.252Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-10-01T06:35:56.254Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-10-01T06:35:56.257Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-10-01T06:35:56.258Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-10-01T06:35:56.264Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-10-01T06:35:56.269Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-10-01T06:35:56.274Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-10-01T06:35:56.276Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.278Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-10-01T06:35:56.279Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-10-01T06:35:56.313Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-01T06:35:56.342Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-01T06:35:56.580Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 22 predefined settings
+[2026-10-01T06:35:56.580Z] [INFO] [electron.embedded-server.stdout] CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T06:35:56.580Z] [INFO] [electron.embedded-server.stdout] [2026-10-01T06:35:56.580Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T06:35:56.595Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-01T06:35:56.596Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-01T06:35:56.700Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-01T06:35:56.700Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-01T06:35:56.702Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/temp_workspace
+[2026-10-01T06:35:56.702Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/temp_workspace.
+[2026-10-01T06:35:56.702Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-01T06:35:56.702Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-01T06:35:56.702Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+[2026-10-01T06:35:56.703Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-01T06:35:56.704Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-01T06:35:56.704Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-01T06:35:56.704Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_media_file'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-01T06:35:56.705Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-01T06:35:56.720Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-01T06:35:56.721Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-01T06:35:56.721Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-01T06:35:56.721Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-01T06:35:56.721Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-01T06:35:56.721Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-01T06:35:56.721Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-01T06:35:56.722Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-01T06:35:56.723Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-01T06:35:56.723Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-01T06:35:56.723Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-01T06:35:56.723Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-01T06:35:56.723Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-01T06:35:56.725Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-01T06:35:56.726Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-01T06:35:56.726Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-01T06:35:56.740Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+[2026-10-01T06:35:56.740Z] [INFO] [electron.embedded-server.stdout] Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+[2026-10-01T06:35:56.741Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-10-01T06:35:56.743Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 2 items.
+[2026-10-01T06:35:56.743Z] [INFO] [electron.embedded-server.stdout] Populating agent definition cache for the first time...
+[2026-10-01T06:35:56.743Z] [INFO] [electron.embedded-server.stdout] [2026-10-01T06:35:56.743Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-01T06:35:56.744Z] [INFO] [electron.embedded-server.stdout] [2026-10-01T06:35:56.744Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+[2026-10-01T06:35:56.745Z] [INFO] [electron.embedded-server.stdout] Agent definition cache populated with 2 items.
+[2026-10-01T06:35:56.756Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1790836556756,"pid":20973,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58703"}
+[2026-10-01T06:35:56.790Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1790836556790,"pid":20973,"hostname":"MacBookPro","msg":"Server listening at http://0.0.0.0:58630"}
+[2026-10-01T06:35:56.790Z] [INFO] [electron.embedded-server.stdout] [2026-10-01T06:35:56.790Z] [INFO] [server.runtime] Server listening on 0.0.0.0:58630
+[2026-10-01T06:35:56.791Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-01T06:35:56.795Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-01T06:35:56.795Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-01T06:35:56.795Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-01T06:35:56.795Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-01T06:35:56.795Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-01T06:35:56.795Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-01T06:35:56.796Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-01T06:35:56.796Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-01T06:35:56.796Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-01T06:35:56.796Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-01T06:35:56.796Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-01T06:35:56.797Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-01T06:35:56.797Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 33 LLM models into cache.
+[2026-10-01T06:35:56.797Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-01T06:35:56.797Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 4 audio models into cache.
+[2026-10-01T06:35:56.797Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-01T06:35:56.797Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-01T06:35:56.946Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-01T06:35:56.946Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-01T06:35:56.946Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:35:57.158Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-10-01T06:35:58.032Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:35:58.035Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:35:58.476Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:35:58.483Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:35:59.920Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:35:59.923Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:03.497Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:03.498Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:08.497Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:08.499Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:13.497Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:13.498Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:18.496Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:18.498Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:23.497Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:23.499Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:28.496Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:28.498Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:33.498Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:33.500Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:38.498Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:38.499Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:43.497Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:43.499Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:47.420Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:47.421Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:47.443Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:36:47.445Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:36:47.455Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://localhost:1234
+[2026-10-01T06:36:47.462Z] [INFO] [electron.embedded-server.stdout] Discovering Ollama models from host: http://localhost:11434
+[2026-10-01T06:36:47.478Z] [ERROR] [electron.embedded-server.stderr] Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+[2026-10-01T06:37:01.299Z] [INFO] [electron.embedded-server.stdout] Server setting 'LMSTUDIO_HOSTS' updated
+[2026-10-01T06:37:01.299Z] [INFO] [electron.embedded-server.stdout] Discovering LM Studio models from host: http://127.0.0.1:58634
+[2026-10-01T06:37:01.305Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:01.307Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:03.205Z] [INFO] [electron.embedded-server.stdout] Server setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated
+[2026-10-01T06:37:03.207Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:03.208Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:06.758Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:06.759Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:11.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:11.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:16.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:16.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:21.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:21.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:26.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:26.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:28.185Z] [INFO] [electron.embedded-server.stdout] In-memory cache: Added new agent definition with ID api7-recovery-fixture.
+[2026-10-01T06:37:28.185Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: api7-recovery-fixture
+[2026-10-01T06:37:31.614Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:31.615Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:31.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:31.770Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:36.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:36.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:41.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:41.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:46.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:46.772Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:51.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:51.773Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:37:56.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:37:56.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:01.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:01.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:06.769Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:06.771Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:10.021Z] [INFO] [electron.embedded-server.stdout] [2026-10-01T06:38:10.021Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID api7-recovery-team.
+[2026-10-01T06:38:10.022Z] [INFO] [electron.embedded-server.stdout] Agent Team Definition created successfully with ID: api7-recovery-team
+[2026-10-01T06:38:11.776Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:11.777Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:16.782Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:16.784Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:17.288Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-01T06:38:17.394Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl
+[2026-10-01T06:38:17.396Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_393b4aa3e0584576be3332ddceb59ac5/raw_traces_active.jsonl
+[2026-10-01T06:38:21.787Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:21.788Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:21.799Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0
+[2026-10-01T06:38:21.799Z] [INFO] [electron.embedded-server.stdout] Created agent session b6c43bc5-aed6-4636-8cfb-10dc78657510 for run api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0
+[2026-10-01T06:38:21.803Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=b6c43bc5-aed6-4636-8cfb-10dc78657510, run=api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0
+[2026-10-01T06:38:21.807Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl
+[2026-10-01T06:38:21.810Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl
+[2026-10-01T06:38:28.597Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:28.600Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:28.985Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:28.987Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:28.997Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-01T06:38:29.007Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/media
+[2026-10-01T06:38:29.013Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'. Config and State linked.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' with config: 'API7 Recovery Fixture'.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'. Total registered contexts: 1
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'. Context registered.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' created and stored successfully.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' requesting runtime to start.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Starting worker.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Starting...
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' asyncRun(): Starting.
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Runtime init completed (event store initialized).
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Runtime init completed (status deriver initialized).
+[2026-10-01T06:38:29.015Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Runtime init completed (AgentEventInbox initialized).
+[2026-10-01T06:38:29.016Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-01T06:38:29.016Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' to become idle (timeout: 30s)...
+[2026-10-01T06:38:29.016Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 74ee35bf-c829-4138-adf1-99fd13d9fde5) initialized for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'. Subscribed to notifier.
+[2026-10-01T06:38:29.017Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Starting direct runtime bootstrap lifecycle.
+[2026-10-01T06:38:29.018Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.019Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Bootstrapper starting direct lifecycle execution.
+[2026-10-01T06:38:29.019Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Executing McpServerPrewarmingStep.
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Executing SystemPromptProcessingStep.
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': No configured skills. Skipping skill catalog.
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Final processed system prompt configured and captured. Trace ID: rt_1790836709020_53406cf7-2861-40fa-91d6-897d905cfbde. Final length: 6713.
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-01T06:38:29.020Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.021Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' initialized successfully. Entering main event scheduler loop.
+[2026-10-01T06:38:29.028Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b' has become idle.
+[2026-10-01T06:38:29.028Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 74ee35bf-c829-4138-adf1-99fd13d9fde5) for 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': close() called. Unsubscribing all listeners and signaling.
+[2026-10-01T06:38:29.029Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 32be34d9-50c0-4be0-a14f-52656cf94889) initialized for agent_id 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'. Subscribed to notifier.
+[2026-10-01T06:38:29.030Z] [INFO] [electron.embedded-server.stdout] Published autobyteus agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b'.
+[2026-10-01T06:38:29.046Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.047Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.047Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': UserInputContextBuildingProcessor completed. Final content length: 18736
+[2026-10-01T06:38:29.050Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.095Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.097Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.098Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:38:29.098Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.098Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.098Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:29.098Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:31.793Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:31.798Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:37.831Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:37.840Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:38.208Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:38.210Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:38.222Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:38.222Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:38.223Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': UserInputContextBuildingProcessor completed. Final content length: 18736
+[2026-10-01T06:38:38.240Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:38.273Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout] compaction_requested {
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   phase: 'requested',
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: null,
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: null,
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   compacted_block_count: null,
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: null
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:38:38.298Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:38.301Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:38:38.303Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.388Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0002',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 3,
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 3,
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_dfc03bf4-6ec7-404f-8112-744a6ff6b8df',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [API7_SYNTHETIC_503]: 503 API7 deliberate synthetic compaction failure'
+[2026-10-01T06:38:41.389Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:38:41.389Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.389Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.389Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.390Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.390Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:38:41.390Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.390Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.390Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.390Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:41.796Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:41.799Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:46.796Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:46.798Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:51.798Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:51.868Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:54.262Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:54.264Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:54.268Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:54.269Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:54.280Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:54.281Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': UserInputContextBuildingProcessor completed. Final content length: 52
+[2026-10-01T06:38:54.294Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:54.295Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:38:54.296Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:56.797Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:38:56.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0003',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 3,
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 3,
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_2cf2f2fa-2926-4c32-8f5b-c599c1fc0861',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [API7_SYNTHETIC_503]: 503 API7 deliberate synthetic compaction failure'
+[2026-10-01T06:38:57.419Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:38:57.420Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:57.420Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:57.420Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:38:57.420Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:39:01.798Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:01.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:03.646Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:03.648Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:39:03.649Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:39:03.655Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:39:03.655Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:39:03.656Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:39:03.666Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:06.798Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:06.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:11.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:11.801Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:16.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:16.816Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:21.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:21.800Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:26.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:26.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:31.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:31.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:36.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:36.800Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:41.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:41.801Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:46.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:46.830Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:51.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:51.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:39:56.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:39:56.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:01.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:01.812Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:06.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:06.800Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:11.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:11.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:16.799Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:16.801Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:21.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:21.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:26.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:26.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:31.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:31.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:36.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:36.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:41.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:41.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:46.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:46.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:51.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:51.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:40:56.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:40:56.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:01.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:01.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:06.744Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0003',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 3,
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 3,
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_a242c7c8-6b29-4765-b399-16a9eb34002f',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [generation_failure]: 400 API7 fixture guard stopped'
+[2026-10-01T06:41:06.745Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:41:06.756Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:41:06.756Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:41:06.756Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:41:06.756Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:41:06.858Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:06.875Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:11.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:11.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:16.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:16.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:21.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:21.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:26.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:26.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:31.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:31.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:36.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:36.815Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:41.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:41.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:46.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:46.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:51.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:51.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:41:56.800Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:41:56.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:01.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:01.819Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:06.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:06.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:11.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:11.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:16.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:16.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:21.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:21.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:26.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:26.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:31.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:31.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:36.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:36.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:41.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:41.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:46.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:46.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:51.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:51.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:42:56.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:42:56.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:01.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:01.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:06.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:06.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:11.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:11.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:15.711Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:15.712Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:15.717Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:15.717Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:15.722Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:15.722Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:43:15.723Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:16.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:16.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout] compaction_completed {
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup5xzh1_1',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   compaction_invocation_id: 'compaction_bea6a17e-f35c-469f-8dd0-ae48ea94f84c',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   completion_status: 'complete',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   completion_reason: 'stop',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   summary_char_count: 639,
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   summary_token_count: 173,
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   phase: 'completed',
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout]   compacted_block_count: 3
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.359Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.365Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.366Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.366Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:43:17.366Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.366Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.366Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.366Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.388Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.388Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.388Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': UserInputContextBuildingProcessor completed. Final content length: 63
+[2026-10-01T06:43:17.389Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.395Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.396Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.396Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:43:17.396Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.396Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.396Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.396Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.414Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.415Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.415Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': UserInputContextBuildingProcessor completed. Final content length: 61
+[2026-10-01T06:43:17.415Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.422Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.423Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.423Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:43:17.423Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.423Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.423Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:17.423Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: 2170ef76-e262-451b-b5d1-dd7a123dcc21, AgentID: api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:43:21.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:21.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:26.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:26.802Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:31.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:31.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:36.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:36.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:41.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:41.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:44.643Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:44.644Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:46.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:46.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:51.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:51.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:43:56.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:43:56.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:01.801Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:01.803Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:06.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:06.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:11.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:11.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:16.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:16.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:19.419Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-01T06:44:19.478Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:19.480Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:19.494Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_active.jsonl
+[2026-10-01T06:44:19.495Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_team_df012843bb3249c8ae5ca77186d1321d/api7_recovery_fixture_8691367a7dad4da3bb8f81afb3c2e693/raw_traces_active.jsonl
+[2026-10-01T06:44:19.495Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_team_df012843bb3249c8ae5ca77186d1321d/api7_recovery_fixture_7af1704d33cd4c16819f040daa0139ea/raw_traces_active.jsonl
+[2026-10-01T06:44:19.501Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:19.502Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:19.508Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_active.jsonl
+[2026-10-01T06:44:19.509Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_team_df012843bb3249c8ae5ca77186d1321d/api7_recovery_fixture_8691367a7dad4da3bb8f81afb3c2e693/raw_traces_active.jsonl
+[2026-10-01T06:44:19.510Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_team_df012843bb3249c8ae5ca77186d1321d/api7_recovery_fixture_7af1704d33cd4c16819f040daa0139ea/raw_traces_active.jsonl
+[2026-10-01T06:44:19.511Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:19.512Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:21.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:21.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:26.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:26.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:31.802Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:31.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:37.813Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:37.814Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:38.198Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-01T06:44:38.205Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/media
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'. Config and State linked.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' with config: 'API7 Recovery Fixture'.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'. Total registered contexts: 2
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'. Context registered.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' created and stored successfully.
+[2026-10-01T06:44:38.206Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' requesting runtime to start.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Starting worker.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Starting...
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' asyncRun(): Starting.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Runtime init completed (event store initialized).
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Runtime init completed (status deriver initialized).
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Runtime init completed (AgentEventInbox initialized).
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' to become idle (timeout: 30s)...
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: ea2c96aa-ac60-47d0-adbe-162a4fee76db) initialized for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'. Subscribed to notifier.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Starting direct runtime bootstrap lifecycle.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Bootstrapper starting direct lifecycle execution.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Executing McpServerPrewarmingStep.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Executing SystemPromptProcessingStep.
+[2026-10-01T06:44:38.207Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': No configured skills. Skipping skill catalog.
+[2026-10-01T06:44:38.208Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Final processed system prompt configured and captured. Trace ID: rt_1790837078207_cf9cbfb4-b308-4b46-957c-04b31d85afdb. Final length: 6616.
+[2026-10-01T06:44:38.208Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-01T06:44:38.208Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.208Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' initialized successfully. Entering main event scheduler loop.
+[2026-10-01T06:44:38.217Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_recovery_fixture_af756933a9744e989de6989b9d098646' has become idle.
+[2026-10-01T06:44:38.217Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: ea2c96aa-ac60-47d0-adbe-162a4fee76db) for 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': close() called. Unsubscribing all listeners and signaling.
+[2026-10-01T06:44:38.217Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 35d98992-d87f-40d0-b22e-99b64ea928d2) initialized for agent_id 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'. Subscribed to notifier.
+[2026-10-01T06:44:38.218Z] [INFO] [electron.embedded-server.stdout] Published autobyteus agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646'.
+[2026-10-01T06:44:38.224Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.224Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.224Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': UserInputContextBuildingProcessor completed. Final content length: 18735
+[2026-10-01T06:44:38.225Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.234Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.242Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.242Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:44:38.242Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.242Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.242Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.242Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:38.254Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:38.255Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:43.145Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:43.147Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:43.519Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.520Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.521Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': UserInputContextBuildingProcessor completed. Final content length: 18735
+[2026-10-01T06:44:43.522Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.530Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:43.532Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout] compaction_requested {
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   phase: 'requested',
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: null,
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: null,
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   compacted_block_count: null,
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: null
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.533Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:44:43.534Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:43.538Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0002',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 3,
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 3,
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_b12981e3-c57d-4c69-a430-592bb9acb7c0',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [API7_SYNTHETIC_503]: 503 API7 deliberate synthetic compaction failure'
+[2026-10-01T06:44:46.559Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:44:46.559Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.560Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:46.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:46.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:51.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:51.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:53.416Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:53.417Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:53.422Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:53.422Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': UserInputContextBuildingProcessor completed. Final content length: 51
+[2026-10-01T06:44:53.424Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:53.424Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:53.425Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:44:53.425Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:44:53.426Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:44:53.426Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:44:53.426Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:53.437Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0003',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 3,
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 3,
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_ef04f57e-35c5-476e-a6c9-1d7dc4310bcc',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [API7_SYNTHETIC_503]: 503 API7 deliberate synthetic compaction failure'
+[2026-10-01T06:44:56.450Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:44:56.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:56.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:56.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:56.450Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:44:56.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:44:56.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:01.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:01.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:06.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:06.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:11.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:11.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:13.489Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:13.489Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:13.495Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:13.495Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:13.495Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:45:13.496Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:13.499Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:13.505Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout] compaction_completed {
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_recovery_fixture_af756933a9744e989de6989b9d098646',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0003',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup65tal_1',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0002',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0003',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 3,
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 3,
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   compaction_invocation_id: 'compaction_51037ed0-573a-4d75-bf84-116d2ae7757b',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   completion_status: 'complete',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   completion_reason: 'stop',
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   summary_char_count: 639,
+[2026-10-01T06:45:15.157Z] [INFO] [electron.embedded-server.stdout]   summary_token_count: 173,
+[2026-10-01T06:45:15.158Z] [INFO] [electron.embedded-server.stdout]   phase: 'completed',
+[2026-10-01T06:45:15.158Z] [INFO] [electron.embedded-server.stdout]   compacted_block_count: 3
+[2026-10-01T06:45:15.158Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:45:15.158Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.158Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.158Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.166Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.166Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.166Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:45:15.166Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.166Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.167Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.167Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.191Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.191Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.191Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': UserInputContextBuildingProcessor completed. Final content length: 62
+[2026-10-01T06:45:15.192Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.213Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.214Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.214Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_recovery_fixture_af756933a9744e989de6989b9d098646': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:45:15.214Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.214Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.214Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:15.214Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: e214d2a8-a719-4512-b836-b08d359e63cf, AgentID: api7_recovery_fixture_af756933a9744e989de6989b9d098646) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:45:16.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:16.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:21.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:21.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:26.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:26.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:31.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:31.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:36.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:36.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:41.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:41.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:46.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:46.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:51.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:51.805Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:45:56.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:45:56.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:01.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:01.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:06.803Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:06.804Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:11.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:11.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:16.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:16.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:21.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:21.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:26.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:26.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:31.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:31.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:36.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:36.812Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:41.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:41.812Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:46.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:46.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:51.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:51.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:46:56.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:46:56.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:01.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:01.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:06.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:06.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:11.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:11.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:16.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:16.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:21.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:21.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:26.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:26.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:31.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:31.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:36.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:36.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:41.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:41.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:46.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:46.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:51.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:51.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:47:56.808Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:47:56.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:01.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:01.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:06.804Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:06.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:11.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:11.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:16.438Z] [INFO] [electron.embedded-server.stdout] In-memory cache: Added new agent definition with ID api7-tool-fixture.
+[2026-10-01T06:48:16.439Z] [INFO] [electron.embedded-server.stdout] Agent Definition created successfully with ID: api7-tool-fixture
+[2026-10-01T06:48:16.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:16.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:21.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:21.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:26.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:26.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:31.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:31.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:36.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:36.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:41.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:41.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:46.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:46.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:51.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:51.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:56.578Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-01T06:48:56.628Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195
+[2026-10-01T06:48:56.628Z] [INFO] [electron.embedded-server.stdout] Created agent session 2d0e0040-4985-4fc7-ac05-d6e80c43319b for run api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195
+[2026-10-01T06:48:56.629Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=2d0e0040-4985-4fc7-ac05-d6e80c43319b, run=api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195
+[2026-10-01T06:48:56.678Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:56.679Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:48:56.680Z] [INFO] [electron.embedded-server.stdout] Resolved configured temp workspace root to TempWorkspace.
+[2026-10-01T06:48:56.681Z] [INFO] [electron.embedded-server.stdout] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/media
+[2026-10-01T06:48:56.682Z] [INFO] [electron.embedded-server.stdout] AgentRuntimeState initialized for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': LLM instance 'LMStudioLLM' and 4 tools prepared and stored in state.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentContext composed for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'. Config and State linked.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Instantiating AgentRuntime for agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' with config: 'API7 Tool Fixture'.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentWorker initialized for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Registered AgentContext for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'. Total registered contexts: 3
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentRuntime initialized for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'. Context registered.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent facade initialized for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' created and stored successfully.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' requesting runtime to start.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentRuntime for 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Starting worker.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Starting...
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' asyncRun(): Starting.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Runtime init completed (event store initialized).
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Runtime init completed (status deriver initialized).
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Runtime init completed (AgentEventInbox initialized).
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Runtime init completed (AgentEventScheduler initialized).
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Waiting for agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' to become idle (timeout: 30s)...
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: d897ebc9-71dc-42f7-b635-da56753cd2fd) initialized for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'. Subscribed to notifier.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Starting direct runtime bootstrap lifecycle.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Bootstrapper starting direct lifecycle execution.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Running bootstrap step 0 (McpServerPrewarmingStep).
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Executing McpServerPrewarmingStep.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Running bootstrap step 1 (SystemPromptProcessingStep).
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Executing SystemPromptProcessingStep.
+[2026-10-01T06:48:56.683Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': No configured skills. Skipping skill catalog.
+[2026-10-01T06:48:56.684Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Final processed system prompt configured and captured. Trace ID: rt_1790837336683_4db85485-af6f-4cba-9f9f-3cf32312614f. Final length: 2710.
+[2026-10-01T06:48:56.684Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[2026-10-01T06:48:56.684Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.684Z] [INFO] [electron.embedded-server.stdout] AgentWorker 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' initialized successfully. Entering main event scheduler loop.
+[2026-10-01T06:48:56.693Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195' has become idle.
+[2026-10-01T06:48:56.693Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: d897ebc9-71dc-42f7-b635-da56753cd2fd) for 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': close() called. Unsubscribing all listeners and signaling.
+[2026-10-01T06:48:56.693Z] [INFO] [electron.embedded-server.stdout] AgentEventStream (ID: 3682b49c-7380-45a6-a70a-c3a6dae3c54f) initialized for agent_id 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'. Subscribed to notifier.
+[2026-10-01T06:48:56.707Z] [INFO] [electron.embedded-server.stdout] Published autobyteus agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195'.
+[2026-10-01T06:48:56.709Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.709Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.709Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': UserInputContextBuildingProcessor completed. Final content length: 288
+[2026-10-01T06:48:56.709Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.716Z] [INFO] [electron.embedded-server.stdout] LlmStreamingResponseHandler finalized 1 tool invocations.
+[2026-10-01T06:48:56.716Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.717Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.718Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Stored pending tool invocation 'api7_owned_read_once' (read_file).
+[2026-10-01T06:48:56.718Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:48:56.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:48:56.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:01.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:01.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:06.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:06.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:07.318Z] [INFO] [electron.embedded-server.stdout] Agent 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': Retrieved pending tool invocation 'api7_owned_read_once' (read_file).
+[2026-10-01T06:49:07.318Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.318Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.319Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.319Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.323Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.323Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.323Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.323Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.325Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': UserInputContextBuildingProcessor completed. Final content length: 47
+[2026-10-01T06:49:07.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.330Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout] compaction_requested {
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   phase: 'requested',
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0001',
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: null,
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: null,
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   compacted_block_count: null,
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: null
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.331Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0001',
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0001',
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 2,
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 4,
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:49:07.332Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.357Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0001',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0001',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 2,
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 4,
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_fe0f1079-fd43-4603-84e7-70dac54b44ef',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [API7_SYNTHETIC_503]: 503 API7 deliberate synthetic compaction failure'
+[2026-10-01T06:49:10.358Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:10.359Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:11.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:11.807Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:16.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:16.809Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:21.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:21.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:25.351Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:25.352Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:25.353Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:25.354Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:25.355Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': UserInputContextBuildingProcessor completed. Final content length: 64
+[2026-10-01T06:49:25.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:25.358Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 2,
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 4,
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:49:25.359Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:25.366Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:26.806Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:26.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:28.382Z] [ERROR] [electron.embedded-server.stderr] compaction_failed {
+[2026-10-01T06:49:28.382Z] [ERROR] [electron.embedded-server.stderr]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:49:28.382Z] [ERROR] [electron.embedded-server.stderr]   turn_id: 'turn_0002',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   selected_block_count: 2,
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   raw_trace_count: 4,
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   compaction_invocation_id: 'compaction_cd57ef7f-50a7-4e4c-97d8-50d707b05f5f',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   completion_status: 'unknown',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   completion_reason: null,
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   phase: 'failed',
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr]   error_message: 'Memory compaction failed before dispatch [API7_SYNTHETIC_503]: 503 API7 deliberate synthetic compaction failure'
+[2026-10-01T06:49:28.383Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-01T06:49:28.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:28.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:28.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:28.383Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:31.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:31.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:36.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:36.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:41.808Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:41.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:46.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:46.810Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:51.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:51.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:56.807Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:56.808Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:49:58.684Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:49:58.685Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:58.685Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout] compaction_started {
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 2,
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 4,
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout]   phase: 'started'
+[2026-10-01T06:49:58.686Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:49:58.687Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:49:58.691Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout] compaction_completed {
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   agent_id: 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   turn_id: 'turn_0002',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   compaction_operation_id: 'compaction_operation_mup6bgub_1',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   requested_turn_id: 'turn_0001',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   execution_turn_id: 'turn_0002',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   selected_block_count: 2,
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   raw_trace_count: 4,
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   compaction_model_identifier: 'api7-deterministic-32768:lmstudio@127.0.0.1:58634',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   summarizer_provider: 'LMSTUDIO',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   compaction_invocation_id: 'compaction_e58de8cf-392d-4dfd-9e6c-7c97ef4981e0',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   completion_status: 'complete',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   completion_reason: 'stop',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   summary_char_count: 693,
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   summary_token_count: 187,
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   phase: 'completed',
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout]   compacted_block_count: 2
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout] }
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.325Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.329Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.330Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.330Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:50:00.330Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.330Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.330Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.330Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.347Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.347Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.347Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': UserInputContextBuildingProcessor completed. Final content length: 80
+[2026-10-01T06:50:00.347Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.355Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.356Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.356Z] [INFO] [electron.embedded-server.stdout] Agent run 'api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[2026-10-01T06:50:00.356Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.356Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.356Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:00.356Z] [INFO] [electron.embedded-server.stdout] AgentExternalEventNotifier (NotifierID: ddc9f8cb-2b5b-4659-b042-ec87344f3e66, AgentID: api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[2026-10-01T06:50:01.805Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:50:01.806Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:50:06.808Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:50:06.811Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:50:11.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:50:11.812Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:50:16.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:50:16.813Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:50:21.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:50:21.814Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-01T06:50:26.809Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-01T06:50:26.815Z] [INFO] [electron] ServerStatusManager: Emitting status change: running

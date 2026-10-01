@@ -83,7 +83,6 @@ describe('serverSettings store', () => {
   it('waits for bound backend readiness before fetching server settings', async () => {
     const queryMock = vi.fn().mockResolvedValue({
       data: {
-        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
           {
@@ -140,7 +139,6 @@ describe('serverSettings store', () => {
 
     expect(getApolloClient).not.toHaveBeenCalled()
     expect(store.settingsBindingRevision).toBeNull()
-    expect(store.effectiveWorkingContextCompactionStrategyId).toBeNull()
   })
 
   it('does not let an old-node rejection erase a successful new-node settings load', async () => {
@@ -149,7 +147,6 @@ describe('serverSettings store', () => {
     const newClient = {
       query: vi.fn().mockResolvedValue({
         data: {
-          getEffectiveWorkingContextCompactionStrategyId: 'remote-strategy',
           getEffectiveStreamingContentFlushIntervalMs: 1000,
           getServerSettings: [
             {
@@ -173,13 +170,11 @@ describe('serverSettings store', () => {
 
     useWindowNodeContextStore().bindNodeContext('remote-node', 'http://127.0.0.1:3900')
     await store.fetchServerSettings()
-    expect(store.effectiveWorkingContextCompactionStrategyId).toBe('remote-strategy')
     expect(store.effectiveStreamingContentFlushIntervalMs).toBe(1000)
     expect(store.settings[0]?.value).toBe('0.6')
 
     oldResponse.reject(new Error('old node rejected'))
     await expect(oldLoad).rejects.toThrow('old node rejected')
-    expect(store.effectiveWorkingContextCompactionStrategyId).toBe('remote-strategy')
     expect(store.effectiveStreamingContentFlushIntervalMs).toBe(1000)
     expect(store.settings[0]?.value).toBe('0.6')
     expect(store.settingsBindingRevision).toBe(1)
@@ -211,7 +206,6 @@ describe('serverSettings store', () => {
 
     newResponse.resolve({
       data: {
-        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [],
       },
@@ -226,7 +220,6 @@ describe('serverSettings store', () => {
       .fn()
       .mockResolvedValueOnce({
         data: {
-          getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
             {
@@ -241,7 +234,6 @@ describe('serverSettings store', () => {
       })
       .mockResolvedValueOnce({
         data: {
-          getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
             {
@@ -353,7 +345,6 @@ describe('serverSettings store', () => {
       })
       .mockResolvedValueOnce({
         data: {
-          getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
             {
@@ -401,7 +392,6 @@ describe('serverSettings store', () => {
     })
     const queryMock = vi.fn().mockResolvedValue({
       data: {
-        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
           {
@@ -481,7 +471,6 @@ describe('serverSettings store', () => {
     })
     const queryMock = vi.fn().mockResolvedValue({
       data: {
-        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [
           {
@@ -522,7 +511,6 @@ describe('serverSettings store', () => {
     })
     const queryMock = vi.fn().mockResolvedValue({
       data: {
-        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [],
       },
@@ -555,7 +543,6 @@ describe('serverSettings store', () => {
     })
     const queryMock = vi.fn().mockResolvedValue({
       data: {
-        getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
         getEffectiveStreamingContentFlushIntervalMs: 500,
         getServerSettings: [],
       },

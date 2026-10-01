@@ -1,3 +1,4 @@
+import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -39,6 +40,7 @@ export class AgentTurnLifecycleState {
   activeTurn: AgentActiveTurn = { kind: "NONE" };
   readonly retiredTurnIds = new Set<string>();
   lastStatus: AgentApiStatus = "idle";
+  recoverableBlock: CompactionRecoveryBlockDto | null = null;
   private pendingCommand: PendingCommand | null = null;
   private nextCommandToken = 1;
 
@@ -90,6 +92,7 @@ export class AgentTurnLifecycleState {
   }
 
   terminate(): void {
+    this.recoverableBlock = null;
     this.pendingCommand = null;
     this.retireAndClearActiveTurn();
     this.lastStatus = "offline";
@@ -98,6 +101,17 @@ export class AgentTurnLifecycleState {
   reconcileRuntimeSnapshot(snapshot: AgentRuntimeLifecycleSnapshot): void {
     if (snapshot.availability === "offline") {
       this.terminate();
+      return;
+    }
+    const wasRecoverable = this.recoverableBlock !== null;
+    this.recoverableBlock = snapshot.recoverableBlock ?? null;
+    if (wasRecoverable && !this.recoverableBlock) this.lastStatus = snapshot.phase === "error" ? "error" : "idle";
+    if (this.recoverableBlock) {
+      if (snapshot.currentTurn.kind === "IDENTIFIED" && !this.retiredTurnIds.has(snapshot.currentTurn.turnId)) {
+        this.pendingCommand = null; this.openIdentifiedTurn(snapshot.currentTurn.turnId);
+      }
+      // A real terminal event retires consumed A; an Error projection never retires held A.
+      this.lastStatus = this.recoverableBlock.state === "recovering" ? "running" : "error";
       return;
     }
     if (snapshot.phase === "error") {
@@ -206,6 +220,7 @@ export class AgentTurnLifecycleState {
       return;
     }
     if (evidence.kind === "RUNTIME_GLOBAL") {
+      this.recoverableBlock = null;
       this.pendingCommand = null;
       this.retireAndClearActiveTurn();
       this.lastStatus = "error";
@@ -261,6 +276,7 @@ export class AgentTurnLifecycleState {
   }
 
   get status(): AgentApiStatus {
+    if (this.recoverableBlock && this.recoverableBlock.state !== "recovering") return "error";
     if (this.activeTurn.kind !== "NONE") {
       return "running";
     }

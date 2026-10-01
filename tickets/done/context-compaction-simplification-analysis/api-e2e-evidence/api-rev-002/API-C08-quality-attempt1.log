@@ -1,0 +1,190 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts > first and repeated live compaction semantic retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/.env
+[dotenv@17.3.1] injecting env (8) from tests/.tmp/api-rev-002-owned/.env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55688
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55688
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts > first and repeated live compaction semantic retention
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts > first and repeated live compaction semantic retention > preserves first/repeated decisions for lmstudio.qwen36.compaction-agent-flow
+Discovering LM Studio models from host: http://localhost:1234
+
+{"event":"semantic_preflight","scenarioId":"lmstudio.qwen36.compaction-agent-flow","health":"READY","configured":["local-model.qwen/qwen3.6-35b-a3b"],"missing":[],"instructionCode":null}
+{"event":"semantic_first","scenarioId":"lmstudio.qwen36.compaction-agent-flow","source":["Prepare an audit-only migration plan for incident INC-042. Constraints: no deployment, no push, and no customer-data export. Approval is for planning only, not implementation. Owner is Mira Chen. Retention is 7 days. Preserve /workspace/helios/plan.md and command pnpm verify:helios exactly. Work in two phases: inventory, then risk assessment. A cloud export was proposed but is not approved.","Inventory phase completed: read /workspace/helios/inventory.json; found 12 tables. Risk assessment is active, not finished. Command pnpm verify:helios has NOT RUN. No code or database was changed. The permission decision for implementation remains pending.","Keep all constraints. In the plan explain the duplicate-key risk. Ask me before any implementation. Do not execute the verification command yet."],"summary":"## Goal and constraints\n- **Goal**: Prepare an audit-only migration plan for incident INC-042.\n- **Constraints**: \n  - No deployment, no push, and no customer-data export.\n  - Approval is for planning only, not implementation.\n  - Owner is Mira Chen. Retention is 7 days.\n  - Preserve `/workspace/helios/plan.md` and command `pnpm verify:helios` exactly.\n  - Work in two phases: inventory, then risk assessment.\n  - A cloud export was proposed but is not approved.\n\n## Decisions and findings\n- **Inventory Phase**: Completed. Read `/workspace/helios/inventory.json` and found 12 tables.\n- **Risk Assessment**: Active but not finished.\n- **Verification Command**: `pnpm verify:helios` has NOT run.\n- **System Changes**: No code or database was changed.\n- **Implementation Permission**: Remains pending.\n\n## Completed work\n- Completed the inventory phase of the migration plan.\n- Read `/workspace/helios/inventory.json` (identified 12 tables).\n\n## Current state\n- The risk assessment phase is active and incomplete.\n- The user instructed to explicitly explain the duplicate-key risk within the plan.\n- The verification command (`pnpm verify:helios`) has not been executed yet.\n\n## Open work and next steps\n- Finish the risk assessment phase of the plan.\n- Update `/workspace/helios/plan.md` to explain the duplicate-key risk.\n- Wait for user approval before proceeding with any implementation.\n- Do not execute `pnpm verify:helios` yet.\n\n## Essential references\n- **Incident**: INC-042\n- **Owner**: Mira Chen\n- **Files**: `/workspace/helios/plan.md`, `/workspace/helios/inventory.json`\n- **Commands**: `pnpm verify:helios`","execution":{"modelIdentifier":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","provider":"LMSTUDIO","invocationId":"compaction_60ebeeac-7543-4dcd-afd3-dc15e8dfbed4","completionStatus":"complete","completionReason":"stop","usage":{"input_tokens":879,"output_tokens":1112,"total_tokens":1991,"usage_scope":"per_call","model_provider":"LMSTUDIO","provider_name":"LM Studio","model_identifier":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","model_value":"qwen/qwen3.6-35b-a3b","input_token_semantic":"gross_includes_cache","cache_state":"not_reported","standard_input_tokens":null,"cache_miss_input_tokens":null,"cache_read_input_tokens":null,"cache_creation_input_tokens":null,"cache_creation_5m_input_tokens":null,"cache_creation_1h_input_tokens":null,"reasoning_output_tokens":686,"billable_input_tokens":null,"billable_output_tokens":null,"raw_usage_json":{"prompt_tokens":879,"completion_tokens":1112,"total_tokens":1991,"completion_tokens_details":{"reasoning_tokens":686}},"quality_flags":[]}}}
+{"event":"semantic_repeated","scenarioId":"lmstudio.qwen36.compaction-agent-flow","correction":"Correction: retention is now 30 days, replacing 7 days. Cancel the proposed cloud export entirely. Inventory remains completed. Keep risk assessment active. Add the owner-review checkpoint APPROVAL-73 to the plan; approval for implementation is still pending. The latest unresolved request is to compare rollback options, not to implement them. pnpm verify:helios is still unrun.","summary":"## Goal and constraints\n- **Goal**: Prepare an audit-only migration plan for incident INC-042.\n- **Constraints**: Planning/approval only; no deployment, push, or customer-data export. Cloud export proposal explicitly canceled. Owner: Mira Chen. Retention period updated to 30 days (previously 7). Must preserve `/workspace/helios/plan.md` and command `pnpm verify:helios` exactly. Structured in two phases: inventory, then risk assessment.\n\n## Decisions and findings\n- Inventory phase completed successfully.\n- `/workspace/helios/inventory.json` analyzed; 12 tables identified.\n- Risk assessment phase is active but incomplete.\n- No code or database modifications made; system state unchanged.\n- Implementation permission remains pending.\n\n## Completed work\n- Completed the inventory phase of the migration plan.\n- Read and processed `/workspace/helios/inventory.json` (identified 12 tables).\n\n## Current state\n- Risk assessment phase is active and ongoing.\n- User instructed the plan to explicitly explain the duplicate-key risk.\n- `pnpm verify:helios` remains unexecuted.\n\n## Open work and next steps\n- Complete the risk assessment phase of the plan.\n- Update `/workspace/helios/plan.md` to explicitly explain the duplicate-key risk.\n- Add the owner-review checkpoint `APPROVAL-73` to the plan.\n- Compare rollback options (current focus); do not implement them.\n- Wait for explicit user approval before proceeding with any implementation.\n- Do not run `pnpm verify:helios` until explicitly approved.\n\n## Essential references\n- **Incident**: INC-042\n- **Owner**: Mira Chen\n- **Files**: `/workspace/helios/plan.md`, `/workspace/helios/inventory.json`\n- **Checkpoint**: `APPROVAL-73`\n- **Command**: `pnpm verify:helios`","execution":{"modelIdentifier":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","provider":"LMSTUDIO","invocationId":"compaction_c30623af-7818-412c-8b09-481eb2a45222","completionStatus":"complete","completionReason":"stop","usage":{"input_tokens":1199,"output_tokens":2047,"total_tokens":3246,"usage_scope":"per_call","model_provider":"LMSTUDIO","provider_name":"LM Studio","model_identifier":"qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234","model_value":"qwen/qwen3.6-35b-a3b","input_token_semantic":"gross_includes_cache","cache_state":"not_reported","standard_input_tokens":null,"cache_miss_input_tokens":null,"cache_read_input_tokens":null,"cache_creation_input_tokens":null,"cache_creation_5m_input_tokens":null,"cache_creation_1h_input_tokens":null,"reasoning_output_tokens":1614,"billable_input_tokens":null,"billable_output_tokens":null,"raw_usage_json":{"prompt_tokens":1199,"completion_tokens":2047,"total_tokens":3246,"completion_tokens_details":{"reasoning_tokens":1614}},"quality_flags":[]}}}
+ ❯ tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts (1 test | 1 failed) 53833ms
+     × preserves first/repeated decisions for lmstudio.qwen36.compaction-agent-flow 53820ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  22:58:57
+   Duration  57.16s (transform 1.98s, setup 13ms, import 2.84s, tests 53.83s, environment 0ms)
+
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts > first and repeated live compaction semantic retention > preserves first/repeated decisions for lmstudio.qwen36.compaction-agent-flow
+AssertionError: expected '## Goal and constraints\n- **Goal**: …' to match /(?:planning.only|planning only|plan.…/i
+
+- Expected: 
+/(?:planning.only|planning only|plan.only)/i
+
++ Received: 
+"## Goal and constraints
+- **Goal**: Prepare an audit-only migration plan for incident INC-042.
+- **Constraints**: Planning/approval only; no deployment, push, or customer-data export. Cloud export proposal explicitly canceled. Owner: Mira Chen. Retention period updated to 30 days (previously 7). Must preserve `/workspace/helios/plan.md` and command `pnpm verify:helios` exactly. Structured in two phases: inventory, then risk assessment.
+
+## Decisions and findings
+- Inventory phase completed successfully.
+- `/workspace/helios/inventory.json` analyzed; 12 tables identified.
+- Risk assessment phase is active but incomplete.
+- No code or database modifications made; system state unchanged.
+- Implementation permission remains pending.
+
+## Completed work
+- Completed the inventory phase of the migration plan.
+- Read and processed `/workspace/helios/inventory.json` (identified 12 tables).
+
+## Current state
+- Risk assessment phase is active and ongoing.
+- User instructed the plan to explicitly explain the duplicate-key risk.
+- `pnpm verify:helios` remains unexecuted.
+
+## Open work and next steps
+- Complete the risk assessment phase of the plan.
+- Update `/workspace/helios/plan.md` to explicitly explain the duplicate-key risk.
+- Add the owner-review checkpoint `APPROVAL-73` to the plan.
+- Compare rollback options (current focus); do not implement them.
+- Wait for explicit user approval before proceeding with any implementation.
+- Do not run `pnpm verify:helios` until explicitly approved.
+
+## Essential references
+- **Incident**: INC-042
+- **Owner**: Mira Chen
+- **Files**: `/workspace/helios/plan.md`, `/workspace/helios/inventory.json`
+- **Checkpoint**: `APPROVAL-73`
+- **Command**: `pnpm verify:helios`"
+
+ ❯ assertEssentialRetention tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts:50:19
+     48|   expect(summary).toMatch(/12 tables/i);
+     49|   expect(summary).toMatch(/(?:no|not|without|prohibit|do not)[^\n.]{0,…
+     50|   expect(summary).toMatch(/(?:planning.only|planning only|plan.only)/i…
+       |                   ^
+     51|   expect(summary).toMatch(/(?:not run|unrun|not executed|has not been …
+     52|   expect(summary).toMatch(/(?:pending|await|ask|approval)/i);
+ ❯ tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts:91:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

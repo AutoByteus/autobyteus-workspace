@@ -1,0 +1,57 @@
+> **SR-020 superseding disposition (2026-09-30):** User explicitly stops Qwen failure investigation and accepts its known fidelity deviation as non-blocking for this ticket. Continue with approved prompt-v5; candidate-v6 and the proposed six-call Qwen campaign are parked, not approved or required. No further Qwen calls. DeepSeek validation is separate and remains bounded; old failures/evidence and exhausted limits below are preserved historically. See `acceptance-disposition.sr020.md`.
+
+> Historical SR-014 campaign is completed and its call bounds are exhausted. Subsequent API-owner coordination reports new user permission for LM Studio/DeepSeek v4 flash testing and optional repository credential import into a private test vault. This does not reopen this plan or approve v6/default/support changes. Any new justified observation is separately declared by API/E2E after its structural prerequisites. See `api-validation-coordination.sr019.md`; original plan below is preserved.
+
+# SR-014 — bounded recovery investigation plan
+
+## Status and authority
+
+Purpose: diagnostic clarification of **CRR-004 Unclear**, not new architecture completion, acceptance Pass, implementation assignment or Delivery release. Original goal remains simple one-call Markdown compaction without category/child/repair machinery. Approved SR-012 REQ-001–009/AC-001–011, prompt-v5 and SR-013 design remain unchanged. Large/High unchanged. API-F005/API-F004 remain open; API-REV-002 Fail82.9 is API-owned historical/current validation, not rescored here. Prior ARCH-REV-001/IR-001→002/CRR-002 sourcePass remain scoped evidence, not semantic approval.
+
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`, branch `codex/context-compaction-simplification-analysis`, HEADc948605e2aa5e9dac77b69819eb8f366226c4112; reviewed source7886aeb78449fa54a09ce715fc6e0d74134b386f; base046279298f53fb98d7688ee9dc2b2ba0fa827685, finalization targetorigin/personal through Delivery. API's seven durable paths and reviewer artifacts are owned elsewhere and must not be overwritten. ProductN/A—not requested; DeliveryN/A—not reached. User desktop/shared provider/external WIP/SDK outputs untouched.
+
+## Investigation already completed
+
+Two no-provider source probes pass; see `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/README.md`. Current app-controlled inherited-model request resolves temperature0.7/max_completion_tokens8192, not parent0/1024. Remote sampling/template/backend controls and actual failed-run wire were not retained. No cause/remedy inferred from defaults alone. Exact repeated-input reconstruction is `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/frozen-repeated-input.json`.
+
+## Request to existing API/E2E execution — evidence, not a rerun-until-green gate
+
+API/E2E owns provider-executed evidence and any durable test support. Existing recipient `/api_e2e_engineer`, last confirmed run `api_e2e_engineer_96e63b834264434986f16a8037990c3f`, supplied by Code Reviewer in this recovery conversation. Ordinary coordination of its existing execution; no delegation or duplicate assignment. Before generating, retain a concrete experiment manifest and no-provider tests of observation instrumentation. Only synthetic inputs and owned runtime settings; no persistent user-vault/default or shared provider settings changes. No cloud/secrets provisioning needed.
+
+### A. Fixed-input configuration discrimination (maximum four direct generations)
+
+1. Freeze firstSummary/correction in the attached input file; no new first-summary generation. Use production createCompactionLlm→DirectLlmCompactionSummarizer with exact prompt-v5, same current local Qwen model,3000 summary target and8192 generation reserve. Confirm actual request bytes match frozen logical input after existing renderer; any drift is reported, not silently substituted.
+2. Predeclare order **A,B,B,A** with two observations each. A=current null/null tuple (inherit model defaults); B=the already-supported **test-owned explicit llmConfig temperature0 only**. B is a diagnostic treatment, not a new product default/recommendation or proposed support restriction. Do not modify factory/prompt, source history, output cap, reasoning controls or assertions between samples. Verify all other serialized fields and discoverable provider controls match; if they do not, report confounding.
+3. Persist exact source/system/body hashes, fresh invocation ID, tuple/effective LLMConfig safe fields and final outgoing JSON safe fields, model identity and safe discoverable local model/template/backend/version information. Mark unknowns as unknown; do not claim reconstructing prior server defaults. Do not collect keys/headers/vault values or raw reasoning. Capture synthetic response content, finish/status/usage and bounded failure cause before cleanup, including timeouts/errors, for every attempt.
+4. Adjudicate each body against the same source, not only keywords: requested plan update remains pending; corrected retention30 and cancelled export are factual decisions, not evidence of an edited file/plan; approval pending; verification unrun; inventory completed; risk assessment active; compare rollback unresolved; exact references and prior constraints survive. Separate omission, fabricated action, false permission and structural errors. Retain all original failing/passing API-REV-002 samples; no replacement or selective reporting.
+5. No retry-until-green, extra first passes, silent repair, production semantic validator or model-support change. Infrastructure failure ends that sample; do not spend substitute attempts beyond four. Stop and report if ownership/setup/sanitization prerequisites are unsafe. Temperature0 is not assumed deterministic; two samples per setting cannot establish reliability or a general remedy. Even four good results do not close the retained failure without an evidence-grounded recovery/acceptance decision.
+
+### B. Separate API-F004 observation (maximum one full-flow attempt)
+
+Preserve original fixture, assertions, parent0/1024 and compactor null/null; do not carry the diagnostic B tuple into this case. Ensure synthetic parent/compactor requests/responses, role/tool events, finish metadata and bounded sanitized exception category/code are captured on **every exit path before cleanup/generic wrapping**, including postAndWait failure. Do not dump raw arbitrary exception strings, credentials or reasoning. A no-provider forced-failure instrumentation check should prove this observation path first. Execute at most one registered owned full-flow attempt. On failure, use the retained observations to localize the stage; on success, report an additional positive observation but leave the historical API-F004 cause unestablished. Do not infer the original cause or grant closure from success.
+
+## Requested return / decision boundary
+
+Return a diagnostic clarification packet to the ongoing Solution Designer investigation, with per-sample results, manifest/hashes, matched vs unknown controls, original failures retained, new failed-run observation if any, and exact owner changes/tests/resource cleanup. This request does not declare a new complete validation round or instruct bypassing your skill's routing; apply applicable formal gates if the scope becomes a material implementation or acceptance change. No confidence rescore requested merely for these probes.
+
+Solution Designer then distinguishes evidence-only result, bounded source/design issue or prompt/configuration/support proposal. No remedy is preselected. Any changed approved literal/default/intended support behavior must be presented for explicit user approval before authoritative design change; affected design/source changes take applicable review/validation routes. Successful final API/E2E still requires proportional review of durable test changes before Delivery.
+
+## Canonical references
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/README.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-review.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-final-observations.json`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F004-triage.json`

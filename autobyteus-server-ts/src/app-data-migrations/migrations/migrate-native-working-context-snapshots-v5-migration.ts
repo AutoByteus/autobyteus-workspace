@@ -13,7 +13,7 @@ import {
   SEMANTIC_MEMORY_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { WorkingContextSnapshotStore } from "autobyteus-ts/memory/store/working-context-snapshot-store.js";
-import { WorkingContextSnapshotSerializer } from "autobyteus-ts/memory/working-context-snapshot-serializer.js";
+import { ReleasedNativeSnapshotV5Codec, recognizeVersionlessSnapshotForPreservation } from "autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.js";
 import {
   RuntimeMemoryLocationClassifier,
   type RuntimeMemoryLocation,
@@ -134,6 +134,21 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
     }
 
     const sourceBytes = await fs.readFile(snapshotPath);
+    let source: unknown;
+    try { source = JSON.parse(sourceBytes.toString('utf8')); } catch { /* Released malformed-JSON conversion remains unchanged. */ }
+    if (source !== undefined && (source === null || typeof source !== 'object' || !Object.hasOwn(source, 'schema_version'))) {
+      const recognized = recognizeVersionlessSnapshotForPreservation(source, location.snapshotAgentId);
+      return {
+        detail: {
+          itemId: location.itemId, filePath: snapshotPath,
+          status: recognized ? 'SKIPPED' : 'FAILED',
+          message: recognized
+            ? 'Versionless current snapshot recognized; the complete location was left untouched.'
+            : 'Unsupported versionless snapshot shape or identity; the complete location was left untouched.',
+        },
+        completedWithOmissions: false,
+      };
+    }
     const conversion = this.converter.convert({
       expectedSnapshotAgentId: location.snapshotAgentId,
       sourceBytes,
@@ -151,10 +166,10 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
       };
     }
 
-    const payload = WorkingContextSnapshotSerializer.serialize(conversion.workingContext, {
+    const payload = ReleasedNativeSnapshotV5Codec.serialize(conversion.workingContext, {
       agent_id: location.snapshotAgentId,
     });
-    if (!WorkingContextSnapshotSerializer.validate(payload)) {
+    if (!ReleasedNativeSnapshotV5Codec.validate(payload)) {
       throw new Error(`Strict-v5 candidate validation failed for '${location.itemId}'.`);
     }
     const retainSourceBytes = conversion.mode === "converted"
@@ -228,7 +243,7 @@ export class MigrateNativeWorkingContextSnapshotsV5Migration
   ): boolean {
     try {
       const source = JSON.parse(new TextDecoder().decode(sourceBytes)) as Record<string, unknown>;
-      if (!WorkingContextSnapshotSerializer.validate(source)) return false;
+      if (!ReleasedNativeSnapshotV5Codec.validate(source)) return false;
       const normalizedCandidate = JSON.parse(JSON.stringify(candidate));
       return isDeepStrictEqual(source, normalizedCandidate);
     } catch {

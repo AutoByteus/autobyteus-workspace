@@ -1,0 +1,7 @@
+{
+  "selected": {
+    "when": "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+    "recipient_address": "/delivery_engineer"
+  },
+  "reason": "Successful post-API durable test-code re-review Pass; TR-001 correction already executed in API008 and independently closed. Not source or failure-origin review; no additional API rerun required. Single most-specific rule; no duplicate informational recipient."
+}

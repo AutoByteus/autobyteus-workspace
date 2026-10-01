@@ -1,0 +1,132 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts > first and repeated live compaction semantic retention
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek/.env
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/api-rev-003-deepseek/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:60147
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:60147
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-003-deepseek/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts > first and repeated live compaction semantic retention
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"event":"semantic_preflight","scenarioId":"deepseek.compaction-agent-flow","health":"READY","configured":["provider.deepseek.api-key"],"missing":[],"instructionCode":null}
+{"event":"semantic_first","scenarioId":"deepseek.compaction-agent-flow","source":["Prepare an audit-only migration plan for incident INC-042. Constraints: no deployment, no push, and no customer-data export. Approval is for planning only, not implementation. Owner is Mira Chen. Retention is 7 days. Preserve /workspace/helios/plan.md and command pnpm verify:helios exactly. Work in two phases: inventory, then risk assessment. A cloud export was proposed but is not approved.","Inventory phase completed: read /workspace/helios/inventory.json; found 12 tables. Risk assessment is active, not finished. Command pnpm verify:helios has NOT RUN. No code or database was changed. The permission decision for implementation remains pending.","Keep all constraints. In the plan explain the duplicate-key risk. Ask me before any implementation. Do not execute the verification command yet."],"summary":"## Goal and constraints\n- Prepare an audit-only migration plan for incident INC-042.\n- Constraints: no deployment, no push, no customer-data export.\n- Approval is for planning only, not implementation.\n- Owner: Mira Chen. Retention: 7 days.\n- Preserve `/workspace/helios/plan.md` and command `pnpm verify:helios` exactly.\n- Required phases: inventory first, then risk assessment.\n- A cloud export was proposed but is not approved.\n- User restated all constraints: keep them, explain the duplicate-key risk in the plan, ask before any implementation, and do not execute the verification command yet.\n\n## Decisions and findings\n- Work must remain audit/planning-only; implementation permission is still pending.\n- Inventory phase found 12 tables by reading `/workspace/helios/inventory.json`.\n- Risk assessment is the active phase and is not finished.\n- The plan must explicitly explain the duplicate-key risk.\n- Do not run `pnpm verify:helios` yet.\n- Ask the user before any implementation.\n- No cloud export is authorized.\n\n## Completed work\n- Inventory phase completed: `/workspace/helios/inventory.json` was read and 12 tables were found.\n- No code or database changes were made.\n- No deployment, push, customer-data export, or verification command execution occurred.\n\n## Current state\n- Inventory phase: completed.\n- Risk assessment phase: active, unfinished.\n- `pnpm verify:helios` has NOT RUN.\n- Implementation permission decision remains pending.\n- The plan should be updated with duplicate-key risk analysis, while preserving `/workspace/helios/plan.md` exactly as required.\n- User’s latest instruction is unresolved: explain duplicate-key risk, keep all constraints, ask before implementation, and do not execute verification yet.\n\n## Open work and next steps\n- Finish the risk assessment phase.\n- Add/explain the duplicate-key risk in the migration plan.\n- Preserve `/workspace/helios/plan.md` and the exact command `pnpm verify:helios`.\n- Ask the user before any implementation action.\n- Do not run `pnpm verify:helios` until the user approves.\n- Do not perform deployment, push, customer-data export, or cloud export.\n\n## Essential references\n- Incident: `INC-042`\n- Plan file: `/workspace/helios/plan.md`\n- Inventory file: `/workspace/helios/inventory.json`\n- Verification command: `pnpm verify:helios` (not run)\n- Inventory result: 12 tables\n- Key risk to document: duplicate-key risk\n- Owner: Mira Chen\n- Retention: 7 days\n- Unapproved proposal: cloud export","execution":{"modelIdentifier":"deepseek-v4-flash","provider":"DEEPSEEK","invocationId":"compaction_844e660a-e032-451e-9493-50f4eca2d33d","completionStatus":"complete","completionReason":"stop","usage":{"input_tokens":880,"output_tokens":1305,"total_tokens":2185,"usage_scope":"per_call","model_provider":"DEEPSEEK","provider_name":"DeepSeek","model_identifier":"deepseek-v4-flash","model_value":"deepseek-v4-flash","input_token_semantic":"gross_includes_cache","cache_state":"zero_reported","standard_input_tokens":null,"cache_miss_input_tokens":880,"cache_read_input_tokens":0,"cache_creation_input_tokens":null,"cache_creation_5m_input_tokens":null,"cache_creation_1h_input_tokens":null,"reasoning_output_tokens":721,"billable_input_tokens":null,"billable_output_tokens":null,"raw_usage_json":{"prompt_tokens":880,"completion_tokens":1305,"total_tokens":2185,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":721},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":880},"quality_flags":[]}}}
+{"event":"semantic_repeated","scenarioId":"deepseek.compaction-agent-flow","correction":"Correction: retention is now 30 days, replacing 7 days. Cancel the proposed cloud export entirely. Inventory remains completed. Keep risk assessment active. Add the owner-review checkpoint APPROVAL-73 to the plan; approval for implementation is still pending. The latest unresolved request is to compare rollback options, not to implement them. pnpm verify:helios is still unrun.","summary":"## Goal and constraints\n- Prepare an audit-only migration plan for incident `INC-042`; approval is for planning only, not implementation.\n- Constraints remain: no deployment, no push, no customer-data export; no cloud export (proposed earlier, now canceled entirely).\n- Required phase order: inventory first, then risk assessment.\n- Preserve `/workspace/helios/plan.md` and command `pnpm verify:helios` exactly.\n- Plan must explicitly explain the duplicate-key risk.\n- Ask the user before any implementation action.\n- Retention: now 30 days, replacing the earlier 7 days.\n- Owner: Mira Chen.\n- Latest unresolved user request: compare rollback options, not implement them.\n\n## Decisions and findings\n- Work remains audit/planning-only; implementation permission is still pending.\n- Inventory phase found 12 tables by reading `/workspace/helios/inventory.json`.\n- Risk assessment is the active phase and is not finished.\n- Duplicate-key risk must be documented in the migration plan.\n- Add owner-review checkpoint `APPROVAL-73` to the plan.\n- Cloud export is canceled entirely; no cloud export is authorized.\n- Do not run `pnpm verify:helios` yet.\n- Latest request is to compare rollback options, not to implement them.\n\n## Completed work\n- Inventory phase completed: `/workspace/helios/inventory.json` was read and 12 tables were found.\n- No code or database changes were made.\n- No deployment, push, customer-data export, cloud export, or verification command execution occurred.\n\n## Current state\n- Inventory phase: completed.\n- Risk assessment phase: active, unfinished.\n- `pnpm verify:helios` has NOT RUN.\n- Implementation approval decision remains pending.\n- Plan still needs duplicate-key risk analysis and the `APPROVAL-73` owner-review checkpoint.\n- Retention is now 30 days.\n- Cloud export is canceled.\n- Latest unresolved request: compare rollback options, not implement them.\n\n## Open work and next steps\n- Finish the risk assessment phase.\n- Add/explain the duplicate-key risk in the migration plan.\n- Add owner-review checkpoint `APPROVAL-73` to the plan.\n- Compare rollback options; do not implement them.\n- Preserve `/workspace/helios/plan.md` and the exact command `pnpm verify:helios`.\n- Ask the user before any implementation action.\n- Do not run `pnpm verify:helios` until the user approves.\n- Do not perform deployment, push, customer-data export, or cloud export.\n\n## Essential references\n- Incident: `INC-042`\n- Plan file: `/workspace/helios/plan.md`\n- Inventory file: `/workspace/helios/inventory.json`\n- Verification command: `pnpm verify:helios` (unrun)\n- Inventory result: 12 tables\n- Key risk to document: duplicate-key risk\n- Owner-review checkpoint: `APPROVAL-73`\n- Owner: Mira Chen\n- Retention: 30 days\n- Canceled proposal: cloud export\n- Latest comparison request: rollback options (compare only; do not implement)","execution":{"modelIdentifier":"deepseek-v4-flash","provider":"DEEPSEEK","invocationId":"compaction_3a16b154-76dc-47b6-8a35-1ab757e0b4f4","completionStatus":"complete","completionReason":"stop","usage":{"input_tokens":1362,"output_tokens":2138,"total_tokens":3500,"usage_scope":"per_call","model_provider":"DEEPSEEK","provider_name":"DeepSeek","model_identifier":"deepseek-v4-flash","model_value":"deepseek-v4-flash","input_token_semantic":"gross_includes_cache","cache_state":"positive","standard_input_tokens":null,"cache_miss_input_tokens":850,"cache_read_input_tokens":512,"cache_creation_input_tokens":null,"cache_creation_5m_input_tokens":null,"cache_creation_1h_input_tokens":null,"reasoning_output_tokens":1460,"billable_input_tokens":null,"billable_output_tokens":null,"raw_usage_json":{"prompt_tokens":1362,"completion_tokens":2138,"total_tokens":3500,"prompt_tokens_details":{"cached_tokens":512},"completion_tokens_details":{"reasoning_tokens":1460},"prompt_cache_hit_tokens":512,"prompt_cache_miss_tokens":850},"quality_flags":[]}}}
+{"event":"semantic_two_calls_verified","scenarioId":"deepseek.compaction-agent-flow","invocationCount":2}
+ ✓ tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts (1 test) 14873ms
+     ✓ preserves first/repeated decisions for deepseek.compaction-agent-flow  14859ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  14:29:14
+   Duration  18.10s (transform 1.96s, setup 39ms, import 2.75s, tests 14.87s, environment 0ms)
+
+

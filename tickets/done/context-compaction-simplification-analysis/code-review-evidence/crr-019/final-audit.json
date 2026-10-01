@@ -1,0 +1,95 @@
+{
+  "pins": 10592,
+  "unchanged": 10590,
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md"
+  ],
+  "missing": [],
+  "unexpected": [],
+  "git_matches": {
+    "HEAD": true,
+    "MERGE_HEAD": true,
+    "index_sha256": true,
+    "logical_index_sha256": true,
+    "stash": true,
+    "staged_count": true,
+    "unmerged": true
+  },
+  "HEAD": "026476691c62bda309ce7f2a9342ebb444959f98",
+  "MERGE_HEAD": "d057801c89f26bc69a97331b59631c00519aec98",
+  "staged_count": 672,
+  "unmerged_count": 0,
+  "protected": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/isolated-launch.json",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/live-e2e-harness.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/run-live-e2e.mjs",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/compaction-quality-checks.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/live-e2e-safe-error.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "matches": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "matches": true
+    }
+  ],
+  "scope": "Pre-handoff audit; reviewer evidence created separately. No downstream freeze claim.",
+  "Pass": true
+}

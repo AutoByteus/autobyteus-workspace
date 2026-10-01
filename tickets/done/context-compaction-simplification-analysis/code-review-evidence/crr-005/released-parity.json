@@ -1,0 +1,18 @@
+{
+  "base": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "cases": 83,
+  "mismatches": [],
+  "sourceHashCount": 9,
+  "sourceMismatches": [],
+  "executedSourceHashes": {
+    "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts": "fc7d0fcec15c57aad988bfe53ef764a9c003f0b667067fc0b30674de9c06c22d",
+    "autobyteus-ts/src/llm/utils/messages.ts": "115df613ce4d0fdd13c62962ccae8af11e3d13a82e501796bb70f0704cc381f6",
+    "autobyteus-ts/src/memory/working-context.ts": "1723dc053bc5cea13a1dacb6ff685dd5ac21923a9f529c40dbaf1fcd302b5b0c",
+    "autobyteus-ts/src/memory/working-context-finalizer.ts": "2b457268c9c2c8f641e67455d8a594fdfca10a38786c86052ee3a0b27e7dd314",
+    "autobyteus-ts/src/memory/working-context-finalization-validation.ts": "a321de4193db96fd7eb3f573eca0c0406e1d9fcecfb9007792398fa2ef1d3c93",
+    "autobyteus-ts/src/memory/working-context-provenance.ts": "b7cc1f6fab3fd49f968bd7332c2a5d42e58c7ebc6b10f83bd03acd63302146a8",
+    "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts": "0bc1e0d24c1fc167913bebdb21760666efa01131a000538000b2062b8ef7a5dd",
+    "autobyteus-ts/src/llm/utils/tool-call-delta.ts": "c90ab306eef2a8f3267df30e77651a86c35dac0a8e4b7764b0c8a786ab412dcf",
+    "autobyteus-ts/src/llm/utils/provider-native-assistant-turn.ts": "e023c082119eb7a5df020bc683940d1ce8e7002f864a1c518068d3197df78733"
+  }
+}

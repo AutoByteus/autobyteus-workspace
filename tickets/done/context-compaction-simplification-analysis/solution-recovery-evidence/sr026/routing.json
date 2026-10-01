@@ -1,0 +1,6 @@
+{
+  "selected_rule": null,
+  "recipient": null,
+  "reason": "Only original/new-message disposition remains a user decision; affected architecture incomplete. No completed-design or Delivery-receipt rule applies.",
+  "handoff_sent": false
+}

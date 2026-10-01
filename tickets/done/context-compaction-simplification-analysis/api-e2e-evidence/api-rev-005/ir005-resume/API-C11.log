@@ -1,0 +1,123 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/working-context-snapshot-store.test.ts (2 tests) 6ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts (11 tests) 12ms
+stdout | tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts > WorkingContextSnapshotRestoreStep > no-ops without restore options
+WorkingContextSnapshotRestoreStep initialized.
+
+stdout | tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts > WorkingContextSnapshotRestoreStep > calls bootstrapper when restore options are set
+WorkingContextSnapshotRestoreStep initialized.
+
+ ✓ tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts (2 tests) 6ms
+ ✓ tests/unit/memory/native-working-context-snapshot-shapes.test.ts (85 tests) 21ms
+ ✓ tests/unit/memory/working-context-snapshot-serializer.test.ts (21 tests) 42ms
+ ✓ tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts (4 tests) 22ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (9 tests) 63ms
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'agent_restore'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'agent_restore': No tools provided in config.
+Agent 'agent_restore': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'agent_restore'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'agent_restore' with config: 'RestoreAgent'.
+AgentWorker initialized for agent_id 'agent_restore'.
+Registered AgentContext for agent_id 'agent_restore'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_restore'. Context registered.
+Agent facade initialized for agent_id 'agent_restore'.
+Agent 'agent_restore' restored and stored successfully.
+Agent 'agent_restore' requesting runtime to start.
+AgentRuntime for 'agent_restore': Starting worker.
+AgentWorker 'agent_restore': Starting...
+AgentWorker 'agent_restore' asyncRun(): Starting.
+Agent 'agent_restore': Runtime init completed (event store initialized).
+Agent 'agent_restore': Runtime init completed (status deriver initialized).
+Agent 'agent_restore': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_restore': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+Agent 'agent_restore': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+Agent 'agent_restore': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_restore': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_restore': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+Agent 'agent_restore': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_restore': Executing SystemPromptProcessingStep.
+Agent 'agent_restore': No configured skills. Skipping skill catalog.
+Agent 'agent_restore': Final processed system prompt configured and captured. Trace ID: rt_1790802484721_a9d8dc50-7379-47d9-a340-bf11719524ca. Final length: 28.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+Agent 'agent_restore': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentWorker 'agent_restore' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AgentExternalEventNotifier (NotifierID: 8fcd2213-3cf1-4b7e-bc8d-e7859410d5f3, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ❯ tests/integration/agent/working-context-snapshot-restore-flow.test.ts (1 test | 1 failed) 68ms
+     × restores an exact strict-v5 snapshot and persists an ordinary continuation 67ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > restores an exact strict-v5 snapshot and persists an ordinary continuation
+AssertionError: expected [ 'agent_id', 'messages' ] to deeply equal [ 'agent_id', 'messages', …(1) ]
+
+- Expected
++ Received
+
+  [
+    "agent_id",
+    "messages",
+-   "schema_version",
+  ]
+
+ ❯ tests/integration/agent/working-context-snapshot-restore-flow.test.ts:143:50
+    141|       'Continue after restore.',
+    142|     );
+    143|     expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', …
+       |                                                  ^
+    144|     expect(WorkingContextSnapshotSerializer.validate(continuedPayload)…
+    145|     const { workingContext: continuedContext } = WorkingContextSnapsho…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 7 passed (8)
+      Tests  1 failed | 134 passed (135)
+   Start at  23:08:03
+   Duration  1.15s (transform 2.01s, setup 141ms, import 2.67s, tests 239ms, environment 1ms)
+

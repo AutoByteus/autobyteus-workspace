@@ -1,0 +1,19 @@
+{
+  "trailing_whitespace": {
+    "TESTING.md": [],
+    "package.json": [],
+    "test-support/native-input-history/native-accepted-input-history.integration.test.ts": [],
+    "test-support/native-input-history/vitest.config.mts": [],
+    "test-support/native-input-history/README.md": [],
+    "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts": []
+  },
+  "newline_at_eof": {
+    "TESTING.md": true,
+    "package.json": true,
+    "test-support/native-input-history/native-accepted-input-history.integration.test.ts": true,
+    "test-support/native-input-history/vitest.config.mts": true,
+    "test-support/native-input-history/README.md": true,
+    "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts": true
+  },
+  "Pass": true
+}

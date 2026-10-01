@@ -1,0 +1,11 @@
+{
+  "command": [
+    "pnpm",
+    "--silent",
+    "isolated-app",
+    "start",
+    "--build"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T18:01:51.710643+00:00"
+}

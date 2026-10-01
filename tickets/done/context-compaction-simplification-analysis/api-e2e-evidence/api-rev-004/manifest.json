@@ -1,0 +1,40 @@
+{
+  "case": "API-C08",
+  "round": "API-REV-004",
+  "declaredAt": "2026-09-30T12:58:05.477188+00:00",
+  "scope": "One original registered DeepSeek compaction-agent-flow full backend runtime observation, not direct quality-pair replay and not full desktop journey",
+  "authority": "SR020 acceptance-disposition.sr020.md; existing explicit user provider/private importer permission quoted in API003/deepseek/manifest.json",
+  "scenario": "deepseek.compaction-agent-flow",
+  "model": "deepseek-v4-flash",
+  "maxFullFlowAttempts": 1,
+  "maxOutboundGenerationRequests": 13,
+  "maxParentRequests": 12,
+  "maxSummaryRequests": 1,
+  "expectedNormalRequests": "8 parent requests (tool + response per4 turns) and1 compactor; cap allows bounded normal extra parent exchanges but original exact4 tools assertions unchanged",
+  "parentConfig": {
+    "temperature": 0,
+    "max_tokens": 1024,
+    "compaction_ratio": 0.05,
+    "safety_margin_tokens": 256,
+    "thinking_type": "disabled"
+  },
+  "compactorConfig": "existing absent/current null tuple, actual parent model/default0.7 +8192 reserve; approved prompt-v5 no change",
+  "input": "Existing synthetic incident evidence A180/B570 +Unicode file fixture;4 user turns readA/readUnicode/readB/write exact retainedJSON after files deleted",
+  "stops": [
+    "No generation unless selected DeepSeek preflightREADY/credential present and offline safe observer/all-exit checks pass",
+    "Any transport/HTTP error closes outbound guard; no network retry",
+    "Block any Qwen/local generation, other cloud generation, second compactor, parent13th or total14th request",
+    "No adaptive rerun/tuning even if failure; retain stage/safeerror/partialSSE/parentoutput beforecleanup",
+    "Existing600second flow test timeout plus outer12minute kill boundary"
+  ],
+  "evidence": [
+    "actual safe request controls/responsechunks",
+    "direct all-exit JSON captured without reporter interleaving",
+    "existing exact output/tools/threshold/event/snapshot=nextparent assertions",
+    "manual summary/continuation fidelity review",
+    "normal Prisma setup/globalSetup and ownedvault identity",
+    "failure F004 not declaredfixed by positive run"
+  ],
+  "remainingSurfaceDecision": "After this smallest real provider/runtime check assess integrated user/status/resume gap; full product journey must use isolated desktop per TESTING. Do not infer overallPass from this sample.",
+  "cleanup": "Owned server/db/key/runtime/fixture directories only; source env read exclusively by importer neverdisplayed/modified; no installedapp/sharedLMStudio/otherprocess changes"
+}

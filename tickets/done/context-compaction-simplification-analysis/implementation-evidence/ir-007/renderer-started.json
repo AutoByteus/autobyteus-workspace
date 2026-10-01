@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"tab_id\": \"e11144\",\n  \"result_json\": \"{\\\"phase\\\":\\\"started\\\",\\\"text\\\":\\\"Compacting memory\u2026\\\\nCOMPACTING\\\\nTurn: turn-12 \u00b7 84 raw traces\\\",\\\"icons\\\":[{\\\"class\\\":\\\"mt-0.5 h-5 w-5 shrink-0 text-blue-600 motion-safe:animate-spin\\\",\\\"animation\\\":\\\"spin\\\"},{\\\"class\\\":\\\"h-5 w-5 shrink-0 text-blue-500 motion-safe:animate-spin\\\",\\\"animation\\\":\\\"spin\\\"}],\\\"focus\\\":true,\\\"viewport\\\":[649,738]}\"\n}"
+    }
+  ]
+}

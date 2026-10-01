@@ -3,6 +3,8 @@ import { ToolCallDelta } from './tool-call-delta.js';
 import type { AnthropicAssistantTurn } from './provider-native-assistant-turn.js';
 
 export class CompleteResponse {
+  completionStatus: 'complete' | 'incomplete' | 'unknown';
+  completionReason: string | null;
   content: string;
   reasoning: string | null;
   usage: LlmTokenUsageObservation | null;
@@ -12,6 +14,8 @@ export class CompleteResponse {
   providerNativeAssistantTurn: AnthropicAssistantTurn | null;
 
   constructor(data: {
+    completionStatus?: 'complete' | 'incomplete' | 'unknown';
+    completionReason?: string | null;
     content: string;
     reasoning?: string | null;
     usage?: LlmTokenUsageObservation | null;
@@ -20,6 +24,8 @@ export class CompleteResponse {
     video_urls?: string[];
     providerNativeAssistantTurn?: AnthropicAssistantTurn | null;
   }) {
+    this.completionStatus = data.completionStatus ?? 'unknown';
+    this.completionReason = data.completionReason ?? null;
     this.content = data.content;
     this.reasoning = data.reasoning ?? null;
     this.usage = data.usage ?? null;

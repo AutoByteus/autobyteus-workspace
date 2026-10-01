@@ -65,6 +65,7 @@ const createHarness = (options: {
   const backend = {
     runId,
     runtimeKind: context.config.runtimeKind,
+    compactionRecovery: { kind: "unsupported" } as const,
     inputCapabilities: { activeTurnAppend: options.append ?? "unsupported" },
     getContext: () => context,
     getPlatformAgentRunId: () => "platform-run-1",
@@ -982,7 +983,7 @@ describe("AgentRun input admission", () => {
       event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }),
     ]);
     await Promise.all([started, completed]);
-    expect(observed.map((item) => item.eventType)).toEqual([
+    expect(observed.filter(item => item.eventType !== AgentRunEventType.AGENT_INPUT_STATE).map((item) => item.eventType)).toEqual([
       AgentRunEventType.AGENT_STATUS,
       AgentRunEventType.TURN_STARTED,
       AgentRunEventType.TURN_COMPLETED,

@@ -1,3 +1,4 @@
+import { normalizeAcceptedInputIdentity } from '@autobyteus/agent-presentation-contracts';
 import {
   parseSystemInstructionTraceRecord,
   SYSTEM_INSTRUCTION_TRACE_TYPE,
@@ -72,6 +73,9 @@ export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTurnTraceEvent 
   if (Object.prototype.hasOwnProperty.call(trace, "tool_error")) {
     event.toolError = asString(trace["tool_error"]);
   }
+  if (event.traceType === 'user') Object.assign(event, normalizeAcceptedInputIdentity({
+    messageId: trace.message_id, dedupeKey: trace.dedupe_key,
+  }));
   const senderId = asString(trace["sender_id"]);
   if (senderId) event.senderId = senderId;
   return event;

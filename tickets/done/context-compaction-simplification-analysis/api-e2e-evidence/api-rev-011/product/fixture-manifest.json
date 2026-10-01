@@ -1,0 +1,13 @@
+{
+  "purpose": "Owned synthetic loopback, no remote model quality claim; adapted from API010 prep, no prior evidence edited",
+  "files": {
+    "loopback-provider.mjs": "db334d84eab11081b4e94d7d212c349e03b4384d2ae01d4e17e2781b4b70d74a",
+    "api.py": "f4666266f5a5ddcf2a14fd2f8720ff54dfa7ec8e5e2bab0e37cbf173bd62cb6a",
+    "attachment.txt": "128bc240253929fda46a6d5da8c55ccd87c227f1911effa81d7a0f83708e4f06",
+    "seed-definitions.py": "2355187383bd6447e272a3b1462a1fc88be5a27d8952be68b26286afd2924637",
+    "consumed-tool-source.txt": "a8db3de16fc91705b002d7e93b3e1da34f8a4a1a5c65d6a038bcad73f17a0dc9",
+    "guard-tool.mjs": "ea37b8328dc0bb3ff4e9adbb68da3790e46d58192c8084ada3a420cda2826e71",
+    "drive.py": "b5156fe670fe19659c6996cc78a10a8b316d0c7196a6cfba3eedf07e8dd1e1b5",
+    "snapshot.py": "05df1e3422baeed251c8b21b3d6dde762890a4693e2573ba3acd69ef1c80ba56"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "frozenFileSha256": "6e96ef1dabb4bef03a36cc6ef4caf393feddd290d5b68e16de288f4361beeb5b",
+  "prefixChecks": [
+    {
+      "case": "F",
+      "prefix": "Summary budget: 8192 tokens.\n\n",
+      "exactOnlyDifference": true,
+      "withHash": "7ad3210432d86efb8bec98a25a3711d8be45b874b2fe402da38d8d27abb6f61b",
+      "withoutHash": "90218075d02a7ec17443d4fc4db5682dcc7967db677443e3929690198f43cef9"
+    },
+    {
+      "case": "R",
+      "prefix": "Summary budget: 3000 tokens.\n\n",
+      "exactOnlyDifference": true,
+      "withHash": "8d324be7e396cb039dacd40267797e978a4158c60cdbe5991bf303d7a72c0cfd",
+      "withoutHash": "85560d33d374ae00f870a197de9800f1e547b158854816ede82aef1fbef88288"
+    }
+  ],
+  "durableHashes": {
+    "test-support/live-e2e/live-e2e-harness.ts": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+    "test-support/live-e2e/run-live-e2e.mjs": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+    "test-support/live-e2e/compaction-quality-checks.ts": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+    "test-support/live-e2e/live-e2e-safe-error.ts": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451"
+  },
+  "authorityHashes": {
+    "requirements-doc.md": "6de72be44c71ac9d5336c3db4a69bb8f9a14c52163a0a309a1beba467e35eff0",
+    "output-format-and-coverage.md": "e369b728cbffcf7fc5413cca4b1cb50fd19dddcc403ad979f446be3027008e4b",
+    "design-spec.md": "f60eeea958629764e54c0b8181d1377e741acc3e9f7e5bac300501c899c2589b",
+    "solution-revision-record.md": "22c0c8e4919f7d73ac762ab92b394ffd823354ff311c34215503b91575ebb23a",
+    "solution-revision.sr022.md": "928414398e27b55f6020d07713e92bf1296a7320bb8a9482af5c3c0882ddee79",
+    "summary-budget-removal-experiment.sr022.md": "284abfb9cd68874589007c2a62702bb2589e63ee00795fa5d62fd936d871ff89",
+    "proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7"
+  },
+  "productionDiff": []
+}

@@ -1,0 +1,136 @@
+{
+  "outcome": "Reproduced",
+  "scope": "SD personally prepared one hosted native Agent; two actual renderer reloads of the same held state, NOT two independent native runs",
+  "observations": [
+    {
+      "phase": "before",
+      "timeOrigin": 1790866734141.8,
+      "messageCopies": 1,
+      "heldLabels": 1
+    },
+    {
+      "phase": "no-reload-control",
+      "timeOrigin": 1790866734141.8,
+      "messageCopies": 1,
+      "heldLabels": 1
+    },
+    {
+      "phase": "after",
+      "timeOrigin": 1790866941502.1,
+      "messageCopies": 2,
+      "heldLabels": 1
+    },
+    {
+      "phase": "repeat",
+      "timeOrigin": 1790866988836.1,
+      "messageCopies": 2,
+      "heldLabels": 1
+    }
+  ],
+  "sameNativeState": true,
+  "sameBackendListener": true,
+  "rawHeldRows": [
+    1,
+    1,
+    1
+  ],
+  "savedHeldRows": [
+    1,
+    1,
+    1
+  ],
+  "rawKeys": [
+    [
+      "id",
+      "ts",
+      "turn_id",
+      "seq",
+      "trace_type",
+      "content",
+      "source_event",
+      "media"
+    ],
+    [
+      "id",
+      "ts",
+      "turn_id",
+      "seq",
+      "trace_type",
+      "content",
+      "source_event",
+      "media"
+    ],
+    [
+      "id",
+      "ts",
+      "turn_id",
+      "seq",
+      "trace_type",
+      "content",
+      "source_event",
+      "media"
+    ]
+  ],
+  "savedKeys": [
+    [
+      "kind",
+      "role",
+      "content",
+      "media",
+      "ts"
+    ],
+    [
+      "kind",
+      "role",
+      "content",
+      "media",
+      "ts"
+    ],
+    [
+      "kind",
+      "role",
+      "content",
+      "media",
+      "ts"
+    ]
+  ],
+  "liveState": {
+    "run_instance_id": "a50eef09-3f0f-4000-a907-be7ac1838e0b",
+    "revision": 16,
+    "entries": [
+      {
+        "sequence": 3,
+        "message_id": "b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "dedupe_key": "member_input:daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9:sd036_reviewer_a870e816a17441b8b7454ae92cefeafe:b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+        "sender_type": "user",
+        "file_attachments": []
+      }
+    ],
+    "recoverableBlock": {
+      "operationId": "compaction_operation_mupnwbsn_1",
+      "failureEpoch": 2,
+      "position": {
+        "kind": "held_turn",
+        "turnId": "turn_0003"
+      },
+      "state": "awaiting_user",
+      "code": "SD036_SYNTHETIC_503",
+      "message": "Compaction failed \u2014 send a message to retry"
+    }
+  },
+  "requests": {
+    "all": 10,
+    "parent": 4,
+    "compaction": 6,
+    "parentContainingHeld": 0,
+    "lastRequest": "2026-10-01T15:01:34.312Z"
+  },
+  "diagnosticProbe": {
+    "exit": 0,
+    "assertions": 8,
+    "notes": "Expected current defective behavior asserted; NOT feature acceptance or a repaired implementation."
+  }
+}

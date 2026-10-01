@@ -1,0 +1,11 @@
+{
+  "old_path": "autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+  "new_path": "autobyteus-web/tests/integration/native-accepted-input-history.integration.test.ts",
+  "only_relative_import_depth_and_web_alias_changed": true,
+  "entire_test_body_byte_identical": true,
+  "test_body_sha256": "ce00b65543c0d733570bbbd2190c42c804388ef7e6e702b49ad7eae485f959ba",
+  "old_removed": true,
+  "meaningful_assertions_deleted": false,
+  "new_guard_test_cases": 3,
+  "production_guard_or_manifest_changes": false
+}

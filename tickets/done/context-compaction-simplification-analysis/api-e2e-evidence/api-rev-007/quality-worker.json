@@ -1,0 +1,11 @@
+{
+  "pid": 79427,
+  "phase": "quality",
+  "started": "2026-10-01T06:19:00.712Z",
+  "deadline": 1790836236638,
+  "closed": true,
+  "timedOut": false,
+  "code": 0,
+  "signal": null,
+  "finished": "2026-10-01T06:19:19.344Z"
+}

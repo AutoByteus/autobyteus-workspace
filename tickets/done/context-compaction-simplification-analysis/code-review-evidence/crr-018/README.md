@@ -1,0 +1,1 @@
+CRR018 corrects the required response to API010-F001 after explicit user boundary clarification. Guard must remain intact; fix test dependency architecture, not guard policy. No new source/test execution or global preservation claim. Canonical report and revision record are authoritative; complete upstream archive and CRR017 reference index retained.

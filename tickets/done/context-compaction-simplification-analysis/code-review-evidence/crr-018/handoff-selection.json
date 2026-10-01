@@ -1,0 +1,5 @@
+{
+  "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+  "recipient_address": "/implementation_engineer",
+  "reason": "Same implementation-owned API010-F001; new user clarification withdraws permissive guard-change option. Restore established architecture, no new design change approved."
+}

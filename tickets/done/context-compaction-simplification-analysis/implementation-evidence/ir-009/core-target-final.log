@@ -1,0 +1,44 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stderr | tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > keeps unknown completion eligible and observer/cleanup errors diagnostic only
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_f50e745c-f70f-48f6-b66d-eb0ee3b7baac' }
+
+ ✓ tests/unit/memory/direct-llm-compression-strategy.test.ts (30 tests) 19ms
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > ingests user message into the already-active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > records the sender of an agent-to-agent delivery on the user trace (RD-004)
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0002
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > records the sender of an agent-to-agent delivery on the user trace (RD-004)
+MemoryIngestInputProcessor stored processed user input with turnId turn_0002
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > keeps TOOL-originated input in the processor lifecycle without a memory write
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > fails when TOOL continuation input reaches memory ingest without an active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts (4 tests) 7ms
+ ✓ tests/unit/memory/accepted-compaction-committer.test.ts (5 tests) 298ms
+stderr | tests/unit/memory/pending-compaction-executor.test.ts > PendingCompactionExecutor direct path > treats postcommit prune/reporter failure as committed and restores from that same snapshot
+Compaction committed; raw archive cleanup failed. Active duplicates retained. { operationId: 'compaction_operation_mupha8y4_1' }
+
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (13 tests) 574ms
+
+ Test Files  4 passed (4)
+      Tests  52 passed (52)
+   Start at  13:56:05
+   Duration  1.10s (transform 901ms, setup 77ms, import 1.14s, tests 897ms, environment 0ms)
+

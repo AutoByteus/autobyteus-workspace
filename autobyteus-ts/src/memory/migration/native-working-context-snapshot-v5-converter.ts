@@ -11,7 +11,7 @@ import {
   createNaturalUserMessageProvenance,
   WorkingContextFinalizer,
 } from '../working-context-finalizer.js';
-import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
+import { ReleasedNativeSnapshotV5Codec } from './native-working-context-snapshot-shapes.js';
 import type {
   NativeSnapshotConversionInput,
   NativeSnapshotConversionResult,
@@ -521,8 +521,8 @@ export class NativeWorkingContextSnapshotV5Converter {
       messages.forEach(() => omissions.message('invalid_candidate_structure'));
       workingContext = new WorkingContext();
     }
-    const payload = WorkingContextSnapshotSerializer.serialize(workingContext, { agent_id: expectedAgentId });
-    if (!WorkingContextSnapshotSerializer.validate(payload)) {
+    const payload = ReleasedNativeSnapshotV5Codec.serialize(workingContext, { agent_id: expectedAgentId });
+    if (!ReleasedNativeSnapshotV5Codec.validate(payload)) {
       throw new Error('Native snapshot converter produced an invalid strict-v5 candidate.');
     }
     return {

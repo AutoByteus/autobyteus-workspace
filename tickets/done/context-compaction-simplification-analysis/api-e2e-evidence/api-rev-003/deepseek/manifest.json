@@ -1,0 +1,29 @@
+{
+  "case": "API-C12",
+  "declaredAt": "2026-09-30T12:26:24.717615+00:00",
+  "userPermissionExact": "for testing you can actually use lm studio. you can use deepseek v4 flash model for testing. you can use pnpm to import  /Users/normy/.autobyteus/server-data/.env  for your private vault for testing if needed.",
+  "permissionCoordination": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-validation-coordination.sr019.md",
+  "reason": "First current-source DeepSeek provider acceptance sample; cloud-provider evidence previously absent. Not repeated SR014 Qwen campaign.",
+  "scenario": "deepseek.compaction-agent-flow (quality file only; no full-agent-flow file except preflight-only)",
+  "model": "deepseek-v4-flash",
+  "configuration": "Current setting absent -> actual parent model; model defaults temperature0.7, compactor reserve max8192; no explicit default/config/prompt changes; exact actual wire controls retained.",
+  "input": "Existing durable synthetic INC-042 planning-only history then generated first summary + existing correction. No private history.",
+  "maximumOutboundGenerationRequests": 2,
+  "stops": [
+    "Any preflight missing/unsafe prerequisite: no generation",
+    "Any transport/HTTP error: close guard, do not retry outbound",
+    "First semantic/retention assertion fail: no repeated generation",
+    "After second call: no additional provider calls even if failed",
+    "Timeout existing400s per call/900s case; no adaptive attempts"
+  ],
+  "assertions": [
+    "exact prompt-v5",
+    "one fresh production factory invocation per summary",
+    "single request; no tools/corrections",
+    "planned/completed fidelity manual review distinct from regex; retain all outputs/errors",
+    "unchanged known API-F005/F004 holds regardless of outcome"
+  ],
+  "target": "autobyteus-server-ts/db/api-rev-003-deepseek.db with adjacent owned key + tests/.tmp/api-rev-003-deepseek",
+  "cleanup": "stop owned backend; remove runtime/database/key/WAL/SHM; source env untouched; logs contain values-free import metadata, safe synthetic request/responses only",
+  "setup": "documented importer; actual built server bootstrap; standard Vitest Prisma setup/globalSetup preserved; temporary fetch observer and cap only; offline observer proof first"
+}

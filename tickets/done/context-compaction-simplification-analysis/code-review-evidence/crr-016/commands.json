@@ -1,0 +1,34 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "commands": [
+    [
+      "contract",
+      "pnpm -C autobyteus-agent-presentation-contracts exec tsc -p tsconfig.build.json --noEmit && node --test autobyteus-agent-presentation-contracts/tests/*.test.mjs"
+    ],
+    [
+      "core",
+      "pnpm -C autobyteus-ts exec vitest run tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts tests/unit/memory/raw-trace-item.test.ts tests/unit/memory/memory-manager.test.ts tests/unit/memory/user-file-attachments.test.ts tests/unit/memory/raw-trace-archive-manager.test.ts --no-watch"
+    ],
+    [
+      "server",
+      "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/projection/user-file-attachment-projection.test.ts tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts tests/unit/agent-memory/raw-trace-record-normalizer.test.ts --no-watch"
+    ],
+    [
+      "web",
+      "env -u NATIVE_INPUT_CAPTURE_DIR pnpm -C autobyteus-web test:nuxt services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts services/runHydration/__tests__/acceptedInputIdentity.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts stores/__tests__/agentRootCompactionIntegration.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts components/conversation/__tests__/UserMessage.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts --run"
+    ],
+    [
+      "core-typecheck",
+      "pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit"
+    ],
+    [
+      "server-typecheck",
+      "pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit"
+    ],
+    [
+      "codec-store-probe",
+      "node /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-016/codec-store-probe.mjs"
+    ]
+  ],
+  "note": "Only CRR016 logs/exits written. NATIVE_INPUT_CAPTURE_DIR unset. No emit, packaged app, remote provider or full web typecheck."
+}

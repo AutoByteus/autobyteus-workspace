@@ -1,0 +1,87 @@
+import json
+from pathlib import Path
+
+E = Path(__file__).parent
+checks = []
+def read(name):
+    return json.loads((E / name).read_text())
+def ui(name):
+    return read(name + '.json')['result']['result']
+def check(name, value, evidence):
+    assert value, name
+    checks.append({'assertion': name, 'result': 'Pass', 'evidence': evidence})
+def events(name):
+    return ui(name)['observer']['events']
+def consumed(ev, key):
+    result = []
+    for e in ev:
+        if e['kind'] == 'consumed_http_response':
+            d = json.loads(e['body']).get('data', {})
+            if key in d:
+                result.append((e, d[key]))
+    return result
+def messages(ev):
+    for e in ev:
+        if e['kind'] == 'ws_message':
+            d = json.loads(e['data'])
+            yield e, d
+
+wire = [json.loads(line) for p in [E/'loopback-wire.jsonl', E/'fixture-continuation/loopback-wire.jsonl'] for line in p.read_text().splitlines()]
+requests = [x for x in wire if x['event'] == 'request']
+check('35 unique product requests, no reset across fixture repair', [x['id'] for x in requests] == list(range(1,36)), ['loopback-wire.jsonl','fixture-continuation/loopback-wire.jsonl'])
+parents = [x for x in requests if x['kind'] == 'parent']
+check('only seven explicitly authorized parent requests', [x['id'] for x in parents] == [1,2,10,18,19,27,28], 'both wire logs')
+last_inputs = [next(m['content'] for m in reversed(x['body']['messages']) if m['role']=='user') for x in parents]
+check('no cancelled A/B/D/E, Team A/B or Org A/B parent dispatch', [s.splitlines()[0] for s in last_inputs] == ['API6-SEED1','API6-SEED2','API6-C new authorized work after the first termination.','API6-TEAM-SEED1','API6-TEAM-SEED2','API6-ORG-SEED1','API6-ORG-SEED2'], 'parent last-user input, not mere text search of historical messages')
+for i in [9,17,26,35]:
+    check(f'request {i} aborted', any(x['event']=='request_aborted' and x['id']==i for x in wire), 'both wire logs')
+for i in [9,26,35]:
+    check(f'late response {i} discarded', any(x['event']=='discard_closed_response' and x['id']==i for x in wire), 'both wire logs')
+check('original fixture timeout was after product request17 abort', next(x['at'] for x in wire if x['event']=='request_aborted' and x['id']==17) < next(x['at'] for x in wire if x['event']=='fixture_hold_timeout' and x['id']==17), 'loopback-wire.jsonl; second late release NOT executed')
+check('no unexplained generation guard failure', not any(x['event']=='guard_failure' for x in wire), 'both product wire logs; separate guard processes excluded')
+for before,after in [('agent-before-terminate-snapshot.json','agent-after-late-release-snapshot.json'),('agent-second-before-terminate-snapshot.json','agent-final-files/working_context_snapshot.json'),('team-before-terminate-snapshot.json','team-after-late-release-files/working_context_snapshot.json'),('org-before-terminate-snapshot.json','org-after-late-release-files/working_context_snapshot.json')]:
+    a,b = read(before),read(after)
+    check(before+' baseline preserved without summary replacement', a['messages']==b['messages'][:len(a['messages'])] and len(b['messages'])==len(a['messages'])+1 and b['messages'][-1]['role']=='system' and 'System note: turn' in b['messages'][-1]['content'] and 'cancelled' in b['messages'][-1]['content'], [before,after])
+
+agent = events('network-before-cold-restart')
+team = events('network-team-termination')
+org = events('network-org-termination')
+for name,ev,key,op in [('standalone',agent,'terminateAgentRun','compaction_operation_mup37tkj_1'),('Team',team,'terminateAgentTeamRun','compaction_operation_mup3o1sc_1')]:
+    commands=consumed(ev,key)
+    check(name+' actual consumed HTTP200 success', bool(commands) and commands[-1][0]['status']==200 and commands[-1][1]['success'], key)
+    terminal=[e for e,d in messages(ev) if d.get('type')=='COMPACTION_STATUS' and d['payload'].get('compaction_operation_id')==op and d['payload'].get('phase')=='stopped']
+    check(name+' terminal event precedes command confirmation', len(terminal)==1 and terminal[0]['at'] < commands[-1][0]['at'], [op,key])
+
+command=consumed(org,'terminateAgentOrgRun')[-1]
+inspection=consumed(org,'getAgentOrgRunInspection')[-1]
+projection=consumed(org,'getAgentOrgMemberRunProjection')
+close=[e for e in org if e['kind']=='ws_close' and '/agent-org/' in e['url']][-1]
+check('Org deliberate stream retirement precedes successful command then real historical inspection', close['code']==1000 and close['at']<command[0]['at']<inspection[0]['at'] and command[0]['status']==200 and command[1]['success'] and not inspection[1]['root_org']['is_active'], 'network-org-termination.json')
+post_projections=[(e,d) for e,d in projection if e['at']>command[0]['at']]
+check('Org all three configured member projections fetched after confirmed success', len({d['agentRunId'] for _,d in post_projections})==3, 'network-org-termination.json; only root had native activity')
+check('Org terminal event not invented after deliberate retirement', not any('"phase":"stopped"' in e.get('data','') and '/agent-org/' in e.get('url','') for e in org), 'network-org-termination.json; confirmed success reconciliation supplies terminal presentation')
+for name in ['ui-74-team-activity','ui-95-org-stopped-activity']:
+    d=ui(name)
+    check(name+' real consumers Stopped and static', len(d['icons'])==4 and all(x['animation']=='none' for x in d['icons']) and all('Stopped' in x['text'] for x in d['icons'] if x['test'] in ['compaction-status-row','compaction-activity-item']), name+'.json')
+check('standalone real icons static', all(x['animation']=='none' for x in ui('ui-46-stopped-animation')['icons']) and ui('ui-46-stopped-animation')['activeAnimations']==[], 'ui-46-stopped-animation.json')
+
+close=[e for e in agent if e['kind']=='ws_close' and e['code']==4001][0]
+opens=[e for e in agent if e['kind']=='ws_open' and e['at']>close['at']]
+snapshots=[(e,d) for e,d in messages(agent) if d.get('type')=='AGENT_INPUT_STATE' and d['payload'].get('revision')==12]
+before=[d for e,d in snapshots if e['at']<close['at']][-1]
+after=[d for e,d in snapshots if e['at']>close['at']][0]
+check('real transport reconnect republishes exact held input/runtime/revision', bool(opens) and before['payload']==after['payload'], 'network-before-cold-restart.json / ui39–40')
+check('transport reconnect generated no request', read('before-link-loss-state.json')['requests']==read('after-link-loss-state.json')['requests']==16, 'before/after-link-loss-state.json')
+check('in-memory saved selection generated no request', read('agent-after-terminate-state.json')['requests']==read('agent-saved-selected-state.json')['requests']==9, 'agent states + network-saved-selection.json')
+check('in-memory saved selection consumed actual projection', bool(consumed(events('network-saved-selection'),'getRunProjection')), 'network-saved-selection.json')
+ops={d['payload'].get('compaction_operation_id') for _,d in messages(agent) if d.get('type')=='COMPACTION_STATUS'}
+check('later standalone work has distinct native activity identity', {'compaction_operation_mup31ogq_1','compaction_operation_mup37tkj_1'} <= ops, 'network-before-cold-restart.json; ui45 retains both')
+check('real standalone restart changed renderer context', ui('network-before-cold-restart')['timeOrigin'] != ui('network-cold-selection')['timeOrigin'], 'isolated-restart.json, old/new tab and marker')
+check('cold standalone selection reads projection without invented native replay', bool(consumed(events('network-cold-selection'),'getRunProjection')) and ui('network-cold-selection')['compactionRows']==0 and read('before-cold-fixture-state.json')['requests']==read('after-cold-fixture-state.json')['requests']==17, 'network-cold-selection.json and fixture states')
+check('second real restart changed renderer context', ui('ui-99-final-cold-observer')['timeOrigin']!=ui('network-cold-selection')['timeOrigin'], 'isolated-final-restart.json and ui99')
+check('cold Team selection hydrates both members, no invented native replay', len(consumed(events('network-team-cold'),'getTeamMemberRunProjection'))==2 and ui('network-team-cold')['nativeRows']==0, 'network-team-cold.json')
+check('cold Org selection hydrates all members, no invented native replay', len(consumed(events('network-org-cold'),'getAgentOrgMemberRunProjection'))==3 and ui('network-org-cold')['nativeRows']==0, 'network-org-cold.json')
+check('cold Team/Org open generated no requests', read('pre-final-cold-state.json')['requests']==read('final-product-fixture-state.json')['requests']==35, 'pre-final-cold-state.json / final-product-fixture-state.json')
+result={'result':'Pass for listed assertions only','checks':checks,'productRequests':35,'parent':7,'compaction':28,'remote':0,'excluded':['semantic model quality','second standalone late release','all members concurrently recovering','seven-member full Org UI','crash/power loss','physical drag hit testing']}
+(E/'terminal-assertions.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({'checksPassed':len(checks),'productRequests':35,'remote':0}))

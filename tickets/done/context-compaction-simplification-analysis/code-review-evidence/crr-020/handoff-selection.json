@@ -1,0 +1,7 @@
+{
+  "selected": {
+    "when": "When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+    "recipient_address": "/delivery_engineer"
+  },
+  "reason": "Completed separate successful-test review Pass; no correction, source re-review or failure-origin result. Single most-specific route; no duplicate notification."
+}

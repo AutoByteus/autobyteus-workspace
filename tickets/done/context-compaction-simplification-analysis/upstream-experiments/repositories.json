@@ -1,0 +1,37 @@
+{
+  "hermes": {
+    "repository": "https://github.com/NousResearch/hermes-agent",
+    "commit": "9fc7f17906eab1dd81ddfdf8a1edeecac1e79940",
+    "commit_date": "2026-09-26T07:21:49+05:30",
+    "path": "/tmp/autobyteus-compaction-research-20260926.kVSGz5/hermes",
+    "tracked_and_untracked_status": ""
+  },
+  "opencode": {
+    "repository": "https://github.com/anomalyco/opencode",
+    "commit": "696f41bc8e7586657375d53390925fc54c25d34c",
+    "commit_date": "2026-09-25T23:27:56Z",
+    "path": "/tmp/autobyteus-compaction-research-20260926.kVSGz5/opencode",
+    "tracked_and_untracked_status": ""
+  },
+  "zcode": {
+    "repository": "https://github.com/zai-org/ZCode",
+    "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e",
+    "commit_date": "2026-09-24T14:49:06+08:00",
+    "path": "/tmp/autobyteus-compaction-research-20260926.kVSGz5/zcode",
+    "tracked_and_untracked_status": ""
+  },
+  "dsh": {
+    "repository": "https://github.com/deepseek-ai/deepseek-harness",
+    "commit": "477b4f420553e8a52c2fbccc464d7561b239c443",
+    "commit_date": "2026-09-24T21:39:59+08:00",
+    "path": "/tmp/autobyteus-compaction-research-20260926.kVSGz5/dsh",
+    "tracked_and_untracked_status": ""
+  },
+  "codex": {
+    "repository": "https://github.com/openai/codex",
+    "commit": "25270df2615eb4da5b9d4a9a392226933fb096c5",
+    "commit_date": "2026-09-26T00:51:21Z",
+    "path": "/tmp/autobyteus-compaction-research-20260926.kVSGz5/codex",
+    "tracked_and_untracked_status": ""
+  }
+}

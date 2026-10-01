@@ -1,0 +1,106 @@
+{
+  "stage": "API-REV-006 in progress / requirement clarification hold; not a completed validation result",
+  "latestCompleted": "API-REV-005 Fail78.6",
+  "cases": [
+    {
+      "case": "API-C05",
+      "files": 5,
+      "passed": 93,
+      "exitCode": 0,
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+        "tests/unit/services/server-settings-service.test.ts",
+        "tests/integration/services/server-settings-service.integration.test.ts",
+        "tests/unit/config/app-config.test.ts",
+        "tests/unit/api/graphql/types/server-settings.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts"
+    },
+    {
+      "case": "API-C14",
+      "files": 4,
+      "passed": 23,
+      "exitCode": 0,
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "tests/unit/agent-execution/agent-run-compaction-recovery.test.ts",
+        "tests/unit/agent-execution/agent-run-compaction-races.test.ts",
+        "tests/unit/agent-execution/root-recovery-command.test.ts",
+        "tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts"
+    },
+    {
+      "case": "API-C14-core",
+      "files": 8,
+      "passed": 55,
+      "exitCode": 0,
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+        "tests/unit/agent/runtime/agent-runtime.test.ts",
+        "tests/unit/agent/runtime/agent-worker.test.ts",
+        "tests/unit/agent/llm-request-assembler.test.ts",
+        "tests/unit/agent/compaction",
+        "tests/unit/agent/status",
+        "--no-watch"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts"
+    },
+    {
+      "case": "API-C06",
+      "files": 11,
+      "passed": 175,
+      "exitCode": 0,
+      "command": [
+        "pnpm",
+        "run",
+        "test:nuxt",
+        "services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts",
+        "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts",
+        "services/agentStreaming/__tests__/AgentStreamingService.spec.ts",
+        "services/agentStreaming/__tests__/TeamStreamingService.spec.ts",
+        "services/teamExecution/__tests__/teamExecutionViewState.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+        "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+        "stores/__tests__/agentRunStore.spec.ts",
+        "components/conversation/__tests__/UserMessage.spec.ts",
+        "components/agentInput/__tests__/AgentUserInputTextArea.spec.ts",
+        "--run"
+      ],
+      "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web"
+    }
+  ],
+  "distinctFiles": 28,
+  "distinctPass": 346,
+  "focusedF007RepeatNotAdditive": {
+    "passed": 2,
+    "filtered": 11
+  },
+  "temporaryGuard": {
+    "passedChecks": 7,
+    "localGenerations": 4
+  },
+  "desktop": {
+    "localGenerations": 32,
+    "parent": 12,
+    "compaction": 20,
+    "remote": 0
+  },
+  "API-F007": "Resolved current product Save/readback/reopen/clear; historical failure preserved",
+  "terminalActivity": "Pending SR032 DEC03201 approval; no normative failure assertion/Pass/waiver",
+  "durableChanges": []
+}

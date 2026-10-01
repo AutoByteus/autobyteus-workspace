@@ -38,7 +38,7 @@ const createHarness = (input: {
   const root = {
     teamRunId: "team-run-root",
     openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, messages, statuses: [] },
+      snapshot: { tree, messages, inputStates: [], statuses: [] },
       baseChangeSequence: 31,
       subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
       close: closeSnapshot,
@@ -132,6 +132,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
           tool_name: null,
           error_message: null,
           error_details: null,
+          recoverableBlock: null,
         },
       },
       {

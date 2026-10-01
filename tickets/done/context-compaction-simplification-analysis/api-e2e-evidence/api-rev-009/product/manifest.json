@@ -1,0 +1,11 @@
+{
+  "round": "API009",
+  "surface": "current worktree isolated Electron with owned loopback LMStudio protocol emulator",
+  "remoteRequestsAuthorized": 0,
+  "syntheticCeiling": 80,
+  "absoluteLifetimeMinutes": 60,
+  "holdDeadlineSeconds": 120,
+  "source": "Adapted immutable API007 fixture into new owned output directory; no historical execution scripts used",
+  "fixtureSha256": "2cacb6e814d2ae13c6a67f5598acf3c9b7d5e5ce70e1bb612d5d45e06b7bd8d6",
+  "stop": "guard mismatch/ceiling/deadline/error; no pretending fixture response is model inference"
+}

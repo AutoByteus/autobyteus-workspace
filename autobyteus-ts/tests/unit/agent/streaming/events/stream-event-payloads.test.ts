@@ -11,6 +11,7 @@ import {
   ErrorEventData,
   createErrorEventData,
   SegmentEventData,
+  CompactionStatusData,
   ToolExecutionStartedData
 } from '../../../../../src/agent/streaming/events/stream-event-payloads.js';
 import { AgentStatus } from '../../../../../src/agent/status/status-enum.js';
@@ -130,5 +131,21 @@ describe('Stream payload factories', () => {
       arguments: { path: 'x' }
     });
     expect(payload.turn_id).toBe('turn_123');
+  });
+});
+
+
+describe('CompactionStatusData current direct fields', () => {
+  it.each(['complete', 'incomplete', 'unknown', null])('preserves %s and nullable diagnostics', (status) => {
+    const payload = new CompactionStatusData({ phase: 'completed', completion_status: status,
+      completion_reason: null, summarizer_provider: 'openai', compaction_invocation_id: 'invocation-1',
+      summary_char_count: 0, summary_token_count: null, provider: 'codex' });
+    expect(payload.completion_status).toBe(status);
+    expect(payload.completion_reason).toBeNull();
+    expect(payload.summary_char_count).toBe(0);
+    expect(payload.summary_token_count).toBeNull();
+    expect(payload.compaction_invocation_id).toBe('invocation-1');
+    expect(payload.summarizer_provider).toBe('openai');
+    expect(payload.provider).toBe('codex'); // Existing native discriminator is independent.
   });
 });

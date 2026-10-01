@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: current versionless Org snapshot carries exact live held/queued state
+ok 1 - current versionless Org snapshot carries exact live held/queued state
+  ---
+  duration_ms: 7.081875
+  type: 'test'
+  ...
+# Subtest: rejects duplicate/unowned input projections and missing live input field
+ok 2 - rejects duplicate/unowned input projections and missing live input field
+  ---
+  duration_ms: 1.527708
+  type: 'test'
+  ...
+# Subtest: live projection is strict and has no durable outbox or retired child fields
+ok 3 - live projection is strict and has no durable outbox or retired child fields
+  ---
+  duration_ms: 1.321792
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 151.739416

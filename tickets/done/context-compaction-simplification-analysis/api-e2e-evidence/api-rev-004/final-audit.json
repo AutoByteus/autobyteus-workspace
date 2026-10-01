@@ -1,0 +1,202 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "durablePaths": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "changedFromAPI003": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "changedFromAPI003": false
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "changedFromAPI003": false
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "changedFromAPI003": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "changedFromAPI003": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "changedFromAPI003": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "changedFromAPI003": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "changedFromAPI003": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "changedFromAPI003": false
+    }
+  ],
+  "changedThisRound": [
+    "test-support/live-e2e/live-e2e-harness.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts"
+  ],
+  "actualRequests": 9,
+  "requestKinds": {
+    "summary": 1,
+    "parent": 8
+  },
+  "requestControls": [
+    {
+      "sequence": 1,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "kind": "summary",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0.7,
+        "max_tokens": null,
+        "max_completion_tokens": 8192,
+        "stream": null,
+        "thinking": null
+      }
+    },
+    {
+      "sequence": 8,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "kind": "parent",
+      "controls": {
+        "model": "deepseek-v4-flash",
+        "temperature": 0,
+        "max_tokens": null,
+        "max_completion_tokens": 1024,
+        "stream": true,
+        "thinking": {
+          "type": "disabled"
+        }
+      }
+    }
+  ],
+  "ownedResourcesRemoved": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-004-deepseek.db.secret.key": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-004-deepseek": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-oPpqca": true
+  },
+  "ownedServerPidNotLive": 61241,
+  "ownedPortNoListener": 62136,
+  "glyphChecksRemoved": true,
+  "currentFinalRepositoryTests": 42,
+  "temporaryTestsFinal": 9,
+  "wholeWorktreeDiffCheck": "non-owned code-review-report.md extra blank EOF; not edited by API owner",
+  "ownedSourceDiffCheck": "Pass",
+  "overallResult": "Fail \u2014 original bounded full-flow exited1; corrected inspector replay only, later live assertions not executed",
+  "confidence": 90.7,
+  "noFurtherProviderCalls": true,
+  "noProductionPromptDefaultChanges": true
+}

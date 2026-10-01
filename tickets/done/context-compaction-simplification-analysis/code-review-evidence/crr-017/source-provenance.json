@@ -1,0 +1,74 @@
+[
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+    "sha256": "b899b1f247129884159414be16adaba46b196435d0e09c43c227a9ce6a726112",
+    "crr016_entry_sha256": "b899b1f247129884159414be16adaba46b196435d0e09c43c227a9ce6a726112",
+    "matches_crr016_entry": true,
+    "head_sha256": null,
+    "matches_HEAD": null,
+    "IR011_inventory_sha256": "b899b1f247129884159414be16adaba46b196435d0e09c43c227a9ce6a726112"
+  },
+  {
+    "path": "TESTING.md",
+    "sha256": "3a5a2d4d3d6f7a689292cde97f4305c54c5e054aa3c287e1a76d8a4bc00c9450",
+    "crr016_entry_sha256": "3a5a2d4d3d6f7a689292cde97f4305c54c5e054aa3c287e1a76d8a4bc00c9450",
+    "matches_crr016_entry": true,
+    "head_sha256": "3a5a2d4d3d6f7a689292cde97f4305c54c5e054aa3c287e1a76d8a4bc00c9450",
+    "matches_HEAD": true,
+    "IR011_inventory_sha256": null
+  },
+  {
+    "path": "package.json",
+    "sha256": "d3f58fce4c57217a9ce7664babd5cbb90868b49a399a1d64769a49f3239b71d0",
+    "crr016_entry_sha256": null,
+    "matches_crr016_entry": null,
+    "head_sha256": "d3f58fce4c57217a9ce7664babd5cbb90868b49a399a1d64769a49f3239b71d0",
+    "matches_HEAD": true,
+    "IR011_inventory_sha256": null
+  },
+  {
+    "path": "autobyteus-web/package.json",
+    "sha256": "1938fa6facbd0014a0e817aa26050e338a015a2b5d4b269850252133d2414860",
+    "crr016_entry_sha256": "1938fa6facbd0014a0e817aa26050e338a015a2b5d4b269850252133d2414860",
+    "matches_crr016_entry": true,
+    "head_sha256": "a5429f4b87bb488ab18c1d7a734124834b1f8ea9a2bd80794fde9b1b2f1f1836",
+    "matches_HEAD": false,
+    "IR011_inventory_sha256": null
+  },
+  {
+    "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+    "sha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+    "crr016_entry_sha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+    "matches_crr016_entry": true,
+    "head_sha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+    "matches_HEAD": true,
+    "IR011_inventory_sha256": null
+  },
+  {
+    "path": "autobyteus-web/scripts/isolated-app/instanceLifecycle.mjs",
+    "sha256": "2bfcda042f7142e8e9b8e43d052dc5d2476ddf2c067f165d5839f0639af0cb4f",
+    "crr016_entry_sha256": "2bfcda042f7142e8e9b8e43d052dc5d2476ddf2c067f165d5839f0639af0cb4f",
+    "matches_crr016_entry": true,
+    "head_sha256": "2bfcda042f7142e8e9b8e43d052dc5d2476ddf2c067f165d5839f0639af0cb4f",
+    "matches_HEAD": true,
+    "IR011_inventory_sha256": null
+  },
+  {
+    "path": "autobyteus-web/scripts/isolated-app/cli.mjs",
+    "sha256": "8ab7678cd92441c983740b37b5be99c125542cdce4e94ff0dd03042e843e9902",
+    "crr016_entry_sha256": "8ab7678cd92441c983740b37b5be99c125542cdce4e94ff0dd03042e843e9902",
+    "matches_crr016_entry": true,
+    "head_sha256": "8ab7678cd92441c983740b37b5be99c125542cdce4e94ff0dd03042e843e9902",
+    "matches_HEAD": true,
+    "IR011_inventory_sha256": null
+  },
+  {
+    "path": "docs/isolated-app-instances.md",
+    "sha256": "eea3b15503ecb71a151103ebcd3f00d5e84124afaef50f113dd050581c1e30d6",
+    "crr016_entry_sha256": null,
+    "matches_crr016_entry": null,
+    "head_sha256": "eea3b15503ecb71a151103ebcd3f00d5e84124afaef50f113dd050581c1e30d6",
+    "matches_HEAD": true,
+    "IR011_inventory_sha256": null
+  }
+]

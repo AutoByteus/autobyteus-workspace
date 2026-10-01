@@ -20,6 +20,8 @@ type MemoryTraceEventBase = {
   toolResult?: unknown | null;
   toolError?: string | null;
   media?: RawTraceMedia | null;
+  messageId?: string;
+  dedupeKey?: string;
   senderId?: string | null;
   ts: number;
 };

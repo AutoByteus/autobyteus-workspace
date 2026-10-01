@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-01",
+  "user_quote": "approve this behavior.",
+  "followup": "follow the design princiles for design thanks",
+  "immediately_preceding_agreed_behavior": "Card shows Stopped, no spinner, remains in history; run terminated means compaction no longer active.",
+  "scope": "SR032 REQ013/AC018/SCN006/BEH007 with exact one-word label Stopped; other SR028 requirements retained",
+  "DEC03201": "Approved",
+  "not_authorized": "Review bypass, implementation by SD, new provider campaign, release/finalization"
+}

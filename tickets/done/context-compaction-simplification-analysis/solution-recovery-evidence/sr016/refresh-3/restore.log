@@ -1,0 +1,42 @@
+On branch codex/context-compaction-simplification-analysis
+Your branch is ahead of 'origin/personal' by 4 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+	modified:   autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+	modified:   autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+	modified:   test-support/live-e2e/live-e2e-harness.ts
+	modified:   test-support/live-e2e/run-live-e2e.mjs
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md
+	modified:   tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	autobyteus-application-backend-sdk/dist/
+	autobyteus-application-sdk-contracts/dist/
+	autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+	autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+	test-support/live-e2e/compaction-quality-checks.ts
+	test-support/live-e2e/live-e2e-safe-error.ts
+	tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md
+	tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/
+	tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md
+	tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md
+	tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md
+	tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/
+	tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/
+	tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/
+	tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-v6-candidate.md
+	tickets/in-progress/context-compaction-simplification-analysis/prompt-recovery-proposal.md
+	tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md
+	tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/
+
+no changes added to commit (use "git add" and/or "git commit -a")

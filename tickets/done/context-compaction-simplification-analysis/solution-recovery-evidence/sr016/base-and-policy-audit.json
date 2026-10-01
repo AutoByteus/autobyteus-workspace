@@ -1,0 +1,13 @@
+{
+  "head": "30e84de288e55152784e9ef520a3eff4f0501438",
+  "base": "f7b4f7f4abe5f36a4ae78fd013a869fd61b6c69e",
+  "guideline": "autobyteus-server-ts/docs/design/data_migration_guideline.md",
+  "guidelineSha256": "959f23520d95b1da66da6b712797ae2d4a2acef31ab76300aa4efe9a1ea94b73",
+  "retainedPendingFiles": 251,
+  "allRetainedPendingContentsIdentical": true,
+  "cleanRebase": true,
+  "cleanRestore": true,
+  "backupBranch": "codex/backup-compaction-before-base-refresh-20260927t093100z",
+  "retainedStash": "892ac5e95c9226683443f150ba725cee2bab6386",
+  "fullValidationAfterRebase": false
+}

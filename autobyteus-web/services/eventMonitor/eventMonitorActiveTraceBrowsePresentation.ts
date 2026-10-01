@@ -1,7 +1,7 @@
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
 import type { MediaSegment, ToolApprovalTarget } from '~/types/segments';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
+import { isCompactionPhase, type CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { ToolCardPresentation, ToolCardStatusPresentationKey } from '~/utils/toolCardPresentation';
 import { buildEventMonitorPageToolCardPresentation } from '~/utils/toolCardPresentation';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
@@ -78,7 +78,7 @@ const toCompaction = (
   visual: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorCompactionVisual' }>,
   occurredAtMs: number | null | undefined,
 ): CompactionActivity => {
-  if (!['requested', 'started', 'completed', 'failed'].includes(visual.phase)) {
+  if (!isCompactionPhase(visual.phase)) {
     throw new Error(`Unsupported active-trace compaction phase '${visual.phase}'.`);
   }
   const timestamp = new Date(occurredAtMs ?? 0);

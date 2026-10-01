@@ -28,12 +28,9 @@ const buildHarness = (
   const planningBudget = acceptedPlanningBudget();
   const coordinator = new MemoryManagerCompactionCoordinator({
     store: {} as any,
-    lineageStore: null,
-    lineageScope: null,
     snapshotStore: null,
     agentId: 'agent-1',
-    getContext: () => new WorkingContext(),
-    installContext: () => undefined,
+    contextController: { getContext: () => new WorkingContext(), installOwned: () => undefined } as any,
   });
   coordinator.restoreState({
     pendingCompactionRequest: null,
@@ -89,7 +86,6 @@ const buildHarness = (
   } as unknown as CompactionRuntimeReporter;
   const runtimeSettingsResolver = {
     resolve: () => ({
-      strategyId: 'structured_json',
       triggerRatioOverride: null,
       activeContextTokensOverride: null,
       detailedLogsEnabled: true,

@@ -1,0 +1,46 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned/.env
+[dotenv@17.3.1] injecting env (6) from tests/.tmp/sr014-diagnostic-owned/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:57025
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:57025
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/sr014-diagnostic-owned/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts
+Discovering LM Studio models from host: http://localhost:1234
+
+ ✓ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts (4 tests) 176790ms
+   ✓ SR014-D01 fixed input A  56259ms
+   ✓ SR014-D02 fixed input B  42978ms
+   ✓ SR014-D03 fixed input B  42670ms
+   ✓ SR014-D04 fixed input A  34817ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  23:55:24
+   Duration  179.45s (transform 1.85s, setup 0ms, import 2.57s, tests 176.79s, environment 0ms)
+
+

@@ -79,7 +79,7 @@ export class CollaborationAgentPresentationEventAdapter {
           trigger: rawEvent.snapshot.details.trigger,
           toolName: null,
           errorMessage: rawEvent.snapshot.details.errorMessage,
-          errorDetails: null,
+          errorDetails: null, recoverableBlock: rawEvent.snapshot.details.recoverableBlock,
         }),
         statusHint: rawEvent.snapshot.statusHint,
       }));

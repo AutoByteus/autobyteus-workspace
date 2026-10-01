@@ -1,0 +1,42 @@
+{
+  "samples": [
+    {
+      "sample": "semantic_first",
+      "preparedUserMessageCharacters": 1264,
+      "summaryBodyCharacters": 2473,
+      "historicalSoftTargetTokens": 3000,
+      "providerOutputTokensIncludingReasoning": 1305,
+      "providerReasoningTokens": 721,
+      "derivedNonReasoningResponseTokensNotExactBodyTokens": 584,
+      "completeStop": true
+    },
+    {
+      "sample": "semantic_repeated",
+      "preparedUserMessageCharacters": 3341,
+      "summaryBodyCharacters": 2844,
+      "historicalSoftTargetTokens": 3000,
+      "providerOutputTokensIncludingReasoning": 2138,
+      "providerReasoningTokens": 1460,
+      "derivedNonReasoningResponseTokensNotExactBodyTokens": 678,
+      "completeStop": true
+    },
+    {
+      "sample": "API004 full-flow summary",
+      "preparedUserMessageCharacters": 9167,
+      "summaryBodyCharacters": 3559,
+      "historicalSoftTargetTokens": 8192,
+      "providerOutputTokensIncludingReasoning": 1573,
+      "providerReasoningTokens": 560,
+      "derivedNonReasoningResponseTokensNotExactBodyTokens": 1013,
+      "completeStop": true,
+      "summarySemanticDisposition": "Pass for this sample; good and usable, mildly repetitive",
+      "notWholeFlowAcceptance": true
+    }
+  ],
+  "limits": [
+    "All samples had numeric instruction; not a with/without effect test",
+    "Sparse first fixture expands1264characters to2473; not every summary is shorter than prepared input",
+    "Output usage includes reasoning; do not compare its raw total as visible Markdown length",
+    "No new generations; historical results/waivers unchanged"
+  ]
+}

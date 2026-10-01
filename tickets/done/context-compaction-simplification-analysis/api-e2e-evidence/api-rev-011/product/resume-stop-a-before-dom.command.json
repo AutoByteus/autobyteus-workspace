@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T18:42:11.359321+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "2EBDE1BCA8FCFB7F5A2DAACA80B77548",
+    "--script",
+    "async()=>({at:Date.now(),timeOrigin:performance.timeOrigin,tail:document.body.innerText.slice(-2500),cards:[...document.querySelectorAll(\"main *\")].filter(e=>e.children.length===0&&[\"Compacting memory\",\"Memory compacted\",\"Memory compaction stopped\",\"Stopped\"].includes(e.textContent.trim())).map(e=>e.parentElement.outerHTML),wire:window.__api11wire})"
+  ],
+  "controlPort": 62666
+}

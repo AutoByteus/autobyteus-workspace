@@ -1,0 +1,717 @@
+diff --git a/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue b/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue
+index 11fca22b4..47f708da7 100644
+--- a/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue
++++ b/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue
+@@ -14,9 +14,14 @@
+           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
+           maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
+         }"
+-        :placeholder="skillTagging?.placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
++        :placeholder="skillTagging?.placeholder || placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
++        :role="hasMenus ? 'combobox' : undefined"
++        :aria-autocomplete="hasMenus ? 'list' : undefined"
++        :aria-expanded="hasMenus ? (activeMenu ? 'true' : 'false') : undefined"
++        :aria-controls="activeMenu?.listId"
++        :aria-activedescendant="activeMenu && activeMenu.count ? `${activeMenu.listId}-option-${activeMenu.highlight}` : undefined"
+         @keydown="handleKeyDown"
+-        @click="skillMenu.detect"
++        @click="detectMenus"
+         :disabled="!target"
+         @dragover.prevent
+         @drop.prevent="handleDrop"
+@@ -54,6 +59,29 @@
+           />
+         </div>
+       </template>
++
++      <!-- `@` menu: bring a shared Agent or Team into this live run. -->
++      <template v-if="mentionMenu.open.value">
++        <div v-if="mentionMenu.popover.narrow.value" class="fixed inset-0 z-40 bg-black/20" aria-hidden="true"></div>
++        <div
++          class="z-50 flex flex-col"
++          :class="mentionMenu.popover.narrow.value
++            ? 'fixed inset-x-2 bottom-2 [&>div]:w-auto'
++            : ['absolute left-2', mentionMenu.popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
++          :style="mentionMenu.popover.narrow.value ? undefined : { maxHeight: `${mentionMenu.popover.maxHeight.value}px` }"
++        >
++          <ChatTargetMenu
++            variant="run"
++            :list-id="mentionMenuListId"
++            :query="mentionMenu.query.value"
++            :targets="mentionMenu.filtered.value"
++            :highlight="mentionMenu.highlight.value"
++            :focused-name="mentionMenu.focusedName.value"
++            @highlight="mentionMenu.highlight.value = $event"
++            @choose="mentionMenu.choose"
++          />
++        </div>
++      </template>
+     </div>
+ 
+     <VoiceInputStatusRow class="mx-3 mb-2" />
+@@ -72,6 +100,8 @@ import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue';
+ import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue';
+ import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
+ import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
++import ChatTargetMenu from '~/components/chat/ChatTargetMenu.vue';
++import { useRunMentionMenu } from '~/composables/agentInput/useRunMentionMenu';
+ import { useSkillTagMenu, type SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
+ import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction';
+ 
+@@ -80,6 +110,7 @@ const props = defineProps<{
+   beforeSend?: () => void | Promise<void>;
+   /** `/` skill tags; supplied only for standalone agent runs. */
+   skillTagging?: SkillTaggingCapability | null;
++  placeholder?: string | null;
+ }>();
+ 
+ const contextFileUploadStore = useContextFileUploadStore();
+@@ -109,6 +140,7 @@ const MAX_TEXTAREA_HEIGHT = 220;
+ const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
+ const rootRef = ref<HTMLElement | null>(null);
+ const skillMenuListId = `agent-skill-menu-${useId()}`;
++const mentionMenuListId = `agent-mention-menu-${useId()}`;
+ let pendingLocalAcknowledgementContext: AgentContext | null = null;
+ 
+ const adjustTextareaHeight = () => {
+@@ -181,9 +213,39 @@ const skillMenu = useSkillTagMenu({
+   setText: setRequirement,
+ });
+ 
++const mentionMenu = useRunMentionMenu({
++  rootRef,
++  textareaRef: textarea,
++  context: targetContext,
++  scope: computed(() => props.target?.mentionScope ?? null),
++  getText: () => internalRequirement.value,
++  setText: setRequirement,
++});
++
++/** One menu at a time: `@` takes the token when it matches, otherwise `/`. */
++const detectMenus = () => {
++  if (mentionMenu.detect()) {
++    skillMenu.close();
++    return;
++  }
++  skillMenu.detect();
++};
++
++const hasMenus = computed(() => Boolean(props.skillTagging) || mentionMenu.available.value);
++/** The open menu, for the textarea's combobox semantics. */
++const activeMenu = computed(() => {
++  if (mentionMenu.open.value) {
++    return { listId: mentionMenuListId, count: mentionMenu.filtered.value.length, highlight: mentionMenu.highlight.value };
++  }
++  if (props.skillTagging && skillMenu.open.value) {
++    return { listId: skillMenuListId, count: skillMenu.filteredSkills.value.length, highlight: skillMenu.highlight.value };
++  }
++  return null;
++});
++
+ const handleInput = (event: Event) => {
+   setRequirement((event.target as HTMLTextAreaElement).value);
+-  nextTick(skillMenu.detect);
++  nextTick(detectMenus);
+ };
+ 
+ const handleSend = async () => {
+@@ -268,6 +330,7 @@ const handleDrop = async (event: DragEvent) => {
+ };
+ 
+ const handleKeyDown = (event: KeyboardEvent) => {
++  if (mentionMenu.onKeydown(event)) return;
+   if (skillMenu.onKeydown(event)) return;
+   if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey) {
+     event.preventDefault();
+diff --git a/autobyteus-web/components/conversation/UserMessage.vue b/autobyteus-web/components/conversation/UserMessage.vue
+index b4ad186b6..0858cfd71 100644
+--- a/autobyteus-web/components/conversation/UserMessage.vue
++++ b/autobyteus-web/components/conversation/UserMessage.vue
+@@ -21,7 +21,14 @@
+           :skill-names="skillRequest.skillNames"
+           :sent-text="message.text"
+         />
+-        <div v-if="displayText" class="whitespace-pre-wrap break-words text-gray-900 leading-6">{{ displayText }}</div>
++        <div v-if="displayText" class="whitespace-pre-wrap break-words text-gray-900 leading-6"><template
++          v-for="(part, index) in displayParts"
++          :key="index"
++        ><span
++          v-if="part.kind === 'mention'"
++          class="rounded bg-sky-50 px-1 py-0.5 font-medium text-sky-800 ring-1 ring-inset ring-sky-200"
++          data-test="user-message-mention"
++        >@{{ part.value }}</span><template v-else>{{ part.value }}</template></template></div>
+ 
+         <p v-if="message.pendingInput && message.pendingInput.state !== 'forwarded'" role="status" class="mt-2 text-xs text-amber-700">
+           {{ message.pendingInput.state === 'held' ? $t('workspace.components.conversation.UserMessage.compaction_held') : $t('workspace.components.conversation.UserMessage.queued') }}
+@@ -74,6 +81,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
+ import type { ContextAttachment, UserMessage } from '~/types/conversation';
+ import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttachmentPresentation';
+ import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
++import { presentSentUserMessage, splitMentionText } from '~/utils/collaborators/collaboratorMentionText';
+ import SkillRequestChips from '~/components/conversation/SkillRequestChips.vue';
+ 
+ const props = defineProps<{
+@@ -90,7 +98,10 @@ const failedAttachmentPreviewKeys = ref(new Set<string>());
+ 
+ // Skill tags travel as an instruction prefix in the content; show them as chips and the user's own text.
+ const skillRequest = computed(() => skillRequestInstruction.parse(props.message.text ?? ''));
+-const displayText = computed(() => (skillRequest.value ? skillRequest.value.text : props.message.text));
++// `@` mentions: the server appends a `[Mentioned collaborators]` note; show the words with inline `@Name` chips.
++const presentation = computed(() => presentSentUserMessage(props.message.text ?? '', props.message.mentionNames ?? []));
++const displayText = computed(() => presentation.value.text);
++const displayParts = computed(() => splitMentionText(displayText.value, presentation.value.mentionNames));
+ 
+ const displayUserName = computed(() => props.userDisplayName?.trim() || 'You');
+ const showAvatarImage = computed(() => Boolean(props.userAvatarUrl) && !avatarLoadError.value);
+diff --git a/autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts b/autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts
+index ed4728c3a..a34cf69f8 100644
+--- a/autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts
++++ b/autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts
+@@ -1,5 +1,6 @@
+ import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
+ import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
++import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+ import { assertAgentOrgRunConfigChange } from './agentOrgRunConfigAdoption'
+ import { existingRunModelConfigsEqual } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+@@ -25,6 +26,10 @@ import {
+   projectAgentOrgCommunicationPerspective,
+   projectAgentOrgMessageIdentity,
+ } from './agentOrgCommunicationPerspective'
++import { collaboratorAgentSourceAt, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
++import { useRunHistoryStore } from '~/stores/runHistoryStore'
++import { createAgentContext } from './agentOrgMemberContextFactory'
++import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
+ 
+ export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
+ export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
+@@ -38,7 +43,7 @@ export type AgentOrgContextEntry = Readonly<{
+ type TaskExecutionStartedEvent = Extract<AgentOrgExecutionEventDto, { kind: 'task_execution_started' }>
+ type AgentOrgStatus = AgentOrgExecutionViewDto['agent_statuses'][number]
+ 
+-const nameAt = (address: string): string => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
++const nameAt = memberDisplayName
+ 
+ export class AgentOrgExecutionContext {
+   readonly orgRunId: string
+@@ -209,6 +214,18 @@ export class AgentOrgExecutionContext {
+       // A new delegated child needs new contexts; reload through a checkpoint.
+       this.validateTaskExecutionStarted(event)
+       return 'checkpoint_required'
++    } else if (event.kind === 'collaborator_added') {
++      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
++      // place (no checkpoint) so the pending send that added it keeps its acknowledgement.
++      const root = this.view.execution_tree.rootOrg
++      if ((root.collaborators ?? []).some((entry) => entry.address === event.collaborator.address)
++        || this.index.configured.has(event.collaborator.address)) {
++        this.correlationFailure(`AgentOrg collaborator address '${event.collaborator.address}' is already in use.`)
++      }
++      this.commitView({ ...this.view, execution_tree: { ...this.view.execution_tree,
++        rootOrg: { ...root, collaborators: [...(root.collaborators ?? []), event.collaborator] } } })
++      this.addContextsForNewAgents()
++      collaboratorCandidatesService.invalidate('agent_org', this.orgRunId)
+     } else {
+       try {
+         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])
+@@ -241,6 +258,32 @@ export class AgentOrgExecutionContext {
+     this.phase = 'reopen_required'
+   }
+ 
++  /** Offline contexts for indexed agents without one (a collaborator's new executions). */
++  private addContextsForNewAgents(): void {
++    const workspaceFor = (rootPath: string | null) => rootPath
++      ? [...this.index.agents.values()].map((agent) => this.contexts.get(agent.agentRunId)?.config.workspaceMetadata)
++        .find((metadata) => metadata?.workspaceRootPath === rootPath) ?? null
++      : null
++    for (const agent of this.index.agents.values()) {
++      if (this.contexts.has(agent.agentRunId)) continue
++      const context = createAgentContext({
++        address: agent.address, agentRunId: agent.agentRunId,
++        agentDefinitionId: agent.source.agentDefinitionId, launch: agent.source.launchConfiguration,
++      }, this.view.execution_tree.createdAt, workspaceFor(agent.source.launchConfiguration.workspaceRootPath))
++      context.state = reactive(context.state)
++      const live = reactive(context)
++      this.contexts.set(agent.agentRunId, live)
++      const rootPath = agent.source.launchConfiguration.workspaceRootPath
++      if (!live.config.workspaceMetadata && rootPath) {
++        void useRunHistoryStore().resolveWorkspaceMetadataByRootPath(rootPath).then((metadata) => {
++          if (metadata && !live.config.workspaceMetadata) {
++            live.config = { ...live.config, workspaceMetadata: metadata, workspaceId: metadata.workspaceId }
++          }
++        }).catch(() => undefined)
++      }
++    }
++  }
++
+   private commitView(view: AgentOrgExecutionViewDto): void {
+     const index = new AgentOrgExecutionViewIndex(view)
+     this.view = view
+@@ -250,13 +293,18 @@ export class AgentOrgExecutionContext {
+   private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
+     const execution = event.execution
+     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
+-    const source = this.index.configured.get(parseAgentTeamAddress(execution.address))
++    const address = parseAgentTeamAddress(execution.address)
++    const configured = this.index.configured.get(address)
++    const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
++    const source = configured
++      ?? collaboratorAgentSourceAt(collaborators, address)
++      ?? collaboratorTeamSourceAt(collaborators, address)
+     const hostKnown = event.host_kind === 'root'
+       ? event.host_run_id === this.orgRunId
+       : this.index.teams.has(event.host_run_id)
+     // A newly started child always records its delegator.
+     if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown || !source
+-      || ('agentRunId' in source) !== ('agentRunId' in execution)
++      || ('agentDefinitionId' in source) !== ('agentRunId' in execution)
+       || this.index.agents.has(runId) || this.index.teams.has(runId)) {
+       this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
+     }
+diff --git a/autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts b/autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts
+index c5a3799e9..e68b00383 100644
+--- a/autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts
++++ b/autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts
+@@ -55,6 +55,14 @@ export type AgentStreamProjectionTarget =
+       orgRunId: string;
+       agentRunId: string;
+       memberAddress: AgentTeamAddress;
++    }
++  | {
++      /** A task child of a standalone run's collaboration root. */
++      kind: 'agent_collaboration_member';
++      context: AgentContext;
++      hostRunId: string;
++      agentRunId: string;
++      memberAddress: AgentTeamAddress;
+     };
+ 
+ const conversationResult = (
+@@ -140,7 +148,8 @@ const dispatchToHandler = (
+           conversationResult(result.conversationEffect !== 'NONE', result.conversationEffect),
+         );
+       }
+-      if (!message.payload.accepted) {
++      // A rejected add posted nothing: the notice above the composer reports it, not the conversation.
++      if (!message.payload.accepted && message.payload.code !== 'COLLABORATOR_ADD_FAILED') {
+         const eventMonitor = handleError({
+           code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
+           message: message.payload.message ?? 'Agent command was not accepted.',
+@@ -224,7 +233,8 @@ export const dispatchAgentStreamMessage = (
+   commitRecentEventMonitorEffect(target.context, effects.eventMonitor);
+   if (effects.navigation.kind !== 'NONE') {
+     const currentStatus = target.context.state.currentStatus;
+-    if (target.kind === 'agent_org_member') return effects;
++    // Root views (Org, Agent collaboration) own their own tree rows.
++    if (target.kind === 'agent_org_member' || target.kind === 'agent_collaboration_member') return effects;
+     useRunHistoryStore().applyRunNavigationEffect(
+       target.kind === 'standalone'
+         ? { kind: 'standalone', runId: target.runId, currentStatus }
+diff --git a/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts b/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+index d013b4a60..66afcd905 100644
+--- a/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
++++ b/autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+@@ -314,6 +314,8 @@ export interface SendMessagePayload {
+   image_urls?: string[];
+   message_id?: string;
+   dedupe_key?: string;
++  /** `@` mentions of shared Agents and Teams to bring into this run; the server re-validates them. */
++  mentions?: Array<{ kind: 'agent' | 'agent_team'; definition_id: string }>;
+ }
+ 
+ export interface ToolActionPayload {
+diff --git a/autobyteus-web/services/runSubmission/localUserSubmission.ts b/autobyteus-web/services/runSubmission/localUserSubmission.ts
+index e33518c13..4a56a38b9 100644
+--- a/autobyteus-web/services/runSubmission/localUserSubmission.ts
++++ b/autobyteus-web/services/runSubmission/localUserSubmission.ts
+@@ -1,11 +1,13 @@
+ import { reactive } from 'vue';
+ import type { AgentContext } from '~/types/agent/AgentContext';
+ import type { ContextAttachment, UserMessage } from '~/types/conversation';
++import type { RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
+ import {
+   commitRecentEventMonitorEffect,
+ } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+ import { useRunHistoryStore } from '~/stores/runHistoryStore';
+ import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
++import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
+ 
+ export interface BeginLocalUserSubmissionOptions {
+   text: string;
+@@ -13,6 +15,8 @@ export interface BeginLocalUserSubmissionOptions {
+   attachments: ContextAttachment[];
+   // Null keeps local composer/conversation effects without optimistic history navigation.
+   navigationTarget: LocalUserSubmissionNavigationTarget | null;
++  /** `@` mentions sent with this message; their names render as inline chips. */
++  mentions?: readonly RequestedCollaboratorMention[];
+ }
+ 
+ export type LocalUserSubmissionNavigationTarget =
+@@ -26,6 +30,11 @@ export type LocalUserSubmissionNavigationTarget =
+ export interface LocalUserSubmissionHandle {
+   context: AgentContext;
+   message: UserMessage;
++  /**
++   * A send with `@` mentions is held (AR-007): the composer keeps the draft and the message is
++   * not shown until the root accepts it, because admission may reject the whole send.
++   */
++  held: boolean;
+   // Null keeps local composer/conversation effects without optimistic history navigation.
+   navigationTarget: LocalUserSubmissionNavigationTarget | null;
+ }
+@@ -69,22 +78,48 @@ export const beginLocalUserSubmission = (
+     text: options.text,
+     timestamp: new Date(occurredAt),
+     contextFilePaths: [...options.attachments],
++    ...(options.mentions?.length ? { mentionNames: options.mentions.map((mention) => mention.name) } : {}),
+   });
++  const handle: LocalUserSubmissionHandle = {
++    context,
++    message: submittedMessage,
++    navigationTarget: options.navigationTarget,
++    held: Boolean(options.mentions?.length),
++  };
++  // A new send replaces the notice of the previous one.
++  context.collaboratorAddFailure = null;
++  context.submissionPending = true;
++  if (!handle.held) showSubmittedMessage(handle, occurredAt);
++  return handle;
++};
+ 
+-  context.state.conversation.messages.push(submittedMessage);
++/** Shows the submitted message and clears the composer (immediately, or on acceptance when held). */
++const showSubmittedMessage = (handle: LocalUserSubmissionHandle, occurredAt: string): void => {
++  const { context } = handle;
++  const messages = context.state.conversation.messages;
++  // The accepted echo of a held send may already be in the conversation (same identity).
++  const echoed = handle.message.messageId
++    ? messages.find((message) => message.type === 'user' && message.messageId === handle.message.messageId)
++    : undefined;
++  if (echoed && echoed.type === 'user') {
++    if (handle.message.mentionNames) echoed.mentionNames = handle.message.mentionNames;
++  } else {
++    messages.push(handle.message);
++  }
+   commitRecentEventMonitorEffect(context, 'STRUCTURAL');
+   context.state.conversation.updatedAt = occurredAt;
+   context.requirement = '';
+   context.contextFilePaths = [];
+   context.requestedSkillNames = [];
+-  context.submissionPending = true;
+-  applyLocalSubmissionNavigation(context, options.navigationTarget, occurredAt);
++  context.requestedMentions = [];
++  applyLocalSubmissionNavigation(context, handle.navigationTarget, occurredAt);
++};
+ 
+-  return {
+-    context,
+-    message: submittedMessage,
+-    navigationTarget: options.navigationTarget,
+-  };
++/** The root accepted a held send: show it and clear the composer. No effect for an ordinary send. */
++export const acceptLocalSubmission = (handle: LocalUserSubmissionHandle): void => {
++  if (!handle.held) return;
++  handle.held = false;
++  showSubmittedMessage(handle, nowIso());
+ };
+ 
+ export const retargetLocalUserSubmission = (
+@@ -101,16 +136,28 @@ export const finalizeLocalSubmissionAttachments = (
+   if (attachmentsEqual(handle.message.contextFilePaths, attachments)) return false;
+   const occurredAt = nowIso();
+   handle.message.contextFilePaths = [...attachments];
++  if (handle.held) return true;
+   commitRecentEventMonitorEffect(handle.context, 'PRESENTATION');
+   handle.context.state.conversation.updatedAt = occurredAt;
+   applyLocalSubmissionNavigation(handle.context, handle.navigationTarget, occurredAt);
+   return true;
+ };
+ 
++/**
++ * A failed send. A held send rejected because a collaborator could not be added shows the
++ * notice and keeps the draft as typed (nothing was posted); returns `'kept_draft'` then.
++ * Any other failure shows the message with an error, as before.
++ */
+ export const failLocalSubmission = (
+   handle: LocalUserSubmissionHandle,
+   error: unknown,
+-): void => {
++): 'kept_draft' | 'failed' => {
++  if (handle.held && error instanceof CollaboratorAddRejection) {
++    handle.context.submissionPending = false;
++    handle.context.collaboratorAddFailure = error.failure;
++    return 'kept_draft';
++  }
++  acceptLocalSubmission(handle);
+   const occurredAt = nowIso();
+   const message = toErrorMessage(error);
+   handle.context.submissionPending = false;
+@@ -129,4 +176,5 @@ export const failLocalSubmission = (
+   commitRecentEventMonitorEffect(handle.context, 'STRUCTURAL');
+   handle.context.state.conversation.updatedAt = occurredAt;
+   applyLocalSubmissionNavigation(handle.context, handle.navigationTarget, occurredAt);
++  return 'failed';
+ };
+diff --git a/autobyteus-web/services/teamExecution/teamExecutionViewState.ts b/autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+index e4dbadf90..6ecb26b4b 100644
+--- a/autobyteus-web/services/teamExecution/teamExecutionViewState.ts
++++ b/autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+@@ -83,7 +83,7 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
+ };
+ 
+ const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
+-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' }>): string | null => {
++  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>): string | null => {
+   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
+   if (message.type === 'ERROR') return message.payload.agent_run_id;
+   return message.payload.agent_run_id;
+@@ -329,6 +329,26 @@ export const createTeamExecutionViewState = (
+           });
+         }
+         effects.push({ kind: 'reconcile_team_navigation' });
++      } else if (message.type === 'COLLABORATOR_ADDED') {
++        // One hosted instance per entry: its executions are placed (Offline) with the entry.
++        const collaborators = publication.value.tree.root_team.collaborators ?? [];
++        if (collaborators.some((entry) => entry.address === message.payload.collaborator.address)) {
++          throw new Error(`Duplicate collaborator address '${message.payload.collaborator.address}'.`);
++        }
++        const nextTree = structuredClone(publication.value.tree);
++        nextTree.root_team = { ...nextTree.root_team, collaborators: [...collaborators, structuredClone(message.payload.collaborator)] };
++        const nextLocations = collectValidatedLocations(nextTree);
++        const planned = planContextAssociations(nextTree, nextLocations);
++        publication.value = { ...publication.value, tree: nextTree, locations: nextLocations,
++          contexts: prepareContextAssociations(planned), changeSequence: sequence ?? publication.value.changeSequence };
++        if (planned.length > 0) {
++          effects.push({
++            kind: 'invalidate_team_member_projection',
++            agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
++          });
++        }
++        effects.push({ kind: 'reconcile_team_navigation' });
++        effects.push({ kind: 'collaborators_changed' });
+       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
+         if (publication.value.messages.some((entry) => entry.message_id === message.payload.message.message_id)) {
+           return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });
+diff --git a/autobyteus-web/stores/agentOrgContextsStore.ts b/autobyteus-web/stores/agentOrgContextsStore.ts
+index 727a1008b..838957b75 100644
+--- a/autobyteus-web/stores/agentOrgContextsStore.ts
++++ b/autobyteus-web/stores/agentOrgContextsStore.ts
+@@ -17,7 +17,7 @@ import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOr
+ import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
+ import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
+ import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
+-import { beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
++import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
+ import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
+ import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
+ import { useRunHistoryStore } from '~/stores/runHistoryStore'
+@@ -25,6 +25,7 @@ import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
+ import { buildOrgMemberDraftContextFileOwner, buildOrgMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner'
+ import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
+ import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
++import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
+ 
+ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+   const contexts = ref<Record<string, AgentOrgExecutionContext>>({})
+@@ -191,7 +192,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+     let attachments = contextPaths.map((attachment) => ({ ...attachment }))
+     const messageId = crypto.randomUUID()
+     const dedupeKey = `member_input:${id}:${agentRunId}:${messageId}`
+-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, identity: { messageId, dedupeKey } })
++    const mentions = mentionsPresentInText(content, context.requestedMentions)
++    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
+     const key = keyFor(id, agentRunId)
+     submissions.set(key, submission)
+     let draftEdited = false
+@@ -219,10 +221,13 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
+         })
+         finalizeLocalSubmissionAttachments(submission, attachments)
+       }
+-      await service.sendPrepared({ agentRunId, content, attachments, messageId, dedupeKey })
++      await service.sendPrepared({ agentRunId, content, attachments, messageId, dedupeKey,
++        mentions: toCollaboratorMentionDtos(content, mentions) })
++      acceptLocalSubmission(submission)
+     } catch (cause) {
+-      failLocalSubmission(submission, cause)
+-      if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments }
++      // A rejected add posted nothing: the notice shows and the draft stays as typed.
++      if (failLocalSubmission(submission, cause) === 'kept_draft') return
++      if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments; context.requestedMentions = [...mentions] }
+       throw cause
+     } finally {
+       stopWatching()
+diff --git a/autobyteus-web/stores/agentRunStore.ts b/autobyteus-web/stores/agentRunStore.ts
+index e881bed59..0b5b3dccd 100644
+--- a/autobyteus-web/stores/agentRunStore.ts
++++ b/autobyteus-web/stores/agentRunStore.ts
+@@ -1,6 +1,8 @@
+ import { useAgentActivityStore } from '~/stores/agentActivityStore';
++import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+ import { defineStore } from 'pinia';
+ import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
++import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
+ import { getApolloClient } from '~/utils/apolloClient'
+ import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
+ import { useAgentContextsStore } from '~/stores/agentContextsStore';
+@@ -27,7 +29,9 @@ import { ConnectionState } from '~/services/agentStreaming';
+ import {
+   applyOfflineOrTerminalCleanup,
+ } from '~/services/runStatus/agentRuntimeStatusState';
++import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
+ import {
++  acceptLocalSubmission,
+   beginLocalUserSubmission,
+   failLocalSubmission,
+   finalizeLocalSubmissionAttachments,
+@@ -164,10 +168,13 @@ export const useAgentRunStore = defineStore('agentRun', {
+       const draftOwner = buildAgentDraftContextFileOwner(runId);
+       const messageId = createClientMessageId();
+       let dedupeKey = `agent_run_input:${runId}:${messageId}`;
++      // `@` mentions exist only for an existing run; a first message never carries them.
++      const mentions = isNewAgent ? [] : mentionsPresentInText(userText, currentAgent.requestedMentions);
+       const localSubmission = beginLocalUserSubmission(currentAgent, {
+         text: messageContent, identity: { messageId, dedupeKey },
+         attachments: draftAttachments,
+         navigationTarget: { kind: 'standalone', runId },
++        mentions,
+       });
+ 
+       let preparedRunId: string | null = null;
+@@ -243,15 +250,20 @@ export const useAgentRunStore = defineStore('agentRun', {
+         finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
+ 
+         const service = await this.ensureAgentStreamConnected(finalRunId);
+-        service.sendMessage(
+-          messageContent,
+-          submissionPlan.executable.contextFilePaths,
+-          submissionPlan.executable.imageUrls,
+-          {
+-            messageId,
+-            dedupeKey,
+-          },
+-        );
++        const command = {
++          messageId,
++          dedupeKey,
++          mentions: toCollaboratorMentionDtos(userText, mentions),
++        };
++        if (localSubmission.held) {
++          // A send with mentions is shown only once the run accepts it (AR-007).
++          await service.sendMessageAwaitingAdmission(
++            messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command,
++          );
++          acceptLocalSubmission(localSubmission);
++        } else {
++          service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
++        }
+         preparedRunId = null;
+         runHistoryStore.refreshTreeQuietly();
+       } catch (error: any) {
+@@ -265,6 +277,11 @@ export const useAgentRunStore = defineStore('agentRun', {
+             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
+           });
+         }
++        // A rejected add posted nothing: the notice shows and the draft stays as typed.
++        if (localSubmission.held && error instanceof CollaboratorAddRejection) {
++          failLocalSubmission(localSubmission, error);
++          return;
++        }
+         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
+         failLocalSubmission(localSubmission, error);
+ 
+@@ -439,7 +456,9 @@ export const useAgentRunStore = defineStore('agentRun', {
+         return true;
+       }
+ 
++      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+       try {
++        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+         const client = getApolloClient();
+         const { data, errors } = await client.mutate({
+           mutation: TerminateAgentRun,
+@@ -456,6 +475,7 @@ export const useAgentRunStore = defineStore('agentRun', {
+         }
+ 
+         if (!ownsRequest()) return false;
++        childStop.confirm();
+         if (context?.config.runtimeKind === 'autobyteus' && state) {
+           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
+             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
+@@ -467,6 +487,8 @@ export const useAgentRunStore = defineStore('agentRun', {
+       } catch (error) {
+         console.error(`Error terminating run '${runId}':`, error);
+         return false;
++      } finally {
++        childStop?.finish();
+       }
+     },
+ 
+diff --git a/autobyteus-web/stores/agentTeamRunStore.ts b/autobyteus-web/stores/agentTeamRunStore.ts
+index 64a583cb1..bfa81490b 100644
+--- a/autobyteus-web/stores/agentTeamRunStore.ts
++++ b/autobyteus-web/stores/agentTeamRunStore.ts
+@@ -23,6 +23,7 @@ import { buildTeamMemberTreeFromDefinition, flattenLeafAgentMemberNodes } from '
+ import { projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy';
+ import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
+ import {
++  acceptLocalSubmission,
+   beginLocalUserSubmission,
+   failLocalSubmission,
+   finalizeLocalSubmissionAttachments,
+@@ -45,6 +46,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+ import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
+ import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
+ import { useRightSideTabs } from '~/composables/useRightSideTabs';
++import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
+ 
+ const teamStreamingServices = new Map<string, TeamStreamingService>();
+ const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
+@@ -278,6 +280,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
+       let localSubmission: LocalUserSubmissionHandle | null = null;
+       let retryAttachments = contextAttachments.map(cloneContextAttachment);
+       let draftOwnerId = draft?.draftId ?? rootTeamRunId;
++      // `@` mentions exist only in a live run; a launch draft's first message never carries them.
++      const mentions = team && !draft && targetAgentRunId
++        ? mentionsPresentInText(text, team.view.getAgentContext(targetAgentRunId)?.requestedMentions ?? [])
++        : [];
+       try {
+         if (draft) {
+           const launched = await this.launchDraft(draft);
+@@ -311,6 +317,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
+         localSubmission = beginLocalUserSubmission(member, {
+           text, attachments: contextAttachments, identity: { messageId, dedupeKey },
+           navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
++          mentions,
+         });
+         const draftOwner = options.attachmentDraftOwner
+           ?? buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
+@@ -328,12 +335,15 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
+         useRunHistoryStore().markTeamAsActive(rootTeamRunId);
+         void useRunHistoryStore().refreshTreeQuietly();
+         const service = await this.ensureTeamStreamConnected(rootTeamRunId);
+-        await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey });
++        await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey, mentions: toCollaboratorMentionDtos(text, mentions) });
++        acceptLocalSubmission(localSubmission);
+       } catch (error) {
+         if (localSubmission) {
+-          failLocalSubmission(localSubmission, error);
++          // A rejected add posted nothing: the notice shows and the draft stays as typed.
++          if (failLocalSubmission(localSubmission, error) === 'kept_draft') return;
+           localSubmission.context.requirement = text;
+           localSubmission.context.contextFilePaths = retryAttachments;
++          localSubmission.context.requestedMentions = [...mentions];
+           applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
+           return;
+         }
+diff --git a/autobyteus-web/types/conversation.ts b/autobyteus-web/types/conversation.ts
+index c3436f0a6..1c93829f7 100644
+--- a/autobyteus-web/types/conversation.ts
++++ b/autobyteus-web/types/conversation.ts
+@@ -71,6 +71,8 @@ export interface UserMessage extends Message {
+   type: 'user';
+   text: string;
+   contextFilePaths?: ContextAttachment[];
++  /** Names of the collaborators mentioned with `@` in this local send; shown as inline chips. */
++  mentionNames?: string[];
+   messageId?: string;
+   dedupeKey?: string;
+   promptTokens?: number;

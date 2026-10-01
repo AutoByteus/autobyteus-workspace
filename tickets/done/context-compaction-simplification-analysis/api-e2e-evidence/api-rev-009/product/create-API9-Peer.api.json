@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-01T12:58:14.887480+00:00",
+  "endpoint": "http://127.0.0.1:56936/graphql",
+  "request": {
+    "query": "mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id name}}",
+    "variables": {
+      "input": {
+        "name": "API9 Peer",
+        "description": "Owned API9 deterministic native fixture",
+        "instructions": "API9 fixture. Acknowledge the latest input. No remote work.",
+        "toolNames": [
+          "read_file"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "api9-deterministic-32768:lmstudio@127.0.0.1:57269"
+        }
+      }
+    }
+  },
+  "response": {
+    "data": {
+      "createAgentDefinition": {
+        "id": "api9-peer",
+        "name": "API9 Peer"
+      }
+    }
+  }
+}

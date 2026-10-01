@@ -2139,7 +2139,6 @@ export type Query = {
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
   getEffectiveStreamingContentFlushIntervalMs: Scalars['Int']['output'];
-  getEffectiveWorkingContextCompactionStrategyId: Scalars['String']['output'];
   getGeminiSetupConfig: GeminiSetupStateObject;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
   getMemorySyncStatus: MemorySyncStatusGql;
@@ -2159,7 +2158,6 @@ export type Query = {
   getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
-  getWorkingContextCompactionStrategies: Array<WorkingContextCompactionStrategyOption>;
   health: HealthStatus;
   listAgentOrgRunsWithMemory: AgentOrgRunMemoryPage;
   listAgentOrgsWithMemory: AgentOrgWithMemoryPage;
@@ -3453,12 +3451,6 @@ export type UsageStatistics = {
   totalCost?: Maybe<Scalars['Float']['output']>;
 };
 
-export type WorkingContextCompactionStrategyOption = {
-  __typename?: 'WorkingContextCompactionStrategyOption';
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-};
-
 export type WorkspaceHistoryTeamDefinitionObject = {
   __typename?: 'WorkspaceHistoryTeamDefinitionObject';
   runs: Array<WorkspaceHistoryTeamRunItemObject>;
@@ -4639,7 +4631,7 @@ export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvail
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getEffectiveStreamingContentFlushIntervalMs: number, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
+export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveStreamingContentFlushIntervalMs: number, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
 
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4757,11 +4749,6 @@ export type GetToolsGroupedByCategoryQueryVariables = Exact<{
 
 
 export type GetToolsGroupedByCategoryQuery = { __typename?: 'Query', toolsGroupedByCategory: Array<{ __typename: 'ToolCategoryGroup', categoryName: string, tools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string, origin: ToolOriginEnum, category: string, argumentSchema?: { __typename: 'ToolArgumentSchema', parameters: Array<{ __typename: 'ToolParameterDefinition', name: string, paramType: ToolParameterTypeEnum, description: string, required: boolean, defaultValue?: string | null, enumValues?: Array<string> | null, jsonSchema?: any | null }> } | null }> }> };
-
-export type GetWorkingContextCompactionStrategiesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetWorkingContextCompactionStrategiesQuery = { __typename?: 'Query', getWorkingContextCompactionStrategies: Array<{ __typename?: 'WorkingContextCompactionStrategyOption', id: string, name: string }> };
 
 export type GetAllWorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -11048,7 +11035,6 @@ export const GetServerSettingsDocument = gql`
     isEditable
     isDeletable
   }
-  getEffectiveWorkingContextCompactionStrategyId
   getEffectiveStreamingContentFlushIntervalMs
 }
     `;
@@ -11678,34 +11664,6 @@ export function useGetToolsGroupedByCategoryLazyQuery(variables?: GetToolsGroupe
   return VueApolloComposable.useLazyQuery<GetToolsGroupedByCategoryQuery, GetToolsGroupedByCategoryQueryVariables>(GetToolsGroupedByCategoryDocument, variables, options);
 }
 export type GetToolsGroupedByCategoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetToolsGroupedByCategoryQuery, GetToolsGroupedByCategoryQueryVariables>;
-export const GetWorkingContextCompactionStrategiesDocument = gql`
-    query GetWorkingContextCompactionStrategies {
-  getWorkingContextCompactionStrategies {
-    id
-    name
-  }
-}
-    `;
-
-/**
- * __useGetWorkingContextCompactionStrategiesQuery__
- *
- * To run a query within a Vue component, call `useGetWorkingContextCompactionStrategiesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWorkingContextCompactionStrategiesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetWorkingContextCompactionStrategiesQuery();
- */
-export function useGetWorkingContextCompactionStrategiesQuery(options: VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>(GetWorkingContextCompactionStrategiesDocument, {}, options);
-}
-export function useGetWorkingContextCompactionStrategiesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>(GetWorkingContextCompactionStrategiesDocument, {}, options);
-}
-export type GetWorkingContextCompactionStrategiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetWorkingContextCompactionStrategiesQuery, GetWorkingContextCompactionStrategiesQueryVariables>;
 export const GetAllWorkspacesDocument = gql`
     query GetAllWorkspaces {
   workspaces {

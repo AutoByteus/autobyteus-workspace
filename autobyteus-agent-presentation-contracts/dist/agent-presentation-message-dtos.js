@@ -1,3 +1,4 @@
+import { agentInputStateSchema, compactionRecoveryBlockSchema, compactionRecoveryEventSchema } from "./agent-input-state-dto.js";
 import { z } from "zod";
 import { agentAddressSchema, finiteNumberSchema, jsonValueSchema, nonEmptyStringSchema, nullableFiniteNumberSchema, nullableNonEmptyStringSchema, } from "./schema-helpers.js";
 import { agentTokenUsageRunSummarySchema } from "./token-usage-presentation-dto.js";
@@ -5,6 +6,7 @@ const turnId = nullableNonEmptyStringSchema;
 const segmentType = z.enum(["text", "tool_call", "write_file", "edit_file", "run_bash", "reasoning", "media"]);
 const toolCore = { invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId };
 const status = {
+    recoverableBlock: compactionRecoveryBlockSchema.nullable(),
     status: z.enum(["offline", "initializing", "idle", "running", "error"]),
     trigger: nullableNonEmptyStringSchema,
     tool_name: nullableNonEmptyStringSchema,
@@ -48,10 +50,10 @@ const compaction = {
     turn_id: turnId, compaction_operation_id: nullableNonEmptyStringSchema, requested_turn_id: nullableNonEmptyStringSchema,
     execution_turn_id: nullableNonEmptyStringSchema, selected_block_count: nullableFiniteNumberSchema,
     compacted_block_count: nullableFiniteNumberSchema, raw_trace_count: nullableFiniteNumberSchema,
-    semantic_fact_count: nullableFiniteNumberSchema, compaction_agent_definition_id: nullableNonEmptyStringSchema,
-    compaction_agent_name: nullableNonEmptyStringSchema, compaction_runtime_kind: nullableNonEmptyStringSchema,
-    compaction_model_identifier: nullableNonEmptyStringSchema, compaction_run_id: nullableNonEmptyStringSchema,
-    compaction_task_id: nullableNonEmptyStringSchema, error_message: nullableNonEmptyStringSchema,
+    summary_char_count: nullableFiniteNumberSchema, compaction_invocation_id: nullableNonEmptyStringSchema,
+    summarizer_provider: nullableNonEmptyStringSchema, completion_status: nullableNonEmptyStringSchema,
+    compaction_model_identifier: nullableNonEmptyStringSchema, completion_reason: nullableNonEmptyStringSchema,
+    summary_token_count: nullableFiniteNumberSchema, error_message: nullableNonEmptyStringSchema,
     provider: nullableNonEmptyStringSchema, source_surface: nullableNonEmptyStringSchema,
     boundary_key: nullableNonEmptyStringSchema, provider_event_id: nullableNonEmptyStringSchema,
     provider_session_id: nullableNonEmptyStringSchema, provider_thread_id: nullableNonEmptyStringSchema,
@@ -68,6 +70,9 @@ export const agentPresentationPayloadSchemas = {
     SEGMENT_END: z.object({ segment_id: nonEmptyStringSchema, turn_id: nonEmptyStringSchema, metadata: jsonValueSchema.nullable(), interrupted: z.boolean(), reason: nullableNonEmptyStringSchema, failed: z.boolean(), error: nullableNonEmptyStringSchema }).strict(),
     AGENT_STATUS: z.object(status).strict(),
     COMPACTION_STATUS: z.object(compaction).strict(),
+    COMPACTION_BLOCKED: compactionRecoveryEventSchema,
+    COMPACTION_RESUMED: compactionRecoveryEventSchema,
+    AGENT_INPUT_STATE: agentInputStateSchema,
     TOKEN_USAGE_UPDATED: z.object(token).strict(),
     ASSISTANT_COMPLETE: z.object({ content: z.string().nullable(), reasoning: z.string().nullable(), usage: jsonValueSchema.nullable(), image_urls: z.array(nonEmptyStringSchema), audio_urls: z.array(nonEmptyStringSchema), video_urls: z.array(nonEmptyStringSchema) }).strict(),
     TOOL_APPROVAL_REQUESTED: z.object({ ...toolCore, arguments: jsonValueSchema }).strict(),

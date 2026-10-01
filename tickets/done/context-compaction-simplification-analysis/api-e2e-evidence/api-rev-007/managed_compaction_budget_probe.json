@@ -1,0 +1,20 @@
+{
+  "event": "managed_compaction_budget_probe",
+  "compactionRatio": 0.05,
+  "promptTokens": [
+    2531,
+    15827,
+    15985,
+    17037,
+    17266,
+    58807,
+    3898,
+    4168
+  ],
+  "triggerThresholdTokens": 49936,
+  "phases": [
+    "requested",
+    "started",
+    "completed"
+  ]
+}

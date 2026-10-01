@@ -1,0 +1,80 @@
+
+> autobyteus@1.4.92-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/__tests__/UserMessage.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | components/conversation/__tests__/UserMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/__tests__/UserMessage.spec.ts (6 tests) 26ms
+ ✓ services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts (3 tests) 8ms
+ ❯ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests | 1 failed) 130ms
+   × AgentUserInputTextArea > shows explicit compaction retry guidance, allows a new send, and restores interrupt while recovering 17ms
+     → expected 'Compaction retry' to contain 'compaction'
+   ✓ AgentUserInputTextArea > hides the voice button when voice input is not installed 5ms
+   ✓ AgentUserInputTextArea > shows the voice button when voice input is installed and ready 4ms
+   ✓ AgentUserInputTextArea > shows visible recording feedback while voice input is active 4ms
+   ✓ AgentUserInputTextArea > shows immediate starting feedback, guards duplicate activation, and cancels only composer on unmount 5ms
+   ✓ AgentUserInputTextArea > disables send while context files are still uploading 4ms
+   ✓ AgentUserInputTextArea > uses canonical running status to show and trigger stop even without a sendable draft 5ms
+   ✓ AgentUserInputTextArea > keeps send disabled while a submission is pending without presenting stop 6ms
+   ✓ AgentUserInputTextArea > applies the same disabled primary-action policy to Enter 7ms
+   ✓ AgentUserInputTextArea > applies the same running interrupt policy to Enter 7ms
+   ✓ AgentUserInputTextArea > leaves Shift+Enter to the textarea without invoking the primary action 6ms
+   ✓ AgentUserInputTextArea > clears the visible composer when the active send is locally acknowledged while send remains pending 15ms
+   ✓ AgentUserInputTextArea > runs the optional beforeSend seam before sending without changing the synced requirement 7ms
+   ✓ AgentUserInputTextArea > keeps activeContextStore.send untouched when the optional beforeSend seam blocks submission 8ms
+   ✓ AgentUserInputTextArea > commits typing and deliberate clearing to the exact context without waiting or sending 10ms
+   ✓ AgentUserInputTextArea > keeps each immediate draft edit with the member that typed it when focus changes 8ms
+   ✓ AgentUserInputTextArea > commits the previous member draft before a new member starts typing 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/agentInput/__tests__/AgentUserInputTextArea.spec.ts > AgentUserInputTextArea > shows explicit compaction retry guidance, allows a new send, and restores interrupt while recovering
+AssertionError: expected 'Compaction retry' to contain 'compaction'
+
+Expected: "compaction"
+Received: "Compaction retry"
+
+ ❯ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts:153:51
+    151|     activeContextStoreMock.currentStatus=AgentStatus.Error;
+    152|     const wrapper=mount(withActiveComposerTarget(AgentUserInputTextAre…
+    153|     expect(wrapper.get('[role="status"]').text()).toContain('compactio…
+       |                                                   ^
+    154|     const send=wrapper.get('button[title="Send message"]');expect(send…
+    155|     await send.trigger('click');expect(activeContextStoreMock.send).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 25 passed (26)
+   Start at  22:15:48
+   Duration  6.33s (transform 3.43s, setup 16.65s, collect 140ms, tests 164ms, environment 685ms, prepare 465ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

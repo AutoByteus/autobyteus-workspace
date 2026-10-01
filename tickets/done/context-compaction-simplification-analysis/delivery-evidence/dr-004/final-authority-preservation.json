@@ -1,0 +1,123 @@
+{
+  "time": "2026-10-01T20:18:45.002842+00:00",
+  "root": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+  "API15": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "expected": "9fa2e9803657830e1e6788b7d2003ffbe1ba7dc9a5633b9f26ecfd12b3cb2eed",
+      "actual": "9fa2e9803657830e1e6788b7d2003ffbe1ba7dc9a5633b9f26ecfd12b3cb2eed",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "expected": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "actual": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "expected": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "actual": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "expected": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "actual": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "expected": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "actual": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "expected": "9f478b85f9f815bfdf2d7abe103fbf2e3d9ff42300a1923392227e0ac1df60d5",
+      "actual": "9f478b85f9f815bfdf2d7abe103fbf2e3d9ff42300a1923392227e0ac1df60d5",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "expected": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "actual": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "expected": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+      "actual": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "expected": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "actual": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "expected": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+      "actual": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts",
+      "expected": "23ef21b66c0572ba2c7d25ac39958402b31c22a3fa503f2e896bfdb08707fdf5",
+      "actual": "23ef21b66c0572ba2c7d25ac39958402b31c22a3fa503f2e896bfdb08707fdf5",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+      "expected": "1f3856f1fd521caf91c928e42e6bbe75f756e9848e5bc9c4706296764771ce16",
+      "actual": "1f3856f1fd521caf91c928e42e6bbe75f756e9848e5bc9c4706296764771ce16",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+      "expected": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "actual": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+      "expected": "9487ad982819b0f82acf67c14b606f27d82fa0751eceace85caf5cf86d05e952",
+      "actual": "9487ad982819b0f82acf67c14b606f27d82fa0751eceace85caf5cf86d05e952",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+      "expected": "e0be9c10dea9c193d94b01f3d31b9acbaa073ee9de829f4a364c272c89bb0cf9",
+      "actual": "e0be9c10dea9c193d94b01f3d31b9acbaa073ee9de829f4a364c272c89bb0cf9",
+      "matches": true
+    }
+  ],
+  "allAPIMatch": true,
+  "guard": {
+    "sha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+    "equalsOriginalCheckpoint": true
+  },
+  "archives": [
+    {
+      "path": "api-e2e-evidence/api-rev-010/cumulative-package.tar.gz",
+      "sha256": "39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5",
+      "matches": true
+    },
+    {
+      "path": "api-e2e-evidence/api-rev-012/resume-evidence.tar.gz",
+      "sha256": "ab4470828d451312b874dd5c88edc5d3e685bc323d5e54dc479643f890f5e96c",
+      "matches": true
+    }
+  ],
+  "longPathArchive": {
+    "sha256": "276410f75d74d4ae44e65f567562239f9329f44b71a6bd7c50f4b0e4ed0bcf9e",
+    "verifiedMembers": 121
+  },
+  "API007Flow": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-007/flow.log",
+    "sha256": "66411303344b6c8ca6e894822df1a04a822952f20be6076297ed4b1f6e54f250",
+    "expected": "66411303344b6c8ca6e894822df1a04a822952f20be6076297ed4b1f6e54f250"
+  },
+  "scope": "Byte preservation and artifact navigation audit; not new runtime execution or semantic re-review."
+}

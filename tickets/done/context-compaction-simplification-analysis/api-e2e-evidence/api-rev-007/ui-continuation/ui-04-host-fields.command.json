@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-01T06:36:55.235Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=58629",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "1469900218F0745D8971D3503A116153",
+    "--script",
+    "async()=>{const actions=[await __abDemo.type({selector:'input[placeholder=\"Host\"]',nth:0},'127.0.0.1',{delayMs:0}),await __abDemo.type({selector:'input[placeholder=\"Port\"]',nth:0},'58634',{delayMs:0})];return {actions,html:document.querySelector('input[placeholder=\"Host\"]').parentElement.parentElement.outerHTML,buttons:[...document.querySelectorAll('button')].map(x=>({text:x.innerText,title:x.title,aria:x.getAttribute('aria-label')})).filter(x=>x.title||x.aria)};}",
+    "--dialog",
+    "accept"
+  ]
+}

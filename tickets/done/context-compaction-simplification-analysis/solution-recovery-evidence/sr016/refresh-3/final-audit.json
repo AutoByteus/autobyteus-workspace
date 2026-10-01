@@ -1,0 +1,16 @@
+{
+  "timestampUtc": "2026-09-30T09:45:32.496270+00:00",
+  "base": "cb01dea2392e4bd7233855218e9a1a5b65ec3530",
+  "head": "599cc4776a2da6c746be9719064fd1a7efdfa36e",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "upstreamAncestor": true,
+  "pendingFilesRestored": 267,
+  "pendingMismatchCount": 0,
+  "conflictPaths": 8,
+  "presentationTestsPassed": 3,
+  "serverTestsPassed": 18,
+  "lockfileChanged": false,
+  "fullValidation": false,
+  "approvedPromptSha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "candidatePromptSha256": "1f7f8eb5d82daced2d47f04ffb2485f2fd1b329e9c3a8700f0d21d1090b080a7"
+}

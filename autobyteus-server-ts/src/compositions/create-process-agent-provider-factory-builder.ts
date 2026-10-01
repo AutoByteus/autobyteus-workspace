@@ -9,9 +9,7 @@ import {
 } from "autobyteus-ts";
 import type { WorkspaceManager } from "../workspaces/workspace-manager.js";
 import { SkillService } from "../skills/services/skill-service.js";
-import {
-  createDefaultCompactionAgentRunner,
-} from "../agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import { createCompactionLlm } from '../agent-execution/compaction/compaction-llm-factory.js';
 import { createAvailableLlm } from "../agent-execution/backends/autobyteus/available-llm-construction.js";
 import { getCodexWorkspaceSkillMaterializer } from "../agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import { getCodexWorkspaceResolver } from "../agent-execution/backends/codex/codex-workspace-resolver.js";
@@ -46,7 +44,7 @@ export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
         lifecycle: defaultLifecycleEventProcessorRegistry,
       },
       waitForIdle: waitForAgentToBeIdle,
-      compactionAgentRunnerFactory: createDefaultCompactionAgentRunner,
+      compactionLlmFactory: createCompactionLlm,
     },
     codex: {
       workspaceSkillMaterializer: getCodexWorkspaceSkillMaterializer(),

@@ -1,0 +1,2 @@
+# API011 — Blocked81.4, not Pass
+Full documented build/start succeeds; original guard intact. Fresh native Agent/Team held/queued/attachment checkpoints pass. Genuine new renderer blocked by native CUA cgWindowNotFound; script reload leaves timeOrigin/sentinel unchanged. API009 closure OPEN. Model disarmed; same app/backend retained for user-assisted normal View > Reload. See canonical report, resource-checkpoint, checkpoint-result and final-audit. No remote calls or source/test changes. API15 pending eventual successful-test review.

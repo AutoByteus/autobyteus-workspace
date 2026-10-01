@@ -1,0 +1,13 @@
+1:  3eb43f0dc ! 1:  af40e5de3 refactor: simplify context compaction to one direct summary
+    @@ autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts: descri
+      
+        it("rejects invalid predefined Codex sandbox values before persistence", () => {
+     @@ autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts: describe("ServerSettingsService", () => {
+    -     expect(mockConfig.set).toHaveBeenNthCalledWith(2, 'ENABLE_APPLICATIONS', 'false');
+    +     });
+        });
+      
+     -  it.each([
+2:  3538fe75c = 2:  edfcbca99 docs: record reviewed compaction design and IR-001 implementation handoff
+3:  7886aeb78 = 3:  706d800c1 fix: finish direct compaction harness and live status cleanup
+4:  c948605e2 = 4:  30e84de28 docs: record CRR-001 corrections and IR-002 re-review handoff

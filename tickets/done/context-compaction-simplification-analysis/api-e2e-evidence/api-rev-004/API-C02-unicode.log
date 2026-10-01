@@ -1,0 +1,11 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/unicode-safe-text.test.ts (9 tests) 6ms
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts (5 tests) 47ms
+
+ Test Files  2 passed (2)
+      Tests  14 passed (14)
+   Start at  15:15:41
+   Duration  214ms (transform 106ms, setup 28ms, import 106ms, tests 52ms, environment 0ms)
+

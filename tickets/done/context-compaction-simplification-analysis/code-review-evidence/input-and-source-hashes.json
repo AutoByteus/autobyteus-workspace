@@ -1,0 +1,867 @@
+{
+  "base": "046279298f53fb98d7688ee9dc2b2ba0fa827685",
+  "sourceCommit": "3eb43f0dc457fb5d5960eee62618d8d497e42e9b",
+  "packageHead": "3538fe75c37e3d70accab26b48388d58abeb05d4",
+  "files": [
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts",
+      "sha256": "dae3d3d900cf397f29f1e13ebc8baa7888eee3869402b2cc42da661c2c305ee5"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js",
+      "sha256": "fb1b5bb0253c064ea2a1ae487ceb4d362505ee63ad355ff6fc74fde85794aec6"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map",
+      "sha256": "0865ced82ba3905f3c7c10455f452e9a92788e6306fe1197dcbee834b11fc9a4"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "sha256": "53a0e08870f273d3dfd8311ce924a3f6b527d7ae5cbc92a1d0bae23ce3207f1e"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/tests/agent-presentation-contracts.test.mjs",
+      "sha256": "18138a93e83cdd6a0cb4093457c5186591c7a30064091311e4d9f12679f88d04"
+    },
+    {
+      "path": "autobyteus-server-ts/scripts/smoke-built-in-agents-bootstrap.mjs",
+      "sha256": "2d616fea9a90c323c65a218fa3e8806070f4ae9d458771e96b0b7ac8a9844b40"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+      "sha256": "adb46a15d49b1b817dd0a119182b5758982bb8088808ab74ca005bf76fae6eb2"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+      "sha256": "3555d332ca50616de8c4cb22e0c2b33a478496278bef06019adddb03314d8865"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "sha256": "d731c092127b8ea728d834fcd859f91aac8719b9c74716825f63d523c8fb132a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "sha256": "e51de8a0210b0b28b4303601c3ad22831071d0357d2878736842c616c754e772"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.ts",
+      "sha256": "42976c1e6c427e2c907dce6386f3ba984833c635e732f106926b6eaf4c521356"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts",
+      "sha256": "5c04f35c22df9aae8e57a236993eab3bf20feb4e947ea49b751c4eff91dd99e5"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "sha256": "01d0172166d80e889999110c2a43aae7611461cf9d7f60f9495590f63e9f1a5e"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+      "sha256": "d60395cd7c221f2d57bf04f866cdd589c1cea5a8b2b6849e4fac94971889904a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/schema.ts",
+      "sha256": "cf95845751405c175c95c0806e2871d5ce32d1618075a91a0db36fd3f9120db0"
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts",
+      "sha256": "bc4a549da70b3c6d319467fe5d4d1182014eb3738e07c56c0163eb9579d55b83"
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "sha256": "64eb05095222798fac9a3df51cd73c86571ff955882ed8914478d14010bbe2dd"
+    },
+    {
+      "path": "autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts",
+      "sha256": "62770dee5b0667f069ae956a916ebd730ad7bdb5b0fca2f5f471c273af14815b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/config/compaction-model-settings.ts",
+      "sha256": "7e7cbbc85dd672af92a6cb807a575a70862085c058eab2c615110327e4da1305"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "sha256": "6e4a839c78d6b761cdbe5b59110f66ba700bc575561911784b596c27e45a860b"
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "sha256": "64bb2a405c7e718694a8f99aba638689adc595859f80b9ae799a15075bb0719a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/startup/compaction-model-settings-migration.ts",
+      "sha256": "c03a51d1903d60ced8ce38519491778799883ccc283b2a453b50a56b3d4ad01c"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts",
+      "sha256": "3427ea417238b1ce8b34578d8d5483e7e05e4f9eb00dbaff4a8a38dc5880d9ac"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts",
+      "sha256": "52c2efd13fa370770969dd1634981ed3ff623245d9f779af4b0a56368723305b"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts",
+      "sha256": "348beb49a8d68fdc1ccad8a5bed010e40c043ee892e7fe012283b4d84a553acb"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+      "sha256": "0d16407bccd1a4abdb1f7916c13a1dae115f87585411d491c75d7e03f460f56f"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "57777a03a2f2763b7adb691990c7aa9004f153cad3086327746888f455301f1b"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts",
+      "sha256": "d1e798076b95538aff6836445c3469371fa6948d61ba7778c4068882a98ca2df"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+      "sha256": "1c269d0c510c05061e7d04509b5c36060748bcd96d24699555ab45cf013c43a9"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+      "sha256": "d88a6c3fa34b8af222b4b86b3f17064f95afd584547a6c110b8ac3e888bacab1"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-provider-factory-builder.test.ts",
+      "sha256": "f19f2d66a0f2278f502fd06cfa159278e016eb2e30899364a0c346740adbe2d3"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts",
+      "sha256": "0ec725095f9ee18f0a72fe29bfaebf0509eb18fee89b9f3f255f88408dbf0199"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts",
+      "sha256": "947db5bfb2d446fff28b2857cfd4773077f77c9bf1c4dfef574d7fc561da60a5"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-llm-factory.test.ts",
+      "sha256": "f1ef3762336782cccf05d1c9cb431b94973bfb9b86923d7d3c4effb417c6b7a6"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-presentation.test.ts",
+      "sha256": "1dfb2388400ee1887263191aeb1f25c9b18a822f13653c1a0f3ef4c8da8bf4eb"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-provider-requests.test.ts",
+      "sha256": "6fc983e3c230159dbeacd435a60a14181d1b3ce8a7d9c4c3eac57a2ca93f2ccb"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+      "sha256": "14df9ca4765ed3ed29ab9b407af9765739ce014e945a7e7c6119857340419280"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts",
+      "sha256": "20880c61c7b70553ae518bf373015f20aa7cf099e714a97a896593ab5885ff93"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts",
+      "sha256": "8b2f6064ab4d620160ceaa4e31c6b417d1d2073495d76864d797a115ef391553"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "821a216635038ca775e0159b846351cc818e3cecb3fa3f85996fb88516f364d0"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts",
+      "sha256": "d6df8ac23d97ce37161f36e8c4a44eafcb8ddb71f9aa33d7f582c1ce16e6b638"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/startup/compaction-model-settings-migration.test.ts",
+      "sha256": "2a8f3c8efa3853fd3aaa78f389c5c02dd3a561f94531cd9ee652c8d6ca093d80"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "sha256": "6730f0e00e8ff01088366460ec1395cef76a2201234d9e3caa1872437dfb77cd"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/context/agent-config.ts",
+      "sha256": "26f4c203c4739213d7ac63d76a1f0efe5653a82809dfa8fd8347d5c1539603ba"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "sha256": "3f017f0c278aa8682b6fe6206f43d4b19c46c548a454485018da0242eea90a04"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/llm-request-assembler.ts",
+      "sha256": "b2c03783798a6ffac29e274f959a9842eac6b3e9fe4b62f7fd507f48b51db0d0"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/llm-phase-compaction.ts",
+      "sha256": "9ee80c01cab5654d112f983476fe32ad3399effdefb308ffbbb1477704c394a3"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "sha256": "e91b2187f59d462fab519cfd59e8cc1ca12b79c367c1277c803865e4396c537d"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+      "sha256": "12efc0bfdf38ec8d94a5413dccd906feaa5bfba993ac642883f898110cac2b5c"
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payload-utils.ts",
+      "sha256": "9960e7c303abc0e0304af92bab6b0af07935660668bc90431fb35f738f4fe0ca"
+    },
+    {
+      "path": "autobyteus-ts/src/clients/autobyteus-client.ts",
+      "sha256": "b6127fc71d2ec946dc09cc2e6f22ed98bdcd4302950779f690094a485a357a07"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/anthropic-llm.ts",
+      "sha256": "f9cd565018b013f6a3f7552a760fc678105d05129fdc1d19a7e8770f430e7dc1"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/autobyteus-llm.ts",
+      "sha256": "a2244926ebf7cc2c627a4ee664f37923ef907b927cd775873e19edd9ce129fb3"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/completion-status.ts",
+      "sha256": "76fd93ac66b0944bdc75b71f1a1c5ce4fa8211aa5207cff70a544884382e2db9"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/gemini-llm.ts",
+      "sha256": "41991c935f3d7b33af7c3543396a2fb16f9a22c057b2290337d4d4baa06d8a04"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/mistral-llm.ts",
+      "sha256": "8bc2029df7d776e2dbc0c4871028abc2c17568198afce5d16d362ffb00f8f50c"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/ollama-llm.ts",
+      "sha256": "b34a724a70f38cf09391f88542228a395fe48b74b510d8f8a74d3819578c88ac"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/openai-compatible-llm.ts",
+      "sha256": "4e1601b34dfdf24433d45f0ced78f4b6ecab6d1628af1bb7ef1bdbb8ad83a108"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/openai-responses-llm.ts",
+      "sha256": "275314b85879cc024ef36f5007cd071205f6d75c647ee98f7612145e4cde7c5b"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/base.ts",
+      "sha256": "60313a3409dd05e791e45193d1946bbe8f8e080b43ddb76cfca177040a3d0dce"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/llm-factory.ts",
+      "sha256": "5d4daa7a4d07a087a406fc83d13956efa5811d833fca35475943df552c198aa4"
+    },
+    {
+      "path": "autobyteus-ts/src/llm/utils/response-types.ts",
+      "sha256": "b63c9fcefa427981b4f8874c90bd2241c285d50c6bba8ee70871bff5e5a28d95"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/accepted-compaction-builder.ts",
+      "sha256": "f7c026fbef53ec0863ceb081dee901f0d764fcb3f7fc37cd3ae72d1729ce64f8"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/accepted-compaction-committer.ts",
+      "sha256": "b160f59a8934b9635206a42eb5d4b736ab5c131242b32f2e5be7cb9eae9483e7"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts",
+      "sha256": "29dd4a5963cca1882f5fb7b7c6079bad0bcf4f0e683795c853c52ff4986ff820"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-execution.ts",
+      "sha256": "4250049cdba5f1f38f1094494602d15fa00a6407c4fcda225779219012e1300f"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts",
+      "sha256": "77b3ec877c7fc4287e36bf3ca2a9d66d4bb367a000b3a507e27da3c8e6efc58d"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+      "sha256": "9847d03a505dd6ffa52a63e1ff1306533762ccb931193c2229a5c9e8d17df003"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts",
+      "sha256": "fa840593c06b0093c95b032f70e5ac2d9984b47c80ede10d95b9f8e34126099e"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts",
+      "sha256": "35d67617b1827f14746ec8f10ea5516e4bab587e4f42930478f12f3ebf2a1ed6"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts",
+      "sha256": "a68c81a22db4c2bb9fe16ce1dcb0ba9c66555859088e73f91195f30e5eecc6b3"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "sha256": "e33b0ebd8ddd506f2151253ec199bcf4702635f411e392ec224ab3c8c535a14d"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts",
+      "sha256": "20c0d3092a14adc19e5664118257cd9538d66e09fd57fb38691ce21452485e01"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts",
+      "sha256": "c58b1b752d3da500163aedabea7443923bdfed754bd9d8ae7b240403c5180d63"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts",
+      "sha256": "97ad515cb622bf304aa44cfed3c8a12e75fcb42e8a82d4c2007fbc5b3a82ae0a"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/index.ts",
+      "sha256": "9c676bd24253e3217e809d4d838dd46bf3b974046dd739bdc9beb5657e19c796"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "sha256": "2173a64d588591641330c375625ea9d41d1bcda267c520f1e58511bed63887aa"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts",
+      "sha256": "5ed7e9bdd51c070b5ac15fb2cbaeeba81629e6d93b3638ddaf0ae565aecc427b"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager.ts",
+      "sha256": "505a7d133350ff36d4b8a5b6f7bf6764a8c715a8e51897d1eadb2ac0d9665232"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts",
+      "sha256": "7a239191fdf1570861a09603cd3423a17a4d507bc24726517f847a49da66318b"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/store/base-store.ts",
+      "sha256": "1ba3229d2896b4051b637b6a799739f0a369623e72823605896287cba7e45877"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/store/file-store.ts",
+      "sha256": "c0b84148b384c06a7763773e696f852d014e17c871df95602e4d3ceddd163f20"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/store/run-memory-file-store.ts",
+      "sha256": "76672dfa70cedea367c18c675433e3ab14f9605c475d48860fd9a25931f0d7f9"
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-provenance.ts",
+      "sha256": "556ffe7642490b2363b3798cc4cadccce603f5e066434901ff4a8e80a3a4fef2"
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+      "sha256": "218e1a4258998a2036a37249af9f31a6bec78caf7cd0876b07ebb861e4e29f35"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/context/agent-config.test.ts",
+      "sha256": "55c7e573b9a59dfac2d23cdb6d5032024d488f88ff6290c274fafa85b7d1a0cb"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts",
+      "sha256": "202d677ffcfb1510df54486970d2e85820b571f4ec7116e760ec0418e7f504c2"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/loop/llm-phase-compaction.test.ts",
+      "sha256": "19bbe80959eaa95692f0b92aaaf1f80e87660b52dcadd0e529a8a962f4b9a482"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts",
+      "sha256": "adcb8cd7a4dbe529a7bc78209a2e31b3e58c029e796efa8060e948f1157f2e2d"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/clients/autobyteus-client.test.ts",
+      "sha256": "9b4d1bdbe732556aae932feed04c743a575982adc1dfb8d455646ae489bd9525"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/llm/api/autobyteus-llm.test.ts",
+      "sha256": "a6b4a97d2746f6463863c2a059f5d370cbf3c48e38c5f46c8b5cbb307c27162e"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/llm/api/completion-status.test.ts",
+      "sha256": "a043b52e8fea13b3273b031e823c001979838d53706e10907ac14702d21e88d8"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/llm/llm-factory-config-composition.test.ts",
+      "sha256": "d91a9b0ab91568ecb159b7c7d7400aa6c55ee3a9abaad97d21e9268855e8b640"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/accepted-compaction-builder-anthropic.test.ts",
+      "sha256": "dd0cce50fbbb4d782b78e6c4c5af011fac8ee714832ffdbb9c6731ec4241c907"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/accepted-compaction-committer.test.ts",
+      "sha256": "1fec6a0adee8ddcf8288071241a07b2094d2fccbf9366570cd09dadbbc88b1fd"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/compaction-runtime-settings.test.ts",
+      "sha256": "0cbbb5b14ccde15c8077126c3b10d1524c84ee23f43039a34a3dceb23a6ef422"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/direct-compaction-harness.ts",
+      "sha256": "2d59d00347e400aa576f24d95163ed139a77eb02fc96a06f421c7c2f5310a971"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/direct-llm-compaction-summarizer.test.ts",
+      "sha256": "f5f85bb249380f06162f81232f9d2128c15ac3fc8e057f5247985be3cf59c1e2"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/file-store.test.ts",
+      "sha256": "51e58763f6f0441b8b8622199619cd4b115970fd4c47c0dfa26c3eda14504b55"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-compaction-configuration.test.ts",
+      "sha256": "5107022af848e636a1aee0faa9e77393c6decdb2c1faa8a248543d7f107f2036"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-compaction-configuration.test.ts",
+      "sha256": "b7e5514c280a003f2e278e509f0fa8ef3831977dd5191848f6a0c389460cfb11"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-compaction-coordinator.test.ts",
+      "sha256": "fef919a0b182309b01b64760c6a6cb84ef090fc81c0334353beffb775f3a4529"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts",
+      "sha256": "ac7b8ebfddc003f03aba98ca5195d9c2bf454b8703fd0c53c9b4688c40cd92c9"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/run-memory-file-store.test.ts",
+      "sha256": "977065a21b0a9bf7f33db3a200bbe1aaf41ac3812b01cbedfbc34e39759778b9"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/system-instruction-trace.test.ts",
+      "sha256": "ae570201e6203c6ede48234cdd9e931b77ebcfed4eb713b413cb735f6d017f40"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-compaction-output-validator.test.ts",
+      "sha256": "f4b010c12bc0e5b9dae6d66f818118a779571cbb562310733748ba2c23315d26"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts",
+      "sha256": "0d931bdfdee0da1582bba428d8386526e52c1c8b33500aa37c1b75013b5717bb"
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts",
+      "sha256": "57a68d1297ced7dc8f63d50a0dd11527e9a192a0fb8c09f3c811f9b28a0d8db1"
+    },
+    {
+      "path": "autobyteus-web/components/progress/CompactionActivityItem.vue",
+      "sha256": "772130b211c69decab6429ee542b1c80d7ae20d50671792022a852bef2cfecd8"
+    },
+    {
+      "path": "autobyteus-web/components/settings/CompactionConfigCard.vue",
+      "sha256": "7a71b287c6cb3fad8afd0061b38999c623114955e30de96a59babe2df58475f0"
+    },
+    {
+      "path": "autobyteus-web/components/settings/CompactionModelSettings.vue",
+      "sha256": "5839de11517b02f4ea7559ec3c1dcb02ca47283b6ca97a63afb524dd3eda97fc"
+    },
+    {
+      "path": "autobyteus-web/components/settings/__tests__/CompactionConfigCard.spec.ts",
+      "sha256": "501349be4fdd1b3231edd8c8e026bd1b8bf674f03eac1d349984b8c89b3c85b2"
+    },
+    {
+      "path": "autobyteus-web/components/settings/__tests__/CompactionModelSettings.spec.ts",
+      "sha256": "97551b078e5d135fc120274d320927d7a4e7c442273c9a1e7d4a05e3e9098b47"
+    },
+    {
+      "path": "autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts",
+      "sha256": "f16da604ba4bf64a4d49065823c044d8a9c4d5370d7a4de3e1ed62727fecedce"
+    },
+    {
+      "path": "autobyteus-web/components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts",
+      "sha256": "9c2e97abf68c5227f23b36ded3536807811985e31e026f468476349f6443dac4"
+    },
+    {
+      "path": "autobyteus-web/generated/graphql.ts",
+      "sha256": "cf9671925db73ecd285520cb55b28fd20cb40fcefae4734bcec06e6ece6351db"
+    },
+    {
+      "path": "autobyteus-web/graphql/queries/server_settings_queries.ts",
+      "sha256": "91876d1301746e12aa2e6878ddeafa60ba0e05e9910d49fa36120b65999526c7"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/settings.ts",
+      "sha256": "8cce457694dea241715eb793e0d41d2054c3590e531f4cc9d8974a0051fc2678"
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/settings.ts",
+      "sha256": "13ed45b1e71c37a852d7ee87380a2e5fbe9eee0cf4093d108b9c321be11c9c34"
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts",
+      "sha256": "365b3f5eb85309dd7cc2df49e1bfb8b319fe68848f549058d38f8e4f9344d3a8"
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts",
+      "sha256": "ad53fb5775744c973931533465322d19add01b63dbf7fe2c651e0424f4638330"
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "sha256": "a40cac7508766e3802d2e31b3e614f303a11999dbef5b48711769888d56443e5"
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "sha256": "cf76efbe06d1e98cadc3bead5d78f806f5b5ba9b64bb06f0f020eb05c1c705bf"
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "sha256": "7f6d2dd0c687180ea717d0b163f83fcb0feac49abf69d7a2c9e5a08402d175c5"
+    },
+    {
+      "path": "autobyteus-web/stores/serverSettings.ts",
+      "sha256": "b98b538468e6a4a25d0c7a73bdd6b01761817731e7afa381b9ec27ab8177ab2c"
+    },
+    {
+      "path": "autobyteus-web/tests/stores/serverSettingsStore.test.ts",
+      "sha256": "d71b0e33b9d5a6097a060f45c67046b85bbef6c78e3d58692a2142a9dc2ad7a0"
+    },
+    {
+      "path": "autobyteus-web/types/activity/RunActivity.ts",
+      "sha256": "ba70c7f1405c898d785eca1fbc8bed35250679dc18d988124c46029f2437d80f"
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentRunState.ts",
+      "sha256": "a83dc7d5afa268f56e86a3b3c05b7785e6c175e2ff6e62b93379cd94e356a939"
+    },
+    {
+      "path": "autobyteus-web/utils/compactionModelSettings.ts",
+      "sha256": "8fb48179e39bdbd10a27f4d8cb7cf886834abc97f3c93cedbc1ef643ca1d7b89"
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "b9f47573c43f7132d2813d13833f8218134867a605bb4c68acfdd938d41d9815"
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-scenarios.mjs",
+      "sha256": "79635a5337de96cfe7198566a24d2b67634c8d7e3f4cf21dfe287361080e6cef"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/analysis-report.md",
+      "sha256": "66005819007b7c3a4140a2400693cc0a4029fdbef551f939528710c0693601da"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/README.md",
+      "sha256": "530b9df796c24abf194fabbd899349147561be21bfdc52bf2d15dd0574093ab7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/persistence-probe-rerun-results.json",
+      "sha256": "0fe046ae07cb144865aaab188ab2190b3a048af971dceab8473378fdb84be91d"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/persistence-probe-rerun.log",
+      "sha256": "7ed3976658d9c4c4a778b6e679a6273e701142aec1f0dd9e2c23fdbaf2cb82fb"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/reviewed-inputs.json",
+      "sha256": "f23f6b42312e0a2eef12a1dbd47e287fe066f1619e1fce74a6ea1b2db2d17a5c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md",
+      "sha256": "1bcc3759941693c839ebf05a107d4cd0987889277b167a5366b7d943b467b9d7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-proposal.md",
+      "sha256": "22fa46d94d3d62230a09b63b63c2e334160843c1838295a782b7169e696145cc"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/README.md",
+      "sha256": "a21b2184181bfa68440294af89c4c451a684232de2a8be82bc3f514905d51399"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/autobyteus-design-probe-results.json",
+      "sha256": "56afdfa71ee3d1942a69d30a6dca085032bf99f3c889a150e674c81051310376"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/autobyteus-design-probes.cjs",
+      "sha256": "0d1a9bda3ddc6fcc572951ff21448047468a97ff3cda40ba79edc85721ec07bb"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/autobyteus-design-probes.log",
+      "sha256": "6dfa60d96086e1811ac479141212302dadd8293b3a24d2a7d9a5fd4efc187e00"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/sr013-persistence-probes.cjs",
+      "sha256": "0e52cb194b951c9573e145d32719a1696e8ad364018dcc27a8fc0c3daf055cdc"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/sr013-persistence-probes.log",
+      "sha256": "7ed3976658d9c4c4a778b6e679a6273e701142aec1f0dd9e2c23fdbaf2cb82fb"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/sr013-persistence-results.json",
+      "sha256": "0fe046ae07cb144865aaab188ab2190b3a048af971dceab8473378fdb84be91d"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/sr013-source-inventory.json",
+      "sha256": "455072c76e60a93e0b067f88fc161923ccd9370e3dbd94cacbca4c6b8cc8bf11"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md",
+      "sha256": "a165b4064a6c5b3ce5412dac2e0b182db43e6902041c3f820f1c920b9ffdc0a2"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "sha256": "eb401bfd7e0c7461c77873824a6f6845752170eb83f052551b8fb8a1d9d08031"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/history/compaction-prompt-proposal.sr003.md",
+      "sha256": "d36dce7c144b556aa1b333edf276f08d688244c0853776a84f25980dd80b3f83"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/history/compaction-prompt-proposal.sr004.md",
+      "sha256": "52b10d02ac126efc64033d13703634faa40237136545dcd334eacde6c3dfc03f"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/history/prompt-v3-to-v4.diff",
+      "sha256": "4e74221431738c8de1148d0243d2897be2325408ce329f30d4b1dfd6d05f9637"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/history/prompt-v4-to-v5.diff",
+      "sha256": "28a3e611c028d7710f5390b1a9a351c474274532d470c242bfe121a307c95215"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/history/proposed-compaction-prompt.sr005.md",
+      "sha256": "ecb5f1ee43a80eea580c1c8e636c921036c02d86401deba82b335e2c4d6a86ce"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/history/proposed-compaction-prompt.sr007.md",
+      "sha256": "34d6ede6c3f83486b65c8e26c9e536ab610ee4c54cdbaeefc59f18d0acf6c25e"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/README.md",
+      "sha256": "5f7c38fa2513a1dcd3f88919d74e97ba510148e03196c40497011bc3b8c205ec"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/additional-core-local-tests.log",
+      "sha256": "42844639c13a2c99b7299da722023b44908f1023ca005104ec3ae5d199aa652c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/baseline-worker-timeout.log",
+      "sha256": "3fdb07c667cc1c78cd427a265eab5452ab4ada439eb55c82b5246bb87bc18f56"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/broader-core-incomplete.log",
+      "sha256": "59a2f667730da4b20dee0a7d962a8705ecd0eb7988e155e8eef7847cf2d34995"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/broader-server-failures.log",
+      "sha256": "af3aa46100ac62dee6be04cdb28c0cbfad046305fe47099935d95fd00e786688"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/core-build.log",
+      "sha256": "0e629462252185372562086595842f5e1a07111d8df56ef43e0e30757cd82db1"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/core-local-tests.log",
+      "sha256": "359b43eb6bc7a329312e5eee8450d80bbd99deee7023bd018c0b65cf77cfbfef"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/dependency-install.log",
+      "sha256": "cd4e63e8a5e483f994e884ef403174e30ab695f9b7f3aeaf6d663fc484265008"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/final-test-cleanup-check.log",
+      "sha256": "4e86a632ab8654008f1693038d75b92062c8d0c440b2aac03a9c201038ed6efe"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/graphql-codegen.log",
+      "sha256": "db0dad9275e610d5d9987b7d4495fda77a2c2bae476b8b42de91785e0e69280e"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/implementation-source-diff-stat.txt",
+      "sha256": "78972048c475c6b67f0556022235bda7985b4d26b89cf9d3cd958e40ba5b8246"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/implementation-source-inventory.json",
+      "sha256": "3d421477d1c0be356c73df979a5a6b93bc319a319aea74c0bfec0bc56935827c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/localization-checks.log",
+      "sha256": "74713de48cfb5e662f32ca95dea79e08eabe31d9f88b30ae49d9395a3c4f9ab8"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/presentation-contract-tests.log",
+      "sha256": "9d660d58e1b5385341b2eadf70eb691bb4c2e3f34c461ef7ed2ca5d8ed412c58"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/render-fixture.vue",
+      "sha256": "99796fd9da954963aaf611a798be2557abbad053848ce8674fc3f2a7d8681b28"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/rendered-result-check.md",
+      "sha256": "81353957d2e872270a5ad62027df7615ae6df759115d303c4dd8a35454a87269"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/server-build.log",
+      "sha256": "8e764fcbcc4f38370944994cc189f135c1d680333b06a5f5b08788d00f3ccfb7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/server-local-tests.log",
+      "sha256": "afdd3128806823d4c8b277ac26916aef56c806c7cec0d4ac0021bffee4d5064a"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/source-size-check.json",
+      "sha256": "4133630e74276c63b0cf0d592774af5ca5dcfb9be4f2592cba7cc57f470c55a4"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/web-build.log",
+      "sha256": "3800fe02e9e621400154a0b942dab9eda81ddea43e45bf2c72d82c1dfedd1771"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/web-local-tests.log",
+      "sha256": "c0cd50f907c7f5824ae833464a53f164a8fdfb17dc6020925566e130a61fda3e"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/web-prepare.log",
+      "sha256": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/web-typecheck-unavailable.log",
+      "sha256": "daa19247c7e1ec2f506acb499738f02250245fe8ca6663c6a19581d3b6d974f2"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md",
+      "sha256": "a5f37c0a011fec9c0e06071473858c525ebbbc030f66db6df6af0e5d1367f93c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md",
+      "sha256": "d5591a29be4a21df56c280e9dcfee9a1c72619bdb7230d7e75f356395b583f48"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "sha256": "950649c4ae88f33b5e88fb377d5f9c5311eb2002f380800b856a2b9a1af9fcc8"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md",
+      "sha256": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/prompt-refinement-notes.md",
+      "sha256": "c2a14c86b9808f3f188f763203d20864486bd0e47e7f87828a124c0a49982cf6"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md",
+      "sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+      "sha256": "4a93380a45452c364aabd867183d443254b7b4275e08332801000a3ab63ce117"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/simplification-design-direction.md",
+      "sha256": "313313aedf439520c72ebdfa3abfb2a1ceba198a8a394bd2f94b1396ddc654d9"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "sha256": "a7fe90046837c88b5cd0636fd0ae49cc9bd002d1e04146f2829036c1f094205e"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "sha256": "91f3617ed607626c7f80d2e8beee277a20908c3a7bb31b9e0e6a51413ac4f298"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-compaction-research.md",
+      "sha256": "e1b3df7730d2fe581c3233d245a27a5ed192001ff831225293ca7a516658f64b"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/README.md",
+      "sha256": "b88f006b5b4d6aa1288254e7f593179262a47223b30dd1d8ccf8f53b8524cf1c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/contract-probe-results.json",
+      "sha256": "88e6d788c3ba7badfff12732bf3a2e5cd233f1d5ea242ebdb35209264f22e0a7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/contract-probes.cjs",
+      "sha256": "81ea719b72e97754501ab761d143fbb5a8d728fff912bcd9ab510842c487844e"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/contract-probes.log",
+      "sha256": "13f4c89f4b743d587b2344ca8146f2bfdaf55a7c4a5c37015a0f5b22a8a3c779"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/hermes-continuity-attempt1.log",
+      "sha256": "5c0009a6843e64b70867b5d19f2300b001f5df7aa411b24cfe42d125316a98ce"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/hermes-continuity.log",
+      "sha256": "22613771038f55df49da0ad9026b56486e9476d89eeb7b2119ebc6bc8c1cb0bb"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/hermes-environment.txt",
+      "sha256": "6b0402a05ad30dd0a5654d971b1a57c36fac741e9edc9c5e9d6a7340b1868811"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/hermes-guards.log",
+      "sha256": "0d791e1cf5c6d8429b445a1b4c5531d153b2914477bfa0c44b68316cf67abeff"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/repositories.json",
+      "sha256": "f3415878db8616c69c2c15a070f3cbe23e10ab1c676f1a26f7a0ab45130bc647"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/README.md",
+      "sha256": "b75c160529cd6dc16e1c8d24667ee107f81fce33eda3cf6b53abee3728777c52"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/autobyteus-original.md",
+      "sha256": "3d9af64d0b81c28fb0337641f3f9c75140b3971b9d687a66f16a9cf469a71ed4"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/codex.md",
+      "sha256": "cc45916f5aead4304117db5508d06950dbd06ddbfcc655247037d6bb02124fc0"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/dsh.md",
+      "sha256": "05dbb882e2e46059e25e52fc99823e7a476bb4707b48872266100d964f1808d0"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/extract-hermes.py",
+      "sha256": "399b4ce250eef9c0ecd26722b2dacf7556c7c50ecc8a563015d2a34d48a4e6d2"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/extract-prompts.cjs",
+      "sha256": "2b124b7e2a8486be00c53b66112c3f101c08f549ba337cda6c302c739875f5a2"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/extraction-manifest.json",
+      "sha256": "55284f7c60af1b63cae6278ea1a030738426431c80856846196aa2fa8474d061"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/hermes-rendered.json",
+      "sha256": "ad5eca063151424baf33e330cf4a8a066579065f38a98d5c7aa66a6d1e8d6268"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/hermes.md",
+      "sha256": "2e96e7524337f1c6faa82695607659f9770aa10ad601600b428c7260e9bf0408"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/codex-LICENSE",
+      "sha256": "d17f227e4df5da1600391338865ce0f3055211760a36688f816941d58232d8dc"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/codex-NOTICE",
+      "sha256": "9d71575ecfd9a843fc1677b0efb08053c6ba9fd686a0de1a6f5382fd3c220915"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/dsh-LICENSE",
+      "sha256": "ebb4f09972aee8608be255debaf78451a68e95c290f55c240dec2ecfa16ea6be"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/hermes-LICENSE",
+      "sha256": "821556e6336796450ab852d375117b48a4887e71d255794fd6318d99982a5ab6"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/opencode-LICENSE",
+      "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/zcode-LICENSE",
+      "sha256": "606c36baf38b973227273df12a74930e4b4137280eea835c5cd623aa4553c13b"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/licenses/zcode-NOTICE",
+      "sha256": "cca8e323ad7f3b12167b58fba7d14faf18a2cdc4fa890818058872f6215912bf"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/opencode.md",
+      "sha256": "8e2d2c470d730e75f97a56c14890bea333ce1a35935a1504e730ca3a124a283d"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/zcode.md",
+      "sha256": "ce929d122df14382f3969ac34b0855540423c9341690a867017db4433d4cdf09"
+    }
+  ]
+}

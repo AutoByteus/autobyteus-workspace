@@ -1,0 +1,79 @@
+{
+  "head_unchanged": true,
+  "changed_owned_existing_files": [
+    "tickets/in-progress/context-compaction-simplification-analysis/input-hold-proposal.sr027.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/strategy-execution-investigation.sr025.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/simplification-design-direction.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/analysis-report.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-proposal.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/strategy-boundary-analysis.sr021.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md"
+  ],
+  "unexpected_existing_file_changes": [],
+  "api_durable": {
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts": {
+      "baseline_source": "SR026 api_owned_sha256 (SR027 final audit also reports unchanged)",
+      "baseline_hash": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "current_hash": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451"
+    },
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts": {
+      "baseline_source": "SR026 api_owned_sha256 (SR027 final audit also reports unchanged)",
+      "baseline_hash": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "current_hash": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b"
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts": {
+      "baseline_source": "SR026 api_owned_sha256 (SR027 final audit also reports unchanged)",
+      "baseline_hash": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "current_hash": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf"
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts": {
+      "baseline_source": "SR026 api_owned_sha256 (SR027 final audit also reports unchanged)",
+      "baseline_hash": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "current_hash": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5"
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts": {
+      "baseline_source": "SR026 api_owned_sha256 (SR027 final audit also reports unchanged)",
+      "baseline_hash": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "current_hash": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea"
+    },
+    "test-support/live-e2e/compaction-quality-checks.ts": {
+      "baseline_source": "SR028 entry",
+      "baseline_hash": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "current_hash": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4"
+    },
+    "test-support/live-e2e/live-e2e-harness.ts": {
+      "baseline_source": "SR028 entry",
+      "baseline_hash": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "current_hash": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd"
+    },
+    "test-support/live-e2e/live-e2e-safe-error.ts": {
+      "baseline_source": "SR028 entry",
+      "baseline_hash": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "current_hash": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6"
+    },
+    "test-support/live-e2e/run-live-e2e.mjs": {
+      "baseline_source": "SR028 entry",
+      "baseline_hash": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "current_hash": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f"
+    }
+  },
+  "all_api_unchanged": true,
+  "production_diff_empty": true,
+  "prompt_sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "prompt_unchanged": true,
+  "assumption_identical": true,
+  "tests_run": 0,
+  "provider_calls": 0,
+  "new_migrations": 0,
+  "new_review_verdict": null,
+  "requirements_approval": "SR028 exact direct user quote in canonical requirements",
+  "result": "Architecture Design Complete",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "audit_note": "First audit stopped before writing final-audit due to missing 5 API hashes in SR027 sources. Corrected lookup to actual SR026 api_owned_sha256; current hashes reconciled. No tests/provider work or change to evidence."
+}

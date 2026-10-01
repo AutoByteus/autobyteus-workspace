@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-01T13:27:35.761788+00:00",
+  "pinsChecked": 38967,
+  "git": {
+    "HEAD": "026476691c62bda309ce7f2a9342ebb444959f98",
+    "MERGE_HEAD": "d057801c89f26bc69a97331b59631c00519aec98",
+    "indexSha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+    "indexEntriesSha256": "de904199d5c8d8b49dd70867e0fc9b48d720943cfc7a6d029750103216b9c74c",
+    "stagedCount": 672,
+    "unmerged": "",
+    "stash": "stash@{0}: On codex/context-compaction-simplification-analysis: sr018 preserve all owners before latest personal refresh\nstash@{1}: On codex/context-compaction-simplification-analysis: compaction-preserve-before-base-refresh-20260930T093850Z\nstash@{2}: On personal: personal: pre-ff backup of ticket edits/untracked already present upstream 2026-09-28\nstash@{3}: On codex/context-compaction-simplification-analysis: compaction-preserve-before-base-refresh-20260928T045609Z\nstash@{4}: On codex/context-compaction-simplification-analysis: context-compaction pre-base-refresh 20260927T093100Z\nstash@{5}: On personal: stray root package.json overwrite (web manifest copy) preserved before ff to origin/personal 2026-09-26\nstash@{6}: On codex/autobyteus-runtime-streaming-ui-performance: Preserve autobyteus-runtime-streaming-ui-performance before finished worktree removal 2026-09-02\nstash@{7}: On codex/team-agent-instruction-composition: Preserve team-agent-instruction-composition before finished worktree removal 2026-09-02\nstash@{8}: On codex/live-run-stream-reconnect-after-reload: Preserve live-run-stream-reconnect-after-reload before finished worktree removal 2026-09-02\nstash@{9}: On codex/universal-application-framework-proposal-analysis: Preserve universal-application-framework-proposal-analysis before finished worktree removal 2026-09-02\nstash@{10}: On codex/external-turn-reply-aggregation: Preserve external-turn-reply-aggregation before finished worktree removal 2026-09-02\nstash@{11}: On codex/run-history-worktree-live-stream-loss: Preserve run-history-worktree-live-stream-loss before finished worktree removal 2026-09-02\nstash@{12}: On codex/external-channel-receipt-state-machine: Preserve external-channel-receipt-state-machine before finished worktree removal 2026-09-02\nstash@{13}: On codex/file-explorer-move-stale-children: Preserve file-explorer-move-stale-children before finished worktree removal 2026-09-02\nstash@{14}: On codex/task-agent-monitor-visibility: Preserve task-agent-monitor-visibility before finished worktree removal 2026-09-02\nstash@{15}: On codex/hierarchical-team-run-launch-config: temporary pre-rebase archive restore 2026-08-24\nstash@{16}: On codex/agent-team-universal-task-delegation: safety: UTD working tree before origin/personal merge 20260815T103300Z\nstash@{17}: On codex/agent-team-hierarchical-handoffs: delivery DR-007 protect delivery artifacts before CRR-072 integration\nstash@{18}: On codex/agent-team-hierarchical-handoffs: delivery DR-006 protect unrelated web-ticket deletions and delivery artifacts\nstash@{19}: On codex/agent-team-hierarchical-handoffs: solution SR-016 protect CRR-050/API state before origin-personal refresh 20260811-102826\nstash@{20}: On codex/agent-team-hierarchical-handoffs: delivery DR-004 protect pre-SR-015 docs and delivery artifacts\nstash@{21}: On codex/agent-team-hierarchical-handoffs: delivery re-entry protect DR-001 docs and handoff artifacts\nstash@{22}: On codex/agent-idle-status-lifecycle: preserve api-e2e round6 artifacts before 2026-07-29 rebase\nstash@{23}: On personal: delivery preserve ignored main worktree files before release\nstash@{24}: On personal: delivery preserve unrelated main worktree before event monitor file URI finalization\nstash@{25}: On personal: safety: stash partial send-message global routing WIP from main checkout before refreshing personal 2026-06-12T02:43:33Z\nstash@{26}: On personal: delivery-protect-main-personal-before-refresh-20260606\nstash@{27}: On codex/mobile-remote-access-requirements: pre-rebase-mobile-remote-access-20260519-095946\nstash@{28}: On personal: pre-release preserve docs/future-features before claude tool args release\nstash@{29}: On personal: pre-sync-personal-before-reset-20260423-082934\nstash@{30}: On personal: move current llm-runtime-compaction work to dedicated worktree 20260410-123853\nstash@{31}: On codex/messaging-agent-team-support: codex/messaging-agent-team-support pre-origin-personal-merge 2026-03-11\nstash@{32}: On codex/messaging-runtime-visibility: codex pre-merge personal sync\nstash@{33}: On codex/claude-agent-sdk-runtime-workflow: retarget-to-personal-20260228-133731\n"
+  },
+  "gitCompared": {
+    "HEAD": true,
+    "MERGE_HEAD": true,
+    "indexSha256": false,
+    "indexEntriesSha256": true,
+    "stagedCount": true,
+    "unmerged": true,
+    "stash": true
+  },
+  "changedPins": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+      "before": "c87cf6cdaa7e6f939fa128f02bd6cf5e8f7d0eaeec5a162b63ed1cb7f0e1840d",
+      "after": "0f3136fdc8bc10578f6ddfd79641c11bdc1b12348b6daa5efba7d25d8c74cc87"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "before": "43b5f9bae69fcb76e9a788ec8ffab366a8e620f3fc17ed673f64d18e8cc116b8",
+      "after": "ed0a9472c2f5fd4a75a19d7c23808bd1eeda216544da00c6e8d2d168429c24a9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+      "before": "21725d4cb790f41f02e6c539613f16a6021f2d62437b67f7aaf3bdcb4e6aaaba",
+      "after": "c3c42b889835848f1b6996c16dbe3d1ed8f6c056d5a87be49f902da99250ce37"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+      "before": "810dae791de8a5210300f9d35f215ad8f21f78dfe0568755145c2aebc9a90d23",
+      "after": "cb34105631880a3205631d5733e05f042757e6a1b00d6c5faee4529f587702f7"
+    }
+  ]
+}

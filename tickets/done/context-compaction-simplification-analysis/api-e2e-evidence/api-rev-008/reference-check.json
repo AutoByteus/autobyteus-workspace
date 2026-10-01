@@ -1,0 +1,8 @@
+{
+  "count": 2565,
+  "missing": [],
+  "allIncomingIncluded": true,
+  "all12DurableIncluded": true,
+  "outgoingEqualsCanonical": true,
+  "assemblyNote": "Historical API007 post-send receipt was absent from in-memory sent array; recovered from current disk index before any handoff."
+}

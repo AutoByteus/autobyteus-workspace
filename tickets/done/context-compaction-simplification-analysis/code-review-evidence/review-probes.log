@@ -1,0 +1,16 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts > CRR-001 bounded review probes (no provider calls) > established live-compaction entry fails on the deleted builtin template before generation
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-FhAHw4/workspace.
+
+ ✓ ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts (2 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  21:41:24
+   Duration  3.46s (transform 2.27s, setup 0ms, import 3.35s, tests 10ms, environment 0ms)
+

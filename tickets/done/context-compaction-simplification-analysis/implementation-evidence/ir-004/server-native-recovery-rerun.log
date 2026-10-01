@@ -1,0 +1,1081 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentRuntimeState initialized for agent_id 'recovery_tester_3464'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_3464': No tools provided in config.
+Agent 'recovery_tester_3464': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_3464'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_3464' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_3464'.
+Registered AgentContext for agent_id 'recovery_tester_3464'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_3464'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_3464'.
+Agent 'recovery_tester_3464' created and stored successfully.
+Agent 'recovery_tester_3464' requesting runtime to start.
+AgentRuntime for 'recovery_tester_3464': Starting worker.
+AgentWorker 'recovery_tester_3464': Starting...
+AgentWorker 'recovery_tester_3464' asyncRun(): Starting.
+Agent 'recovery_tester_3464': Runtime init completed (event store initialized).
+Agent 'recovery_tester_3464': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_3464': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_3464': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+Agent 'recovery_tester_3464': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+Agent 'recovery_tester_3464': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_3464': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_3464': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+Agent 'recovery_tester_3464': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_3464': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_3464': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_3464': Final processed system prompt configured and captured. Trace ID: rt_1790796070158_a4357ab1-c180-447b-8dbb-ab20cea5dd59. Final length: 28.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+Agent 'recovery_tester_3464': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentWorker 'recovery_tester_3464' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentEventStream (ID: 86b6e2d2-8c4f-4c95-a49d-b9f3d3d0171c) initialized for agent_id 'recovery_tester_3464'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3464',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3464',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3464',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+Agent 'recovery_tester_3464' requesting runtime to stop (timeout: 2s).
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentWorker 'recovery_tester_3464': Stop requested.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_3464': Drained 1 queued inbox event(s) during shutdown.
+AgentWorker 'recovery_tester_3464' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_3464': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentWorker 'recovery_tester_3464': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_3464': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentExternalEventNotifier (NotifierID: 7aed4f0f-0e53-4372-8de1-95935e2debf8, AgentID: recovery_tester_3464) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+Unregistered AgentContext for agent_id 'recovery_tester_3464'.
+AgentRuntime for 'recovery_tester_3464': Context unregistered.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AgentRuntime for 'recovery_tester_3464' stop() method completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentRuntimeState initialized for agent_id 'recovery_tester_7756'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_7756': No tools provided in config.
+Agent 'recovery_tester_7756': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_7756'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_7756' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_7756'.
+Registered AgentContext for agent_id 'recovery_tester_7756'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_7756'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_7756'.
+Agent 'recovery_tester_7756' created and stored successfully.
+Agent 'recovery_tester_7756' requesting runtime to start.
+AgentRuntime for 'recovery_tester_7756': Starting worker.
+AgentWorker 'recovery_tester_7756': Starting...
+AgentWorker 'recovery_tester_7756' asyncRun(): Starting.
+Agent 'recovery_tester_7756': Runtime init completed (event store initialized).
+Agent 'recovery_tester_7756': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_7756': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_7756': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+Agent 'recovery_tester_7756': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+Agent 'recovery_tester_7756': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_7756': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_7756': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+Agent 'recovery_tester_7756': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_7756': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_7756': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_7756': Final processed system prompt configured and captured. Trace ID: rt_1790796070815_59a07398-5edc-462d-b115-98f7c01853ed. Final length: 28.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+Agent 'recovery_tester_7756': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentWorker 'recovery_tester_7756' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentEventStream (ID: 6e5cdb9d-dd19-4d46-884e-6ce32f63f3d9) initialized for agent_id 'recovery_tester_7756'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7756',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7756',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7756',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_7756',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muohqrq8_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+compaction_failed {
+  agent_id: 'recovery_tester_7756',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muohqrq8_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: blocked'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+Agent 'recovery_tester_7756' requesting runtime interrupt.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentEventStream (ID: 6e5cdb9d-dd19-4d46-884e-6ce32f63f3d9) for 'recovery_tester_7756': close() called. Unsubscribing all listeners and signaling.
+Agent 'recovery_tester_7756' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentWorker 'recovery_tester_7756': Stop requested.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a860b212-5e28-43cb-9b4e-ce6234a5deed, AgentID: recovery_tester_7756) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_7756' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_7756': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentWorker 'recovery_tester_7756': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_7756': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+Unregistered AgentContext for agent_id 'recovery_tester_7756'.
+AgentRuntime for 'recovery_tester_7756': Context unregistered.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AgentRuntime for 'recovery_tester_7756' stop() method completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentRuntimeState initialized for agent_id 'recovery_tester_3027'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_3027': No tools provided in config.
+Agent 'recovery_tester_3027': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_3027'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_3027' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_3027'.
+Registered AgentContext for agent_id 'recovery_tester_3027'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_3027'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_3027'.
+Agent 'recovery_tester_3027' created and stored successfully.
+Agent 'recovery_tester_3027' requesting runtime to start.
+AgentRuntime for 'recovery_tester_3027': Starting worker.
+AgentWorker 'recovery_tester_3027': Starting...
+AgentWorker 'recovery_tester_3027' asyncRun(): Starting.
+Agent 'recovery_tester_3027': Runtime init completed (event store initialized).
+Agent 'recovery_tester_3027': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_3027': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_3027': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+Agent 'recovery_tester_3027': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+Agent 'recovery_tester_3027': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_3027': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_3027': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+Agent 'recovery_tester_3027': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_3027': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_3027': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_3027': Final processed system prompt configured and captured. Trace ID: rt_1790796070929_4d362324-0a07-4d29-a6f3-81691b6a0291. Final length: 28.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+Agent 'recovery_tester_3027': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentWorker 'recovery_tester_3027' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentEventStream (ID: 429162de-784c-4951-a0d1-7d6d2039eb34) initialized for agent_id 'recovery_tester_3027'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3027',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3027',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3027',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3027',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'recovery_tester_3027',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muohqrtf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_3027',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muohqrtf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+compaction_failed {
+  agent_id: 'recovery_tester_3027',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_muohqrtf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: post response exhausted'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_3027',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_muohqrtf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_completed {
+  agent_id: 'recovery_tester_3027',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_muohqrtf_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3027',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3027',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+Agent 'recovery_tester_3027' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentWorker 'recovery_tester_3027': Stop requested.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentExternalEventNotifier (NotifierID: 5258566e-69eb-45c0-ab6f-0b37088dc51b, AgentID: recovery_tester_3027) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_3027' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_3027': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentWorker 'recovery_tester_3027': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_3027': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+Unregistered AgentContext for agent_id 'recovery_tester_3027'.
+AgentRuntime for 'recovery_tester_3027': Context unregistered.
+
+stdout | tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C
+AgentRuntime for 'recovery_tester_3027' stop() method completed.
+
+ ❯ tests/unit/agent-execution/agent-run-compaction-recovery.test.ts (3 tests | 2 failed) 899ms
+     × keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact 661ms
+     × does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence 114ms
+     ✓ finishes answered A once, blocks prequeued B, and grants oldest FIFO B from fresh C 123ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > keeps held A and queued B; standalone admission authorizes once, duplicate B does not replay; reconnect is exact
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected: 
+true
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-execution/agent-run-compaction-recovery.test.ts:12:43
+     10|   try {
+     11|    f.request(); f.compress.mockRejectedValueOnce(new Error('synthetic …
+     12|    expect((await f.submit('A')).accepted).toBe(true);
+       |                                           ^
+     13|    await eventually(()=>f.run.getInputStateSnapshot().entries.some(e=>…
+     14|    const held=f.run.getInputStateSnapshot();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-compaction-recovery.test.ts > AgentRun with real native backend and recovery gate (synthetic LLM) > does not use an agent reservation release as retry intent; stop fences before waiting for held quiescence
+AssertionError: promise rejected "Error: AgentRun termination cannot settle…" instead of resolving
+ ❯ tests/unit/agent-execution/agent-run-compaction-recovery.test.ts:47:34
+     45|    await new Promise(resolve=>setTimeout(resolve,30));
+     46|    expect(f.compress).toHaveBeenCalledTimes(1);expect(f.parent.request…
+     47|    await expect(f.run.terminate()).resolves.toMatchObject({accepted:tr…
+       |                                  ^
+     48|    expect(f.native.isRunning).toBe(false);expect(f.run.getInputStateSn…
+     49|   }finally{await f.close()}
+
+Caused by: Error: AgentRun termination cannot settle while submitted input remains unresolved.
+ ❯ AgentRunInputAdmissionState.settleAcceptedTermination src/agent-execution/input/agent-run-input-admission-state.ts:424:13
+ ❯ src/agent-execution/domain/agent-run.ts:471:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  21:21:06
+   Duration  4.85s (transform 2.36s, setup 16ms, import 3.46s, tests 899ms, environment 0ms)
+

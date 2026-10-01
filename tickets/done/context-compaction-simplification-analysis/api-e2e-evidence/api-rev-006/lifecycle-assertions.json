@@ -1,0 +1,46 @@
+{
+  "result": "Pass scoped termination and saved resume",
+  "total_requests": 32,
+  "parents": 12,
+  "compaction_attempts": 20,
+  "remote": 0,
+  "terminate_aborted_request": 30,
+  "late_response_discarded": true,
+  "no_generation_merely_reopen": true,
+  "new_I_parent_id": 31,
+  "post_I_summary_id": 32,
+  "H_and_E_not_dispatched": true,
+  "final_summary_count": 1,
+  "snapshot_keys": [
+    "agent_id",
+    "messages"
+  ],
+  "summary_selected_counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "raw_user_count": 14,
+  "limits": [
+    "Historical stopped compaction activity remains started; validity clarification requested",
+    "No physical drag hit-test or crash/power-loss proof",
+    "No current real-model inference/fidelity"
+  ]
+}

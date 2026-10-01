@@ -1,0 +1,139 @@
+{
+  "revision": "SR031",
+  "finding": "IR004-DI001",
+  "mode": "Source and retained deterministic evidence inspection only",
+  "sources": {
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+      "sha256": "9afe7761f9ad88377bbfee3632fa37a72057a9066cfc17972399df90ab892304"
+    },
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+      "sha256": "3ded75bfabde0eb0b4d369e832991e50d0ae3e7f9ecec9cf3210e45af3a86ad1"
+    },
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+      "sha256": "882dcec48cd72bd3377f814ee04840d9e9517ea2e55bb9e87e3a3f493de1e865"
+    },
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts",
+      "sha256": "51b87daca30487c9182ebe4360ff3baf4bb8e4a1fb6a22edb5b5cf2dac86157e"
+    },
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+      "sha256": "1f9f2ca4ffdc9036c40852e6db4da1d57ed60b42aabd6fcdec572f0883ddee4f"
+    },
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "sha256": "b99107838194b016cf432dccebc6ecc8f6f5159536e9b015061e13cb786d7409"
+    },
+    "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
+      "sha256": "8838ebfcb23b0867dc2e91fdfd225aacb794cc2d57d4a889e263bc12c01e2cd7"
+    },
+    "autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/runtime/agent-run-activation-registry.ts",
+      "sha256": "39d12e02c55318f371fc942577b7604b4eea51d91fadf5623d2f01313f521965"
+    },
+    "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "a6504730c9f9ffc40d5649a6d6a94c8edb682606760e5d76bac7b9f49c3559e4"
+    },
+    "autobyteus-server-ts/src/agent-execution/domain/agent-operation-result.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-operation-result.ts",
+      "sha256": "601a49c90dd1b6d8ade5b8895e17c347f40f00ed73f0038658c7dd7094600b51"
+    },
+    "autobyteus-server-ts/src/agent-execution/domain/agent-run-command-observer-dispatch.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run-command-observer-dispatch.ts",
+      "sha256": "83ce0bc9a1078dd12781df7f7fcb3338b751fd9b6a2fa2cd491bb3c782ac057d"
+    },
+    "autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts",
+      "sha256": "f2b629df02a77c2d5c09c980199c2ebb6ccce03dc151bad0c246c3785f2598f2"
+    },
+    "autobyteus-server-ts/src/agent-execution/input/agent-run-input-contract.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/input/agent-run-input-contract.ts",
+      "sha256": "81f8c815a39a8dc696bae2716806daa52c5d3871602627455f3103174cba698d"
+    },
+    "autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts",
+      "sha256": "32999e436b687e14791b6373b2bc6e75e1db28e5553cf8da656f7a2bd1a71143"
+    },
+    "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "sha256": "f0d3dc371006265c79dacbbc955fb0696380757ae74474e70c7e4fa37684d01a"
+    },
+    "autobyteus-server-ts/src/agent-collaboration/execution/domain/root-execution-identity.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/domain/root-execution-identity.ts",
+      "sha256": "cd8708b9cc2db88f9ab9a38c1d0f5ae2b751d4c16f7015ac956ec292a8ae63ad"
+    },
+    "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts",
+      "sha256": "56883009bd2db04632adc77b71bddfbdd4233fa0e4c52a42be04cf202f4147ef"
+    },
+    "autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+      "sha256": "8a6dc8157944a20e0cf19a7462bab49ac22a52c0057461c2603f2a98808f0163"
+    },
+    "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "sha256": "c9e53944061bb16034014a01437258b8a86291a93f5ee6d5dcc928b3d645e07d"
+    },
+    "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "sha256": "32c0fdacb5857e6ebd4f650cd4f4fd29c4040a1374b164ea362dfd8afac8cf6f"
+    },
+    "autobyteus-server-ts/docs/modules/agent_execution.md": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/docs/modules/agent_execution.md",
+      "sha256": "539741004321ae4298eac38549d9f5115796b3d65efc9ed1be9f67150c42b720"
+    },
+    "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+      "sha256": "48feda591e25c30d29d301cc5492abfb5bd68552dd0f339203f5c3fe1df5a2ba"
+    },
+    "autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture.ts",
+      "sha256": "826436b51ba1d280002ebb6ba15bd7d6739711509e3d144768204bf3bc429e57"
+    },
+    "autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-registry.test.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/agent-execution/agent-run-command-registry.test.ts",
+      "sha256": "f86aaad8327a1d352bb804dfb572fa45b70a16093133c5b17649d4f99cdfa5b1"
+    },
+    "autobyteus-web/services/runSubmission/localUserSubmission.ts": {
+      "absolute_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "sha256": "e2e6e7f103b6283387d9b7e58a56a211acf6cb6fa7a2c40579249becca98898d"
+    }
+  },
+  "facts": [
+    {
+      "id": "E31-1",
+      "fact": "Standalone coordinator begins registry record before readiness. Registry keys (runId,messageId); dedupeKey is stored, not a second unique index. Current terminal TTL is 15 minutes; outstanding records do not expire. Module documentation states at least 15 minutes."
+    },
+    {
+      "id": "E31-2",
+      "fact": "Team and Org strict SEND_MESSAGE keep message_id/dedupe_key, use root membership/lease/readiness and configured handle. Org command_id correlates transport ACK but is not passed into message metadata. Configured handle calls AgentRun.postUserMessage without registry begin."
+    },
+    {
+      "id": "E31-3",
+      "fact": "AgentRun serialized postUserMessage admits each invocation and claims recovery from its new sequence. AdmissionState reserves every invocation anew; removeEntry forgets settled entries. Pending-only dedupe cannot cover completed/rejected identities."
+    },
+    {
+      "id": "E31-4",
+      "fact": "Configured handle publishes member_input for every accepted result; Team/Org handlers record activity for accepted input. A dedupe result that only returns accepted=true would duplicate presentation/activity unless disposition is propagated. Team has no positive SEND_MESSAGE ACK; Org has existing accepted/rejected/failed correlated ACK; standalone has duplicate_* states."
+    },
+    {
+      "id": "E31-5",
+      "fact": "ActivationRegistry enforces one current run per runId and resource release checks exact expectedRun; supports explicit removal/inactive discovery/replacement/stop/rollback. Reuse that identity-qualified cleanup for registry live pin, not stream-disconnect cleanup."
+    },
+    {
+      "id": "E31-6",
+      "fact": "IR004 existing deterministic evidence uses actual strict handlers/configured handle/AgentRun/native core with synthetic strategy and test-owned root hosting. Two ordinary fresh controls pass; two duplicate B cases fail (operation2 ->3, [A,B]->[A,B,B]). This round reads/reconciles results; no test rerun or full-root acceptance claim."
+    }
+  ],
+  "tests_run": 0,
+  "provider_calls": 0,
+  "production_edits": 0,
+  "lookup_limits": [
+    "First command-registry test glob and first activation-registry lookup used wrong directories; corrected actual paths read; no runtime failure inferred."
+  ]
+}

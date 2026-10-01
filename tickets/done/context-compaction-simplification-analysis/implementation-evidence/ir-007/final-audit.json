@@ -1,0 +1,144 @@
+{
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "entry_pin_count": 1736,
+  "changed": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md",
+      "before": "8cbaf40aa1bf22827a4fa6916dd631f63ce3008af2fc3e0612d2179d2f0cb86d",
+      "after": "f9795e831a4b79bcc4df26773f2b5260230e09d46c06bf942bd7c90b93dcb630",
+      "authorized": true
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md",
+      "before": "1f6807c1cf69a91c7457f9769963b8978bed3416a17acf271d16cc87bb6ecae2",
+      "after": "d68b048395f73c75bdc685acafb5ad21a614914bfbc02c216b8723d0b9da5998",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "before": "2f1db2c063929b947a61fad8a414eff9395c1488dcc0d986fa7a3cd19204a096",
+      "after": "888f860ede932d004ba35feb8be3d7e3badb76d08e2ca534a525fd053394d1c3",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "before": "3ffa0e271ea0b0237dc44a17f452b7490cb4d026484d63a2ee42c8212c8cfeab",
+      "after": "ebc6d965bd17b091a861d19fba2514cf3a8ad4e5353ff7c35fb11b6f58272376",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts",
+      "before": "2676efb8c9107c87bea618bb6372b01ed5912c8dd838ceea9b013e18a8df9d41",
+      "after": "12ec514f98e5989f8128424ff554ef5c8c73ca6d33099bfa640ffd613d9ed916",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "before": "51216e0f474022ff62eaf0dc730c20c25c40fd343dd7dbce6a560f1f8ff0df6b",
+      "after": "ad515f9181c1d493a7f9f3f882268288e84a14066807048656fe8417aceb78db",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "before": "aefb343aed80844c1cf5f7585d27a0f5b86aba68d33159d7721d1a0b0beb60ce",
+      "after": "f73fb4904ab1e1e40e2c2e2489c20f8d75ada002929241bdae7ec83972b2c90b",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts",
+      "before": "b031295d01aa7d94fe5ab7d5ce945d7eed414a4841a8e3d1a9f44643a48b69f6",
+      "after": "9270ac71ad1b16f29a7e1a0c1eb54ec1341e529e11c6f19567c3e4b4b2d3899e",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/components/workspace/agent/CompactionStatusRow.vue",
+      "before": "ffabf28186ba279cd853163fcc11afa216e966dd88eab26f90d53588802448f6",
+      "after": "c6bc415dae0e83baa1440d6d2e7bef9f28152e9129023f605af6673279fe467c",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/services/activity/runActivityWindowPolicy.ts",
+      "before": "d2b2ddcf1efba551d9c35a6aad9bf3b8ad636d1b11bf1eaa67e829760b6d8766",
+      "after": "1c201444dc882e4800dbcd089aade3b177be1fa03105dcf072554ebb214c1946",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "before": "a40cac7508766e3802d2e31b3e614f303a11999dbef5b48711769888d56443e5",
+      "after": "dbebfb88a34a4c3e97807f2dd509ec592a31dc342ab1987f7a2f026df8823cba",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "before": "cf76efbe06d1e98cadc3bead5d78f806f5b5ba9b64bb06f0f020eb05c1c705bf",
+      "after": "da2427f595f23ff17b882bda805974c323e85a27187d0a3475ec214420b5d12a",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "before": "0a3cfc66833f02a6cd19ba4bfe62d9a3a8595a6625e3b1a54a0773923a156bad",
+      "after": "14d7561d1845d078e4d7ea2b33f44da83e1a5e08fd7f8d75321274ef66ef25c2",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/services/runHydration/runProjectionActivityHydration.ts",
+      "before": "bc456be44c86b1578cd7913a8c487ccf0cb3ad547399325c3790fba62f10a6f9",
+      "after": "34aed6ceb2e7a81e040bf3dc7b2f030703fe288e5ee0e8f944877c4ee4b7b664",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentActivityStore.ts",
+      "before": "a8b1f259c1973f80ad7820be9869bb84712ecf241f3ace1748e9ce1208caa769",
+      "after": "4db4158ceec1fca9d2fdc1c0c505db502583225d50bda7f3d0119d7a90b4b20c",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "before": "675aa834310bf3f5ea12da80d3c255964527935276b74ddbe9c0d5c876d5d8d4",
+      "after": "19f9a355334f0eb62f17e45a0783fb345691ef1230d9c8ed5edffa139c51cd97",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "before": "bca4fd40a660c1d318cece9f96af920c8a60aa5bf55b0e87743d78ac754c4976",
+      "after": "c96da34350d5f7552bf5d9045e2e7f97c341426178a32b8e3161cdfe892ae089",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "before": "04b13f076f27c3bcd2635e9892b05586c7c92dff15b17319f87cae1c9c120bfd",
+      "after": "e980a39a1db7af9fa01fb9168890b6358f14ad3a17cc405d536bd8c41f1a772f",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/types/activity/RunActivity.ts",
+      "before": "ba70c7f1405c898d785eca1fbc8bed35250679dc18d988124c46029f2437d80f",
+      "after": "e4b807f73417f4b7d62eaae831432be9f6f060339c1074a7698a0d7535a423ea",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentRunState.ts",
+      "before": "e629ccd2de6b6901b4c35d328d6ac53ef69ed4f19771e4f16adc3a508a4277b0",
+      "after": "a0a873201dcf4b2ff9d3a586d401666683b59b63949f006dbe3a755d380e78a3",
+      "authorized": true
+    },
+    {
+      "path": "autobyteus-web/utils/compactionActivityPresentation.ts",
+      "before": "b1437fd0efffe08e393a194fca6e11e6d5eb451264dbdc365698d9b56a91270b",
+      "after": "29121c98c3e02eb8520d3ca35fe37f966030abab3cbac06306a29590b0f7751c",
+      "authorized": true
+    }
+  ],
+  "unexpected_changes": [],
+  "api_paths_unchanged": true,
+  "ir007_owned_paths": 31,
+  "source_limits": {
+    "production_file_count": 22,
+    "test_file_count": 9,
+    "over_500": [],
+    "over_220_changed": [],
+    "baseline_mismatches": []
+  },
+  "staged_diff_stat": ""
+}

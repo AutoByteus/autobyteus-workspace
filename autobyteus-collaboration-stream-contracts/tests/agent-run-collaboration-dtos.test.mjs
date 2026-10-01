@@ -46,10 +46,11 @@ const agentView = (overrides = {}) => ({
         messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-30T00:00:02.000Z",
       }],
     },
+    agent_input_states: [],
     agent_statuses: [
-      { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null },
-      { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null },
-      { member_address: "/code_reviewer", agent_run_id: "reviewer-copy-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null },
+      { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+      { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+      { member_address: "/code_reviewer", agent_run_id: "reviewer-copy-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
     ],
     ...overrides,
   },
@@ -106,4 +107,17 @@ test("Org trees require the collaborators list", () => {
   assert.equal(agentOrgExecutionTreeDtoSchema.parse(tree).rootOrg.collaborators.length, 1);
   const { collaborators: _omitted, ...withoutCollaborators } = tree.rootOrg;
   assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: withoutCollaborators }));
+});
+
+
+test("Agent-root live input projection is required and carries held/queued recovery facts", () => {
+  const view = agentView();
+  const state = { run_instance_id: "native-instance", revision: 2, entries: [], recoverableBlock: {
+    operationId: "op", failureEpoch: 1, position: { kind: "next_turn", failedTurnId: "A" },
+    state: "awaiting_user", code: "failed", message: "retry required",
+  } };
+  view.root_agent.agent_input_states.push({ agent_run_id: "reviewer-run", state });
+  assert.deepEqual(RootExecutionViewDtoSchema.parse(view).root_agent.agent_input_states[0].state, state);
+  delete view.root_agent.agent_input_states;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(view));
 });

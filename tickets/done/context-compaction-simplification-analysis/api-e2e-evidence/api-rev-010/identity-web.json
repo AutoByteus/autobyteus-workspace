@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "env -u NATIVE_INPUT_CAPTURE_DIR pnpm -C autobyteus-web test:nuxt services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts services/runHydration/__tests__/acceptedInputIdentity.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts stores/__tests__/agentRootCompactionIntegration.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts components/conversation/__tests__/UserMessage.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts --run"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T16:57:57.961922+00:00",
+  "finished": "2026-10-01T16:58:12.518839+00:00",
+  "exit": 0
+}

@@ -1,0 +1,12 @@
+{
+  "id": "API-C05",
+  "name": "Real GraphQL schema settings and historical memory",
+  "criteria": "AC-009/010",
+  "command": "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/server-settings/server-settings-graphql.e2e.test.ts tests/e2e/memory/memory-view-graphql.e2e.test.ts tests/e2e/memory/memory-explorer-graphql.e2e.test.ts --no-watch",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-09-26T20:46:00.835032+00:00",
+  "completed": "2026-09-26T20:46:07.380694+00:00",
+  "exitCode": 0,
+  "result": "Pass",
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05.log"
+}

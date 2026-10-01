@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"solution_designer_e86db51ce2a24b15abe56a98c9c8114f\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Message delivered.",
+    "target_agent_run_id": "solution_designer_e86db51ce2a24b15abe56a98c9c8114f"
+  }
+}

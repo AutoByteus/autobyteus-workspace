@@ -1,0 +1,15 @@
+{
+  "stage": "post-repository",
+  "scores": {
+    "requirements_ac": 75,
+    "changed_boundary": 95,
+    "integration_realism": 90,
+    "environment_identity": 95,
+    "failure_lifecycle": 90,
+    "user_surface": 90,
+    "durable_coverage": 90
+  },
+  "overall": 89.3,
+  "broaderValidation": "Required",
+  "reason": "New focused28Pass/3files +14temporaryguardPass; unchanged prior394 scoped retained, not summed for overlapping suites. Real-provider current fidelity remains missing; prior actual desktop/recovery evidence retained. User authorization removes erroneous permission hold, not evidence gap. No source/test edits this round. CG033/typecheck and other residuals unwaived."
+}

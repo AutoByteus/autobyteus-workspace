@@ -1,0 +1,4 @@
+PASS Production ingestion persists an unfinished tool batch with summary and provenance
+PASS Current envelope accepts this writer output but full post-repair validation rejects it
+PASS Existing bootstrap repairs and resumes the same snapshot without losing its summary
+PASS Historical converter empties the otherwise identical versionless unfinished successor

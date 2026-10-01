@@ -46,6 +46,11 @@ export class MemoryManagerWorkingContextController {
     this.context = context.copy();
   }
 
+  // Internal ownership transfer only: caller preallocates and relinquishes this context.
+  installOwned(context: WorkingContext): void {
+    this.context = context;
+  }
+
   replaceMessage(index: number, message: Message): void {
     this.context.replaceMessage(index, message);
   }
@@ -75,7 +80,6 @@ export class MemoryManagerWorkingContextController {
     const agentId = snapshotStore.agentId || this.options.fallbackAgentId;
     if (!agentId) return;
     snapshotStore.write(agentId, WorkingContextSnapshotSerializer.serialize(this.context, {
-      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
       agent_id: agentId,
     }));
   }

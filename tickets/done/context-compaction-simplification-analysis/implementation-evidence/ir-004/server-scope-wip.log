@@ -1,0 +1,802 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/agent-run.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-run.test.ts (34 tests) 936ms
+stdout | tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts (21 tests) 32ms
+stdout | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts (11 tests | 10 failed) 17ms
+     × sends the native snapshot for AGY Org root, direct Agents and nested Team members 9ms
+     × opens one correlated native Org snapshot barrier and sequences events 1ms
+     × projects restored task Agent and Team runs at their configured recipient addresses 2ms
+     × rejects wrong-root commands and routes a correlated command only to the exact AgentRun 1ms
+     × keeps task-scoped and rejected sends out of Org history summary qualification 1ms
+     × preserves an accepted ACK when derived history metadata cannot be committed 1ms
+     × enqueues concurrent summary attempts in accepted-result completion order 0ms
+     × acknowledges the strict INTERRUPT_GENERATION command 0ms
+     × acknowledges the strict APPROVE_TOOL command 1ms
+     × acknowledges the strict DENY_TOOL command 0ms
+     ✓ fails closed when the requested Org root is not active 1ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Created agent session 50aa4c70-50c4-4563-a003-205202a4a548 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Closed agent session 50aa4c70-50c4-4563-a003-205202a4a548
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Created agent session 5080c159-8a3b-4a20-9ab6-90cf6cb24dd3 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Closed agent session 5080c159-8a3b-4a20-9ab6-90cf6cb24dd3
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session 627714de-7b23-415b-8804-f5f8ab209de4 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session 627714de-7b23-415b-8804-f5f8ab209de4
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session 473ae8a3-6e20-43e6-8b6e-decd1692da5f for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session 473ae8a3-6e20-43e6-8b6e-decd1692da5f
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Created agent session 7cb56af8-131a-4c9f-a048-8062a6e2c1ac for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Closed agent session 7cb56af8-131a-4c9f-a048-8062a6e2c1ac
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Created agent session 375c5c08-944e-4a09-8ddf-108003670489 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Closed agent session 375c5c08-944e-4a09-8ddf-108003670489
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (7 tests | 6 failed) 21ms
+     × connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes 10ms
+     × streams strict live status N and the following Agent event N+1 after the snapshot barrier 4ms
+     × routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once 2ms
+     × reports exact-target rejection without persistent or address fallback 1ms
+     × returns a target-correlated failure when the exact AgentRun rejects message admission 2ms
+     × returns a target-correlated failure when message execution throws 1ms
+     ✓ rejects legacy selector fields at the strict client contract boundary 1ms
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-96asXJ/workspace.
+
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-VzA4pR/workspace.
+
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+ ❯ tests/unit/secret-management/live-e2e-compaction-boundary.test.ts (8 tests | 2 failed) 33ms
+     ✓ deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports 14ms
+     ✓ lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports 6ms
+     × accepts ordinary assistant text while checking request framing and source preservation: Source received. 9ms
+     × accepts ordinary assistant text while checking request framing and source preservation: Preserved emoji 🛡️ and other Unicode: Grüße 中文 ✅; the log literally contains �. 1ms
+     ✓ accepts inventory completion with the checkpoint still pending 1ms
+     ✓ does not classify explicit non-completion as an update 0ms
+     ✓ rejects invented plan completion: ## Completed work
+- Updated plan with retention policy (30 days) and checkpoint `APPROVAL-73`.
+## Current state
+- Risk assessment active. 0ms
+     ✓ rejects invented plan completion: ## Decisions and findings
+- Checkpoint `APPROVAL-73` added to the plan to track owner review.
+## Completed work
+- Inventory phase completed. 0ms
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > passes raw run llmConfig to LLMFactory without wrapping it as extraParams
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes the selected application-owned tool through the real AutoByteus provider factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > composes the selected application-owned tool through the real AutoByteus provider factory
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > wires one subject-scoped API-key resolver into the core factory
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > filters mixed task-management tools, composes server team prompts, and injects primitive team context
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > advertises the strict filesystem-like logical protocol without a flat roster
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps task-management tools for standalone AutoByteus runs without member team context
+Using temp workspace (ID: workspace-1) for agent.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > routes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector on the canonical Team binding
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > keeps the exact-run send_message_to selector on the canonical Team binding
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > binds the exact AutoByteus task Agent identity and root capability into the task tool
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > binds the exact AutoByteus task Agent identity and root capability into the task tool
+Using temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a lazy direct summarizer without a child AgentRun factory
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts > AutoByteusAgentRunBackendFactory > injects a lazy direct summarizer without a child AgentRun factory
+Using temp workspace (ID: workspace-1) for agent.
+
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts (10 tests) 21ms
+stdout | tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/agent-run-status-projection-service.test.ts (4 tests) 10ms
+ ✓ tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts (11 tests) 6ms
+ ✓ tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts (7 tests) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > accepts ordinary assistant text while checking request framing and source preservation: Source received.
+ FAIL  tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > accepts ordinary assistant text while checking request framing and source preservation: Preserved emoji 🛡️ and other Unicode: Grüße 中文 ✅; the log literally contains �.
+Error: LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID
+ ❯ inspectDirectSummaryRequest ../test-support/live-e2e/live-e2e-harness.ts:249:11
+    247|       || countOccurrences(task, TARGET_HISTORY_CLOSE_TAG) !== 1
+    248|       || !task.endsWith(COMPACTION_TASK_END_SEPARATOR)) {
+    249|     throw new Error('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
+       |           ^
+    250|   }
+    251|   if (!providerSafeCompactionText.isProviderSafeText(task)) {
+ ❯ tests/unit/secret-management/live-e2e-compaction-boundary.test.ts:83:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > sends the native snapshot for AGY Org root, direct Agents and nested Team members
+AssertionError: {"type":"ERROR","payload":{"code":"AGENT_ORG_STREAM_UNAVAILABLE","message":"[\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      0,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      1,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      2,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      3,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      4,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      5,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      6,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_input_states\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  }\n]"}}: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:108:43
+    106|     const sessionId = await test.handler.connect(client.socket, orgRun…
+    107| 
+    108|     expect(sessionId, client.sent.at(-1)).toBeTruthy();
+       |                                           ^
+    109|     expect(client.socket.close).not.toHaveBeenCalled();
+    110|     const messages = client.sent.map((value) => CollaborationStreamSer…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > opens one correlated native Org snapshot barrier and sequences events
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:128:23
+    126|   it("opens one correlated native Org snapshot barrier and sequences e…
+    127|     const test = harness(); const client = connection(); const session…
+    128|     expect(sessionId).toBeTruthy();
+       |                       ^
+    129|     const initial = client.sent.map((value) => CollaborationStreamServ…
+    130|     expect(initial.map((message) => message.type)).toEqual(["CONNECTED…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > projects restored task Agent and Team runs at their configured recipient addresses
+AssertionError: {"type":"ERROR","payload":{"code":"AGENT_ORG_STREAM_UNAVAILABLE","message":"[\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      0,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      1,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      2,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      3,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      4,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      5,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"object\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_statuses\",\n      6,\n      \"recoverableBlock\"\n    ],\n    \"message\": \"Invalid input: expected object, received undefined\"\n  },\n  {\n    \"expected\": \"array\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"root_org\",\n      \"agent_input_states\"\n    ],\n    \"message\": \"Invalid input: expected array, received undefined\"\n  }\n]"}}: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:151:43
+    149|     const test = harness(taskBearingPackage()); const client = connect…
+    150|     const sessionId = await test.handler.connect(client.socket, orgRun…
+    151|     expect(sessionId, client.sent.at(-1)).toBeTruthy();
+       |                                           ^
+    152| 
+    153|     const snapshot = client.sent.map((value) => CollaborationStreamSer…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > rejects wrong-root commands and routes a correlated command only to the exact AgentRun
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:168:147
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > keeps task-scoped and rejected sends out of Org history summary qualification
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:183:94
+    181|   it("keeps task-scoped and rejected sends out of Org history summary …
+    182|     const test = harness(taskBearingPackage()); const client = connect…
+    183|     const sessionId = await test.handler.connect(client.socket, orgRun…
+       |                                                                                              ^
+    184|     const send = (target: string, id: string) => JSON.stringify({ type…
+    185|       root_subject_kind: "agent_org", root_run_id: orgRunId, target_ag…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > preserves an accepted ACK when derived history metadata cannot be committed
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:201:94
+    199|     test.recordRunActivity.mockRejectedValueOnce(new Error("index unav…
+    200|     const observed = vi.spyOn(console, "error").mockImplementation(() …
+    201|     const sessionId = await test.handler.connect(client.socket, orgRun…
+       |                                                                                              ^
+    202|     await test.handler.handleMessage(sessionId!, JSON.stringify({ type…
+    203|       root_subject_kind: "agent_org", root_run_id: orgRunId, target_ag…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > enqueues concurrent summary attempts in accepted-result completion order
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:222:94
+    220|     test.executeAgentCommandWithExecutionKind.mockImplementation((_id,…
+    221|       ((command as { message: { content: string } }).message.content =…
+    222|     const sessionId = await test.handler.connect(client.socket, orgRun…
+       |                                                                                              ^
+    223|     const send = (content: string, commandId: string) => JSON.stringif…
+    224|       root_subject_kind: "agent_org", root_run_id: orgRunId, target_ag…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > acknowledges the strict INTERRUPT_GENERATION command
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > acknowledges the strict APPROVE_TOOL command
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > acknowledges the strict DENY_TOOL command
+AssertionError: expected null to be truthy
+
+- Expected: 
+true
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:244:94
+    242|   ] as const)("acknowledges the strict %s command", async (type, expec…
+    243|     const test = harness(); const client = connection();
+    244|     const sessionId = await test.handler.connect(client.socket, orgRun…
+       |                                                                                              ^
+    245|     const payload = {
+    246|       root_subject_kind: "agent_org", root_run_id: orgRunId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+AssertionError: expected null to deeply equal Any<String>
+
+- Expected: 
+Any<String>
+
++ Received: 
+null
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:76:23
+     74|     const harness = createHarness();
+     75|     const sessionId = await harness.handler.connect(harness.connection…
+     76|     expect(sessionId).toEqual(expect.any(String));
+       |                       ^
+     77|     sessions.push({ handler: harness.handler, id: sessionId! });
+     78| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+AssertionError: expected [ { type: 'CONNECTED', …(1) }, …(1) ] to deeply equal [ Array(2) ]
+
+- Expected
++ Received
+
+  [
+    {
+      "payload": {
+-       "agent_run_id": "nested-task-agent-run-001",
+-       "change_sequence": 32,
+-       "error_details": null,
+-       "error_message": null,
+-       "status": "running",
+-       "tool_name": null,
+-       "trigger": "turn_started",
++       "root_team_run_id": "team-run-root",
++       "session_id": "5080c159-8a3b-4a20-9ab6-90cf6cb24dd3",
+      },
+-     "type": "AGENT_STATUS",
++     "type": "CONNECTED",
+    },
+    {
+      "payload": {
+-       "agent_run_id": "nested-task-agent-run-001",
+-       "change_sequence": 33,
+-       "turn_id": "turn-1",
++       "agent_run_id": null,
++       "change_sequence": null,
++       "code": "TEAM_STREAM_UNAVAILABLE",
++       "error_effect": null,
++       "error_scope": null,
++       "message": "[
++   {
++     \"expected\": \"array\",
++     \"code\": \"invalid_type\",
++     \"path\": [
++       \"payload\",
++       \"agent_input_states\"
++     ],
++     \"message\": \"Invalid input: expected array, received undefined\"
++   }
++ ]",
++       "turn_id": null,
+      },
+-     "type": "TURN_STARTED",
++     "type": "ERROR",
+    },
+  ]
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:124:48
+    122|       },
+    123|     });
+    124|     expect(sent(harness.connection).slice(-2)).toEqual([
+       |                                                ^
+    125|       {
+    126|         type: "AGENT_STATUS",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'nested-task-agent-run-001', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:163:41
+    161|       },
+    162|     }));
+    163|     expect(harness.executeAgentCommand).toHaveBeenCalledWith(
+       |                                         ^
+    164|       "nested-task-agent-run-001",
+    165|       expect.objectContaining({ kind: "post_message", message: expect.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'stale-agent-run', Anything ]
+
+Number of calls: 0
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:182:41
+    180|       },
+    181|     }));
+    182|     expect(harness.executeAgentCommand).toHaveBeenCalledWith("stale-ag…
+       |                                         ^
+    183|     expect(sent(harness.connection).at(-1)).toMatchObject({
+    184|       type: "ERROR",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+AssertionError: expected { type: 'ERROR', payload: { …(7) } } to match object { type: 'ERROR', payload: { …(4) } }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "payload": {
+-     "agent_run_id": "nested-task-agent-run-001",
+-     "code": "TEAM_SEND_MESSAGE_REJECTED",
+-     "details": "AGENT_RUN_NOT_ACCEPTING_INPUT",
+-     "message": "runtime is stopping",
++     "agent_run_id": null,
++     "code": "TEAM_STREAM_UNAVAILABLE",
++     "message": "[
++   {
++     \"expected\": \"array\",
++     \"code\": \"invalid_type\",
++     \"path\": [
++       \"payload\",
++       \"agent_input_states\"
++     ],
++     \"message\": \"Invalid input: expected array, received undefined\"
++   }
++ ]",
+    },
+    "type": "ERROR",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:205:45
+    203|       },
+    204|     }));
+    205|     expect(sent(harness.connection).at(-1)).toMatchObject({
+       |                                             ^
+    206|       type: "ERROR",
+    207|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+AssertionError: expected { type: 'ERROR', payload: { …(7) } } to match object { type: 'ERROR', payload: { …(3) } }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "payload": {
+-     "agent_run_id": "nested-task-agent-run-001",
+-     "code": "TEAM_SEND_MESSAGE_FAILED",
+-     "message": "provider activation failed",
++     "agent_run_id": null,
++     "code": "TEAM_STREAM_UNAVAILABLE",
++     "message": "[
++   {
++     \"expected\": \"array\",
++     \"code\": \"invalid_type\",
++     \"path\": [
++       \"payload\",
++       \"agent_input_states\"
++     ],
++     \"message\": \"Invalid input: expected array, received undefined\"
++   }
++ ]",
+    },
+    "type": "ERROR",
+  }
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:226:45
+    224|       },
+    225|     }));
+    226|     expect(sent(harness.connection).at(-1)).toMatchObject({
+       |                                             ^
+    227|       type: "ERROR",
+    228|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/18]⎯
+
+
+ Test Files  3 failed | 6 passed (9)
+      Tests  18 failed | 95 passed (113)
+   Start at  21:25:53
+   Duration  13.63s (transform 3.57s, setup 65ms, import 11.20s, tests 1.08s, environment 1ms)
+

@@ -1,0 +1,18 @@
+{
+  "case": "API-C01",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/secret-management/live-e2e-harness.test.ts",
+    "tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T20:54:49.114724+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T20:54:55.337564+00:00"
+}

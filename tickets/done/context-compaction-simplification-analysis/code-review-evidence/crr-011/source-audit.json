@@ -1,0 +1,1445 @@
+{
+  "paths": [
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "test": false,
+      "sha256": "888f860ede932d004ba35feb8be3d7e3badb76d08e2ca534a525fd053394d1c3",
+      "matches_ir007": true,
+      "nonempty": 444,
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "test": false,
+      "sha256": "ebc6d965bd17b091a861d19fba2514cf3a8ad4e5353ff7c35fb11b6f58272376",
+      "matches_ir007": true,
+      "nonempty": 294,
+      "added": 53,
+      "deleted": 36
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts",
+      "test": true,
+      "sha256": "12ec514f98e5989f8128424ff554ef5c8c73ca6d33099bfa640ffd613d9ed916",
+      "matches_ir007": true,
+      "nonempty": 346,
+      "added": 74,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/native-compaction-terminal-drain.test.ts",
+      "test": true,
+      "sha256": "cf0a83f2f845658b0c5deac3197a7116c4320a87868188ec2761037c4515758d",
+      "matches_ir007": true,
+      "nonempty": 29,
+      "added": 30,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "test": false,
+      "sha256": "ad515f9181c1d493a7f9f3f882268288e84a14066807048656fe8417aceb78db",
+      "matches_ir007": true,
+      "nonempty": 79,
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "test": false,
+      "sha256": "f73fb4904ab1e1e40e2c2e2489c20f8d75ada002929241bdae7ec83972b2c90b",
+      "matches_ir007": true,
+      "nonempty": 108,
+      "added": 16,
+      "deleted": 4
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts",
+      "test": true,
+      "sha256": "9270ac71ad1b16f29a7e1a0c1eb54ec1341e529e11c6f19567c3e4b4b2d3899e",
+      "matches_ir007": true,
+      "nonempty": 108,
+      "added": 48,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/components/progress/CompactionActivityItem.vue",
+      "test": false,
+      "sha256": "2f2800874a54a762a03513c9f91ed269dd7f31a3d230d2a0923c0878f55a84c9",
+      "matches_ir007": true,
+      "nonempty": 109,
+      "added": 7,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/components/progress/__tests__/CompactionActivityItem.spec.ts",
+      "test": true,
+      "sha256": "0efde2c794b91e107a2f9c199a7d8dcdd9eab3bfa4a6b0ed5d5c99b49b5f520a",
+      "matches_ir007": true,
+      "nonempty": 55,
+      "added": 11,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/components/workspace/agent/CompactionStatusRow.vue",
+      "test": false,
+      "sha256": "c6bc415dae0e83baa1440d6d2e7bef9f28152e9129023f605af6673279fe467c",
+      "matches_ir007": true,
+      "nonempty": 71,
+      "added": 6,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/components/workspace/agent/__tests__/CompactionStatusRow.spec.ts",
+      "test": true,
+      "sha256": "d10b3434ef76d14085d1d0c77003336c16019ba3314348337b55ca4bdcfad87f",
+      "matches_ir007": true,
+      "nonempty": 52,
+      "added": 11,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/services/activity/nativeCompactionActivityReconciliation.ts",
+      "test": false,
+      "sha256": "6697f5e83b04af7389d56f24df8b4f4cfaf6a5eb1cb88dfdb61a2bae23535495",
+      "matches_ir007": true,
+      "nonempty": 32,
+      "added": 36,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/services/activity/runActivityWindowPolicy.ts",
+      "test": false,
+      "sha256": "1c201444dc882e4800dbcd089aade3b177be1fa03105dcf072554ebb214c1946",
+      "matches_ir007": true,
+      "nonempty": 23,
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "test": false,
+      "sha256": "dbebfb88a34a4c3e97807f2dd509ec592a31dc342ab1987f7a2f026df8823cba",
+      "matches_ir007": true,
+      "nonempty": 253,
+      "added": 4,
+      "deleted": 7
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "test": false,
+      "sha256": "da2427f595f23ff17b882bda805974c323e85a27187d0a3475ec214420b5d12a",
+      "matches_ir007": true,
+      "nonempty": 33,
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "test": false,
+      "sha256": "14d7561d1845d078e4d7ea2b33f44da83e1a5e08fd7f8d75321274ef66ef25c2",
+      "matches_ir007": true,
+      "nonempty": 156,
+      "added": 3,
+      "deleted": 2
+    },
+    {
+      "path": "autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation.ts",
+      "test": false,
+      "sha256": "f7c8e259ba7f07a029946269f0b31380bc66136cf71a8c35ea716c6274b96b2c",
+      "matches_ir007": true,
+      "nonempty": 130,
+      "added": 2,
+      "deleted": 2
+    },
+    {
+      "path": "autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts",
+      "test": false,
+      "sha256": "2f52eaa4b272c48f32029e634458d2f4a363002147649ff5a3ca5f236044bb2c",
+      "matches_ir007": true,
+      "nonempty": 186,
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/services/runHydration/runProjectionActivityHydration.ts",
+      "test": false,
+      "sha256": "34aed6ceb2e7a81e040bf3dc7b2f030703fe288e5ee0e8f944877c4ee4b7b664",
+      "matches_ir007": true,
+      "nonempty": 252,
+      "added": 4,
+      "deleted": 5
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts",
+      "test": true,
+      "sha256": "9742d8620f2e96916164f5bf2504cb522c5734c449ec0a046b2052e418f6e7b4",
+      "matches_ir007": true,
+      "nonempty": 943,
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/nativeCompactionActivity.spec.ts",
+      "test": true,
+      "sha256": "9f8eea71fe40d03a203e6a30405a570c61a56ae173dff904086c4a038edeb81f",
+      "matches_ir007": true,
+      "nonempty": 98,
+      "added": 100,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/nativeCompactionTermination.spec.ts",
+      "test": true,
+      "sha256": "08d05ef6084912be5bed440b4318f9a117f47dc452e37fca72298edb8aca9eb7",
+      "matches_ir007": true,
+      "nonempty": 92,
+      "added": 93,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/nativeOrgCompactionTermination.spec.ts",
+      "test": true,
+      "sha256": "d4097815088f25cc1b01fb0d271dca0e416dfd8932ff047cd2313faff26a8896",
+      "matches_ir007": true,
+      "nonempty": 123,
+      "added": 125,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/stores/agentActivityStore.ts",
+      "test": false,
+      "sha256": "4db4158ceec1fca9d2fdc1c0c505db502583225d50bda7f3d0119d7a90b4b20c",
+      "matches_ir007": true,
+      "nonempty": 372,
+      "added": 30,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "test": false,
+      "sha256": "19f9a355334f0eb62f17e45a0783fb345691ef1230d9c8ed5edffa139c51cd97",
+      "matches_ir007": true,
+      "nonempty": 347,
+      "added": 21,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "test": false,
+      "sha256": "c96da34350d5f7552bf5d9045e2e7f97c341426178a32b8e3161cdfe892ae089",
+      "matches_ir007": true,
+      "nonempty": 434,
+      "added": 16,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "test": false,
+      "sha256": "e980a39a1db7af9fa01fb9168890b6358f14ad3a17cc405d536bd8c41f1a772f",
+      "matches_ir007": true,
+      "nonempty": 472,
+      "added": 25,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/types/activity/RunActivity.ts",
+      "test": false,
+      "sha256": "e4b807f73417f4b7d62eaae831432be9f6f060339c1074a7698a0d7535a423ea",
+      "matches_ir007": true,
+      "nonempty": 61,
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/types/activity/compactionPhase.ts",
+      "test": false,
+      "sha256": "f453e15d8d89cbfc55f023e1c4ff3e815041ee0bc84f6fc9619fc0ec4ecefd1d",
+      "matches_ir007": true,
+      "nonempty": 8,
+      "added": 8,
+      "deleted": 0
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentRunState.ts",
+      "test": false,
+      "sha256": "a0a873201dcf4b2ff9d3a586d401666683b59b63949f006dbe3a755d380e78a3",
+      "matches_ir007": true,
+      "nonempty": 80,
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "autobyteus-web/utils/compactionActivityPresentation.ts",
+      "test": false,
+      "sha256": "29121c98c3e02eb8520d3ca35fe37f966030abab3cbac06306a29590b0f7751c",
+      "matches_ir007": true,
+      "nonempty": 66,
+      "added": 5,
+      "deleted": 2
+    }
+  ],
+  "production_count": 22,
+  "test_count": 9,
+  "above500": [],
+  "above220": [],
+  "cumulative_tracked_numstat": "10\t61\tautobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts\n68\t37\tautobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts\n8\t94\tautobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts\n85\t103\tautobyteus-ts/src/memory/compaction/pending-compaction-executor.ts\n12\t1\tautobyteus-web/components/progress/CompactionActivityItem.vue\n6\t1\tautobyteus-web/components/workspace/agent/CompactionStatusRow.vue\n2\t1\tautobyteus-web/services/activity/runActivityWindowPolicy.ts\n17\t20\tautobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts\n8\t7\tautobyteus-web/services/agentStreaming/protocol/compactionTypes.ts\n17\t4\tautobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts\n2\t2\tautobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation.ts\n2\t1\tautobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts\n4\t5\tautobyteus-web/services/runHydration/runProjectionActivityHydration.ts\n30\t1\tautobyteus-web/stores/agentActivityStore.ts\n22\t2\tautobyteus-web/stores/agentOrgContextsStore.ts\n23\t4\tautobyteus-web/stores/agentRunStore.ts\n28\t5\tautobyteus-web/stores/agentTeamRunStore.ts\n8\t1\tautobyteus-web/types/activity/RunActivity.ts\n11\t1\tautobyteus-web/types/agent/AgentRunState.ts\n5\t2\tautobyteus-web/utils/compactionActivityPresentation.ts\n",
+  "input_refs_count": 1482,
+  "unique_refs": 1482,
+  "missing": [],
+  "unchanged_pins": 1482,
+  "changed_pins": [],
+  "api_owner_preservation": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "before": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+      "after": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "before": "fac1aec30d5ac2e988b96ce99d7103e4edbe26da7c68e323ab8b4b9909863e34",
+      "after": "fac1aec30d5ac2e988b96ce99d7103e4edbe26da7c68e323ab8b4b9909863e34",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "before": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "after": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "before": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "after": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "before": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "after": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "unchanged": true
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "before": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+      "after": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+      "unchanged": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "before": "d0527b871e4132f3423204f05c033f6259d31b62e2b60485c5343df9597e321c",
+      "after": "d0527b871e4132f3423204f05c033f6259d31b62e2b60485c5343df9597e321c",
+      "unchanged": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "before": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "after": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "unchanged": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "before": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "after": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "unchanged": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "before": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "after": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "unchanged": true
+    }
+  ],
+  "api_current_check": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "matches": true
+    }
+  ],
+  "prior_inventory_check": [
+    {
+      "revision": "ir-006",
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-006",
+      "path": "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-006",
+      "path": "autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-status-overlay.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run-command-observer-dispatch.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run-event.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-contract.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-status.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/services/agent-streaming/models.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-status-websocket-projector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/fixtures/accepted-attachment-message.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/helpers/org-migration-continuation-fixtures.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-compaction-races.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-compaction-recovery.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-team-stream-contracts/src/team-stream-server-message.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/agent.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/context/agent-runtime-state.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/events/notifiers.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/llm-request-assembler.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/runtime/agent-runtime.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/runtime/agent-worker.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/status/manager.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/status/status-deriver.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/status/status-update-utils.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payloads.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-events.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/events/event-types.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/api/anthropic-llm.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/api/gemini-llm.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/api/mistral-llm.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/api/openai-compatible-llm.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/api/openai-responses-llm.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/api/provider-request-kwargs.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/llm/base.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/compaction-content-builder.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/compaction-execution.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/compaction-recovery.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/compression-strategy.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/index.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/memory/memory-manager.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/src/utils/gemini-helper.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/agent/context/agent-config.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/agent/runtime/agent-runtime.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/agent/runtime/agent-worker.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/agent/status/status-update-utils.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/llm/api/compaction-single-attempt-transport.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/accepted-compaction-committer.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/compaction-content-builder.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/direct-compaction-harness.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/direct-llm-compaction-summarizer.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/direct-llm-compression-strategy.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/memory-compaction-configuration.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-compaction-configuration.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-compaction-coordinator.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/working-context-compaction-output-validator.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/components/conversation/UserMessage.vue",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/components/conversation/__tests__/UserMessage.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/localization/messages/en/agentInput.generated.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/localization/messages/en/workspace.generated.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/localization/messages/zh-CN/agentInput.generated.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.generated.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/taskBearingOrgFixture.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/protocol/messageParser.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/protocol/messageTypes.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/runStatus/agentRuntimeStatusState.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/types/agent/AgentRunState.ts",
+      "affected_ir007": true,
+      "matches": false
+    },
+    {
+      "revision": "ir-005",
+      "path": "autobyteus-web/types/conversation.ts",
+      "affected_ir007": false,
+      "matches": true
+    },
+    {
+      "revision": "ir-005",
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "affected_ir007": false,
+      "matches": true
+    }
+  ],
+  "prior_unexpected_changes": [],
+  "audit_note": "Prior deletion entries compare absence to null; initial audit script incorrectly assumed all prior paths present. Corrected before result. Source not changed."
+}

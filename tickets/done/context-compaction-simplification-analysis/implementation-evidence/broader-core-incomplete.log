@@ -1,0 +1,1343 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler basics > finalize creates invocations from accumulated args
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler basics > carries provider-native context from deltas to tool invocations
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler parallel tool calls > tracks multiple tool calls by index
+LlmStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler parallel tool calls > keeps multiple Gemini functionCall parts as distinct invocations
+LlmStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler file streaming > decodes escaped content
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler callbacks > invokes onToolInvocation callback
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler callbacks > emits the tool segment end before publishing the finalized invocation
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts (23 tests) 10ms
+ ✓ tests/unit/llm/utils/llm-config.test.ts (26 tests) 7ms
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > commits the final ordered processed batch once before pure continuation construction and emits the ephemeral continuation event
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+ ✓ tests/unit/agent/loop/agent-turn-runner.test.ts (3 tests) 9ms
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > initializes components and registers context
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 0971a45a-9ade-49f2-9fe8-89ede4bf4608).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start delegates to worker
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 0252e90c-d740-4a56-aa3c-e7735286448f).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+AgentRuntime for 'agent-1': Starting worker.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start is idempotent when worker alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: b452c695-0c58-46b6-b653-c904aa49d7d2).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stderr | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start is idempotent when worker alive
+AgentRuntime for 'agent-1' is already running. Ignoring start request.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 37b75c9c-6a7d-4f4e-aee3-8d0f0f822d85).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentRuntime for 'agent-1': Context unregistered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentRuntime for 'agent-1' stop() method completed.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop returns early when worker not alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 7b078899-75ff-4e73-bd03-b0656e65a382).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > handles worker completion with error
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: f5a35f05-49ca-401e-b0ea-d496fba5d928).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stderr | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > handles worker completion with error
+AgentRuntime 'agent-1': Worker loop terminated with an exception: Error: Worker crashed
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > exposes currentStatus and isRunning
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: fa55dd95-650f-41bc-afab-66c35fb446d8).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt returns no_active_turn when worker is inactive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: f5c182db-05e0-4c64-acb5-c58ef932f857).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt signals the active turn without stopping the worker
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: d93a495d-9025-480a-887d-e069b303a5d1).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt rejects mismatched turn ids without signaling the active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 141ef9b3-8493-48ad-b8ac-5f196bb01f9a).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > posts tool approvals as awaitable AgentEventInbox active-turn events
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: c55fb1e7-4e0f-472f-b718-ca7ea587de4c).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > posts external tool results as awaitable AgentEventInbox active-turn events
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 77af773d-f680-48b8-a526-2e37a15a2264).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > returns runtime_stopped for tool approvals/results when the worker is inactive or stopping
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 6ffb3660-28b0-4a4b-ba7d-9392d35322cf).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > routes external turn-starting input through AgentEventInbox
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: bcadf0b3-9faa-4b28-8bd3-4c79dc965738).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > rejects unsupported turn-local operational events instead of queuing them as lifecycle input
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 4aaae2c6-6ffd-4abd-8f87-c143f06254e9).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+ ✓ tests/unit/agent/runtime/agent-runtime.test.ts (15 tests) 11ms
+ ✓ tests/unit/llm/api/openai-compatible-llm.test.ts (12 tests) 10ms
+ ✓ tests/unit/llm/api/anthropic-llm.test.ts (34 tests) 20ms
+stdout | tests/unit/agent/event-inbox/agent-event-scheduler.test.ts > AgentEventScheduler > dispatches through the matching inbox event handler
+AgentRuntimeState initialized for agent_id 'agent-dispatch-handler'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/event-inbox/agent-event-scheduler.test.ts > AgentEventScheduler > does not strand a parked turn-start event when active-turn settlement wakes before wait registration
+AgentRuntimeState initialized for agent_id 'agent-lost-wake'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/event-inbox/agent-event-scheduler.test.ts > AgentEventScheduler > cleans up the losing availability waiter when dispatchability wins
+AgentRuntimeState initialized for agent_id 'agent-dispatchability-cleanup'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/event-inbox/agent-event-scheduler.test.ts > AgentEventScheduler > cleans up the losing dispatchability waiter when inbox availability wins
+AgentRuntimeState initialized for agent_id 'agent-availability-cleanup'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/event-inbox/agent-event-scheduler.test.ts > AgentEventScheduler > admits the earliest USER behind retained non-user entries with the same wait predicate
+AgentRuntimeState initialized for agent_id 'agent-user-gate'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/event-inbox/agent-event-scheduler.test.ts > AgentEventScheduler > resumes the retained non-user entries in relative FIFO order after the retry gate clears
+AgentRuntimeState initialized for agent_id 'agent-user-gate-success'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+ ✓ tests/unit/agent/event-inbox/agent-event-scheduler.test.ts (6 tests) 8ms
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > runs TOOL processors once and decides carrier presence from the processed message
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > returns a required null additional message for text-only same-turn continuation
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > returns exactly one additional message when a TOOL continuation carries media context files
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > rejects SenderType.TOOL as a new external turn trigger
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > publishes system task notifications through the semantic notifier exactly once
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > suppresses only the generic system task notifier when explicit metadata requests suppression
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > converts inter-agent messages with sender id and strict recipient input shape
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > includes explicit reference files once in recipient runtime input and metadata
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/pipelines/agent-input-pipeline.test.ts > AgentInputPipeline > keeps strict inter-agent template when sender name cannot be resolved
+AgentConfig created for name='agent', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/pipelines/agent-input-pipeline.test.ts (9 tests) 11ms
+ ✓ tests/unit/agent/context/agent-runtime-state.test.ts (14 tests) 8ms
+ ✓ tests/unit/llm/api/token-usage-normalizers.test.ts (9 tests) 7ms
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts > provider native tool history renderers > reconciles stream-start native metadata with final normalized arguments
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/llm/prompt-renderers/provider-native-tool-history-renderers.test.ts (5 tests) 7ms
+ ✓ tests/unit/llm/api/provider-native-request-payloads.test.ts (11 tests) 20ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts (7 tests) 16ms
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unified streaming setup > uses the unified handler path without tool schemas when the turn has no tools
+AgentRuntimeState initialized for agent_id 'agent_no_tools'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_no_tools'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+Successfully registered tool definition: 'request_recovery_test_tool'
+AgentRuntimeState initialized for agent_id 'agent_tool_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_tool_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice
+AgentRuntimeState initialized for agent_id 'agent_interruption_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_interruption_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'.
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts (5 tests) 40ms
+ ✓ tests/unit/llm/metadata/model-metadata-resolver.test.ts (7 tests) 6ms
+stderr | tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts > OpenAIResponsesRenderer > degrades user audio input in responses renderer and keeps text content
+OpenAI Responses input audio is not supported in this runtime path; skipping.
+
+stderr | tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts > OpenAIResponsesRenderer > omits an empty image conversion while preserving the message text
+Error processing image data:image/png;base64,: Error: Invalid data URI media source: the base64 payload is empty or invalid.
+
+ ✓ tests/unit/llm/supported-model-definitions.test.ts (16 tests) 8ms
+ ✓ tests/unit/llm/prompt-renderers/openai-responses-renderer.test.ts (8 tests) 12ms
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > is a singleton
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > is a singleton
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > registers processor definitions
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > registers processor definitions
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > registers processor definitions
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > overwrites existing definitions
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > overwrites existing definitions
+LLM response processor definition 'ProcOverwrite' (class: 'ProcA') registered successfully.
+LLM response processor definition 'ProcOverwrite' (class: 'ProcB') registered successfully.
+
+stderr | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > overwrites existing definitions
+Overwriting existing LLM response processor definition for name: 'ProcOverwrite'.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > overwrites existing definitions
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > rejects invalid definition types
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > rejects invalid definition types
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined for invalid name lookups
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stderr | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined for invalid name lookups
+Attempted to retrieve LLM response processor definition with non-string name: object.
+Attempted to retrieve LLM response processor definition with non-string name: number.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined for invalid name lookups
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns processor instances when available
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns processor instances when available
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns processor instances when available
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined for missing processor
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined for missing processor
+LLM response processor definition with name 'NonExistentProc' not found in registry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined for missing processor
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined when processor instantiation fails
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined when processor instantiation fails
+LLM response processor definition 'ProcWithInitError' (class: 'ProcWithInitError') registered successfully.
+
+stderr | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined when processor instantiation fails
+Failed to instantiate LLM response processor 'ProcWithInitError' from class 'ProcWithInitError': Error: Init failed
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns undefined when processor instantiation fails
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > lists processor names
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+ ❯ tests/unit/llm/api/autobyteus-llm.test.ts (10 tests | 1 failed) 17ms
+     ✓ uses logicalConversationId and sends a transcript payload to the client 5ms
+     ✓ passes extraParams as send-message generationConfig 1ms
+     ✓ passes extraParams as stream-message generationConfig 1ms
+     ✓ passes send-message cancellation signal through to the client 1ms
+     ✓ passes stream-message cancellation signal through to the client 0ms
+     ✓ rejects missing logicalConversationId before sending to the client 1ms
+     ✓ rejects empty logicalConversationId before sending to the client 0ms
+     ✓ rejects non-string logicalConversationId before sending to the client 0ms
+     ✓ rejects missing logicalConversationId before streaming to the client 1ms
+     × cleans up every remote conversation id used by the instance 5ms
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > lists processor names
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+LLM response processor definition 'ProcB' (class: 'ProcB') registered successfully.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > lists processor names
+Cleared 2 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns ordered processor options
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns ordered processor options
+LLM response processor definition 'ProcB' (class: 'ProcB') registered successfully.
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns ordered processor options
+Cleared 2 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns all definitions
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns all definitions
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > returns all definitions
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > clears definitions
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > clears definitions
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+LLM response processor definition with name 'ProcA' not found in registry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > clears definitions
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > supports contains and length helpers
+Cleared 0 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > supports contains and length helpers
+LLM response processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/llm-response-processor/processor-registry.test.ts > LLMResponseProcessorRegistry > supports contains and length helpers
+Cleared 1 definitions from the LLMResponseProcessorRegistry.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: aa7208cf-0726-42a1-97cd-19532a3c54fc).
+AgentEventStream (ID: d8db5a05-9bd1-4d41-b81b-fc46873052f2) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/llm-response-processor/processor-registry.test.ts (13 tests) 7ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier (NotifierID: aa7208cf-0726-42a1-97cd-19532a3c54fc, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentEventStream (ID: d8db5a05-9bd1-4d41-b81b-fc46873052f2) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 0938132b-95d6-4ad6-bee7-835caa71b16d).
+AgentEventStream (ID: ec75ddc4-6eff-4363-aff9-f92af1888e43) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier (NotifierID: 0938132b-95d6-4ad6-bee7-835caa71b16d, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/unit/llm/api/anthropic-signed-tool-continuation.test.ts (3 tests) 18ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentEventStream (ID: ec75ddc4-6eff-4363-aff9-f92af1888e43) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/unit/llm/api/gemini-llm.test.ts (11 tests) 9ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 762d278b-41c3-4437-abf4-0bc6e032bbdd).
+AgentEventStream (ID: a662df8f-8026-433d-81da-0d864a57c80f) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 762d278b-41c3-4437-abf4-0bc6e032bbdd, AgentID: stream_test_agent_001) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 762d278b-41c3-4437-abf4-0bc6e032bbdd, AgentID: stream_test_agent_001) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentEventStream (ID: a662df8f-8026-433d-81da-0d864a57c80f) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 15873c0f-f5f7-4aba-95be-7950c9c5f1f1).
+AgentEventStream (ID: afe48765-ae5c-41fb-8153-062642e4c25c) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+ ❯ tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts (0 test)
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > registers processor definitions
+Tool execution result processor definition 'ProcA' registered successfully.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > overwrites existing definitions
+Tool execution result processor definition 'ProcOverwrite' registered successfully.
+Tool execution result processor definition 'ProcOverwrite' registered successfully.
+
+stderr | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > overwrites existing definitions
+Overwriting existing tool execution result processor definition for name: 'ProcOverwrite'.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns processor instances when available
+Tool execution result processor definition 'ProcA' registered successfully.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns undefined when processor instantiation fails
+Tool execution result processor definition 'ProcWithInitError' registered successfully.
+
+stderr | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns undefined when processor instantiation fails
+Failed to instantiate tool execution result processor 'ProcWithInitError': Error: Init failed
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > is a singleton
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > is a singleton
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > lists processor names
+Tool execution result processor definition 'ProcA' registered successfully.
+Tool execution result processor definition 'ProcB' registered successfully.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns ordered processor options
+Tool execution result processor definition 'ProcB' registered successfully.
+Tool execution result processor definition 'ProcA' registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > registers processor definitions
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > returns all definitions
+Tool execution result processor definition 'ProcA' registered successfully.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > clears definitions
+Tool execution result processor definition 'ProcA' registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > registers processor definitions
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts > ToolExecutionResultProcessorRegistry > supports contains and length helpers
+Tool execution result processor definition 'ProcA' registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > registers processor definitions
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > overwrites existing definitions
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+ ✓ tests/unit/agent/tool-execution-result-processor/processor-registry.test.ts (12 tests) 6ms
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > overwrites existing definitions
+Input processor definition 'ProcOverwrite' (class: 'ProcA') registered successfully.
+Input processor definition 'ProcOverwrite' (class: 'ProcB') registered successfully.
+
+stderr | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > overwrites existing definitions
+Overwriting existing input processor definition for name: 'ProcOverwrite'.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > overwrites existing definitions
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > rejects invalid definition types
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > rejects invalid definition types
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > handles invalid name lookups
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stderr | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > handles invalid name lookups
+Attempted to retrieve input processor definition with non-string name: object.
+Attempted to retrieve input processor definition with non-string name: number.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > handles invalid name lookups
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns processor instances when available
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns processor instances when available
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns processor instances when available
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined for missing processor
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined for missing processor
+Input processor definition with name 'NonExistentProc' not found in registry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined for missing processor
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined when processor instantiation fails
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined when processor instantiation fails
+Input processor definition 'ProcWithInitError' (class: 'ProcWithInitError') registered successfully.
+
+stderr | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined when processor instantiation fails
+Failed to instantiate input processor 'ProcWithInitError' from class 'ProcWithInitError': Error: Init failed
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns undefined when processor instantiation fails
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > lists processor names
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > lists processor names
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+Input processor definition 'ProcB' (class: 'ProcB') registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > lists processor names
+Cleared 2 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns ordered processor options
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns ordered processor options
+Input processor definition 'ProcB' (class: 'ProcB') registered successfully.
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns ordered processor options
+Cleared 2 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns all definitions
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns all definitions
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > returns all definitions
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > clears definitions
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > clears definitions
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+Input processor definition with name 'ProcA' not found in registry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > clears definitions
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > supports contains and length helpers
+Cleared 0 definitions from the AgentUserInputMessageProcessorRegistry.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > supports contains and length helpers
+Input processor definition 'ProcA' (class: 'ProcA') registered successfully.
+
+stdout | tests/unit/agent/input-processor/processor-registry.test.ts > AgentUserInputMessageProcessorRegistry > supports contains and length helpers
+Cleared 1 definitions from the AgentUserInputMessageProcessorRegistry.
+
+ ✓ tests/unit/agent/input-processor/processor-registry.test.ts (13 tests) 12ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentEventStream (ID: afe48765-ae5c-41fb-8153-062642e4c25c) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 28cbd6cd-4707-4838-86f6-f42f0b71889a).
+AgentEventStream (ID: c550a883-ddc2-4d04-9a9d-10bbbda91953) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier (NotifierID: 28cbd6cd-4707-4838-86f6-f42f0b71889a, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentEventStream (ID: c550a883-ddc2-4d04-9a9d-10bbbda91953) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: b79544b8-c9a4-46ad-88a5-715775ddcfe4).
+AgentEventStream (ID: ef6bb976-1485-48f5-a2e4-4e70372d61a6) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > registers preprocessor definitions
+Tool invocation preprocessor definition 'ProcA' registered.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > overwrites existing definitions
+Tool invocation preprocessor definition 'ProcOverwrite' registered.
+Tool invocation preprocessor definition 'ProcOverwrite' registered.
+
+stderr | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > overwrites existing definitions
+Overwriting existing tool invocation preprocessor definition 'ProcOverwrite'.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > returns processor instances when available
+Tool invocation preprocessor definition 'ProcA' registered.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > returns undefined when processor instantiation fails
+Tool invocation preprocessor definition 'ProcWithInitError' registered.
+
+stderr | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > returns undefined when processor instantiation fails
+Failed to instantiate tool invocation preprocessor 'ProcWithInitError': Error: Init failed
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > lists processor names
+Tool invocation preprocessor definition 'ProcA' registered.
+Tool invocation preprocessor definition 'ProcB' registered.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier (NotifierID: b79544b8-c9a4-46ad-88a5-715775ddcfe4, AgentID: stream_test_agent_001) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > returns ordered processor options
+Tool invocation preprocessor definition 'ProcB' registered.
+Tool invocation preprocessor definition 'ProcA' registered.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > returns all definitions
+Tool invocation preprocessor definition 'ProcA' registered.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > clears definitions
+Tool invocation preprocessor definition 'ProcA' registered.
+
+stdout | tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts > ToolInvocationPreprocessorRegistry > supports contains and length helpers
+Tool invocation preprocessor definition 'ProcA' registered.
+
+ ✓ tests/unit/agent/tool-invocation-preprocessor/processor-registry.test.ts (12 tests) 6ms
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > does not mutate the tool catalog when the factory module is imported or constructed
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentEventStream (ID: ef6bb976-1485-48f5-a2e4-4e70372d61a6) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > initializes without legacy dependencies
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > does not expose a default turn-control handler registry
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > creates agents and stores them
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'factorytestagent_factory_tester_5143'.
+Agent 'factorytestagent_factory_tester_5143' created and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > rejects invalid config types
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > prepares tool instances by name
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > warns and overwrites duplicate tool names
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > populates runtime state with LLM and tools
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'test-runtime-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test-runtime-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'test-runtime-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test-runtime-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'test-runtime-agent'.
+Registered AgentContext for agent_id 'test-runtime-agent'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test-runtime-agent'. Context registered.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > installs supplied memory compaction without inventing another policy
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > restores agents with existing id
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'restored-agent'.
+Agent 'restored-agent' restored and stored successfully.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > treats explicit config memoryDir as a leaf directory without team metadata branching
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'explicit-memory-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'explicit-memory-agent': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'explicit-memory-agent'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'explicit-memory-agent' with config: 'FactoryTestAgent'.
+AgentWorker initialized for agent_id 'explicit-memory-agent'.
+Registered AgentContext for agent_id 'explicit-memory-agent'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'explicit-memory-agent'. Context registered.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 04ace597-33ff-4336-b684-e87e5c913224).
+AgentEventStream (ID: 8b3a985a-f031-465d-8515-21b4d3653495) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > keeps stopping agents known to removal but non-routable until stop completes
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'stopping-agent'.
+Agent 'stopping-agent' created and stored successfully.
+Removing agent 'stopping-agent'. Attempting graceful shutdown.
+Agent 'stopping-agent' requesting runtime to stop (timeout: 10s).
+Agent 'stopping-agent' is already stopping. Awaiting existing shutdown.
+
+stdout | tests/unit/agent/factory/agent-factory.test.ts > AgentFactory > retains a non-routable stopping entry when graceful stop fails
+AgentFactory (Singleton) initialized.
+Agent facade initialized for agent_id 'failing-stop-agent'.
+Agent 'failing-stop-agent' created and stored successfully.
+Removing agent 'failing-stop-agent'. Attempting graceful shutdown.
+Agent 'failing-stop-agent' requesting runtime to stop (timeout: 10s).
+
+ ❯ tests/unit/agent/factory/agent-factory.test.ts (13 tests | 1 failed) 42ms
+     ✓ does not mutate the tool catalog when the factory module is imported or constructed 25ms
+     ✓ initializes without legacy dependencies 0ms
+     ✓ does not expose a default turn-control handler registry 0ms
+     ✓ creates agents and stores them 2ms
+     ✓ rejects invalid config types 0ms
+     ✓ prepares tool instances by name 0ms
+     ✓ warns and overwrites duplicate tool names 0ms
+     ✓ populates runtime state with LLM and tools 2ms
+     × installs supplied memory compaction without inventing another policy 2ms
+     ✓ restores agents with existing id 3ms
+     ✓ treats explicit config memoryDir as a leaf directory without team metadata branching 2ms
+     ✓ keeps stopping agents known to removal but non-routable until stop completes 1ms
+     ✓ retains a non-routable stopping entry when graceful stop fails 1ms
+stdout | tests/unit/agent/status/status-deriver.test.ts > AgentStatusDeriver > handles bootstrap and ready transitions
+AgentStatusDeriver initialized with status 'uninitialized'.
+
+stdout | tests/unit/agent/status/status-deriver.test.ts > AgentStatusDeriver > handles shutdown and error transitions
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'error'.
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'error'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 04ace597-33ff-4336-b684-e87e5c913224, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/status/status-deriver.test.ts > AgentStatusDeriver > handles user message and llm transitions
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'processing_user_input'.
+AgentStatusDeriver initialized with status 'awaiting_llm_response'.
+AgentStatusDeriver initialized with status 'error'.
+AgentStatusDeriver initialized with status 'processing_tool_result'.
+AgentStatusDeriver initialized with status 'awaiting_llm_response'.
+AgentStatusDeriver initialized with status 'idle'.
+
+stdout | tests/unit/agent/status/status-deriver.test.ts > AgentStatusDeriver > handles tool related transitions
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'idle'.
+AgentStatusDeriver initialized with status 'executing_tool'.
+
+stdout | tests/unit/agent/status/status-deriver.test.ts > AgentStatusDeriver > handles turn interrupt transitions
+AgentStatusDeriver initialized with status 'awaiting_llm_response'.
+AgentStatusDeriver initialized with status 'error'.
+AgentStatusDeriver initialized with status 'shutting_down'.
+
+ ✓ tests/unit/agent/status/status-deriver.test.ts (5 tests) 7ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 04ace597-33ff-4336-b684-e87e5c913224, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > fileToBase64 reads files
+Failed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-eXGr2z/missing.png: Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-eXGr2z/missing.png'
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for processing user input
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for executing tool (pending invocation)
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for execution approval unknown tool
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for tool denied
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for tool denied
+Agent 'agent-1': Stored pending tool invocation 'tid3' (deny_tool).
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for processing tool result
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for error
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > builds status update data for interrupt request and settlement
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > apply_event_and_derive_status updates status and emits
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > urlToBase64 downloads content
+Failed to download from URL https://example.com/notfound.jpg: Error: Not Found
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > apply_event_and_derive_status updates status and emits
+AgentStatusDeriver initialized with status 'idle'.
+
+stdout | tests/unit/agent/status/status-update-utils.test.ts > status_update_utils > apply_event_and_derive_status does nothing without deriver
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/status/status-update-utils.test.ts (9 tests) 7ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentEventStream (ID: 8b3a985a-f031-465d-8515-21b4d3653495) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts (7 tests) 402ms
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > rejects empty local files, downloads, raw base64, and data URI payloads
+Failed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-7IIawZ/empty.png: Error: Media file '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-7IIawZ/empty.png' is empty.
+
+stderr | tests/unit/llm/utils/media-payload-formatter.test.ts > media_payload_formatter > rejects empty local files, downloads, raw base64, and data URI payloads
+Failed to download from URL https://127.0.0.1:51739/media/images/b132adbb-80e4-4faf-bd36-44d965d2e095.jpg: Error: Media URL 'https://127.0.0.1:51739/media/images/b132adbb-80e4-4faf-bd36-44d965d2e095.jpg' returned an empty payload.
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (6 tests) 6ms
+ ✓ tests/unit/agent/loop/llm-phase-compaction.test.ts (3 tests) 6ms
+ ✓ tests/unit/agent/events/notifiers.test.ts (5 tests) 7ms
+ ✓ tests/unit/llm/utils/media-payload-formatter.test.ts (12 tests) 166ms
+ ✓ tests/unit/agent/event-inbox/agent-event-inbox.test.ts (6 tests) 5ms
+ ✓ tests/unit/llm/openai-compatible-endpoint-discovery.test.ts (6 tests) 24ms
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > copy creates a new config with cloned lists and data
+AgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when skills are configured
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > defaults skillAccessMode to PRELOADED_ONLY when no skills are configured
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-config.test.ts > AgentConfig > respects explicit skillAccessMode
+AgentConfig created for name='name', role='role'.
+
+ ❯ tests/unit/agent/context/agent-config.test.ts (6 tests | 1 failed) 26ms
+     ✓ copy creates a new config with cloned lists and data 3ms
+     ✓ defaults skillAccessMode to PRELOADED_ONLY when skills are configured 0ms
+     ✓ defaults skillAccessMode to PRELOADED_ONLY when no skills are configured 0ms
+     × copies enabled memory compaction with a fresh policy and retained runner identity 17ms
+     ✓ respects explicit skillAccessMode 0ms
+     ✓ rejects unsupported skillAccessMode values 3ms
+stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > requires valid agentId, config, and state
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > exposes state-backed properties
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > throws when AgentEventInbox is not initialized
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > gets tools and warns when missing
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > stores and retrieves pending tool invocations
+AgentConfig created for name='name', role='role'.
+
+stdout | tests/unit/agent/context/agent-context.test.ts > AgentContext > sets processed system prompt
+AgentConfig created for name='name', role='role'.
+
+ ✓ tests/unit/agent/context/agent-context.test.ts (6 tests) 7ms
+ ✓ tests/unit/llm/api/ollama-llm.test.ts (3 tests) 20ms
+ ✓ tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts (8 tests) 5ms
+ ✓ tests/unit/llm/api/glm-llm.test.ts (6 tests) 6ms
+ ✓ tests/unit/agent/token-budget.test.ts (8 tests) 4ms
+ ✓ tests/unit/llm/prompt-renderers/autobyteus-prompt-renderer.test.ts (5 tests) 4ms
+stdout | tests/unit/agent/agent.test.ts > Agent > delegates runtime start/stop
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+Agent facade initialized for agent_id 'agent-1'.
+Agent 'agent-1' requesting runtime to start.
+Agent 'agent-1' requesting runtime to stop (timeout: 0.5s).
+
+stdout | tests/unit/agent/agent.test.ts > Agent > submits user messages and starts runtime if needed
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+Agent facade initialized for agent_id 'agent-1'.
+Agent 'agent-1' runtime is not running. Calling start() before submitting event.
+Agent 'agent-1' requesting runtime to start.
+
+stdout | tests/unit/agent/agent.test.ts > Agent > submits user messages and starts runtime if needed
+Agent 'agent-1': Submitting UserMessageReceivedEvent to runtime.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > returns the original prompt unchanged when no skills are configured
+Agent 'test_agent': No configured skills. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > does not advertise registry-only skills when no skills are configured
+Agent 'test_agent': No configured skills. Skipping skill catalog.
+
+stdout | tests/unit/agent/agent.test.ts > Agent > submits inter-agent messages
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+Agent facade initialized for agent_id 'agent-1'.
+Agent 'agent-1': Submitting InterAgentMessageReceivedEvent to runtime.
+
+stdout | tests/unit/agent/agent.test.ts > Agent > posts tool execution approvals through runtime approval boundary without starting runtime
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+Agent facade initialized for agent_id 'agent-1'.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > returns the original prompt unchanged when skill access mode is NONE
+Agent 'test_agent': Skill access mode is NONE. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > returns the original prompt unchanged when configured names do not resolve
+Agent 'test_agent': Configured skills produced no catalog entries. Skipping skill catalog.
+
+stdout | tests/unit/agent/agent.test.ts > Agent > exposes status and running state
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+Agent facade initialized for agent_id 'agent-1'.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > omits configured entries with blank required metadata
+Agent 'test_agent': Configured skills produced no catalog entries. Skipping skill catalog.
+
+stderr | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > omits configured entries with blank required metadata
+Agent 'test_agent': Omitting invalid configured skill catalog entry.
+
+stdout | tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts > appendConfiguredSkillsCatalog > renders the exact configured catalog contract in configured order without skill bodies
+Agent 'test_agent': Added 2 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+ ✓ tests/unit/agent/agent.test.ts (5 tests) 9ms
+ ✓ tests/unit/agent/system-prompt/append-configured-skills-catalog.test.ts (6 tests) 5ms
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > does nothing when status does not change
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > does nothing when status does not change
+AgentStatusManager initialized for agent_id 'agent-1'. Initial status: uninitialized. Notifier provided: true
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > runs lifecycle processors in order
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > runs lifecycle processors in order
+AgentStatusManager initialized for agent_id 'agent-1'. Initial status: uninitialized. Notifier provided: true
+Agent 'agent-1': Executing 2 lifecycle processors for 'agent_ready': Early,Late
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > runs lifecycle processors in order
+Agent 'agent-1': Lifecycle processor 'Early' executed successfully.
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > runs lifecycle processors in order
+Agent 'agent-1': Lifecycle processor 'Late' executed successfully.
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > handles lifecycle processor errors
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > handles lifecycle processor errors
+AgentStatusManager initialized for agent_id 'agent-1'. Initial status: uninitialized. Notifier provided: true
+Agent 'agent-1': Executing 1 lifecycle processors for 'before_llm_call': Fails
+
+stderr | tests/unit/agent/status/status-manager.test.ts > AgentStatusManager > handles lifecycle processor errors
+Agent 'agent-1': Error executing lifecycle processor 'Fails' for 'before_llm_call': Error: boom
+
+ ✓ tests/unit/agent/status/status-manager.test.ts (3 tests) 6ms
+ ✓ tests/unit/llm/api/grok-llm.test.ts (2 tests) 7ms
+ ✓ tests/unit/llm/autobyteus-provider.test.ts (3 tests) 8ms
+ ✓ tests/unit/agent/streaming/events/stream-event-payloads.test.ts (11 tests) 16ms
+ ✓ tests/unit/llm/prompt-renderers/gemini-prompt-renderer.test.ts (5 tests) 14ms
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams items until sentinel is encountered
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams items until sentinel is encountered
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > waits for sentinel when queue starts empty
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > waits for sentinel when queue starts empty
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > stops when sentinel is first item
+Starting to stream items from queue 'unspecified_queue'.
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams multiple items before sentinel
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams multiple items before sentinel
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > respects cancellation via AbortSignal
+Starting to stream items from queue 'test_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > respects cancellation via AbortSignal
+Stream from queue 'test_queue' was cancelled.
+Exiting streamQueueItems for queue 'test_queue'.
+
+ ✓ tests/unit/agent/streaming/utils/queue-streamer.test.ts (13 tests) 35ms
+ ✓ tests/unit/agent/tool-invocation.test.ts (7 tests) 6ms
+ ✓ tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent/loop/turn-tool-input-port.test.ts (6 tests) 9ms
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > ingests user message into the already-active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > keeps TOOL-originated input in the processor lifecycle without a memory write
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > fails when TOOL continuation input reaches memory ingest without an active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts (3 tests) 8ms
+ ✓ tests/unit/agent/loop/tool-continuation-input-builder.test.ts (4 tests) 4ms
+stdout | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > persists the exact configured prompt after handoff and stages the committed raw identity
+SystemPromptProcessingStep initialized.
+Agent 'agent-system': Executing SystemPromptProcessingStep.
+Agent 'agent-system': Retrieved base system prompt.
+Agent 'agent-system': No configured skills. Skipping skill catalog.
+Agent 'agent-system': Final processed system prompt configured and captured. Trace ID: system-raw. Final length: 21.
+
+stdout | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation
+SystemPromptProcessingStep initialized.
+Agent 'agent-1': Executing SystemPromptProcessingStep.
+Agent 'agent-1': Retrieved base system prompt.
+Agent 'agent-1': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+stderr | tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts > SystemPromptProcessingStep > rejects placeholder-shaped metadata from a real configured skill before state or LLM mutation
+Agent 'agent-1': Critical failure during system prompt processing step: Error: Final provider instruction contains an unresolved documentation placeholder.
+
+ ✓ tests/unit/agent/bootstrap-steps/system-prompt-processing-step.test.ts (2 tests) 12ms
+ ✓ tests/unit/llm/api/lmstudio-llm.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent/interruption/abortable-operation.test.ts (5 tests) 4ms
+ ✓ tests/unit/llm/utils/llm-config-overrides.test.ts (4 tests) 4ms
+stdout | tests/unit/agent/context/agent-context-registry.test.ts > AgentContextRegistry > registers and retrieves contexts
+Registered AgentContext for agent_id 'test_agent_123'. Total registered contexts: 1
+
+stdout | tests/unit/agent/context/agent-context-registry.test.ts > AgentContextRegistry > unregisters contexts
+Registered AgentContext for agent_id 'test_agent_123'. Total registered contexts: 1
+Unregistered AgentContext for agent_id 'test_agent_123'.
+
+stdout | tests/unit/agent/context/agent-context-registry.test.ts > AgentContextRegistry > logs when overwriting an existing context
+Registered AgentContext for agent_id 'test_agent_123'. Total registered contexts: 1
+Registered AgentContext for agent_id 'test_agent_123'. Total registered contexts: 1
+
+stdout | tests/unit/agent/context/agent-context-registry.test.ts > AgentContextRegistry > cleans up dead weak references when possible
+Registered AgentContext for agent_id 'temp_agent_for_gc'. Total registered contexts: 1
+
+ ✓ tests/unit/agent/context/agent-context-registry.test.ts (7 tests) 4ms
+ ✓ tests/unit/llm/llm-factory-config-composition.test.ts (3 tests) 4ms
+stdout | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > keeps discovered Ollama models in the OLLAMA provider bucket and captures context metadata
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > falls back to configured num_ctx when the model is not currently running
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stdout | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > keeps the listed model when detail enrichment fails and leaves metadata unknown
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/llm/ollama-provider.test.ts > OllamaModelProvider > keeps the listed model when detail enrichment fails and leaves metadata unknown
+Failed to fetch Ollama model details for 'llama3.3:70b' from http://127.0.0.1:11434: show failed
+
+ ✓ tests/unit/llm/ollama-provider.test.ts (3 tests) 5ms
+ ✓ tests/unit/llm/api/openai-compatible-request-builder.test.ts (2 tests) 3ms
+stdout | tests/unit/agent/lifecycle/processor-registry.test.ts > LifecycleEventProcessorRegistry > returns undefined for unknown names
+Lifecycle event processor definition with name 'missing' not found in registry.
+
+ ✓ tests/unit/agent/lifecycle/processor-registry.test.ts (5 tests) 6ms
+ ✓ tests/unit/agent/lifecycle/base-processor.test.ts (8 tests) 9ms
+ ✓ tests/unit/llm/api/deepseek-llm.test.ts (2 tests) 17ms
+ ✓ tests/unit/llm/dynamic-model-identifiers.test.ts (5 tests) 6ms
+ ✓ tests/unit/llm/models.test.ts (4 tests) 5ms
+ ✓ tests/unit/llm/base.test.ts (4 tests) 5ms
+ ✓ tests/unit/agent/event-inbox/inbox-queue-store.test.ts (5 tests) 8ms
+stdout | tests/unit/agent/shutdown-steps/agent-shutdown-orchestrator.test.ts > AgentShutdownOrchestrator > runs all steps when successful
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/agent-shutdown-orchestrator.test.ts > AgentShutdownOrchestrator > stops when a step fails
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/shutdown-steps/agent-shutdown-orchestrator.test.ts (4 tests) 6ms
+ ✓ tests/unit/agent/message/context-file-reference-section.test.ts (7 tests) 6ms
+ ✓ tests/unit/llm/prompt-renderers/deepseek-chat-renderer.test.ts (3 tests) 5ms
+ ✓ tests/unit/llm/utils/messages.test.ts (6 tests) 5ms
+stdout | tests/unit/agent/shutdown-steps/tool-cleanup-step.test.ts > ToolCleanupStep > succeeds when no tool instances are present
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/tool-cleanup-step.test.ts > ToolCleanupStep > cleans up sync and async tools
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/tool-cleanup-step.test.ts > ToolCleanupStep > skips tools without cleanup hooks
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/tool-cleanup-step.test.ts > ToolCleanupStep > continues cleanup and reports failures
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/shutdown-steps/tool-cleanup-step.test.ts (4 tests) 7ms
+ ✓ tests/unit/agent/message/multimodal-message-builder.test.ts (3 tests) 5ms
+ ✓ tests/unit/llm/utils/token-usage-tracker.test.ts (3 tests) 5ms
+stdout | tests/unit/agent/shutdown-steps/llm-instance-cleanup-step.test.ts > LLMInstanceCleanupStep > succeeds with async cleanup
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/llm-instance-cleanup-step.test.ts > LLMInstanceCleanupStep > succeeds with sync cleanup
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/llm-instance-cleanup-step.test.ts > LLMInstanceCleanupStep > succeeds when no cleanup method
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/llm-instance-cleanup-step.test.ts > LLMInstanceCleanupStep > succeeds when no llm instance
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/llm-instance-cleanup-step.test.ts > LLMInstanceCleanupStep > fails when cleanup throws
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/shutdown-steps/llm-instance-cleanup-step.test.ts (5 tests) 11ms
+ ✓ tests/unit/llm/converters/ollama-tool-call-converter.test.ts (3 tests) 4ms
+ ✓ tests/unit/llm/api/kimi-llm.test.ts (2 tests) 9ms
+ ✓ tests/unit/llm/custom-llm-provider-identity.test.ts (8 tests) 9ms
+ ✓ tests/unit/llm/autobyteus-gateway-routing.test.ts (2 tests) 16ms
+stdout | tests/unit/llm/lmstudio-provider.test.ts > LMStudioModelProvider > uses the LM Studio native model list to capture supported and active context metadata
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/unit/agent/loop/tool-phase-edit-file-error.test.ts > ToolPhase edit_file failure envelope > preserves the existing outer prefix around the actionable inner diagnostic
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/unit/llm/lmstudio-provider.test.ts > LMStudioModelProvider > returns null active context when loaded instances disagree on configured context length
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+ ✓ tests/unit/llm/lmstudio-provider.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent/events/agent-events.test.ts (6 tests) 6ms
+ ✓ tests/unit/agent/input-processor/base-user-input-processor.test.ts (5 tests) 4ms
+ ✓ tests/unit/agent/loop/tool-phase-edit-file-error.test.ts (1 test) 18ms
+ ✓ tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent/llm-response-processor/base-processor.test.ts (5 tests) 7ms
+ ✓ tests/unit/llm/extensions/extension-registry.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent/bootstrap-steps/agent-bootstrapper.test.ts (2 tests) 18ms
+ ✓ tests/unit/llm/extensions/token-usage-tracking-extension.test.ts (2 tests) 19ms
+ ✓ tests/unit/llm/qwen-provider-config.test.ts (3 tests) 3ms
+stderr | tests/unit/llm/llm-factory-provider-helper.test.ts > LLMFactory.getProvider > returns null when model is not found
+Could not find model with identifier 'missing-model' to get its provider.
+
+stdout | tests/unit/agent/shutdown-steps/mcp-server-cleanup-step.test.ts > McpServerCleanupStep > succeeds when instance manager cleanup succeeds
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/llm/llm-factory-provider-helper.test.ts (4 tests) 8ms
+stdout | tests/unit/agent/shutdown-steps/mcp-server-cleanup-step.test.ts > McpServerCleanupStep > fails when instance manager cleanup throws
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/shutdown-steps/mcp-server-cleanup-step.test.ts (2 tests) 17ms
+ ✓ tests/unit/agent/tool-invocation-preprocessor/base-preprocessor.test.ts (5 tests) 4ms
+ ✓ tests/unit/llm/transport/local-long-running-fetch.test.ts (2 tests) 11ms
+ ✓ tests/unit/llm/metadata/gemini-developer-api-model-metadata-provider.test.ts (2 tests) 7ms
+ ✓ tests/unit/agent/tool-execution-result-processor/base-processor.test.ts (5 tests) 4ms
+ ✓ tests/unit/agent/streaming/events/stream-events.test.ts (4 tests) 4ms
+ ✓ tests/unit/agent/message/agent-input-user-message.test.ts (4 tests) 5ms
+ ✓ tests/unit/agent/input-processor/processor-definition.test.ts (3 tests) 4ms
+ ✓ tests/unit/agent/streaming/api-tool-call/json-string-field-extractor.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/prompt-renderers/mistral-prompt-renderer.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent/message/inter-agent-message.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent/message/context-file.test.ts (5 tests) 3ms
+ ✓ tests/unit/llm/prompt-renderers/anthropic-prompt-renderer.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent/streaming/reexports.test.ts (3 tests) 2ms
+ ✓ tests/unit/llm/prompt-renderers/ollama-prompt-renderer.test.ts (2 tests) 7ms
+ ✓ tests/unit/agent/streaming/segments/segment-events.test.ts (1 test) 2ms
+ ✓ tests/unit/agent/message/context-file-type.test.ts (5 tests) 6ms
+ ✓ tests/unit/agent/lifecycle/lifecycle-events.test.ts (5 tests) 4ms
+ ✓ tests/unit/agent/llm-response-processor/processor-definition.test.ts (3 tests) 8ms
+ ✓ tests/unit/llm/converters/gemini-tool-call-converter.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent/tool-execution-result-processor/processor-definition.test.ts (3 tests) 4ms
+ ✓ tests/unit/llm/api/provider-request-kwargs.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent/tool-invocation-preprocessor/processor-definition.test.ts (3 tests) 7ms
+ ✓ tests/unit/llm/discovery-endpoint-identity.test.ts (3 tests) 2ms
+ ✓ tests/unit/llm/utils/response-types.test.ts (4 tests) 7ms
+ ✓ tests/unit/agent/events/event-store.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent/message/tool-continuation-display-text.test.ts (3 tests) 19ms
+ ✓ tests/unit/llm/errors/provider-error.test.ts (2 tests) 3ms
+stdout | tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts > WorkingContextSnapshotRestoreStep > no-ops without restore options
+WorkingContextSnapshotRestoreStep initialized.
+
+stdout | tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts > WorkingContextSnapshotRestoreStep > calls bootstrapper when restore options are set
+WorkingContextSnapshotRestoreStep initialized.
+
+ ✓ tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts (2 tests) 4ms
+ ✓ tests/unit/llm/converters/anthropic-tool-call-converter.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent/pipelines/llm-response-pipeline.test.ts (1 test) 3ms
+ ✓ tests/unit/llm/extensions/base-extension.test.ts (1 test) 5ms
+ ✓ tests/unit/llm/token-counter/base-token-counter.test.ts (2 tests) 7ms
+ ✓ tests/unit/llm/api/openai-llm.test.ts (1 test) 4ms
+ ✓ tests/unit/llm/utils/tool-call-delta.test.ts (3 tests) 4ms
+ ✓ tests/unit/llm/user-message.test.ts (4 tests) 7ms
+ ✓ tests/unit/agent/status/status-enum.test.ts (2 tests) 8ms
+ ✓ tests/unit/llm/converters/openai-tool-call-converter.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/utils/token-usage.test.ts (3 tests) 3ms
+ ✓ tests/unit/llm/converters-media.test.ts (4 tests) 5ms
+ ✓ tests/unit/agent/processor-option.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent/factory/agent-id.test.ts (2 tests) 3ms
+ ✓ tests/unit/agent/sender-type.test.ts (2 tests) 2ms
+ ✓ tests/unit/llm/enums.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent/exceptions.test.ts (1 test) 2ms

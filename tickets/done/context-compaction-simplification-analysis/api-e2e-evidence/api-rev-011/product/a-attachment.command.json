@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T18:15:06.414100+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "2EBDE1BCA8FCFB7F5A2DAACA80B77548",
+    "--script",
+    "async()=>{const i=document.querySelector(\"input[type=file]\");const d=new DataTransfer();d.items.add(new File([\"API011 owned attachment. Owner Ada Vale; inspection fixture only. No external action.\\n\"],\"attachment.txt\",{type:\"text/plain\"}));i.files=d.files;i.dispatchEvent(new Event(\"change\",{bubbles:true}));return {selected:1,method:\"DOM selection\"};}"
+  ],
+  "controlPort": 62666
+}

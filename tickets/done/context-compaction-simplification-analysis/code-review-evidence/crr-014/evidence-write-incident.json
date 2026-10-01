@@ -1,0 +1,29 @@
+{
+  "affected": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-009/server-overlap-final.log",
+      "entrySha256": "b35110ab0de6ec94667b2b1fd994d20922907acc89551fdb5c5e68c436a56860",
+      "currentSha256": "07b1bf19e731f4f8e970326bc7dbda973299714871b813fc1aa034c96dda5096",
+      "cause": "Reviewer invoked implementation runner before inspecting embedded output redirection. Fresh reviewer output was written to the implementation final artifact path. Copied to reviewer evidence; not original IR009 execution bytes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-009/server-overlap-final.exit",
+      "entrySha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "currentSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "cause": "Reviewer invoked implementation runner before inspecting embedded output redirection. Fresh reviewer output was written to the implementation final artifact path. Copied to reviewer evidence; not original IR009 execution bytes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-009/web-overlap-final.log",
+      "entrySha256": "5b87d359d539396218cca05c47915874e149c9a216cba6ee3a3c3d1ef671f1ea",
+      "currentSha256": "e9ac1c8fc75a5e91a0d12e54d7413274f6ce1aa9666835d5e075914f1eb22061",
+      "cause": "Reviewer invoked implementation runner before inspecting embedded output redirection. Fresh reviewer output was written to the implementation final artifact path. Copied to reviewer evidence; not original IR009 execution bytes."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-009/web-overlap-final.exit",
+      "entrySha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "currentSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "cause": "Reviewer invoked implementation runner before inspecting embedded output redirection. Fresh reviewer output was written to the implementation final artifact path. Copied to reviewer evidence; not original IR009 execution bytes."
+    }
+  ],
+  "recovery": "Implementation engineer confirmed read-only search of 487 log/txt files and both pre-IR009 safety archives found neither original hash. No exact recovery available; do not reconstruct. Historical summaries only partially corroborated by original transcript tails. Replacements are CRR014 reruns, not original IR009 evidence."
+}

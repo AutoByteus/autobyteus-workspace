@@ -1,0 +1,8 @@
+{
+  "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+  "effective_nonempty_lines": 376,
+  "changed_line_numstat": "7\t3\tautobyteus-server-ts/src/services/server-settings-service.ts",
+  "under_500": true,
+  "delta_under_220": true,
+  "tests_exempt": true
+}

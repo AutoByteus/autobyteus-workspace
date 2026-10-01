@@ -1,0 +1,17 @@
+from pathlib import Path
+import json,hashlib,subprocess,datetime
+u=Path(__file__).parent;t=u.parents[2];w=t.parents[2]
+before=json.loads((u/'entry-audit.json').read_text())
+sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+missing=[p for p in before['hashes'] if not Path(p).is_file()]
+changed=[p for p,h in before['hashes'].items() if Path(p).is_file() and sha(p)!=h]
+allowed={str(t/n) for n in ['api-e2e-coverage-investigation.md','api-e2e-execution-coverage-report.md','api-e2e-revision-record.md','api-e2e-test-case-ledger.md']}
+prior=json.loads((t/'api-e2e-evidence/api-rev-006/ir007-resume/final-audit.json').read_text())
+api={p:sha(w/p)==h for p,h in prior['currentDurableSha256'].items()}
+out={'at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'head':subprocess.check_output(['git','rev-parse','HEAD'],cwd=w,text=True).strip(),'branch':subprocess.check_output(['git','branch','--show-current'],cwd=w,text=True).strip(),'pinned':len(before['hashes']),'missing':missing,'changed':changed,'onlyFourOwnedCanonicalChanges':set(changed)<=allowed,'all11ApiDurableUnchanged':all(api.values()),'apiPaths':api,'currentDurableSha256':{p:sha(w/p) for p in api},'status':subprocess.check_output(['git','status','--porcelain'],cwd=w,text=True).splitlines()}
+(u/'final-audit.json').write_text(json.dumps(out,indent=2))
+assert not missing,missing
+assert set(changed)<=allowed,changed
+assert all(api.values())
+assert out['head']=='6908ccff483f1eca522caa65bfaaf6dcfcc26750' and out['branch']=='codex/context-compaction-simplification-analysis'
+print(json.dumps({k:v for k,v in out.items() if k not in ['status','apiPaths','currentDurableSha256']},indent=2))

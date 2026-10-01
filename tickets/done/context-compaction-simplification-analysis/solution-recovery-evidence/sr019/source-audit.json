@@ -1,0 +1,16 @@
+{
+  "head": "9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e",
+  "source_hashes": {
+    "autobyteus-ts/src/memory/memory-manager.ts": "505a7d133350ff36d4b8a5b6f7bf6764a8c715a8e51897d1eadb2ac0d9665232",
+    "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts": "5ed7e9bdd51c070b5ac15fb2cbaeeba81629e6d93b3638ddaf0ae565aecc427b",
+    "autobyteus-ts/src/memory/working-context-finalizer.ts": "2b457268c9c2c8f641e67455d8a594fdfca10a38786c86052ee3a0b27e7dd314",
+    "autobyteus-ts/src/memory/working-context-finalization-validation.ts": "a321de4193db96fd7eb3f573eca0c0406e1d9fcecfb9007792398fa2ef1d3c93",
+    "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts": "20c0d3092a14adc19e5664118257cd9538d66e09fd57fb38691ce21452485e01",
+    "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts": "7a239191fdf1570861a09603cd3423a17a4d507bc24726517f847a49da66318b",
+    "autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts": "ead2d4dbd24594a765ff9b10a83c622d6d65333b1ca3575bfa3ffae401204587"
+  },
+  "prompt_sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "production_edits": false,
+  "live_calls": 0,
+  "probe": "four actual-writer/normal-restore cuts; target predicate not implemented"
+}

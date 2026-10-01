@@ -297,11 +297,11 @@ export class AutobyteusClient {
     }
   }
 
-  async cleanup(conversationId: string): Promise<JsonRecord> {
+  async cleanup(conversationId: string, options: AutobyteusRequestOptions = {}): Promise<JsonRecord> {
     try {
       const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/cleanup'), {
         conversation_id: conversationId
-      });
+      }, { signal: options.signal ?? undefined });
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Cleanup error');

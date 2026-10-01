@@ -1,0 +1,246 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams items until sentinel is encountered
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams items until sentinel is encountered
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > waits for sentinel when queue starts empty
+Starting to stream items from queue 'unspecified_queue'.
+
+ ✓ tests/unit/agent/streaming/api-tool-call/json-string-field-extractor.test.ts (2 tests) 3ms
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > waits for sentinel when queue starts empty
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > stops when sentinel is first item
+Starting to stream items from queue 'unspecified_queue'.
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams multiple items before sentinel
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams multiple items before sentinel
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Starting to stream items from queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > streams various data types
+Sentinel [object Object] received from queue 'unspecified_queue'. Ending stream.
+Exiting streamQueueItems for queue 'unspecified_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > respects cancellation via AbortSignal
+Starting to stream items from queue 'test_queue'.
+
+stdout | tests/unit/agent/streaming/utils/queue-streamer.test.ts > streamQueueItems > respects cancellation via AbortSignal
+Stream from queue 'test_queue' was cancelled.
+Exiting streamQueueItems for queue 'test_queue'.
+
+ ✓ tests/unit/agent/streaming/utils/queue-streamer.test.ts (13 tests) 31ms
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler basics > finalize creates invocations from accumulated args
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler basics > carries provider-native context from deltas to tool invocations
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler parallel tool calls > tracks multiple tool calls by index
+LlmStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler parallel tool calls > keeps multiple Gemini functionCall parts as distinct invocations
+LlmStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler file streaming > decodes escaped content
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler callbacks > invokes onToolInvocation callback
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts > LlmStreamingResponseHandler callbacks > emits the tool segment end before publishing the finalized invocation
+LlmStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/agent/streaming/handlers/llm-streaming-response-handler.test.ts (23 tests) 11ms
+ ✓ tests/unit/agent/streaming/events/stream-events.test.ts (4 tests) 3ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: e71fde32-2dc5-46b1-a8f5-e4f2e93fadd4).
+AgentEventStream (ID: b7a04bd7-7c1d-473d-9b5c-944b553a702c) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/streaming/events/stream-event-payloads.test.ts (15 tests) 5ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentExternalEventNotifier (NotifierID: e71fde32-2dc5-46b1-a8f5-e4f2e93fadd4, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts (3 tests) 2ms
+ ✓ tests/unit/agent/streaming/segments/segment-events.test.ts (1 test) 2ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+AgentEventStream (ID: b7a04bd7-7c1d-473d-9b5c-944b553a702c) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > streams assistant final responses
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > round-trips current direct-summary metadata without manufacturing retired live fields
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 482ba2e5-1cd4-49f4-a02a-b0b36564e549).
+AgentEventStream (ID: ec89e8e4-2302-4622-9a5b-d0ef7fb7c47d) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > round-trips current direct-summary metadata without manufacturing retired live fields
+AgentExternalEventNotifier (NotifierID: 482ba2e5-1cd4-49f4-a02a-b0b36564e549, AgentID: stream_test_agent_001) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > round-trips current direct-summary metadata without manufacturing retired live fields
+AgentEventStream (ID: ec89e8e4-2302-4622-9a5b-d0ef7fb7c47d) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > round-trips current direct-summary metadata without manufacturing retired live fields
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 653b6f15-7908-4197-876d-9b52e1e2e84a).
+AgentEventStream (ID: 3e6e0f8e-49be-4871-adad-162c4cf46c76) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentExternalEventNotifier (NotifierID: 653b6f15-7908-4197-876d-9b52e1e2e84a, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/unit/agent/loop/llm-phase-compaction.test.ts (3 tests) 6ms
+ ✓ tests/unit/agent/streaming/reexports.test.ts (3 tests) 2ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+AgentEventStream (ID: 3e6e0f8e-49be-4871-adad-162c4cf46c76) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives status changes
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 41001fdd-ecd8-44ce-90cb-1f11a39a95ee).
+AgentEventStream (ID: 87b3f775-8d44-4613-a112-96884073e853) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 41001fdd-ecd8-44ce-90cb-1f11a39a95ee, AgentID: stream_test_agent_001) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentExternalEventNotifier (NotifierID: 41001fdd-ecd8-44ce-90cb-1f11a39a95ee, AgentID: stream_test_agent_001) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+AgentEventStream (ID: 87b3f775-8d44-4613-a112-96884073e853) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives turn lifecycle events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 13f55721-1ed3-457b-b165-6fa65d297e44).
+AgentEventStream (ID: 8ba9b8d0-7638-4701-b452-8a34db55cf18) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+AgentEventStream (ID: 8ba9b8d0-7638-4701-b452-8a34db55cf18) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives segment event payloads
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 58dfe2e5-3945-4893-bf35-4cbc3e33801e).
+AgentEventStream (ID: 0da65b27-5199-4fe0-9eee-9bd86f4f35ff) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentExternalEventNotifier (NotifierID: 58dfe2e5-3945-4893-bf35-4cbc3e33801e, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/memory/pending-compaction-executor.test.ts > PendingCompactionExecutor direct path > treats postcommit prune/reporter failure as committed and restores from that same snapshot
+Compaction committed; raw archive cleanup failed. Active duplicates retained. { operationId: 'compaction_operation_muitbnff_1' }
+
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (4 tests) 63ms
+stdout | tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts > LlmPhase disabled automatic compaction > reports capacity but performs no automatic-compaction work at captured proactive pressure
+AgentRuntimeState initialized for agent_id 'disabled-leaf'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='leaf', role='compactor'.
+AgentContext composed for agent_id 'disabled-leaf'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts > LlmPhase disabled automatic compaction > reports capacity but performs no automatic-compaction work at the policy hard cap
+AgentRuntimeState initialized for agent_id 'disabled-leaf'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='leaf', role='compactor'.
+AgentContext composed for agent_id 'disabled-leaf'. Config and State linked.
+
+ ✓ tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts (2 tests) 14ms
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+AgentEventStream (ID: 0da65b27-5199-4fe0-9eee-9bd86f4f35ff) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives complete response
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: cdd91469-cde1-4630-b8b5-1d7c6f43395d).
+AgentEventStream (ID: 8198b883-986b-47d5-bb42-e187b46878d6) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentExternalEventNotifier (NotifierID: cdd91469-cde1-4630-b8b5-1d7c6f43395d, AgentID: stream_test_agent_001) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+AgentEventStream (ID: 8198b883-986b-47d5-bb42-e187b46878d6) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives error event
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier initialized for agent_id 'stream_test_agent_001' (NotifierID: 54202d75-1639-48b3-9c08-57b7bb343d49).
+AgentEventStream (ID: cf09597c-72ed-401d-a07b-28abeab05393) initialized for agent_id 'stream_test_agent_001'. Subscribed to notifier.
+Starting to stream items from queue 'agent_stream_test_agent_001_allEvents'.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 54202d75-1639-48b3-9c08-57b7bb343d49, AgentID: stream_test_agent_001) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentExternalEventNotifier (NotifierID: 54202d75-1639-48b3-9c08-57b7bb343d49, AgentID: stream_test_agent_001) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+AgentEventStream (ID: cf09597c-72ed-401d-a07b-28abeab05393) for 'stream_test_agent_001': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent/streaming/streams/agent-event-stream.test.ts > AgentEventStream > allEvents receives mixed events in order
+Sentinel [object Object] received from queue 'agent_stream_test_agent_001_allEvents'. Ending stream.
+Exiting streamQueueItems for queue 'agent_stream_test_agent_001_allEvents'.
+
+ ✓ tests/unit/agent/streaming/streams/agent-event-stream.test.ts (8 tests) 414ms
+
+ Test Files  12 passed (12)
+      Tests  81 passed (81)
+   Start at  21:58:43
+   Duration  741ms (transform 1.56s, setup 130ms, import 2.07s, tests 557ms, environment 1ms)
+

@@ -1,0 +1,13 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | ../tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/recovery-probes.test.ts > SR-014 no-provider reconstruction: defaults and immutable repeated input > discovers synthetic model metadata and constructs current app-controlled default request without a provider
+Discovering LM Studio models from host: http://localhost:1234
+
+ ✓ ../tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/recovery-probes.test.ts (2 tests) 9ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  23:42:04
+   Duration  527ms (transform 177ms, setup 0ms, import 423ms, tests 9ms, environment 0ms)
+

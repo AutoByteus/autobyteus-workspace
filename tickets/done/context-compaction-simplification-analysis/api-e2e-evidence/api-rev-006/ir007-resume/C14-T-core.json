@@ -1,0 +1,21 @@
+{
+  "case": "C14-T-core",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts",
+  "argv": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/memory/pending-compaction-executor.test.ts",
+    "tests/unit/memory/direct-llm-compression-strategy.test.ts",
+    "tests/unit/memory/memory-manager-compaction-coordinator.test.ts",
+    "tests/unit/llm/api/compaction-single-attempt-transport.test.ts",
+    "tests/unit/agent/runtime/agent-runtime.test.ts",
+    "tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-10-01T05:07:50.814900+00:00",
+  "mode": "repository; no real-provider flags",
+  "exitCode": 0,
+  "finished": "2026-10-01T05:07:56.098974+00:00"
+}

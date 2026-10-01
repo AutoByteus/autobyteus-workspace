@@ -1,0 +1,100 @@
+{
+  "scope": "Focused independent source trace, not full auto-merge review. Complemented by E35 hashes/excerpts and unchanged-source tests.",
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+      "sha256": "36340e214320d52b0ce814626f73a85bce11ab6865566533adf950861181a054",
+      "focus": "Package omits input; synchronous snapshot capture; child ownership; inactive published after frozen finish before rejected result returned."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+      "sha256": "da9690a5ae6f3d21cc18f4c78c6e1dc84ce9e0662bf49cd4c97b0a7f79da0b7d",
+      "focus": "Inspection live-or-stored never restores; command-ready connection does; rejected child finish throws."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "sha256": "653eb2186513752415ec7398083458e6dafcf7dc7525d3065e0af0fe273a7089",
+      "focus": "Lossy status mapping omits recoverableBlock; single strict GraphQL/WS view."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts",
+      "sha256": "d82a702c9f5f13946bb16675ac76b8ff2e200710ad2c45345490a5bd670485c6",
+      "focus": "Connect command-ready, snapshot/barrier, real USER post_message route with input identity."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/services/root-event-publisher.ts",
+      "sha256": "f610f6d6e22437cfbea3807829986a920d79836d26981bc7533b3a03a16f0604",
+      "focus": "Base sequence/capture barrier, queued events, synchronous publication."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+      "sha256": "eaecb7133fedf6e6d3db1058fee8b10e2da3596cbf100ae52d726dda5c6a6a11",
+      "focus": "Existing public input snapshots and quiet termination uses prepared scope."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "sha256": "f0d3dc371006265c79dacbbc955fb0696380757ae74474e70c7e4fa37684d01a",
+      "focus": "Managed live input snapshots; Error remains open work; no task-idle redesign selected."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+      "focus": "Existing input/lifecycle ownership, termination recovery fence/quiescence."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+      "sha256": "e2e2ffdbbf87d6b0bc6ff81fb5b39509e9e1e0612d4f27ea074925511506df41",
+      "focus": "Terminate child collaboration root before standalone host completion/history."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+      "sha256": "109f97deed2a6a42ac731814fdf5123b2fae1f1fd302f1892121004be546309f",
+      "focus": "Current blanket Error-is-dead watch lacks recovery qualification."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "sha256": "c9afd678049ae1bb3a409f6ee6a207666695417aad2ee34612dc0b4029353c15",
+      "focus": "Private maps; unqualified service/read callbacks; adopt before commit; inspect/send split."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts",
+      "sha256": "f5c34549171b65b32bcf5642898e194426c6f06fe75d54839b7297af91aeeae3",
+      "focus": "Existing success-qualified host identity guard and reconciliation; child confirmation absent in current source."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+      "sha256": "1a46e3d7d8635302444d49d0cc423daf10e65db8af66de745698e3976d4dbd88",
+      "focus": "Exact child index; current status-only projection; adoption mutates old context and can throw."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+      "sha256": "dff1fee2b17a1ab1cdd74855c0b95f21b32ed250130d205d6f200271740eca8b",
+      "focus": "Actual workspace/member fetch precedes expected activity revision capture."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+      "sha256": "15ad0ddc9c468e00e0465c3dc95aca551f58393f083f816aed642be32e24168b",
+      "focus": "Socket lifetime, staged snapshot then events, disconnect/inactive/readiness responsibilities."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts",
+      "sha256": "c76e1b7d62ab1d6ca367b61b4eb39f513324f30319d3e2abb09a6d2e5b16a361",
+      "focus": "Same-instance revision projection; user identity upsert; no dispatch or global activity mutation."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentActivityStore.ts",
+      "sha256": "4db4158ceec1fca9d2fdc1c0c505db502583225d50bda7f3d0119d7a90b4b20c",
+      "focus": "All-run revisions prechecked, replacements staged before publication; public native confirmation."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/activity/nativeCompactionActivityReconciliation.ts",
+      "sha256": "6697f5e83b04af7389d56f24df8b4f4cfaf6a5eb1cb88dfdb61a2bae23535495",
+      "focus": "Only native unresolved -> stopped; known terminal retained under projection; no cold facts invented."
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+      "sha256": "08fba85cdcce61abb45c4ef6f72b4b441c38918d2f9217711936a8cb2874f372",
+      "focus": "Current strict root view omits input states; target reuses shared input schema."
+    }
+  ]
+}
