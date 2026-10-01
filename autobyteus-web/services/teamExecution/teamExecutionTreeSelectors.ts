@@ -1,4 +1,5 @@
 import type {
+  CollaboratorEntryDto,
   ConfiguredMemberExecutionDto,
   ConfiguredTeamExecutionDto,
   TaskExecutionDto,
@@ -9,6 +10,7 @@ import type {
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
 import type {
   TeamAgentExecutionLocation,
   TeamExecutionNavigationRow,
@@ -16,6 +18,49 @@ import type {
 
 export const agentRowKey = (agentRunId: string): string => `agent:${agentRunId}`;
 export const teamRowKey = (teamRunId: string): string => `team:${teamRunId}`;
+
+/**
+ * A collaborator shown with the product's task rows (approved look): an Agent as a task Agent
+ * at the root, a Team as a task Team with its members and its own delegations. It started when
+ * the user's send added it (`added_via_agent_run_id` is the starter).
+ */
+const collaboratorExecution = (entry: CollaboratorEntryDto): TaskExecutionDto => entry.kind === 'agent'
+  ? {
+      kind: 'task_agent', address: entry.address, agent_run_id: entry.agent_run_id,
+      platform_agent_run_id: entry.platform_agent_run_id,
+      delegator_agent_run_id: entry.added_via_agent_run_id, started_at: entry.added_at,
+    }
+  : {
+      kind: 'task_team', address: entry.address, team_run_id: entry.team_run_id,
+      members: entry.members.map((member) => ({
+        kind: 'task_team_agent' as const, address: member.address,
+        agent_run_id: member.agent_run_id, platform_agent_run_id: member.platform_agent_run_id,
+      })),
+      task_executions: entry.task_executions,
+      delegator_agent_run_id: entry.added_via_agent_run_id, started_at: entry.added_at,
+    };
+
+/**
+ * The tree as the views present it: collaborators first among the root's delegated children.
+ * Never persisted or sent; selectors read placements, rows and identities from it.
+ */
+export const withCollaboratorExecutions = (tree: TeamRunExecutionTreeDto): TeamRunExecutionTreeDto => {
+  const collaborators = tree.root_team.collaborators ?? [];
+  if (collaborators.length === 0) return tree;
+  return {
+    ...tree,
+    root_team: {
+      ...tree.root_team,
+      task_executions: [...collaborators.map(collaboratorExecution), ...tree.root_team.task_executions],
+    },
+  };
+};
+
+/** Whether an address is (or is inside) a collaborator of the run. */
+export const isCollaboratorAddress = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
+  const segment = address.split('/').filter(Boolean)[0];
+  return (tree.root_team.collaborators ?? []).some((entry) => entry.address.split('/').filter(Boolean)[0] === segment);
+};
 
 export const collectConfiguredAgents = (
   tree: TeamRunExecutionTreeDto,
@@ -51,8 +96,9 @@ export const findConfiguredTeamByAddress = (
   collectConfiguredTeams(tree).find((team) => (team === tree.root_team ? '/' : team.address) === address) ?? null;
 
 export const collectAgentExecutionLocations = (
-  tree: TeamRunExecutionTreeDto,
+  storedTree: TeamRunExecutionTreeDto,
 ): readonly TeamAgentExecutionLocation[] => {
+  const tree = withCollaboratorExecutions(storedTree);
   const output: TeamAgentExecutionLocation[] = [];
   const addLocation = (
     agentRunId: string,
@@ -104,9 +150,10 @@ export const collectAgentExecutionLocations = (
 
 /** Run ID of the innermost delegated child (task Agent or task Team) containing the agent, if any. */
 export const findContainingTaskExecutionRunId = (
-  tree: TeamRunExecutionTreeDto,
+  storedTree: TeamRunExecutionTreeDto,
   agentRunId: string,
 ): string | null => {
+  const tree = withCollaboratorExecutions(storedTree);
   type Member = ConfiguredMemberExecutionDto | TaskTeamMemberExecutionDto;
   const search = (
     tasks: readonly TaskExecutionDto[],
@@ -140,10 +187,15 @@ export const findConfiguredAgentByAddress = (
 ): Extract<ConfiguredMemberExecutionDto, { kind: 'configured_agent' }> | null =>
   collectConfiguredAgents(tree).find((agent) => agent.address === address) ?? null;
 
-export const projectNavigationRows = (input: {
+export const projectNavigationRows = (inputTree: {
   tree: TeamRunExecutionTreeDto;
   contexts: ReadonlyMap<string, AgentContext>;
 }): readonly TeamExecutionNavigationRow[] => {
+  const input = { ...inputTree, tree: withCollaboratorExecutions(inputTree.tree) };
+  // F-03: collaborator rows (and their members and copies) read as spaced names.
+  const nameOf = (address: AgentTeamAddress): string => isCollaboratorAddress(input.tree, address)
+    ? memberDisplayName(address)
+    : memberAddressBasename(address);
   const rows: TeamExecutionNavigationRow[] = [];
   const addressesByAgentRunId = new Map(collectAgentExecutionLocations(input.tree)
     .map((location) => [location.agentRunId, location.memberAddress]));
@@ -164,7 +216,7 @@ export const projectNavigationRows = (input: {
     delegatedBy?: string | null;
     coordinatorAddress?: AgentTeamAddress | null;
   }): void => {
-    const label = memberAddressBasename(inputAgent.address);
+    const label = nameOf(inputAgent.address);
     rows.push(Object.freeze({
       key: agentRowKey(inputAgent.agentRunId), kind: inputAgent.kind, address: inputAgent.address,
       displayName: label, accessibleName: label,
@@ -200,7 +252,7 @@ export const projectNavigationRows = (input: {
         const key = teamRowKey(member.team_run_id);
         rows.push(Object.freeze({
           key, kind: 'task_team_member', address: member.address,
-          displayName: memberAddressBasename(member.address), accessibleName: memberAddressBasename(member.address),
+          displayName: nameOf(member.address), accessibleName: nameOf(member.address),
           depth, parentKey, agentRunId: null, teamRunId: member.team_run_id, delegatedBy: null,
           currentStatus: null, focusable: false,
           expandable: member.members.length > 0 || member.task_executions.length > 0, coordinator: false,
@@ -218,8 +270,10 @@ export const projectNavigationRows = (input: {
     parentKey: string,
   ): void => {
     const key = teamRowKey(team.team_run_id);
-    const coordinatorAddress = configuredTeamAtAddress(input.tree, team.address)?.coordinator_address ?? team.address;
-    const label = memberAddressBasename(team.address);
+    const coordinatorAddress = configuredTeamAtAddress(input.tree, team.address)?.coordinator_address
+      ?? collaboratorTeamAt(input.tree, team.address)?.coordinator_address
+      ?? team.address;
+    const label = nameOf(team.address);
     rows.push(Object.freeze({
       key, kind: 'task_team', address: team.address,
       displayName: label, accessibleName: label,
@@ -227,6 +281,7 @@ export const projectNavigationRows = (input: {
       delegatedBy: delegatorName(team.delegator_agent_run_id),
       currentStatus: null, focusable: false,
       expandable: team.members.length > 0 || team.task_executions.length > 0, coordinator: false,
+      ...(collaboratorTeamAt(input.tree, team.address)?.team_run_id === team.team_run_id ? { opensOnAppear: true } : {}),
     }));
     addTaskMembers(team.members, team.task_executions, depth + 1, key, coordinatorAddress);
   };
@@ -260,6 +315,11 @@ export const projectNavigationRows = (input: {
   };
   addConfiguredTeam(input.tree.root_team, 0, null, true);
   return Object.freeze(rows);
+};
+
+const collaboratorTeamAt = (tree: TeamRunExecutionTreeDto, address: AgentTeamAddress) => {
+  const entry = (tree.root_team.collaborators ?? []).find((candidate) => candidate.address === address);
+  return entry?.kind === 'agent_team' ? entry : null;
 };
 
 const configuredTeamAtAddress = (

@@ -31,6 +31,8 @@ const resolveSafePath = (rootDir: string, ...segments: string[]): string => {
   return candidate;
 };
 
+export const AGENT_RUN_COLLABORATION_DIR_NAME = "collaboration";
+
 export class AgentMemoryLayout {
   private readonly standaloneRootDir: string;
   private readonly teamRootDir: string;
@@ -87,13 +89,22 @@ export class AgentMemoryLayout {
     );
   }
 
+  /** An Agent root keeps its package and child memory inside the host run directory. */
+  getAgentRunCollaborationDirPath(hostRunId: string): string {
+    return resolveSafePath(this.getStandaloneRunDirPath(hostRunId), AGENT_RUN_COLLABORATION_DIR_NAME);
+  }
+
   getRootExecutionDirPath(scopeInput: RootExecutionPhysicalScope): string {
     const scope = createRootExecutionPhysicalScope(scopeInput);
-    const root = scope.root.rootSubjectKind === "agent_team" ? this.teamRootDir : this.orgRootDir;
-    return resolveSafePath(root,
-      normalizePathSegment(scope.root.rootRunId, "rootRunId"),
-      ...scope.ancestorTeamRunIds.map((id, index) => normalizePathSegment(id, `ancestorTeamRunIds[${index}]`)),
-    );
+    const ancestors = scope.ancestorTeamRunIds.map((id, index) => normalizePathSegment(id, `ancestorTeamRunIds[${index}]`));
+    switch (scope.root.rootSubjectKind) {
+      case "agent_team":
+        return resolveSafePath(this.teamRootDir, normalizePathSegment(scope.root.rootRunId, "rootRunId"), ...ancestors);
+      case "agent_org":
+        return resolveSafePath(this.orgRootDir, normalizePathSegment(scope.root.rootRunId, "rootRunId"), ...ancestors);
+      case "agent":
+        return resolveSafePath(this.getAgentRunCollaborationDirPath(scope.root.rootRunId), ...ancestors);
+    }
   }
 
   getRootedAgentRunDirPath(scope: RootExecutionPhysicalScope, agentRunId: string): string {

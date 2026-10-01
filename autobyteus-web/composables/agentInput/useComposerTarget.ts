@@ -2,7 +2,9 @@ import { computed, type ComputedRef } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
+import { resolveRunMentionScope, type RunMentionScope } from '~/composables/agentInput/runMentionScope';
 import {
+  buildAgentCollaborationMemberDraftContextFileOwner,
   buildAgentDraftContextFileOwner,
   buildOrgMemberDraftContextFileOwner,
   buildTeamMemberDraftContextFileOwner,
@@ -28,6 +30,8 @@ export interface ComposerTarget {
   /** Owner under which draft uploads are stored, or null when uploads are not allowed. */
   readonly draftOwner: DraftContextFileOwnerDescriptor | null;
   readonly access: ComposerTargetAccess;
+  /** The live run `@` brings collaborators into; absent for launch drafts and read-only views. */
+  readonly mentionScope?: RunMentionScope | null;
   send(): Promise<void>;
   interrupt?(): Promise<void> | void;
 }
@@ -40,6 +44,7 @@ const resolveDraftOwner = (
   if (target.access === 'read_only' && target.kind !== 'agent_org_direct_agent'
     && target.kind !== 'agent_org_team_member') return null;
   if ('root' in target) return buildOrgMemberDraftContextFileOwner(target.root.orgRunId, target.context.state.runId);
+  if ('host' in target) return buildAgentCollaborationMemberDraftContextFileOwner(target.host.hostRunId, target.context.state.runId);
   if (target.kind === 'standalone_agent') return buildAgentDraftContextFileOwner(target.context.state.runId);
   return buildTeamMemberDraftContextFileOwner(target.team.rootRunId, target.team.focusedMemberAddress);
 };
@@ -58,6 +63,7 @@ export function useComposerTarget(): ComputedRef<ComposerTarget | null> {
       context: target.context,
       draftOwner: resolveDraftOwner(target),
       access: target.access === 'read_only' ? 'read_only' : 'live',
+      mentionScope: resolveRunMentionScope(target),
       send: () => activeContextStore.send(),
       interrupt: () => activeContextStore.interruptGeneration(),
     });

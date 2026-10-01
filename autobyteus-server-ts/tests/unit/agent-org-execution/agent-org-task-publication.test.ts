@@ -3,8 +3,8 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { createAgentOrgRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { FlatTeamExecutionCallbacks } from "../../../src/agent-team-execution/local/flat-team-execution-callbacks.js";
 import { FlatTeamExecutionFactory } from "../../../src/agent-team-execution/local/flat-team-execution-factory.js";
-import { AgentOrgTeamExecutionDirectory } from "../../../src/agent-org-execution/services/agent-org-team-execution-directory.js";
-import { AgentOrgRootAgentExecutionRegistry } from "../../../src/agent-org-execution/services/agent-org-root-agent-execution-registry.js";
+import { RootTeamExecutionDirectory } from "../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js";
+import { RootAgentExecutionRegistry } from "../../../src/agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles, taskTeamNode } from "./helpers/task-publication-handles.js";
 
@@ -30,7 +30,7 @@ describe("Org-root prepared task publishers", () => {
         if (seen.at(-1) === "parent-lead:initializing") handles.get("parent-lead")!.emit("idle");
       }),
     };
-    const directory = new AgentOrgTeamExecutionDirectory(new FlatTeamExecutionFactory());
+    const directory = new RootTeamExecutionDirectory(new FlatTeamExecutionFactory());
     const prepared = await directory.prepareRootTaskTeam({ task: teamInput("parent"),
       physicalScope: { root, ancestorTeamRunIds: ["parent"] }, callbacks });
     const registration = directory.reserveTaskSubtree(prepared.preparedTeamRuns);
@@ -79,9 +79,9 @@ describe("Org-root prepared task publishers", () => {
     const forward = vi.fn();
     const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn() };
     const prepared = kind === "team"
-      ? await new AgentOrgTeamExecutionDirectory(new FlatTeamExecutionFactory()).prepareRootTaskTeam({
+      ? await new RootTeamExecutionDirectory(new FlatTeamExecutionFactory()).prepareRootTaskTeam({
           task: teamInput("aborted"), physicalScope: { root, ancestorTeamRunIds: ["aborted"] }, callbacks })
-      : await new AgentOrgRootAgentExecutionRegistry({ root, callbacks }).prepareTask({
+      : await new RootAgentExecutionRegistry({ root, callbacks }).prepareTask({
           taskId: "aborted", address: "/worker", agentRunId: "aborted-agent", sourceNode: testAgentNode("/worker"), message });
     prepared.sealForCommit(); await prepared.abort(); await prepared.abort();
     for (const execution of handles.values()) {
@@ -98,9 +98,9 @@ describe("Org-root prepared task publishers", () => {
     const forward = vi.fn();
     const callbacks = { publishAgentEvent: forward, buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn() };
     const prepare = kind === "team"
-      ? new AgentOrgTeamExecutionDirectory(new FlatTeamExecutionFactory()).prepareRootTaskTeam({
+      ? new RootTeamExecutionDirectory(new FlatTeamExecutionFactory()).prepareRootTaskTeam({
           task: teamInput("failed"), physicalScope: { root, ancestorTeamRunIds: ["failed"] }, callbacks })
-      : new AgentOrgRootAgentExecutionRegistry({ root, callbacks }).prepareTask({
+      : new RootAgentExecutionRegistry({ root, callbacks }).prepareTask({
           taskId: "failed", address: "/worker", agentRunId: "failed-agent", sourceNode: testAgentNode("/worker"), message });
     await expect(prepare).rejects.toBe(failure);
     for (const execution of handles.values()) {
@@ -118,7 +118,7 @@ describe("Org-root prepared task publishers", () => {
         expect(identity.root).toEqual(root); expect(identity.memberAddress).toBe("/worker");
         if (event.kind === "status_overlay") seen.push(`${identity.agentRunId}:${event.snapshot.details.status}`);
       }) };
-    const registry = new AgentOrgRootAgentExecutionRegistry({ root, callbacks });
+    const registry = new RootAgentExecutionRegistry({ root, callbacks });
     const prepare = (id: string) => registry.prepareTask({ taskId: id, address: "/worker", agentRunId: id, sourceNode: testAgentNode("/worker"), message });
     const first = await prepare("first"); const second = await prepare("second");
     first.sealForCommit(); const commit = first.commitAfterDurability();

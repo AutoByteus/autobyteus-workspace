@@ -32,6 +32,8 @@ export interface TeamExecutionNavigationRow {
   readonly focusable: boolean;
   readonly expandable: boolean;
   readonly coordinator: boolean;
+  /** A collaborator Team row: the tree opens it once when it appears (F-02). */
+  readonly opensOnAppear?: boolean;
 }
 
 export interface TeamAgentContextEntry {
@@ -48,12 +50,14 @@ export interface TeamAgentExecutionLocation {
 
 export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
   | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' }
-  | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' }>;
+  | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' | 'COLLABORATOR_ADDED' }>;
 
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>
   | Readonly<{ kind: 'record_team_token_usage'; agentRunId: string; details: TeamTokenUsageDetails }>
   | Readonly<{ kind: 'reconcile_team_navigation' }>
+  /** The run's collaborators changed; the `@` candidates of this root are stale. */
+  | Readonly<{ kind: 'collaborators_changed' }>
   | Readonly<{ kind: 'invalidate_team_member_projection'; agentRunIds: readonly string[] }>
   | Readonly<{ kind: 'invalidate_team_member_projections' }>
   | Readonly<{ kind: 'reconcile_focused_team_member_projection' }>

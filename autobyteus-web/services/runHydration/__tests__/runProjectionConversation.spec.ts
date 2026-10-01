@@ -550,4 +550,18 @@ describe('runProjectionConversation', () => {
       urls: [imageLocator],
     });
   });
+
+  it('RD-004: replays a stored agent-to-agent delivery as "From <Sender>:"; an old trace without a sender stays a user message', () => {
+    const conversation = buildConversationFromProjection('run-1', [
+      { kind: 'inter_agent_message', role: 'user', senderAgentRunId: 'researcher-run', senderAddress: '/researcher',
+        content: 'You received a message from sender name: researcher, sender id: researcher-run\nmessage:\nPlease prototype it.', ts: 1 },
+      { kind: 'message', role: 'assistant', content: 'On it.', ts: 2 },
+      { kind: 'message', role: 'user', content: 'You received a message from sender name: old, sender id: old-run\nmessage:\nlegacy', ts: 3 },
+    ], { agentDefinitionId: 'a', agentName: 'A', llmModelIdentifier: 'm' });
+    expect(conversation.messages.map((message) => message.type)).toEqual(['ai', 'user']);
+    expect(conversation.messages[0]).toMatchObject({ segments: [
+      { type: 'inter_agent_message', senderAgentRunId: 'researcher-run', senderAddress: '/researcher', content: 'Please prototype it.' },
+      { type: 'text', content: 'On it.' },
+    ] });
+  });
 });

@@ -1,4 +1,4 @@
-import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
+import type { CollaborationMemberExecutionIdentity, RootSubjectKind } from "../domain/root-execution-identity.js";
 
 export type TaskDelegationContext = Readonly<{ identity: CollaborationMemberExecutionIdentity }>;
 
@@ -29,7 +29,7 @@ export class TaskDelegationError extends Error {
 
 export class RootTaskPersistenceFinalizationIndeterminateError extends Error {
   constructor(
-    readonly rootSubjectKind: "agent_team" | "agent_org",
+    readonly rootSubjectKind: RootSubjectKind,
     readonly fileRole: string,
     readonly stage: string,
     message = `${rootSubjectKind} task persistence '${fileRole}' is indeterminate at '${stage}'.`,

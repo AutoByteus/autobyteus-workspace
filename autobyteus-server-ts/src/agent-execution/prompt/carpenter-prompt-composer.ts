@@ -2,6 +2,7 @@ import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { renderTeamCollaborationInstruction } from "../../agent-team-execution/services/team-collaboration-instruction-renderer.js";
+import { renderStandaloneCollaborationInstruction } from "../../agent-run-collaboration/prompt/standalone-collaboration-instruction.js";
 import {
   BASH_OPERATING_PRACTICE_SECTION,
   FILE_AND_DIRECTORY_PRACTICE_SECTION,
@@ -33,12 +34,16 @@ const buildSharedCarpenterPromptSections = (
   }
 
   const sections: string[] = [renderAgentIdentitySection(input.agentDefinition)];
-  if (input.memberExecutionContext) {
-    const teamInstruction = renderTeamInstructionSection(input.memberExecutionContext.authoredEnclosingScopeInstruction);
+  const member = input.memberExecutionContext;
+  if (member && !member.teamScoped) {
+    // The standalone Agent-root host, or a task Agent directly under it: no Team, no handoffs.
+    sections.push(renderStandaloneCollaborationInstruction({ memberAddress: member.identity.memberAddress }));
+  } else if (member) {
+    const teamInstruction = renderTeamInstructionSection(member.authoredEnclosingScopeInstruction);
     if (teamInstruction) {
       sections.push(teamInstruction);
     }
-    sections.push(renderTeamCollaborationInstruction(input.memberExecutionContext));
+    sections.push(renderTeamCollaborationInstruction(member));
   }
   return sections;
 };

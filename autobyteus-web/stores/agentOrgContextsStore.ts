@@ -17,7 +17,7 @@ import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOr
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
-import { beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
+import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
 import { upsertUserMessageByIdentity } from '~/services/agentStreaming/handlers/userMessageProjection'
 import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -25,6 +25,7 @@ import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
 import { buildOrgMemberDraftContextFileOwner, buildOrgMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner'
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
+import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 
 export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   const contexts = ref<Record<string, AgentOrgExecutionContext>>({})
@@ -191,7 +192,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     let attachments = contextPaths.map((attachment) => ({ ...attachment }))
     const messageId = crypto.randomUUID()
     const dedupeKey = `member_input:${id}:${agentRunId}:${messageId}`
-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, identity: { messageId, dedupeKey } })
+    const mentions = mentionsPresentInText(content, context.requestedMentions)
+    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     const key = keyFor(id, agentRunId)
     submissions.set(key, submission)
     let draftEdited = false
@@ -219,10 +221,13 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         })
         finalizeLocalSubmissionAttachments(submission, attachments)
       }
-      await service.sendPrepared({ agentRunId, content, attachments, messageId, dedupeKey })
+      await service.sendPrepared({ agentRunId, content, attachments, messageId, dedupeKey,
+        mentions: toCollaboratorMentionDtos(content, mentions) })
+      acceptLocalSubmission(submission)
     } catch (cause) {
-      failLocalSubmission(submission, cause)
-      if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments }
+      // A rejected add posted nothing: the notice shows and the draft stays as typed.
+      if (failLocalSubmission(submission, cause) === 'kept_draft') return
+      if (!draftEdited) { context.requirement = content; context.contextFilePaths = attachments; context.requestedMentions = [...mentions] }
       throw cause
     } finally {
       stopWatching()

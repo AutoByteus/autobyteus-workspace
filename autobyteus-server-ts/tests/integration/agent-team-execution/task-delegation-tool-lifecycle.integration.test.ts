@@ -271,6 +271,12 @@ const createHarness = async () => {
       allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
+    // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
+    collaboratorHost: {
+      prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
+      prepareCollaboratorTeam: () => { throw new Error("No collaborators in this scenario."); },
+      requireCollaboratorTeam: () => { throw new Error("No collaborators in this scenario."); },
+    },
     config: currentConfig,
     tree,
     messages,
@@ -292,7 +298,7 @@ const createHarness = async () => {
   const drain = async () => {
     for (let i = 0; i < 3; i += 1) { await new Promise<void>((resolve) => setImmediate(resolve)); await lifecycle.drain(); }
   };
-  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain };
+  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain, publisher, treeStore };
 };
 
 afterEach(async () => {
@@ -433,19 +439,28 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
 
   it("fails closed for a retired configured-Team recipient in a flat Team root", async () => {
     const harness = await createHarness();
+    // Neither mounted nor mentioned: nothing starts and the call returns the reason (REQ-012).
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
-    })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
+    })).resolves.toEqual({
+      target_agent_run_id: null,
+      message: expect.stringContaining("the user can bring one in with @"),
+    });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
   });
 
   it("rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    for (const recipient_address of ["/coordinator", "/", "/missing", "worker", "./worker", "/worker/child"]) {
+    for (const recipient_address of ["/coordinator", "/", "worker", "./worker"]) {
       await expect(delegate(harness.service, coordinator, {
         recipient_address, description: "must reject", reference_files: [],
       })).rejects.toBeTruthy();
+    }
+    for (const recipient_address of ["/missing", "/worker/child"]) {
+      await expect(delegate(harness.service, coordinator, {
+        recipient_address, description: "must not start", reference_files: [],
+      })).resolves.toMatchObject({ target_agent_run_id: null });
     }
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator", "foreign-root"), {
       recipient_address: "/worker", description: "foreign", reference_files: [],

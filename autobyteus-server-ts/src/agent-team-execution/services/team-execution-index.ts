@@ -1,5 +1,9 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
+  CollaboratorAgentEntry,
+  CollaboratorEntry,
+  CollaboratorTeamEntry,
+  CollaboratorTeamMember,
   ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskAgentExecution,
@@ -17,15 +21,22 @@ import {
   type RootExecutionPhysicalScope,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 
-export type AgentExecutionKind = "configured" | "task" | "task_team_member";
-export type TeamExecutionKind = "configured" | "task" | "task_team_member";
+export type AgentExecutionKind = "configured" | "task" | "task_team_member" | "collaborator" | "collaborator_team_member";
+export type TeamExecutionKind = "configured" | "task" | "task_team_member" | "collaborator";
 
 export type IndexedAgentExecution = Readonly<{
   agentRunId: string;
   address: AgentTeamAddress;
   containingTeamRunId: string;
   executionKind: AgentExecutionKind;
-  source: ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
+  source: ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution | CollaboratorAgentEntry | CollaboratorTeamMember;
+}>;
+
+/** One message target: the receiving Agent of an Agent address, or a collaborator Team's coordinator. */
+export type TeamMessagePlacement = Readonly<{
+  kind: "agent" | "agent_team";
+  address: AgentTeamAddress;
+  receiver: Readonly<{ agentRunId: string; address: AgentTeamAddress }>;
 }>;
 
 export type IndexedTeamExecution = Readonly<{
@@ -36,7 +47,8 @@ export type IndexedTeamExecution = Readonly<{
   source:
     | RootConfiguredTeamExecutionNode
     | TaskTeamExecution
-    | TaskTeamNestedTeamExecution;
+    | TaskTeamNestedTeamExecution
+    | CollaboratorTeamEntry;
 }>;
 
 export type IndexedTaskExecution =
@@ -60,6 +72,8 @@ export class TeamExecutionIndex {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
   private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();
+  private readonly collaboratorsByAddress = new Map<string, CollaboratorEntry>();
+  private readonly collaboratorMembersByAddress = new Map<string, CollaboratorTeamMember>();
   private readonly taskExecutionsByRunId = new Map<string, IndexedTaskExecution>();
   private readonly directAgentRunIdsByTeamRunId = new Map<string, string[]>();
   private readonly directTeamRunIdsByTeamRunId = new Map<string, string[]>();
@@ -74,6 +88,7 @@ export class TeamExecutionIndex {
       source: tree.rootTeam,
     });
     this.visitConfiguredRoot(tree.rootTeam);
+    tree.rootTeam.collaborators.forEach((entry) => this.visitCollaborator(entry, tree.rootTeam.teamRunId));
   }
 
   get rootTeamRunId(): string {
@@ -102,6 +117,34 @@ export class TeamExecutionIndex {
 
   getConfiguredPlacement(address: AgentTeamAddress | string): ConfiguredAgentExecutionNode | null {
     return this.configuredByAddress.get(address as AgentTeamAddress) ?? null;
+  }
+
+  /** A collaborator entry of the run (one hosted instance). */
+  getCollaborator(address: AgentTeamAddress | string): CollaboratorEntry | null {
+    return this.collaboratorsByAddress.get(address) ?? null;
+  }
+
+  /**
+   * The one execution a message to `address` reaches (REQ-003/005): a configured Agent, a
+   * collaborator Agent, a collaborator Team's coordinator or a collaborator Team member.
+   */
+  getMessagePlacement(address: AgentTeamAddress | string): TeamMessagePlacement | null {
+    const placement = (kind: TeamMessagePlacement["kind"], target: string, receiver: { agentRunId: string; address: string }) =>
+      Object.freeze({
+        kind,
+        address: target as AgentTeamAddress,
+        receiver: Object.freeze({ agentRunId: receiver.agentRunId, address: receiver.address as AgentTeamAddress }),
+      });
+    const configured = this.configuredByAddress.get(address as AgentTeamAddress);
+    if (configured) return placement("agent", configured.address, configured);
+    const collaborator = this.collaboratorsByAddress.get(address);
+    if (collaborator?.kind === "agent") return placement("agent", collaborator.address, collaborator);
+    if (collaborator?.kind === "agent_team") {
+      const coordinator = collaborator.members.find((member) => member.address === collaborator.coordinatorAddress);
+      return coordinator ? placement("agent_team", collaborator.address, coordinator) : null;
+    }
+    const member = this.collaboratorMembersByAddress.get(address);
+    return member ? placement("agent", member.address, member) : null;
   }
 
   getTaskExecution(reference: TaskExecutionReference): IndexedTaskExecution | null {
@@ -183,6 +226,42 @@ export class TeamExecutionIndex {
       });
     }
     team.taskExecutions.forEach((task) => this.visitTaskExecution(task, team.teamRunId));
+  }
+
+  /**
+   * A collaborator Agent is a direct execution of the root TeamRun; a collaborator Team is
+   * one TeamRun under the root that hosts its members and their delegations.
+   */
+  private visitCollaborator(entry: CollaboratorEntry, rootTeamRunId: string): void {
+    this.collaboratorsByAddress.set(entry.address, entry);
+    if (entry.kind === "agent") {
+      this.addAgent({
+        agentRunId: entry.agentRunId,
+        address: entry.address as AgentTeamAddress,
+        containingTeamRunId: rootTeamRunId,
+        executionKind: "collaborator",
+        source: entry,
+      });
+      return;
+    }
+    this.addTeam({
+      teamRunId: entry.teamRunId,
+      address: entry.address as AgentTeamAddress,
+      parentTeamRunId: rootTeamRunId,
+      executionKind: "collaborator",
+      source: entry,
+    });
+    for (const member of entry.members) {
+      this.collaboratorMembersByAddress.set(member.address, member);
+      this.addAgent({
+        agentRunId: member.agentRunId,
+        address: member.address as AgentTeamAddress,
+        containingTeamRunId: entry.teamRunId,
+        executionKind: "collaborator_team_member",
+        source: member,
+      });
+    }
+    entry.taskExecutions.forEach((task) => this.visitTaskExecution(task, entry.teamRunId));
   }
 
   private visitTaskExecution(task: TaskExecution, ownerTeamRunId: string): void {

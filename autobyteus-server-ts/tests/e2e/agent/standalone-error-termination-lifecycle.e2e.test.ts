@@ -210,7 +210,9 @@ const startHarness = async (terminationAccepted: boolean): Promise<Harness & Run
     historyCatalogService: catalogService,
     workspaceManager: {} as never,
     provisioningService: {} as never,
-    lifecycleService: {} as never,
+    // terminateAgentRun ends a registered Agent collaboration root first; a manager-owned Error
+    // runtime has none.
+    lifecycleService: { terminateCollaborationRoot: vi.fn(async () => false) } as never,
   });
   const studioHandle = configureE2eStudioApplicationApiServices({
     agentDefinitionService: {} as never,

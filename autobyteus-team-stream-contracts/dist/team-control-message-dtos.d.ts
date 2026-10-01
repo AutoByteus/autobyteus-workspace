@@ -13,6 +13,13 @@ export declare const teamSendMessageClientPayloadSchema: z.ZodObject<{
     agent_run_id: z.ZodString;
     message_id: z.ZodString;
     dedupe_key: z.ZodString;
+    mentions: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        kind: z.ZodEnum<{
+            agent: "agent";
+            agent_team: "agent_team";
+        }>;
+        definition_id: z.ZodString;
+    }, z.core.$strict>>>;
 }, z.core.$strict>;
 export declare const teamInterruptClientPayloadSchema: z.ZodObject<{
     command_id: z.ZodString;

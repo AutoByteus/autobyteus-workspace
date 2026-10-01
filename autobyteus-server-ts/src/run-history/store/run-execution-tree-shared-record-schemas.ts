@@ -5,7 +5,10 @@ import {
   getParentAgentTeamAddress,
   type AgentTeamAddress,
 } from "../../agent-collaboration/domain/agent-team-address.js";
+import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type {
+  CollaboratorEntry,
+  CollaboratorTeamMember,
   ConfiguredAgentExecutionNode,
   ConfiguredExecutionNode,
   ConfiguredTeamExecutionNode,
@@ -13,6 +16,7 @@ import type {
   TaskTeamMemberExecution,
   TeamRunApplicationBinding,
 } from "../domain/run-execution-tree-shared-records.js";
+import { isCollaboratorTeamEntry } from "../domain/run-execution-tree-shared-records.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -285,6 +289,169 @@ export const validateConfiguredPlacementUniqueness = (
     }
   }
 };
+
+const rootLevelAddress = (value: unknown, label: string): AgentTeamAddress => {
+  const address = canonicalNonRootAddress(value, label);
+  if (getParentAgentTeamAddress(address) !== "/") throw new Error(`${label} must be a root-level address.`);
+  return address;
+};
+
+const parseCollaboratorTeamMember = (
+  value: unknown,
+  teamAddress: AgentTeamAddress,
+  label: string,
+): CollaboratorTeamMember => {
+  const member = objectRecord(value, label);
+  requireKeys(member, ["address", "agentDefinitionId", "agentRunId", "platformAgentRunId"], label);
+  const address = canonicalNonRootAddress(member.address, `${label}.address`);
+  if (getParentAgentTeamAddress(address) !== teamAddress) {
+    throw new Error(`${label}.address '${address}' is not a direct member of '${teamAddress}'.`);
+  }
+  return {
+    address,
+    agentDefinitionId: requiredString(member.agentDefinitionId, `${label}.agentDefinitionId`),
+    agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
+    platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
+  };
+};
+
+export const parseCollaboratorEntry = (value: unknown, label: string): CollaboratorEntry => {
+  const entry = objectRecord(value, label);
+  if (entry.kind === "agent") {
+    requireKeys(entry, [
+      "kind", "address", "agentDefinitionId", "agentRunId", "platformAgentRunId", "launchConfiguration",
+      "addedAt", "addedViaAgentRunId",
+    ], label);
+    return {
+      kind: "agent",
+      address: rootLevelAddress(entry.address, `${label}.address`),
+      agentDefinitionId: requiredString(entry.agentDefinitionId, `${label}.agentDefinitionId`),
+      agentRunId: requiredString(entry.agentRunId, `${label}.agentRunId`),
+      platformAgentRunId: nullableString(entry.platformAgentRunId, `${label}.platformAgentRunId`),
+      launchConfiguration: parseLaunchConfiguration(entry.launchConfiguration, `${label}.launchConfiguration`),
+      addedAt: isoTimestamp(entry.addedAt, `${label}.addedAt`),
+      addedViaAgentRunId: requiredString(entry.addedViaAgentRunId, `${label}.addedViaAgentRunId`),
+    };
+  }
+  if (entry.kind !== "agent_team") throw new Error(`${label}.kind must be 'agent' or 'agent_team'.`);
+  requireKeys(entry, [
+    "kind", "address", "teamDefinitionId", "teamRunId", "coordinatorAddress", "members", "handoffs",
+    "defaultLaunchConfiguration", "taskExecutions", "addedAt", "addedViaAgentRunId",
+  ], label);
+  const address = rootLevelAddress(entry.address, `${label}.address`);
+  const members = requiredArray(entry.members, `${label}.members`).map((member, index) =>
+    parseCollaboratorTeamMember(member, address, `${label}.members[${index}]`));
+  const memberAddresses = new Set(members.map((member) => member.address));
+  if (memberAddresses.size !== members.length) throw new Error(`${label}.members repeat an address.`);
+  const coordinatorAddress = canonicalNonRootAddress(entry.coordinatorAddress, `${label}.coordinatorAddress`);
+  if (!memberAddresses.has(coordinatorAddress)) throw new Error(`${label}.coordinatorAddress is not one of its members.`);
+  const handoffs = normalizeCollaborationHandoffs(entry.handoffs, `${label}.handoffs`);
+  for (const handoff of handoffs) {
+    if (!memberAddresses.has(handoff.from as AgentTeamAddress) || !memberAddresses.has(handoff.to as AgentTeamAddress)) {
+      throw new Error(`${label} handoff '${handoff.from}' -> '${handoff.to}' leaves the Team.`);
+    }
+  }
+  return {
+    kind: "agent_team",
+    address,
+    teamDefinitionId: requiredString(entry.teamDefinitionId, `${label}.teamDefinitionId`),
+    teamRunId: requiredString(entry.teamRunId, `${label}.teamRunId`),
+    coordinatorAddress,
+    members,
+    handoffs,
+    defaultLaunchConfiguration: parseLaunchConfiguration(entry.defaultLaunchConfiguration, `${label}.defaultLaunchConfiguration`),
+    taskExecutions: parseTaskExecutions(entry.taskExecutions, `${label}.taskExecutions`),
+    addedAt: isoTimestamp(entry.addedAt, `${label}.addedAt`),
+    addedViaAgentRunId: requiredString(entry.addedViaAgentRunId, `${label}.addedViaAgentRunId`),
+  };
+};
+
+/** `collaborators` is optional on read: an absent list truthfully means none were added. Writers always emit it. */
+export const parseCollaborators = (value: unknown, label: string): CollaboratorEntry[] => {
+  if (value === undefined) return [];
+  return requiredArray(value, label).map((entry, index) => parseCollaboratorEntry(entry, `${label}[${index}]`));
+};
+
+/** Every run ID (AgentRun and TeamRun) inside a task execution forest. */
+export const collectTaskExecutionRunIds = (tasks: readonly TaskExecution[]): string[] => {
+  const ids: string[] = [];
+  const visitMember = (member: TaskTeamMemberExecution): void => {
+    if ("agentRunId" in member) { ids.push(member.agentRunId); return; }
+    ids.push(member.teamRunId);
+    member.members.forEach(visitMember);
+    member.taskExecutions.forEach(visitTask);
+  };
+  const visitTask = (task: TaskExecution): void => {
+    if ("agentRunId" in task) { ids.push(task.agentRunId); return; }
+    ids.push(task.teamRunId);
+    task.members.forEach(visitMember);
+    task.taskExecutions.forEach(visitTask);
+  };
+  tasks.forEach(visitTask);
+  return ids;
+};
+
+/**
+ * Collaborator invariants shared by every tree family:
+ * - addresses are unique and never collide with a configured (or host) address;
+ * - collaborator run IDs are unique and never collide with any other run ID of the tree;
+ * - an extra copy (a task execution at a collaborator address) has the collaborator's kind
+ *   and, for a Team, its member layout.
+ * `owners` are every holder of task executions outside the collaborators themselves.
+ */
+export const validateCollaboratorInvariants = (input: Readonly<{
+  collaborators: readonly CollaboratorEntry[];
+  reservedAddresses: Iterable<string>;
+  /** Run IDs of the tree outside the collaborator entries (root, configured members, task executions). */
+  otherRunIds: Iterable<string>;
+  owners: readonly Readonly<{ taskExecutions: readonly TaskExecution[] }>[];
+}>): void => {
+  const reserved = new Set(input.reservedAddresses);
+  const runIds = new Set(input.otherRunIds);
+  const claim = (runId: string): void => {
+    if (runIds.has(runId)) throw new Error(`Duplicate run ID '${runId}'.`);
+    runIds.add(runId);
+  };
+  const byAddress = new Map<string, CollaboratorEntry>();
+  for (const entry of input.collaborators) {
+    if (byAddress.has(entry.address)) throw new Error(`Duplicate collaborator address '${entry.address}'.`);
+    if (reserved.has(entry.address)) throw new Error(`Collaborator address '${entry.address}' collides with a configured placement.`);
+    if (entry.kind === "agent") claim(entry.agentRunId);
+    else {
+      claim(entry.teamRunId);
+      for (const member of entry.members) {
+        if (reserved.has(member.address)) throw new Error(`Collaborator member '${member.address}' collides with a configured placement.`);
+        claim(member.agentRunId);
+      }
+      collectTaskExecutionRunIds(entry.taskExecutions).forEach(claim);
+    }
+    byAddress.set(entry.address, entry);
+  }
+  const visit = (task: TaskExecution): void => {
+    const entry = byAddress.get(task.address);
+    if (entry) {
+      if (entry.kind === "agent" && !("agentRunId" in task)) {
+        throw new Error(`Task execution at collaborator '${task.address}' must be an Agent.`);
+      }
+      if (entry.kind === "agent_team") {
+        if (!("teamRunId" in task)) throw new Error(`Task execution at collaborator '${task.address}' must be a Team.`);
+        const layout = new Set(entry.members.map((member) => member.address));
+        if (task.members.length !== layout.size || task.members.some((member) => !layout.has(member.address))) {
+          throw new Error(`Task TeamRun '${task.teamRunId}' does not match collaborator '${task.address}'.`);
+        }
+      }
+    }
+    if ("teamRunId" in task) task.taskExecutions.forEach(visit);
+  };
+  [...input.owners, ...input.collaborators.filter(isCollaboratorTeamEntry)]
+    .forEach((owner) => owner.taskExecutions.forEach(visit));
+};
+
+/** Task-execution owners inside collaborator Teams, for delegator validation (their members delegate). */
+export const collaboratorTaskOwners = (
+  collaborators: readonly CollaboratorEntry[],
+): readonly Readonly<{ members: readonly unknown[]; taskExecutions: readonly TaskExecution[] }>[] =>
+  collaborators.filter(isCollaboratorTeamEntry);
 
 export const deepFreeze = <T>(value: T): T => {
   if (value && typeof value === "object" && !Object.isFrozen(value)) {

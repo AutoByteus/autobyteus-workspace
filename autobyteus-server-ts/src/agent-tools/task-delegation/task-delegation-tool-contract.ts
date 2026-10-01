@@ -4,6 +4,7 @@ import type {
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import {
   cloneCollaborationMemberExecutionIdentity,
+  isRootSubjectKind,
   sameRootExecutionIdentity,
   type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -48,7 +49,7 @@ export const requireConfiguredTaskDelegationToolContext = (
   if (
     !identity ||
     !identity.root ||
-    (identity.root.rootSubjectKind !== "agent_team" && identity.root.rootSubjectKind !== "agent_org") ||
+    !isRootSubjectKind(identity.root.rootSubjectKind) ||
     typeof identity.root.rootRunId !== "string" ||
     !identity.root.rootRunId.trim() ||
     typeof identity.memberAddress !== "string" ||

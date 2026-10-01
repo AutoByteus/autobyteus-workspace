@@ -38,7 +38,12 @@ export interface RunProjectionConversationEntry {
   toolError?: string | null;
   media?: Record<string, string[]> | null;
   fileAttachments?: readonly ContextFileReference[];
+  messageId?: string;
+  dedupeKey?: string;
   senderId?: string | null;
+  /** `inter_agent_message` only: the sender AgentRun and, when its root can resolve it, its address. */
+  senderAgentRunId?: string | null;
+  senderAddress?: string | null;
   ts?: number | null;
 }
 
@@ -128,3 +133,15 @@ export interface RunProjection {
   lastActivityAt: string | null;
   hasEarlierActiveTraceEvents: boolean;
 }
+
+/**
+ * Fills `senderAddress` on inter-agent replay items from the root's execution index (the
+ * sender's address is needed for its display name; the stored trace has only its run ID).
+ */
+export const resolveInterAgentSenderAddresses = (
+  conversation: RunProjectionConversationEntry[],
+  addressOf: (agentRunId: string) => string | null,
+): RunProjectionConversationEntry[] => conversation.map((entry) =>
+  entry.kind === "inter_agent_message" && entry.senderAgentRunId
+    ? { ...entry, senderAddress: addressOf(entry.senderAgentRunId) }
+    : entry);

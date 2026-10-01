@@ -1,3 +1,24 @@
+# API-REV-009 — integrated execution ledger (completed Fail)
+
+2026-10-01. Final77.9%; API009-F001 blocks acceptance. Initial planned cases and chronological checkpoints are preserved below, including explicit correction of ignored scripted reloads. Counts overlap.
+
+| Case | Expected boundary | Result | Evidence / limit |
+|---|---|---|---|
+| I09-01 | Focused DTO/server/web then broader repository | Pass — scoped | contracts8, server18, web38; broader server108/core101/web110. Exact JSON/log pairs in api-rev-009. Not full-suite. |
+| I09-02 | Hosted native Agent/Team recovery and reconnect | Fail — integrated reconnect | New native-root10/termination6 Pass and real A/B FIFO success do not override actual reload duplicate bubbles. F001. |
+| I09-03 | Dormant GraphQL/WS and no restoring inspection | Pass — scoped |13 strict public root snapshots/153 collaboration frames; dormant and final stored input empty; no inspection activation. |
+| I09-04 | Normal Stop/negative ownership and atomic two-child hydration | Pass — scoped combination | Actual two-child normal host Stop/retained/cold observations; repository owner/atomicity/failure tests. Full-product negative fault matrix Not Tested. |
+| I09-05 | Sender/identity/Team/Org/current reader retention regressions | Fail — held early identity/history merge | Selected repository sender/Team/Org/current-reader checks Pass; actual identity merge duplicates. Fresh complete Team/Org product matrix Not Tested. |
+| I09-06 | Isolated broader real-product journey | Fail | Verified native reload shows2 copies per child/1 server entry each. Temporary captured-response probe2Fail. Other scoped observations in report. |
+| I09-99 | Cleanup and preservation audit | Pass — qualified | Own app/provider stopped/data root removed; production and input pins preserved except4 API authorities. Logical index preserved; raw index stat-cache bytes changed. |
+
+### Final checkpoint
+True new renderer timeOrigin1790859976183.3 ->1790860118043.5 with sentinel removed. Both child snapshots exact before/after revision12. Two DOM copies each of one held input; no parent execution of either. API009-F001 preliminary implementation Local Fix for focused failure-origin review. Retry after this failed reconnect not performed; normal cleanup Stop discarded held state. Product requests45 (17parent/28compaction), remote0; one consumed actual read_file, no replay.
+
+Evidence assertion program Pass validates observations only, while product acceptance is Fail. Temporary probe2Fail is not a newly passing regression. Own instance iso-56935-c9f4 stopped without force; ports released/data root removed. Provider stopped. No other process/user-data cleanup or production edit.
+
+---
+## Historical ledger
 # API/E2E Test-Case Ledger
 
 ## Ledger meta
@@ -563,3 +584,139 @@ API008-C01 execution completed exit0; exact command/times/log in api-rev-008/API
 API008-C01: **Pass, 30 tests /3 files, zero skipped**, exit0 (18 harness +10 boundary including two new guards +2 observation). Actual builder/framing/valid-Unicode/source-immutability, setup and failure-observation tests retained. Named setup scenarios do not generate or contact Qwen/DeepSeek. No overlapping grand total with the narrow two or previous28. API008-AUDIT remains pending.
 API008-AUDIT: **Pass**. 2528 existing input references checked; exactly seven allowed pins differ (three durable files/four canonical API artifacts), no unexpected changes/missing paths. Original API007 flow.log SHA preserved; CRR011/source review, CRR012 test review, production/prompt pins unchanged. Twelve cumulative paths = previous11 + consumer; nine unchanged this round. Owned diff check exit0; observed owned flow temporary roots removed. Standard test DB retained, no services/browser/provider campaign launched.
 API008 completed reconciliation: TR001 red expected2Fail -> green2Pass -> broader30Pass/3files, no unresolved local correction case. Final Pass95.0; broaderNotRequired for reporting-only delta; independent12-path successful test-code re-review required. API007 historical Pass95.0 and full limitations retained, not rescored. Fresh routing next.
+
+I09-01 setup attempt1: evidence runner resolved tickets/ instead of worktree (cwd parents off by one); contract path/PNPM failure before tests. Logs preserved as *-setup-attempt1. Corrected helper cwd only, no product result inferred.
+
+I09-01 checkpoint: contracts8 Pass (node --test, exit0), focused server18 Pass/4files (Vitest exit0). Fresh owned logs. Web running; no integrated acceptance inferred.
+
+I09-01 completed focused stage: web38Pass/4files; contracts8Pass; server18Pass/4files (groups not summed unique).
+I09-02 attempt1: pre-parent Agent/Team2Pass, post-response2Fail; reported exception from cleanup root termination (no active turn to interrupt) may mask an earlier test assertion. Preserve native-root.log; diagnose before product attribution. No wider/UI run started.
+
+I09-02 rerun native-root2:4Pass/1file. Agent and hosted Team, pre-parent and settled post-response each prove actual native input snapshot -> production root/strict stream reconnect -> A/B once. Fake strategy/provisioning/host are explicit; no generation-attempt/provider/network/UI proof. Prior failing post-response timing assertion and masking cleanup remain in attempt1 evidence.
+
+I09-03/04 native-root3:8Pass (4recovery/reconnect+4actual root Stops),2GraphQL setup Fail before resolver due GraphQL ESM/CJS realm mismatch. Existing project GraphQL tests resolve graphql/index.js through createRequire; adopt that execution setup, unchanged assertions. Not a product/API failure.
+
+I09-02/03/04 native-root4:10Pass/1file, fresh GraphQL resolver strict dormant/cold2Pass, root-only native stop4Pass, recovery/reconnect4Pass. Not host-whole-command/HTTP/Electron/model/tool-run proof. Fixture GraphQL realm resolved with createRequire, no production/dependency edit. Beginning scoped wider regression in three independent packages.
+
+I09-05 scoped regression Pass:server108/13files,core101/8files,web110/13files, all exit0/zero skips. Counts overlap earlier groups and are not summed as unique coverage. I09-06 now Required at repository confidence86.7; build preparation begins, no runtime proof yet.
+
+I09-04 server ordering extension: native-termination6Pass/1file. AgentRunService consumes real child-root success/failure; actual ROOT_LIFECYCLE inactive is present for success, child-finish uncertainty and later host-manager false. Host/history not confirmed on failure. Host runtime and injected cleanup failure explicitly controlled. I09-06 fixture guard11checks/8localrequests Pass; remote0. Build still packaging; no app result yet.
+
+### API009 I09-06 checkpoint — isolated built Agent recovery
+2026-10-01T13:02Z. Worktree isolated instance iso-56935-c9f4 built/launched successfully, control56935/backend56936; own temporary root. Local protocol emulator57269 only (no remote credentials/inference). Public API seeded three Agent definitions/one two-member Team; UI normal @ admission created hosted Agent and Team.
+- Dormant GraphQL: three offline child statuses/null recovery; required child-only agent_input_states=[]; inspecting reviewer did not activate it.
+- Hosted Agent pre-parent: API9-AGENT-A held/revision16 after failed compaction, B queued/revision19 while retry suspended; same backend process survived renderer reload; actual UI reconstructed A/B and COMPACTING/Queued. Release produced exactly one ACK A then ACK B, no remaining Queued/COMPACTING.
+- Evidence: product/dormant-root.api.json, agent-a-held.api.json, agent-ab-recovering.api.json, reconnect-*.json, agent-recovery-result.json, loopback-wire.jsonl. Product case ongoing: Team/Stop/retention not yet complete. Ambiguous extra reviewer click after reload was a no-op; reload itself already restored selected child. Initial offscreen model click and popup-obscured send were setup no-ops; model was then explicitly filtered/verified before the first generation.
+
+### API009 I09-06 checkpoint — hosted Team recovery / actual read_file
+2026-10-01T13:03Z. Team lead started through normal selected member composer; peer stayed dormant. API9-TOOL-READ-TEAM completed an actual read_file of the owned fixture and its response before the deliberate post-response compaction failure. Subsequent A failed pre-parent and was held; B queued under a suspended retry; renderer reload in the same backend process restored the selected lead/COMPACTING/B queued. Release yielded one ACK A and one ACK B. Team recovery result and provider-wire assertions to be consolidated; whole-host Stop remains next.
+
+### API009 evidence correction — requested reload was not executed
+2026-10-01T13:05Z. Explicit sentinel/timeOrigin probe proves location.reload() was ignored by the packaged shell: sentinel 4133b1c3-8603-4556-bace-2130872ceafa and timeOrigin1790859212197.6 unchanged. Earlier checkpoint language saying reload restored/reconnected is WITHDRAWN. A/B recovery and same-renderer retained Stopped results stand; no reconnect/cold claim from those attempts. File names containing reconnect/cold denote attempted intent only. Continuing via documented browser navigate and fresh-document proof before acceptance.
+Whole-host Stop through normal history terminate button succeeded while both native children were compacting: Team/Agent show STOPPED and Offline, history Stop control gone. The next cold check is unresolved, not a product failure.
+
+### API009 I09-06 correction closed for cold inspection; reconnect rerun next
+2026-10-01T13:06Z. CLI navigate refuses file://; CUA bound the exact isolated build path and confirmed own API9 run. Native View > Reload succeeded (new timeOrigin1790859976183.3, sentinel absent, wire observer absent). Cold current-reader inspection of both hosted Agent and Team has no native COMPLETED/STOPPED/COMPACTING cards, preserves conversation/tool text and Offline state. This is actual renderer cold-state proof, not process-restart/power-loss proof. Same-renderer saved Stopped retention before native Reload was verified for both children. Actual same-process pending reconnect still needs rerun using native menu; previous scripted reload claims remain withdrawn.
+
+
+## SR036 fresh reproduction plan — four new independent attempts
+| Case | Expected | Initial result |
+|---|---|---|
+| R1A | Fresh hosted Agent held A -> true View Reload, same backend/native instance, one bubble | Not Tested |
+| R1T | Fresh hosted Team lead held A -> true View Reload, same backend/native instance, one bubble | Not Tested |
+| R2A | Independently prepared second hosted Agent, same controls (attachment if supported) | Not Tested |
+| R2T | Independently prepared second hosted Team lead, same controls | Not Tested |
+Each includes before/no-reload control. Exact fresh evidence: api-e2e-evidence/sr036-fresh-reproduction/. Preserve original API009 evidence/result. No fix authorized.
+
+SR036 R1A: Reproduced. Fresh hosted Agent one Held bubble in before/no-reload controls; native View > Reload changed document, reselected sr036 reviewer, now two bubbles. One live entry/instance unchanged; exact fresh evidence r1a-* in reproduction/product. No fix.
+
+SR036 R1T: Reproduced after native View > Reload and reselect lead. Before/no-reload1 Held bubble -> after2. Native instance/live entry unchanged. This attempt submitted A near seed2 post-response completion rather than well after the error; before reload it reached the same exhausted pre-parent held state. r1t-* records timing.
+
+SR036 R2A: Reproduced on independent second host/Agent, including normal native-picker attachment.txt. Before/control1 Held bubble with attachment -> native View Reload/new document/reselect ->2 bubbles, both retaining attachment. Live state unchanged. r2a-* evidence. No source/test edit.
+
+SR036 R2T: Reproduced on independently admitted second hosted Team lead. Before/control1 -> native View Reload/new document/reselect ->2 user bubbles. Source unchanged. All4 fresh prepared attempts reproduced; bounded path, not general frequency inference. R2A qualification: history bubble text is expanded with attachment context, not byte-identical to the live Held bubble; r2a-expanded-dom.json counts two corresponding user-message leaf nodes.
+
+
+# API010 initialized — CRR016 / IR011
+All cases below Not Tested initially; plan at api-e2e-evidence/api-rev-010/plan.md. API009-F001 reused; fresh corrected native history only.
+
+| Case | Expected | Result |
+|---|---|---|
+| I10-01 | Correct identity/producer/history/pending and attachments | Not Tested |
+| I09-02/03/04 | Native FIFO, actual GraphQL, root/whole Stop failure boundaries | Not Tested |
+| I10-02 | Ownership, atomicity, sender/echo and lifecycle negatives | Not Tested |
+| I10-03 | Fresh corrected isolated build/start | Not Tested |
+| API009-F001-A | Agent real repeated reload, held/queued, attachment, new-user recovery | Not Tested |
+| API009-F001-T | Hosted Team lead same journey | Not Tested |
+| I10-04 | Normal two-child whole Stop, truthful history | Not Tested |
+| I10-99 | Own cleanup and preservation | Not Tested |
+
+SR036 prior diagnostic reconciliation: all four pre-fix cases Reproduced, cleanup complete; see new plan for scope. No historical score changed.
+
+API010 identity-contract completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/identity-contract.{log,json}. Counts and validity reviewed separately.
+
+API010 identity-core completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/identity-core.{log,json}. Counts and validity reviewed separately.
+
+API010 identity-server completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/identity-server.{log,json}. Counts and validity reviewed separately.
+
+API010 identity-web completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/identity-web.{log,json}. Counts and validity reviewed separately.
+
+API010 native-root4 completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/native-root4.{log,json}. Counts and validity reviewed separately.
+
+API010 native-termination completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/native-termination.{log,json}. Counts and validity reviewed separately.
+
+API010 focused-server completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/focused-server.{log,json}. Counts and validity reviewed separately.
+
+API010 focused-web completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/focused-web.{log,json}. Counts and validity reviewed separately.
+
+API010 regression-core completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/regression-core.{log,json}. Counts and validity reviewed separately.
+
+API010 regression-server completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/regression-server.{log,json}. Counts and validity reviewed separately.
+
+API010 regression-web completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/regression-web.{log,json}. Counts and validity reviewed separately.
+
+API010 contracts completed exit0; exclusive log/command at api-e2e-evidence/api-rev-010/contracts.{log,json}. Counts and validity reviewed separately.
+
+## API010 post-repository gate
+I10-01 Pass: presentation8/core60/server28/web93 (includes native Agent/Team2). I09-02/03/04 Pass: native root10/whole Stop6; focusedserver18/web38. I10-02 Pass within controlled seams: regressioncore102/server108/web110, rootcontracts8. Counts overlap; never sum as unique. Guard11 checks/8local requests Pass, remote0, owned guard process exited. No durable edits required. Source-level unknown/keyed optional codec, attachment/name union and separate echo policy covered; no migration campaign.
+
+
+I10-03 Fail / API010-F001: start --build exit3 BUILD_FAILED; nested guard exits1 on four IR011 test imports. No app launched. API009-F001-A/T and I10-04 Not Tested due package build prerequisite, no new renderer/history/retry evidence.
+
+API010 build-guard completed exit1; exclusive log/command at api-e2e-evidence/api-rev-010/build-guard.{log,json}. Counts and validity reviewed separately.
+
+API010 final reconciliation: I10-01 / I09-02,03,04 / I10-02 scoped Pass, all counts/limits in report. I10-03 Fail/API010-F001 confirmed by direct guard exit1. API009-F001-A/T and I10-04 Not Tested (build prerequisite failed), integrated F001 open. I10-99 own process cleanup confirmed; preservation audited separately. Overall Fail75.0, no successful-test/Delivery.
+
+## API011 plan — before execution
+I11-01 guard/workspace native/web boundary: Not Tested. I09-02/03/04 source-matched regression reuse review: Not Tested. I11-03 full corrected build: Not Tested. API009-F001-A/T fresh product history/reload/recovery: Not Tested. I11-04 product Stop: Not Tested. I11-99 cleanup/preservation: Not Tested. Plan: api-e2e-evidence/api-rev-011/plan.md. No new round Pass or confidence yet.
+
+API011 workspace-native completed exit0; exclusive log/command at api-e2e-evidence/api-rev-011/workspace-native.{log,json}. Counts and validity reviewed separately.
+
+API011 web-boundary completed exit0; exclusive log/command at api-e2e-evidence/api-rev-011/web-boundary.{log,json}. Counts and validity reviewed separately.
+
+API011 I11-01 Pass: native2 plus web17 (4 files) and mandatory guard; exact logs. I09-02/03/04 retained API010 evidence after enumerated pin comparison, not fresh reruns. I11-03 backup/build starting, unresolved. 
+## API011 post-repository gate
+Fresh unchanged web guard + workspace native2 Pass; normal web17/3files Pass. API010 production/test pin reuse inspected 6312 paths (exact count in regression-reuse.json), only enumerated TESTING and removed web-native test differ; root IR012 commands/new files separately reviewed and freshly run. API010 core/server/root/Stop/negative/sender groups remain prior scoped evidence, not rerun or summed. Seven-category scorecard: acceptance90, changed-boundary95, realism75, environment90, failure/recovery90, user/desktop75, durable95; mean610/7=87.1%. Critical same-instance new-renderer proof remains missing, so broader Required. Full documented worktree build then deterministic owned loopback actual product is selected. No remote provider use; no source edits or guard bypass. API010 Fail75.0 remains last completed result. Native transport/Apollo mock gap explicitly remains.
+
+
+API011 temporary fixture validation Pass11 guard checks,8 local requests,0 remote; guard child stopped and owned port free. Product not yet started. product/guard-tool-results.json and guard-cleanup.json.
+
+API011 I11-03 documented full build/start completed exit0. Exclusive isolated-start.{json,stderr,exit}; inspect outcome before continuing.
+
+API011 environment checkpoint: full documented build/start exit0. Owned iso-62666-3bea / app91688 / server62667 / control62666; same app is alive. Native CUA initial AX correctly showed this isolated data-root, but later exact-path discovery repeatedly failed cgWindowNotFound, including reset/title/focus recovery; bundle id correctly refuses ambiguity. No other app selected or modified. User asked asynchronously to show owned window. CUA mac launch_app unavailable. CLI renderer remains responsive. Title-only marker 'API11 isolated validation' does not change runtime input state.
+Before declaring Blocked, use documented browser run-script for a normal DOM file-selection fixture (File/DataTransfer/change on observed existing input; real upload/finalization and normal composer pipeline; no Pinia/raw-history mutation) and attempt actual document reload with explicit async script and sentinel/timeOrigin verification. This can prove attachments/history/renderer boundary, not native picker physical gesture. Native menu proof remains separate if unavailable; no claims based on attempted or ineffective reload. Existing source gap concerns new document, not picker implementation. All prior ineffective claims stay withdrawn. No backend restart or new remote provider budget.
+
+## API-REV-011 — Blocked81.4 / CRR019-IR012 / 2026-10-01
+Large/High. API010-F001 full documented build/start now Pass0 with guard unchanged; historical API01075Fail unchanged. Native2/web17 fresh Pass; bounded source-matched API010 regressions retained. Fresh actual Agent+Team A attachment/Held and B Queued, raw/history/live keys and three bounded cycles each checkpoint Pass. Actual new renderer BLOCKED: CUA cgWindowNotFound; async script reload ineffective by unchanged sentinel/timeOrigin. API009-F001 remains OPEN; C success/current productStop NotTested. No source/durable changes;API15 pending eventual proportional review. Postrepo87.1; final570/7=81.4. Model disarmed; same backend/queues retained pending native/user normal View > Reload, NOT cleanup-complete. No team handoff for external Blocked. Current report, checkpoint-result, native-ui-recovery, resource-checkpoint and final-audit own details; historical limits unchanged.
+
+### API011 resume checkpoint — 2026-10-01T18:37:16.317150+00:00
+Native control available again on exact isolated app; no user action needed. Before-reload provider/raw/public state/wire captured under product/resume-*. Genuine reload still unresolved pending native action.
+
+API011 resumed reload checkpoint Pass: two native reloads (View Reload and Cmd+R), document timeOrigins1790878010930.6→1790879844700→1790879909835.6, sentinel absent each new document. Same backend92623 and exact native states/raw/history both children; one A Held + B Queued + original attachment name each reconstruction. Provider24/6parent/18compaction unchanged, postboot observed hydration outbound0. Boot observer gap explicitly bounded by unchanged native/raw/provider counts. reload-result.json and analyze-reload.py. No user intervention. Prior native cgWindowNotFound transient cause unknown; prior scripted claims stay withdrawn. Next C recovery and product Stop unresolved.
+API011 new-input recovery Pass for Agent and Team: real normal C after repeated reload authorizes one summary each then A/B/C FIFO parent once each, raw user A/B/C once, attachments remain; native sameinstances; requests24→32 (6parents+2summaries). recovery-result.json/analyze-recovery.py; controlled output not semantic quality. Entire API009-F001 fresh integrated Agent/Team identity/reload/recovery scope now executable Pass. Proceed normal active whole Stop.
+
+## API-REV-012 — resumed validation Pass95.0 / CRR019-IR012 / 2026-10-01
+User challenged API011 missing native reload. Next exact-bundle CUA worked; no user assistance. Same API011 backend92623 and Agent/Team native instances survive two proven new documents with lost sentinels/timeOrigin changes. One Held A/Queued B+original attachment each, exact state/raw/history and provider24 unchanged; postboot instrumented hydration outbound0 (boot gap bounded). New C normal input:2summaries+6FIFO parent turns once, rawA/B/C each1. Normal active whole Stop both children aborts2calls, retains Stopped/earlierCompleted in same renderer; late responses discarded. Third genuine cold renderer correctly no invented native activity journal or reactivation. Final product38/16parent/22compaction,remote0. API009-F001 integrated closure Pass, API010 build readiness already PassAPI011. API011 Blocked81.4/API01075Fail/API00977.9Fail unchanged historically.
+No new repository run/durable edits. API01119/4files plus full build and hash-qualified API010 negatives remain scoped. Final categories95each mean95.0, broaderRequiredCompleted. Cleanup own app/provider/data/ports complete; logs/native memory retained. API15/API0093 need independent successful-test review; CRR013 pre-integration unchanged. NoDelivery/semantic rescore/migration/newbudget. All prior limits retained as current report states. Evidence api-rev-011 resumed captures plus api-rev-012 metadata/index/audit; temporary Stop assertion correction disclosed. Single most-specific fresh routing rule to follow.
+
+I11-04 Pass:2active compactions normal whole Stop;38finalrequests; append-only normal interrupt boundaries; retained/cold behavior correct. I11-99 Pass:normal isolated stop0,no force,data removed,provider absent,3ports free. All pending executed cases reconciled; negative matrix retained repository scoped, not freshly product fault-injected.

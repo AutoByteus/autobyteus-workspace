@@ -37,6 +37,7 @@
         :has-earlier-active-trace-events="target.context.state.hasEarlierActiveTraceEvents"
         :browse-subject="target.browse"
         :skill-tagging="skillTagging"
+        :composer-placeholder="composerPlaceholder"
         class="h-full"
       >
         <template v-if="skillTarget" #composerContext>
@@ -66,7 +67,9 @@ const props = withDefaults(defineProps<{
   recoveryNotice?: string | null
   /** `/` skill tags in the box; supplied only for standalone agent runs. */
   skillTagging?: SkillTaggingCapability | null
-}>(), { showHeaderActions: false, recoveryNotice: null, skillTagging: null })
+  /** Composer placeholder for a target without skill tags. */
+  composerPlaceholder?: string | null
+}>(), { showHeaderActions: false, recoveryNotice: null, skillTagging: null, composerPlaceholder: null })
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
@@ -86,8 +89,10 @@ const fallbackTitle = computed(() => {
   const suffix = props.target.context.state.runId.slice(-4).toUpperCase()
   return `${agentName.value} - ${suffix}`
 })
-const headerTitle = computed(() => standaloneRunTitle.title.value ?? fallbackTitle.value)
-const headerFullTitle = computed(() => standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
+// A task child of a standalone run is titled by its name.
+const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member')
+const headerTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.title.value ?? fallbackTitle.value)
+const headerFullTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
 const senderNameByAgentRunId = computed(() => 'collaborationMessages' in props.target
   ? Object.freeze(Object.fromEntries(Object.entries(
       props.target.collaborationMessages.memberIdentityByAgentRunId(),

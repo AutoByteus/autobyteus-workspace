@@ -14,6 +14,7 @@ import type { ToolApprovalTarget } from '~/types/segments';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { hasSendableDraft, resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 import { useAgentOrgContextsStore } from './agentOrgContextsStore';
+import { useAgentRunCollaborationStore } from './agentRunCollaborationStore';
 import type {
   ActiveAgentWorkspaceTarget,
   TeamWorkspaceContextView,
@@ -37,6 +38,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   const agentTeamRunStore = useAgentTeamRunStore();
   const contextFileUploadStore = useContextFileUploadStore();
   const agentOrgContextsStore = useAgentOrgContextsStore();
+  const agentRunCollaborationStore = useAgentRunCollaborationStore();
   const route = useRoute();
 
   const standaloneTeamView = (team: AgentTeamContext): TeamWorkspaceContextView => {
@@ -92,8 +94,13 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     if (selectionStore.selectedType === 'agent') {
       const context = agentContextsStore.activeRun || null;
       if (!context) return null;
+      // A task child selected under this run is the target; the run row selects the run's own agent.
+      const childTarget = agentRunCollaborationStore.childTargetFor(context.state.runId);
+      if (childTarget) return childTarget;
+      const collaborationMessages = agentRunCollaborationStore.hostMessagesView(context.state.runId);
       return Object.freeze({
         kind: 'standalone_agent', access: 'live', context,
+        ...(collaborationMessages ? { collaborationMessages } : {}),
         interaction: Object.freeze({
           send: async () => { await agentRunStore.sendUserInputAndSubscribe(); },
           interrupt: async () => { await agentRunStore.interruptGeneration(context.state.runId); },

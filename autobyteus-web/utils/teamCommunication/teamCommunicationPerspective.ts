@@ -1,3 +1,4 @@
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
 import { findContainingTaskExecutionRunId } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import type { TeamCommunicationMessageDto } from '@autobyteus/team-stream-contracts';
 import type { TeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
@@ -6,7 +7,6 @@ import type {
   CollaborationMessageMemberIdentity,
   CollaborationMessagesPerspective,
 } from '~/types/workspace/collaborationMessagesContextView';
-import { memberAddressBasename } from '~/types/agent/AgentTeamAddress';
 
 const compareDesc = (left: CollaborationMessagePerspectiveRow, right: CollaborationMessagePerspectiveRow): number =>
   right.createdAt.localeCompare(left.createdAt) || left.messageId.localeCompare(right.messageId);
@@ -53,7 +53,8 @@ export const projectTeamCommunicationMemberIdentity = (
   const address = view.getMemberAddress(agentRunId);
   if (!address) throw new Error(`Team communication participant '${agentRunId}' is unavailable.`);
   const executionRunId = findContainingTaskExecutionRunId(view.getExecutionTree(), agentRunId);
-  const common = { address, label: memberAddressBasename(address) };
+  // F-03: one display-name rule for tab senders in every root.
+  const common = { address, label: memberDisplayName(address) };
   return executionRunId ? { ...common, kind: 'delegated',
     hostRunId: view.getAgentExecutionLocation(agentRunId)!.containingTeamRunId,
     executionRunId }

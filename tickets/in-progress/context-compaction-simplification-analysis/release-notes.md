@@ -1,5 +1,8 @@
 # Draft release notes — context-compaction-simplification-analysis
 
+DR002: latest-base integration is conflicted; no Electron build or release from
+that state. These notes remain an unverified draft.
+
 Prepared before user verification on 2026-10-01. **Unreleased candidate, not a
 version/tag/publication approval.** See `handoff-summary.md` for exact evidence
 and residual limits.

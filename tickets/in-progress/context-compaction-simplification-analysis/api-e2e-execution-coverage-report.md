@@ -1,3 +1,334 @@
+# API-REV-012 — Pass / 95.0%: genuine renderer reload and recovery verified
+
+2026-10-01. **Large / High, reviewed route; request separate proportional API-owned test review. Not Delivery.** Approved SR033 / Ready SR038 / ARCH-REV006 / IR012 / CRR019. This completed resumed result supersedes API011 Blocked81.4 as current validation authority; API011, API010 Fail75.0 and API009 Fail77.9 remain historical.
+
+**API009-F001 integrated closure verified for newly corrected native Agent AND hosted Team history. API010-F001 full-build readiness verified in API011.** User correctly challenged asking for manual assistance: native control recovered on our next exact-bundle attempt, and we performed the reloads ourselves. Prior cgWindowNotFound was real, but its underlying cause is unknown. No user UI action was needed. All earlier ineffective scripted reload claims remain withdrawn.
+
+## Scope, authority and execution surface
+Full cumulative authorities/supplements remain those enumerated by API011, including requirements, investigation, solution history, design, implementation history, independent architecture/source reviews, input-hold SR027, accepted disposition SR020, exact v5/output format, SR035 root behavior and SR038 identity/no-migration. IR012/CRR019 override archived IR011/CRR016. Legacy/compatibility and persisted-data transition remain clean: one ordinary optional-key reader, **future-native correctness, no migration/backfill**, old keyless captures unchanged.
+
+Root TESTING.md, applicable web/server instructions, isolated-app docs/skill and advertised browser-automation skill governed execution. Same fresh worktree build and owned API011 app/backend/native instances continued; no restart, fixture replacement, private store/history mutation, old build substitution or guard bypass. All source and durable tests unchanged. API15 paths in protected-api15-check.json remain pending successful-test review, especially API0093. CRR013 is pre-integration, not current approval.
+
+Evidence: api-e2e-evidence/api-rev-011 contains original build/tests and resumed product/resume-* captures; api-rev-012 indexes this completed continuation. API012 ran no new repository suites; original checks remain attributed to their commands and source-matched evidence. Temporary capture assertions are not durable tests or extra suite counts.
+
+## Results and direct evidence
+| Case | Result | Evidence and boundary |
+|---|---|---|
+| I11-01 / API010-F001 repository boundary | Pass, retained fresh API011 | Original unchanged guard + workspace native2; normal web17 in3 files.19/4files total, not overlapping repeats. Native harness controlled model/provisioning/Apollo is not HTTP proof. |
+| I09-02/03/04 and remaining negative matrix | Retained scoped Pass | API010 native root10/termination6; focused server18/web38; regression core102/server108/web110 and identity groups after API011 bounded hash check. Recipient/node/instance/revision/stale-owner/atomicity/sender/echo fault injection remains repository evidence, not claimed as a new full-product negative matrix. |
+| I11-03 full product build | Pass | Documented pnpm --silent isolated-app start --build exit0. Corrected native writer/codec packaged hashes match rebuilt outputs; actual HTTP/WS/native persistence used. Guard Pass alone was not substituted. |
+| API009-F001-A/T actual new-document reconstruction | **Pass** | Two native reloads, each with changed performance.timeOrigin and vanished sentinel. Agent and Team each retain exactly one Held A with original attachment name and one separate Queued B. Exact live states/native IDs/public history/raw bytes unchanged across both reloads. reload-result.json / analyze-reload.py. |
+| API009-F001-A/T no hydration side effects | **Pass** | Backend PID92623 and native instances unchanged; provider24 requests (6parent/18failed compaction) unchanged; captured postboot hydration connections outbound0. Boot-window observer gap is bounded by exact native/raw/history/provider equality. No reingestion, extra model work or hidden retry. |
+| API009-F001-A/T new-input recovery | **Pass** | Normal new C composer input explicitly authorizes one successful compaction per child, then A/B/C parent turns in FIFO order exactly once. Each raw user input once, same native instances, attachment remains.24→32 requests =2summaries+6parents. recovery-result.json / analyze-recovery.py. |
+| I11-04 active whole-host Stop | **Pass** | Normal host Terminate action while both real native compactions await local responses; both become Stopped without spinner, earlier Completed cards retained. Requests36/38 abort; released late responses discarded. No retries/commit after Stop. stop-result.json / analyze-stop.py. |
+| I11-04 stopped history/new renderer | **Pass** | Third proven new document after Stop. History selection does not reactivate root; input/status collections empty, request count38 unchanged. No fabricated native cards in cold renderer, consistent with no persistent native activity journal. |
+| I11-99 cleanup/preservation | Pass, scoped audit | Own instance stopped gracefully, data root removed, provider stopped, all3 ports free. Native memory and logs copied before cleanup. API15/source/guard/owner pins and raw/logical Git index preserved; final-audit.json. |
+
+Same-process details: app91688/backend92623; native Agent20846854-7813-40de-891a-cb3fc477a9e0 and Team leaded1a639f-3dc6-4d94-af49-86cd007d36c9 survived the two held/queued reloads. Document timeOrigins: **1790878010930.6 → 1790879844700 → 1790879909835.6**. Post-Stop cold-renderer timeOrigin1790880198378.8. Root/child addresses and message IDs are in original captures. Team peer remained dormant in the observed root. Renderer reload is not backend restart.
+
+Final local product count38 =16parent+22compaction:18 deliberate503 failures,2successful summaries,2aborted active attempts. Separate fixture guard8 requests/11checks. **Remote inference0; no new provider budget or semantic-quality rescore.**
+
+## Coverage validity and limits
+No durable changes/removals this continuation. Existing native producer/FIFO/history, identity, attachment, sender, echo, ownership, root Stop and atomicity tests remain Still Valid; conformant IR012 root harness retains assertions outside web. Web guard remains original, with no native/core dependency in web tests.
+
+Actual attachment setup in API011 used DOM File/DataTransfer/change on the observed file input followed by normal upload/finalization/composer; it is not OS file-picker proof. The attachment and held-state history boundary, not file-picker implementation, is the changed scope. Screenshots support semantic/API/raw assertions and were inspected.
+
+Temporary Stop assertion initially overrequired byte-identical active raw files. Inspection found exactly the expected appended AgentTurnInterruptedEvent operation_boundary per child. Final probe asserts immutable prior rows/archive plus that exact normal interrupt boundary, unchanged public conversation and no duplicated user input. Initial probe and correction rationale retained; no product defect was hidden. A command-construction syntax error and an ambiguous already-selected Agent label were corrected/observed without extra send; neither is runtime evidence. Native stale-state guard before the third reload was respected by fresh AX observation.
+
+Negative fault matrix is deliberately split: durable executable fault controls plus actual nominal admission, same-instance reconstruction, FIFO and product Stop. No artificial duplicate-ID retransmission journey or new all-provider/platform claim. Previous real-provider/consumed-tool evidence is not newly rerun or inflated.
+
+## Mandatory confidence reassessment
+Evidence judgments for approved current scope, not test pass rates. Postrepository score remains API011610/7=87.1, broader Required. Resumed final:
+| Category | Final | Evidence / residual |
+|---|---:|---|
+| Requirement/acceptance proof |95|Previously critical build/reload/identity/recovery/Stop gaps now direct; prior scoped criteria and accepted disposition unchanged.|
+| Changed-boundary directness |95|Corrected packaged producer, native store/history, HTTP/WS and renderer; no fake keys.|
+| Cross-boundary realism/mock gap |95|Real app/backend/native loop with controlled model responses; no inference about semantic model quality.|
+| Environment/config/identity/fixture fidelity |95|Full isolated build, same PID/native IDs, fresh histories, bounded loopback and original guard; native control recovered.|
+| Failure/edge/lifecycle/recovery |95|Bounded failures, C-authorized FIFO and actual two-child Stop/cancellation; repository negative controls source-matched.|
+| User/browser/desktop shell |95|Two proven native held-state reloads plus stopped-history reload; attachments/labels observed. Native picker itself unchanged/outside proof.|
+| Durable regression quality/relevance |95|API15 and relocated producer-to-web assertions remain valid; independent proportional review is still a required next gate.|
+
+**665/7 =95.0% Pass** for this executable validation stage. Broader validation **Required and Completed**; no material remaining current-scope runtime evidence gap. No confidence category below90. This does not waive historical known limitations or substitute for independent test review, user verification, release or full typing.
+
+## Preservation and handoff
+API011 entry10,626-pin audit baseline is retained; final current verification and its limits are recorded in api-rev-012/final-audit.json. Only four API canonical authorities and intentionally regenerated app.asar differ from that baseline; derived build backup preserved. Original source/guard/API15/other owners unchanged. HEAD026476691c62bda309ce7f2a9342ebb444959f98; MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98;672staged/0unmerged; merge IN-PROGRESS/UNCOMMITTED. Raw/logical index, stash and refs unchanged. No stage/reset/commit/push/release/unrelated cleanup.
+
+No current owned app/provider remains. Prior backups/WIP retained; no old history rewritten. Bounded cumulative handoff attaches immutable API010 archive, current IR012/CRR019 authorities, resumed evidence archive/index, current reports and API15. Archive inclusion does not mean rereading every historical path.
+
+Request **Code Reviewer proportional successful-test review of all pending API15, explicitly API0093**, not Delivery. CRR013 remains unchanged/pre-integration. Fresh routing rules govern the sole recipient.
+
+Historical limits remain **F005 accepted-known/nonfixed/nonPass/Qwen STOP; F004 unknown; SR022 exhausted/v6 unapproved; CG033 unproved/not pump Pass;14 wider+7 baseline failures; OOM/web7078/7181 non-green**. API006 withdrawn/API007 unsupported excluded; ARCH005 SR035 only; earlier passes scoped. Two original IR009 overlap logs remain lost, CRR014 replacements disclosed, no reconstruction. No backend-restart queue/cold-native journal/power-loss/all-model guarantee.
+
+---
+## Historical reports (unchanged)
+# API-REV-011 — Blocked / 81.4%: native reload control unavailable
+
+2026-10-01. **Large / High; Reviewed route. Not Pass, not Delivery.** CRR019 / IR012 accepted; Approved SR033 / Ready SR038 / ARCH-REV006. Latest authoritative owner result is this blocked round; API010 Fail75.0 and API009 Fail77.9 remain historical results.
+
+**API010-F001 full-build correction executable-verified:** pnpm --silent isolated-app start --build exit0 and owned instance ready. Original web guard intact. **API009-F001 integrated closure OPEN:** no genuinely new renderer established. Missing dependency: functioning native control of the owned test window, or user performing normal View > Reload while the same backend remains running. This is an automation/environment blocker, not a newly established product defect or design ambiguity.
+
+Evidence below is relative to api-e2e-evidence/api-rev-011/.
+
+## Authority and investigation
+Canonical requirements-doc, investigation-notes, solution-revision-record, design-spec, implementation-handoff/revision, design-review-report/architecture-review-revision-record and code-review-report/revision remain active. Applicable supplements: exact v5/output-format, input-hold SR027, accepted-disposition SR020, SR035 root integration and SR038 identity/no-migration. IR012/CRR019 override archived IR011/CRR016 authorities. DR002 integration trigger and CRR013 pre-integration test report remain relevant; new Delivery revision N/A.
+
+Canonical investigation/ledger initialized before execution. Read updated root TESTING.md (only applicable guideline), web/server AGENTS and normal runners, isolated-app docs/skill and advertised browser-automation skill, current root native harness, web negative guard test, IR012 inventory and CRR018 explicit web/core boundary. Legacy/compatibility: none introduced. Stored identity optional in one normal reader, **Directly Usable — No Migration**, future-native correctness only. Old captures untouched; no guessed keys/backfill/restart-durable queue.
+
+Still Valid: root native producer/FIFO/history/client tests with controlled model/provisioning/Apollo; exact identity/sender/attachment/echo tests; native root/Stop/atomicity/negative controls and strategy/reader regressions. API15 unchanged including API0093 pending proportional review. No durable/source edits or removals this round. IR012 relocation is implementation-owned/source-reviewed.
+
+regression-reuse.json compares enumerated API010 non-ticket/non-node_modules pins, disclosing expected TESTING/removal differences. IR012 root commands/new harness/config/guard tests separately read and freshly run. Prior evidence is attributed to original logs, not fresh reruns or summed overlapping totals.
+
+## Execution and ledger reconciliation
+| Case | Result | Direct evidence / limit |
+|---|---|---|
+| I11-01 / API010-F001 guard + harness |Pass|pnpm test:native-input-history: unchanged guard + native Agent/Team2, exit0; workspace-native log/json. Controlled model/provisioning/Apollo, not HTTP/reload.|
+| I11-01 normal web |Pass|3 files17: identity12, guard negatives3, dependency2; web-boundary log/json. Fresh19/4files total, no repeat/candidate sums.|
+| I09-02/03/04 and negative/regression matrix |Retained prior scoped Pass, not rerun|API010 native root10, termination6, focused server18/web38, core102/server108/web110 and identity groups reused after bounded hash comparison. Sender/recipient/node/instance/revision/stale-owner/atomicity fault controls not newly exercised in product.|
+| Temporary fixture guard |Pass|11 checks/8 local requests, zero remote; child PID absent/port free, product/guard-tool* and guard-cleanup.json.|
+| I11-03 documented full build/start |Pass|Exact command above, exit0, fresh packaged app/backend. build-command.json, isolated-start json/stderr/exit, build-basis.json. Packaged native writer/codec equals rebuilt dist. No full-suite/typing/release claim.|
+| API009-F001-A/T native held preparations |Partial checkpoint Pass; overall Blocked|Normal UI host/@ admission, Agent/Team lead, actual upload/finalization/composer, ordinary threshold -> failure -> A Held -> B authorizes one fresh bounded failure cycle. One raw/saved/visible A and one visible Queued B each. checkpoint-result.json, analyze-checkpoint.py, checkpoint-recheck.log; product API/raw/DOM/wire.|
+| API009-F001-A/T genuine new renderer/repeat |Blocked|CUA initially read correct isolated window, later repeated cgWindowNotFound after reset/exact-path/focus/title attempts. Bundle ambiguity refused, no unrelated app selected. Async script reload attempted, sentinel AND timeOrigin unchanged. Explicitly NOT reload proof. native-ui-recovery.md, setup-deviations.json, product/script-reload-*.json.|
+| Post-reload new-C success/FIFO |Not Tested|Children deliberately remain Held A/Queued B for same-instance continuation; repository success does not substitute.|
+| I11-04 current product whole-host Stop |Not Tested|Preserving same-instance pending state for user-assisted reload. Prior scoped Stop evidence not a current product rerun.|
+| I11-99 preservation/resource disposition |Audit checked; cleanup deferred|Local fixture disarmed; app/backend retained specifically to preserve ephemeral queue. NOT cleanup-complete. resource-checkpoint.json and final-audit.json.|
+
+Ledger carries completed checks and unresolved long-running case checkpoints. Exact argv/cwd/time/output are per-command JSON/drivers; cwd assigned worktree. No additional repository execution after broader gate except offline capture assertions.
+
+Native file picker unavailable: attachment setup used File/DataTransfer/change on the observed existing input, exercising real upload/finalization/composer, not private store/raw identity injection. **No OS file-picker gesture claim.** Passive WebSocket observation and title/sentinel instrumentation do not mutate input state. Two setup mistakes corrected without generation: nonexistent setServerSetting mutation HTTP400 -> current updateServerSetting scalar; offscreen model/initial-chat textarea mismatch -> DOM-observed filtering/selection. setup-deviations.json preserves these. Canned local model output is not semantic quality evidence.
+
+## Actual system checkpoint
+Owned iso-62666-3bea; app91688/backend92623; backend62667/control62666. Root daily_assistant_3fad328986b54a2282fff7e7e0b737cb.
+- Agent api11_reviewer_558729981d9749d89b2e91fc8558ab19, instance20846854-7813-40de-891a-cb3fc477a9e0.
+- Team lead api11_lead_9e45116625bd4373835c9b67ca0e4014, instanceed1a639f-3dc6-4d94-af49-86cd007d36c9. Peer dormant.
+Each A has accepted messageId/dedupeKey in new native raw, public saved history and live held state. B remains queued; A raw bytes unchanged by B retry. One visible A with Held/attachment.txt and one B Queued. No A parent dispatch.
+
+Provider PID93358,127.0.0.1:62749:24 product requests =6 parent +18 deliberate503 compactions (three cycles of3 per child: post-response seed, A, B). No fourth/autonomous cycle observed; zero remote inference. Guard8 requests separate. Normal UI context override12000/ratio80; exact v5 unchanged; no keys imported.
+
+Sentinel77420203-4d99-4f25-8ac1-de6f6b915b8e and timeOrigin1790878010930.6 survived script reload. Same-document switching is NOT new-document hydration. Prior API006 ineffective claims remain withdrawn.
+
+## Mandatory confidence scorecards
+Evidence judgments, not pass rates. All categories applicable.
+| Category | Postrepository | Final | Basis / gap |
+|---|---:|---:|---|
+| Requirement/acceptance proof |90|75|Fresh identity/held-queued path proven, critical new-renderer/recovery incomplete.|
+| Changed-boundary directness |95|95|Rebuilt producer/store/history and actual HTTP/WS/composer; no fake history.|
+| Integration realism/mock gap |75|90|Real product pre-reload spine; new-document boundary still missing.|
+| Environment/config/identity/fixture fidelity |90|75|Full build and local fixture verified; native control unavailable.|
+| Failure/edge/lifecycle/recovery |90|90|Actual bounded failures/new-B authorization and source-matched durable controls; postreload success/Stop missing.|
+| User/browser/desktop shell |75|50|Live held/queued/attachments observed, critical native reload unavailable; picker emulated.|
+| Durable regression relevance |95|95|Conformant root harness, original guard/API15 preserved; independent successful-test review pending.|
+
+Postrepository610/7=**87.1%**. Final570/7=**81.4% — Blocked**. Broader initially Required, full build/product attempted; now **Blocked** on native Reload control/user gesture. Critical missing proof prohibits Pass. Resume same backend, prove changed document, inspect both children twice, then success-mode + genuinely new C, once-only FIFO/no reingestion and normal two-child Stop. No old build/fake keys/guard bypass/backend restart substitution.
+
+## Preservation, resources and routing
+Entry10,626 pins; final exact counts/checks final-audit.json. Source/guard/API15/owner evidence/history and raw/logical index/HEAD/MERGE_HEAD/stash preserved. Build intentionally changes app.asar (new SHA eae14a8149c6b7b628f6d7e5bedf9e462169ef27bbfa60cf53b109d55672d496). Old outputs retained in fresh4,285,796,864-byte prebuild tar SHA36164483231245835a9ce62aa7c715396c124ec9c2d781231147573fe60e96cd, matching prior backup contents. build-backup.json owns path/list. Keep all backups. Merge IN-PROGRESS/UNCOMMITTED;672 staged/0 unmerged. No stage/reset/commit/push/release/unrelated cleanup.
+
+Guard child cleaned. **Own live app/backend/data intentionally retained awaiting native/user Reload** to avoid destroying required ephemeral queues. Model disarmed,80-request ceiling, self-exits60min after18:07:00Z; no remote spend. Its exit does not stop backend queues. If needed, restart only owned emulator on recorded port after ownership check; never backend for this proof. After completion/abandonment use documented isolated-app stop iso-62666-3bea and terminate only owned provider if alive; preserve evidence first. product/resource-checkpoint.json has exact ownership/data/logs. No user's app/data touched.
+
+Blocked external dependency has no matching team route; per skill, no handoff. Ask user to show isolated API11-HOST window and use View > Reload once, not restart. Eventual successful executable result returns for separate API15 proportional review including API0093, then Delivery. CRR013 remains pre-integration.
+
+Historical limits unchanged: F005 accepted-known/nonfixed/nonPass/QwenSTOP; F004unknown; SR022 exhausted/v6unapproved; CG033unproved/notpumpPass;14wider+7baseline; OOM/web7078/7181non-green; API006withdrawn/API007unsupported. ARCH005SR035only; older passes scoped. Two original IR009 logs lost, CRR014 replacements disclosed/no reconstruction. No migration/backfill/cold-native journal/backend-restart queue/power-loss/all-provider guarantee. Delivery docs/user verification/finalization separate.
+
+
+---
+## Historical reports (unchanged)
+# API-REV-010 — Executable validation: Fail / 75.0%
+
+2026-10-01. **API010-F001: documented worktree desktop build fails on IR011 test imports.** Request focused failure-origin review, not successful-test review or Delivery. Task **Large / High** unchanged. Approved SR033 / Ready SR038 / ARCH-REV006 / IR011 / CRR016 source Pass9.50 are the current upstream basis. Source suitability is not this executable confidence score. Current working tree, including unstaged work and the preserved merge, is the source basis.
+
+**API009-F001 remains OPEN for integrated closure.** Fresh repository native-produced identity/hydration checks pass, but no corrected packaged product was created or launched. Agent/Team actual new-renderer, attachments, repeated reconstruction, retry continuation and product Stop reruns are **Not Tested this round**. No claim that the identity fix fails at runtime; no reuse of old app/captures as a post-fix oracle.
+
+## Finding API010-F001 — implementation test / build integration
+- Case I10-03; blocks direct package proof of REQ012 / AC014,017 / SCN005, DS016–018 and downstream AC018 journey. The runtime criteria themselves were not executed/falsified in a corrected package.
+- Expected: root TESTING.md's `pnpm --silent isolated-app start --build` creates the current worktree product and returns an owned isolated instance ready for validation.
+- Observed: command exits **3**, JSON `BUILD_FAILED`; nested `pnpm build:electron:mac` exits **1** at its first `guard:web-boundary`. No prepare-server, generate, packaging or app launch occurred.
+- Guard rejects exactly four direct `../../../../autobyteus-ts/dist/...` imports in `autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts:5–8`: AgentInputUserMessage, ContextFile, ContextFileType, SenderType.
+- Focused reproduction `pnpm -C autobyteus-web guard:web-boundary` exits **1** with the same four diagnostics. The guard recursively scans services, including colocated tests; its bytes match HEAD. The test hash matches IR011's implementation inventory. The documented build chain uses `&&`, so it does not reach the corrected product build.
+- **Preliminary classification: Local Fix — implementation-owned test/build integration; recommended Implementation Engineer after independent Code Review origin determination.** Not an external dependency blocker, new product requirement, migration request, or proven defect in production identity behavior. API owns this validation report, not the newly implementation-owned test.
+- Preserve the valid fresh-native regression. Do not bypass the guard, build by an undocumented partial chain, fall back to the old product, inject keys into historical captures, or delete meaningful assertions to call this green. Owner/reviewer should determine conformant test placement/setup or a justified narrowly tested guard correction.
+
+Evidence relative to `api-e2e-evidence/api-rev-010/`: `isolated-start.json`, `isolated-start.stderr`, `.exit`, `build-command.json`; `build-guard.log/.json`; `finding.json`, `source-excerpts.txt`. No screenshot is applicable: the build fails before any new window exists.
+
+## Coverage investigation / validity / commands
+Read current requirements, SR038 identity/persistence/overlay contract and explicit no-migration clarification, SR030/034/035 preserved recovery/root/terminal rules, architecture/source reports, implementation handoff including Legacy/Compatibility and Persisted Data Transition, cumulative history and existing API investigation/report/ledger. Complete incoming4,577-reference navigation is retained; inclusion is not a claim every historical file was reread/rerun. Exact v5, hold supplement, sender provenance and accepted deviations remain applicable. No new Product redesign; upstream Product artifacts retained.
+
+Root `TESTING.md`, `autobyteus-server-ts/AGENTS.md`, `autobyteus-web/AGENTS.md`, manifests, normal Vitest/Prisma setup, `docs/isolated-app-instances.md`, `skills/autobyteus-isolated-app/SKILL.md` and advertised browser-automation skill govern. No closer source testing guideline. Core uses documented working `exec vitest run --no-watch`; web uses `test:nuxt --run`. A preliminary lookup for web vitest.config.ts found no file; actual vitest.config.mts was read. Server setup resets only the designated worktree `tests/.tmp/autobyteus-server-test.db`.
+
+Before tests/build, canonical investigation and ledger were initialized with real-use scenarios and existing coverage decisions. IR011 producer/history/identity/attachment tests remain **Still Valid** as in-process proofs. Existing root/Stop/ownership/echo/strategy tests remain Still Valid. The new finding adds **Needs Update—build integration**, not invalidation of the intended regression assertions. No durable/source changes or test removal by API010. API15, including API009's3 new native files, remains the eventual cumulative successful-test review scope; CRR013 is still pre-integration only.
+
+Exact repository argv/cwd/start/end/exit and raw output are in `commands.json`, `run-check.py`, per-case `.json/.log`. Old scripts with embedded output paths were read, not executed over owner evidence. All new logs are exclusive. Build command metadata explicitly notes exact start time was not instrumented; no fabricated timestamp.
+
+## Execution reconciliation
+| Case/check | Result | Boundary / limitation |
+|---|---|---|
+| I10-01 presentation contract |8 Pass|Shared tagged primary identity and current contracts; build-config noEmit included.|
+| I10-01 core identity |60 Pass /5 files|Original input ingestion, raw codec, memory/files/archive; no network.|
+| I10-01 server identity |28 Pass /3 files|Normalizer/replay/saved attachment projection.|
+| I10-01 web identity |93 Pass /10 files|Includes actual fresh native Agent/hosted-Team producer + FIFO/history/client hydration2; controlled model/provisioning and mocked Apollo, not HTTP/reload. Primary-ID, exact sender, attachment union/names/timestamp and separate echo controls.|
+| I09-02/03 native root |10 Pass /1 file|Both pre-parent/post-response, actual GraphQL schema/read-only inspection, input snapshots/FIFO/root Stop. Transport/in-process fixtures, not shell.|
+| I09-04 whole-root termination |6 Pass /1 file|Actual AgentRunService orchestration; controlled child-finish/later-host-failure seams. Inactive event does not equal whole success.|
+| Focused server / web |18 Pass /4;38 Pass /4|Root/Team recovery/stream plus two-child atomic commit, recipient/instance/node/stale-callback ownership, failure/inspection, host error liveness.|
+| I10-02 core regression |102 Pass /8|Strategy attempts, SDK transport controls, cancellation/commit, actual runtime recovery and current snapshot restore.|
+| I10-02 server regression |108 Pass /13|Recovery/races/drain/lifecycle, sender/mention/history, settings/harness.|
+| I10-02 web regression |110 Pass /13|Retained activity, standalone/Team/Org Stop, sender/echo, input/recovery labels and conversation components.|
+| Root contract regression |8 Pass|Strict root input/recovery DTOs.|
+| Temporary fixture guard |11 checks Pass /8 local requests|Only protocol/emulator safety; fixture child cleaned. No product requests or remote inference.|
+| I10-03 actual worktree build |**Fail**|BUILD_FAILED at boundary guard; direct guard reproduction also Fail.|
+| API009-F001-A / T |**Not Tested**|Fresh actual packaged repeated reload + attachment + HeldA/QueuedB + new-C authorized continuation cannot run without corrected build. Repository results do not substitute.|
+| I10-04 product multi-child Stop |**Not Tested**|Prior API009 scoped product Stop evidence retained; current repository matrix rerun, no current product rerun.|
+| I10-99 cleanup/preservation |Pass within enumerated scope|No app launched; temporary fixture child exited/port free; pins/index/refs checked.|
+
+Groups overlap and **must not be summed as unique coverage**. No full suite, full web typecheck, semantic fidelity rescore or packaged Pass. No new provider campaign. Prepared product drivers and fixture inputs are **unexecuted preparation**, not journey evidence. No browser/CUA call in this round.
+
+## Mandatory confidence scorecards
+Evidence-confidence judgments, not pass rates or measured probabilities. Seven categories all applicable.
+
+| Category | Post-repository % | Final % | Evidence / remaining uncertainty |
+|---|---:|---:|---|
+| Requirement / acceptance proof |90|50|Fresh native proof is strong but critical corrected built AC014/017 witness remains missing after build failure.|
+| Changed-boundary directness |95|95|Actual native pipeline/store/FIFO, real transforms and production client owners; build guard directly reproduced.|
+| Cross-boundary integration realism / mock gap |75|75|Models/provisioning/Apollo controlled; current packaged HTTP/WS/renderer spine untested.|
+| Environment/configuration/identity/fixture fidelity |90|75|Correct worktree and owned deterministic fixtures; documented build fails, no current product environment ready.|
+| Failure/edge/lifecycle/recovery |90|90|Native safe points, authorization/races/cancel/whole-root faults and exact ownership rerun; built continuation still missing.|
+| User surface/browser/desktop shell |75|50|Nuxt/component proof only this round; no corrected actual new renderer.|
+| Durable regression relevance |95|90|Valid fresh-history regression now present, but its import placement blocks product build; independent successful-test review still pending.|
+
+Postrepository610/7=**87.1%**, recorded before build. Final525/7=**75.0%**. Critical unproven behavior and actual build failure override green tests. **Overall Fail, not environmental Blocked. Broader Required—attempted setup failed; resume actual same-backend new-renderer journeys after owner correction.** No score change to historical API00977.9 or earlier semantic observations.
+
+## Preservation and cleanup
+Entry10,381 pins include incoming source/test/dist/evidence and prior SR036 captures. Before build saved current derived outputs in a unique4,285,796,864-byte archive; exact path/hash/list in `build-backup.json`. Retain this and all older DR002/IR/API backups. Build exited before prepare-server; no emit/package replacement. Final audit owns exact changed/missing counts; permitted changes are only four canonical API documents plus new API010 evidence.
+
+HEAD026476691c62bda309ce7f2a9342ebb444959f98 / MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98; merge IN-PROGRESS/UNCOMMITTED,672 staged/0 unmerged. GIT_OPTIONAL_LOCKS=0 used, raw/logical index/refs/stash checked. API15, production/source/implementation tests, other-owner evidence, old keyless captures and packaged2 unchanged. No stage/reset/commit/fetch/push/release/cleanup of unrelated WIP.
+
+Only guard fixture process ran; its PID absent and port free in `cleanup.json`. Product provider never started. Build failed before isolated instance/dataRoot allocation; read-only isolated list contains no new owned instance. No credentials/vault/provider keys imported, private history/user app touched or remote generations. Normal repository fixtures remove their owned temp memory in finally; designated disposable DB is retained normal test state. No resources require user assistance.
+
+## Historical evidence reconciliation and limits
+Prior API-owned SR036 diagnostic did finish all four fresh pre-fix Agent/Team preparations, one with attachment:1→2 corresponding bubbles, same native/backend, one raw/history/live entry, no held parent dispatch. `sr036-fresh-reproduction/repro-result.json` and cleanup establish that bounded result. Its interrupted canonical underway wording is superseded, without inventing a retrospective audit across later IR011 changes. Old captures remain unchanged; they may still show the historical defect. SR038 explicitly forbids migration/backfill/retroactive join.
+
+F005 accepted-known/nonfixed/nonPass/Qwen STOP; F004 unknown; SR022 exhausted/v6 unapproved; CG033 unproved/not pump Pass;14 wider+7 baseline residuals remain unwaived. Historical OOM/plain-web7078 and current IR0117181 diagnostics remain NON-GREEN; not rerun or waived here. API006 ineffective-reload claims and API007 unsupported literal excluded. ARCH005 applies SR035 only; older ARCH004/IR007/CRR011/API00895/CRR013 remain pre-integration. CRR014 overwritten two IR009 overlap logs remain disclosed replacement evidence; originals unavailable/no reconstruction. No backend-restart pending queue, native cold-activity history, power-loss or all-model guarantee.
+
+## Handoff
+Focused **failure-origin review** for API010-F001 with preliminary implementation-owned Local Fix, not successful-test-code review or full production re-review. API009-F001 integrated closure remains open. After conformant build correction/source route, API rebuilds and completes Agent/Team actual repeated new-renderer same-backend history/attachments/recovery plus product negatives. Successful executable validation then returns for separate proportional API15 test review, followed by normal Delivery gates/user verification. Fresh rule selection/confirmed receipt below; no planned-send claim.
+
+
+---
+## Preserved prior checkpoints and reports
+
+# API010 validation in progress — CRR016 / IR011
+Fresh identity/native-history checks and isolated corrected build planned. API009 Fail77.9 remains last completed. See current investigation/ledger; no post-fix result yet. Prior SR036 diagnostic completed four reproductions and cleanup; its stale underway checkpoint below is superseded by API010 plan reconciliation, not a new acceptance score.
+
+---
+# API-REV-009 — Integrated executable validation: Fail / 77.9%
+
+2026-10-01. Large / High unchanged. Trigger: CRR014 integrated implementation-source Pass (9.40/10), IR009 / DR002. Authority: compaction Approved SR033 / Ready SR035 / ARCH-REV005; upstream cross-scope Approved SR008 / Ready SR010. Reviewed CURRENT WORKTREE plus cumulative merge, not index alone. **API009-F001 blocks integrated acceptance. Request focused failure-origin review, not successful-test review or Delivery.**
+
+Prior ARCH004 / IR007 / CRR011 9.40 / API008 95.0% / CRR013 Pass remain PRE-INTEGRATION ONLY and are not retroactively rescored. API001 baseline and all subsequent history remain below. Cumulative package is active; the incoming-reference index is navigation, not a claim that all 3,698 historical files were reread. Legacy/compatibility removal: none retained per current handoff. SR035 persisted transition: Not Affected; ephemeral input queue is not stored. No new native activity journal.
+
+## Blocking finding — API009-F001
+**Preliminary classification: Local Fix — implementation integration; recommended implementation owner, subject to Code Review failure-origin determination.** No production fix made. No claim yet whether this predates the merge or which layer should own the correction.
+
+Approved basis: REQ-012 / AC-014 / AC-017 and SR035 DI001.a verification: held A must not be duplicated on same-process reconnect. This is an ordinary single-user native View > Reload in the isolated worktree app, not an artificial multi-tab race.
+
+Expected: one held user bubble for one accepted input after history and live snapshot hydration.
+Observed: both hosted Agent and hosted Team lead display **two copies** of their held input: one anonymous history bubble plus one identity-bearing Held bubble. The server reports exactly one held entry for each child, unchanged instance/revision/identity before and after the genuinely new renderer. No evidence of duplicate queue admission or parent execution; neither held input reached a parent model request.
+
+| Child | Native instance | Held message ID |
+|---|---|---|
+| api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d | 94e7a2fb-ea81-402a-8d78-e057e3f47d6d | 482afc18-2a66-440a-8f83-2b4d5c089e40 |
+| api9_lead_3a6a5e7b787943b594a6461899fe6043 | 0e8c27fd-a6fb-4695-a5a4-a9a2da1be54f | 9e504a42-e7bb-4491-ad1b-a712727162b5 |
+
+Both states: revision12, sequence2, turn_0002, held_turn / awaiting_user / failureEpoch2. Text markers: API9-AGENT-RECONNECT-HELD-A and API9-TEAM-RECONNECT-HELD-A. Host daily_assistant_c885a1076e524ac493bf01d1ac03a4c5; Team api9_team_9c1e5092646448b0adda985405be70d8.
+
+Evidence under api-e2e-evidence/api-rev-009/product:
+- real-reconnect-before.api.json, real-reconnect-after.api.json, real-reconnect-comparison.json: exact two-child live snapshot equality.
+- real-reconnect-* sentinel/timeOrigin evidence: true renderer replacement, timeOrigin1790859976183.3 ->1790860118043.5 and sentinel removed.
+- finding-agent/team-projection.api.json and finding-agent/team-dom.json: one history entry versus two visible leaf bubbles each; duplicate-held-agent.png and duplicate-held-team.png support the DOM observations.
+- owned-run-memory-before-cleanup: copied only owned test-run memory; native raw user trace has one copy but lacks messageId/dedupeKey.
+- assert-evidence.mjs / assert-evidence-result.json: executable checks corroborate these observations. “Evidence assertions Pass” is NOT product acceptance.
+
+Preliminary trace: native raw user row -> public history DTO lacks accepted-input identity -> buildConversationFromProjection constructs an identity-less user message -> handleAgentInputState cannot identity-match and appends another held message. Existing context tests create empty conversations and bypass this history/live merge. Do not infer that content-based deduplication, a migration, or a new persisted schema is required; reviewer must determine origin and correct boundary.
+
+Temporary captured-response executable repro: from worktree root,
+pnpm -C autobyteus-web exec vitest run --config <absolute api-rev-009>/finding/vitest.config.mjs --no-watch
+Result: **2 Fail**, expected one matching user bubble, actual two, for Agent and Team. Exact argv/cwd/exit in finding/probe-command.json; output in finding/probe.log. It executes production conversation hydration and input reconciliation using actual captured responses. It is not durable coverage freezing an incomplete identity representation. Investigation recorded that decision before this probe edit.
+
+## Repository execution and durable coverage
+Project path: root TESTING.md (only applicable testing guideline), server/web AGENTS.md, package scripts and test runner setup. Worktree-owned Prisma test DB; Nuxt/happy-dom is not native renderer proof. Node22.23.1 / pnpm10.28.2. Exact commands, cwd, times, exits and raw output are the corresponding JSON/log pairs under api-rev-009 and run-check.py.
+
+| Check | Result | Proof limit |
+|---|---|---|
+| contracts | 8 Pass | Selected strict DTO schemas |
+| focused-server | 18 Pass /4 files | Root, hosted Team, recovery and stream producer cases |
+| focused-web | 38 Pass /4 files | Real client context/store/stream/sync code with controlled I/O; ownership and atomicity checks |
+| native-root4 | 10 Pass /1 file | New native hosted Agent/Team FIFO at both sites, in-process reconnect snapshot, actual GraphQL schema, root Stop |
+| native-termination | 6 Pass /1 file | Actual AgentRunService whole-root success, child failure and later host failure with controlled fault seams |
+| regression-server | 108 Pass /13 files | Selected recovery/races/drain/Team/Org/sender/history/settings/harness |
+| regression-core | 101 Pass /8 files | Selected native runtime, strategy, commit, transport and current snapshot reader |
+| regression-web | 110 Pass /13 files | Selected retained activity, termination, input identity, Team/Org and rendered component regressions |
+| product fixture guards | 11 checks Pass /8 local requests | Emulator safety/protocol only; separate from45 product requests |
+| finding captured-response probe | 2 Fail | Reproduces actual history/live held-input duplication |
+
+Counts overlap and MUST NOT be summed as unique coverage. No full-suite/typecheck/native whole-product Pass.
+
+Three new durable paths, no existing coverage removed:
+- autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts
+- autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts
+- autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts
+
+Fixture uses real native AgentFactory/backend/AgentRun/FIFO, actual collaboration root admission/registry/FlatTeam/root manager, strict stream handler and real GraphQL schema. Parent model, compaction strategy, host provisioning and selected failure outcomes are deterministic seams. Handler reconnect is in-process, not a physical socket or renderer reload. Post-response A waits for the actual settled safe point before B; fast-B races are covered separately by existing tests, not this new settled case. The Team has lead/peer, with peer dormant. Child failure wrapper rejects after actual native finish; later host failure occurs after child closure. Only whole-success history outcome confirms termination.
+
+Retained unsuccessful setup/test iterations: first contract/server launch used tickets/ cwd and failed before Vitest; corrected to worktree. Initial native post-response tests raced before consumed A settled and cleanup could obscure failure; corrected test synchronization and error preservation. GraphQL additions initially mixed module realms and failed before resolver entry; corrected to project createRequire('graphql'). Final native-root4 is10Pass; earlier failures/logs remain, not production defects or erased attempts. Successful test-code review of the three new files remains pending until executable validation succeeds.
+
+## Broader validation — Required, executed, failed gate
+Selected documented surface: pnpm --silent isolated-app start --build from this worktree. Owned instance iso-56935-c9f4, control56935/backend56936. Minimal definitions seeded through public GraphQL; collaborators admitted through normal UI @ flow; selected native model through normal settings/model reload. Public LMSTUDIO_HOSTS configured only to owned loopback127.0.0.1:57269; model api9-deterministic-32768:lmstudio@127.0.0.1:57269. Compaction override12000 / ratio80. No credentials imported or remote generation.
+
+Temporary loopback-provider.mjs emulates provider protocol with deterministic responses/faults, bounded80 requests/one hour/120s holds, disarmed by default. It is NOT model quality, fidelity sampling, or renewed campaign authorization. Product:45 local requests (17 parent /28 compaction), eight approved three-attempt failure groups, one actual read_file response; remote0. Three attempts are the approved strategy behavior, not an accidental retry defect.
+
+Scoped successful observations:
+1. Dormant public root inspection shows offline children, null recovery, empty agent_input_states; inspection does not activate a host.
+2. Agent and Team: consumed seed input reaches post-response compaction failure; subsequent distinct A fails pre-parent and is held; B queues under retry. Release yields exactly one parent ACK A then one ACK B, queue empty. Team consumed an actual read_file result before failure and did not replay the tool.
+3. Both children concurrently compacting: normal whole-host history Stop succeeds; both show STOPPED/Offline, prior completed activity retained, history Stop action gone. Same-renderer saved selection retains stopped native activity for both.
+4. Actual native View > Reload after Stop produces a new renderer: cold inspection preserves conversation/tool history but has no native COMPLETED/STOPPED/COMPACTING cards. This is renderer cold-state evidence, not backend restart, native cold history or power-loss proof.
+5. Both children subsequently reach held recovery. Actual native reload preserves exact live input state but duplicates held bubbles (F001). Retry/B continuation after this failed reconnect was not tested; cleanup Stop discarded held inputs without parent dispatch.
+
+Actual two-child atomic hydration, stale read/service/socket/node/child ownership, child failure and later-host failure/uncertainty have selected repository execution with controlled I/O; actual two-child UI hydration/normal Stop also ran. No full-product fault-injection matrix or fresh complete Team/Org product regression campaign is claimed.
+
+### Mandatory evidence correction — ignored reloads
+Earlier scripted location.reload() returned “ok” but the packaged shell prevented navigation. Sentinel/timeOrigin proved that no new renderer existed. **All earlier reconnect/cold files before native-menu-reload-proof.json record attempted intent only; corresponding preliminary reload-success checkpoint language is withdrawn.** A/B recovery and same-renderer retention observations stand, but those attempts do not prove reconnect or cold hydration. CLI file:// navigation was rejected without effect. Only later native View > Reload, with changed timeOrigin/removed sentinel, supports cold-real-* and real-reconnect-* evidence. Historical attempts were not overwritten. This correction also supersedes early user-facing progress wording.
+
+## Confidence decisions
+Evidence-based assessment, not a statistical probability or semantic-model rescore. Post-repository score:86.7% (90/92/75/90/90/75/95); broader Required to close built HTTP/WS/native-renderer and lifecycle gaps. Final mean545/7=**77.9%**:
+
+| Mandatory category | Final % | Evidence and remaining gap |
+|---|---:|---|
+| Requirements / acceptance proof |50|Critical AC014/017 reconnect single-input presentation fails. Requires origin fix and real rerun.|
+| Changed-boundary execution directness |95|Actual built native/backend/HTTP/WS/renderer journey and captured-response source repro.|
+| Integration realism / mock gap |90|Real product spine; provider synthetic and failure outcomes partly controlled seams, not model quality.|
+| Environment/configuration/identity/fixture fidelity |95|Owned worktree build, exact ports/instances/input IDs and verified renderer replacement; ignored attempts explicitly excluded.|
+| Failure/lifecycle/recovery evidence |75|Both sites and whole Stop exercised; reconnect fails and downstream continuation remains unfinished.|
+| User surface / browser / desktop |50|Critical duplicate user bubbles visibly fail in both real hosted child kinds.|
+| Durable regression relevance |90|New16 passing native tests plus selected regressions; historical/live identity merge gap now reproduced but correct durable regression awaits origin fix.|
+
+Broader decision: Required — executed and found blocking failure; reroute, not additional arbitrary sampling. Not an environment blocker. A failing critical criterion overrides passing suites and any average.
+
+## Preservation and cleanup
+Entry pins38,967 paths /3,698 incoming references. HEAD026476691c62bda309ce7f2a9342ebb444959f98 and MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98 preserved;672 staged paths, zero unmerged, merge IN-PROGRESS/UNCOMMITTED. Logical index entries and stash unchanged. **Raw index SHA changed** during read-only Git stat-cache refresh; do not claim byte-identical index. No staging/reset/merge completion/cleanup/commit/push/release or production source edits by this stage. Four canonical API authorities updated; three new durable files and this stage's evidence added. Existing protected API12, reviewed production, historical evidence and other pinned inputs preserved; see final-audit.json.
+
+Standard documented build regenerated ignored build outputs. They are not all covered by source preservation pins and are NOT claimed byte-identical. Prebuild backup retained (3,324,772,352 bytes, SHA2561e21806e7279451d5f9dedca311e9519ff6aa84ee83c9750b7bc1a530cd72ff0); location in build-backup.json. Prior archives untouched.
+
+Cleanup: normal UI whole-host Stop; provider disarmed; pnpm --silent isolated-app stop iso-56935-c9f4 exited0, no forced stop, own data root removed and both ports released. Owned providerPID65323 terminated; no owned app/provider session remains. Owned run memory/logs copied into product evidence first; no vault/credentials copied. Standard worktree test DB and backup remain intentionally. User app/data, unrelated processes and old stopped instances untouched. See isolated-stop.json, isolated-list-after.json and product/cleanup.json.
+
+## Provenance incident and residuals carried unchanged
+CRR014 reviewer accidentally overwrote original IR009 server-overlap-final.log and web-overlap-final.log by executing scripts with internal redirects. Exit files rewritten byte-identically; original pins retained. IE searched487 logs/text files and two older archives; no original recovery or reconstruction. These replacement files are CRR014 rerun evidence, NOT original IR009 transcripts. Historical IR009 summaries retain only partial original raw corroboration. Reviewer evidence-handling error, not a source defect deduction; this stage did not invoke those scripts.
+
+F005 remains accepted known/nonfixed/nonPass, Qwen STOP; F004 unknown. SR022 exhausted (one fidelity Fail/three usable), v6 unapproved. CG033 preparatory quiescence timeout remains unproved/not fixed/not pump Pass/not executed baseline. Historical OOM and web8GB plain tsc exit2/7078 diagnostics remain non-green, not vue-tsc/full Pass. Fourteen wider plus seven baseline residuals unwaived. API006 withdrawn reload claims and API007 unsupported directSummaryShieldOmissionPressureVerified:true excluded. API007 Team timeout followed by C recovery is not retroactive B Pass. CRR012/TR001 reporting correction validated by API008/CRR013, without changing semantic confidence. No new ledger architecture, native cold-history or power-loss promise. Delivery semantic docs, isolated user-candidate verification, explicit user testing, finalization/release remain separately gated.
+
+## Routing disposition
+Fail / preliminary implementation Local Fix. Fresh rule-based handoff required to Code Reviewer for **focused API009-F001 failure-origin review** with the full cumulative package and three new durable files. Not a successful-test review request. No direct Delivery/Designer advancement. Receipt is recorded only after tool-confirmed delivery.
+
+---
+## Prior completed report (historical)
 # API-REV-008 — reporting Local Fix validated: Pass / 95.0%
 
 2026-10-01. **CRR012/TR-001 corrected by the API owner; independent successful-validation test-code re-review required.** This is not a new implementation-source review, product failure, Delivery, full-suite/typecheck Pass or release approval. Large / High; Approved SR033 / Ready SR034 / ARCH-REV004 / IR007 / CRR011 source Pass9.40 unchanged. Product Design and DR N/A. Pending worktree remains authoritative at HEAD6908ccff483f1eca522caa65bfaaf6dcfcc26750.
@@ -529,3 +860,16 @@ API-RQ-001 requirement/design-impact handoff confirmed accepted=true / DELIVERED
 API005 routing confirmed: get_handoff_rules selected the sole executable-Fail rule to /code_reviewer; send_message_to accepted=true / DELIVERED to code_reviewer_7bd4b2c09af543088c0238d792d0fd98, full799 references attached. Focused API-F007 origin review only; no other outcome recipient, no Delivery/successful-test review. API stage stops after this confirmed handoff.
 
 API007 routing checkpoint: fresh get_handoff_rules has no matching rule for scoped campaignPass while cumulative validationIncomplete92.9; no send_message_to/Delivery or duplicate owner forwarding. Handoff-selection.json records decision. Finalaudit2053pins/missing0,only4ownedcanonicalAPIartifacts changed,all11APIpaths and frozenmanifest/wrapper unchanged.
+
+
+API009 routing confirmed: fresh executable-Fail rule selected sole /code_reviewer; send_message_to accepted=true / DELIVERED to code_reviewer_7bd4b2c09af543088c0238d792d0fd98,4,196 references attached. Focused API009-F001 failure-origin review only; no successful-test review, second recipient or Delivery. Receipt api-e2e-evidence/api-rev-009/handoff-receipt.json. API stage stops.
+
+
+## SR036 fresh reproduction investigation resumed
+Fresh user-requested actual reproduction is underway; no fix or acceptance change. API009 Fail77.9 remains the last completed validation result. Four bounded attempts and controls planned in current investigation/ledger; fresh output directory api-e2e-evidence/sr036-fresh-reproduction. Parked SR036 design candidate is not authority.
+
+API010 pre-handoff preservation audit:10,381 entry pins,10,377 unchanged; only four canonical API documents changed, zero missing/unexpected. API15+packaged2 match; raw/logical index/HEAD/MERGE_HEAD/branch/stash unchanged,672 staged/0 unmerged. Fresh rules select solely /code_reviewer for executable Fail and focused failure-origin review. No send claimed until tool-confirmed receipt.
+
+API010 handoff transport constraint: initial 5,079-reference send returned HTTP413 Payload Too Large, not accepted/delivered. Repackage the complete cumulative files as an immutable archive with SHA256/manifest and attach that plus direct canonical authorities/failure evidence/API15 to the same sole reviewer. No alternate recipient or validation change.
+
+API010 handoff confirmed accepted=true / DELIVERED solely to /code_reviewer, existing code_reviewer_7bd4b2c09af543088c0238d792d0fd98. Receipt api-e2e-evidence/api-rev-010/handoff-receipt.json. HTTP413 first attempt was not delivered; complete checked archive + direct authorities/API15 accepted on bounded retry. Focused API010-F001 failure-origin review only; API009-F001 integrated open. No successful-test review, additional recipient or Delivery. API stage stops. Pre-send final audit remains its scoped preservation basis, not a claim about subsequent reviewer work.

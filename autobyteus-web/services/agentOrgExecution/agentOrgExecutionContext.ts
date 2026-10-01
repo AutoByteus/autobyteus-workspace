@@ -1,5 +1,6 @@
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { assertAgentOrgRunConfigChange } from './agentOrgRunConfigAdoption'
 import { existingRunModelConfigsEqual } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
@@ -25,6 +26,10 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
+import { collaboratorAgentSourceAt, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { createAgentContext } from './agentOrgMemberContextFactory'
+import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -38,7 +43,7 @@ export type AgentOrgContextEntry = Readonly<{
 type TaskExecutionStartedEvent = Extract<AgentOrgExecutionEventDto, { kind: 'task_execution_started' }>
 type AgentOrgStatus = AgentOrgExecutionViewDto['agent_statuses'][number]
 
-const nameAt = (address: string): string => address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
+const nameAt = memberDisplayName
 
 export class AgentOrgExecutionContext {
   readonly orgRunId: string
@@ -209,6 +214,18 @@ export class AgentOrgExecutionContext {
       // A new delegated child needs new contexts; reload through a checkpoint.
       this.validateTaskExecutionStarted(event)
       return 'checkpoint_required'
+    } else if (event.kind === 'collaborator_added') {
+      // One hosted instance per entry: its executions get contexts now, Offline. Applied in
+      // place (no checkpoint) so the pending send that added it keeps its acknowledgement.
+      const root = this.view.execution_tree.rootOrg
+      if ((root.collaborators ?? []).some((entry) => entry.address === event.collaborator.address)
+        || this.index.configured.has(event.collaborator.address)) {
+        this.correlationFailure(`AgentOrg collaborator address '${event.collaborator.address}' is already in use.`)
+      }
+      this.commitView({ ...this.view, execution_tree: { ...this.view.execution_tree,
+        rootOrg: { ...root, collaborators: [...(root.collaborators ?? []), event.collaborator] } } })
+      this.addContextsForNewAgents()
+      collaboratorCandidatesService.invalidate('agent_org', this.orgRunId)
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])
@@ -241,6 +258,32 @@ export class AgentOrgExecutionContext {
     this.phase = 'reopen_required'
   }
 
+  /** Offline contexts for indexed agents without one (a collaborator's new executions). */
+  private addContextsForNewAgents(): void {
+    const workspaceFor = (rootPath: string | null) => rootPath
+      ? [...this.index.agents.values()].map((agent) => this.contexts.get(agent.agentRunId)?.config.workspaceMetadata)
+        .find((metadata) => metadata?.workspaceRootPath === rootPath) ?? null
+      : null
+    for (const agent of this.index.agents.values()) {
+      if (this.contexts.has(agent.agentRunId)) continue
+      const context = createAgentContext({
+        address: agent.address, agentRunId: agent.agentRunId,
+        agentDefinitionId: agent.source.agentDefinitionId, launch: agent.source.launchConfiguration,
+      }, this.view.execution_tree.createdAt, workspaceFor(agent.source.launchConfiguration.workspaceRootPath))
+      context.state = reactive(context.state)
+      const live = reactive(context)
+      this.contexts.set(agent.agentRunId, live)
+      const rootPath = agent.source.launchConfiguration.workspaceRootPath
+      if (!live.config.workspaceMetadata && rootPath) {
+        void useRunHistoryStore().resolveWorkspaceMetadataByRootPath(rootPath).then((metadata) => {
+          if (metadata && !live.config.workspaceMetadata) {
+            live.config = { ...live.config, workspaceMetadata: metadata, workspaceId: metadata.workspaceId }
+          }
+        }).catch(() => undefined)
+      }
+    }
+  }
+
   private commitView(view: AgentOrgExecutionViewDto): void {
     const index = new AgentOrgExecutionViewIndex(view)
     this.view = view
@@ -250,13 +293,18 @@ export class AgentOrgExecutionContext {
   private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
     const execution = event.execution
     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
-    const source = this.index.configured.get(parseAgentTeamAddress(execution.address))
+    const address = parseAgentTeamAddress(execution.address)
+    const configured = this.index.configured.get(address)
+    const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
+    const source = configured
+      ?? collaboratorAgentSourceAt(collaborators, address)
+      ?? collaboratorTeamSourceAt(collaborators, address)
     const hostKnown = event.host_kind === 'root'
       ? event.host_run_id === this.orgRunId
       : this.index.teams.has(event.host_run_id)
     // A newly started child always records its delegator.
     if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown || !source
-      || ('agentRunId' in source) !== ('agentRunId' in execution)
+      || ('agentDefinitionId' in source) !== ('agentRunId' in execution)
       || this.index.agents.has(runId) || this.index.teams.has(runId)) {
       this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
     }

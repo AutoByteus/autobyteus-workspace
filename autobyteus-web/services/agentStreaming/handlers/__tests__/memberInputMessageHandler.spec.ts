@@ -107,4 +107,24 @@ describe('handleMemberInputMessage', () => {
       type: 'Image',
     });
   });
+
+  it('RD-004: shows an agent-to-agent delivery as "From <Sender>:" in the receiving message block, once', () => {
+    const context = { conversation: { messages: [] as any[] }, submissionPending: false } as any;
+    const delivery = {
+      content: 'You received a message from sender name: researcher, sender id: researcher-run\nmessage:\nPlease prototype the onboarding flow.',
+      received_at: '2026-10-01T00:00:00.000Z',
+      message_id: 'memberinput_1',
+      dedupe_key: 'member_input:1',
+      context_file_paths: [],
+      input_origin: 'inter_agent_delivery',
+      sender_agent_run_id: 'researcher-run',
+    };
+    expect(handleMemberInputMessage(delivery as any, context)).toBe(true);
+    expect(handleMemberInputMessage(delivery as any, context)).toBe(false);
+    expect(context.conversation.messages).toHaveLength(1);
+    expect(context.conversation.messages[0]).toMatchObject({ type: 'ai', segments: [{
+      type: 'inter_agent_message', messageId: 'memberinput_1', senderAgentRunId: 'researcher-run', senderName: 'researcher',
+      content: 'Please prototype the onboarding flow.',
+    }] });
+  });
 });

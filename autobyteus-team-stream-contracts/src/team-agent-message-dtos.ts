@@ -51,6 +51,8 @@ export const teamAgentPayloadSchemas = {
 const errorExecution = {
   change_sequence: z.number().int().positive().nullable(),
   agent_run_id: nonEmptyStringSchema.nullable(),
+  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
+  collaborator_name: nonEmptyStringSchema.optional(),
 };
 export const teamAgentErrorPayloadSchema = z.union(
   [

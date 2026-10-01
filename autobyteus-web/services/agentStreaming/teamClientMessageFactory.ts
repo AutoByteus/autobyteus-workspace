@@ -1,4 +1,5 @@
 import type { TeamStreamClientMessage } from '@autobyteus/team-stream-contracts';
+import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 
 const runId = (value: string): string => {
   const normalized = value.trim();
@@ -13,6 +14,7 @@ export const createTeamSendMessage = (input: {
   imageUrls?: readonly string[];
   messageId: string;
   dedupeKey: string;
+  mentions?: readonly CollaboratorMentionDto[];
 }): TeamStreamClientMessage => Object.freeze({
   type: 'SEND_MESSAGE',
   payload: Object.freeze({
@@ -22,6 +24,7 @@ export const createTeamSendMessage = (input: {
     agent_run_id: runId(input.agentRunId),
     message_id: input.messageId,
     dedupe_key: input.dedupeKey,
+    ...(input.mentions?.length ? { mentions: input.mentions.map((mention) => ({ ...mention })) } : {}),
   }),
 });
 

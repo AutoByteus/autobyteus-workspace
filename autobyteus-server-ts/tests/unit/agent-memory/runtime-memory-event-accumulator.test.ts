@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -609,6 +610,29 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(view.workingContext).toBeNull();
   });
 
+
+  it("records the sender of a forwarded agent-to-agent delivery on its user trace (RD-004)", async () => {
+    const memoryDir = await mkTempDir();
+    const accumulator = createAccumulator(memoryDir);
+    const forward = (message: AgentInputUserMessage, turnId: string) => accumulator.recordForwardedUserMessage({
+      runId: "run-1",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, agentDefinitionId: "agent-def-1", llmModelIdentifier: "claude",
+        autoExecuteTools: false, memoryDir,
+      }),
+      platformAgentRunId: "session-1",
+      message,
+      result: { accepted: true, turnId },
+      forwardedAt: new Date(1000),
+    });
+    forward(new AgentInputUserMessage("From the researcher", SenderType.AGENT, null, {
+      input_origin: "inter_agent_delivery", sender_agent_id: "run-researcher",
+    }), "turn-a");
+    forward(new AgentInputUserMessage("From the user"), "turn-b");
+    expect(readView(memoryDir).rawTraces?.map((trace) => [trace.traceType, trace.senderId ?? null]))
+      .toEqual([["user", "run-researcher"], ["user", null]]);
+  });
 
   it("does not substitute an active turn when forwarded input lacks its exact turn identity", async () => {
     const memoryDir = await mkTempDir();

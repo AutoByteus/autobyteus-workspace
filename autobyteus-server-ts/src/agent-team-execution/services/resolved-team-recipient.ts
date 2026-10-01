@@ -1,9 +1,6 @@
-import {
-  assertAgentTeamAddress,
-  type AgentTeamAddress,
-} from "../../agent-collaboration/domain/agent-team-address.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
-export type ResolvedTeamRecipient = Readonly<{ kind: "agent"; address: AgentTeamAddress }>;
-
-export const createResolvedAgentRecipient = (address: string): ResolvedTeamRecipient =>
-  Object.freeze({ kind: "agent", address: assertAgentTeamAddress(address) });
+/** A delegation target: a configured Agent, or a collaborator (an Agent, Agent Team or Team member) of the run. */
+export type TeamDelegationPlacement =
+  | Readonly<{ kind: "agent"; address: AgentTeamAddress }>
+  | Readonly<{ kind: "agent_team"; address: AgentTeamAddress; coordinatorAddress: AgentTeamAddress }>;

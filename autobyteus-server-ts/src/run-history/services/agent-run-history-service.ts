@@ -131,6 +131,7 @@ export class AgentRunHistoryService {
       createdAt: row.createdAt,
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
+      hasCollaboration: row.hasCollaboration === true,
     };
   }
 

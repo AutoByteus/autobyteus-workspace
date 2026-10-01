@@ -37,6 +37,7 @@ const build = (kind: "agent_team" | "agent_org", runtimeKind = RuntimeKind.AUTOB
     ancestorTeamRunIds: kind === "agent_team" ? [] : ["mounted-team-run"],
   });
   const memberExecutionContext = new MemberExecutionContext({
+    teamScoped: true,
     identity,
     authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({

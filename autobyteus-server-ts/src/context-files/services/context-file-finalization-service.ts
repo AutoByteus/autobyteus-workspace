@@ -69,6 +69,13 @@ export class ContextFileFinalizationService {
         throw new Error("Org draft and final context-file owners must identify the same execution.");
       }
     }
+    if (input.draftOwner.kind === "agent_collaboration_member_draft" || input.finalOwner.kind === "agent_collaboration_member_final") {
+      if (input.draftOwner.kind !== "agent_collaboration_member_draft" || input.finalOwner.kind !== "agent_collaboration_member_final"
+        || input.draftOwner.hostRunId !== input.finalOwner.hostRunId
+        || input.draftOwner.agentRunId !== input.finalOwner.agentRunId) {
+        throw new Error("Agent collaboration draft and final context-file owners must identify the same execution.");
+      }
+    }
     await this.ownerResolver.validateDraftOwner(input.draftOwner);
     await this.cleanupService.cleanupExpiredDrafts();
     const resolvedFinalOwner = await this.ownerResolver.resolveFinalOwner(input.finalOwner);

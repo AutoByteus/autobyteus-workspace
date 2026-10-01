@@ -29,7 +29,7 @@ export interface CollaborationMessagesPerspective {
 }
 
 export interface CollaborationMessagesContextView {
-  readonly rootKind: 'agent_team' | 'agent_org'
+  readonly rootKind: 'agent_team' | 'agent_org' | 'agent'
   readonly rootRunId: string
   readonly focusedAgentRunId: string
   readonly focusedMemberAddress: AgentTeamAddress

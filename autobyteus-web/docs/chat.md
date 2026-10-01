@@ -196,6 +196,72 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
 The New chat footer (model, thinking, workspace, approval) exists only before
 the first message (`chatDraftModelControls.ts`).
 
+## `@` In A Live Run (Collaborators)
+
+In every sendable live-run composer (standalone Agent run, Team member, Org
+member, and any task child), `@` at a word start opens the run variant of
+`ChatTargetMenu` above the box ("Bring into this run"). New chat `@` still picks
+the launch target and is unchanged.
+
+- **Options** come only from the server: `collaboratorMentionCandidates`
+  (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
+  time the menu opens and invalidated when a collaborator is added. Shared
+  Agents (no Daily Assistant or built-ins), then shared Agent Teams, minus what
+  is already in the run; Agent Orgs are never offered. The footer names the
+  focused agent, which receives the message.
+- **Scope.** `useComposerTarget` sets `mentionScope` from the active target
+  (`composables/agentInput/runMentionScope.ts`); launch drafts and read-only
+  views have none and show no menu.
+- **Choosing** (`useRunMentionMenu`) writes `@Name ` into the text and records
+  the mention in `AgentContext.requestedMentions`. `MentionChipRow` shows a chip
+  while `@Name` is in the text; removing a chip keeps the words (`@Name` →
+  `Name`). ↑/↓, Enter/Tab and Escape work as in New chat; Enter with no match is
+  swallowed. The textarea exposes combobox semantics while a menu is open.
+- **Sending.** The Agent, Team, Org and Agent-collaboration stores send
+  `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds the
+  collaborator on send and appends a `[Mentioned collaborators]` note to the
+  stored message; `UserMessage` strips it and shows each `@Name` as an inline
+  chip, and run summaries drop it (`utils/collaborators/collaboratorMentionText.ts`).
+  **Only a send with mentions is held** (AR-007,
+  `services/runSubmission/localUserSubmission.ts`): the composer keeps the draft
+  and no local message is shown until the root accepts the send
+  (`acceptLocalSubmission`; the standalone store waits for the SEND_MESSAGE ack,
+  `AgentStreamingService.sendMessageAwaitingAdmission`). A Team send settles on
+  its identity (`agent_run_id`, `message_id`, `dedupe_key`), never on content
+  (CR-003). Sends without mentions keep their immediate local echo.
+- **Failure notice.** A send rejected with `COLLABORATOR_ADD_FAILED` (every
+  transport maps it to `CollaboratorAddRejection`,
+  `services/collaborators/collaboratorAddFailures.ts`) posts nothing: the draft
+  and its chips stay, and `CollaboratorAddFailureNotice` (above the box) shows
+  "Couldn't add <name> to this run" with the reason from
+  `AgentContext.collaboratorAddFailure`. It can be dismissed and is replaced by
+  the next send. Success has no notice; the tree shows the result.
+- **Collaborator rows.** Each collaborator is one hosted instance, shown with
+  the product's task rows from the run's `collaborators` (Offline until its first
+  message), before any extra copies: Team runs
+  (`teamExecutionTreeSelectors.withCollaboratorExecutions`), Org runs and
+  standalone runs (`collaboratorExecutionNodes`). A collaborator Team opens once
+  when it appears (F-02). `collaborator_added` adds the contexts in place, so the
+  pending send that added it keeps its acknowledgement.
+- **Names (F-03).** Rows, the Team/Org tab and "From <Sender>:" use one formatter,
+  `utils/collaboration/memberDisplayName.ts` (`product prototyper`, and
+  `Product Prototyper` in sentences).
+- **Agent-to-agent messages (RD-004).** A `send_message_to` delivery shows its
+  sender with `InterAgentMessageSegment` ("From <Sender>:") inside the receiving
+  agent's message block, live (`memberInputMessageHandler` for
+  `inter_agent_delivery`) and after reopen (`inter_agent_message` replay items).
+  Older stored deliveries without a recorded sender stay user-style. Known
+  limit: the Event Monitor's "earlier events" page (active-trace paging) still
+  shows deliveries user-style.
+- **Standalone runs** gain children: rows under the run row
+  (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
+  ⚙ and ＋ header controls and a "Message <name>…" box, F-04), the run row
+  returning to the run's own agent, and a "Team" tab once the run has
+  children. `stores/agentRunCollaborationStore.ts`
+  reads a stopped run's stored view with `agentRunCollaboration` (never restoring
+  it) and attaches `/ws/agent-collaboration/:runId` only while the host runs or
+  when the user sends to a child.
+
 ## Tests
 
 - `stores/__tests__/chatDraftStore.spec.ts`
@@ -217,3 +283,17 @@ the first message (`chatDraftModelControls.ts`).
   `ExistingRunConfigEditor.workspace.spec.ts`
 - `composables/__tests__/useRightSideTabs.contextualDefault.spec.ts`
 - `pages/__tests__/chat.spec.ts`, `pages/__tests__/workspace-chat-redirect.spec.ts`
+- `components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts`,
+  `utils/collaborators/__tests__/collaboratorMentionText.spec.ts`,
+  `services/collaborators/__tests__/*.spec.ts`,
+  `services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts`,
+  `stores/__tests__/agentRunCollaborationStore.spec.ts`,
+  `services/runSubmission/__tests__/localUserSubmission.spec.ts`,
+  `components/agentInput/__tests__/CollaboratorAddFailureNotice.spec.ts`,
+  `utils/collaboration/__tests__/memberDisplayName.spec.ts`
+- Browser probe: `pnpm test:e2e:cross-scope-agent-mentions`
+  (`tests/e2e/cross-scope-agent-mentions-live-probe.mjs`): `@` in standalone,
+  Team and Org runs, briefing with `send_message_to`, "From <Sender>:" live and
+  on replay, the add-failure notice and the Agent-root lifecycle. It runs in an
+  owned temp data root on a real runtime. It needs Chrome, a logged-in runtime
+  CLI and a prior `pnpm -C autobyteus-server-ts build`; case F01 needs LM Studio.

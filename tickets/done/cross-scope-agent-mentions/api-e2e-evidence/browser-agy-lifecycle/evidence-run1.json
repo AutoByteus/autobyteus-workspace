@@ -1,0 +1,82 @@
+{
+  "startedAt": "2026-09-30T23:23:48.316Z",
+  "runtime": "antigravity_cli",
+  "cases": {
+    "L01": {
+      "title": "Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Fail",
+      "ms": 53718,
+      "error": "woken host process not found",
+      "details": {
+        "runId": "research_assistant_051d39a8edce4823953a26f84092091d",
+        "hostPids": [
+          3502
+        ],
+        "childRunId": "code_reviewer_a95ee32dc85d43c8bcac487789d0e5c0",
+        "childPids": [
+          4251
+        ],
+        "rootActiveAfterCrash": true,
+        "childStatusAfterCrash": "idle",
+        "hostActiveAfterWake": true,
+        "wokenHostPids": []
+      }
+    },
+    "L02": {
+      "title": "Host crash without collaborators: Archive succeeds and the lingering root is ended",
+      "result": "Pass",
+      "ms": 12831,
+      "details": {
+        "runId": "research_assistant_ebc009e629554322bec2832a53191cb5",
+        "hostPids": [
+          6778
+        ],
+        "rootBeforeCrash": true,
+        "rootAfterCrash": true,
+        "rootAfterArchive": null
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 3098
+    },
+    {
+      "label": "frontend",
+      "pid": 3174
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 3174,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 3098,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-9cecXA"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-9cecXA",
+  "backendUrl": "http://127.0.0.1:55902",
+  "frontUrl": "http://127.0.0.1:55903",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "flaky": "flaky-agent",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-09-30T23:29:27.274Z"
+}

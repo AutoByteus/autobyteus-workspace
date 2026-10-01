@@ -239,10 +239,29 @@ queue.
 - Task Agents and task Teams are delegated children recorded in the execution
   tree (with `delegatorAgentRunId` for children created since the resource
   lifecycle); they do not alter configured topology. There are no task records.
+- Collaborators: a shared Agent or Agent Team the user brought into the Org run
+  with `@` (see [Agent Communication](./agent_communication.md#collaborators)).
+  Each is one hosted instance recorded as a `rootOrg.collaborators` entry with
+  its run IDs, at its own root-level address. The Org hosts it like a configured
+  member (AR-006): a collaborator Agent through
+  `RootAgentExecutionRegistry.prepareConfigured`, a collaborator Team as one
+  mounted-style TeamRun through `RootTeamExecutionDirectory.prepareConfigured`
+  (members prepared lazily). Admission prepares the handles, commits the entries,
+  then publishes them (Offline) and emits `collaborator_added`; restore re-hosts
+  them in `restore` mode; termination includes them. `send_message_to` resolves
+  configured placements, then collaborators (a Team goes to its coordinator) and
+  collaborator Team members; the first message starts the instance. Member
+  contexts read the live tree: a collaborator Agent gets no Org instruction, a
+  collaborator Team member gets its Team's handoffs and instruction. The Org's
+  index records `collaborator` and `collaborator_team_member` executions; a
+  collaborator Team hosts its members' delegations in its entry's
+  `taskExecutions`. `delegate_task` to a collaborator address starts an extra
+  copy (`AgentOrgTaskSourceResolver` projects it from the entry). The Org, its
+  members and its mounted Teams are never offered with `@`.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
   same-root wake-on-message in `restore` mode, one liveness predicate
-  (`AgentOrgRootAgentExecutionRegistry.isTaskLive` or the hosting Team
+  (`RootAgentExecutionRegistry.isTaskLive` or the hosting Team
   registry), and open work counting only `initializing`/`running` children. See
   [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
 - Each Agent owns its exact five-state runtime status.
@@ -289,7 +308,8 @@ memory/agent_orgs/<org-run-id>/
 coordinator-free `rootOrg`. It stores direct Agent placements, direct
 mounted-Team placements with their Agent members, compiled handoffs, effective
 launch configurations, concrete local and provider identities, application
-binding, timestamps, and delegated child executions. Like the Team tree it is
+binding, timestamps, delegated child executions, and `collaborators` (read as
+`[]` when absent, always written). Like the Team tree it is
 read tolerantly (known required fields and invariants checked, `schemaVersion`,
 `settledAt`, and unknown keys ignored) and written exactly with no
 `schemaVersion`. Older packages may still hold an

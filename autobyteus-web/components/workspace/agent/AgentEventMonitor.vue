@@ -31,8 +31,10 @@
         {{ filePreviewStatus }}
       </p>
       <slot name="composerContext" />
+      <!-- A collaborator that could not be brought into this run (REQ-008); hidden otherwise. -->
+      <CollaboratorAddFailureNotice />
       <slot name="composer">
-        <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" />
+        <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" :placeholder="composerPlaceholder" />
       </slot>
     </div>
   </div>
@@ -42,6 +44,7 @@
 import { computed, ref, toRef } from 'vue';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
+import CollaboratorAddFailureNotice from '~/components/agentInput/CollaboratorAddFailureNotice.vue';
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
 import AgentConversationFeed from '~/components/workspace/agent/AgentConversationFeed.vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
@@ -66,6 +69,8 @@ const props = defineProps<{
   browseSubject: EventMonitorActiveTraceBrowseSubject;
   /** `/` skill tags in the box; standalone agent runs only. */
   skillTagging?: SkillTaggingCapability | null;
+  /** Composer placeholder when there are no skill tags (e.g. "Message code reviewer…"). */
+  composerPlaceholder?: string | null;
 }>();
 
 const activityStore = useAgentActivityStore();

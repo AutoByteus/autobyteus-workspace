@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
-  AUTOMATIC_TEAM_TOOL_NAMES,
+  automaticCollaborationToolNames,
   buildRuntimeAgentToolExposure,
   resolveRuntimeAgentToolExposure,
   toRuntimeAgentToolNameSet,
 } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 
 const memberExecutionContext = testMemberExecutionContext({
   teamRunId: "team-run",
@@ -112,7 +113,7 @@ describe("runtime-agent-tool-exposure", () => {
       memberExecutionContext,
     );
 
-    expect(AUTOMATIC_TEAM_TOOL_NAMES).toEqual([
+    expect(automaticCollaborationToolNames(memberExecutionContext)).toEqual([
       "get_handoff_rules",
       "send_message_to",
       "delegate_task",
@@ -126,5 +127,15 @@ describe("runtime-agent-tool-exposure", () => {
     expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(exposure.getHandoffRulesEnabled).toBe(true);
+  });
+
+  it("gives a member that belongs to no Team send_message_to and delegate_task but not get_handoff_rules", () => {
+    const host = new MemberExecutionContext({ ...memberExecutionContext, teamScoped: false });
+    expect(automaticCollaborationToolNames(host)).toEqual(["send_message_to", "delegate_task"]);
+    const exposure = resolveRuntimeAgentToolExposure({ toolNames: ["delegate_task", "run_bash"] }, host);
+    expect(exposure.requestedToolNames).toEqual(["delegate_task", "run_bash", "send_message_to"]);
+    expect(exposure.getHandoffRulesEnabled).toBe(false);
+    expect(exposure.sendMessageToEnabled).toBe(true);
+    expect(automaticCollaborationToolNames(null)).toEqual([]);
   });
 });

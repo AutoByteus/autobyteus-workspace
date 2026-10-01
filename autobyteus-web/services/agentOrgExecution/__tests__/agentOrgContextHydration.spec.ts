@@ -190,6 +190,25 @@ describe('staged AgentOrg context hydration and publication', () => {
     expect(context.phase).toBe('live')
     expect(context.error).toBeNull()
   })
+
+  it('hosts a collaborator Team in place on collaborator_added: Offline contexts and an opened Team row (no reload)', async () => {
+    const view = taskBearingView()
+    const context = await hydrateAgentOrgExecutionContext({ orgRunId: 'org-run', view })
+    const launch = view.execution_tree.rootOrg.defaultLaunchConfiguration
+    expect(context.applyEvent(9, { kind: 'collaborator_added', collaborator: {
+      kind: 'agent_team', address: '/product_team', teamDefinitionId: 'product-team', teamRunId: 'product-run',
+      coordinatorAddress: '/product_team/product_prototyper',
+      members: [{ address: '/product_team/product_prototyper', agentDefinitionId: 'prototyper', agentRunId: 'pp-run', platformAgentRunId: null }],
+      handoffs: [], defaultLaunchConfiguration: launch, taskExecutions: [], addedAt: view.execution_tree.createdAt, addedViaAgentRunId: 'agent-director',
+    } } as AgentOrgExecutionEventDto)).toBe('applied')
+    expect(context.phase).toBe('live')
+    expect(context.getAgentContext('pp-run')).toMatchObject({ config: { agentDefinitionId: 'prototyper', agentDefinitionName: 'product prototyper' } })
+    expect(context.getAgentContext('pp-run')!.state.currentStatus).toBe(AgentStatus.Offline)
+    const rows = projectAgentOrgHistoryRows({ run: liveHistoryRun({ ...view, execution_tree: context.executionTree } as never), context, isTeamExpanded: () => true })
+      .map((item) => item.row)
+    expect(rows.find((row) => row.kind === 'task_team' && row.teamRunId === 'product-run')).toBeTruthy()
+    expect(rows.find((row) => 'agentRunId' in row && row.agentRunId === 'pp-run')).toBeTruthy()
+  })
 })
 
 async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source'>) {

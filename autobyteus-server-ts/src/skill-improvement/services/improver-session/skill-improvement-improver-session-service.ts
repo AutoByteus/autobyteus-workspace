@@ -152,6 +152,7 @@ export class SkillImprovementImproverSessionService {
       autoExecuteTools: true,
       llmConfig: resolved.llmConfig,
       runtimeKind: resolved.runtimeKind,
+      launchPurpose: "server_helper",
     });
     const run = this.requireActiveRun(created.runId);
     const state: SkillImprovementImproverSessionState = await this.improverSessionStore.write(context, {

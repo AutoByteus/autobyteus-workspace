@@ -27,6 +27,19 @@ The latest canonical report remains authoritative. This record is the cumulative
 
 | CRR-013 | api-e2e-test-review-report.md | Proportional re-review / API-REV-008 Pass95.0 reporting Local Fix | CRR012 Fail — TR-001 | Pass — test-code review | TR-001 closed; all prior scope limits retained |
 
+| CRR-014 | code-review-report.md | Integrated source review / DR002, IR009, ReadySR035 | CRR011 source Pass and CRR013 test Pass, pre-integration only | Pass — integrated source 9.40; independent API/E2E pending | IR008-LF001 / DI001.a/b/c source verified; reviewer evidence incident disclosed |
+
+| CRR-015 | code-review-report.md | Focused failure-origin / API-REV009 API009-F001 | CRR014 integrated source Pass; API009 Fail77.9 | Fail — implementation Local Fix, earlier review gap confirmed | API009-F001 open; CG035/DI001.a no-duplicate closure corrected |
+
+| CRR-016 | code-review-report.md | IR011 source re-review / SR038 | CRR015 Fail Local Fix | Pass — source9.50, integrated API009 closure open; readiness corrected by CRR017 | API009-F001 source-addressed only |
+| CRR-017 | code-review-report.md | Focused failure-origin / API010-F001 | CRR016 sourcePass9.50; API010 Fail75.0 | Fail — Local Fix, implementation-owned test/build; CRR016 readiness gap | API010-F001 open; API009 integrated open |
+
+| CRR-018 | code-review-report.md | Failure-origin follow-up / explicit user web-core boundary constraint | CRR017 Fail Local Fix | Fail unchanged; guard-policy option withdrawn, boundary restoration required | API010-F001 open; API009 integrated open |
+
+| CRR-019 | code-review-report.md | IR012 source re-review / CRR018 boundary correction | CRR018 Fail Local Fix; API010 Fail75.0 | Pass — source9.50, unchanged guard; full build/API closure pending | API010-F001 source-addressed; API009 integrated open |
+
+| CRR-020 | api-e2e-test-review-report.md | Proportional successful test-code review / API-REV012 Pass95.0 | CRR013 test Pass pre-integration; API009 three paths pending; CRR019 source Pass | Pass — cumulative API15; 12 unchanged reused +3 additions independently reviewed | TR-001 remains closed; API0093 review complete; API009/010 executable closure API-owned |
+
 ## Revision Entries
 
 ### CRR-001 — Direct-summary baseline; incomplete affected cleanup
@@ -441,3 +454,205 @@ Confirmed **accepted=true / DELIVERED** to sole **/api_e2e_engineer**, exact Age
 Fresh get_handoff_rules selected **“When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.”** → sole **/delivery_engineer**. API008 already executed the affected correction checks; no pending API rerun/failure/source/upstream condition applies. No duplicate API/SD/IE notification. Confirmed receipt follows.
 
 Confirmed **accepted=true / DELIVERED** to sole **/delivery_engineer**, exact AgentRun **delivery_engineer_5ebcf8d1d77a4919b99577a1db8491e5**,2583 cumulative/current references attached. Receipt `code-review-evidence/crr-013/handoff-receipt.json`. No duplicate API/SD/IE outcome message. Review stops after confirmed handoff; Delivery completion remains pending.
+
+### CRR-014 — Integrated IR009 source review Pass; independent execution required
+
+- Date / reviewer: 2026-10-01 / Code Reviewer. **Implementation Review / round14; Pass, source 9.40/10 (94/100)**. Canonical report: `code-review-report.md`; task **Large / High**, unchanged. Failure classification **N/A — Pass**.
+- Trigger: Implementation Engineer IR009 completion of **DR002 integration Local Fix**, after IR008-DI001 / LF001 and **ReadySR035 / ARCH-REV005 Pass**. Approved compaction **SR033** and upstream cross-scope **ApprovedSR008 / ReadySR010** govern. Related implementation IR001–009; API001–008 historical only; CRR001–013 retained. Applicable upstream Product UI retained; compaction redesign N/A.
+- Prior authoritative source **CRR011 Pass9.40** and test **CRR013 Pass** are explicitly **PRE-INTEGRATION ONLY**, as are ARCH004/IR007/API00895.0. Previous canonical source/record/test-report snapshots are preserved under `code-review-evidence/crr-014/`; canonical test report unchanged. No absent prior result inferred as Pass.
+- Reviewed **current worktree plus cumulative merge**, not index alone: HEAD026476691c62bda309ce7f2a9342ebb444959f98 / MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98; IN-PROGRESS/UNCOMMITTED, 672 staged paths, zero unmerged. IR009 31 paths (12 production, 13 tests/fixtures, 6 generated), 676 incoming /69 overlaps; all current source hashes checked. All production overlaps and relevant forward owners traced; non-overlap upstream work risk-selected, not a claim to reread every line.
+- **No new actionable source defect.** Mandatory24 structural checks Pass; 232 implementation files audited, none >500 non-empty; nine cumulative >220 additions/moves explicitly assessed, no split justified by size alone. Strict snapshots, recovery-qualified host liveness, public begin/confirm/finish scope and deliberate pre-request stream retirement, actual whole-command receipt, exact child-batch preflight, before-I/O revisions and all-or-nothing stage/commit/adopt satisfy the reviewed contracts.
+- Scenario/premise basis unchanged: **MP012** ordinary host Stop during unresolved native child work; **MP013** recoverable Error with live child inspection/reconnect. Upstream root Stop requirement is REQ006, not its REQ013 extra-copy requirement; technical initiating premise unchanged. CG035–038 promote supported contracts and are satisfied. CG039 general ledger/queue persistence/cold-native-history expansion rejected. No artificially timed contradictory workflows, new provider policy, root coordinator, migration or durable native-card promise.
+- Independent reviewer checks: web target38 Pass/4 files; server target15 Pass/3; selected server overlap251 Pass/2 skipped (28 files Pass/1 skipped); selected web overlap408 Pass/34; core52 Pass/4; contracts14 Pass; core/server noEmit exit0. Groups overlap: **no unique grand total or confidence rescore**. Local doubles/fixtures are not native hosted product or Electron proof. No provider campaign, API/E2E, full suite, full web typing, emitted build, app/private-data interaction or Git finalization.
+
+#### Prior Finding Resolution
+
+| Finding / item | Prior status | CRR014 disposition | Related revisions / evidence |
+| --- | --- | --- | --- |
+| IR008-LF001 / DI001.a | Missing strict child input/recovery projection; design corrected | **Source closure verified** | SR035 / ARCH005 / IR009; required DTO, child-only collector, hosted-Team recursion, strict consumer and dormant projector checks |
+| IR008-DI001.b | Whole-host confirmation boundary required | **Source closure verified** | Public child scope before real host action; pre-retired stream; full batch validation before settlement; failure/stale cases locally covered |
+| IR008-DI001.c | Exact-owner atomic publication required | **Source closure verified** | Before-fetch revisions, exact read/service/socket/node ownership, full adoption preflight -> public activity transaction -> nonthrowing adoption |
+| ARCH-F001/002/003 | Prior source resolutions | Preserved at integration intersections | Shared-owner move diff and affected core/Team/Org regression; not historical score carry-over |
+| CRR013 TR-001 / API12 | Reporting correction closed | Closed / unchanged | Protected durable API paths and canonical test-report hashes retained |
+| F005 / F004 / SR022 | Accepted known nonfixed/nonPass Qwen STOP / unknown / exhausted v6 unapproved | Unchanged | No semantic remedy, new provider budget or rescore |
+| CG033 | Preparatory timeout unproved | Unchanged | Not fixed, pump Pass or executed baseline |
+
+- **Reviewer-owned evidence incident:** running two IR009 overlap scripts without first inspecting their output redirects overwrote original `server-overlap-final.log` and `web-overlap-final.log` with CRR014 rerun output. Exit files were rewritten byte-identically. Original SHA256 pins remain in entry audit/incident. Owner's read-only search of487 log/txt files and two older archives found no originals; exact original raw bytes unavailable from known backups. Historical IR009 counts have only partial original transcript corroboration; replacement files are **CRR014 reruns, not original IR009 raw proof**. Fresh final logs copied into reviewer evidence. No reconstruction; no claim that all historical evidence is untouched. Incident is not an implementation defect/deduction.
+- Other limits retained: 14 wider and7 baseline residuals, full collaboration9 Pass/7 baseline Fail, plain web8GBtsc exit2/7078 (not vue-tsc/full Pass or comparable6836), earlier OOM, withdrawn API006 claims and unsupported API007 literal. Actual synthetic row/card preview does not prove root Stop/reconnect/native recovery/Electron. No cold native replay, physical drag/seven-member UI or power-loss guarantee.
+- Required next gate: independent integrated API/E2E for native hosted Agent **and** Team held-A/queued-B/retry/post-response nonreplay/reconnect; whole-host Stop success plus child and late-host failures; exact stale ownership and two-child atomic hydration; sender/identity, strict dormant projections and Team/Org regressions. Then separate successful-test review, then Delivery semantic docs/isolated Electron/user verification. **No direct Delivery advancement.**
+- Evidence: `code-review-evidence/crr-014/README.md`, source/incoming hash crosschecks, source size audit, exact reviewer logs/exits, entry/final preservation audits and provenance incident. Canonical report and cumulative record completed before fresh result routing. Exact selected rule and confirmed receipt follow.
+
+Fresh get_handoff_rules selected **“When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.”** -> sole **/api_e2e_engineer**. This is not a successful-test/Delivery or failure-origin result. Latest developer single-recipient contract excludes a duplicate informational outcome. Confirmed receipt follows only after successful send.
+
+Confirmed **accepted=true / DELIVERED** to sole **/api_e2e_engineer**, exact AgentRun **api_e2e_engineer_96e63b834264434986f16a8037990c3f**; **3697** cumulative/current references attached. Receipt: `code-review-evidence/crr-014/handoff-receipt.json`. No duplicate informational outcome, no direct Delivery advance. Review stops after confirmed handoff.
+
+
+### CRR-015 — Held-input reload duplication confirmed; implementation Local Fix
+
+- Date/reviewer: 2026-10-01 / Code Reviewer. **Focused API/E2E failure-origin review / round15; Fail — Local Fix, implementation-owned.** Canonical `code-review-report.md` updated; prior CRR014 source report and cumulative record preserved in `code-review-evidence/crr-015/entry-*`. CRR001 and every prior entry retained. Canonical successful-test report remains byte-identical CRR013, pre-integration only.
+- Trigger API-REV009 Fail77.9 / API009-F001 after IR009 / DR002 / CRR014. Requirements ApprovedSR033 / ReadySR035 / ARCH-REV005; upstream cross-scope ApprovedSR008 / ReadySR010. **Large / High** unchanged. Product redesign N/A; no renewed requirements/design decision needed for this bounded correction.
+- CG040 **Promote**: SCN005 Supported Explicit Edge Scenario, REQ012 / AC014 / AC017 / DI001.a. User submits A, pre-parent compaction fails, and ordinary native View > Reload returns to the same live child. Intended one identity-bearing Held bubble; actual anonymous history + Held bubble for both hosted Agent and Team lead. This is not an artificial duplicate-envelope/multi-tab sequence.
+- Independent captured-evidence checks confirm real new renderer, exact same native instance/revision12/message, one raw row/history row/live held entry each, two DOM leaves (one Held) each, and no held parent request. Both screenshots inspected. Fresh temporary-probe rerun: **2 Fail**, expected1/received2, exit1. No full product rerun; evidence consistency is not product acceptance. Original API probe/evidence unchanged.
+- Forward origin: accepted metadata identity survives live input snapshot, but native memory ingestion stores no message/dedupe identity; history projection and web conversation user builder expose none. History is built before `handleAgentInputState`, whose exact-identity upsert cannot match the anonymous user and appends. Nineteen relevant paths match CRR014 entry pins; additional helper matches unchanged HEAD. No claim of a new merge regression or pre-merge baseline.
+- **Earlier CRR014 review gap acknowledged:** CG035/DI001.a source closure missed whether saved A carried the identity needed by the live upsert. Empty-conversation pending-state tests proved labels/revisions, not the actual history/live merge. This was source-detectable, not runtime-only. Correct affected category7 readiness/category8 fidelity rationale and the broad no-duplicate closure; do not repeat/rescore full source scorecard. Historical9.40 unchanged but not current Pass.
+
+#### Prior finding resolution
+
+| Item | Prior | Current | Evidence / limits |
+| --- | --- | --- | --- |
+| API009-F001 | API preliminary implementation Local Fix | **Confirmed/open, implementation-owned** | Native captured responses + source trace + independent2Fail |
+| CG035 / IR008-DI001.a | CRR014 broad source closure | **No-duplicate portion reopened** | Snapshot schema/collection ownership still valid; missing history/live identity correlation |
+| IR008-LF001 schema omission / DI001.b/c | Source closure verified | Unaffected closure retained | This finding does not invalidate schema, whole-command Stop or atomic publication checks; full product gaps remain API-owned |
+| CRR013/TR001 and API12 | Closed/pass, pre-integration | Unchanged | No successful-test review this round; new API009 durable3 deferred until execution Pass |
+| F005/F004/SR022/CG033 | Historical qualified dispositions | Retained | Nonfixed/nonPass/QwenSTOP; unknown; exhausted/v6unapproved; unproved/notpumpPass |
+
+- Proportionate action: Implementation owns the existing identity/history/live merge correction and focused regressions using native-produced history, then source review and integrated API/E2E again. No content-dedupe prescription, persisted queue, migration, new schema mandate or retry-policy change. If actual design authority must change, route that issue upstream rather than assume it here.
+- Preserve all API009 limits: initial ignored location.reload successes withdrawn; actual native-menu evidence only; retry continuation after failed reconnect and full product negative matrix not tested; repository checks are not whole-product proof. No double-queue/execution, cold-native-history/backendrestart/powerloss, fullsuite/fulltyping or semantic-confidence claim.
+- CRR014 original two IR009 raw-log overwrites remain disclosed and unrecoverable from known backups; replacement files are CRR014 evidence only, not originals. No reconstruction. API006 withdrawn/API007 unsupported-literal excluded; historical OOM/tsc7078non-green/14wider+7baseline unwaived. Cleanup/build backup remains API-owned; no new app/provider/budget or Git mutation.
+- Artifacts: `code-review-evidence/crr-015/README.md`, captured-observations, fresh repro command/log/exit, reviewed-source pins/comparison, entry/final preservation audit. **Recommended sole recipient /implementation_engineer**. Fresh handoff-rule selection and confirmed receipt follow. No Delivery or duplicate informational outcome.
+
+Fresh `get_handoff_rules` selected **“When API/E2E failure-origin review confirms that the owning problem is an implementation defect.”** -> sole **/implementation_engineer**. This focused failure-origin rule is more specific than generic source Local Fix. No API-owned correction, upstream design/requirement change, successful-test or Delivery condition applies. Final preservation audit: 4,197 incoming/reviewed pins, only the two reviewer authorities changed; no missing/unexpected differences; canonical test/API artifacts unchanged. Logical index, raw index, HEAD/MERGE_HEAD and stash unchanged during CRR015. Confirmed receipt follows only after successful send.
+
+Confirmed **accepted=true / DELIVERED** to sole **/implementation_engineer**, exact AgentRun **implementation_engineer_d565b3adf8074d59878dc089de6d3df1**, **4225** cumulative/current references attached. Receipt: `code-review-evidence/crr-015/handoff-receipt.json`. No duplicate recipient or Delivery advance. Review stops after this confirmed handoff; implementation correction and subsequent gates remain pending.
+
+### CRR-016 — IR011 accepted-input identity source re-review
+- Date/reviewer: 2026-10-01 / Code Reviewer; **Implementation Review / round16 / Pass**, source suitability **9.50/10 (95/100)**, not API coverage or semantic-confidence rescore. **Large / High unchanged.**
+- Trigger IR011 completed Local Fix following CRR015/API009-F001 and IR010-DI001 design recovery. Requirements ApprovedSR033 plus explicit SR038 no-migration/future-correctness clarification; ReadySR038 / ARCH-REV006; DR002 integration remains in progress. ARCH005 stored-data exclusion superseded, not inherited as proof.
+- Canonical source report updated; entry CRR015 report/record and unchanged pre-integration CRR013 test report archived under `code-review-evidence/crr-016`. CRR001 and all prior history retained. Not a successful API test-code review.
+- Reviewed current working 17production/7implementationtests/23derived paths, all24 source/test pins match IR011. Independently compared prior232source paths:222unchanged,10changes all IR011. Seven additional IR011source paths reviewed; cumulative239 none>500; delta max84/no>220, source max497. Nine unchanged prior cumulative>220 moves retain explicit structural judgments.
+- DS016–018 traced from actual accepted original metadata through native ingestion, ordinary optional codec/read, typed server replay/conversation/dedupe and web builder to named pending overlay. Shared normalized tagged-primary policy prevents conflicting-ID/secondary/semantic bridges; exact saved kind/role/sender and validated recipient scope retained. Pending keeps timestamp/provenance/known keys/media/files/rich names; accepted-echo stale-executable policy stays separate.
+- CG040 / MP014 source correction verified; CG041 primary-policy and CG042 / MP015 lossless pending mechanisms supported and satisfied. CG043 rejects backfill/heuristic key inference/registry/queue persistence under explicit no-migration scope. Existing rejected premises remain excluded. No new actionable source finding or source/test fix by reviewer.
+- Independent fresh checks: contracts8Pass/noEmit0, core60/5filesPass, server28/3filesPass, web93/10filesPass including2actual-native Agent/Team history cases (overlapping groups not summed); core/server source noEmit0. Own ordinary-codec/store probe preserves three synthetic optional-key rows through current/archive/rotation/repeat reads. Test-owned temp data cleaned; server setup only designated disposable DB. No remote providers or app/build campaign.
+- Native integration uses actual producer/FIFO/root and staged hydration but controlled provisioning/model/compaction trigger and mocked Apollo projection transport. Confirms one HeldA/separateQueuedB, no hydration raw/live/model change, newC recovery and once-onlyA/B/C. Not actual HTTP/packaged renderer proof. IR011 narrow screenshot personally inspected; interaction feedback attributed, not rerun.
+- IR011 plainweb8GBtsc exit2/7181 and32server diagnostics underweboptions remain non-green; zero exact owned-path diagnostic report is not fullgreen/waiver of historical7078. API00977.9%Fail unchanged.
+
+#### Prior finding resolution
+| Item | Prior | Current | Basis / remaining gate |
+|---|---|---|---|
+| API009-F001 | CRR015 confirmed/open implementation defect | **Source correction verified for future corrected native writes; integrated closure OPEN** | IR011 source + fresh actual-native history regression; true new-renderer/same-backend product rerun still required |
+| CG035 / IR008-DI001.a no-duplicate portion | Reopened CRR015 | **Source-addressed, not integrated acceptance** | History now carries the exact accepted key consumed by pending upsert; empty-history-only gap replaced by real-produced history assertions |
+| IR010-DI001 / ARCH005 raw exclusion | Incomplete design premise | **SR038/ARCH006 design-addressed and implemented** | Optional fields through existing owners; no migration/backfill/old-capture rewrite |
+| IR008-LF001 / DI001.b,c; CG036/037 | Scoped source closure | Unaffected closure retained | Relevant root/schema/Stop/atomic owners byte-identical; downstream negative matrix remains |
+| CRR013/TR001 / API0093 durable files | Pre-integration test Pass / new test review pending | Unchanged | No successful API execution yet; API15 remain read-only |
+| F005/F004/SR022/CG033 | Qualified historical dispositions | Retained | Accepted-known/nonfixed/nonPass/QwenSTOP; unknown; exhausted/v6unapproved; unproved/notpumpPass |
+
+- Required next: integrated API owner fresh worktree build/native history, hosted Agent and Team lead actual View/Reload with verified newrenderer on SAME backend/native instance; repeat/attachments/retry continuation/no-send/no-reingestion and remaining sender/recipient/node/Stop negatives. Then successful durable-test review includingAPI0093 -> Delivery docs/userverification/finalization. No provider-budget/coldnative/restartqueue/Delivery shortcut.
+- Keep14wider+7baseline/OOM/typing nongreen; API006withdrawn/API007unsupported excluded; ARCH005SR035only; CRR0149.40historical/corrected; priorpreintegration passes scoped. CRR014 two overwritten IR009logs remain replacements; originals unavailable/no reconstruction, no deduction against IR011.
+- Preservation:9919entrypins; protectedAPI15+packaged2 match; post-check pinned differences0. Raw/logical index/HEAD/MERGE/stash unchanged,672staged/0unmerged; mergeINPROGRESSUNCOMMITTED. No staging/reset/commit/push/release/cleanup; other-owner authorities/evidence and WIP/backups preserved. Final audit/reference index and fresh routing follow. **Recommended sole /api_e2e_engineer**, not Delivery.
+
+Fresh get_handoff_rules selected primary implementation-review Pass -> sole **/api_e2e_engineer**. Current developer single-most-specific-recipient contract excludes duplicate informational outcome. No failure-origin, successful-test/Delivery or upstream revision condition applies. Confirmed receipt follows actual send only.
+
+Pre-handoff final audit:9919 pinned files checked; only canonical source report and review revision record changed,0 missing/0 unexpected. Raw/logical index,HEAD,MERGE_HEAD,stash,672 staged and0 unmerged all unchanged. Reviewer-owned diff check exit0. API/test authorities and all source/derived pins remain intake-identical. Protected17 upstream pins match.
+
+Confirmed **accepted=true / DELIVERED** to sole **/api_e2e_engineer**, exact AgentRun **api_e2e_engineer_96e63b834264434986f16a8037990c3f**,4577 cumulative references attached. Receipt: code-review-evidence/crr-016/handoff-receipt.json. Source Pass only; API009-F001 integrated closure and API00977.9%Fail unchanged. Final audit is pre-send evidence, not a claim that downstream work remains frozen. No duplicate notification/Delivery advance; reviewer stops after confirmed handoff.
+
+
+### CRR-017 — Mandatory worktree build blocked by IR011 test imports
+- Date/reviewer:2026-10-01 / Code Reviewer. **Focused API/E2E failure-origin / round17; Fail — Local Fix, implementation-owned.** Canonical code-review-report.md supersedes CRR016; entry report/record/test report archived under code-review-evidence/crr-017. CRR001 baseline and all prior results retained. Added missing CRR016 index navigation to its already-existing entry; no prior result rewritten.
+- Trigger: API-REV010 Fail75.0 / API010-F001 / I10-03. ApprovedSR033 / ReadySR038 / ARCH-REV006 / IR011, related IR010-DI001 and CRR015/016. DR001/002 remains integration context; new delivery revision N/A. Large/High unchanged.
+- Basis CG044: supported normal operational contract in TESTING.md, engineer building this unreleased worktree via isolated-app start --build for approved SCN005/REQ012/AC014,017. First mandatory guard recursively includes the new test and rejects four direct core-dist imports before packaging/launch. Not a scenario invented by the test.
+- API observed outerexit3 BUILD_FAILED / innerexit1. Reviewer direct guard rerun independently exit1 with same4 diagnostics; script side effect inspected and stale-link path absent before/after. Full build/provider/runtime not rerun.
+- Test matches IR011 and CRR016 pins; guard matches HEAD and CRR016; manifest/lifecycle match CRR016. **Implementation-owned test/build defect + source-detectable earlier review gap**, not postreview change, runtime identity failure, invalid scenario or external environment issue. Valid native assertions retained.
+- **Affected prior rationale only:** CRR016 API-readiness structural Pass/category7 is corrected; test placement was not checked against mandatory guard. CRR0169.50 remains historical, not current Pass. No full source scorecard or numeric confidence rescore.
+
+#### Prior Finding Resolution
+| Finding ID / premise | Prior status | Current status | Related revisions | Verification evidence |
+|---|---|---|---|---|
+| API010-F001 / CG044 | API preliminary implementation Local Fix | Confirmed OPEN, implementation-owned build integration | IR011/CRR016/API010/CRR017 | Exact mandatory chain, matching hashes, direct reviewer exit1/same4 diagnostics |
+| API009-F001 / CG040 | Fresh-write source correction verified; integrated open | Unchanged integrated OPEN; corrected package not produced | CRR015/016, SR038/ARCH006/IR011, API010 | API build fails prelaunch; no runtime duplicate/fix claim |
+| CRR016 readiness | Source Pass9.50, category7 readiness9.0 | Readiness rationale superseded by concrete blocker; no numeric rescore | CRR016/017 | Test/guard/manifest in prior snapshot; prior commands omitted guard |
+| CRR013/API15 | Pre-integration successful-test review;3API009 files pending | Unchanged; no new successful-test result | CRR013/API009/010 | API15 + packaged2 pins match; test report unchanged |
+| F005/F004, CG033 and historical limits | Accepted-known nonfixed/unknown/unproved | Unchanged, no waiver/new budget | Prior records | No new provider/semantic or runtime evidence |
+
+- Required response: conformant native-test setup/placement or justified narrowly tested guard correction, retaining actual native history/FIFO/hydration/attachment assertions and production boundary enforcement. No regex evasion, assertion deletion, guard bypass, fake-key capture or oldbuild substitute. No migration/backfill.
+- Required sequence: implementation correction -> independent source re-review -> documented complete build and integrated API/E2E actual repeated new renderer/SAME backend/native Agent+Team, recovery/remaining negatives/productStop -> successful-test review -> Delivery.
+- Recommended sole recipient: /implementation_engineer after fresh rule lookup. Evidence: code-review-evidence/crr-017/README.md, source-excerpts/provenance, guard command/log/exit, entry/final preservation and archive check. Complete incoming archive/manifests plus direct current overrides preserve the cumulative chain without an oversized expanded-reference send.
+- Remaining provider/typing/baseline/withdrawn-evidence constraints and disclosed CRR014 replacement-log provenance stay unchanged. No source/test edits, build/app/provider/cleanup or Git mutation in this review.
+
+Fresh get_handoff_rules selected **“When API/E2E failure-origin review confirms that the owning problem is an implementation defect.”** -> sole **/implementation_engineer**. This is more specific than generic source Local Fix; the test belongs to IR011 implementation, not an API-owned coverage correction. No SD/API/Delivery duplicate notification. Confirmed receipt follows only after successful send.
+
+Pre-handoff final audit: **10,464 pins /10,462 unchanged**, only the two reviewer canonicals changed; zero missing/unexpected. API15 + packaged2 match. Raw/logical index, HEAD026476691c62bda309ce7f2a9342ebb444959f98, MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98 and stash unchanged;672 staged/0 unmerged. Merge IN-PROGRESS/UNCOMMITTED; source/dist, other-owner authorities/evidence, archive, WIP/backups preserved. Reviewer-owned diff check exit0. This audit covers this review before handoff, not later downstream work.
+
+Confirmed **accepted=true / DELIVERED** to sole **/implementation_engineer**, existing AgentRun **implementation_engineer_d565b3adf8074d59878dc089de6d3df1**,145 bounded references including the complete cumulative archive. Receipt: code-review-evidence/crr-017/handoff-receipt.json. API010-F001 implementation correction required; API009 integrated closure OPEN. No second outcome recipient or Delivery advance. Pre-send preservation audit is not a downstream freeze claim. Reviewer stops after confirmed handoff.
+
+
+### CRR-018 — User requires intact web/core boundary guard
+- 2026-10-01 / Code Reviewer. Focused failure-origin follow-up round18; canonical code-review-report.md updated, prior report/record archived in code-review-evidence/crr-018. CRR001 and all previous entries retained.
+- Trigger: explicit user instruction that web must never directly depend on core and the existing intentional guard cannot be removed. ApprovedSR033 / ReadySR038 / ARCH-REV006 / IR011 / API-REV010 / CRR017; DR001/002 remains context, new delivery revision N/A. Large/High unchanged.
+- Prior/current result: **Fail — implementation-owned Local Fix**, unchanged. User clarifies the engineering contract; **CRR017 optional guard-policy correction is withdrawn** as too permissive. Restore architecture in test placement/setup; retain guard unchanged, no exemptions or disguised dependency through a wrapper/re-export.
+- Scenario/candidate basis: CG044 supported normal worktree-build/architectural-boundary contract; prior exact mandatory-guard failure still grounds origin. No new product behavior, runtime failure, scorecard/rescore or validation claim.
+- Preserve actual-native Agent+Team fresh-history/FIFO/hydration/attachment/recovery regression at a conformant integration boundary. Do not delete assertions, bypass guard or modify frozen captures.
+- No source/test/guard edits or new build/test/provider execution here; no claim concurrent implementation remained frozen. Current artifact chain preserved via API010 snapshot + current direct overrides.
+
+#### Prior finding resolution
+| Finding / premise | Prior status | Current status | Evidence / revisions |
+|---|---|---|---|
+| API010-F001 / CG044 | Confirmed implementation boundary/build defect OPEN | OPEN; remove forbidden dependency, keep guard intact | CRR017 failure evidence + explicit user boundary clarification in CRR018 |
+| CRR017 permissible remedy | Included optional narrowly tested guard-policy correction | **Withdrawn/superseded**; no guard relaxation authorized | User's explicit architecture/guard instruction |
+| CRR016 readiness | Source-detectable gap recorded;9.50 historical | Unchanged; no new numeric score | CRR017 source/command evidence |
+| API009-F001 / API15 | Integrated closure / eventual successful test review pending | Unchanged OPEN; CRR013 preintegration only | No new executable acceptance |
+
+- Required route: implementation correction -> independent source re-review -> documented current full build and integrated API/E2E -> successful-test review -> Delivery. Sole recommended /implementation_engineer, to existing execution; no duplicate outcome recipient.
+- All historical no-migration/provider/typing/baseline/log-provenance restrictions in CRR017 remain; no Delivery shortcut.
+
+Fresh rules select solely /implementation_engineer under the implementation-defect failure-origin condition. Same existing execution receives the explicit user constraint; no new design/requirement change, API-owned defect or Delivery route applies.
+
+Confirmed accepted=true / DELIVERED solely to existing Implementation Engineer implementation_engineer_d565b3adf8074d59878dc089de6d3df1. Receipt: code-review-evidence/crr-018/handoff-receipt.json. Explicit user boundary constraint delivered; no guard-policy relaxation allowed. Reviewer stops after this confirmed follow-up.
+
+
+### CRR-019 — External workspace harness restores web/core ownership
+- 2026-10-01 / Code Reviewer / implementation-source re-review round19. **Pass9.50/10 (95/100)**; Large/High unchanged. Canonical code-review-report.md updated; entry CRR018 report/cumulative record/test report archived at code-review-evidence/crr-019. CRR001 and history preserved.
+- Trigger IR012 completed reviewer-requested Local Fix, CRR017/API010-F001 and explicit CRR018 user boundary. ApprovedSR033 / ReadySR038 / ARCH-REV006; related IR011, API009/010 and DR001/002 ongoing; new DR N/A.
+- Re-reviewed six final current paths plus removal, guard/build/config/setup/fixture dependencies and prior findings. All6 hashes match IR012; all17 IR011 production files unchanged. No blanket reuse of CRR016 readiness. Unaffected source evidence retained; mandatory24 structural checks and10-category scorecard completed.
+- Supported basis CG044 operational build/user architecture contract and existing SCN005/MP014,015. Workspace harness explicitly composes native/server and web from above; no web reverse edge found in1577 inspected source/local-test/script/config files. Core-name hits are only unchanged guard and inert negative sample strings. No alias/re-export/hidden core bridge.
+- Entire original native mock/test body byte-identical, only import depth/frontend alias retargeted. Both old active web native test locations absent. New web guard cases reject service import, colocated-test import and production core dependency. Guard/webmanifest/config equal CRR016; lock equals index and intake pinned (not claimed retroactively CRR016 pinned).
+- Fresh documented root command exit0: unchanged guard Pass +native2; web selected3files17 Pass.19/4files, no repeats/candidate totals added. Explicit capture env unset, own logs; no newly remaining enumerated temp roots. No full build/emit/full typing/app/provider/server-globalDB run.
+- Source score9.50 is current scoped judgment, not executable confidence or retroactive CRR016 readiness vindication. Guard-policy option stays withdrawn; no exemption or weakening.
+
+#### Prior finding resolution
+| Finding / premise | Prior status | Current status | Verification evidence / revisions |
+|---|---|---|---|
+| API010-F001 / CG044 | Confirmed implementation boundary/build defect OPEN | **Source correction verified**, mandatory guard green; full build/API confirmation pending | IR012 external harness + exact guard/config hashes + fresh root/web commands |
+| CRR018 user boundary | Keep guard intact, no hidden web core dependency | **Satisfied in source** |1577-file bounded scan, explicit one-way config/harness imports, negative guard cases |
+| CRR016 readiness | Missed static guard conflict;9.50 historical/corrected | Gap retained historically; current readiness re-reviewed | CRR017 evidence preserved; CRR019 guard/placement verification |
+| API009-F001 / CG040–042 | Fresh-write source verified; integrated open | Unchanged integrated **OPEN** | Runtime17 hashes identical; preserved actual-native test2; no packaged renderer journey |
+| CRR013 / API15 | Pre-integration successful-test result; later review pending | Unchanged | API15+packaged2 preservation; test report untouched |
+| F005/F004/CG033 and historic restrictions | Accepted-known nonfixed / unknown / unproved | Unchanged, not waived | No new semantic/provider/runtime acceptance |
+
+- Docs updated appropriately in TESTING.md and external harness README. Runtime transition unaffected; explicit no migration/backfill remains. No new source-size pressure; tests excluded from500/220 thresholds.
+- Next: sole API/E2E after fresh rules -> full documented current worktree build, actual new renderer on SAME backend/native Agent+Team, repeated reconstruction/attachments/recovery/no-send/no-re-ingestion/remaining negatives/productStop -> separate successful-test review -> Delivery. API01075.0 Fail and API009 integrated status not changed by source Pass.
+- Preserves withdrawn unhanded candidate provenance, lost original IR009 log disclosure/CRR014 replacements, all provider/typing/baseline limits. No source/test fixes or Git/app/provider changes by reviewer. Entry10,592 current pins; old active-test historical reference explicitly maps to preserved preimage/new path. Final audit/rules/receipt follow in own evidence.
+
+Pre-handoff preservation:10,592 pins checked,10,590 unchanged; only canonical code-review report and revision record changed,0 missing/unexpected. Protected API15+packaged2 match; raw/logical index, HEAD/MERGE_HEAD, stash unchanged;672 staged/0 unmerged. Removed old test was already absent at intake and is explicitly represented by preserved preimage/new workspace path. No source/guard/build changes by reviewer. Owned diff check exit0. Fresh rules select primary implementation-review Pass -> sole **/api_e2e_engineer**. No duplicate informational outcome under current single-recipient contract; no Delivery. Receipt follows confirmed send.
+
+Confirmed **accepted=true / DELIVERED** solely to /api_e2e_engineer, existing AgentRun api_e2e_engineer_96e63b834264434986f16a8037990c3f,275 bounded attachments with complete archive/current overrides. Receipt: code-review-evidence/crr-019/handoff-receipt.json. Source Pass only: full build/API010 confirmation and API009 integrated closure remain pending. Pre-send audit does not freeze downstream work. No duplicate notification or Delivery advance; reviewer stops.
+
+
+### CRR-020 — Successful integrated validation; cumulative API15 test review
+- 2026-10-01 / Code Reviewer. **Pass — proportional successful-test review**, no source scorecard or API confidence rescore. Trigger API-REV012 Pass95.0; ApprovedSR033 / ReadySR038 / ARCH-REV006 / IR012 / CRR019. Large/High unchanged. DR001/002 integration history relevant; new DR N/A.
+- Canonical **api-e2e-test-review-report.md** updated; prior CRR013 test report archived in code-review-evidence/crr-020 with entry source report/history. **code-review-report.md CRR019 remains byte-identical.** CRR001 baseline and all completed history preserved.
+- Scope API15: independent current hashes show12 match CRR013 and all15 match API012. Reuse those12 scoped prior reviews; fully read3 API009 native root fixture/recovery/termination additions and relevant existing native fixture dependency. No durable edits during API010–012 does not erase the pending three-file review.
+- Requirements SCN005/AC014/017 and design's normal hosted Agent/Team path plus explicit whole-command Stop contract independently justify cases. Real admission/SEND_MESSAGE/native FIFO, strict reconnect/GraphQL and actual root/AgentRunService termination; model/provisioning/host seams clearly bounded. No invented concurrent workflow, size threshold or forced test split. Nine proportional checks Pass; no new actionable finding.
+- Existing API01010+6 native cases and API011 source-matched reuse support current code. API012 actual same-backend/native new-renderer, attachments/HeldA+QueuedB/newC once-only recovery/normal whole-hostStop evidence reviewed as supporting evidence, not new durable production source. No reviewer execution needed; no overlapping test counts added.
+- Corrected temporary Stop oracle permits only immutable raw prefix/archive plus exact normal typed interrupt append, with unchanged public conversation. Initial probe and rationale preserved; no durable assertion weakened. Genuine native reload evidence replaces earlier withdrawn ineffective reload claims.
+
+#### Prior finding resolution
+| Finding / premise | Prior status | Current status | Verification / authority |
+|---|---|---|---|
+| TR-001 | CRR013 closed | Closed retained | All12 CRR013 hashes identical, producer/consumer correction and controls unchanged |
+| API0093 successful-test gate | Pending since integrated API009 | **Completed Pass here** | Full current fixture/two-suite inspection; requirements/design basis; API010 successful16 cases retained with API011 source matching |
+| API009-F001 / CG040–042 | Source corrected; integrated open at CRR019 | API012 **integrated closure verified for corrected future-native writes**; test gate passed | Actual two new renderer documents/same backend/native, exact one A and B, no ingestion/send/generation, new C FIFO; not old-key repair |
+| API010-F001 / CG044 | Source corrected; full build pending at CRR019 | API011 full documented build/start verified; API012 current Pass | Build/start/package evidence; guard current bytes equal HEAD; no boundary exemption |
+| CRR018 boundary instruction | Source satisfied | Retained | Guard unchanged, external workspace harness selected; new API fixtures server-owned |
+| F005/F004/CG033/historical limits | Qualified and unwaived | Unchanged | No semantic campaign/budget, persistence guarantee, global typecheck or baseline waiver |
+
+- API01295.0 is upstream-owned, not a reviewer rating. API011Blocked81.4/API010Fail75.0/API009Fail77.9 remain historical; CRR013 pre-integration Pass not retroactively expanded.
+- Retain F005accepted-known/nonfixed/nonPass/QwenSTOP, F004unknown, SR022exhausted/v6unapproved, CG033unproved/notpumpPass,14wider+7baseline and OOM/web7078/7181 nongreen; API006withdrawn/API007unsupported excluded, ARCH005SR035only, lost originalIR009logs/CRR014replacement provenance disclosed. No migration/backfill, cold-native/restart-queue or new provider budget.
+- Entry audit11,213 current pins,0 absent; cumulative API010 archive and590-file API012 resume archive hashes independently match supplied values. Current direct authorities override archived mutable snapshots. Complete references retained without claiming reread-all.
+- Recommended sole **/delivery_engineer** after fresh rules. Delivery owns docs sync, explicit user verification and finalization; not Delivery Completed or release/merge permission. Reviewer writes only test report/revision history/own evidence, no source/test edits or app/provider/Git mutation. Final preservation/routing/receipt follow.
+
+Fresh get_handoff_rules selects **“When post-API/E2E durable test-code review passes and the complete validated package is ready for delivery, documentation sync, finalization, or release work.”** -> sole **/delivery_engineer**. No source-review informational, failure-origin, correction or upstream revision condition applies. No duplicate IE/API/SD outcome notification. Receipt follows confirmed delivery only.
+
+Pre-handoff final preservation:11,213 entry pins checked,11,211 unchanged; only canonical test-review report and revision record changed,0 missing/unexpected. Source CRR019, API15, original guard, source/dist/owner evidence/archives unchanged. Raw/logical index, HEAD/MERGE_HEAD/stash and672 staged/0 unmerged unchanged; merge IN-PROGRESS/UNCOMMITTED. Owned diff check exit0. Reference-check self-output creation ordering was corrected in reviewer-owned checker (initial result retained); no incoming-file discrepancy. Audit covers this review, not later Delivery changes.
+
+Confirmed **accepted=true / DELIVERED** solely to /delivery_engineer, existing AgentRun **delivery_engineer_5ebcf8d1d77a4919b99577a1db8491e5**,350 bounded attachments including both complete archives/current authorities/API15. Receipt: code-review-evidence/crr-020/handoff-receipt.json. Separate test gate Pass; Delivery owns remaining docs/user verification/finalization. No duplicate notification or reviewer release/Git action. Pre-send audit is not a downstream freeze; reviewer stops after receipt persistence.

@@ -64,6 +64,8 @@ type RuntimeMemoryProviderBoundaryTraceInput = RuntimeMemoryTraceInputBase & {
 type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceType"> & {
   traceType: "user";
   fileAttachments?: readonly ContextFileReference[];
+  /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
+  senderId?: string | null;
 };
 
 /** A system notice shown in the conversation (recorded only for Claude background-task notices). */

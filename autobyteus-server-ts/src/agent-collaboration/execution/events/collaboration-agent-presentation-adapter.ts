@@ -164,7 +164,8 @@ const tokenRunSummary = (
   if (expectedIdentity.root.rootSubjectKind === "agent_team") {
     if (rootTeamRunId !== expectedIdentity.root.rootRunId) throw new Error("run_summary_after_event root_team_run_id is invalid");
   } else if (rootTeamRunId !== null) {
-    throw new Error("AgentOrg token summary must not claim a Team root");
+    // AgentOrg and Agent roots attribute usage by AgentRun; no Team root is claimed.
+    throw new Error(`${expectedIdentity.root.rootSubjectKind} token summary must not claim a Team root`);
   }
   const summary = agentTokenUsageRunSummarySchema.parse(rootNeutral) as Omit<TokenUsageRunSummaryPayload, "root_team_run_id">;
   if (summary.run_id !== expectedIdentity.agentRunId) throw new Error("run_summary_after_event run_id is invalid");
@@ -179,8 +180,8 @@ const token = (payload: Record<string, unknown>, expectedIdentity: Collaboration
   if (expectedIdentity.root.rootSubjectKind === "agent_team" && required(claimedRoot, "root_team_run_id") !== expectedIdentity.root.rootRunId) {
     throw new Error("root_team_run_id does not match the TeamRun execution");
   }
-  if (expectedIdentity.root.rootSubjectKind === "agent_org" && claimedRoot !== null && claimedRoot !== undefined) {
-    throw new Error("AgentOrg token usage must not claim a Team root");
+  if (expectedIdentity.root.rootSubjectKind !== "agent_team" && claimedRoot !== null && claimedRoot !== undefined) {
+    throw new Error(`${expectedIdentity.root.rootSubjectKind} token usage must not claim a Team root`);
   }
   return Object.freeze({
   usageEventId: required(raw(payload, "usage_event_id", "usageEventId"), "usage_event_id"),

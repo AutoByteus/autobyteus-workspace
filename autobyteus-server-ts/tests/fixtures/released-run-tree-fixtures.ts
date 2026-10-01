@@ -6,7 +6,8 @@
  * for the released app-data migrations (frozen strict classifiers) need the released
  * shapes instead: Team tree V2 / Org tree V1, where each task execution has
  * `settledAt` and no delegator, and each launch configuration carries the since-removed
- * run-level `skillAccessMode`. These helpers perform only that shape change.
+ * run-level `skillAccessMode`. Released roots also had no `collaborators` list. These
+ * helpers perform only that shape change.
  */
 type Json = Record<string, unknown>;
 
@@ -41,14 +42,20 @@ const releasedMember = (member: Json, settledAt: string | null): Json => {
 export const toReleasedConfiguredNode = <T>(node: T, settledAt: string | null = null): T =>
   releasedMember(structuredClone(node) as Json, settledAt) as T;
 
+/** Released roots predate collaborator entries. */
+const releasedRoot = (root: Json, settledAt: string | null): Json => {
+  const { collaborators: _collaborators, ...rest } = root;
+  return releasedMember(rest, settledAt);
+};
+
 /** Current Team tree -> released Team tree V2 shape. */
 export const toReleasedTeamRunExecutionTreeV2 = (tree: unknown, settledAt: string | null = null): Json => {
   const current = structuredClone(tree) as Json & { rootTeam: Json };
-  return { ...current, schemaVersion: 2, rootTeam: releasedMember(current.rootTeam, settledAt) };
+  return { ...current, schemaVersion: 2, rootTeam: releasedRoot(current.rootTeam, settledAt) };
 };
 
 /** Current Org tree -> released Org tree V1 shape. */
 export const toReleasedAgentOrgRunExecutionTreeV1 = (tree: unknown, settledAt: string | null = null): Json => {
   const current = structuredClone(tree) as Json & { rootOrg: Json };
-  return { ...current, schemaVersion: 1, rootOrg: releasedMember(current.rootOrg, settledAt) };
+  return { ...current, schemaVersion: 1, rootOrg: releasedRoot(current.rootOrg, settledAt) };
 };

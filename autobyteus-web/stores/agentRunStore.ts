@@ -1,6 +1,8 @@
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { defineStore } from 'pinia';
 import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
+import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
 import { getApolloClient } from '~/utils/apolloClient'
 import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -27,7 +29,9 @@ import { ConnectionState } from '~/services/agentStreaming';
 import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
+import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import {
+  acceptLocalSubmission,
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
@@ -164,10 +168,13 @@ export const useAgentRunStore = defineStore('agentRun', {
       const draftOwner = buildAgentDraftContextFileOwner(runId);
       const messageId = createClientMessageId();
       let dedupeKey = `agent_run_input:${runId}:${messageId}`;
+      // `@` mentions exist only for an existing run; a first message never carries them.
+      const mentions = isNewAgent ? [] : mentionsPresentInText(userText, currentAgent.requestedMentions);
       const localSubmission = beginLocalUserSubmission(currentAgent, {
         text: messageContent, identity: { messageId, dedupeKey },
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
+        mentions,
       });
 
       let preparedRunId: string | null = null;
@@ -243,15 +250,20 @@ export const useAgentRunStore = defineStore('agentRun', {
         finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
-        service.sendMessage(
-          messageContent,
-          submissionPlan.executable.contextFilePaths,
-          submissionPlan.executable.imageUrls,
-          {
-            messageId,
-            dedupeKey,
-          },
-        );
+        const command = {
+          messageId,
+          dedupeKey,
+          mentions: toCollaboratorMentionDtos(userText, mentions),
+        };
+        if (localSubmission.held) {
+          // A send with mentions is shown only once the run accepts it (AR-007).
+          await service.sendMessageAwaitingAdmission(
+            messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command,
+          );
+          acceptLocalSubmission(localSubmission);
+        } else {
+          service.sendMessage(messageContent, submissionPlan.executable.contextFilePaths, submissionPlan.executable.imageUrls, command);
+        }
         preparedRunId = null;
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
@@ -264,6 +276,11 @@ export const useAgentRunStore = defineStore('agentRun', {
           }).catch((cancelError: unknown) => {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
+        }
+        // A rejected add posted nothing: the notice shows and the draft stays as typed.
+        if (localSubmission.held && error instanceof CollaboratorAddRejection) {
+          failLocalSubmission(localSubmission, error);
+          return;
         }
         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
         failLocalSubmission(localSubmission, error);
@@ -439,7 +456,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
+      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
       try {
+        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -456,6 +475,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         }
 
         if (!ownsRequest()) return false;
+        childStop.confirm();
         if (context?.config.runtimeKind === 'autobyteus' && state) {
           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
@@ -467,6 +487,8 @@ export const useAgentRunStore = defineStore('agentRun', {
       } catch (error) {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
+      } finally {
+        childStop?.finish();
       }
     },
 

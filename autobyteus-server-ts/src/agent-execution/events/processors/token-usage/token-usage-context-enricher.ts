@@ -35,6 +35,8 @@ export class TokenUsageContextEnricher {
       model_identifier: sdkResult ? (validatedSdkIdentity ? payload.model_identifier : null)
         : payload.model_identifier ?? config.llmModelIdentifier,
       model_value: sdkResult ? (validatedSdkIdentity ? payload.model_value : null) : payload.model_value,
+      // Only Team members roll up to a root TeamRun. The Agent-root host keeps standalone
+      // attribution and its children are attributed by their own AgentRun (no host roll-up).
       root_team_run_id: memberContext?.identity.root.rootSubjectKind === "agent_team"
         ? memberContext.identity.root.rootRunId
         : payload.root_team_run_id,

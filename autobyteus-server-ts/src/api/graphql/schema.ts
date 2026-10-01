@@ -11,6 +11,7 @@ import { AgentDefinitionResolver } from './types/agent-definition.js';
 import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
 import { AgentOrgDefinitionResolver } from './types/agent-org-definition.js';
 import { AgentOrgRunResolver } from './types/agent-org-run.js';
+import { AgentRunCollaborationResolver } from './types/agent-run-collaboration.js';
 import { TokenUsageStatisticsResolver } from './types/token-usage-stats.js';
 import { TokenUsageAnalyticsResolver } from './types/token-usage-analytics.js';
 import { AgentCustomizationOptionsResolver } from './types/agent-customization-options.js';
@@ -53,6 +54,7 @@ export async function buildGraphqlSchema() {
       AgentTeamDefinitionResolver,
       AgentOrgDefinitionResolver,
       AgentOrgRunResolver,
+      AgentRunCollaborationResolver,
       TokenUsageStatisticsResolver,
       TokenUsageAnalyticsResolver,
       AgentCustomizationOptionsResolver,

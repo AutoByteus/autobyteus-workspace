@@ -47,7 +47,7 @@ describe("autobyteus runtime tool exposure", () => {
   it("keeps the automatic team collaboration trio additive to the native baseline", () => {
     const exposure = resolveAutoByteusRuntimeAgentToolExposure(
       { toolNames: [] },
-      { teamBackendKind: TeamBackendKind.MIXED } as any,
+      { teamBackendKind: TeamBackendKind.MIXED, teamScoped: true } as any,
     );
 
     expect(exposure.requestedToolNames).toEqual([
@@ -56,6 +56,18 @@ describe("autobyteus runtime tool exposure", () => {
       "edit_file",
       "write_file",
       "get_handoff_rules",
+      "send_message_to",
+      "delegate_task",
+    ]);
+  });
+
+  it("gives a standalone Agent-root host both collaboration tools but no handoff rules", () => {
+    const exposure = resolveAutoByteusRuntimeAgentToolExposure({ toolNames: [] }, { teamScoped: false } as any);
+    expect(exposure.requestedToolNames).toEqual([
+      "run_bash",
+      "read_file",
+      "edit_file",
+      "write_file",
       "send_message_to",
       "delegate_task",
     ]);

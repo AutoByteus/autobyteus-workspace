@@ -1,6 +1,7 @@
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type {
+  CollaboratorEntry,
   ConfiguredExecutionNode,
   IsoTimestamp,
   TaskExecution,
@@ -14,6 +15,8 @@ export type RootConfiguredAgentOrgExecutionNode = Readonly<{
   orgRunId: string;
   defaultLaunchConfiguration: AgentLaunchConfiguration;
   members: readonly ConfiguredExecutionNode[];
+  /** Shared definitions brought into this run with `@`; no run IDs (runs stay in `taskExecutions`). */
+  collaborators: readonly CollaboratorEntry[];
   taskExecutions: readonly TaskExecution[];
 }>;
 

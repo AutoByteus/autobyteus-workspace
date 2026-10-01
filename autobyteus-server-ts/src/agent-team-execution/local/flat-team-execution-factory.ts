@@ -14,8 +14,15 @@ import { FlatAgentExecutionContext, FlatTeamExecutionContext, type ConfiguredMem
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { FlatTeamExecutionCallbacks } from "./flat-team-execution-callbacks.js";
 
+/** The collaborator hosting of one TeamRun's manager (used by a Team root for its root TeamRun). */
+export type FlatTeamCollaboratorHost = Pick<
+  FlatTeamExecutionManager,
+  "prepareCollaboratorAgent" | "prepareCollaboratorTeam" | "requireCollaboratorTeam"
+>;
+
 export type PreparedFlatTeamExecution = Readonly<{
   teamRun: TeamRun;
+  collaboratorHost: FlatTeamCollaboratorHost;
   stagedPlatformBindings: readonly import("../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js").CollaborationAgentPlatformBinding[];
   stagedNoConversationBindingReplacements: readonly import("../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js").CollaborationAgentNoConversationBindingReplacement[];
   commitAfterDurability(): void;
@@ -98,6 +105,7 @@ export class FlatTeamExecutionFactory {
     let state: "prepared" | "committed" | "aborted" = "prepared";
     return Object.freeze({
       teamRun,
+      collaboratorHost: manager,
       stagedPlatformBindings: activation?.stagedPlatformBindings ?? Object.freeze([]),
       stagedNoConversationBindingReplacements:
         activation?.stagedNoConversationBindingReplacements ?? Object.freeze([]),

@@ -1,4 +1,5 @@
 import { AgentOrgExecutionViewIndex } from './agentOrgExecutionViewIndex'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
@@ -28,12 +29,8 @@ import {
 
 type LaunchConfiguration = AgentOrgExecutionViewDto['execution_tree']['rootOrg']['defaultLaunchConfiguration']
 
-type AgentSeed = Readonly<{
-  address: AgentTeamAddress
-  agentRunId: string
-  agentDefinitionId: string
-  launch: LaunchConfiguration
-}>
+export type { AgentSeed } from './agentOrgMemberContextFactory'
+import { createAgentContext, type AgentSeed } from './agentOrgMemberContextFactory'
 
 type Projection = Readonly<{
   agentRunId: string
@@ -43,8 +40,7 @@ type Projection = Readonly<{
   hasEarlierActiveTraceEvents: boolean
 }>
 
-const nameAt = (address: string): string =>
-  address.split('/').filter(Boolean).at(-1)?.replace(/[_-]+/g, ' ') || address
+const nameAt = memberDisplayName
 
 const collectAgentSeeds = (view: AgentOrgExecutionViewDto): readonly AgentSeed[] =>
   [...new AgentOrgExecutionViewIndex(view).agents.values()].map((agent) => Object.freeze({
@@ -79,34 +75,6 @@ const resolveWorkspaces = async (
   return output
 }
 
-const createAgentContext = (
-  seed: AgentSeed,
-  createdAt: string,
-  workspace: WorkspaceMetadata | null,
-): AgentContext => {
-  const config: AgentRunConfig = {
-    agentDefinitionId: seed.agentDefinitionId,
-    agentDefinitionName: nameAt(seed.address),
-    llmModelIdentifier: seed.launch.llmModelIdentifier,
-    runtimeKind: seed.launch.runtimeKind,
-    workspaceId: workspace?.workspaceId ?? null,
-    workspaceMetadata: workspace,
-    autoExecuteTools: seed.launch.autoExecuteTools,
-    llmConfig: seed.launch.llmConfig ? structuredClone(seed.launch.llmConfig) : null,
-    isLocked: true,
-  }
-  const state = new AgentRunState(seed.agentRunId, {
-    id: seed.agentRunId,
-    messages: [],
-    createdAt,
-    updatedAt: createdAt,
-    agentDefinitionId: seed.agentDefinitionId,
-    agentName: nameAt(seed.address),
-    llmModelIdentifier: seed.launch.llmModelIdentifier,
-  })
-  initializeRuntimeStatusState(state, AgentStatus.Offline)
-  return new AgentContext(config, state)
-}
 
 const fetchProjection = async (
   orgRunId: string,

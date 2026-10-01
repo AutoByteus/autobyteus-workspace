@@ -28,6 +28,8 @@ const taskTeam = z.lazy(() => z.object({
     taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
 }).strict());
 const taskExecution = z.lazy(() => z.union([taskAgent, taskTeam]));
+/** Shared by every collaboration root view (Org and Agent roots). */
+export const taskExecutionDtoSchema = taskExecution;
 const configuredTeam = z.object({
     address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
     role: z.string().nullable(), description: z.string().nullable(), teamRunId: nonEmptyStringSchema,
@@ -43,6 +45,28 @@ const configuredTeam = z.object({
     }
 });
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
+/**
+ * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
+ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
+ */
+export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
+    z.object({
+        kind: z.literal("agent"), address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
+        agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
+        launchConfiguration: agentOrgLaunchConfigurationDtoSchema, addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
+    }).strict(),
+    z.object({
+        kind: z.literal("agent_team"), address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
+        teamRunId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
+        members: z.array(z.object({
+            address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
+            agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
+        }).strict()).min(1),
+        handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+        taskExecutions: z.array(taskExecution),
+        addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
+    }).strict(),
+]);
 export const agentOrgExecutionTreeDtoSchema = z.object({
     subjectKind: z.literal("agent_org"), createdAt: timestamp,
     archivedAt: timestamp.nullable(),
@@ -51,7 +75,8 @@ export const agentOrgExecutionTreeDtoSchema = z.object({
     rootOrg: z.object({
         address: z.literal("/"), orgDefinitionId: nonEmptyStringSchema, orgDefinitionName: nonEmptyStringSchema,
         orgRunId: nonEmptyStringSchema, defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
-        members: z.array(z.union([configuredAgent, configuredTeam])), taskExecutions: z.array(taskExecution),
+        members: z.array(z.union([configuredAgent, configuredTeam])),
+        collaborators: z.array(collaboratorEntryDtoSchema), taskExecutions: z.array(taskExecution),
     }).strict(),
 }).strict();
 export const agentOrgCommunicationMessageDtoSchema = z.object({
@@ -82,5 +107,6 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
         host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,
     }).strict(),
     z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
+    z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
 ]);
 //# sourceMappingURL=agent-org-execution-dtos.js.map

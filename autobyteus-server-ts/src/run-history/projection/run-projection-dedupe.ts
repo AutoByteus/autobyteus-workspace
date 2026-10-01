@@ -1,3 +1,4 @@
+import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity } from '@autobyteus/agent-presentation-contracts';
 import type {
   RunProjectionActivityEntry,
   RunProjectionConversationEntry,
@@ -39,7 +40,47 @@ const hasValue = (value: unknown): boolean => {
   return true;
 };
 
+// Calls are scoped to one already-resolved recipient conversation, never a global index.
+const isInputEntry = (entry: RunProjectionConversationEntry): boolean =>
+  entry.role === 'user' || entry.kind === 'inter_agent_message';
+const inputScope = (entry: RunProjectionConversationEntry): string => JSON.stringify([
+  entry.kind, entry.role ?? null, entry.senderId ?? null,
+  entry.senderAgentRunId ?? null, entry.senderAddress ?? null,
+]);
+
+const mergeInputEntry = (
+  current: RunProjectionConversationEntry, incoming: RunProjectionConversationEntry,
+): RunProjectionConversationEntry => {
+  const media = { ...incoming.media, ...current.media };
+  for (const key of ['images', 'audio', 'video'] as const) {
+    media[key] = [...new Set([...(current.media?.[key] ?? []), ...(incoming.media?.[key] ?? [])])];
+  }
+  const files: NonNullable<RunProjectionConversationEntry['fileAttachments']>[number][] = [];
+  for (const file of [...(current.fileAttachments ?? []), ...(incoming.fileAttachments ?? [])]) {
+    const index = files.findIndex(saved => saved.uri.trim() === file.uri.trim() && saved.fileType.trim().toLowerCase() === file.fileType.trim().toLowerCase());
+    if (index < 0) files.push(file);
+    else if (!files[index].fileName?.trim() || files[index].fileName === files[index].uri.split('/').pop()) {
+      files[index] = { ...files[index], fileName: file.fileName?.trim() ? file.fileName : files[index].fileName };
+    }
+  }
+  return {
+    ...incoming, ...current,
+    ...normalizeAcceptedInputIdentity({
+      messageId: normalizeAcceptedInputIdentity(current).messageId ?? incoming.messageId,
+      dedupeKey: normalizeAcceptedInputIdentity(current).dedupeKey ?? incoming.dedupeKey,
+    }),
+    content: current.content || incoming.content,
+    ts: normalizeTs(current.ts) ?? normalizeTs(incoming.ts),
+    ...(current.media || incoming.media ? { media } : {}),
+    ...(files.length ? { fileAttachments: files } : {}),
+  };
+};
+
 const explicitConversationKey = (entry: RunProjectionConversationEntry): string | null => {
+  if (isInputEntry(entry)) {
+    const key = acceptedInputIdentityKey(entry);
+    return key ? JSON.stringify([inputScope(entry), key]) : null;
+  }
   const metadataRecord = (entry as unknown as { metadata?: unknown }).metadata;
   const metadata =
     metadataRecord && typeof metadataRecord === "object" && !Array.isArray(metadataRecord)
@@ -71,6 +112,7 @@ const conversationEntriesCanMerge = (
   left: RunProjectionConversationEntry,
   right: RunProjectionConversationEntry,
 ): boolean => {
+  if ((isInputEntry(left) || isInputEntry(right)) && inputScope(left) !== inputScope(right)) return false;
   if (conversationSemanticKey(left) !== conversationSemanticKey(right)) {
     return false;
   }
@@ -99,6 +141,7 @@ const mergeConversationEntry = (
   current: RunProjectionConversationEntry,
   incoming: RunProjectionConversationEntry,
 ): RunProjectionConversationEntry => {
+  if (isInputEntry(current)) return mergeInputEntry(current, incoming);
   const winner =
     conversationRichnessScore(incoming) > conversationRichnessScore(current)
       ? incoming

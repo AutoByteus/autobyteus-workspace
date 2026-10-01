@@ -48,9 +48,16 @@ const readableFile = (absolutePath: string): boolean => {
   }
 };
 
-/** Resolves Org-owned sidecar references without reinterpreting them as Team records. */
+/** The communication messages of one collaboration root (an Org, or a standalone Agent run's root). */
+export type CollaborationMessageRecords = Readonly<{
+  getCollaborationRecordsSnapshot(rootRunId: string): Promise<Readonly<{
+    messages: Readonly<{ messages: readonly Readonly<{ messageId: string; referenceFiles: readonly string[] }>[] }>;
+  }>>;
+}>;
+
+/** Resolves root-owned sidecar references without reinterpreting them as Team records. */
 export class AgentOrgReferenceContentService {
-  constructor(private readonly records: Pick<AgentOrgRunManager, "getCollaborationRecordsSnapshot"> = AgentOrgRunManager.getInstance()) {}
+  constructor(private readonly records: CollaborationMessageRecords = AgentOrgRunManager.getInstance()) {}
 
   async resolveCommunication(input: Readonly<{
     orgRunId: string;

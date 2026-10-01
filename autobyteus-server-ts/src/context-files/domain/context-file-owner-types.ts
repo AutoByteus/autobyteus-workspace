@@ -19,6 +19,15 @@ export type AgentOrgMemberDraftContextFileOwner = { kind: "org_member_draft"; or
 export type StandaloneFinalContextFileOwner = { kind: "agent_final"; runId: string };
 export type TeamMemberFinalContextFileOwner = { kind: "team_member_final"; teamRunId: string; agentRunId: string };
 export type AgentOrgMemberFinalContextFileOwner = { kind: "org_member_final"; orgRunId: string; agentRunId: string };
+/** A child (task Agent or task-Team member) of a standalone Agent run's collaboration root. */
+export type AgentCollaborationMemberDraftContextFileOwner = { kind: "agent_collaboration_member_draft"; hostRunId: string; agentRunId: string };
+export type AgentCollaborationMemberFinalContextFileOwner = { kind: "agent_collaboration_member_final"; hostRunId: string; agentRunId: string };
+export type ResolvedAgentCollaborationMemberFinalContextFileOwner = AgentCollaborationMemberFinalContextFileOwner & {
+  rootSubjectKind: "agent";
+  rootRunId: string;
+  ancestorTeamRunIds: string[];
+  memoryDir: string;
+};
 export type ResolvedTeamMemberFinalContextFileOwner = TeamMemberFinalContextFileOwner & {
   rootTeamRunId: string;
   ancestorTeamRunIds: string[];
@@ -30,9 +39,12 @@ export type ResolvedAgentOrgMemberFinalContextFileOwner = AgentOrgMemberFinalCon
   ancestorTeamRunIds: string[];
   memoryDir: string;
 };
-export type ContextFileDraftOwnerDescriptor = StandaloneDraftContextFileOwner | TeamMemberDraftContextFileOwner | AgentOrgMemberDraftContextFileOwner;
-export type ContextFileFinalOwnerDescriptor = StandaloneFinalContextFileOwner | TeamMemberFinalContextFileOwner | AgentOrgMemberFinalContextFileOwner;
-export type ContextFileResolvedFinalOwnerDescriptor = StandaloneFinalContextFileOwner | ResolvedTeamMemberFinalContextFileOwner | ResolvedAgentOrgMemberFinalContextFileOwner;
+export type ContextFileDraftOwnerDescriptor = StandaloneDraftContextFileOwner | TeamMemberDraftContextFileOwner | AgentOrgMemberDraftContextFileOwner
+  | AgentCollaborationMemberDraftContextFileOwner;
+export type ContextFileFinalOwnerDescriptor = StandaloneFinalContextFileOwner | TeamMemberFinalContextFileOwner | AgentOrgMemberFinalContextFileOwner
+  | AgentCollaborationMemberFinalContextFileOwner;
+export type ContextFileResolvedFinalOwnerDescriptor = StandaloneFinalContextFileOwner | ResolvedTeamMemberFinalContextFileOwner | ResolvedAgentOrgMemberFinalContextFileOwner
+  | ResolvedAgentCollaborationMemberFinalContextFileOwner;
 
 const record = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new ContextFileDescriptorError("owner descriptor is invalid.");
@@ -52,6 +64,12 @@ const exactOrgIdentity = (input: Record<string, unknown>): { orgRunId: string; a
   }
   return { orgRunId: safeIdentity(input.orgRunId, "orgRunId"), agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
 };
+const exactAgentCollaborationIdentity = (input: Record<string, unknown>): { hostRunId: string; agentRunId: string } => {
+  if (Object.keys(input).some((key) => !["kind", "hostRunId", "agentRunId"].includes(key))) {
+    throw new ContextFileDescriptorError("Agent collaboration context-file owner has unsupported fields.");
+  }
+  return { hostRunId: safeIdentity(input.hostRunId, "hostRunId"), agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
+};
 export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFileDraftOwnerDescriptor => {
   const input = record(value);
   if (input.kind === "agent_draft") return { kind: "agent_draft", draftRunId: required(String(input.draftRunId ?? ""), "draftRunId") };
@@ -63,6 +81,10 @@ export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFil
   if (input.kind === "org_member_draft") return {
     kind: "org_member_draft",
     ...exactOrgIdentity(input),
+  };
+  if (input.kind === "agent_collaboration_member_draft") return {
+    kind: "agent_collaboration_member_draft",
+    ...exactAgentCollaborationIdentity(input),
   };
   throw new ContextFileDescriptorError(`Unsupported draft owner kind '${String(input.kind)}'.`);
 };
@@ -80,20 +102,38 @@ export const parseFinalContextFileOwnerDescriptor = (value: unknown): ContextFil
     kind: "org_member_final",
     ...exactOrgIdentity(input),
   };
+  if (input.kind === "agent_collaboration_member_final") return {
+    kind: "agent_collaboration_member_final",
+    ...exactAgentCollaborationIdentity(input),
+  };
   throw new ContextFileDescriptorError(`Unsupported final owner kind '${String(input.kind)}'.`);
 };
-export const buildDraftContextFileLocator = (owner: ContextFileDraftOwnerDescriptor, storedFilename: string): string =>
-  owner.kind === "agent_draft"
-    ? `/rest/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`
-    : owner.kind === "team_member_draft"
-      ? `/rest/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodeURIComponent(filename(storedFilename))}`
-      : `/rest/drafts/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`;
-export const buildFinalContextFileLocator = (owner: ContextFileFinalOwnerDescriptor, storedFilename: string): string =>
-  owner.kind === "agent_final"
-    ? `/rest/runs/${encodeURIComponent(owner.runId)}/context-files/${encodeURIComponent(filename(storedFilename))}`
-    : owner.kind === "team_member_final"
-      ? `/rest/team-runs/${encodeURIComponent(owner.teamRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`
-      : `/rest/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`;
+export const buildDraftContextFileLocator = (owner: ContextFileDraftOwnerDescriptor, storedFilename: string): string => {
+  const file = encodeURIComponent(filename(storedFilename));
+  switch (owner.kind) {
+    case "agent_draft":
+      return `/rest/drafts/agent-runs/${encodeURIComponent(owner.draftRunId)}/context-files/${file}`;
+    case "team_member_draft":
+      return `/rest/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${file}`;
+    case "org_member_draft":
+      return `/rest/drafts/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
+    case "agent_collaboration_member_draft":
+      return `/rest/drafts/agent-collaborations/${encodeURIComponent(owner.hostRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
+  }
+};
+export const buildFinalContextFileLocator = (owner: ContextFileFinalOwnerDescriptor, storedFilename: string): string => {
+  const file = encodeURIComponent(filename(storedFilename));
+  switch (owner.kind) {
+    case "agent_final":
+      return `/rest/runs/${encodeURIComponent(owner.runId)}/context-files/${file}`;
+    case "team_member_final":
+      return `/rest/team-runs/${encodeURIComponent(owner.teamRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
+    case "org_member_final":
+      return `/rest/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
+    case "agent_collaboration_member_final":
+      return `/rest/agent-collaborations/${encodeURIComponent(owner.hostRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${file}`;
+  }
+};
 export const getStoredFilenameFromLocator = (locator: string): string | null => {
   const raw = locator.trim(); if (!raw) return null;
   const pathname = raw.startsWith("http://") || raw.startsWith("https://") ? new URL(raw).pathname : raw;

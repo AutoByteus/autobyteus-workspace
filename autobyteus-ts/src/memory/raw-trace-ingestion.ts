@@ -5,7 +5,7 @@ import type { ToolResultEvent } from '../agent/events/agent-events.js';
 import type { ToolInvocation } from '../agent/tool-invocation.js';
 import type { ToolCallSpec } from '../llm/utils/messages.js';
 import type { CompleteResponse } from '../llm/utils/response-types.js';
-import { RawTraceItem } from './models/raw-trace-item.js';
+import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
 import { createToolCallIdentity, type ToolCallIdentity } from './models/tool-call-identity.js';
 
 type NextSeq = (turnId: string) => number;
@@ -141,13 +141,16 @@ export const buildNativeToolResultTrace = (
 /** Native media and processed text remain LLM-owned; non-media references are captured from original input. */
 export function buildNativeUserMessageTrace(
   llmUserMessage: LLMUserMessage,
-  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[] },
+  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[]; senderId?: string | null } & Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'>,
 ): RawTraceItem {
   return new RawTraceItem({
     id: `rt_${Date.now()}`, ts: Date.now() / 1000,
     turnId: input.turnId, seq: input.seq, sourceEvent: input.sourceEvent,
     traceType: 'user', content: llmUserMessage.content,
     fileAttachments: input.fileAttachments,
+    senderId: input.senderId ?? null,
+    messageId: input.messageId,
+    dedupeKey: input.dedupeKey,
     media: {
       images: llmUserMessage.image_urls ?? [],
       audio: llmUserMessage.audio_urls ?? [],

@@ -52,6 +52,7 @@ const normalizeMetadata = (
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
+  ...(metadata.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
 });
 
 export type AgentRunMetadataReadState =

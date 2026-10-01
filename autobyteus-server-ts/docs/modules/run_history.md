@@ -372,13 +372,23 @@ Standalone agent persisted files:
 
 - V2 catalog index: `memory/run_history_index.json`, with rows containing only
   `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`,
-  `createdAt`, `archivedAt`, and `terminatedAt`
+  `createdAt`, `archivedAt`, `terminatedAt`, and the optional
+  `hasCollaboration: true` (written when the run's collaboration package is
+  first created; `RunHistoryItem.hasCollaboration` in GraphQL)
 - metadata: `memory/agents/<runId>/run_metadata.json`, containing resume/config
   and prepared/start facts such as `runId`, `agentDefinitionId`,
   `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
   `llmConfig`, `autoExecuteTools`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
-  `applicationExecutionContext`
+  `applicationExecutionContext` and `launchPurpose` (stored only as
+  `"server_helper"` for server-owned helper runs such as the memory compactor
+  and the skill improver; those runs never host collaborators)
+- optional collaboration package (created lazily with the first collaborator):
+  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity,
+  `collaborators`, `taskExecutions`) and `communication_messages.json`; each
+  child's runtime memory lives in `collaboration/<childRunId>/...` (task Team
+  members below their task TeamRun IDs). See
+  [Agent Run Collaboration](./agent_run_collaboration.md).
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
@@ -394,7 +404,9 @@ Team persisted files:
   root with direct Agents, and delegated child executions (with
   `delegatorAgentRunId` for children created since the resource lifecycle). The
   root carries a complete `defaultLaunchConfiguration`; every direct configured
-  Agent carries a complete `launchConfiguration`. The tree is read tolerantly
+  Agent carries a complete `launchConfiguration`. The root also carries
+  `collaborators` (entries for shared Agents and Agent Teams brought in with
+  `@`; read as `[]` when absent, always written). The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use
@@ -430,6 +442,11 @@ AgentOrg persisted files:
 
 Important identity/storage rules:
 
+- Delete, archive and prepared-run cancel of a standalone run go through
+  `StandaloneRunLiveness.releaseForHistory`: refused while the host runtime is active; when the host
+  is down but its Agent root lingers (every eligible run has one; it outlives a crashed host), the
+  root and its children are ended first, then history changes. Only a root that cannot be ended
+  refuses the change. See [Agent Run Collaboration](./agent_run_collaboration.md#root-lifetime).
 - `AgentRunHistoryCatalogService` is the normal semantic owner for standalone
   catalog mutations: prepare/create, first/explicit summary update,
   archive/unarchive, terminate, delete/cancel, and catalog flush
@@ -638,6 +655,15 @@ team member metadata -> member memoryDir -> active raw traces -> historical repl
   confusing runtime-native ids with local storage ids. Provider-boundary marker traces are provenance and
   are ignored as conversation/activity content by the historical replay
   transformer.
+- Agent-to-agent deliveries (RD-004): a `user` raw trace with `senderId` (the
+  sender AgentRun of an `inter_agent_delivery` input, recorded by native
+  AutoByteus memory and by the external-runtime recorder) replays as an
+  `inter_agent_message` conversation item `{kind, role: "user",
+  senderAgentRunId, senderAddress, content, media, ts, fileAttachments?}`. The
+  Team-member, Org-member and Agent-root member projections fill
+  `senderAddress` from their root's execution index; the standalone projection
+  leaves it null. A `user` trace without `senderId` (a user message, or an older
+  inter-agent message recorded before this field) stays a user message.
 - A strict run-scoped `system_instruction` row becomes only a
   `system_instruction` Activity entry using its raw trace ID, exact content, and
   timestamp. It has no turn group and is excluded before every Event Monitor

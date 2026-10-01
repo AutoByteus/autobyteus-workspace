@@ -83,6 +83,7 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
+          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -442,7 +443,9 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/study_group/reviewer', agentRunId: taskChildRunId,
     }, 'workspace:/ws/a');
-    expect(wrapper.text()).toContain('Started by worker');
+    // REQ-009: the starter is not a visible line; it stays in the accessible label.
+    expect(wrapper.text()).not.toContain('Started by worker');
+    expect(taskRows[0].attributes('aria-label')).toContain('Started by worker');
   });
 
   it('removes transient execution rows when the exact live projection disappears', async () => {
@@ -479,7 +482,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(childRow().exists()).toBe(false);
     await nestedRow().trigger('click');
     await wrapper.vm.$nextTick();
-    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run');
+    expect(state.toggleTeamMember).toHaveBeenLastCalledWith('workspace:/ws/a', 'team-run-1', 'team:software-team-run', false);
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
     expect(childRow().exists()).toBe(true);
     await childRow().trigger('click');
@@ -557,7 +560,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     await dot.trigger('click');
     expect(state.toggleTeamMember).toHaveBeenCalledTimes(1);
     expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'team:product-team-run',
+      'workspace:/ws/a', 'team-run-1', 'team:product-team-run', false,
     );
     expect(actions.onSelectTeamMember).not.toHaveBeenCalled();
   });

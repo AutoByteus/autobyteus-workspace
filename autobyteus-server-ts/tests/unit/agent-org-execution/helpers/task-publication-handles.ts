@@ -42,6 +42,7 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
       // Mirrors ConfiguredAgentExecutionHandle: an errored configured Agent still holds open work.
       hasOpenExecutionWork: () => status === "running" || status === "initializing" || status === "error",
       getStatusSnapshot: snapshot,
+      getInputStateSnapshots: vi.fn(() => [] as unknown[]),
       prepareConfiguredActivation: vi.fn(async () => {
         emit("initializing");
         if (activationFailure) throw activationFailure;
@@ -52,6 +53,8 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
         };
       }),
       postMessage: vi.fn(async () => { emit("running"); return { accepted: true as const }; }),
+      interrupt: vi.fn(async () => ({ accepted: true as const })),
+      approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
       reserveInput: vi.fn(async () => ({ reserved: true as const, reservation: {
         agentRunId: input.identity.agentRunId,
         cancel: vi.fn(),

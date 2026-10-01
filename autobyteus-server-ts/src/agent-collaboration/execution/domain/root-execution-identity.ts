@@ -4,11 +4,18 @@ import {
   type AgentTeamAddress,
 } from "../../domain/agent-team-address.js";
 
-export type RootSubjectKind = "agent_team" | "agent_org";
+/**
+ * `agent`: a standalone Agent run hosting delegated collaborators; its `rootRunId` is the
+ * host AgentRun ID.
+ */
+export type RootSubjectKind = "agent_team" | "agent_org" | "agent";
 
 export type RootExecutionIdentity =
   | Readonly<{ rootSubjectKind: "agent_team"; rootRunId: string }>
-  | Readonly<{ rootSubjectKind: "agent_org"; rootRunId: string }>;
+  | Readonly<{ rootSubjectKind: "agent_org"; rootRunId: string }>
+  | Readonly<{ rootSubjectKind: "agent"; rootRunId: string }>;
+
+const ROOT_SUBJECT_KINDS: readonly RootSubjectKind[] = Object.freeze(["agent_team", "agent_org", "agent"]);
 
 export type CollaborationMemberExecutionIdentity = Readonly<{
   root: RootExecutionIdentity;
@@ -47,8 +54,8 @@ export const createRootExecutionIdentity = (input: {
   rootRunId: string;
 }): RootExecutionIdentity => {
   exactKeys(input, ["rootSubjectKind", "rootRunId"], "Root execution identity");
-  if (input.rootSubjectKind !== "agent_team" && input.rootSubjectKind !== "agent_org") {
-    throw new Error("rootSubjectKind must be 'agent_team' or 'agent_org'.");
+  if (!ROOT_SUBJECT_KINDS.includes(input.rootSubjectKind)) {
+    throw new Error("rootSubjectKind must be 'agent_team', 'agent_org' or 'agent'.");
   }
   return Object.freeze({
     rootSubjectKind: input.rootSubjectKind,
@@ -88,6 +95,12 @@ export const createTeamRootExecutionIdentity = (rootTeamRunId: string): RootExec
 
 export const createAgentOrgRootExecutionIdentity = (orgRunId: string): RootExecutionIdentity =>
   createRootExecutionIdentity({ rootSubjectKind: "agent_org", rootRunId: orgRunId });
+
+export const createAgentRootExecutionIdentity = (hostRunId: string): RootExecutionIdentity =>
+  createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: hostRunId });
+
+export const isRootSubjectKind = (value: unknown): value is RootSubjectKind =>
+  typeof value === "string" && ROOT_SUBJECT_KINDS.includes(value as RootSubjectKind);
 
 export const createCollaborationMemberExecutionIdentity = (input: {
   root: RootExecutionIdentity;

@@ -16,7 +16,7 @@ import { testAgentOrgExecutionTree,testOrgAgentNode } from '../../fixtures/curre
 async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeof createRecoveryFixture>>) {
  const root=kind==='agent_team'?createTeamRootExecutionIdentity('team-run-root'):createAgentOrgRootExecutionIdentity('org-run-1');
  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});
- const memberExecutionContext=new MemberExecutionContext({identity,
+ const memberExecutionContext=new MemberExecutionContext({identity,teamScoped:true,
   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),
   tasks:{root,delegateTask:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,
@@ -36,6 +36,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
  let handler:AgentTeamStreamHandler|AgentOrgStreamHandler;
  if(kind==='agent_team') {
   const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-nested-task-team/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
+  tree.rootTeam.collaborators=[];
   const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,executeAgentCommand,
    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};
   handler=new AgentTeamStreamHandler(new AgentSessionManager(),{resolveActiveTeamRun:async()=>run,getActiveTeamRun:()=>run,recordRunActivity:async()=>{}} as any,

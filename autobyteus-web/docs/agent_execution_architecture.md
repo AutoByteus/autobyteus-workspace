@@ -445,13 +445,14 @@ task-agent, task-team root, and task-team child executions inline with explicit
 transient row kinds. AgentOrg mounted-Team rows use an unboxed filled user-group
 icon and semibold name, while configured Agent rows retain their circular
 avatar. A transient task-Team row uses one dashed indigo row treatment plus a
-bordered bolt icon; a transient task-Agent keeps the eight-dot `StatusDot`
-variant so its exact status color remains visible. Neither role adds visible
-`Temp` / `Temporary` or `Task:` copy to the row body. A direct delegated
-task-Agent or task-Team row shows a secondary "Started by <delegator>" line
-(also in its aria-label) resolved through the tree; a child without a recorded
-`delegatorAgentRunId` (created before the resource lifecycle) shows no starter
-line. Task-Team members show no starter line.
+bordered bolt icon; a transient task-Agent shows the member marker (solid
+`StatusDot` plus initials) centered on its name line, so its exact status color
+remains visible. Neither role adds visible `Temp` / `Temporary` or `Task:` copy
+to the row body, and neither shows a visible "Started by" line. The starter of a
+direct delegated task-Agent or task-Team row ("Started by <delegator>",
+resolved through the tree) is kept in its aria-label only; a child without a
+recorded `delegatorAgentRunId` (created before the resource lifecycle) has no
+starter. Branch lines run straight through member and task rows.
 
 In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
 mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click

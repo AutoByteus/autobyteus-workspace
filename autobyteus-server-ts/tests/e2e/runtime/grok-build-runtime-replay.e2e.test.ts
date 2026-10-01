@@ -60,6 +60,9 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
       FAKE_ACP_EXIT_AT_END: undefined,
       FAKE_ACP_STOP_BEFORE: undefined,
       FAKE_ACP_RECORD: undefined,
+      // Every eligible standalone run attaches Agent Tools MCP (always-on send_message_to and
+      // delegate_task); these recordings predate that, so the fake reports it ready as Grok does.
+      FAKE_ACP_REPORT_MCP_READY: "1",
     });
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     const started = await startStudioE2eRuntimeServer();
@@ -171,7 +174,11 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
       await wait(300);
 
       const sessionNew = (await run.recorded()).find((message) => message.method === "session/new");
-      expect(sessionNew?.params.mcpServers).toEqual([]);
+      // A user-facing standalone run always has send_message_to/delegate_task (REQ-012 of
+      // cross-scope-agent-mentions), so Agent Tools MCP is attached even with no configured tools.
+      expect(sessionNew?.params.mcpServers).toEqual([
+        { type: "http", name: "autobyteus_agent_tools", url: expect.stringContaining("/mcp/agent-tools/"), headers: [] },
+      ]);
       expect(Object.keys(sessionNew?.params._meta ?? {}).sort()).toEqual(["rules", "yoloMode"]);
       expect(sessionNew?.params._meta.yoloMode).toBe(true);
       expect(sessionNew?.params._meta.rules).toContain("GROK-REPLAY-INSTRUCTION");

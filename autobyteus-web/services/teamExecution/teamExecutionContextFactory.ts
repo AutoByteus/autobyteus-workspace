@@ -1,6 +1,5 @@
 import type {
   AgentLaunchConfigurationDto,
-  ConfiguredAgentExecutionDto,
   ConfiguredMemberExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
@@ -17,7 +16,9 @@ import type {
 } from '~/types/agent/TeamRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
-import { collectConfiguredAgents } from './teamExecutionTreeSelectors'
+import { teamAgentSourceAt, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
+import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+import { isCollaboratorAddress } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
 import { resolvedTeamRunLaunchConfigsEqual } from '~/utils/teamRunConfigUtils'
 
@@ -31,12 +32,10 @@ const deepFreeze = <T>(value: T): T => {
 }
 const immutableLlmConfig = (value: AgentLaunchConfigurationDto['llm_config']): Record<string, unknown> | null =>
   value ? deepFreeze(structuredClone(value) as Record<string, unknown>) : null
-export const configuredAgentAtAddress = (tree: TeamRunExecutionTreeDto, address: AgentTeamAddress): ConfiguredAgentExecutionDto | null =>
-  collectConfiguredAgents(tree).find((agent) => agent.address === address) ?? null
 
-const agentConfig = (input: { source: ConfiguredAgentExecutionDto; workspaceMetadata: WorkspaceMetadata | null }): AgentRunConfig => ({
+const agentConfig = (input: { source: TeamAgentSource; name: string; workspaceMetadata: WorkspaceMetadata | null }): AgentRunConfig => ({
   agentDefinitionId: input.source.agent_definition_id,
-  agentDefinitionName: memberAddressBasename(input.source.address),
+  agentDefinitionName: input.name,
   llmModelIdentifier: input.source.launch_configuration.llm_model_identifier,
   runtimeKind: runtimeKind(input.source.launch_configuration.runtime_kind),
   workspaceId: input.workspaceMetadata?.workspaceId ?? null,
@@ -63,17 +62,22 @@ export const createTeamAgentContext = (input: {
   address: AgentTeamAddress
   workspaceMetadata: WorkspaceMetadata | null
 }): AgentContext | null => {
-  const source = configuredAgentAtAddress(input.tree, input.address)
+  // A task execution at a collaborator address takes its source from the collaborator entry.
+  const source = teamAgentSourceAt(input.tree, input.address)
   if (!source) return null
+  // F-03: a collaborator (and its members and copies) reads as a spaced name, as in its row.
+  const name = isCollaboratorAddress(input.tree, source.address)
+    ? memberDisplayName(source.address)
+    : memberAddressBasename(source.address)
   const conversation = {
     id: input.agentRunId, messages: [], createdAt: input.tree.created_at, updatedAt: input.tree.created_at,
     agentDefinitionId: source.agent_definition_id,
-    agentName: memberAddressBasename(source.address),
+    agentName: name,
     llmModelIdentifier: source.launch_configuration.llm_model_identifier,
   }
   const state = new AgentRunState(input.agentRunId, conversation)
   initializeRuntimeStatusState(state, AgentStatus.Offline)
-  return new AgentContext(agentConfig({ source, workspaceMetadata: input.workspaceMetadata }), state)
+  return new AgentContext(agentConfig({ source, name, workspaceMetadata: input.workspaceMetadata }), state)
 }
 
 export const createTeamConfigurationView = (input: {

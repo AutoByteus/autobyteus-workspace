@@ -1,0 +1,162 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55266
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55266
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/cross-scope-agent-mentions/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:49576) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T06:10:46.531Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-dsqWc1/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-10-01T06:10:46.648Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-10-01T06:10:46.648Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1790835046654,"pid":49576,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55280"}
+{"level":30,"time":1790835046685,"pid":49576,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55266"}
+[2026-10-01T06:10:46.685Z] [INFO] [server.runtime] Server listening on 127.0.0.1:55266
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID research-assistant.
+Agent Definition created successfully with ID: research-assistant
+In-memory cache: Added new agent definition with ID code-reviewer.
+Agent Definition created successfully with ID: code-reviewer
+In-memory cache: Added new agent definition with ID researcher.
+Agent Definition created successfully with ID: researcher
+In-memory cache: Added new agent definition with ID writer.
+Agent Definition created successfully with ID: writer
+In-memory cache: Added new agent definition with ID analyst.
+Agent Definition created successfully with ID: analyst
+In-memory cache: Added new agent definition with ID product-prototyper.
+Agent Definition created successfully with ID: product-prototyper
+In-memory cache: Added new agent definition with ID prototype-bootstrapper.
+Agent Definition created successfully with ID: prototype-bootstrapper
+[2026-10-01T06:10:46.896Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID product-team.
+Agent Team Definition created successfully with ID: product-team
+[2026-10-01T06:10:46.912Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID review-team.
+Agent Team Definition created successfully with ID: review-team
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run research_assistant_79404261f35b4a6fbfc3f1445b644d0f
+Created agent session 604089c6-b1ad-4a14-821b-46afe6f6bbae for run research_assistant_79404261f35b4a6fbfc3f1445b644d0f
+Agent WebSocket connected: session=604089c6-b1ad-4a14-821b-46afe6f6bbae, run=research_assistant_79404261f35b4a6fbfc3f1445b644d0f
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'research_assistant_79404261f35b4a6fbfc3f1445b644d0f'.
+(node:49576) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790835062477,"pid":49576,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_QzPb_hqhlj3emL66AVJva_2gc3cm9wWsSb6P8I2ynmU","statusCode":400,"elapsedMs":0.9434590041637421,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'code_reviewer_d875e099125a4f42819215db953d52db'.
+(node:49576) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790835072635,"pid":49576,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/mcp/agent-tools/agtrun_KOPcCmqyfKqOu5I3CDa0KC5maXLGnA9ThV3jTfQ6604","statusCode":400,"elapsedMs":0.789792001247406,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'product_prototyper_efac7a733b054705ac9c70f586f47acf'.
+(node:49576) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790835094399,"pid":49576,"hostname":"MacBookPro","reqId":"req-1w","method":"POST","url":"/mcp/agent-tools/agtrun_-1-1S77Ip7ISWdEsan9Mq9dy0LHdZll80XtTs9BxlSg","statusCode":400,"elapsedMs":0.406125009059906,"msg":"http request completed"}
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'prototype_bootstrapper_da9f3f2e56bc4ea69b985762dcbba16e'.
+(node:49576) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790835101518,"pid":49576,"hostname":"MacBookPro","reqId":"req-2p","method":"POST","url":"/mcp/agent-tools/agtrun_2GcxoiVvnQykCLj28DpNocG6X2eX9MQqbTv4IzTYTc4","statusCode":400,"elapsedMs":0.30295899510383606,"msg":"http request completed"}
+Closed agent session 604089c6-b1ad-4a14-821b-46afe6f6bbae
+Agent WebSocket disconnected: 604089c6-b1ad-4a14-821b-46afe6f6bbae
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'research_assistant_79404261f35b4a6fbfc3f1445b644d0f'.
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'code_reviewer_d875e099125a4f42819215db953d52db'.
+(node:49576) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790835174452,"pid":49576,"hostname":"MacBookPro","reqId":"req-a6","method":"POST","url":"/mcp/agent-tools/agtrun_KOPcCmqyfKqOu5I3CDa0KC5maXLGnA9ThV3jTfQ6604","statusCode":400,"elapsedMs":0.28041699528694153,"msg":"http request completed"}
+[2026-10-01T06:12:56.212Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-10-01T06:12:56.943Z] [INFO] [server.runtime] Server closed cleanly.

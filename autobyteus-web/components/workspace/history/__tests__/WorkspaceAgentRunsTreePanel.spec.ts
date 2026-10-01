@@ -2294,7 +2294,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
       executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
-        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: "/", orgDefinitionId: "org-def",
           orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun] }];
@@ -2335,7 +2335,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
       createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
       executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
-        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def',
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { collaborators: [], address: '/', orgDefinitionId: 'org-def',
           orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
     };
     runHistoryState.nodes[0].agentOrgDefinitions = [{

@@ -55,6 +55,14 @@ export type AgentStreamProjectionTarget =
       orgRunId: string;
       agentRunId: string;
       memberAddress: AgentTeamAddress;
+    }
+  | {
+      /** A task child of a standalone run's collaboration root. */
+      kind: 'agent_collaboration_member';
+      context: AgentContext;
+      hostRunId: string;
+      agentRunId: string;
+      memberAddress: AgentTeamAddress;
     };
 
 const conversationResult = (
@@ -140,7 +148,8 @@ const dispatchToHandler = (
           conversationResult(result.conversationEffect !== 'NONE', result.conversationEffect),
         );
       }
-      if (!message.payload.accepted) {
+      // A rejected add posted nothing: the notice above the composer reports it, not the conversation.
+      if (!message.payload.accepted && message.payload.code !== 'COLLABORATOR_ADD_FAILED') {
         const eventMonitor = handleError({
           code: message.payload.code ?? 'AGENT_COMMAND_REJECTED',
           message: message.payload.message ?? 'Agent command was not accepted.',
@@ -224,7 +233,8 @@ export const dispatchAgentStreamMessage = (
   commitRecentEventMonitorEffect(target.context, effects.eventMonitor);
   if (effects.navigation.kind !== 'NONE') {
     const currentStatus = target.context.state.currentStatus;
-    if (target.kind === 'agent_org_member') return effects;
+    // Root views (Org, Agent collaboration) own their own tree rows.
+    if (target.kind === 'agent_org_member' || target.kind === 'agent_collaboration_member') return effects;
     useRunHistoryStore().applyRunNavigationEffect(
       target.kind === 'standalone'
         ? { kind: 'standalone', runId: target.runId, currentStatus }

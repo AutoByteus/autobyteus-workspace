@@ -8,6 +8,7 @@ import { registerContextFileRoutes } from "./context-files.js";
 import { registerRunFileChangeRoutes } from "./run-file-changes.js";
 import { registerTeamCommunicationRoutes } from "./team-communication.js";
 import { registerAgentOrgReferenceRoutes } from "./agent-org-references.js";
+import { registerAgentCollaborationReferenceRoutes } from "./agent-collaboration-references.js";
 import { registerApplicationBundleRoutes } from "./application-bundles.js";
 import { registerApplicationBackendRoutes } from "./application-backends.js";
 import { registerApplicationAvailabilityRoutes } from "./application-availability.js";
@@ -34,6 +35,7 @@ export async function registerRestRoutes(
   await registerRunFileChangeRoutes(app);
   await registerTeamCommunicationRoutes(app);
   await registerAgentOrgReferenceRoutes(app);
+  await registerAgentCollaborationReferenceRoutes(app);
   await registerApplicationBundleRoutes(app, dependencies.application.assets);
   await registerApplicationBackendRoutes(app, {
     gateway: dependencies.application.backend,

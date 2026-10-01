@@ -377,10 +377,43 @@ legacy configured tool names are ignored.
 
 The address uses the same canonical absolute non-root `/...` grammar as
 `send_message_to`; relative addresses, bare names, and the structural root `/`
-are invalid. The root topology resolver returns one immutable Agent or
-AgentTeam placement; an Agent cannot delegate to its own logical placement.
-Input and admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
+are invalid. `RootTeamRun.resolveDelegationPlacement` returns one immutable
+Agent or AgentTeam placement: a configured member first, then a collaborator
+of the run or a member of a collaborator Team (see
+[Agent Communication](./agent_communication.md#collaborators)); delegating to a
+collaborator starts an extra copy. Task sources come from
+`TeamTaskSourceResolver`, which projects a collaborator entry into the same
+source shape a configured placement has. An Agent cannot delegate to its
+own logical placement. An address that is neither returns
+`{ target_agent_run_id: null, message }` rather than failing the call. Input and
+admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
 `ROOT_RUN_NOT_ACTIVE`) are tool errors raised before any preparation.
+`resolveMessageRecipient` (used by `send_message_to`) resolves a configured
+member, then a collaborator Agent, a collaborator Team (its coordinator) or a
+collaborator Team member: one execution per address.
+
+### Collaborators In A Team Root (AR-006)
+
+A Team root hosts each collaborator in its root TeamRun's
+`FlatTeamExecutionManager`:
+
+- a collaborator Agent is a direct Agent of the root TeamRun:
+  `prepareCollaboratorAgent` registers its node with `FlatTeamMemberConfigResolver`
+  (configured children first, then collaborator nodes, each with the activation
+  mode it was added with) and its context in `runtimeContext.memberContexts`, so
+  routing (`getConfiguredAgent`), status snapshots and lazy handles reach it;
+- a collaborator Team is one TeamRun under the root, held by
+  `local/registries/collaborator-team-execution-registry.ts` (lazy members, no
+  idle shutdown) and registered with the root's `TeamRunResolver`;
+  `requireTeamRun` falls back to `requireCollaboratorTeam`.
+
+`TeamExecutionIndex` records `collaborator` and `collaborator_team_member`
+executions (a collaborator Team's parent is the root TeamRun, so a member's
+physical scope is `[collaboratorTeamRunId]`). Admission prepares, commits, then
+publishes; `materializeTeamRoot` re-hosts collaborators with the root in
+`restore` mode; the root TeamRun's termination includes them. Member contexts of
+a collaborator Agent carry no enclosing instruction or handoffs; members of a
+collaborator Team (and copies of it) get that Team's handoffs and instruction.
 
 A successful Agent target creates one task Agent at the logical member's
 address. A successful AgentTeam target creates one task-scoped TeamRun and sends
@@ -553,6 +586,10 @@ Team-only events retain their own strict identities:
 - `TASK_EXECUTION_STARTED` carries the host `parent_team_run_id` and the new
   task Agent or task Team execution, including its nullable
   `delegator_agent_run_id`;
+- `COLLABORATOR_ADDED` carries a new root-level collaborator entry with its run
+  IDs; its executions exist (Offline) from then on;
+- `ERROR` with `COLLABORATOR_ADD_FAILED` rejects a send whose collaborator could
+  not be added and carries `collaborator_name`;
 - `TEAM_COMMUNICATION_MESSAGE` carries exact sender/receiver addresses;
 - `MEMBER_INPUT_MESSAGE` carries its execution, optional sender, stable message
   identity, origin, and context files; and

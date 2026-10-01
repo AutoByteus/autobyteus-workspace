@@ -20,6 +20,7 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({ useWorkspaceCenterViewStor
 vi.mock('~/stores/agentDefinitionStore', () => ({
   useAgentDefinitionStore: () => ({ agentDefinitions: [{ id: 'autobyteus-daily-assistant' }], getAgentDefinitionById: () => null, fetchAllAgentDefinitions: vi.fn() }),
 }))
+vi.mock('~/composables/agentCollaboration/useAgentRunCollaborationSync', () => ({ useAgentRunCollaborationSync: vi.fn() }))
 vi.mock('~/composables/chat/useChatComposerOptions', () => ({
   useChatComposerOptions: () => ({
     skillOptions: computed(() => [{ name: 'writer', description: 'Writes' }]),
@@ -42,7 +43,7 @@ const buildTarget = (runId: string, firstMessage: string | null) => {
 const mountView = () => mount(AgentWorkspaceView, {
   global: {
     stubs: {
-      AgentEventMonitor: { name: 'AgentEventMonitor', props: ['skillTagging'], template: '<div data-test="monitor" />' },
+      AgentEventMonitor: { name: 'AgentEventMonitor', props: ['skillTagging', 'composerPlaceholder'], template: '<div data-test="monitor" />' },
       AgentStatusDisplay: { template: '<span data-test="status" />' },
       SkillImprovementComposerCta: true,
       WorkspaceHeaderActions: {
@@ -91,5 +92,22 @@ describe('AgentWorkspaceView (the chat run view, D-17)', () => {
     expect(monitor.props('skillTagging')).toEqual({
       skills: [{ name: 'writer', description: 'Writes' }], allInstalled: true, placeholder: expect.any(String),
     })
+  })
+
+  it('F-04: a collaborator of the run has the ⚙ and ＋ controls, is titled by its name, and its box names it', async () => {
+    const host = buildTarget('run-1', 'hello')
+    const context = host.context
+    context.config = { ...context.config, agentDefinitionId: 'computer-use', agentDefinitionName: 'computer use agent' }
+    mocks.target = { ...host, kind: 'agent_run_task_agent', host: { hostRunId: 'host-run' } }
+    const wrapper = mountView()
+    expect(wrapper.get('[data-test="agent-workspace-title"]').text()).toBe('computer use agent')
+    const monitor = wrapper.getComponent({ name: 'AgentEventMonitor' })
+    expect(monitor.props('skillTagging')).toBeNull()
+    expect(monitor.props('composerPlaceholder')).toBe('Message computer use agent…')
+    await wrapper.get('[data-test="new-agent"]').trigger('click')
+    await flushPromises()
+    expect(mocks.startNewChat).toHaveBeenCalledWith({ agentDefinitionId: 'computer-use', workspaceRootPath: '/Users/me/project' })
+    await wrapper.get('[data-test="edit-config"]').trigger('click')
+    expect(mocks.showConfig).toHaveBeenCalledTimes(1)
   })
 })

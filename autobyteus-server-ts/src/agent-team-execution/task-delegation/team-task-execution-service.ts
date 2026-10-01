@@ -5,13 +5,13 @@ import type {
   TaskDelegationContext,
 } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
-import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
+import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
 import type { TeamTaskExecutionServiceOptions } from "./team-task-execution-service-contract.js";
 import { TeamTaskExecutionAdapter } from "./team-task-execution-adapter.js";
 
 /** Team-private construction of the root-neutral task-execution lifecycle; forwards root events. */
 export class TeamTaskExecutionService {
-  private readonly lifecycle: RootTaskExecutionLifecycle<ResolvedTeamRecipient>;
+  private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
     this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), options.idleShutdown ?? {});
@@ -29,7 +29,7 @@ export class TeamTaskExecutionService {
   delegateTask(
     context: TaskDelegationContext,
     input: DelegateTaskInput,
-    placement: ResolvedTeamRecipient,
+    placement: TeamDelegationPlacement,
   ): Promise<DelegateTaskResult> {
     return this.lifecycle.delegate(context, input, placement);
   }

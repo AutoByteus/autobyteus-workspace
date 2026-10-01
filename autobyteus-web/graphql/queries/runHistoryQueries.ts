@@ -18,6 +18,7 @@ export const ListWorkspaceRunHistory = gql`
           isActive
           shouldConnectStream
           statusSource
+          hasCollaboration
         }
       }
       teamDefinitions {
@@ -68,6 +69,7 @@ export const GetWorkspaceRunHistory = gql`
           isActive
           shouldConnectStream
           statusSource
+          hasCollaboration
         }
       }
       teamDefinitions {

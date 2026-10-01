@@ -1,6 +1,8 @@
+import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity } from '@autobyteus/agent-presentation-contracts';
 import type { ContextAttachment, Conversation, AIMessage, UserMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { parseInterAgentDelivery } from '~/utils/collaboration/interAgentDelivery';
 import { enforceRecentConversationWindow } from '~/services/eventMonitor/recentEventMonitorWindow';
 
 export interface RunProjectionConversationEntry {
@@ -14,7 +16,12 @@ export interface RunProjectionConversationEntry {
   toolError?: string | null;
   media?: Record<string, string[]> | null;
   fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }>;
+  messageId?: string;
+  dedupeKey?: string;
   senderId?: string | null;
+  /** `inter_agent_message`: an agent-to-agent delivery (RD-004). */
+  senderAgentRunId?: string | null;
+  senderAddress?: string | null;
   ts?: number | null;
 }
 
@@ -64,10 +71,52 @@ const projectionEntryKey = (entry: RunProjectionConversationEntry): string => [
   ...(entry.fileAttachments?.length ? [stableJson(entry.fileAttachments)] : []),
 ].join('\0');
 
+// Calls are scoped to one already-resolved recipient conversation, never a global index.
+const isInputEntry = (entry: RunProjectionConversationEntry): boolean =>
+  entry.role === 'user' || entry.kind === 'inter_agent_message';
+const inputScope = (entry: RunProjectionConversationEntry): string => JSON.stringify([
+  entry.kind, entry.role ?? null, entry.senderId ?? null,
+  entry.senderAgentRunId ?? null, entry.senderAddress ?? null,
+]);
+
+const mergeInputEntry = (
+  current: RunProjectionConversationEntry, incoming: RunProjectionConversationEntry,
+): RunProjectionConversationEntry => {
+  const media = { ...incoming.media, ...current.media };
+  for (const key of Object.keys(media)) {
+    media[key] = [...new Set([...(current.media?.[key] ?? []), ...(incoming.media?.[key] ?? [])])];
+  }
+  const files: NonNullable<RunProjectionConversationEntry['fileAttachments']>[number][] = [];
+  for (const file of [...(current.fileAttachments ?? []), ...(incoming.fileAttachments ?? [])]) {
+    const index = files.findIndex(saved => saved.uri.trim() === file.uri.trim() && saved.fileType.trim().toLowerCase() === file.fileType.trim().toLowerCase());
+    if (index < 0) files.push(file);
+    else if (!files[index].fileName?.trim() || files[index].fileName === files[index].uri.split('/').pop()) {
+      files[index] = { ...files[index], fileName: file.fileName?.trim() ? file.fileName : files[index].fileName };
+    }
+  }
+  return {
+    ...incoming, ...current,
+    ...normalizeAcceptedInputIdentity({
+      messageId: normalizeAcceptedInputIdentity(current).messageId ?? incoming.messageId,
+      dedupeKey: normalizeAcceptedInputIdentity(current).dedupeKey ?? incoming.dedupeKey,
+    }),
+    content: current.content || incoming.content,
+    ts: normalizeTs(current.ts) ?? normalizeTs(incoming.ts),
+    ...(current.media || incoming.media ? { media } : {}),
+    ...(files.length ? { fileAttachments: files } : {}),
+  };
+};
+
 const projectionEntriesCanMerge = (
   left: RunProjectionConversationEntry,
   right: RunProjectionConversationEntry,
 ): boolean => {
+  if (isInputEntry(left) || isInputEntry(right)) {
+    if (inputScope(left) !== inputScope(right)) return false;
+    const leftKey = acceptedInputIdentityKey(left);
+    const rightKey = acceptedInputIdentityKey(right);
+    if (leftKey || rightKey) return leftKey !== null && leftKey === rightKey;
+  }
   if (projectionEntryKey(left) !== projectionEntryKey(right)) {
     return false;
   }
@@ -82,7 +131,7 @@ const projectionEntriesCanMerge = (
 const mergeProjectionEntry = (
   current: RunProjectionConversationEntry,
   incoming: RunProjectionConversationEntry,
-): RunProjectionConversationEntry => ({
+): RunProjectionConversationEntry => isInputEntry(current) ? mergeInputEntry(current, incoming) : ({
   ...current,
   ...incoming,
   ts: normalizeTs(incoming.ts) ?? normalizeTs(current.ts),
@@ -316,10 +365,28 @@ export const buildConversationFromProjection = (
       return;
     }
 
+    if (entry.kind === 'inter_agent_message') {
+      // An agent-to-agent delivery opens the receiving agent's message block with "From <Sender>:".
+      flushPendingAIMessage();
+      const delivery = parseInterAgentDelivery(entry.content || '');
+      pendingAIMessage = createAIMessage(timestamp);
+      pendingAIMessage.segments.push({
+        type: 'inter_agent_message',
+        senderAgentRunId: entry.senderAgentRunId || delivery.senderAgentRunId || '',
+        senderAddress: entry.senderAddress ?? null,
+        senderName: delivery.senderName,
+        recipientRoleName: '',
+        messageType: 'agent_message',
+        content: delivery.body,
+      });
+      return;
+    }
+
     if (entry.kind === 'message' && entry.role === 'user') {
       flushPendingAIMessage();
       messages.push({
         type: 'user',
+        ...normalizeAcceptedInputIdentity(entry),
         text: entry.content || '',
         timestamp,
         contextFilePaths: buildUserContextFilePaths(entry),

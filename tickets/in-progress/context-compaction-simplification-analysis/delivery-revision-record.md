@@ -9,6 +9,7 @@ A completed round below does not imply all delivery gates are complete.
 | Revision | Trigger | Prior result | Current result | Affected canonical artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR013 Pass after API008/TR001 closure | N/A | Blocked — initial integrated docs package ready; explicit user verification pending | docs-sync-report, handoff-summary, release-deployment-report, draft release-notes; fourteen long-lived docs |
+| DR-002 | User requests current remote base + Electron for testing | DR001 verification hold | Blocked — 23 integration conflicts; build not run | handoff-summary, docs-sync-report, release-deployment-report, draft release-notes |
 
 ## DR-001 — Initial integrated delivery preparation
 
@@ -50,3 +51,31 @@ A completed round below does not imply all delivery gates are complete.
   not assumed safe against new versionless data for a future rollback.
 
 Append DR-002 for a later completed delivery round; preserve this initial hold.
+
+## DR-002 — Updated remote base conflicts before requested Electron build
+
+- Date: 2026-10-01; user request recorded in DR002 README.
+- Prior result: DR001 integrated docs preparation complete / user verification hold.
+- Current result: **Blocked — Local Fix (source integration conflicts)**.
+- Authority/route unchanged: Approved SR033 / Ready SR034 / ARCH-REV004 / IR007 /
+  CRR011 / API008 / CRR013; Large / High, independently reviewed. Those passes
+  describe the pre-integration candidate, not the new conflicted merge.
+- Refresh: fetched origin/personal exit0; base advanced to
+  d057801c89f26bc69a97331b59631c00519aec98; 23 incoming commits.
+- Safety: all 2583 original pins and owned docs verified unchanged at entry;
+  all 2982 pending files archived; 142 explicit paths checkpointed locally at
+  026476691. No generic all-files staging, no push or finalization.
+- Integration: default base-into-ticket merge exit1; 23 unmerged paths (14 generated,
+  5 production, 2 tests, 2 docs); MERGE_HEAD retained for owner reconciliation.
+- Post-integration tests/build: **not executed**; unresolved source is not a
+  user-testable current build. No provider campaign or user app/data access.
+- Canonical status artifacts updated to mark DR001 as historical readiness;
+  long-lived source docs not resolved against guessed intended behavior.
+- Next action: rule-selected implementation owner resolves code integration and
+  auto-merge interactions, preserves both approved features, runs checks and
+  applicable review/validation. Delivery resumes docs/build afterwards.
+- User verification/finalization/release/cleanup: still not complete/not authorized.
+- Terminal return: **Not eligible**. Routing receipt, if accepted, is stored in
+  delivery-evidence/dr-002/handoff-receipt.json; never a Delivery Completed message.
+- Existing unwaived limits and rollback concerns remain in DR001 handoff. Backup
+  path/hash, checkpoint manifest, merge log/index/conflict diff are in DR002 evidence.

@@ -1,0 +1,378 @@
+{
+  "startedAt": "2026-10-01T06:29:33.465Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; send adds the collaborator Offline at once; send_message_to briefing; \"From\" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion",
+      "result": "Pass",
+      "ms": 89946,
+      "details": {
+        "runId": "research_assistant_10b0b364b99442c396dd0a9fda5f3109",
+        "packageBeforeMention": false,
+        "options": [
+          "code-reviewer",
+          "researcher",
+          "writer",
+          "analyst",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team",
+          "review-team"
+        ],
+        "menuText": "Bring into this run @ · ↑↓ to move, Enter to choose\n\nAgents\nCR\nCode Reviewer\nReviews text and code.\nR\nResearcher\nTeam researcher.\nW\nWriter\nTeam writer.\nA\nAnalyst\nOrg analyst.\nPP\nProduct Prototyper\nBuilds UI prototypes.\nPB\nPrototype Bootstrapper\nSets up prototype repositories.\nAgent teams\nPT\nProduct Team\n2 members · coordinator product_prototyper\nRT\nReview Team\n2 members · coordinator researcher\nResearch Assistant gets your message and brings them into this run",
+        "footer": "Research Assistant gets your message and brings them into this run",
+        "aria": {
+          "role": "combobox",
+          "expanded": "true",
+          "controls": "agent-mention-menu-v-0-2",
+          "active": "agent-mention-menu-v-0-2-option-0"
+        },
+        "geometry": {
+          "menuBottom": 855,
+          "textareaTop": 861,
+          "above": true
+        },
+        "emptyText": "No agents or teams match\nAgent Orgs can’t be mentioned.",
+        "textAfterChoose": "please ask @Code Reviewer ",
+        "textAfterRemove": "please ask Code Reviewer ",
+        "firstSeen": {
+          "rows": [
+            {
+              "kind": "task_agent",
+              "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+              "text": "CR\ncode reviewer",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 1405
+        },
+        "entry": {
+          "address": "/code_reviewer",
+          "agentRunId": "code_reviewer_bb2b1694a30a46eebce645cd19e67548",
+          "launch": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-BUheza/server-data/temp_workspace"
+          }
+        },
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "cards": [
+          {
+            "text": "send_message_to",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "hostFrom": [
+          "From Code Reviewer:"
+        ],
+        "tabs": [
+          "Files",
+          "Team",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ],
+        "teamTabRows": [
+          "Message Oct 1, 08:30 AM from code reviewer The phrase \"hello world\" is a conventional, grammatically correct greeting with no issues—it's clear, simple, and commonly used in programming as a canonical first example.",
+          "Message Oct 1, 08:30 AM to code reviewer Could you please review the phrase \"hello world\" and report back to me with your findings?"
+        ],
+        "childTitle": "code reviewer",
+        "runRowHighlighted": false,
+        "childHeaderControls": {
+          "settings": true,
+          "newRun": true
+        },
+        "childPlaceholder": "Message code reviewer…",
+        "childFrom": [
+          "From Research Assistant:"
+        ],
+        "childHasNotice": false,
+        "backTitle": "Say hello in one short sentence.",
+        "teamFirstSeen": {
+          "rows": [
+            {
+              "kind": "task_agent",
+              "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+              "text": "CR\ncode reviewer",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team",
+              "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+              "text": "product team",
+              "avatar": false,
+              "dot": false,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+              "text": "PP\nproduct prototyper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+              "text": "PB\nprototype bootstrapper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 952
+        },
+        "di001": "coordinator → teammate → coordinator → host recorded",
+        "optionsAfter": [
+          "researcher",
+          "writer",
+          "analyst",
+          "review-team"
+        ],
+        "small": {
+          "top": 243,
+          "bottom": 543,
+          "vh": 640
+        }
+      }
+    },
+    "A02": {
+      "title": "AC-006 / AC-016: Stop → reopen → the collaborator shows the briefing as \"From Research Assistant:\" (replay) and wakes with the same run ID",
+      "result": "Pass",
+      "ms": 10281,
+      "details": {
+        "storedRunIds": [
+          "code_reviewer_bb2b1694a30a46eebce645cd19e67548",
+          "product_team_a750cf00be8f4afd82fab8d65ade0f2f"
+        ],
+        "rowsAfterReopen": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "replayFrom": [
+          "From Research Assistant:"
+        ],
+        "hostActiveAfterWake": true
+      }
+    },
+    "A03": {
+      "title": "AC-006 / AC-016 server restart: rows stored; the host conversation shows \"From Code Reviewer:\" on replay; a send to the collaborator restores the host",
+      "result": "Fail",
+      "ms": 7460,
+      "error": "after restart: host should be inactive with stored rows",
+      "details": {
+        "hostActive": true,
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ]
+      }
+    },
+    "A04": {
+      "title": "AC-016: a stored delivery without a recorded sender (an old trace) keeps the user-style presentation; the user message is unchanged",
+      "result": "Pass",
+      "ms": 6281,
+      "details": {
+        "traceFiles": [
+          "raw_traces_active.jsonl",
+          "collaboration/product_team_a750cf00be8f4afd82fab8d65ade0f2f/prototype_bootstrapper_2334bf53f87a42a3aaf02254b986d88e/raw_traces_active.jsonl",
+          "collaboration/product_team_a750cf00be8f4afd82fab8d65ade0f2f/product_prototyper_261f7dc9441242beb93f8221a002fbc4/raw_traces_active.jsonl",
+          "collaboration/code_reviewer_bb2b1694a30a46eebce645cd19e67548/raw_traces_active.jsonl"
+        ],
+        "strippedTraces": 6,
+        "from": [],
+        "userStyle": true,
+        "userMention": 2
+      }
+    },
+    "F01": {
+      "title": "UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the run's model becomes unavailable (LM Studio host changed in settings); a mention send is refused in standalone, Team and Org runs — notice, draft and chip kept, no message, no row, still offered; the kept draft sends once the host is restored",
+      "result": "Pass",
+      "ms": 22838,
+      "details": {
+        "attempts": {
+          "agent": {
+            "before": 0,
+            "notice": "Couldn’t add Code Reviewer to this run\n\nThe model 'qwen/qwen3.8-27b:lmstudio@localhost:1234' is not available on autobyteus. Nothing was added.",
+            "alert": [
+              null,
+              "alert"
+            ],
+            "draft": "F01-1790836301508 please ask @Code Reviewer to check the release notes.",
+            "chipKept": true,
+            "messageSent": false,
+            "after": 0,
+            "stillOffered": true
+          },
+          "team": {
+            "before": 0,
+            "notice": "Couldn’t add Code Reviewer to this run\n\nThe model 'qwen/qwen3.8-27b:lmstudio@localhost:1234' is not available on autobyteus. Nothing was added.",
+            "alert": [
+              null,
+              "alert"
+            ],
+            "draft": "F01-1790836301508 please ask @Code Reviewer to check the release notes.",
+            "chipKept": true,
+            "messageSent": false,
+            "after": 0,
+            "stillOffered": true
+          },
+          "org": {
+            "before": 0,
+            "notice": "Couldn’t add Code Reviewer to this run\n\nThe model 'qwen/qwen3.8-27b:lmstudio@localhost:1234' is not available on autobyteus. Nothing was added.",
+            "alert": [
+              null,
+              "alert"
+            ],
+            "draft": "F01-1790836301508 please ask @Code Reviewer to check the release notes.",
+            "chipKept": true,
+            "messageSent": false,
+            "after": 0,
+            "stillOffered": true
+          }
+        },
+        "model": "qwen/qwen3.8-27b:lmstudio@localhost:1234",
+        "agentRunId": "research_assistant_195f8d45588044f1bfe641310c178255",
+        "teamRunId": "review_team_cb1926b3e2f44dfb98f1261b2f03b688",
+        "orgRunId": "launch_org_43aa2f8710f84f9b83d1bba76c8495e0",
+        "modelStillListed": false,
+        "modelListedAfterRestore": true,
+        "resentAfterRestore": 1,
+        "noticeClearedOnSend": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 99969
+    },
+    {
+      "label": "frontend",
+      "pid": 100
+    },
+    {
+      "label": "backend-restart",
+      "pid": 13035
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 99969,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 13035,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 100,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 99969,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-BUheza"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-BUheza",
+  "backendUrl": "http://127.0.0.1:57767",
+  "frontUrl": "http://127.0.0.1:57768",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-10-01T06:32:04.539Z"
+}

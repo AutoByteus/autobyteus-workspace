@@ -42,6 +42,68 @@ type TaskTeamExecutionDto = Readonly<{
     startedAt: string;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
+/** Shared by every collaboration root view (Org and Agent roots). */
+export declare const taskExecutionDtoSchema: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
+/**
+ * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
+ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
+ */
+export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
+    kind: z.ZodLiteral<"agent">;
+    address: z.ZodString;
+    agentDefinitionId: z.ZodString;
+    agentRunId: z.ZodString;
+    platformAgentRunId: z.ZodNullable<z.ZodString>;
+    launchConfiguration: z.ZodObject<{
+        runtimeKind: z.ZodEnum<{
+            autobyteus: "autobyteus";
+            claude_agent_sdk: "claude_agent_sdk";
+            codex_app_server: "codex_app_server";
+            antigravity_cli: "antigravity_cli";
+            grok_build: "grok_build";
+        }>;
+        llmModelIdentifier: z.ZodString;
+        llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+        autoExecuteTools: z.ZodBoolean;
+        workspaceRootPath: z.ZodNullable<z.ZodString>;
+    }, z.core.$strict>;
+    addedAt: z.ZodString;
+    addedViaAgentRunId: z.ZodString;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"agent_team">;
+    address: z.ZodString;
+    teamDefinitionId: z.ZodString;
+    teamRunId: z.ZodString;
+    coordinatorAddress: z.ZodString;
+    members: z.ZodArray<z.ZodObject<{
+        address: z.ZodString;
+        agentDefinitionId: z.ZodString;
+        agentRunId: z.ZodString;
+        platformAgentRunId: z.ZodNullable<z.ZodString>;
+    }, z.core.$strict>>;
+    handoffs: z.ZodArray<z.ZodObject<{
+        from: z.ZodString;
+        to: z.ZodString;
+        rules: z.ZodArray<z.ZodString>;
+    }, z.core.$strict>>;
+    defaultLaunchConfiguration: z.ZodObject<{
+        runtimeKind: z.ZodEnum<{
+            autobyteus: "autobyteus";
+            claude_agent_sdk: "claude_agent_sdk";
+            codex_app_server: "codex_app_server";
+            antigravity_cli: "antigravity_cli";
+            grok_build: "grok_build";
+        }>;
+        llmModelIdentifier: z.ZodString;
+        llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+        autoExecuteTools: z.ZodBoolean;
+        workspaceRootPath: z.ZodNullable<z.ZodString>;
+    }, z.core.$strict>;
+    taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
+    addedAt: z.ZodString;
+    addedViaAgentRunId: z.ZodString;
+}, z.core.$strict>], "kind">;
+export type CollaboratorEntryDto = Readonly<z.infer<typeof collaboratorEntryDtoSchema>>;
 export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
     subjectKind: z.ZodLiteral<"agent_org">;
     createdAt: z.ZodString;
@@ -136,6 +198,61 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             }, z.core.$strict>>;
             taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         }, z.core.$strict>]>>;
+        collaborators: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agentDefinitionId: z.ZodString;
+            agentRunId: z.ZodString;
+            platformAgentRunId: z.ZodNullable<z.ZodString>;
+            launchConfiguration: z.ZodObject<{
+                runtimeKind: z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>;
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                autoExecuteTools: z.ZodBoolean;
+                workspaceRootPath: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+            addedAt: z.ZodString;
+            addedViaAgentRunId: z.ZodString;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            teamDefinitionId: z.ZodString;
+            teamRunId: z.ZodString;
+            coordinatorAddress: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agentDefinitionId: z.ZodString;
+                agentRunId: z.ZodString;
+                platformAgentRunId: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>>;
+            handoffs: z.ZodArray<z.ZodObject<{
+                from: z.ZodString;
+                to: z.ZodString;
+                rules: z.ZodArray<z.ZodString>;
+            }, z.core.$strict>>;
+            defaultLaunchConfiguration: z.ZodObject<{
+                runtimeKind: z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>;
+                llmModelIdentifier: z.ZodString;
+                llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                autoExecuteTools: z.ZodBoolean;
+                workspaceRootPath: z.ZodNullable<z.ZodString>;
+            }, z.core.$strict>;
+            taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
+            addedAt: z.ZodString;
+            addedViaAgentRunId: z.ZodString;
+        }, z.core.$strict>], "kind">>;
         taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
     }, z.core.$strict>;
 }, z.core.$strict>;
@@ -292,6 +409,61 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 }, z.core.$strict>>;
                 taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
             }, z.core.$strict>]>>;
+            collaborators: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"agent">;
+                address: z.ZodString;
+                agentDefinitionId: z.ZodString;
+                agentRunId: z.ZodString;
+                platformAgentRunId: z.ZodNullable<z.ZodString>;
+                launchConfiguration: z.ZodObject<{
+                    runtimeKind: z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>;
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    autoExecuteTools: z.ZodBoolean;
+                    workspaceRootPath: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>;
+                addedAt: z.ZodString;
+                addedViaAgentRunId: z.ZodString;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"agent_team">;
+                address: z.ZodString;
+                teamDefinitionId: z.ZodString;
+                teamRunId: z.ZodString;
+                coordinatorAddress: z.ZodString;
+                members: z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    agentDefinitionId: z.ZodString;
+                    agentRunId: z.ZodString;
+                    platformAgentRunId: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>>;
+                handoffs: z.ZodArray<z.ZodObject<{
+                    from: z.ZodString;
+                    to: z.ZodString;
+                    rules: z.ZodArray<z.ZodString>;
+                }, z.core.$strict>>;
+                defaultLaunchConfiguration: z.ZodObject<{
+                    runtimeKind: z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>;
+                    llmModelIdentifier: z.ZodString;
+                    llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+                    autoExecuteTools: z.ZodBoolean;
+                    workspaceRootPath: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>;
+                taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
+                addedAt: z.ZodString;
+                addedViaAgentRunId: z.ZodString;
+            }, z.core.$strict>], "kind">>;
             taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         }, z.core.$strict>;
     }, z.core.$strict>;
@@ -414,6 +586,63 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         referenceFiles: z.ZodArray<z.ZodString>;
         createdAt: z.ZodString;
     }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    kind: z.ZodLiteral<"collaborator_added">;
+    collaborator: z.ZodDiscriminatedUnion<[z.ZodObject<{
+        kind: z.ZodLiteral<"agent">;
+        address: z.ZodString;
+        agentDefinitionId: z.ZodString;
+        agentRunId: z.ZodString;
+        platformAgentRunId: z.ZodNullable<z.ZodString>;
+        launchConfiguration: z.ZodObject<{
+            runtimeKind: z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>;
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            autoExecuteTools: z.ZodBoolean;
+            workspaceRootPath: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>;
+        addedAt: z.ZodString;
+        addedViaAgentRunId: z.ZodString;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"agent_team">;
+        address: z.ZodString;
+        teamDefinitionId: z.ZodString;
+        teamRunId: z.ZodString;
+        coordinatorAddress: z.ZodString;
+        members: z.ZodArray<z.ZodObject<{
+            address: z.ZodString;
+            agentDefinitionId: z.ZodString;
+            agentRunId: z.ZodString;
+            platformAgentRunId: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>>;
+        handoffs: z.ZodArray<z.ZodObject<{
+            from: z.ZodString;
+            to: z.ZodString;
+            rules: z.ZodArray<z.ZodString>;
+        }, z.core.$strict>>;
+        defaultLaunchConfiguration: z.ZodObject<{
+            runtimeKind: z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>;
+            llmModelIdentifier: z.ZodString;
+            llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
+            autoExecuteTools: z.ZodBoolean;
+            workspaceRootPath: z.ZodNullable<z.ZodString>;
+        }, z.core.$strict>;
+        taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
+        addedAt: z.ZodString;
+        addedViaAgentRunId: z.ZodString;
+    }, z.core.$strict>], "kind">;
 }, z.core.$strict>], "kind">;
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;
 export type AgentOrgExecutionViewDto = Readonly<z.infer<typeof agentOrgExecutionViewDtoSchema>>;

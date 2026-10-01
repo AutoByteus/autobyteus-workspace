@@ -6,6 +6,11 @@ import {
 } from "../../../../src/agent-execution/prompt/carpenter-prompt-composer.js";
 import { containAuthoredMarkdownHeadings } from "../../../../src/agent-execution/prompt/markdown-heading-containment.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
+import { MemberCollaborationContext, MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
+import {
+  createAgentRootExecutionIdentity,
+  createCollaborationMemberExecutionIdentity,
+} from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
 const definition = (input: Partial<ConstructorParameters<typeof AgentDefinition>[0]> = {}) =>
   new AgentDefinition({
@@ -215,5 +220,42 @@ describe("containAuthoredMarkdownHeadings", () => {
     expect(containAuthoredMarkdownHeadings("# A\n### B\n###### C", 3)).toBe(
       "#### A\n###### B\n**C**",
     );
+  });
+});
+
+describe("standalone collaboration section (Agent-root host)", () => {
+  const hostContext = () => new MemberExecutionContext({
+    identity: createCollaborationMemberExecutionIdentity({
+      root: createAgentRootExecutionIdentity("daily-assistant-run"),
+      memberAddress: "/daily_assistant",
+      agentRunId: "daily-assistant-run",
+    }),
+    teamScoped: false,
+    collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
+    tasks: {
+      root: createAgentRootExecutionIdentity("daily-assistant-run"),
+      delegateTask: async () => ({ target_agent_run_id: null, message: "none" }),
+    },
+  });
+
+  it("renders the short standalone section instead of the Team sections for every eligible standalone agent", () => {
+    const prompt = composeSharedCarpenterPrompt({
+      agentDefinition: new AgentDefinition({
+        id: "autobyteus-daily-assistant", name: "Daily Assistant", description: "Helps with everyday tasks.", instructions: "Be helpful.",
+      }),
+      memberExecutionContext: hostContext(),
+    });
+    expect(prompt).toMatchSnapshot();
+    expect(prompt).not.toContain("AgentTeam Addressing");
+    expect(prompt).not.toContain("get_handoff_rules");
+    expect(prompt).toContain("Your address in this run is `/daily_assistant`.");
+  });
+
+  it("keeps a standalone agent without a member context unchanged", () => {
+    const prompt = composeSharedCarpenterPrompt({
+      agentDefinition: new AgentDefinition({ name: "Helper", description: "d", instructions: "i" }),
+      memberExecutionContext: null,
+    });
+    expect(prompt).not.toContain("## Collaboration");
   });
 });

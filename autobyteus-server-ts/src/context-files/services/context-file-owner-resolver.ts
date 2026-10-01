@@ -21,6 +21,9 @@ export class StandaloneContextFileOwnerNotFoundError extends Error {}
 
 export class OrgContextFileOwnerNotFoundError extends Error {}
 
+/** A shaped but absent Agent-root child (or an unadmitted host) is distinct from an invalid request. */
+export class AgentCollaborationContextFileOwnerNotFoundError extends Error {}
+
 /** A shaped but absent exact Team member is distinct from an invalid request. */
 export class TeamContextFileOwnerNotFoundError extends Error {}
 
@@ -36,18 +39,22 @@ export class ContextFileOwnerResolver {
     this.readiness = new RootRunPackageReadinessIndex(input.memoryDir);
   }
 
+  /** Org and Agent-root member drafts are validated against their exact final owner. */
   async validateDraftOwner(owner: ContextFileDraftOwnerDescriptor): Promise<void> {
-    if (owner.kind !== "org_member_draft") return;
-    const parsed = parseDraftContextFileOwnerDescriptor(owner);
-    if (parsed.kind !== "org_member_draft") throw new Error("Expected Org draft owner.");
-    await this.resolveFinalOwner({ ...parsed, kind: "org_member_final" });
+    const final = this.matchingFinalOwner(owner);
+    if (final) await this.resolveFinalOwner(final);
   }
 
   validateDraftOwnerSync(owner: ContextFileDraftOwnerDescriptor): void {
-    if (owner.kind !== "org_member_draft") return;
+    const final = this.matchingFinalOwner(owner);
+    if (final) this.resolveFinalOwnerSync(final);
+  }
+
+  private matchingFinalOwner(owner: ContextFileDraftOwnerDescriptor): ContextFileFinalOwnerDescriptor | null {
     const parsed = parseDraftContextFileOwnerDescriptor(owner);
-    if (parsed.kind !== "org_member_draft") throw new Error("Expected Org draft owner.");
-    this.resolveFinalOwnerSync({ ...parsed, kind: "org_member_final" });
+    if (parsed.kind === "org_member_draft") return { ...parsed, kind: "org_member_final" };
+    if (parsed.kind === "agent_collaboration_member_draft") return { ...parsed, kind: "agent_collaboration_member_final" };
+    return null;
   }
 
   async resolveFinalOwner(owner: ContextFileFinalOwnerDescriptor): Promise<ContextFileResolvedFinalOwnerDescriptor> {
@@ -56,6 +63,7 @@ export class ContextFileOwnerResolver {
       if (!this.readiness.isAdmitted("agent", owner.runId)) throw new StandaloneContextFileOwnerNotFoundError(`Standalone context-file owner '${owner.runId}' is unavailable.`);
       return owner;
     }
+    this.assertAgentCollaborationHostAdmitted(owner);
     const location = await this.locations.findAgent(this.lookup(owner));
     return this.result(owner, location);
   }
@@ -65,13 +73,25 @@ export class ContextFileOwnerResolver {
       if (!this.readiness.isAdmitted("agent", owner.runId)) throw new StandaloneContextFileOwnerNotFoundError(`Standalone context-file owner '${owner.runId}' is unavailable.`);
       return owner;
     }
+    this.assertAgentCollaborationHostAdmitted(owner);
     return this.result(owner, this.locations.findAgentSync(this.lookup(owner)));
+  }
+
+  /** An Agent-root child is admitted with its host's standalone package. */
+  private assertAgentCollaborationHostAdmitted(owner: ContextFileFinalOwnerDescriptor): void {
+    if (owner.kind === "agent_collaboration_member_final" && !this.readiness.isAdmitted("agent", owner.hostRunId)) {
+      throw new AgentCollaborationContextFileOwnerNotFoundError(`Agent run '${owner.hostRunId}' is unavailable.`);
+    }
   }
 
   private lookup(owner: Exclude<ContextFileFinalOwnerDescriptor, { kind: "agent_final" }>): Lookup {
     if (owner.kind === "org_member_final") {
       parseFinalContextFileOwnerDescriptor(owner);
       return { rootSubjectKind: "agent_org", rootRunId: owner.orgRunId, agentRunId: owner.agentRunId };
+    }
+    if (owner.kind === "agent_collaboration_member_final") {
+      parseFinalContextFileOwnerDescriptor(owner);
+      return { rootSubjectKind: "agent", rootRunId: owner.hostRunId, agentRunId: owner.agentRunId };
     }
     parseFinalContextFileOwnerDescriptor(owner);
     return { containingTeamRunId: owner.teamRunId, agentRunId: owner.agentRunId };
@@ -87,6 +107,16 @@ export class ContextFileOwnerResolver {
         throw new OrgContextFileOwnerNotFoundError(`Unable to resolve Org context-file owner '${owner.orgRunId}/${owner.agentRunId}'.`);
       }
       return { ...owner, rootSubjectKind: "agent_org", rootRunId: location.rootRunId,
+        ancestorTeamRunIds: [...location.ancestorTeamRunIds], memoryDir: location.memoryDir };
+    }
+    if (owner.kind === "agent_collaboration_member_final") {
+      if (!location || !("rootSubjectKind" in location) || location.rootSubjectKind !== "agent"
+        || location.rootRunId !== owner.hostRunId || location.agentRunId !== owner.agentRunId) {
+        throw new AgentCollaborationContextFileOwnerNotFoundError(
+          `Unable to resolve Agent collaboration context-file owner '${owner.hostRunId}/${owner.agentRunId}'.`,
+        );
+      }
+      return { ...owner, rootSubjectKind: "agent", rootRunId: location.rootRunId,
         ancestorTeamRunIds: [...location.ancestorTeamRunIds], memoryDir: location.memoryDir };
     }
     if (!location

@@ -46,6 +46,11 @@ type WorkspaceTargetCore = WorkspaceAccess & Readonly<{
 
 export type ActiveAgentWorkspaceTarget =
   | (WorkspaceTargetCore & Readonly<{ kind: 'standalone_agent' }>)
+  /** A standalone run with task children: its Team tab lists messages with them. */
+  | (WorkspaceTargetCore & Readonly<{
+      kind: 'standalone_agent'
+      collaborationMessages: CollaborationMessagesContextView
+    }>)
   | (WorkspaceTargetCore & Readonly<{
       kind: 'standalone_team_member'
       team: TeamWorkspaceContextView
@@ -75,6 +80,20 @@ export type ActiveAgentWorkspaceTarget =
       kind: 'agent_org_task_team_member'
       root: Readonly<{ orgRunId: string }>
       team: TeamWorkspaceContextView
+      address: AgentTeamAddress
+      collaborationMessages: CollaborationMessagesContextView
+    }>)
+  /** A task Agent brought into a standalone run (directly under the run). */
+  | (WorkspaceTargetCore & Readonly<{
+      kind: 'agent_run_task_agent'
+      host: Readonly<{ hostRunId: string }>
+      address: AgentTeamAddress
+      collaborationMessages: CollaborationMessagesContextView
+    }>)
+  /** A member of a task Team brought into a standalone run. */
+  | (WorkspaceTargetCore & Readonly<{
+      kind: 'agent_run_task_team_member'
+      host: Readonly<{ hostRunId: string }>
       address: AgentTeamAddress
       collaborationMessages: CollaborationMessagesContextView
     }>)

@@ -14,9 +14,14 @@
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
           maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
         }"
-        :placeholder="skillTagging?.placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
+        :placeholder="skillTagging?.placeholder || placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
+        :role="hasMenus ? 'combobox' : undefined"
+        :aria-autocomplete="hasMenus ? 'list' : undefined"
+        :aria-expanded="hasMenus ? (activeMenu ? 'true' : 'false') : undefined"
+        :aria-controls="activeMenu?.listId"
+        :aria-activedescendant="activeMenu && activeMenu.count ? `${activeMenu.listId}-option-${activeMenu.highlight}` : undefined"
         @keydown="handleKeyDown"
-        @click="skillMenu.detect"
+        @click="detectMenus"
         :disabled="!target"
         @dragover.prevent
         @drop.prevent="handleDrop"
@@ -54,6 +59,29 @@
           />
         </div>
       </template>
+
+      <!-- `@` menu: bring a shared Agent or Team into this live run. -->
+      <template v-if="mentionMenu.open.value">
+        <div v-if="mentionMenu.popover.narrow.value" class="fixed inset-0 z-40 bg-black/20" aria-hidden="true"></div>
+        <div
+          class="z-50 flex flex-col"
+          :class="mentionMenu.popover.narrow.value
+            ? 'fixed inset-x-2 bottom-2 [&>div]:w-auto'
+            : ['absolute left-2', mentionMenu.popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+          :style="mentionMenu.popover.narrow.value ? undefined : { maxHeight: `${mentionMenu.popover.maxHeight.value}px` }"
+        >
+          <ChatTargetMenu
+            variant="run"
+            :list-id="mentionMenuListId"
+            :query="mentionMenu.query.value"
+            :targets="mentionMenu.filtered.value"
+            :highlight="mentionMenu.highlight.value"
+            :focused-name="mentionMenu.focusedName.value"
+            @highlight="mentionMenu.highlight.value = $event"
+            @choose="mentionMenu.choose"
+          />
+        </div>
+      </template>
     </div>
 
     <VoiceInputStatusRow class="mx-3 mb-2" />
@@ -72,6 +100,8 @@ import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue';
 import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue';
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
 import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
+import ChatTargetMenu from '~/components/chat/ChatTargetMenu.vue';
+import { useRunMentionMenu } from '~/composables/agentInput/useRunMentionMenu';
 import { useSkillTagMenu, type SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
 import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction';
 
@@ -80,6 +110,7 @@ const props = defineProps<{
   beforeSend?: () => void | Promise<void>;
   /** `/` skill tags; supplied only for standalone agent runs. */
   skillTagging?: SkillTaggingCapability | null;
+  placeholder?: string | null;
 }>();
 
 const contextFileUploadStore = useContextFileUploadStore();
@@ -109,6 +140,7 @@ const MAX_TEXTAREA_HEIGHT = 220;
 const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
 const rootRef = ref<HTMLElement | null>(null);
 const skillMenuListId = `agent-skill-menu-${useId()}`;
+const mentionMenuListId = `agent-mention-menu-${useId()}`;
 let pendingLocalAcknowledgementContext: AgentContext | null = null;
 
 const adjustTextareaHeight = () => {
@@ -181,9 +213,39 @@ const skillMenu = useSkillTagMenu({
   setText: setRequirement,
 });
 
+const mentionMenu = useRunMentionMenu({
+  rootRef,
+  textareaRef: textarea,
+  context: targetContext,
+  scope: computed(() => props.target?.mentionScope ?? null),
+  getText: () => internalRequirement.value,
+  setText: setRequirement,
+});
+
+/** One menu at a time: `@` takes the token when it matches, otherwise `/`. */
+const detectMenus = () => {
+  if (mentionMenu.detect()) {
+    skillMenu.close();
+    return;
+  }
+  skillMenu.detect();
+};
+
+const hasMenus = computed(() => Boolean(props.skillTagging) || mentionMenu.available.value);
+/** The open menu, for the textarea's combobox semantics. */
+const activeMenu = computed(() => {
+  if (mentionMenu.open.value) {
+    return { listId: mentionMenuListId, count: mentionMenu.filtered.value.length, highlight: mentionMenu.highlight.value };
+  }
+  if (props.skillTagging && skillMenu.open.value) {
+    return { listId: skillMenuListId, count: skillMenu.filteredSkills.value.length, highlight: skillMenu.highlight.value };
+  }
+  return null;
+});
+
 const handleInput = (event: Event) => {
   setRequirement((event.target as HTMLTextAreaElement).value);
-  nextTick(skillMenu.detect);
+  nextTick(detectMenus);
 };
 
 const handleSend = async () => {
@@ -268,6 +330,7 @@ const handleDrop = async (event: DragEvent) => {
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {
+  if (mentionMenu.onKeydown(event)) return;
   if (skillMenu.onKeydown(event)) return;
   if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey) {
     event.preventDefault();

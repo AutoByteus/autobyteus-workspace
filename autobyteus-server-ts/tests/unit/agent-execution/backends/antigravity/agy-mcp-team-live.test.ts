@@ -24,7 +24,7 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
       agentRunId: "team-live-member", teamInstruction: "You coordinate this team.", deliverInterAgentMessage: deliver })
     : (() => {
       const root = createAgentOrgRootExecutionIdentity("org-live-root");
-      return new MemberExecutionContext({ identity: createCollaborationMemberExecutionIdentity({ root,
+      return new MemberExecutionContext({ teamScoped: true, identity: createCollaborationMemberExecutionIdentity({ root,
         memberAddress: "/coordinator", agentRunId: "org-live-member" }),
       authoredEnclosingScopeInstruction: "You coordinate this organization.",
       collaboration: new MemberCollaborationContext({ deliverLogicalMessage: deliver }),
