@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer → implementation handoff (ARCH-REV-003 Pass), round 1 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003, CRR-001 | Implemented; code review **Pass** (CRR-001, 9.3/10, no findings) → api_e2e_engineer |
+| IR-002 | architecture_reviewer (ARCH-REV-004 Pass on SR-006) after API-REV-001 Fail; code_reviewer CRR-002/CRR-003 | CR-001 (F-01), CR-002 (F-02) | `Design Impact` (CR-001 via SR-006) + `Local Fix` (CR-002) | SR-006, ARCH-REV-004, CRR-002, CRR-003, API-REV-001 | Implemented; to code review |
 
 ## Revision Entries
 
@@ -45,6 +46,45 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (Large/High).
 - Remaining limitations or risks: AGY/ACP live exposure unverified; concurrency premise corrected locally (per-root
   admission queue) and flagged for review; Org behavior change (REQ-007) documented.
+
+### IR-002 — One member-scope owner (CR-001) and Team-root copy row names (CR-002)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer` (ARCH-REV-004 Pass on
+  SR-006) after API-REV-001 (Fail) and `/software_engineering_team/code_reviewer` CRR-002 (failure origin) / CRR-003
+  (CR-001 reclassified to Design Impact):
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/code-review-report.md`,
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/design-review-report.md`.
+- Triggering finding IDs: CR-001 (F-01), CR-002 (F-02).
+- Classification: `Design Impact` resolved by SR-006 (CR-001) + `Local Fix` (CR-002).
+- Prior authoritative result: IR-001 passed CRR-001; API-REV-001 failed F-01 (catalog Team copy members had no own
+  handoffs/instruction in all three roots; a catalog Agent copy in a Team root inherited the root-Team instruction) and
+  F-02 (Team-root catalog copy rows showed raw segments).
+- Current authoritative result: one pure owner `resolveMemberCollaborationScope` decides every member's handoffs and
+  enclosing instruction from its hosting TeamRun (`hostTeam`) or the root's facts, in all three roots, at construction
+  and restore; per-root special cases removed; Team-root rows and contexts format catalog copies like collaborators.
+- Related solution revision IDs: SR-005, SR-006
+- Related architecture-review revision IDs: ARCH-REV-004
+- Related code-review revision IDs: CRR-002, CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Why recorded: rework after API/E2E failure and the SR-006 design revision.
+- Approved behavior or requirement IDs affected: REQ-007, REQ-011, AC-007, AC-011, AC-012.
+- Implementation delta:
+  - new `agent-collaboration/execution/domain/member-instance-scope.ts`;
+  - `flat-team-execution-callbacks.ts` (optional `hostTeam`), `flat-team-agent-execution-handle.ts` (passes it);
+  - Team root: `member-team-context-builder.ts` (owner; `scope` override and `collaboratorMemberScope` removed),
+    `team-flat-execution-callbacks.ts`, `team-root-materializer.ts` (`resolveMemberScope` removed);
+  - Org root: `agent-org-execution-scope-builder.ts` (owner; `agentOrgHandoffs`, `resolveFreshInstruction` branching
+    removed);
+  - Agent root: `agent-run-collaboration-root-builder.ts` (owner; `collaboratorOf` removed);
+  - web: `teamExecutionTreeSelectors.ts` (`readsAsDisplayName`), `teamExecutionContextFactory.ts`;
+  - docs: `agent_team_execution.md`, `agent_orgs.md`;
+  - tests: see the handoff.
+- Local validation and result: server 4953 / web 3464 tests, 0 new failures vs base; live Team-root render check
+  passed (see the handoff).
+- Next recipient or routing: `/software_engineering_team/code_reviewer` (Large/High).
+- Remaining limitations or risks: copy members' scope verified by tests, not yet live (API/E2E LE-A2, LE-T1, LE-O1);
+  AGY/ACP exposure still unverified live.
 
 ## Review Outcomes (informational)
 

@@ -17,16 +17,30 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, after API-REV-001 → CRR-002/CRR-003 → SR-006 / ARCH-REV-004)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-005`
-- Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-002` (delta over `IR-001`)
+- Related solution revision IDs: `SR-005`, `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (failure origin), `CRR-003` (CR-001 → Design Impact)
+- Related API/E2E revision IDs: `API-REV-001` (Fail: F-01, F-02)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
-- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; implementation commit `549510977`.
+- Triggering finding IDs: `CR-001` (F-01, via SR-006), `CR-002` (F-02, Local Fix)
+- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; IR-001 commit `549510977`; IR-002 commit: see the revision record.
+
+IR-002 delta (CR-001 per SR-006 § Member Collaboration Scope; CR-002):
+- **One owner for member scope:** `agent-collaboration/execution/domain/member-instance-scope.ts#resolveMemberCollaborationScope`
+  (pure). Rules: (1) a direct member of its non-root hosting Team instance gets that instance's handoffs and Team
+  instruction; (2) a root-level configured placement (or a copy at its address) gets the root's; (3) anything else gets
+  none (a catalog Agent copy in a Team root gets no root-Team instruction). The hosting TeamRun's own context reaches
+  it as the optional `hostTeam` of `FlatTeamExecutionCallbacks.buildMemberExecutionContext`
+  (`FlatTeamAgentExecutionHandle` passes it; root-hosted Agents have none), at construction and restore.
+- **Per-root special cases removed:** `collaboratorMemberScope`, the `scope` override and `resolveMemberScope`
+  (Team root); `agentOrgHandoffs` and the `resolveFreshInstruction` branching (Org root, now one
+  `resolveInstruction(definition)`); `collaboratorOf` (Agent root). `teamScoped` unchanged.
+- **CR-002:** Team-root rows and agent contexts format collaborator **and catalog copy** addresses (and members) with
+  `memberDisplayName` (`readsAsDisplayName` in `teamExecutionTreeSelectors.ts`, used by `projectNavigationRows` and
+  `teamExecutionContextFactory.ts`).
 
 What the change does:
 - **`list_available_agents`** (opt-in, REQ-001/002): a registry tool (Agent Communication category, so it shows in
@@ -173,6 +187,21 @@ Web: `services/collaborators/agentSourceSelectors.ts`, Org/Agent view indexes, O
 
 ## Local Implementation Checks Run
 
+IR-002 (after the CR-001/CR-002 changes):
+- Server typecheck clean; `--noUnusedLocals` clean in touched files.
+- Server full suite: 4953 tests, 171 failed — **0 new failures** vs the base baseline (the run includes API/E2E's
+  uncommitted durable tests in the worktree).
+- Web full suite: 3464 tests, the same 4 base-failing files — **0 new failures**.
+- New/updated tests: `member-instance-scope.test.ts` (rules 1–3); `agent-org-member-scope.test.ts` (mounted Team
+  member keeps cross-placement Org handoffs + Team instruction (AC-012), configured direct Agent keeps the Org's,
+  catalog Team copy member gets its own, catalog Agent copy none); Team root (catalog copy lead gets own handoffs +
+  "Ship the product UI." and keeps them after Stop → reopen → message; catalog Agent copy gets no root-Team
+  instruction); Agent root (copy members own scope, catalog Agent copy hosted by the copy gets none, restored copy
+  members keep their scope); web `agentSourceSelectors.spec.ts` (catalog copy row `product team`, members
+  `product prototyper` / `prototype bootstrapper`); `org-owned-team-local-agent.test.ts` passes `hostTeam`.
+
+IR-001:
+
 Evidence logs/JSON were kept under `/tmp/aic-baseline/` during the session; results:
 
 - Server typecheck `npx tsc -p tsconfig.build.json --noEmit`: clean. `--noUnusedLocals` over changed files: clean
@@ -200,6 +229,15 @@ Evidence logs/JSON were kept under `/tmp/aic-baseline/` during the session; resu
   5/5, `autobyteus-collaboration-stream-contracts` 5 pass / 7 fail — the same 7 fail on base.
 
 ## Frontend Rendered-Result Check (When Applicable)
+
+IR-002 (CR-002): live Team root on the worktree `pnpm dev` stack with Claude `haiku` (`implementation-evidence/render-check-aic-team.mjs`,
+`render-check-aic-team/`): a one-member "PM Team" whose coordinator is the Project Manager called
+`list_available_agents`, `send_message_to` (`/code_reviewer` brought in) and `delegate_task` ×2. Rows read
+"code reviewer", "product team", "product team"; expanded copy members read "product prototyper" and "prototype
+bootstrapper"; no raw segments; no page errors. Stack stopped. Copy members' handoffs/instructions (CR-001) were
+verified by tests; API/E2E rechecks LE-A2, LE-T1 and LE-O1 live.
+
+IR-001:
 
 - Affected surfaces / journeys: standalone run rows (collaborator + task-team copies), copy members' conversations,
   the brought-in collaborator's conversation ("From <Sender>:"), the Team tab, the tool picker.

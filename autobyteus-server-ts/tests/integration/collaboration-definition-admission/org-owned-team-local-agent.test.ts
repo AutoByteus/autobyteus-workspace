@@ -194,7 +194,10 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const identity = createCollaborationMemberExecutionIdentity({
       root: createAgentOrgRootExecutionIdentity('org-run'), memberAddress: member.address, agentRunId: member.agentRunId,
     });
-    const context = await callbacks!.buildMemberExecutionContext({ identity } as Parameters<FlatTeamExecutionCallbacks['buildMemberExecutionContext']>[0]);
+    // The mounted Team's TeamRun hosts the member (its handle passes the hosting Team).
+    const context = await callbacks!.buildMemberExecutionContext({
+      identity, hostTeam: { address: '/group', teamDefinitionId: f.ids('alpha').team, handoffs: [] },
+    } as unknown as Parameters<FlatTeamExecutionCallbacks['buildMemberExecutionContext']>[0]);
     expect(context.authoredEnclosingScopeInstruction).toBe('alpha Team instructions');
     expect(read).toHaveBeenCalledWith(f.ids('alpha').team);
     expect(prepareNewAgentRun).not.toHaveBeenCalled();

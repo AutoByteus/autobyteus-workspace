@@ -389,6 +389,14 @@ describe("agent-initiated collaborators of a standalone run", () => {
 
     const [one, two] = copies;
     const leadOne = childIdentity("/product_team/lead", memberRun(one!, "/product_team/lead"));
+    // CR-001: a catalog Team copy's members get the copy's own handoffs and Team instruction.
+    const ownScope = {
+      teamScoped: true, authoredEnclosingScopeInstruction: "Ship the product UI.",
+      collaboration: expect.objectContaining({
+        outgoingHandoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }],
+      }),
+    };
+    expect(f.handles.get(leadOne.agentRunId)!.input.memberExecutionContext).toMatchObject(ownScope);
     await expect(root.deliverLogicalMessage(leadOne, { recipientAddress: "/product_team/designer" as never, content: "UI" }))
       .resolves.toMatchObject({ accepted: true });
     expect(f.handles.get(memberRun(one!, "/product_team/designer"))!.handle.reserveInput).toHaveBeenCalledOnce();
@@ -402,6 +410,11 @@ describe("agent-initiated collaborators of a standalone run", () => {
     await flushMicrotasks();
     const hostCopy = root.getExecutionTreeSnapshot().taskExecutions[0] as { taskExecutions: readonly { address: string; source?: unknown }[] };
     expect(hostCopy.taskExecutions).toEqual([expect.objectContaining({ address: "/code_reviewer", source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) })]);
+    // A catalog Agent copy hosted by that Team is not its member: no handoffs, no Team instruction.
+    const reviewerCopy = hostCopy.taskExecutions[0] as unknown as { agentRunId: string };
+    expect(f.handles.get(reviewerCopy.agentRunId)!.input.memberExecutionContext).toMatchObject({
+      authoredEnclosingScopeInstruction: null, collaboration: expect.objectContaining({ outgoingHandoffs: [] }),
+    });
 
     // Stop and reopen: a copy restores from its recorded source.
     expect(await f.manager.terminateRoot(HOST)).toBe(true);
@@ -410,5 +423,11 @@ describe("agent-initiated collaborators of a standalone run", () => {
     await expect(reopened.executeAgentCommand(designerRun, { kind: "post_message", message: { content: "Status?" } as never }))
       .resolves.toMatchObject({ accepted: true });
     expect(f.handles.get(designerRun)!.input.activationMode).toBe("restore");
+    expect(f.handles.get(designerRun)!.input.memberExecutionContext).toMatchObject({
+      authoredEnclosingScopeInstruction: "Ship the product UI.", collaboration: expect.objectContaining({ outgoingHandoffs: [] }),
+    });
+    const restoredLead = memberRun(two!, "/product_team/lead");
+    await reopened.executeAgentCommand(restoredLead, { kind: "post_message", message: { content: "And you?" } as never });
+    expect(f.handles.get(restoredLead)!.input.memberExecutionContext).toMatchObject(ownScope);
   });
 });

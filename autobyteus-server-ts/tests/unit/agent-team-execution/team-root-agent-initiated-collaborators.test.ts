@@ -112,6 +112,14 @@ describe("agent-initiated collaborators in a Team root", () => {
     await flushMicrotasks();
     const [copy] = copiesOf(f);
     const leadRunId = memberOf(copy!, "/product_team/lead");
+    // CR-001: the catalog copy's members get the copy's own handoffs and Team instruction.
+    const ownScope = {
+      authoredEnclosingScopeInstruction: "Ship the product UI.",
+      collaboration: expect.objectContaining({
+        outgoingHandoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }],
+      }),
+    };
+    expect(f.handles.get(leadRunId)!.input.memberExecutionContext).toMatchObject(ownScope);
     await expect(f.root.terminate()).resolves.toMatchObject({ accepted: true });
     const reopened = await f.reopen();
     expect(copiesOf(f, reopened)).toEqual([copy]);
@@ -119,6 +127,8 @@ describe("agent-initiated collaborators in a Team root", () => {
       sender: { kind: "agent", identity: coordinatorOf(f), displayName: "coordinator" }, targetAgentRunId: leadRunId, content: "Status?",
     })).resolves.toMatchObject({ accepted: true });
     expect(f.handles.get(leadRunId)!.input.activationMode).toBe("restore");
+    // ...and keep them after Stop → reopen → message.
+    expect(f.handles.get(leadRunId)!.input.memberExecutionContext).toMatchObject(ownScope);
     await reopened.terminate();
   });
 
@@ -129,6 +139,10 @@ describe("agent-initiated collaborators in a Team root", () => {
     await flushMicrotasks();
     const designerCopy = f.root.getExecutionTreeSnapshot().rootTeam.taskExecutions[0] as { agentRunId: string; source?: unknown };
     expect(designerCopy.source).toMatchObject({ kind: "agent", agentDefinitionId: "designer" });
+    // CR-001: a catalog Agent copy is not a root-Team member: no handoffs, no root-Team instruction.
+    expect(f.handles.get(designerCopy.agentRunId)!.input.memberExecutionContext).toMatchObject({
+      authoredEnclosingScopeInstruction: null, collaboration: expect.objectContaining({ outgoingHandoffs: [] }),
+    });
     const copyIdentity = f.identity("/designer", designerCopy.agentRunId);
     await expect(f.root.delegateTask({ identity: copyIdentity }, { recipient_address: "/lead", description: "Plan" }))
       .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });

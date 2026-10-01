@@ -1,6 +1,7 @@
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { ConfiguredAgentExecutionSpec } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
+import type { MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import type { CollaborationAgentExecutionEvent } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type {
@@ -15,6 +16,8 @@ export type FlatTeamExecutionCallbacks = Readonly<{
     physicalScope: RootExecutionPhysicalScope;
     execution: ConfiguredAgentExecutionSpec;
     sourceNode: import("../domain/team-run-config.js").TeamRunAgentNode;
+    /** The TeamRun hosting the Agent; absent for an Agent hosted directly by an Org or Agent root. */
+    hostTeam?: MemberHostTeam | null;
   }>): Promise<MemberExecutionContext>;
   publishAgentEvent(identity: CollaborationMemberExecutionIdentity, event: CollaborationAgentExecutionEvent): void;
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;

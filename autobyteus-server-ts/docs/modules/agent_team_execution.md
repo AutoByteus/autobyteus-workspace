@@ -411,9 +411,20 @@ A Team root hosts each collaborator in its root TeamRun's
 executions (a collaborator Team's parent is the root TeamRun, so a member's
 physical scope is `[collaboratorTeamRunId]`). Admission prepares, commits, then
 publishes; `materializeTeamRoot` re-hosts collaborators with the root in
-`restore` mode; the root TeamRun's termination includes them. Member contexts of
-a collaborator Agent carry no enclosing instruction or handoffs; members of a
-collaborator Team (and copies of it) get that Team's handoffs and instruction.
+`restore` mode; the root TeamRun's termination includes them.
+
+**Member collaboration scope (CR-001).** One owner,
+`agent-collaboration/execution/domain/member-instance-scope.ts#resolveMemberCollaborationScope`,
+decides every member's outgoing handoffs and enclosing instruction in all three roots, at
+construction and restore. The hosting TeamRun's own context reaches it as `hostTeam` through the
+member-context callback. Rules, in order:
+1. a direct member of its non-root hosting Team instance (collaborator Team, any copy, including a
+   catalog copy prepared from its recorded `source`) gets that instance's handoffs and Team
+   instruction;
+2. a root-level member at a configured root placement (or a copy at its address) gets the root's
+   handoffs and instruction;
+3. anything else (a collaborator Agent, a catalog Agent copy, an Agent hosted by a Team it is not a
+   member of) gets none — a catalog Agent copy in a Team root gets no root-Team instruction.
 
 Agent-initiated collaborators (REQ-004/005/007) use the same hosting. The root's
 message and delegation addressing lives in `services/team-run-message-delivery.ts`

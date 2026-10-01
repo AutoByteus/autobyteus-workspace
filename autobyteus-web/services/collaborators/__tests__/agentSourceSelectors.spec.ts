@@ -118,10 +118,10 @@ describe('collaborator-aware sources', () => {
   it('a catalog copy and its members take their source from the copy (REQ-011)', () => {
     const tree = teamTree()
     const productSource = {
-      kind: 'agent_team' as const, team_definition_id: 'product-team', coordinator_address: '/product_team/prototyper',
+      kind: 'agent_team' as const, team_definition_id: 'product-team', coordinator_address: '/product_team/product_prototyper',
       members: [
-        { address: '/product_team/prototyper', agent_definition_id: 'prototyper' },
-        { address: '/product_team/bootstrapper', agent_definition_id: 'bootstrapper' },
+        { address: '/product_team/product_prototyper', agent_definition_id: 'prototyper' },
+        { address: '/product_team/prototype_bootstrapper', agent_definition_id: 'bootstrapper' },
       ],
       handoffs: [], default_launch_configuration: launch,
     }
@@ -136,17 +136,21 @@ describe('collaborator-aware sources', () => {
     const started = state.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: { change_sequence: 1, parent_team_run_id: 'team-run', execution: {
       kind: 'task_team', address: '/product_team', team_run_id: 'copy-run',
       members: [
-        { kind: 'task_team_agent', address: '/product_team/prototyper', agent_run_id: 'copy-prototyper', platform_agent_run_id: null },
-        { kind: 'task_team_agent', address: '/product_team/bootstrapper', agent_run_id: 'copy-bootstrapper', platform_agent_run_id: null },
+        { kind: 'task_team_agent', address: '/product_team/product_prototyper', agent_run_id: 'copy-prototyper', platform_agent_run_id: null },
+        { kind: 'task_team_agent', address: '/product_team/prototype_bootstrapper', agent_run_id: 'copy-bootstrapper', platform_agent_run_id: null },
       ],
       task_executions: [], delegator_agent_run_id: 'researcher-run', started_at: created, source: productSource,
     } } } as never)
     expect(started.disposition).toBe('applied')
     expect(state.getAgentContext('copy-bootstrapper')?.config.agentDefinitionId).toBe('bootstrapper')
     const rows = state.listNavigationRows()
-    expect(rows.find((row) => row.key === 'team:copy-run')).toMatchObject({ kind: 'task_team', delegatedBy: 'researcher' })
-    expect(rows.find((row) => row.agentRunId === 'copy-prototyper')).toMatchObject({ coordinator: true })
-    expect(teamAgentSourceAt(state.getExecutionTree(), '/product_team/prototyper')).toMatchObject({ agent_definition_id: 'prototyper', launch_configuration: launch })
+    // CR-002: a catalog copy and its members read as spaced names, like collaborators.
+    expect(rows.find((row) => row.key === 'team:copy-run')).toMatchObject({ kind: 'task_team', delegatedBy: 'researcher', displayName: 'product team' })
+    expect(rows.find((row) => row.agentRunId === 'copy-prototyper')).toMatchObject({ coordinator: true, displayName: 'product prototyper' })
+    expect(rows.find((row) => row.agentRunId === 'copy-bootstrapper')).toMatchObject({ displayName: 'prototype bootstrapper' })
+    // A configured member keeps its address basename.
+    expect(rows.find((row) => row.agentRunId === 'researcher-run')).toMatchObject({ displayName: 'researcher' })
+    expect(teamAgentSourceAt(state.getExecutionTree(), '/product_team/product_prototyper')).toMatchObject({ agent_definition_id: 'prototyper', launch_configuration: launch })
     expect(state.getExecutionTree().root_team.collaborators).toEqual([])
   })
 

@@ -1,0 +1,30 @@
+{
+  "shots": [
+    "B1"
+  ],
+  "checks": {
+    "rows": [
+      {
+        "kind": "task_agent",
+        "address": "/code_reviewer",
+        "text": "CR code reviewer"
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "text": "product team"
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "text": "product team"
+      }
+    ],
+    "rawSegmentsShown": []
+  },
+  "notes": [
+    "no copy member row to open"
+  ],
+  "teamRunId": "pm_team_c11dda12bb064249ba8777351131b663",
+  "pageErrors": []
+}

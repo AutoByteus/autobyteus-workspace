@@ -259,8 +259,11 @@ queue.
   them in `restore` mode; termination includes them. `send_message_to` resolves
   configured placements, then collaborators (a Team goes to its coordinator) and
   collaborator Team members; the first message starts the instance. Member
-  contexts read the live tree: a collaborator Agent gets no Org instruction, a
-  collaborator Team member gets its Team's handoffs and instruction. The Org's
+  contexts follow the shared member-scope owner (see
+  [Agent Team Execution](./agent_team_execution.md)): a mounted Team member keeps the Org handoffs
+  its TeamRun carries and its Team instruction; a configured direct Agent gets the Org's; a member
+  of a collaborator Team or of any copy (including a catalog copy) gets that instance's; a
+  collaborator Agent or catalog Agent copy gets none. The Org's
   index records `collaborator` and `collaborator_team_member` executions; a
   collaborator Team hosts its members' delegations in its entry's
   `taskExecutions`. `delegate_task` to a collaborator address starts an extra

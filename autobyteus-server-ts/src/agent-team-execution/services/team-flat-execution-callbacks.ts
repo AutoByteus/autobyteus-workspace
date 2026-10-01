@@ -7,10 +7,10 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-ev
 import type { TeamRunContext } from "../domain/team-run-context.js";
 import { toTeamAgentEvent } from "./team-agent-event-adapter.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
-import { MemberExecutionContextBuilder, type MemberScope } from "./member-team-context-builder.js";
+import { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
+import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 
 type MemberExecutionContextBuildInput = Parameters<MemberExecutionContextBuilder["build"]>[0];
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 
 /** Standalone-Team subject adapter for root-neutral local Agent callbacks. */
 export const createTeamFlatExecutionCallbacks = (input: {
@@ -22,16 +22,14 @@ export const createTeamFlatExecutionCallbacks = (input: {
   /** The root's `list_available_agents`; absent in application-owned runs. */
   listAvailableAgents?: MemberExecutionContextBuildInput["listAvailableAgents"];
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
-  /** The scope of a collaborator Agent or collaborator Team member (read from the live tree). */
-  resolveMemberScope?(address: string): MemberScope | null;
 }): FlatTeamExecutionCallbacks => Object.freeze({
-  buildMemberExecutionContext: ({ identity, sourceNode }) => input.memberExecutionContextBuilder.build({
+  buildMemberExecutionContext: ({ identity, sourceNode, hostTeam }) => input.memberExecutionContextBuilder.build({
     teamContext: input.teamContext,
     agentNode: sourceNode,
     deliverInterAgentMessage: input.deliverInterAgentMessage,
     listAvailableAgents: input.listAvailableAgents ?? null,
     taskCommands: input.taskCommands,
-    scope: input.resolveMemberScope?.(identity.memberAddress) ?? null,
+    hostTeam,
   }).then((context) => {
     if (context.identity.agentRunId !== identity.agentRunId || context.identity.memberAddress !== identity.memberAddress) {
       throw new Error("Team member context identity does not match the local execution.");
