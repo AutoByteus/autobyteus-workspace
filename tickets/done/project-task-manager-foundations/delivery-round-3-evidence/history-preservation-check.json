@@ -1,0 +1,6 @@
+{
+  "DR001DR002EntryBodies": "Byte-identical original suffix remains prefix of current entry section, with DR003 appended only",
+  "upstreamHistories": "Five original histories remain byte-identical to CRR004 incoming before archive; checked previously",
+  "sourceTestDiff": "Delivery source/test correction None; unrelated base integration and version script only",
+  "checkedAt": "2026-10-02T20:01:24.562375+00:00"
+}

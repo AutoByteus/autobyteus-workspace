@@ -1,0 +1,7 @@
+{
+  "command": "python3 delivery-round-3-evidence/verify-publication.py",
+  "exitCode": 1,
+  "failure": "Beta alias index digest did not equal version index digest",
+  "completedChecks": "All four CI workflows success;17 assets and small metadata digest/version/reference checks, Linux blockmap checks passed.",
+  "disposition": "Investigate actual manifest identity and CI beta-alias step; no source/test change, no publication success inferred from unequal index digests."
+}

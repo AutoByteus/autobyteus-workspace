@@ -1,0 +1,12 @@
+{
+  "result": "Completed",
+  "ticketWorktreeRemoved": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+  "localTicketBranchDeleted": "codex/project-task-manager-foundations",
+  "safeAncestry": "f1bbd609d is ancestor of refreshed origin/personal; original local worktree globally clean",
+  "remoteTicketBranch": "Retained for audit; remote deletion not required",
+  "finalizationCheckoutRetained": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization",
+  "whyRetained": "Clean personal target delivery-records checkout remains durable authoritative artifact surface; not a ticket branch worktree.",
+  "unrelatedMainHead": "cc143577b8ca3bcf40469dcf5f1f928438f56a02",
+  "unrelatedMainStatus": " M tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md\n M tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md\n M tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md\n?? .article-work/\n?? applications/brief-studio/dist/\n?? applications/socratic-math-teacher/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/done/chat-composer-menus-open-upward/solution-designer-terminal-receipt.md\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/finalization-receipt.json\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-failed.log\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-retry.md\n",
+  "noMainCheckoutResetCleanStashOrUserAppProfileDefaultAudioChanges": true
+}

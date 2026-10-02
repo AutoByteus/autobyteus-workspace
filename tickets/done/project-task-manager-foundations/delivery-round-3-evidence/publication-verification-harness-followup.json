@@ -1,0 +1,7 @@
+{
+  "attempt2Exit": 1,
+  "cause": "Delivery log parser expected tab immediately before Left; actual GH job log includes timestamp before the message. Corrected only the observed log prefix check.",
+  "underlyingEvidence": "Actual CI result: Left beta unchanged because beta.12 is newer; all four CI jobs passed and beta.11 version image is active for both architectures.",
+  "productionOrTestCorrection": false,
+  "publicationReplay": false
+}

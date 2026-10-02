@@ -1,0 +1,3210 @@
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push less than a minute ago
+
+JOBS
+* Resolve Release Metadata (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  * Checkout release ref
+  * Check repository artifact hygiene
+  * Validate workspace package versions match release tag
+  * Resolve release commit SHA
+  * Post Checkout release ref
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 1 minute ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install Linux build deps
+  * Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install Linux build deps
+  * Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 1 minute ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install Linux build deps
+  * Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  * Setup pnpm
+  * Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  * Install Linux build deps
+  * Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 2 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  * Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  * Install workspace dependencies
+  * Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 2 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 3 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 3 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 4 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux ARM64
+  * Verify Linux ARM64 AppImage and updater metadata
+  * Verify Linux ARM64 Prisma engines
+  * Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 4 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  * Build Electron Linux x64
+  * Verify Linux x64 AppImage and updater metadata
+  * Verify Linux x64 Prisma engines
+  * Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Linux ARM64 (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  * Upload Linux ARM64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 5 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+* Build Linux x64 (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  * Upload Linux x64 artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 6 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 6 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 7 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 7 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 8 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 8 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 9 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 9 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 10 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 10 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 11 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 12 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 12 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 13 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 13 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  * Build Electron Windows x64
+  * Upload Windows artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 14 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build Windows x64 (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS Intel x64
+  * Verify bundled Prisma x64 engine target
+  * Verify packaged terminal runtime x64
+  * Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  * Build Electron macOS ARM64
+  * Verify bundled Prisma ARM64 engine target
+  * Verify packaged terminal runtime ARM64
+  * Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 14 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Windows x64 in 13m24s (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS Intel x64
+  ✓ Verify bundled Prisma x64 engine target
+  ✓ Verify packaged terminal runtime x64
+  ✓ Verify macOS signing policy x64
+  * Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS ARM64
+  ✓ Verify bundled Prisma ARM64 engine target
+  ✓ Verify packaged terminal runtime ARM64
+  ✓ Verify macOS signing policy ARM64
+  * Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 15 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Windows x64 in 13m24s (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS Intel x64 (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS Intel x64
+  ✓ Verify bundled Prisma x64 engine target
+  ✓ Verify packaged terminal runtime x64
+  ✓ Verify macOS signing policy x64
+  ✓ Upload macOS Intel artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Build macOS ARM64 (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS ARM64
+  ✓ Verify bundled Prisma ARM64 engine target
+  ✓ Verify packaged terminal runtime ARM64
+  ✓ Verify macOS signing policy ARM64
+  ✓ Upload macOS artifacts
+  * Post Setup Node
+  * Post Setup pnpm
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 15 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Windows x64 in 13m24s (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS Intel x64 in 14m37s (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS Intel x64
+  ✓ Verify bundled Prisma x64 engine target
+  ✓ Verify packaged terminal runtime x64
+  ✓ Verify macOS signing policy x64
+  ✓ Upload macOS Intel artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS ARM64 in 14m30s (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS ARM64
+  ✓ Verify bundled Prisma ARM64 engine target
+  ✓ Verify packaged terminal runtime ARM64
+  ✓ Verify macOS signing policy ARM64
+  ✓ Upload macOS artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Publish GitHub Release (ID 110996465683)
+  ✓ Set up job
+  * Checkout workspace + submodules
+  * Download build artifacts
+  * Merge macOS updater metadata
+  * Validate merged macOS updater metadata
+  * Validate Linux updater metadata
+  * Resolve release notes mode
+  * Publish release assets with curated notes
+  * Publish release assets with generated notes fallback
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build macOS ARM64: .github#2
+
+- Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.
+Build macOS ARM64: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 16 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Windows x64 in 13m24s (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS Intel x64 in 14m37s (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS Intel x64
+  ✓ Verify bundled Prisma x64 engine target
+  ✓ Verify packaged terminal runtime x64
+  ✓ Verify macOS signing policy x64
+  ✓ Upload macOS Intel artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS ARM64 in 14m30s (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS ARM64
+  ✓ Verify bundled Prisma ARM64 engine target
+  ✓ Verify packaged terminal runtime ARM64
+  ✓ Verify macOS signing policy ARM64
+  ✓ Upload macOS artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Publish GitHub Release (ID 110996465683)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  * Download build artifacts
+  * Merge macOS updater metadata
+  * Validate merged macOS updater metadata
+  * Validate Linux updater metadata
+  * Resolve release notes mode
+  * Publish release assets with curated notes
+  * Publish release assets with generated notes fallback
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build macOS ARM64: .github#2
+
+- Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.
+Build macOS ARM64: .github#1
+
+Refreshing run status every 30 seconds. Press Ctrl+C to quit.
+
+* v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 16 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Windows x64 in 13m24s (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS Intel x64 in 14m37s (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS Intel x64
+  ✓ Verify bundled Prisma x64 engine target
+  ✓ Verify packaged terminal runtime x64
+  ✓ Verify macOS signing policy x64
+  ✓ Upload macOS Intel artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS ARM64 in 14m30s (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS ARM64
+  ✓ Verify bundled Prisma ARM64 engine target
+  ✓ Verify packaged terminal runtime ARM64
+  ✓ Verify macOS signing policy ARM64
+  ✓ Upload macOS artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+* Publish GitHub Release (ID 110996465683)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Download build artifacts
+  ✓ Merge macOS updater metadata
+  ✓ Validate merged macOS updater metadata
+  ✓ Validate Linux updater metadata
+  ✓ Resolve release notes mode
+  - Publish release assets with curated notes
+  * Publish release assets with generated notes fallback
+  * Post Checkout workspace + submodules
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build macOS ARM64: .github#2
+
+- Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.
+Build macOS ARM64: .github#1
+
+✓ v1.4.92-beta.11 Desktop Release · 37053036495
+Triggered via push about 17 minutes ago
+
+JOBS
+✓ Resolve Release Metadata in 38s (ID 110990833828)
+  ✓ Set up job
+  ✓ Resolve release metadata
+  ✓ Checkout release ref
+  ✓ Check repository artifact hygiene
+  ✓ Validate workspace package versions match release tag
+  ✓ Resolve release commit SHA
+  ✓ Post Checkout release ref
+  ✓ Complete job
+✓ Build Linux x64 in 5m9s (ID 110991083869)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux x64
+  ✓ Verify Linux x64 AppImage and updater metadata
+  ✓ Verify Linux x64 Prisma engines
+  ✓ Verify Linux x64 packaged server startup
+  ✓ Upload Linux x64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Windows x64 in 13m24s (ID 110991083939)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Build Electron Windows x64
+  ✓ Upload Windows artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS Intel x64 in 14m37s (ID 110991083945)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS Intel x64
+  ✓ Verify bundled Prisma x64 engine target
+  ✓ Verify packaged terminal runtime x64
+  ✓ Verify macOS signing policy x64
+  ✓ Upload macOS Intel artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build Linux ARM64 in 4m19s (ID 110991083973)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install Linux build deps
+  ✓ Install workspace dependencies
+  ✓ Build Electron Linux ARM64
+  ✓ Verify Linux ARM64 AppImage and updater metadata
+  ✓ Verify Linux ARM64 Prisma engines
+  ✓ Verify Linux ARM64 packaged server startup
+  ✓ Upload Linux ARM64 artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Build macOS ARM64 in 14m30s (ID 110991084053)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Setup pnpm
+  ✓ Setup Node
+  ✓ Install workspace dependencies
+  ✓ Install Python setuptools for node-gyp
+  ✓ Import Apple code signing certificate
+  ✓ Build Electron macOS ARM64
+  ✓ Verify bundled Prisma ARM64 engine target
+  ✓ Verify packaged terminal runtime ARM64
+  ✓ Verify macOS signing policy ARM64
+  ✓ Upload macOS artifacts
+  ✓ Post Setup Node
+  ✓ Post Setup pnpm
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+✓ Publish GitHub Release in 1m42s (ID 110996465683)
+  ✓ Set up job
+  ✓ Checkout workspace + submodules
+  ✓ Download build artifacts
+  ✓ Merge macOS updater metadata
+  ✓ Validate merged macOS updater metadata
+  ✓ Validate Linux updater metadata
+  ✓ Resolve release notes mode
+  - Publish release assets with curated notes
+  ✓ Publish release assets with generated notes fallback
+  ✓ Post Checkout workspace + submodules
+  ✓ Complete job
+
+ANNOTATIONS
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Resolve Release Metadata: .github#8
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Resolve Release Metadata: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build Linux ARM64: .github#2
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-node@v4, actions/upload-artifact@v4, apple-actions/import-codesign-certs@v3, pnpm/action-setup@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Build macOS ARM64: .github#2
+
+- Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times.
+Build macOS ARM64: .github#1
+
+! Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, softprops/action-gh-release@v2. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+Publish GitHub Release: .github#2
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Publish GitHub Release: .github#1
+
