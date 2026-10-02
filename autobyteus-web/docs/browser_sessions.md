@@ -377,6 +377,18 @@ Browser changes should keep all of these green:
 - Claude browser unit suites
 - live Codex browser integration scenarios
 - live Claude browser integration scenarios
+- AGY converter and MCP transport regressions for canonical own-server
+  `open_tab`, preserved native/third-party/error cases and opaque saved history
+
+For AGY `open_tab` presentation changes, also validate a corrected worktree-built
+isolated desktop with a real AGY run: request a harmless page from Activity,
+confirm automatic Browser selection, correlate the returned `tab_id` with the
+active shell session, and verify native page content with positive viewport
+bounds. Repeat from Activity without manually focusing Browser or injecting
+results. Reopen saved history and verify exact results without replayed focus.
+Backend success or assignment while the tools panel is collapsed is not, by
+itself, evidence that the page was visible. Follow the workspace
+[testing guideline](../../TESTING.md) and clean up only test-owned instances.
 
 Electron browser lifecycle regression coverage should explicitly protect:
 
