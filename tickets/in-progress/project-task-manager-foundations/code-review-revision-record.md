@@ -9,6 +9,7 @@ The current code-review-report.md is authoritative for source review; api-e2e-te
 | CRR-001 | code-review-report.md | Implementation Review Round 1; IR-001 after ARCH-REV-002 Pass | N/A | Pass; Large / High; 10.0/10 (100/100) | None |
 | CRR-002 | api-e2e-test-review-report.md | Proportional test-code review Round 1; API-REV-002 scoped Pass | CRR-001 source Pass; prior test-review N/A | Pass; Large / High; source score unchanged, test score N/A | None |
 | CRR-003 | code-review-report.md | Implementation Review Round 2; IR-002 after DR-001 DLF-001/002 | CRR-001 source Pass; CRR-002 test Pass as-of | Pass — correction verified, renewed validation pending; Large / High | DLF-001/002 correction dispositions; no new review finding |
+| CRR-004 | api-e2e-test-review-report.md | Proportional test-code review Round 2; API-REV-003 scoped Pass after IR-002/DR-001 | CRR-002 test Pass as-of; CRR-003 source Pass | Pass; Large / High / Reviewed; no source score change | None |
 
 ## Revision Entries
 
@@ -86,3 +87,29 @@ The current code-review-report.md is authoritative for source review; api-e2e-te
 - Limits: scoped repository rerun is not renewed API/E2E. DR-001 server150/150 and API-REV-002 browser16/16/package results retained as-of, latter pre-integration. Original install cause unproven; real voice user-waived/independently UNVERIFIED; AC-018 unchanged; last full checker FAILED387/base388/message-shape origin partly unattributed, not rerun. No integrated user verification/finalization approval/terminal package.
 - Recommended next recipient: **API/E2E Engineer**, most-specific returned completed test-code/fixture Local Fix rerun rule. Delivery resumes only after applicable validation and review route.
 - Ownership/hygiene: reviewer report/history and own scoped evidence only; Delivery's pre-existing untracked reports/evidence preserved byte-identical/unstaged. No source/test fix, Product/docs/user-profile/installation/permission/default changes, integration/push/release or new microphone request.
+
+### CRR-004 — Successful merged-candidate correction test review
+
+- Date/package: 2026-10-02; PROJ-TASK-MANAGER-20261002-001.
+- Canonical report updated: [api-e2e-test-review-report.md](api-e2e-test-review-report.md), **proportional successful test-code review Round 2**. Source [code-review-report.md](code-review-report.md)/CRR-003 unchanged.
+- Trigger: **API-REV-003 Round 3 scoped Pass/95.0%**, renewed validation after **CRR-003/IR-002/DR-001 DLF-001–002**; two additional API-owned stale-double fixes **API-LF-003A/B**. Not failure-origin review.
+- Relevant revisions: cumulative **SR-001–015/current SR-015**, SD-AP-001/002; **ARCH-REV-002 Pass** with ARCH-REV-001 Fail retained; **IR-001/002**; **API-REV-003**, earlier API-REV-001 Blocked/API-REV-002 pre-integration Pass preserved; **DR-001 Blocked as-of**.
+- Candidate: incoming evidence **064412c46854c38e6d15a8e90a64d3a320b228fc**; API tests **e9828bb5134bc44d777bf52417862bf7a5a961a1**; IR-002 correction **4d88b42e2360a6827cb31e2481410607ca1407ad**. Delivery merge **a5123e7d08f66bbb08440340db167fa4ccb5eba0**/both parents preserved, reviewer input **dba9a6b9010e54d2b745b3ad2bf0b43364cad6de**.
+- Prior authoritative proportional result: **CRR-002 Pass as-of**; latest source **CRR-003 Pass**. Current proportional result: **Pass**, four correction test paths. Large / High / Reviewed unchanged; no source-size/full scorecard/confidence rescoring.
+- Why: both new mock-only updates match actual target watch/unmount interface, all1+4 bodies/assertions unchanged; two IR-002 files byte-identical to reviewed checkpoint, all11 mentions and original voice scenario preserved. Immutable HTTP byte/SHA regression matches the governing release contract; no production change, assertion weakening/retry/skip/compatibility fallback.
+- Supported scenario/material-premise changes: **None**. Existing shared-caller focus/publication/native input are preservation contracts, not new Projects Manager/team delivery; doubled scope/admission and invalid frames remain contract evidence. MP-004 Not Reachable; waiver unchanged, not proof of real voice.
+
+#### Prior Finding / Triggering Finding Resolution
+
+| ID | Prior status / authority | Current review disposition / evidence |
+|---|---|---|
+| Prior proportional findings | CRR-002 None | None to resolve |
+| DLF-001/002 | CRR-003 correction verified; renewed validation pending | Correction test-code accepted after API-REV-003 narrow11/11+2/2 and combined135/135. Delivery alone owns renewed DR disposition; original intermittent install cause remains UNPROVEN |
+| API-LF-003A/B | API-owned stale-double errors, initial5failed/5passed/14errors | Mock-interface-only corrections independently verified; same10/10 then135/135, bodies/assertions preserved. No production-defect attribution |
+
+- New/remaining reviewer finding IDs: **None**; source score unchanged, proportional score **N/A**.
+- Evidence: actual four files/diffs/relevant source/contracts inspected; independent entire-file reverse-edit preservation, IR-002 byte equality, no production delta, four-test whitespace Pass. Incoming537/537 hashes verified before reviewer report/history changes; self gives538 references. Existing five API paths unchanged since CRR-002.
+- Retained execution, not reviewer reruns: renderer135/135 in16files includes125 and10 subsets; Electron9/9; serialized post-build server150/150/20files includes13 Project E2E; current merged Projects16/16 and composer renderer fixture4/4, both zero pageerrors/cleaned. First overlapping server run not acceptance basis; repeated/subset counts not extra distinct coverage.
+- Remaining risks: real mic/device/official extension/live IPC Not Tested — user-waived/independently UNVERIFIED, AC-018 unchanged; last full checker FAILED387/base388 PRE-INTEGRATION/message-shape origin partly unattributed, not rerun. No current full checker/web build/package Pass; prior packaged proof pre-integration only. Raw evidence whitespace/historical failures retained. No whole-product/Team admission/hardware/OS IME/phone certification.
+- Recommended next recipient: **Delivery Engineer**, final returned successful post-API/E2E test-review Pass rule, complete cumulative538-reference package including current report/history/four tests/exact diffs.
+- Ownership/hygiene: reviewer report/history only; source report and all16 Delivery-owned pre-existing untracked files byte-identical/unstaged. No source/test/Product/long-lived docs/user data/defaults/permission/install changes or integration/push/release. Delivery still owns current-base/docs/integrated user verification/authorized finalization; voice waiver not finalization approval, DR-001 remains Blocked as-of and no terminal package eligible.
