@@ -7,6 +7,7 @@
 | SR-002 | Requirements | Product UF-001 / requirement-impact.md | UF-001 | Draft / no design | Draft / no design | BEH-005; UC-007; REQ-007,009; AC-013; SCN-002,005,006; DEC-006,007 | Product Design Requested — continuation |
 | SR-003 | Requirements | Product Prototype Completed / UF-017 | PFI-001–007; UF-003/005–017; DATA-001 | Draft / no design | Draft; manual UI subset Approved / no design | BEH-002,005,007,008; REQ-002,007,009,011–014; AC-008,012–019; SCN-002,005,006,008,009; DEC-006,007,010–014 | User Decision/Approval Hold |
 | SR-004 | Requirements | User SD-CF-001–004 and continuity source inspection | SD-CF-001–004; E-023–026 | Draft; UI subset approved / no design | Ready for Approval; bounded tools/manual UI / no design | Active tool/UI IDs; Manager/dispatch/dependency/sidebar/stop dispositions | Requirements Approval Hold |
+| SR-005 | Requirements | User practical list/update direction | SD-CF-005; DEC-015 | Ready for Approval / no design | Draft two-tool creation clarification / no design | REQ-002/003/010/015; AC-002/003/020/021; SCN-002/005/010 | Requirements Clarification Hold |
 
 ## SR-001 — Experimental manager/tool foundation analysis and UI brainstorming request
 - Phase/classification: Requirements / Initial Baseline.
@@ -79,3 +80,17 @@
 - Approval/design impact: scope and previous manual UI approval explicit; complete SR-004 approval pending. No architecture/review/implementation route or size/risk classification yet.
 - Routing: get_handoff_rules found no matching rule; evaluation in requirements-refinement-sr-004.md. Latest user defers new Product request; architecture not completed, no marketing/delivery receipt gap. Return to user for SR-004 approval; no send_message_to required.
 - Next action: obtain explicit approval of the complete proposed bounded baseline, then architecture/design for tools + accepted manual UI only. Preserve all deferred concerns as future context, not hidden required deliverables.
+
+## SR-005 — Practical list/update only; creation remains explicit proposal
+- Phase/classification: Requirements / user contract refinement. SR-004 Ready for Approval → **SR-005 Draft**, pending creation semantics; no full baseline approval or architecture.
+- Trigger: SD-CF-005, 2026-10-02: no separate find, practical small-volume task list, external LLM reasoning on TODO work/order/splitting/independent delegation, explicit Manager status update after delegation; user suggests two tools, list/update.
+- Prior checkpoint: a5f843ada1aa2d4762a74ae517bbfa4c09044ce6. SR-001–004 and historical handoffs/results unchanged.
+- Affected preserved IDs: BEH-002; UC-002; REQ-002/003/010; AC-002/003; SCN-002/005; current status/scope/traceability/readiness. Added stable REQ-015, AC-020/021, SCN-010, DEC-015 without renumbering.
+- Intended delta: new Task tool surface list + update, caller-supplied Project ID, optional exact status filter and complete current Task contents; no separate find/get/search/Project-catalog Task tools, replacement-list writer, scheduler or new delegation layer. Existing UI APIs/general collaboration remain.
+- Creation ambiguity: user still requires creating/splitting work but did not define how creation fits update. Recommend missing Task ID→create required-description TODO and return stable ID; existing ID→patch supplied description/status; supplied unknown ID→error, never implicit create. **Proposal only**, DEC-015 requires user clarification. Alternative separate creation tool would be three tools, not user-requested two.
+- External workflow: Manager lists TODO, reasons, uses existing delegate_task, explicitly updates IN_PROGRESS after successful launch, later DONE after its decision. No server automatic start/completion/quality verification, run association or resource stop; Manager creation remains user-owned and no Manager configuration authored here.
+- Small-volume statement is operating expectation, not enforced maximum or pagination/search project. Independent Task writes preserve records instead of replacing all Tasks.
+- Approved manual UI supplement unchanged (UF-017/84ed47b/f66efa9, external final spec/VIS-001–020); earlier native/MCP/flag/voice/context/workspace proposals remain bounded pending complete baseline approval. Sidebar/resource stopping still explicitly deferred.
+- Canonical evidence E-027/user chronology/current inventory and requirements-refinement-sr-005.md persisted; only owned docs changed. No source/runtime/installed setting/test execution or Product artifact changes.
+- Design/review/task-size/risk: N/A — architecture not started. get_handoff_rules found no matching route; evaluation in current result. Return to user for DEC-015; no Product request/send_message_to or downstream engineering readiness.
+- Next action: clarify whether update creates when ID is omitted, finalize list/update contracts, then obtain full refined requirements approval before architecture.
