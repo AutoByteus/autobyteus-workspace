@@ -35,10 +35,6 @@ export const toCollaboratorMentionDtos = (
     : undefined
 }
 
-/** Removing a chip keeps the words and drops the mention: `@Name` becomes `Name`. */
-export const removeMentionFromText = (text: string, name: string): string =>
-  text.split(mentionToken(name)).join(name)
-
 export type MentionTextPart = Readonly<{ kind: 'text' | 'mention'; value: string }>
 
 /** Splits text into plain parts and the known `@Name` mentions it contains. */

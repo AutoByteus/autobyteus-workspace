@@ -1,0 +1,49 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts utils/collaborators/__tests__/collaboratorMentionText.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-web
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/collaborators/__tests__/collaboratorMentionText.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/collaborators/__tests__/collaboratorMentionText.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/collaborators/__tests__/collaboratorMentionText.spec.ts (5 tests) 3ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts (11 tests) 88ms
+ ✓ components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts (3 tests) 48ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests) 132ms
+
+ Test Files  4 passed (4)
+      Tests  36 passed (36)
+   Start at  13:11:29
+   Duration  4.95s (transform 2.83s, setup 17.08s, collect 384ms, tests 271ms, environment 587ms, prepare 452ms)

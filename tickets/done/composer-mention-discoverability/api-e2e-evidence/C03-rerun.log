@@ -1,0 +1,405 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to a run identity and sends CONNECTED plus projected status without restoring runtime
+Created agent session 442f02da-827a-4f71-8ba4-8b7b9773e742 for run agent-123
+Agent WebSocket connected: session=442f02da-827a-4f71-8ba4-8b7b9773e742, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to run events through the AgentRun subject for active runtime-managed runs
+Created agent session f992a6fd-54f7-4a92-b69b-e194c833c266 for run runtime-run-1
+Agent WebSocket connected: session=f992a6fd-54f7-4a92-b69b-e194c833c266, run=runtime-run-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps Codex AgentRunEvents directly to websocket messages for single-agent runs
+Created agent session 228902b8-d298-4ead-94aa-e9d95c81c530 for run runtime-run-2
+Agent WebSocket connected: session=228902b8-d298-4ead-94aa-e9d95c81c530, run=runtime-run-2
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps turn lifecycle AgentRunEvents directly to websocket messages
+Created agent session b2aa7041-ffb7-4c07-af53-62bbca430cd1 for run runtime-run-3
+Agent WebSocket connected: session=b2aa7041-ffb7-4c07-af53-62bbca430cd1, run=runtime-run-3
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > registers the websocket connection for run-scoped live message broadcasts
+Created agent session c2aa942b-f912-4367-bd29-a57f26038658 for run agent-123
+Agent WebSocket connected: session=c2aa942b-f912-4367-bd29-a57f26038658, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > publishes terminal offline status to an already-connected websocket when a run terminates
+Created agent session 3dff5590-7a5b-40a0-af45-006f34d3ec63 for run run-terminate-1
+Agent WebSocket connected: session=3dff5590-7a5b-40a0-af45-006f34d3ec63, run=run-terminate-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles SEND_MESSAGE through the command coordinator and returns an ACK
+Created agent session fec48a28-0dd2-4284-b43e-2bd874799acc for run agent-123
+Agent WebSocket connected: session=fec48a28-0dd2-4284-b43e-2bd874799acc, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > defers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+Created agent session 24f0992d-ee24-4e1c-921a-82ee9ec3892c for run agent-123
+Agent WebSocket connected: session=24f0992d-ee24-4e1c-921a-82ee9ec3892c, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+Created agent session 686567d1-81fe-4326-8751-e596fe8ffde5 for run agent-123
+Agent WebSocket connected: session=686567d1-81fe-4326-8751-e596fe8ffde5, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+INTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > returns exactly one same-socket acknowledgement for an accepted interrupt
+Created agent session 4d25ce2a-b94b-46dc-9b59-774e6ada19a4 for run agent-123
+Agent WebSocket connected: session=4d25ce2a-b94b-46dc-9b59-774e6ada19a4, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > rejects an empty interrupt command id before runtime execution
+Created agent session 32282ab7-7727-4c37-8d66-3233e0e666d2 for run agent-123
+Agent WebSocket connected: session=32282ab7-7727-4c37-8d66-3233e0e666d2, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+Created agent session 08573a48-7488-4faf-956b-9878984d8c97 for run agent-123
+Agent WebSocket connected: session=08573a48-7488-4faf-956b-9878984d8c97, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+INTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles tool approvals for active sessions
+Created agent session 1d368bdd-40fa-4f22-ba79-cdaafceb427f for run agent-123
+Agent WebSocket connected: session=1d368bdd-40fa-4f22-ba79-cdaafceb427f, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > ignores messages for unknown sessions
+Message for unknown session: missing
+
+ ❯ tests/unit/services/agent-streaming/agent-stream-handler.test.ts (18 tests | 1 failed) 18ms
+     ✓ parses valid messages 1ms
+     ✓ rejects invalid JSON 0ms
+     ✓ rejects messages missing a type 0ms
+     ✓ connects to a run identity and sends CONNECTED plus projected status without restoring runtime 2ms
+     ✓ closes with 4004 when agent identity is missing 0ms
+     ✓ connects to run events through the AgentRun subject for active runtime-managed runs 1ms
+     ✓ maps Codex AgentRunEvents directly to websocket messages for single-agent runs 1ms
+     ✓ maps turn lifecycle AgentRunEvents directly to websocket messages 1ms
+     ✓ registers the websocket connection for run-scoped live message broadcasts 1ms
+     × publishes terminal offline status to an already-connected websocket when a run terminates 6ms
+     ✓ handles SEND_MESSAGE through the command coordinator and returns an ACK 1ms
+     ✓ defers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator 1ms
+     ✓ keeps interrupt-generation active-only and does not activate a stopped agent run 1ms
+     ✓ returns exactly one same-socket acknowledgement for an accepted interrupt 0ms
+     ✓ rejects an empty interrupt command id before runtime execution 0ms
+     ✓ maps interrupt provider failures without emitting lifecycle status 0ms
+     ✓ handles tool approvals for active sessions 0ms
+     ✓ ignores messages for unknown sessions 0ms
+stdout | tests/unit/agent-team-execution/team-root-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-team-execution/team-root-collaborators.test.ts > collaborators hosted in a Team root (AR-006) > includes a hosted collaborator Team's live input snapshots in the root package
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-server-ts
+
+ ✓ tests/unit/agent-team-execution/team-root-collaborators.test.ts (6 tests) 321ms
+stdout | tests/unit/agent-org-execution/agent-org-collaborators.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-org-execution/agent-org-collaborators.test.ts > collaborators brought into an AgentOrg run with @ > admits mentions on SEND_MESSAGE, streams collaborator_added and posts the composed note
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-server-ts
+
+ ✓ tests/unit/agent-org-execution/agent-org-collaborators.test.ts (5 tests) 251ms
+stdout | tests/integration/api/rest/agent-org-context-files.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: orgRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'org/unknown'.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'wrong-root/configured-direct'.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+
+stderr | tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > preserves existing per-file partial-batch continuation without a new retry or journal
+Failed to finalize context files: Error: controlled move failure
+
+ ✓ tests/integration/api/rest/agent-org-context-files.integration.test.ts (4 tests) 181ms
+stdout | tests/integration/api/rest/context-files.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'missing' for collaboration root 'child-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-E-D' for collaboration root 'child-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-C-D' for collaboration root 'root-team-exact'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+ ✓ tests/integration/api/rest/context-files.integration.test.ts (10 tests) 171ms
+stdout | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts (11 tests) 73ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Created agent session 350dcf6f-5219-43f8-b84f-fb1581b3d509 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Agent Team WebSocket connected: session=350dcf6f-5219-43f8-b84f-fb1581b3d509, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Closed agent session 350dcf6f-5219-43f8-b84f-fb1581b3d509
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Created agent session adb24a16-2cf6-462f-85b1-496b52350d0f for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Agent Team WebSocket connected: session=adb24a16-2cf6-462f-85b1-496b52350d0f, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Closed agent session adb24a16-2cf6-462f-85b1-496b52350d0f
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session 16c8dc1d-f374-40f1-993c-b4f19a7e0067 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Agent Team WebSocket connected: session=16c8dc1d-f374-40f1-993c-b4f19a7e0067, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session 16c8dc1d-f374-40f1-993c-b4f19a7e0067
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session 8378687e-fca5-4881-9a00-390b6fc88d1d for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Agent Team WebSocket connected: session=8378687e-fca5-4881-9a00-390b6fc88d1d, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session 8378687e-fca5-4881-9a00-390b6fc88d1d
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Created agent session 1cd4e9ab-6e4c-41ef-b4f8-af66ede04945 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Agent Team WebSocket connected: session=1cd4e9ab-6e4c-41ef-b4f8-af66ede04945, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Closed agent session 1cd4e9ab-6e4c-41ef-b4f8-af66ede04945
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Created agent session 1851f72d-bbf8-4576-8015-9529c8fc5660 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Agent Team WebSocket connected: session=1851f72d-bbf8-4576-8015-9529c8fc5660, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Closed agent session 1851f72d-bbf8-4576-8015-9529c8fc5660
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (7 tests) 19ms
+stdout | tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-collaboration/collaborators/collaborator-admission.test.ts (12 tests) 11ms
+stdout | tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts (3 tests) 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > publishes terminal offline status to an already-connected websocket when a run terminates
+AssertionError: expected [ { type: 'CONNECTED', …(1) }, …(4) ] to deep equally contain ObjectContaining{…}
+
+- Expected:
+ObjectContaining {
+  "payload": {
+    "agent_id": "run-terminate-1",
+    "status": "offline",
+  },
+  "type": "AGENT_STATUS",
+}
+
++ Received:
+[
+  {
+    "payload": {
+      "agent_id": "run-terminate-1",
+      "session_id": "3dff5590-7a5b-40a0-af45-006f34d3ec63",
+    },
+    "type": "CONNECTED",
+  },
+  {
+    "payload": {
+      "agent_id": "run-terminate-1",
+      "recoverableBlock": null,
+      "status": "idle",
+    },
+    "type": "AGENT_STATUS",
+  },
+  {
+    "payload": {
+      "entries": [],
+      "recoverableBlock": null,
+      "revision": 1,
+      "run_instance_id": "c7bf5080-1744-48b3-a5aa-4b996026d918",
+    },
+    "type": "AGENT_INPUT_STATE",
+  },
+  {
+    "payload": {
+      "entries": [],
+      "recoverableBlock": null,
+      "revision": 1,
+      "run_instance_id": "c7bf5080-1744-48b3-a5aa-4b996026d918",
+    },
+    "type": "AGENT_INPUT_STATE",
+  },
+  {
+    "payload": {
+      "agent_id": "run-terminate-1",
+      "recoverableBlock": null,
+      "status": "offline",
+    },
+    "type": "AGENT_STATUS",
+  },
+]
+
+ ❯ tests/unit/services/agent-streaming/agent-stream-handler.test.ts:413:22
+    411|
+    412|     const messages = connection.send.mock.calls.map(([raw]) => JSON.pa…
+    413|     expect(messages).toContainEqual(expect.objectContaining({
+       |                      ^
+    414|       type: ServerMessageType.AGENT_STATUS,
+    415|       payload: {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 8 passed (9)
+      Tests  1 failed | 75 passed (76)
+   Start at  13:28:16
+   Duration  10.71s (transform 2.47s, setup 41ms, import 8.51s, tests 1.05s, environment 1ms)
