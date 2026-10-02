@@ -198,7 +198,7 @@ Sending a message to an AgentTeam address delivers it through that AgentTeam's c
 
 ### Work Requests and Outcomes
 
-On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` when your instructions or skill call for a handoff, or when you are blocked. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
+On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
 
 Choose the collaboration mode based on your primary intent.
 `send_message_to` reaches the one instance at an address, brought in on first use.

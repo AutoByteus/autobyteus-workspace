@@ -1,6 +1,6 @@
 # Solution Handoff — Agent Work Request Prompt
 
-Outcome: Architecture Design Complete. task_size: Small. architectural_risk: Low. Package agent-work-request-prompt; SR-001; approved requirements R1.
+Outcome: Architecture Design Complete. task_size: Small. architectural_risk: Low. Package agent-work-request-prompt; SR-002; approved requirements R2.
 
 ## Request and approved result
 User wants a concise platform-wide rule: receiving assigned work activates own instructions/skills; no casual acknowledgements/promises instead of work; communicate at instruction/skill-defined handoff points or genuine blockers; follow applicable rules, otherwise return result/blocker to requesting agent. Applies to Team/Org and ad-hoc collaborators without inventing cross-team rules. User explicitly approved implementation: “i agree. lets do the update. i think its simple. lets go”.
@@ -28,3 +28,16 @@ Review artifacts: N/A — not applicable to classified Small/Low direct route. P
 Next action: implement bounded update, run implementation-scoped checks, then follow applicable validation/delivery rules. Route pending get_handoff_rules.
 
 Routing decision: get_handoff_rules matched Architecture Design Complete + Small/Low. Selected direct implementation recipient `/implementation_engineer`; independent architecture review N/A. Implementation self-checks and executable validation still required.
+
+## Current correction — SR-002 (supersedes prior wording)
+User explicitly requests the original quoted wording restored. Existing task worktree remains active; HEAD is 18c795d2bb309d56a4874c29969901d93a1d1e81. Do not paraphrase. Replace the canonical constant’s third sentence exactly with:
+
+Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input.
+
+Full resulting paragraph:
+
+On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
+
+Update directly affected assertions/hash/snapshot and documented paragraph, preserving delivery’s existing uncommitted docs. Recheck changed candidate and hand off to validation/delivery; R1 test results are not evidence for this literal. No unrelated code or prompt edits. This is the exact fix, not a request to revisit wording. Current result: Architecture Design Complete, Small/Low. R2 explicit approval captured in requirements and SR-002. No blockers.
+
+SR-002 routing: refreshed get_handoff_rules selects /implementation_engineer for revised Architecture Design Complete Small/Low; prior R1 delivery verification is superseded by the requested correction.

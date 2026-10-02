@@ -271,7 +271,7 @@ describe("CodexThreadBootstrapper", () => {
         const prompt = context.runtimeContext.codexThreadConfig.baseInstructions!;
         expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(scope === "no-context" ? 1 : 2);
         if (scope !== "no-context") {
-          expect(prompt).toContain("when your instructions or skill call for a handoff, or when you are blocked");
+          expect(prompt).toContain("only at a workflow-defined handoff point or when blocked and needing external input");
           expect(prompt).toContain("return the result or specific blocker to the requesting agent");
           expect(prompt.indexOf(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toBeLessThan(prompt.indexOf("`delegate_task`"));
         }

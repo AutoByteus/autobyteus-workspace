@@ -3,7 +3,7 @@ const lines = (...values: string[]): string => values.join("\n");
 export const WORK_REQUEST_EXECUTION_LLM_INSTRUCTION = [
   "On receiving a work request, follow your own agent instructions and applicable skills.",
   "Do not send acknowledgements or promises to work.",
-  "Use `send_message_to` when your instructions or skill call for a handoff, or when you are blocked.",
+  "Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input.",
   "Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.",
 ].join(" ");
 

@@ -25,3 +25,6 @@ Commands: targeted cat/sed/rg of the listed files; no tests executed during desi
 
 ## Supplement inventory and uncertainty
 `prior-investigation.md` is historical source/analysis context, non-normative (earlier proposals superseded by approved R1). Original /tmp path remains provenance only. No Product artifact or UI supplement applies. No failed live exchange available, so no assertion of confirmed incident root cause. No remaining material implementation-shape uncertainty.
+
+## E7 / SR-002 — exact-text drift confirmed
+Current worktree HEAD 18c795d2bb309d56a4874c29969901d93a1d1e81; delivery is awaiting user verification, not finalized. Read solution-handoff.md, requirements, design, revision record and delivery handoff-summary.md before resuming. Canonical source line 6 of agent-team-collaboration-llm-contract.ts omits “only” and “needing external input”; both renderers import it. rg identified exact expected sentence in contract unit test, standalone snapshot and prompt_engineering.md. Existing uncommitted docs change belongs to delivery and must be preserved. User explicitly requests original quoted paragraph; no causal re-investigation needed. No source/test edits or tests executed by Solution Designer in SR-002.

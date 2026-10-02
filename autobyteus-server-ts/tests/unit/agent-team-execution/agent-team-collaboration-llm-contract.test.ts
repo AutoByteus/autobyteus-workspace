@@ -24,7 +24,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
     expect(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION).toBe(
       "On receiving a work request, follow your own agent instructions and applicable skills. " +
       "Do not send acknowledgements or promises to work. " +
-      "Use `send_message_to` when your instructions or skill call for a handoff, or when you are blocked. " +
+      "Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. " +
       "Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.",
     );
     expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("### Work Requests and Results");
@@ -57,7 +57,7 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateRecipient: "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
       delegateDescription: "b5e9223456da4f02bd95fa69a1b0298b255f62839f3a8ea657adece6ad4a88dc",
       delegateReferences: "7d4b59ec1a78e52a8c09657dbb5e296cf424bb0b5f9148c06fc59b3b10997c69",
-      collaborationPrompt: "06ad3be7f11e934988a94fce4d70547324a86cb9b5e0c3077e1de28c8e737b03",
+      collaborationPrompt: "36bbec94d4433debdb4c2416b7195cda7704c035cb4a53b56ee0c36b32d8970e",
     });
   });
 

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-SR-001; requirements R1 Approved by the user’s “i agree. lets do the update. i think its simple. lets go”. Status: Ready. Evidence: investigation-notes.md; no behavior-defining supplements.
+SR-002; requirements R2 Approved by the user’s explicit request to restore the original quoted paragraph. Status: Ready. Evidence: investigation-notes.md; no behavior-defining supplements.
 
 ## Current-State Read
 
@@ -18,7 +18,7 @@ E1 selects projections; E2/E3 establish common wording location/consumers; E4 es
 
 ## Intended Change
 
-Export a scope-neutral `WORK_REQUEST_EXECUTION_LLM_INSTRUCTION` string from existing agent-team-collaboration-llm-contract.ts. Insert once near the beginning of both collaboration sections, before tool mechanics, under `### Work Requests and Outcomes`. Keep the approved paragraph concise, using “when your instructions or skill call for a handoff, or when you are blocked”. Do not add mandatory skill loading when none applies.
+Export a scope-neutral `WORK_REQUEST_EXECUTION_LLM_INSTRUCTION` string from existing agent-team-collaboration-llm-contract.ts. Insert once near the beginning of both collaboration sections, before tool mechanics, under `### Work Requests and Outcomes`. Keep the approved paragraph concise, using “only at a workflow-defined handoff point or when blocked and needing external input”. Do not add mandatory skill loading when none applies.
 Rename `### Ordinary Communication` to `### Work Requests and Results`. Align the send_message_to description and its content field to self-contained work requests, results or blockers, removing conversational/email framing. Preserve all addressing/selector/instance semantics.
 Align the Team rule paragraph’s ending: if no rule applies to an incoming work request, return the result or specific blocker to its requesting agent via send_message_to; otherwise finish normally. Preserve single-most-specific selection and no duplicate forwarding. Do not instruct standalone agents to call an unavailable get_handoff_rules tool. Do not convert informational notifications into assignments.
 
@@ -182,3 +182,10 @@ Model may still fail to execute. Text tests prove supplied guidance, not live co
 Run focused Vitest tests for agent-team-collaboration-llm-contract, carpenter-prompt-composer and send-message-to tool projection (vitest run --no-watch). Assert canonical paragraph exactly once in shared/native Team and standalone contexts; include a collaborator Team/Org context representative, preserve no-member-context behavior, absence of get_handoff_rules in standalone, and unchanged selectors/delegation. Assert meaningful wording, not only changed hashes. Update hash/snapshot expectations deliberately. Existing scope tests establish Team/Org ownership; do not alter scopes.
 API/E2E owner should verify actual supplied prompt and exposed tool schema through a deterministic runtime boundary. Any claim of corrected live model behavior requires a bounded isolated-provider probe under TESTING.md (preflight first); otherwise report that behavior unverified, not passed. No desktop UI changes warrant a UI redesign or Product work.
 Keep all updates in this worktree. Implementation owns code/tests; API/E2E owns executable validation; Delivery owns docs finalization, explicit user verification and applicable integration/cleanup. No release requested.
+
+## SR-002 exact-text correction
+At candidate 18c795d2bb309d56a4874c29969901d93a1d1e81, replace only the third sentence of WORK_REQUEST_EXECUTION_LLM_INSTRUCTION with the approved R2 sentence. Both renderers already import the constant, so no duplicate code edits are needed. Update exact paragraph/hash assertions, standalone snapshot and documented sample; preserve existing uncommitted documentation additions. Re-run focused contract/composer tests and relevant bootstrap coverage affected by text pins. Prior validation covers R1, not this new literal. Classification remains Small/Low: one source string and directly affected expectations/documentation, no structural or routing change.
+
+Exact resulting paragraph:
+
+On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
