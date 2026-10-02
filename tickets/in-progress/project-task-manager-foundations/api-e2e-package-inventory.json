@@ -1713,8 +1713,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-execution-coverage-report.md",
-      "bytes": 29706,
-      "sha256": "2f6f2e09e48805f4627d9b11c3cbfb3b1a95065714ac7d5faca1709ca01204d2",
+      "bytes": 30299,
+      "sha256": "41ec23b42121f97e0a5d85a70bab693a7ddc7544262397830684aede5e39a021",
       "category": "API/E2E evidence"
     },
     {
@@ -1797,8 +1797,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-case-ledger.md",
-      "bytes": 10934,
-      "sha256": "b11c9f6640ea19defc23a599ac64a1e505004df1a48c78dd0bc5b74b00510bca",
+      "bytes": 11355,
+      "sha256": "d6a826560444a6e257e7360470596679adea1a5954e9ad1a37d10655232e6c22",
       "category": "API/E2E evidence"
     },
     {
@@ -2078,5 +2078,6 @@
       "category": "Upstream"
     }
   ],
-  "note": "Cumulative package prepared for later handoff. No handoff sent while Blocked. Inventory does not hash itself."
+  "note": "Cumulative package prepared for later handoff. No handoff sent while Blocked. Inventory does not hash itself.",
+  "evidenceRepositoryHygiene": "Source/test whitespace check passed. Raw logs/exact patch intentionally preserve their output whitespace; evidence-stage check warnings disclosed in report."
 }
