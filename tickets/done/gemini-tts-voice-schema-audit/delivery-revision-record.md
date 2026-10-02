@@ -7,6 +7,8 @@
 | DR-001 | CRR-002 successful-test review Pass; initial latest-base refresh | N/A | Integrated checks/docs sync Pass; Blocked for explicit user acceptance and external prerequisite hold | docs-sync-report.md, handoff-summary.md, release-notes.md, release-deployment-report.md, cumulative-package-manifest.md, delivery-evidence/post-integration.log |
 | DR-002 | User task-done/finalize/stable signal | DR-001 user/dependency hold | New package accepted; stable preflight Pass; predecessor gate still held | handoff-summary.md, release-deployment-report.md, delivery-evidence/release-preflight.md |
 
+| DR-003 | Renewed combined finalization and beta instruction | DR-002 stable held on predecessor | Both accepted; latest integration/271 checks Pass; predecessor ticket archived/committed/pushed; current finalization proceeding | handoff-summary.md, release-deployment-report.md, delivery-evidence/user-verification.md, predecessor archived checks |
+
 ## Revision Entries
 
 ### DR-001 — Integrated delivery baseline and two-package verification hold
@@ -39,3 +41,16 @@
 - Terminal/routing: Not eligible; expected user/dependency hold, not new Local Fix/design/requirement/unclear finding. `get_handoff_rules` checked after persistence; no returned condition matches this known verification hold because no upstream classification issue was found and completion gates remain open. No inter-agent handoff or successful terminal message sent.
 - Next action: resolve predecessor acceptance/finalization, refresh/check applicable ticket states, archive/commit/push/merge, execute documented stable helper and verify all publication/cleanup gates before Delivery Completed.
 - Residuals unchanged: exactly three API-owned authorized provider calls consumed; bounded USER listening evidence only. No new import/private read/provider call/audition/transcription or old-worktree mutation. Future access, untested IDs/Arabic quality/Flash-Lite/custom capabilities remain scoped.
+
+### DR-003 — Combined acceptance, latest refresh and beta finalization
+
+- Trigger: user **“okayyyy then finalize and release a beta version then”**, after explicit disclosed both-package/earlier-upgrade gate and no-finalization status. Chronology `delivery-evidence/user-verification.md`. Both delivery acceptances now reconciled through this existing Delivery owner; publication choice changed to beta. No extra paid authorization.
+- Prior: DR-002 current package accepted/stable selected, predecessor hold unresolved.
+- Current: **Combined acceptance Completed; current integration/docs/checks Pass; finalization proceeding**, not Delivery Completed before publication/cleanup. Medium/High reviewed unchanged.
+- Integration: protected delivery docs/evidence as1315a75b9; latest origin/personal777548b05 merged clean as97775019d. New base changes independently reviewed Projects/AGY; no Gemini source/SDK/lock/speech-test delta or material Gemini handoff change. Old actual authoritative package checkpointdd087b5c2, integrated new/latest througheda59e585; three doc-only conflicts resolved locally to richer combined docs, no source conflict/edit. Old final ticket39b9f473e archived before commit and pushed. New fast-forwarded old final state; same non-ticket tree.
+- Checks on same combined source: current frozen offline install/server build/prebuild/bootstrap, core83/83, API26/26, server135/135, Settings renderer27/27 **271 Pass**. Exact evidence archived in `../gemini-38-tts-upgrade/delivery-evidence/final-integration.log`, checks.md. Prior DR-001242 tests remain historical. No live operation/listening/private read/import; all3 new API call authorizations already consumed.
+- Docs:3 canonical docs already current and byte-identical after old reconciliation; docs report/handoff refreshed after checks. Original scoped API/listening evidence unchanged.
+- Finalization plan: archive new before finalcommit/push; update clean proxy of recorded origin/personal, merge/push old then new in order. Preserve unrelated dirty shared root, no force push. Exact target receipts follow execution.
+- Release: beta helper computes next unused1.4.92 beta, uses generated notes; original stable plan superseded, curated archived notes not used for beta. Helper creates tag; no manual tag or duplicate immediate dispatch. Monitor Desktop/Android/iOS/Docker jobs and assets before terminal success.
+- Cleanup: old instance already stopped; lifecycle reap with--keep released ports/preserved data, no other instance touched. Worktree/local branches safe cleanup follows publication; pre-existing old dist preserved.
+- Terminal: not yet eligible. Subsequent result will record actual finalization, helper/tag/push, workflow/assets/rollout/cleanup outcomes.
