@@ -100,8 +100,8 @@ or credentials.
 | Image | `gemini-3.1-flash-image` | `gemini-3.1-flash-image` | Gemini | 2026-07-03 | Current Gemini 3.1 Flash Image / Nano Banana 2 model ID; replaces the shut-down preview catalog ID without an alias. |
 | Image | `gemini-3-pro-image` | `gemini-3-pro-image` | Gemini | 2026-07-03 | Current Gemini 3 Pro Image model ID; replaces the shut-down preview catalog ID without an alias. |
 | Video | `gemini-omni-flash-preview` | `gemini-omni-flash-preview` | Gemini | 2026-07-03 | Docs-backed registration for creation-only `text_to_video`, `image_to_video`, and `reference_to_video` through `GeminiVideoClient` and the Gemini Interactions API; live provider generation was not validated in the delivery environment. |
-| Audio / TTS | `gemini-3.8-flash-tts` | `gemini-3.8-flash-tts` | Gemini | 2026-10-01 | Current default Gemini speech model; exact ID for API-key and Vertex modes. |
-| Audio / TTS | `gemini-3.8-flash-lite-tts` | `gemini-3.8-flash-lite-tts` | Gemini | 2026-10-01 | Separate selectable Gemini speech model; exact ID for API-key and Vertex modes. |
+| Audio / TTS | `gemini-3.8-flash-tts` | `gemini-3.8-flash-tts` | Gemini | 2026-10-02 | Blank/default speech choice; exact ID for API-key and Vertex modes. Extra-ID and styled-dialogue live evidence is scoped to Vertex Express. |
+| Audio / TTS | `gemini-3.8-flash-lite-tts` | `gemini-3.8-flash-lite-tts` | Gemini | 2026-10-02 | Separate selectable model with the same local voice/style schema; no Flash-Lite live or audible-quality claim. |
 
 ## xAI Grok 4.7
 
@@ -469,28 +469,46 @@ Gemini TTS model registration and runtime mapping are separate. Add the model
 to `AudioClientFactory` first, then add any API-key or Vertex-specific mapping
 to `resolveGeminiRuntimeModelName` through `src/utils/gemini-model-mapping.ts`.
 
-The built-in Gemini speech catalog now contains only `gemini-3.8-flash-tts`
-and `gemini-3.8-flash-lite-tts`. The former is the server/web fallback when
-`DEFAULT_SPEECH_GENERATION_MODEL` is blank; the latter remains an explicit
-choice. The retired built-in `gemini-3.1-flash-tts-preview`,
-`gemini-2.5-flash-tts`, and `gemini-2.5-pro-tts` are not runtime aliases or
-silent fallbacks. OpenAI speech models remain separate and available.
+The current built-in Gemini speech rows are `gemini-3.8-flash-tts` and
+`gemini-3.8-flash-lite-tts`. Server and web use Flash when the speech default
+setting is blank. The retired `gemini-3.1-flash-tts-preview`,
+`gemini-2.5-flash-tts` and `gemini-2.5-pro-tts` are not runtime aliases or
+fallbacks; OpenAI speech choices remain separate. The shared installed/locked
+Google GenAI SDK is 2.24.0 for this cutover, with non-TTS adapter regressions
+checked rather than changing LLM/image/video catalogs implicitly.
 
-`GeminiAudioClient` sends each utterance as transcript text and puts optional
-style and speaker information in `speechMetadata`, rather than appending style
-instructions to the spoken text. It retains single-speaker voice selection and
-validated one- or two-speaker mappings. The unary response must contain audio:
-an already-WAV response is validated as a playable PCM WAV container, while a
-supported PCM response with valid rate/channels is wrapped as WAV. Empty,
-malformed, unsupported, or header-only output fails explicitly instead of
-returning a success file. This is a format/structure guarantee, not a claim of
-manual audible quality verification.
+`voice_name` is a single-speaker **string**, not a 30-entry allowlist. Omission
+uses `Kore`; a supplied ID must be nonempty without surrounding whitespace and
+is forwarded unchanged to the configured provider. The 30 existing voices are
+advertised as **featured prebuilt voices**, not the complete Google catalog.
+The tested additional ID `ar-001-advisor-1` is labelled `Authoritative Advisor 1`
+with catalog language `ar-001`: generation succeeded on Vertex Express using
+an English transcript; Arabic pronunciation/quality was not tested. Other
+caller-supplied prebuilt/Extended IDs are not pre-verified and may be rejected
+by the provider. This does not add custom-voice lifecycle support or discovery.
 
-The shared `@google/genai` dependency is 2.24.0 for this cutover. Gemini
-LLM/image/video catalogs were not changed as a side effect of the speech
-upgrade; their adapter regressions need checking when the SDK graph changes.
-Model listing and a successful historical provider call do not guarantee
-future availability for every Gemini mode, key, project, region, or quota.
+Multi-speaker dialogue retains one or two unique speakers mapped to featured
+prebuilt voices. Each `Speaker: utterance` line is a turn; repeated speakers
+are allowed, and colons after the first separator remain in the utterance.
+Optional `turn_styles` must have exactly one string-or-null entry per line.
+A trimmed nonempty string overrides `style_instructions` for that turn;
+null or empty/whitespace inherits the trimmed global style. Omitting the array
+preserves the global-only behavior. Supplying it for single-speaker mode,
+wrong counts/types, or invalid dialogue mappings fails before SDK initialization
+and paid generation. Transcript, speaker and effective style are normalized
+once and emitted as text plus `speechMetadata`, never as prepended spoken
+style directions. See the server's [speech tool contract](../../autobyteus-server-ts/docs/modules/multimedia_management.md#gemini-speech-tool-contract)
+for the public argument shape.
+
+The adapter validates a nonempty playable PCM WAV container or wraps supported
+PCM with explicit rate/channels as WAV. Malformed, empty, unsupported and
+header-only responses fail instead of publishing success. External failures
+expose only fixed categories and valid HTTP status, not raw SDK/provider bodies,
+messages or causes; no route, key, model or voice substitution follows a failure.
+One authorized styled-dialogue clip received qualitative user listening
+confirmation; that is not an engineer audition, automated transcription,
+objective acoustic evaluation or broad voice/language/model quality guarantee.
+Catalog presence and past success do not guarantee future provider availability.
 
 ### Gemini Image Models
 

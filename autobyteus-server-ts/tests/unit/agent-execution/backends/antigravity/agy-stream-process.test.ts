@@ -28,12 +28,13 @@ vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-back
   signalProcessGroups: groups.signal,
 }));
 
+import { spawn } from "node:child_process";
 import { AgyStreamProcess } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 
 const conversationId = "conversation-a";
 const startInput = { capsulePath: "/tmp/capsule", agentName: "agent", workspacePath: "/tmp/workspace",
-  model: "gemini-3.8-flash-low", autoExecuteTools: true, conversationId };
+  model: "gemini-3.8-flash-low", conversationId };
 
 const startProcess = async () => {
   const process = new AgyStreamProcess();
@@ -144,4 +145,20 @@ describe("AgyStreamProcess stop cleans up AGY background process groups", () => 
       expect(groups.signal).not.toHaveBeenCalled();
     } finally { warn.mockRestore(); }
   });
+});
+
+describe("AgyStreamProcess launch arguments", () => {
+  beforeEach(() => { children.length = 0; vi.mocked(spawn).mockClear(); });
+
+  it.each([["new", null], ["resumed", conversationId]] as const)(
+    "always passes --dangerously-skip-permissions for a %s conversation", async (_kind, id) => {
+      const process = new AgyStreamProcess();
+      const started = process.start({ ...startInput, conversationId: id });
+      (children.at(-1) as FakeChild).emitLine({ event: "init", conversation_id: conversationId, init: {} });
+      await started;
+      const argv = vi.mocked(spawn).mock.calls.at(-1)?.[1] as string[];
+      expect(argv).toContain("--dangerously-skip-permissions");
+      expect(argv).toContain(id ? "--conversation" : "--new-project");
+      process.stop();
+    });
 });

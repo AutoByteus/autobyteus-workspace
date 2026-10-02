@@ -39,7 +39,7 @@
       <div class="ml-auto flex items-center gap-0.5">
         <slot name="footer-right" />
         <span class="w-1" aria-hidden="true"></span>
-        <VoiceInputButton :target="target" compact />
+        <VoiceInputButton :target="voiceTarget" compact />
         <MessagePrimaryActionButton
           data-test="chat-primary-action"
           compact
@@ -57,7 +57,8 @@
 <script setup lang="ts">
 import { computed, ref, useSlots } from 'vue'
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue'
-import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue'
+import { useComposerVoiceTarget } from '~/composables/voiceInput/useComposerVoiceTarget';
+import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue'
 import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue'
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue'
 import ChatMessageInput from '~/components/chat/ChatMessageInput.vue'
@@ -140,4 +141,5 @@ const activatePrimaryAction = async () => {
 }
 
 defineExpose({ focus: () => inputRef.value?.focus() })
+const voiceTarget = useComposerVoiceTarget(() => props.target);
 </script>

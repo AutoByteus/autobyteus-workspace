@@ -1,0 +1,12 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "guard:web-boundary"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "start": "2026-10-01T17:27:32.476530+00:00",
+  "end": "2026-10-01T17:27:33.322881+00:00",
+  "exit": 0
+}

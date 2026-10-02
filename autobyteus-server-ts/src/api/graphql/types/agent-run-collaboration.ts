@@ -1,7 +1,7 @@
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { getCollaboratorMentionAdmission } from "../../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { getCollaboratorAdmission } from "../../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { AgentRunCollaborationRootManager } from "../../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
 import { getAgentRunCollaborationMemberViewProjectionService } from "../../../agent-run-collaboration/services/agent-run-collaboration-member-view-projection-service.js";
 import { projectAgentCollaborationView } from "../../../services/agent-streaming/agent-collaboration-view-projector.js";
@@ -76,7 +76,7 @@ export class AgentRunCollaborationResolver {
     if (!isRootSubjectKind(rootSubjectKind)) throw new Error(`Unknown root kind '${rootSubjectKind}'.`);
     const port = await resolveCollaboratorRootPort(rootSubjectKind, rootRunId);
     if (!port) throw new Error(`Run '${rootRunId}' was not found.`);
-    const list = await getCollaboratorMentionAdmission().policy.listCandidates(port);
+    const list = await getCollaboratorAdmission().policy.listCandidates(port);
     return {
       availability: list.availability,
       candidates: list.candidates.map((candidate) => candidate.kind === "agent"

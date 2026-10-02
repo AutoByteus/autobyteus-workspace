@@ -103,13 +103,10 @@ links before omitting an unavailable optional skill. AGY also consumes these
 bindings for its run-owned capsule. No runtime should call the global skill
 catalog lookup by name. This preserves package-private and owning-team-shared
 skill context while still allowing configured skill-directory fallback for
-explicitly named skills. The resolved binding records the winning
-agent-private, team-shared, or global source and its canonical trust root.
-AGY uses that provenance for its checked snapshot; it does not infer a team
-root from an unrelated global fallback. See the
-[AGY runtime guide](./antigravity_cli_runtime.md#run-owned-project-and-workspace)
-for its checked in-bound file-link policy. Codex/Claude retain their own
-materialization semantics.
+explicitly named skills. AGY links each resolved skill folder into its
+private capsule instead of the selected workspace; see the
+[AGY runtime guide](./antigravity_cli_runtime.md#run-owned-project-and-workspace).
+Codex/Claude retain their own materialization semantics.
 
 Launch flows no longer expose a user-facing skill-access choice. A standalone
 agent run receives the skills configured on its selected agent definition, and a
@@ -240,9 +237,10 @@ both fields. See [LLM Management](./llm_management.md#persisted-run-model-select
 
 The same run's next normal message/restore consumes the saved pair without a
 new provider conversation. Save neither activates a backend nor compacts,
-converts, or resets history. Existing memory/compaction lineage remains in
-place; ordinary later execution uses its existing runtime algorithm with the
-selected model, without promising identical future compaction timing.
+converts, or resets history. Existing WorkingContext and raw evidence remain in
+place; historical category/lineage files are not rewritten or made current
+continuation dependencies. Ordinary later execution uses its runtime compaction
+path with the selected model, without promising identical future timing.
 
 Studio adds a separate owner-aware guard before this General lane. A live
 Application binding locks configuration without exposing Application managers

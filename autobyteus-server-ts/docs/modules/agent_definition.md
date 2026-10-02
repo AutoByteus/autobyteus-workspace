@@ -116,7 +116,6 @@ Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-a
 
 Built-in templates are centralized under `src/built-in-agents/templates/`. Every built-in agent is platform-owned:
 
-- `memory-compactor/` syncs the shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
 - `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
 - `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file`, so it can read cataloged `SKILL.md` files) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
 
@@ -124,13 +123,19 @@ The built-in-agent bootstrapper owns this lifecycle:
 
 - every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
-- the Memory Compactor is synchronized at fixed id `autobyteus-memory-compactor` without creating a user-selectable server-setting default;
 - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
 - the agent-definition cache is refreshed after built-in definitions resolve.
 
 Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
 
-Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. The current `structured-json` compaction strategy always resolves the fixed built-in `autobyteus-memory-compactor`; it does not own the template/sync lifecycle and does not read `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`. A stale custom value for that removed selector is inert. The separate process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting selects the registered working-context algorithm for subsequent operations and must not be added to `AgentConfig` or agent definitions. The Daily Assistant is not auto-featured; featured placement stays an operator choice in Settings.
+Do not add separate one-off built-in-agent bootstrappers or scatter platform
+templates under feature-runtime folders. Native compaction now constructs an
+isolated tool-free LLM directly; it has no synchronized Memory Compactor agent,
+registry-selected algorithm or child Agent runtime. Old compactor-agent files and
+removed selector/strategy setting values are inert for compaction and are neither
+imported nor deleted. The optional current model/config tuple is server-owned,
+not an AgentDefinition selector. The Daily Assistant is not auto-featured;
+featured placement stays an operator choice in Settings.
 
 ## Notes
 

@@ -1,0 +1,60 @@
+IR-002 source delta
+ .../real-e2e-provider-capabilities.e2e.test.ts     |  42 +-
+ .../live-e2e-compaction-boundary.test.ts           |  75 ++++
+ .../secret-management/live-e2e-harness.test.ts     |  40 --
+ .../compaction/compaction-runtime-reporter.ts      |  14 -
+ .../events/stream-event-payload-lifecycle.ts       |  24 +-
+ .../streaming/events/stream-event-payloads.test.ts |  17 +
+ .../streaming/streams/agent-event-stream.test.ts   |  27 +-
+ test-support/live-e2e/live-e2e-harness.ts          | 457 ++++++---------------
+ 8 files changed, 265 insertions(+), 431 deletions(-)
+Retired active harness/reporter symbols (expected no matches):
+Scenario registrations (preserved):
+26:  'deepseek.compaction-agent-flow': Object.freeze({
+27:    operation: 'compaction-agent-flow',
+32:  'lmstudio.qwen36.compaction-agent-flow': Object.freeze({
+33:    operation: 'compaction-agent-flow',
+Current live wrapper:
+
+export class CompactionStatusData extends BaseStreamPayload {
+  phase: string;
+  turn_id?: string | null;
+  compaction_operation_id?: string | null;
+  requested_turn_id?: string | null;
+  execution_turn_id?: string | null;
+  selected_block_count?: number | null;
+  compacted_block_count?: number | null;
+  raw_trace_count?: number | null;
+  summary_char_count?: number | null;
+  compaction_invocation_id?: string | null;
+  summarizer_provider?: string | null;
+  completion_status?: 'complete' | 'incomplete' | 'unknown' | null;
+  compaction_model_identifier?: string | null;
+  completion_reason?: string | null;
+  summary_token_count?: number | null;
+  error_message?: string | null;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['phase'], 'CompactionStatusData');
+    super(data);
+    this.phase = String(data.phase ?? '');
+    this.turn_id = typeof data.turn_id === 'string' ? data.turn_id : data.turn_id ?? undefined;
+    this.compaction_operation_id = typeof data.compaction_operation_id === 'string' ? data.compaction_operation_id : data.compaction_operation_id ?? undefined;
+    this.requested_turn_id = typeof data.requested_turn_id === 'string' ? data.requested_turn_id : data.requested_turn_id ?? undefined;
+    this.execution_turn_id = typeof data.execution_turn_id === 'string' ? data.execution_turn_id : data.execution_turn_id ?? undefined;
+    this.selected_block_count = typeof data.selected_block_count === 'number' ? data.selected_block_count : data.selected_block_count ?? undefined;
+    this.compacted_block_count = typeof data.compacted_block_count === 'number' ? data.compacted_block_count : data.compacted_block_count ?? undefined;
+    this.raw_trace_count = typeof data.raw_trace_count === 'number' ? data.raw_trace_count : data.raw_trace_count ?? undefined;
+    this.summary_char_count = data.summary_char_count;
+    this.compaction_invocation_id = data.compaction_invocation_id;
+    this.summarizer_provider = data.summarizer_provider;
+    this.completion_status = data.completion_status;
+    this.compaction_model_identifier = typeof data.compaction_model_identifier === 'string' ? data.compaction_model_identifier : data.compaction_model_identifier ?? undefined;
+    this.completion_reason = data.completion_reason;
+    this.summary_token_count = data.summary_token_count;
+    this.error_message = typeof data.error_message === 'string' ? data.error_message : data.error_message ?? undefined;
+  }
+}
+
+export class SegmentEventData extends BaseStreamPayload {
+Source diff whitespace:

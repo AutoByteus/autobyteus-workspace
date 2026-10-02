@@ -1,0 +1,497 @@
+[
+  {
+    "event": "managed_compaction_continuation_probe",
+    "parentResponses": [
+      {
+        "content": "\n\n",
+        "reasoningCharacters": 129,
+        "usage": {
+          "input_tokens": 2527,
+          "output_tokens": 121,
+          "total_tokens": 2648,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 28,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 2527,
+            "completion_tokens": 121,
+            "total_tokens": 2648,
+            "completion_tokens_details": {
+              "reasoning_tokens": 28
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\nEVIDENCE_A_INGESTED\n\n- **customer**: Northwind Helios\n- **rollback_action**: restore the last stable payments build\n- **safety_rule**: the ledger delta must remain zero\n- **verification**: reconcile both ledgers before reopening retries",
+        "reasoningCharacters": 420,
+        "usage": {
+          "input_tokens": 4292,
+          "output_tokens": 156,
+          "total_tokens": 4448,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 100,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 4292,
+            "completion_tokens": 156,
+            "total_tokens": 4448,
+            "completion_tokens_details": {
+              "reasoning_tokens": 100
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\n",
+        "reasoningCharacters": 238,
+        "usage": {
+          "input_tokens": 4447,
+          "output_tokens": 145,
+          "total_tokens": 4592,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 52,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 4447,
+            "completion_tokens": 145,
+            "total_tokens": 4592,
+            "completion_tokens_details": {
+              "reasoning_tokens": 52
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\nUNICODE_BOUNDARY_EVIDENCE_INGESTED",
+        "reasoningCharacters": 250,
+        "usage": {
+          "input_tokens": 5428,
+          "output_tokens": 70,
+          "total_tokens": 5498,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 57,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 5428,
+            "completion_tokens": 70,
+            "total_tokens": 5498,
+            "completion_tokens_details": {
+              "reasoning_tokens": 57
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\n",
+        "reasoningCharacters": 418,
+        "usage": {
+          "input_tokens": 5550,
+          "output_tokens": 222,
+          "total_tokens": 5772,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 129,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 5550,
+            "completion_tokens": 222,
+            "total_tokens": 5772,
+            "completion_tokens_details": {
+              "reasoning_tokens": 129
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\nEVIDENCE_B_INGESTED\n\n- **owner**: Mira Chen\n- **mitigation**: freeze payment retries\n- **rejection_condition**: any duplicate ledger entry\n- **communication_channel**: payments incident bridge",
+        "reasoningCharacters": 386,
+        "usage": {
+          "input_tokens": 18918,
+          "output_tokens": 137,
+          "total_tokens": 19055,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 91,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 18918,
+            "completion_tokens": 137,
+            "total_tokens": 19055,
+            "completion_tokens_details": {
+              "reasoning_tokens": 91
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\n",
+        "reasoningCharacters": 1459,
+        "usage": {
+          "input_tokens": 3155,
+          "output_tokens": 497,
+          "total_tokens": 3652,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 327,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 3155,
+            "completion_tokens": 497,
+            "total_tokens": 3652,
+            "completion_tokens_details": {
+              "reasoning_tokens": 327
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      },
+      {
+        "content": "\n\nFile created successfully at `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/retained-incident-plan.json`\n\nThe JSON object contains all 9 required keys with the exact retained values from the evidence files, plus the new_constraint field set to \"preserve auditable rollback proof\".",
+        "reasoningCharacters": 676,
+        "usage": {
+          "input_tokens": 3399,
+          "output_tokens": 247,
+          "total_tokens": 3646,
+          "usage_scope": "per_call",
+          "model_provider": "LMSTUDIO",
+          "provider_name": "LM Studio",
+          "model_identifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+          "model_value": "qwen/qwen3.6-35b-a3b",
+          "input_token_semantic": "gross_includes_cache",
+          "cache_state": "not_reported",
+          "standard_input_tokens": null,
+          "cache_miss_input_tokens": null,
+          "cache_read_input_tokens": null,
+          "cache_creation_input_tokens": null,
+          "cache_creation_5m_input_tokens": null,
+          "cache_creation_1h_input_tokens": null,
+          "reasoning_output_tokens": 151,
+          "billable_input_tokens": null,
+          "billable_output_tokens": null,
+          "raw_usage_json": {
+            "prompt_tokens": 3399,
+            "completion_tokens": 247,
+            "total_tokens": 3646,
+            "completion_tokens_details": {
+              "reasoning_tokens": 151
+            }
+          },
+          "quality_flags": []
+        },
+        "completionStatus": "unknown",
+        "completionReason": null
+      }
+    ],
+    "summaryResponses": [
+      {
+        "content": "\n\n<compaction_summary>\n## Goal and constraints\n- Goal: Read specified evidence files exactly once, extract task anchor values (or confirm ingestion), and respond concisely with the required status string and extracted values.\n- Constraints: Use `read_file` exactly once per request; do not call `write_file`; preserve exact field values; respond with specific status codes (e.g., `EVIDENCE_A_INGESTED`); maintain concise output.\n\n## Decisions and findings\n- Incident Evidence A anchor extracted: customer \"Northwind Helios\", rollback_action \"restore the last stable payments build\", safety_rule \"the ledger delta must remain zero\", verification \"reconcile both ledgers before reopening retries\".\n- Incident Evidence B anchor extracted: owner \"Mira Chen\", mitigation \"freeze payment retries\", rejection_condition \"any duplicate ledger entry\", communication_channel \"payments incident bridge\".\n- Unicode boundary evidence file contained Vue component source code; treated as successfully ingested ordinary evidence per instructions.\n\n## Completed work\n- Ingested `incident-evidence-a.jsonl` and responded with `EVIDENCE_A_INGESTED` plus the four exact anchor values.\n- Ingested `unicode-boundary-evidence.json` and responded with `UNICODE_BOUNDARY_EVIDENCE_INGESTED`.\n- Ingested `incident-evidence-b.jsonl` and responded with `EVIDENCE_B_INGESTED` plus the four exact anchor values.\n\n## Current state\n- All three requested files have been successfully read and processed.\n- The agent has completed all explicit ingestion tasks provided in the history and is awaiting further instructions.\n\n## Open work and next steps\n- Awaiting next user prompt specifying a new file path and the required response format/status string.\n\n## Essential references\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-a.jsonl`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/unicode-boundary-evidence.json`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-b.jsonl`\n</compaction_summary>",
+        "completionStatus": "complete",
+        "completionReason": "stop"
+      }
+    ],
+    "lastParentRequest": {
+      "messages": [
+        {
+          "role": "system",
+          "content": "## Agent Identity\n\n- Name: Managed-provider live compaction E2E agent\n- Description: Exercises managed-provider tools, real compaction, retained quality, and continuation.\n\n### Responsibilities and Boundaries\n\nYou are a careful incident response analyst. Follow the requested file-tool sequence exactly and use provider-native tool calls. Never invent task values; preserve exact literal values from tool evidence. For write_file, use the exact absolute path supplied by the user. The write_file content argument must always be a string, including when that string contains serialized JSON. Do not finish a write request until write_file succeeds.\n\n## Working Environment\n\n- Agent workspace: `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace`\n- Use skills from their skill package directories to work on tasks in the agent workspace.\n- A skill package directory contains the skill's instructions and bundled assets. It is not the agent workspace, and reading the skill does not change the agent workspace.\n- Resolve skill-package references from the skill package directory. Resolve task and project locations from the agent workspace unless an explicit target says otherwise.\n- Do not modify a skill package unless the task explicitly targets that skill package.\n- With no working-directory override, `pwd` returns the agent workspace. An explicit working directory changes only that command's location; it does not redefine the workspace.\n\n## Bash Operating Practice\n\n- Use Bash for workspace navigation, targeted search, repository and project commands, processes, network operations, and verification. Prefer deterministic, targeted commands over broad directory listings.\n- For file content, follow `File And Directory Practice` and prefer the exposed dedicated file tools. Use Bash for file inspection or modification when those tools are unavailable or cannot complete the operation after recovery.\n- Prefer non-interactive, small, composable, project-native commands.\n\n## File And Directory Practice\n\n- Locate files and directories by intent instead of broadly listing them. For content searches, use `rg -n \"term\" path`; for filename discovery, use `rg --files path | rg \"pattern\"`; use constrained `find path -maxdepth N ...` only when filesystem traversal or metadata is the goal.\n- When exposed, use `read_file` for file reading, `edit_file` for targeted regional changes to an existing file, and `write_file` for new files or deliberate whole-file replacement.\n- Before every targeted `edit_file` change, use `read_file` to read the relevant current content of the original file unless it was read recently and has not changed.\n- Build the regional `edit_file` patch from that latest content and preserve unrelated content. If the edit context fails or the file changed, use `read_file` again for the affected content, construct a new patch, and retry; do not blindly retry an unchanged patch.\n- Preserve unrelated content and existing changes. Verify important file changes with an appropriate read, diff, parser, test, or project-native check.",
+          "toolPayload": null,
+          "provenance": {
+            "kind": "single",
+            "rawTraceIds": [],
+            "turnId": null
+          }
+        },
+        {
+          "role": "user",
+          "content": "## Goal and constraints\n- Goal: Read specified evidence files exactly once, extract task anchor values (or confirm ingestion), and respond concisely with the required status string and extracted values.\n- Constraints: Use `read_file` exactly once per request; do not call `write_file`; preserve exact field values; respond with specific status codes (e.g., `EVIDENCE_A_INGESTED`); maintain concise output.\n\n## Decisions and findings\n- Incident Evidence A anchor extracted: customer \"Northwind Helios\", rollback_action \"restore the last stable payments build\", safety_rule \"the ledger delta must remain zero\", verification \"reconcile both ledgers before reopening retries\".\n- Incident Evidence B anchor extracted: owner \"Mira Chen\", mitigation \"freeze payment retries\", rejection_condition \"any duplicate ledger entry\", communication_channel \"payments incident bridge\".\n- Unicode boundary evidence file contained Vue component source code; treated as successfully ingested ordinary evidence per instructions.\n\n## Completed work\n- Ingested `incident-evidence-a.jsonl` and responded with `EVIDENCE_A_INGESTED` plus the four exact anchor values.\n- Ingested `unicode-boundary-evidence.json` and responded with `UNICODE_BOUNDARY_EVIDENCE_INGESTED`.\n- Ingested `incident-evidence-b.jsonl` and responded with `EVIDENCE_B_INGESTED` plus the four exact anchor values.\n\n## Current state\n- All three requested files have been successfully read and processed.\n- The agent has completed all explicit ingestion tasks provided in the history and is awaiting further instructions.\n\n## Open work and next steps\n- Awaiting next user prompt specifying a new file path and the required response format/status string.\n\n## Essential references\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-a.jsonl`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/unicode-boundary-evidence.json`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-b.jsonl`",
+          "toolPayload": null,
+          "provenance": {
+            "kind": "composed_user",
+            "constituents": [
+              {
+                "kind": "compacted_memory",
+                "textRange": {
+                  "start": 0,
+                  "end": 2106
+                }
+              }
+            ]
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "\n\nEVIDENCE_B_INGESTED\n\n- **owner**: Mira Chen\n- **mitigation**: freeze payment retries\n- **rejection_condition**: any duplicate ledger entry\n- **communication_channel**: payments incident bridge",
+          "toolPayload": null,
+          "provenance": {
+            "kind": "single",
+            "rawTraceIds": [
+              "rt_1790456533846_f464c333-4b80-4777-8225-34ebf96e1a58",
+              "rt_1790456533846_bc0afcc6-0f8c-4ff2-922c-73342e264a6e"
+            ],
+            "turnId": "turn_0003"
+          }
+        },
+        {
+          "role": "user",
+          "content": "The evidence files are deleted. Without rereading them, call write_file exactly once with the exact absolute path=\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/retained-incident-plan.json\". The content tool argument must be a string containing serialized JSON, not a nested object. Write one valid JSON object with exactly these keys: customer, rollback_action, safety_rule, verification, owner, mitigation, rejection_condition, communication_channel, new_constraint. Use the exact retained values and set new_constraint to \"preserve auditable rollback proof\". Do not write Markdown.",
+          "toolPayload": null,
+          "provenance": {
+            "kind": "composed_user",
+            "constituents": [
+              {
+                "kind": "current_user",
+                "textRange": {
+                  "start": 0,
+                  "end": 635
+                },
+                "rawTraceIds": [
+                  "rt_1790456582759"
+                ],
+                "turnId": "turn_0004",
+                "imageRange": {
+                  "start": 0,
+                  "end": 0
+                },
+                "audioRange": {
+                  "start": 0,
+                  "end": 0
+                },
+                "videoRange": {
+                  "start": 0,
+                  "end": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "\n\n",
+          "toolPayload": {
+            "toolCalls": [
+              {
+                "id": "355581243",
+                "name": "write_file",
+                "arguments": {
+                  "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/retained-incident-plan.json",
+                  "content": "{\"customer\":\"Northwind Helios\",\"rollback_action\":\"restore the last stable payments build\",\"safety_rule\":\"the ledger delta must remain zero\",\"verification\":\"reconcile both ledgers before reopening retries\",\"owner\":\"Mira Chen\",\"mitigation\":\"freeze payment retries\",\"rejection_condition\":\"any duplicate ledger entry\",\"communication_channel\":\"payments incident bridge\",\"new_constraint\":\"preserve auditable rollback proof\"}"
+                }
+              }
+            ]
+          },
+          "provenance": {
+            "kind": "single",
+            "rawTraceIds": [
+              "rt_1790456592820_69260856-6390-406a-a40f-a2d7c23bc9ba",
+              "rt_1790456592820_f0cf0844-7360-442c-ba37-be79a273205c",
+              "rt_1790456592821_turn_0004_355581243_call"
+            ],
+            "turnId": "turn_0004"
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "toolPayload": {
+            "toolCallId": "355581243",
+            "toolName": "write_file",
+            "toolResult": "File created/updated at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/retained-incident-plan.json",
+            "toolError": null
+          },
+          "provenance": {
+            "kind": "single",
+            "rawTraceIds": [
+              "rt_1790456592825_turn_0004_355581243_result"
+            ],
+            "turnId": "turn_0004"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "event": "managed_compaction_budget_probe",
+    "compactionRatio": 0.05,
+    "promptTokens": [
+      2527,
+      4292,
+      4447,
+      5428,
+      5550,
+      18918,
+      3155,
+      3399
+    ],
+    "triggerThresholdTokens": 13043,
+    "phases": [
+      "requested",
+      "started",
+      "completed"
+    ]
+  },
+  {
+    "event": "managed_compaction_direct_source_probe",
+    "requestInspections": [
+      {
+        "sourceToolTailVerified": true,
+        "shieldOmissionPressureVerified": true
+      }
+    ],
+    "summaryResponses": [
+      {
+        "content": "\n\n<compaction_summary>\n## Goal and constraints\n- Goal: Read specified evidence files exactly once, extract task anchor values (or confirm ingestion), and respond concisely with the required status string and extracted values.\n- Constraints: Use `read_file` exactly once per request; do not call `write_file`; preserve exact field values; respond with specific status codes (e.g., `EVIDENCE_A_INGESTED`); maintain concise output.\n\n## Decisions and findings\n- Incident Evidence A anchor extracted: customer \"Northwind Helios\", rollback_action \"restore the last stable payments build\", safety_rule \"the ledger delta must remain zero\", verification \"reconcile both ledgers before reopening retries\".\n- Incident Evidence B anchor extracted: owner \"Mira Chen\", mitigation \"freeze payment retries\", rejection_condition \"any duplicate ledger entry\", communication_channel \"payments incident bridge\".\n- Unicode boundary evidence file contained Vue component source code; treated as successfully ingested ordinary evidence per instructions.\n\n## Completed work\n- Ingested `incident-evidence-a.jsonl` and responded with `EVIDENCE_A_INGESTED` plus the four exact anchor values.\n- Ingested `unicode-boundary-evidence.json` and responded with `UNICODE_BOUNDARY_EVIDENCE_INGESTED`.\n- Ingested `incident-evidence-b.jsonl` and responded with `EVIDENCE_B_INGESTED` plus the four exact anchor values.\n\n## Current state\n- All three requested files have been successfully read and processed.\n- The agent has completed all explicit ingestion tasks provided in the history and is awaiting further instructions.\n\n## Open work and next steps\n- Awaiting next user prompt specifying a new file path and the required response format/status string.\n\n## Essential references\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-a.jsonl`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/unicode-boundary-evidence.json`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-b.jsonl`\n</compaction_summary>",
+        "completionStatus": "complete"
+      }
+    ]
+  },
+  {
+    "scenarioId": "lmstudio.qwen36.compaction-agent-flow",
+    "capability": "agent-compaction-turns",
+    "status": "PASSED",
+    "modelIdentifier": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+    "effectiveContextWindowTokens": 262144,
+    "compactionRatio": 0.05,
+    "triggerThresholdTokens": 13043,
+    "observedBelowThreshold": true,
+    "observedAtOrAboveThreshold": true,
+    "completedCompactionCount": 1,
+    "successfulToolCount": 4,
+    "recoverableToolFailureCount": 0,
+    "orderedToolTracePairsVerified": true,
+    "continuationTraceAbsent": true,
+    "exactRetainedArtifactVerified": true,
+    "summaryAndCurrentUserVerified": true,
+    "directSummaryRequestCount": 1,
+    "summaryInvocationIds": [
+      "compaction_4ec2716c-91fd-4a63-a862-087f0fc6b92d"
+    ],
+    "summaryModelIdentifiers": [
+      "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234"
+    ],
+    "completionStatuses": [
+      "complete"
+    ],
+    "directSummaryTaskFramingVerified": true,
+    "directSummarySourceToolTailVerified": true,
+    "directSummaryProviderSafeUnicodeVerified": true,
+    "directSummaryShieldOmissionPressureVerified": true,
+    "noCategoryArtifactsVerified": true,
+    "unicodeShieldSourceImmutableVerified": true,
+    "summaryPromptSha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+    "qualityEvidence": {
+      "snapshotSummary": "## Goal and constraints\n- Goal: Read specified evidence files exactly once, extract task anchor values (or confirm ingestion), and respond concisely with the required status string and extracted values.\n- Constraints: Use `read_file` exactly once per request; do not call `write_file`; preserve exact field values; respond with specific status codes (e.g., `EVIDENCE_A_INGESTED`); maintain concise output.\n\n## Decisions and findings\n- Incident Evidence A anchor extracted: customer \"Northwind Helios\", rollback_action \"restore the last stable payments build\", safety_rule \"the ledger delta must remain zero\", verification \"reconcile both ledgers before reopening retries\".\n- Incident Evidence B anchor extracted: owner \"Mira Chen\", mitigation \"freeze payment retries\", rejection_condition \"any duplicate ledger entry\", communication_channel \"payments incident bridge\".\n- Unicode boundary evidence file contained Vue component source code; treated as successfully ingested ordinary evidence per instructions.\n\n## Completed work\n- Ingested `incident-evidence-a.jsonl` and responded with `EVIDENCE_A_INGESTED` plus the four exact anchor values.\n- Ingested `unicode-boundary-evidence.json` and responded with `UNICODE_BOUNDARY_EVIDENCE_INGESTED`.\n- Ingested `incident-evidence-b.jsonl` and responded with `EVIDENCE_B_INGESTED` plus the four exact anchor values.\n\n## Current state\n- All three requested files have been successfully read and processed.\n- The agent has completed all explicit ingestion tasks provided in the history and is awaiting further instructions.\n\n## Open work and next steps\n- Awaiting next user prompt specifying a new file path and the required response format/status string.\n\n## Essential references\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-a.jsonl`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/unicode-boundary-evidence.json`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-b.jsonl`",
+      "nextRequestSummary": "## Goal and constraints\n- Goal: Read specified evidence files exactly once, extract task anchor values (or confirm ingestion), and respond concisely with the required status string and extracted values.\n- Constraints: Use `read_file` exactly once per request; do not call `write_file`; preserve exact field values; respond with specific status codes (e.g., `EVIDENCE_A_INGESTED`); maintain concise output.\n\n## Decisions and findings\n- Incident Evidence A anchor extracted: customer \"Northwind Helios\", rollback_action \"restore the last stable payments build\", safety_rule \"the ledger delta must remain zero\", verification \"reconcile both ledgers before reopening retries\".\n- Incident Evidence B anchor extracted: owner \"Mira Chen\", mitigation \"freeze payment retries\", rejection_condition \"any duplicate ledger entry\", communication_channel \"payments incident bridge\".\n- Unicode boundary evidence file contained Vue component source code; treated as successfully ingested ordinary evidence per instructions.\n\n## Completed work\n- Ingested `incident-evidence-a.jsonl` and responded with `EVIDENCE_A_INGESTED` plus the four exact anchor values.\n- Ingested `unicode-boundary-evidence.json` and responded with `UNICODE_BOUNDARY_EVIDENCE_INGESTED`.\n- Ingested `incident-evidence-b.jsonl` and responded with `EVIDENCE_B_INGESTED` plus the four exact anchor values.\n\n## Current state\n- All three requested files have been successfully read and processed.\n- The agent has completed all explicit ingestion tasks provided in the history and is awaiting further instructions.\n\n## Open work and next steps\n- Awaiting next user prompt specifying a new file path and the required response format/status string.\n\n## Essential references\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-a.jsonl`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/unicode-boundary-evidence.json`\n- `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/incident-evidence-b.jsonl`",
+      "nextCurrentUserRegion": "The evidence files are deleted. Without rereading them, call write_file exactly once with the exact absolute path=\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-KBL9Pi/workspace/retained-incident-plan.json\". The content tool argument must be a string containing serialized JSON, not a nested object. Write one valid JSON object with exactly these keys: customer, rollback_action, safety_rule, verification, owner, mitigation, rejection_condition, communication_channel, new_constraint. Use the exact retained values and set new_constraint to \"preserve auditable rollback proof\". Do not write Markdown."
+    },
+    "managedSecretResolverUsed": false
+  }
+]

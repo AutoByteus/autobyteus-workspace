@@ -117,6 +117,8 @@ vi.mock('~/utils/apolloClient', () => ({
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => ({
     getCompactionActivities: vi.fn(() => []),
+    getNativeCompactionActivityIds: vi.fn(() => []),
+    applyConfirmedNativeTermination: vi.fn((_id, _ids, status) => status),
     replaceProjectionActivitiesIfRevisions: mockReplaceProjectionActivitiesIfRevisions,
   }),
 }))

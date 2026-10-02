@@ -16,7 +16,7 @@ Collaborators, admission and the candidate policy are shared by all roots; see
 ## Which runs host collaborators
 
 A standalone run can host collaborators unless it is a server helper run
-(`launchPurpose: "server_helper"`, such as the memory compactor and the skill improver) or an
+(`launchPurpose: "server_helper"`, such as the skill improver) or an
 application-owned run (`applicationExecutionContext`). This one rule
 (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
 An eligible host always has `send_message_to` and `delegate_task` from its first turn and a short
@@ -54,10 +54,22 @@ The root hosts collaborators in its existing backends (AR-006): a collaborator A
 handles, commits the entries (the first commit creates the package), then publishes them and
 emits `collaborator_added`. `AgentRunCollaborationRootBuilder.build` re-hosts stored collaborators
 in `restore` mode, and termination stops them with every other child. Messages resolve the host,
-a collaborator Agent, a collaborator Team (its coordinator) or a collaborator Team member. An
-extra copy is hosted by the delegator's host: the root for a root-level Agent, the collaborator
-TeamRun for its members (recorded in the entry's `taskExecutions`). A collaborator Agent directly
+a collaborator Agent, a collaborator Team (its coordinator) or a collaborator Team member. A
+copy is placed by address (REQ-012, `resolveTaskCopyHost`): a teammate copy inside the delegator's
+own Team instance (recorded in that instance's `taskExecutions`), any other copy at the root. A collaborator Agent directly
 under the root is not Team-scoped; members of a collaborator Team are.
+
+Agents bring collaborators in and delegate to the catalog themselves (REQ-004/005/008).
+`AgentRunCollaborationRecipientResolver` resolves `send_message_to(address)` with the shared
+`MessageRecipientResolution`, inside the operation gate: the sender's own Team instance first
+(REQ-007), then the host or a collaborator, then a catalog bring-in through
+`AgentRunCollaborationCollaborators.bringInAt` (same admission as `@`; the first bring-in creates the
+package). The operation gate does not serialize; the root's `CollaboratorAdmissionQueue` does, so
+concurrent first messages to one new address make one instance. `delegate_task(address)` falls back to a catalog copy with a recorded `source`, which
+`AgentRunCollaborationTaskSourceResolver` reads first; the tree accepts a root-level task copy at an
+address that is not a collaborator only when it carries a `source`. The host stays reachable by its
+address. `listAvailableAgents(sender)` serves `list_available_agents` and never writes, so a run that
+only lists has no `collaboration/` package and no `hasCollaboration` flag (AR-005).
 
 ## Package
 
@@ -65,7 +77,7 @@ under the root is not Team-scoped; members of a collaborator Team are.
 memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
-    collaboration_tree.json        # subjectKind "agent", host, collaborators (with run IDs), taskExecutions (extra copies)
+    collaboration_tree.json        # subjectKind "agent", host, collaborators (with run IDs), taskExecutions (extra and catalog copies)
     communication_messages.json    # schemaVersion 1, hostRunId, messages
     <childRunId>/...               # a collaborator Agent's (or copy's) memory
     <teamRunId>/<agentRunId>/...   # members of a collaborator Team (or of a copy)
@@ -98,6 +110,32 @@ service resolves a child through the third root family `agents`.
   ordinary standalone owners.
 - **Message references.** `/rest/agent-collaborations/:host/communication/messages/:messageId/references/:referenceId/content`.
 
+## Native Compaction, Live Input And Whole-Host Stop
+
+Agent-root children use the same native recovery/admission contract as Team/Org
+members: accepted A may remain Held before parent dispatch; later accepted B
+remains Queued and can permit the current failed epoch. Successful recovery
+resumes FIFO without replaying consumed work. The host retains its standalone
+stream/command owner; collaboration commands and snapshots target children,
+including native leaves in hosted Teams, not the host a second time.
+
+`collectAgentRootInputSnapshots` admits exact indexed child run IDs, rejects a
+non-child snapshot and deduplicates repeated Team-recursive leaves. Strict live
+GraphQL and reconnect snapshots expose those input facts; an inactive stored
+package cannot invent pending native state. Renderer projection is not retry
+permission or backend-restart queue persistence.
+
+Whole-host Stop fences root admission, stops children and then stops the host.
+The frontend captures exact root/context/service revisions before awaiting the
+command, retires the matching stream and reconciles confirmed terminal state
+for all loaded children, including hosted-Team members. Failed or superseded
+commands cannot mutate a replacement context. Late compaction output must not
+commit or revive the stopped operation. Existing terminal Activity rows may
+survive an in-memory projection refresh, but a new inactive renderer does not
+synthesize a native compaction journal from Offline status. See
+[frontend activity](../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity)
+and [memory](agent_memory.md) for the persistence boundaries.
+
 ## Known limits
 
 - Token usage of children is not rolled up to the host run.
@@ -109,6 +147,7 @@ service resolves a child through the third root family `agents`.
 - `src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts`
 - `src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts`
 - `src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts`
+- `src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts`
 - `src/agent-execution/services/standalone-agent-run-collaboration-binding.ts`
 - `src/services/agent-streaming/agent-collaboration-stream-handler.ts`
 - `src/api/graphql/types/agent-run-collaboration.ts`

@@ -439,12 +439,12 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
 
   it("fails closed for a retired configured-Team recipient in a flat Team root", async () => {
     const harness = await createHarness();
-    // Neither mounted nor mentioned: nothing starts and the call returns the reason (REQ-012).
+    // Neither mounted, a collaborator nor an available agent: nothing starts and the call returns the reason.
     await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     })).resolves.toEqual({
       target_agent_run_id: null,
-      message: expect.stringContaining("the user can bring one in with @"),
+      message: expect.stringContaining("is not a mounted Agent or Agent Team, a collaborator or an available agent"),
     });
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
   });

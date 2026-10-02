@@ -1,3 +1,4 @@
+import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunEvent, AgentRunStatusHint } from "../../../agent-execution/domain/agent-run-event.js";
 import {
@@ -13,6 +14,7 @@ export type CollaborationAgentStatusDetails = Readonly<{
   status: AgentApiStatus;
   trigger: string | null;
   errorMessage: string | null;
+  recoverableBlock: CompactionRecoveryBlockDto | null;
 }>;
 
 export type CollaborationAgentStatusSnapshot = Readonly<{
@@ -32,12 +34,13 @@ export const createCollaborationAgentStatusSnapshot = (input: {
   status: unknown;
   trigger?: string | null;
   errorMessage?: string | null;
+  recoverableBlock?: CompactionRecoveryBlockDto | null;
 }): CollaborationAgentStatusSnapshot => {
   const status = normalizeAgentApiStatus(input.status);
   return Object.freeze({
     execution: cloneCollaborationMemberExecutionIdentity(input.execution),
     details: Object.freeze({
-      status,
+      status, recoverableBlock: input.recoverableBlock ?? null,
       trigger: input.trigger?.trim() || null,
       errorMessage: input.errorMessage?.trim() || null,
     }),

@@ -1,0 +1,1116 @@
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md b/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md
+index 281465575..b236d57fc 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md
+@@ -144,3 +144,32 @@ Fresh rule selection and confirmed receipt are appended below after the tools re
+ Fresh get_handoff_rules returned primary Pass -> /implementation_engineer, Fail/Blocked -> /solution_designer and secondary informational Pass -> /solution_designer. Selected **only /implementation_engineer**, the single most-specific primary Pass rule for the ready SR034 package under the governing single-recipient contract. No API restart/Delivery or duplicate informational notification. Tool confirmation follows.
+ 
+ Primary handoff **confirmed**: send_message_to returned accepted=true / DELIVERED to /implementation_engineer, exact AgentRun implementation_engineer_d565b3adf8074d59878dc089de6d3df1.1,148 cumulative references attached; exact list and receipt in architecture-review-evidence/arch-rev-004. No second informational/API/Delivery recipient. Review stage complete; stop without polling.
++
++### ARCH-REV-005 — Agent-root integration snapshots, child confirmation and atomic publication
++
++- Date/reviewer: 2026-10-01 / Architecture Reviewer; round 5.
++- Canonical result: `design-review-report.md`, **Pass ARCH-REV-005**, Ready SR035 / Approved SR033 plus upstream Approved SR008 / Ready SR010. Large / High unchanged; behavior basis Confirmed, material-premise gate Pass.
++- Trigger: Solution Designer `architecture-integration-handoff.sr035.md`, responding to IR008-DI001.a/b/c and LF001 after Delivery DR002 upstream integration. No new behavior approval requested or supplied; existing child chat/reconnect/root Stop and native recovery/Stopped contracts suffice.
++- Prior authoritative result: **Pass ARCH-REV-004 / SR034**, pre-integration only. This round is not a source/API score revision or a retrospective expansion of that Pass.
++- Review delta: required child-only live input snapshots within the existing root barrier; explicit recoverableBlock/null and input DTO projection; existing input handler after saved conversation hydration; effective host recovery liveness while dead-host viewing remains non-restoring. Public child-store call-scoped beginHostTermination/confirm/finish keeps host command in agentRunStore, intentionally retires child transport before request, requires actual whole success and exact captured batch before reconciliation. Immutable before-fetch activity revisions, exact read/service/node ownership, complete preflight, atomic activity commit then nonthrowing context adoption. Stored tree/messages/native history and sender provenance remain unchanged.
++- Independent source trace confirms the IR008 gaps and the target response: normal standalone @/child chat and host Terminate reach the new owners; root inactive is emitted before a failed finish can be returned and before host completion; generic service absence is not success. Current store adopts before committing and hydration reads expected revisions after I/O. Selected design corrects those boundaries without a private-map bypass, new lifecycle authority, receipt ledger, queue or cold activity persistence.
++
++#### Prior Finding Resolution
++
++| Finding ID | Prior Status | Current Status | Revision References | Verification |
++| --- | --- | --- | --- | --- |
++| ARCH-F001 | Resolved ARCH002; retained ARCH003/004 | **Remains Resolved** | SR019 / IR003 / preserved SR035 | Pure successor preservation and unfinished writer-state contract remain; no new migration or runtime historical interpretation selected. Unaffected evidence reused. |
++| ARCH-F002 | Resolved ARCH003; retained ARCH004 | **Remains Resolved** | SR030 / preserved SR035 | Held A and consumed-A run-level gate remain distinct; child hydration uses actual input projection without send/replay; no new recovery admission authority. |
++| ARCH-F003 | Resolved at design level ARCH004/SR034 | **Remains Resolved; integrated applicability completed** | SR034 + SR035 DS011A/012A/013A/015a | Existing standalone/Team/Org contracts remain. New hosted-child presentation participates through its public owner; whole response qualification and atomic retained-native replacement cover the integrated root without reviving standalone-only reconciliation. Source implementation still due. |
++
++- New/remaining architecture blockers: **None**. IR008-DI001.a/b/c and LF001 are design-addressed, not execution-closed; do not create duplicate ARCH findings for the now-specified correction. Implementation handoff remains incomplete until its owner finishes source/audit/checks.
++- Evidence: `architecture-review-evidence/arch-rev-005/README.md`, entry authorities, input/final audits, source crosschecks and normal runner logs. **5 files / 19 existing tests Pass**: server3/11, web2/8. Mocked baseline coverage, not native target/reconnect/Stop/hydration proof. IR008 projector1Pass/1Fail remains unfixed and not rerun.39 E35 source and12 API durable hashes checked; no source or durable tests authored, provider/private-data/app/browser work, full build/typecheck or confidence rescore.
++- Scope: HEAD026476691c62bda309ce7f2a9342ebb444959f98 / MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98, zero unmerged,672 staged. Preserve in-progress merge/index, WIP, DR002 backup, IR008 preemit backup and stash. No fetch/commit/merge/push/release/cleanup.
++- Residuals: full676/69 auto-merge audit and target implementation/testing remain. ARCH004/IR007/CRR0119.40/API00895.0/CRR013Pass are pre-integration. F005 accepted known/nonfixed/nonPass Qwen STOP; F004unknown; SR022exhausted/v6unapproved; CG033preparatorytimeoutunproved; plain webtscOOM then8GBexit2/7078 not vue-tsc/fullPass;14 wider+7 baseline retained. API006 withdrawn claims and API007 unsupported literal stay excluded. No new provider budget or native cold-history promise.
++- Next gate: dependent implementation -> normal independent source/API/successful-test review -> Delivery semantic docs and isolated Electron build/launch/user verification. No Delivery Completed or finalization inferred.
++
++#### Routing
++
++Fresh rule lookup/selection and confirmed receipt are recorded after tool results. Single most-specific primary Pass rule only; no additional informational/API/Delivery outcome recipient.
++
++Fresh get_handoff_rules selected solely **/implementation_engineer**, primary Pass rule. Tool-confirmed **accepted=true / DELIVERED**, exact AgentRun implementation_engineer_d565b3adf8074d59878dc089de6d3df1;3,459 cumulative references attached. Selection, exact sent list and receipt retained under architecture-review-evidence/arch-rev-005. No duplicate informational/API/Delivery recipient. Pre-send audit remains the preservation basis; no post-send source audit claimed. Review stage complete; stop without polling.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md b/tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md
+index 208e98e32..c9f1155fd 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md
+@@ -9,6 +9,7 @@ A completed round below does not imply all delivery gates are complete.
+ | Revision | Trigger | Prior result | Current result | Affected canonical artifacts |
+ | --- | --- | --- | --- | --- |
+ | DR-001 | CRR013 Pass after API008/TR001 closure | N/A | Blocked — initial integrated docs package ready; explicit user verification pending | docs-sync-report, handoff-summary, release-deployment-report, draft release-notes; fourteen long-lived docs |
++| DR-002 | User requests current remote base + Electron for testing | DR001 verification hold | Blocked — 23 integration conflicts; build not run | handoff-summary, docs-sync-report, release-deployment-report, draft release-notes |
+ 
+ ## DR-001 — Initial integrated delivery preparation
+ 
+@@ -50,3 +51,31 @@ A completed round below does not imply all delivery gates are complete.
+   not assumed safe against new versionless data for a future rollback.
+ 
+ Append DR-002 for a later completed delivery round; preserve this initial hold.
++
++## DR-002 — Updated remote base conflicts before requested Electron build
++
++- Date: 2026-10-01; user request recorded in DR002 README.
++- Prior result: DR001 integrated docs preparation complete / user verification hold.
++- Current result: **Blocked — Local Fix (source integration conflicts)**.
++- Authority/route unchanged: Approved SR033 / Ready SR034 / ARCH-REV004 / IR007 /
++  CRR011 / API008 / CRR013; Large / High, independently reviewed. Those passes
++  describe the pre-integration candidate, not the new conflicted merge.
++- Refresh: fetched origin/personal exit0; base advanced to
++  d057801c89f26bc69a97331b59631c00519aec98; 23 incoming commits.
++- Safety: all 2583 original pins and owned docs verified unchanged at entry;
++  all 2982 pending files archived; 142 explicit paths checkpointed locally at
++  026476691. No generic all-files staging, no push or finalization.
++- Integration: default base-into-ticket merge exit1; 23 unmerged paths (14 generated,
++  5 production, 2 tests, 2 docs); MERGE_HEAD retained for owner reconciliation.
++- Post-integration tests/build: **not executed**; unresolved source is not a
++  user-testable current build. No provider campaign or user app/data access.
++- Canonical status artifacts updated to mark DR001 as historical readiness;
++  long-lived source docs not resolved against guessed intended behavior.
++- Next action: rule-selected implementation owner resolves code integration and
++  auto-merge interactions, preserves both approved features, runs checks and
++  applicable review/validation. Delivery resumes docs/build afterwards.
++- User verification/finalization/release/cleanup: still not complete/not authorized.
++- Terminal return: **Not eligible**. Routing receipt, if accepted, is stored in
++  delivery-evidence/dr-002/handoff-receipt.json; never a Delivery Completed message.
++- Existing unwaived limits and rollback concerns remain in DR001 handoff. Backup
++  path/hash, checkpoint manifest, merge log/index/conflict diff are in DR002 evidence.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md b/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md
+index fa747dbf9..f42d80d39 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md
+@@ -3,300 +3,270 @@
+ ## Review Round Meta
+ 
+ - Package / reviewer / date: `context-compaction-simplification-analysis` / Architecture Reviewer / 2026-10-01.
+-- Canonical ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis`. Ticket-relative references below resolve here; source paths resolve at the isolated worktree root.
+-- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR033**, SR028 REQ001–012/AC001–017 plus REQ013/AC018/BEH007/SCN006. Requirements and approved supplements unchanged during this round.
+-- Upstream Investigation Notes / Solution Revision Record: `investigation-notes.md` E33/E34 and retained investigations; `solution-revision-record.md`.
+-- Reviewed Design Spec: `design-spec.md`, **Ready SR034**, refining the SR033 terminal-activity delta and preserving the reviewed SR030 baseline.
+-- Trigger: `architecture-review-handoff.sr033.md`, followed by in-round `architecture-review-clarification.sr034.md` addressing ARCH-F003.
+-- Supplemental Task Artifacts Reviewed: approval JSON; exact v5/output/held-input/acceptance supplements; SR031 premise clarification; superseded SR032 proposal; SR033/034 source/delta/audit evidence; current IR006/CRR010 and API006 checkpoint plus its explicit evidence-provenance correction. Complete cumulative reference chain: `solution-recovery-evidence/sr034/reference-index.json` -> SR033 -> API006/prior rounds. Older unaffected review evidence is reused within its scope, not claimed reread or rerun in full. Product/DR N/A—not requested.
+-- Relevant Solution Revision IDs: SR012/017/020/022/024/026/028 approvals, SR029/030 reviewed lifecycle/boundary corrections, SR031 rejected same-ID premise, SR033 approval and SR034 technical correction.
+-- Architecture Review Revision Record: `architecture-review-revision-record.md`.
+-- Current Revision / Round / Latest Authoritative Round: **ARCH-REV-004 / 4 / 4**.
+-- Prior Result Reviewed: **ARCH-REV-003 Pass**, SR030 only. ARCH-F001/F002 remain resolved; prior Pass did not approve SR033.
+-- Current-State Evidence Basis: HEAD `6908ccff483f1eca522caa65bfaaf6dcfcc26750`, current pending worktree, last-refreshed `origin/personal` base `8caa610ff438c288d9aca9f2efe2c33924fbf517`. No fresh remote check.
++- Canonical ticket: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis`. Ticket-relative references resolve here; source paths resolve at the isolated worktree root.
++- Upstream Requirements Doc: `requirements-doc.md`, **Approved SR033**; additional applicable upstream `tickets/done/cross-scope-agent-mentions/requirements-doc.md`, **Approved SR008**. Neither approval is reopened.
++- Investigation / solution history: `investigation-notes.md`, current E35 and retained evidence; `solution-revision-record.md`, SR035.
++- Reviewed Design Spec: `design-spec.md`, **Ready SR035**, especially final Agent-root integration section; preserved SR030/SR034 contracts remain applicable. Upstream cross-scope design **Ready SR010** is an additional authority, not proof of merged behavior.
++- Trigger: `architecture-integration-handoff.sr035.md`, after IR008-DI001.a/b/c and IR008-LF001 arising from Delivery DR002 integration.
++- Supplements: exact v5/output, SR027 hold, SR020 acceptance disposition, SR031 premise clarification, SR033 approval and SR034 correction; upstream Product UI specification linked by the cross-scope package; IR008 request/resolution/probe and DR002; current code/API/test-review reports and their histories. Canonical cumulative inventory: `solution-recovery-evidence/sr035/reference-index.json`. Historical/superseded documents are context, not parallel current authorities.
++- Architecture history: `architecture-review-revision-record.md`; **ARCH-REV-005 / round 5 / latest authoritative round 5**. Prior **ARCH-REV-004 Pass** applies to SR034 before integration only.
++- Current checkout: HEAD `026476691c62bda309ce7f2a9342ebb444959f98`, MERGE_HEAD `d057801c89f26bc69a97331b59631c00519aec98`; merge in progress, zero unmerged entries, **672 staged paths**. No new fetch, merge action or commit by reviewer.
+ 
+ ### Independent evidence and limits
+ 
+-| Anchor | Independently checked basis | Scope |
++| Anchor | Checked basis | Meaning |
+ | --- | --- | --- |
+-| R4-E1 | Requirements/approval, canonical SR033 then SR034, E33/E34, source/reference audits | Exact Stopped; no spinner; retained facts/card within the existing in-memory history boundary; no provider-result fiction |
+-| R4-E2 | Executor, reporter, turn abort race, worker/factory, AgentEventStream FIFO/sentinel, native backend and serialized AgentRun | Actual owner abort can precede provider settlement; current close-before-stop/shared-discard hazard; target per-call emission and ordered bounded drain |
+-| R4-E3 | Standalone Terminate UI/store/GraphQL/service/manager; shared event and activity projection | Successful response and event receipt are separate; reconcile before owned listener removal, not generic Offline cleanup |
+-| R4-E4 | Team/Org exposed controls, stores, root/frozen termination, configured handle; Org stage/commit/adopt and activity-store replacement | Supported root omission identified; SR034 completes response/inspection paths without a new root owner |
+-| R4-E5 | Native reporter and recorder exclusion, raw replay/provider boundary, local projection/hydration, corrected API006 provenance | No native cold activity replay established; no migration/persistence inferred from authored reload strings |
+-| R4-E6 | Current unchanged-source tests | **7 files / 85 Pass**: core2/15, server1/11, web4/59; characterization only, not target proof |
++| R5-E1 | Approved compaction/upstream requirements, applicable Product UI, SR035 canonical design and IR008 request | Hosted child chat/reconnect/host Terminate are supported; applying approved native recovery/Stopped semantics is within scope |
++| R5-E2 | Agent-root snapshot/manager/projector/strict DTO; registry/Team input snapshots; event barrier and child context/input handler | Current projection omissions confirmed by source; selected required fields and child-only aggregation fit existing owners |
++| R5-E3 | Host sync composable, AgentRun recovery/termination, configured handle liveness | Recoverable Error is not ordinary dead-host Error; inspection and command-ready attachment have different authority |
++| R5-E4 | Host terminate action, standalone service, root frozen shutdown and inactive publication; child store/service | Whole-command success is later than child inactive and can differ from it; scoped early retirement avoids treating missing service as proof |
++| R5-E5 | Real hydration, context adoption, store publication and public activity-store/native retention helper | Before-fetch revision capture, full identity preflight and commit-before-adopt are necessary and implementable within current boundaries |
++| R5-E6 | Five existing test files, normal package runners | **19 Pass: server 3 files/11; web 2 files/8.** Characterization only; no SR035 target tests authored or executed |
+ 
+-Evidence: `architecture-review-evidence/arch-rev-004/README.md`, input/final audits, source crosschecks, root-termination-premise and test logs. All48 SR033 source hashes and all43 SR034 source hashes matched; ten API durable paths matched. This does not mean91 distinct sources. No production/durable-test changes, live/provider calls, private history/credentials, desktop/browser journey, full-suite/typecheck or crash campaign. No source/API confidence rescore.
++`architecture-review-evidence/arch-rev-005/` retains entry authorities, audits, source crosschecks and exact baseline logs. All39 E35 source hashes matched; all12 API durable hashes are independently checked in the final audit. No source/durable tests authored, contract build, app/browser/provider execution, private history/credentials, full-suite/typecheck or integrated acceptance claim. Normal server test setup uses its test-owned database/Prisma setup; that is not a product build. Baseline stream fixtures with empty statuses do not close LF001. The reported IR008 projector1Pass/1Fail remains unfixed source evidence, not rerun or rescored here.
+ 
+ ## Routing Classification Review
+ 
+-- **Large / High; independent Architecture Review required: Yes.** Cumulative text-strategy/attempt/FIFO/restore scope remains Large/High. The terminal delta is bounded but crosses abort/commit timing, native stream ownership, root command responses and atomic renderer projection.
+-- Classification rationale is evidence-backed, not based on document count. No routing correction required.
++- **Large / High; independent review required: Yes.** Cumulative memory/strategy/recovery/terminal scope remains Large/High. SR035 is a bounded Medium/High integration delta across strict contracts, live input snapshots, two frontend presentation owners, termination evidence and asynchronous publication.
++- Classification is supported by execution/ownership risk, not the number of reference paths. No routing inconsistency.
+ 
+ ## Upstream Behavior And Production-Path Basis Confirmation
+ 
+-- Overall Basis Status: **Confirmed**, after independently verifying SR034's correction.
+-- Approved intended behavior: confirmed termination leaves unresolved native activity visibly **Stopped**, without animation, while retaining factual metadata and already-known completed/failed outcomes. A connection loss is not termination. Later work has its own identity; cancelled input cannot resume or commit late.
+-- Existing behavior confirmed: native event is not a persisted activity trace; frontend stores hold current cards; normal saved projections can replace them. Team/Org controls terminate member AgentRuns through existing frozen scopes, not standalone UI orchestration. Org retires its listener before the request and then inspects.
+-- Scope guardrail confirmed: UC001–004 and SCN006's terminal display correction, including native members under existing root controls. Preserve current snapshot/raw/category inspection, no-import/default-parent, three attempts, fresh-user recovery and original input identity. Exclude new native activity durability, cold reconstruction, outbox/ledger, provider-wide shutdown framework, broad UI redesign, unsupported same-ID replay and arbitrary corruption/power-loss guarantees.
+-- Review authority: technical compliance with approved behavior, not business reapproval. The corrected history boundary is explicit; missing durable native cards are not repaired by inventing history.
+-- Blocking Design Impact traceability: **Yes**. In-round ARCH-F003 protects REQ013/AC018/BEH007; now resolved at design level. No remaining approved-intent ambiguity.
++- Overall Basis Status: **Confirmed**.
++- Approved basis: one direct summary behind the prepared-text strategy, three strategy attempts, safe commit/restore, fresh-user recovery and original input ordering; actual confirmed termination gives unresolved native cards exact **Stopped**, no spinner, retained observed facts. Upstream adds supported standalone @ collaborators, child chat, live/saved views and host-wide Stop, not a new compactor.
++- Current forward witness: standalone composer @ admission publishes a dormant hosted Agent/Team; user opens/messages a child; native child executes normal compaction; reconnect or normal host Terminate reaches the separate Agent-root child stream/view. `AgentCollaborationStreamHandler` delivers genuine user `post_message`; it does not replace the established FIFO or grant recovery through agent reservation release.
++- Scope guardrail: preserve compaction BEH001–007 and upstream UC001/004, REQ001/003/006/008/011/013/014, AC016 sender provenance. No new provider/attempt/default policy, native cold history, persisted queue, migration, receipt ledger, global freshness framework, task-idle policy or shutdown SLA. Inspection never wakes a dead host. Explicit child Send retains upstream wake authority.
++- Review authority: technical compliance, not business reapproval. A stopped card retained in current memory is not proof of cold replay. Old requirements checkout metadata and older specialist headers are historical; current integration position is explicitly established by SR035/IR008/DR002.
++- Prospective blocking Design Impact scope traceability: **Yes; no new blockers identified.** Previously raised IR008 items are design-addressed, not execution-closed.
+ 
+ | Behavior ID | Kind | Design Alignment | Approved Trigger / Current Evidence | Target Path Coherence | Status | Required Action |
+ | --- | --- | --- | --- | --- | --- | --- |
+-| BEH007 | User, supported explicit termination edge | Pass | Pass—normal standalone, Team and Org Terminate controls | Pass—DS011/T/O, DS012 and DS013 now reach retained member cards | Confirmed | Implement all three owners together; test actual response/inspection paths |
+-| BEH005 | User/system | Pass | Pass—owner interrupt/termination during authorized compression or hold | Pass—per-call stopped fact, existing abort/commit fences and fresh-user gate unchanged | Confirmed | Cancellation, no-late-commit/no-cancelled-dispatch regressions |
+-| BEH004/002 | User/operational | Pass | Pass—normal existing saved projection/restore and memory inspection | Pass—bounded terminal-native retention; no invented cold activity or migration | Confirmed | Real reopen/action/response evidence; retain older restore tests |
+-| BEH001/003/006 | System/engineering contract | Pass | Pass—prior ARCH003 basis and unchanged source/design boundaries | Pass—prepared text strategy/three attempts/exact v5/fit unchanged | Confirmed | Reuse scoped prior evidence; do not treat this review as semantic acceptance |
++| BEH005 / upstream UC001/004 | User/system | Pass | Pass—ordinary hosted child message, recoverable exhaustion and reconnect | Pass—DS014/015, required input snapshots and effective host liveness | Confirmed | Implement and prove native Agent plus hosted Team, both failure sites, no replay |
++| BEH007 / SCN006 | User explicit edge | Pass | Pass—normal host Terminate includes frozen child shutdown before host completion | Pass—DS011A/012A, guarded child confirmation then inspection | Confirmed | Actual host action/whole response, failure/stale negatives, exact Stopped |
++| BEH004/002 / upstream saved views | User/operational | Pass | Pass—non-restoring inspection and saved member projection | Pass—DS013A/015a, terminal-native in-memory retention and atomic publish | Confirmed | Real stage/commit/adopt tests; cold empty negative |
++| BEH001/003/006 | System/engineering contract | Pass | Pass—prior approved strategy/summary/fit/restore basis retained | Pass—no SR035 redesign of those owners | Confirmed | Integration regressions; prior passes do not certify merge |
++| Upstream REQ014/AC016 | User/preserved contract | Pass | Pass—sender-aware live and reopened communication, no inferred old provenance | Pass—unchanged upstream message/raw readers | Confirmed | Preserve sender facts during remaining auto-merge audit |
+ 
+ ## Supplemental Artifact Coherence Verdict
+ 
+-| Artifact | Purpose/Scope Clear | Linked | Complete | Consistent | Status/Approval Clear | Required Action |
++| Artifact group | Purpose/Scope Clear | Linked | Complete | Consistent | Status/Approval Clear | Required Action |
+ | --- | --- | --- | --- | --- | --- | --- |
+-| SR033 approval + requirements; SR034 clarification/E34/delta | Pass | Pass | Pass | Pass | Pass | None; user approval unchanged |
+-| Exact v5/output, SR027 input hold, SR020 disposition | Pass | Pass | Pass | Pass | Pass | Preserve existing limits; v6 excluded |
+-| API006 evidence clarification and original checkpoint | Pass | Pass | Pass | Pass | Pass | Correction supersedes older reconnect/reopen/interim-score claims; do not erase original evidence |
+-| IR006/CRR010 and prior architecture histories | Pass | Pass | Pass | Pass | Pass | Prior scope only; no stopped implementation approval inferred |
+-| SR031 and historical SR032/older research | Pass | Pass | Pass | Pass | Pass | Same-ID machinery withdrawn; SR032 approval hold superseded; older proposals not current authority |
+-| Cumulative inventory/index chain | Pass | Pass | Pass | Pass | Pass | Carry complete references to implementation; index is navigation, not proof every artifact was rerun |
++| SR035 handoff/E35/delta + canonical four SD docs | Pass | Pass | Pass | Pass | Pass | Implement final section, not LF001 alone |
++| IR008 request/resolution/probe + DR002 | Pass | Pass | Pass | Pass | Pass | Preserve incomplete merge/audit status and backup |
++| Upstream SR008/SR010 and linked Product UI | Pass | Pass | Pass | Pass | Pass | Preserve approved entry/child/root journeys and sender identity |
++| v5/output/hold/disposition and SR031/033/034 | Pass | Pass | Pass | Pass | Pass | No new prompt/provider authority; v6 excluded |
++| ARCH004/IR007/CRR011/API008/CRR013 and histories | Pass | Pass | Pass | Pass | Pass | Explicitly pre-integration; no aggregate rescore |
++
++Complete reference inventory is navigation, not a claim every historical file was reread or every previous check rerun. Product compaction redesign remains N/A; upstream Product UI is applicable. Delivery DR002 is applicable, not N/A. No new Product mockup required for unchanged vocabulary/layout.
+ 
+ ## Task Design Health Assessment Verdict
+ 
+ | Assessment Area | Result | Evidence | Required Action |
+ | --- | --- | --- | --- |
+-| Current posture assessed | Pass | Bounded approved behavior correction over existing lifecycle owners | None |
+-| Root-cause classification explicit/evidenced | Pass | Missing terminal invariant; consumer disposed before final producer event; native source coverage mismatch during projection replacement | Do not attribute all observations to unmeasured packet loss |
+-| Refactor decision explicit | Pass | Narrow native pump lifetime and frontend phase/reconciliation policy | No general lifecycle/history framework |
+-| Decision reflected concretely | Pass | SR034 rules1–9, DS011/T/O–013, exact file/removal/test map | Implement source and projection changes together |
++| Current posture assessed | Pass | Bounded integration correction, not greenfield feature | None |
++| Root cause supported | Pass | LF001 mapping defect; overall missing snapshot invariant/ownership and publication ordering | Preserve distinction between local defect and dependency closure |
++| Refactor decision explicit | Pass | Narrow extension of existing root/child-store/read owners | No new root coordinator |
++| Concrete response matches decision | Pass | Required DTO, public call-scoped child boundary, guarded stage/commit/adopt | Implement full set, remove old lossy/unqualified paths |
+ 
+ ## Spine Inventory Verdict
+ 
+-All listed spines have readable narrative, concrete naming, governing owner and off-spine separation (Pass); no facade is mistaken for the lifecycle authority.
++| Spine | Scope | Readable | Narrative | Facade/Owner | Naming | Ownership | Off-Spine Separation | Verdict |
++| --- | --- | --- | --- | --- | --- | --- | --- | --- |
++| DS014 | @ admission -> child user message -> FIFO/core -> projection | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
++| DS015 | Live selection/reconnect -> barrier -> strict child state -> view | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
++| DS011A | Host Terminate -> child then host backend shutdown -> response -> both presentations | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
++| DS012A | Native final/stopped event -> root stream -> child card | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
++| DS013A | Read-only inspection -> staged saved projection -> retained facts | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
++| DS015a | Read identity/revision capture -> I/O -> preflight -> commit -> adopt | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
++| DS001–013 retained baseline | Strategy, attempts, memory, held/consumed A, native drain, standalone/Team/Org | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+ 
+-| Spine ID | Scope / start -> end | Governing Owner / Narrative | Verdict |
+-| --- | --- | --- | --- |
+-| DS011 | Standalone Terminate -> API/service -> prepared AgentRun -> native stop -> confirmed response -> card | Existing runtime shutdown; store applies confirmed evidence before teardown | Pass |
+-| DS011T | Team panel/history Terminate -> root frozen member scope -> successful response -> exact member reconciliation -> disconnect/Offline | Team root lifecycle server-owned; Team store owns view sequencing | Pass |
+-| DS011O | Org history Stop -> stopAndInspect/early retire -> frozen direct/team scope -> success -> reconciliation -> inspection/commit/adopt | Org contexts store owns command/view sequence; transport facade does not adopt policy | Pass |
+-| DS012 | AbortSignal -> executor/reporter -> core FIFO -> backend/AgentRun -> adapters -> activity store -> row | Observed execution fact; separate successful-response reconciliation covers absent/late receipt | Pass |
+-| DS012a | Register abort -> compress/validate/commit or stop -> one local terminal emission -> detach | Executor owns an authorized call, not a global operation ledger | Pass |
+-| DS012b | Shutdown producer -> sentinel -> queued events/listeners -> concrete pump disposal | Native backend, outside dispatch lock, one remaining deadline | Pass |
+-| DS013 | Saved inspection -> actual raw projection -> guarded activity replacement -> context adoption -> render | Projection owns saved facts; activity store retains uncovered terminal native facts already present | Pass |
+-| DS001–010 | Existing selection/strategy/commit, restore/inspection/settings, held/consumed recovery and live queue/status | Prior ARCH003 owner/spine conclusions retained; no new call site/retry policy | Pass—reused unaffected evidence |
++The host remains a separately managed AgentRun; its Agent-root owns children. New return/event and local publication spines do not obscure that split.
+ 
+ ## Boundary Encapsulation Verdict
+ 
+ | Boundary / Owner | Public Entry Clear | Internals Internal | Bypass Controlled | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Native lifecycle / AgentRun | Pass | Pass | Pass | Pass | Backend wait remains outside serialized event queue; no UI call to factory/memory |
+-| Executor/reporting | Pass | Pass | Pass | Pass | Signal/commit fact originates in core; observer cannot change acceptance or retry |
+-| Root command stores | Pass | Pass | Pass | Pass | Exact existing Team/Org owners; no compaction coordinator above them |
+-| Activity store | Pass | Pass | Pass | Pass | Public confirmation and guarded replacement; pure reconciliation below store, never a second caller boundary |
+-| Saved projection | Pass | Pass | Pass | Pass | Reads stored facts only; no history-derived retry/runtime resurrection |
++| agentRunStore host lifecycle | Pass | Pass | Pass | Pass | Existing command; calls child store only through public beginHostTermination |
++| agentRunCollaborationStore | Pass | Pass | Pass | Pass | Owns child contexts/services/read exclusion; transient confirm/finish scope |
++| Root snapshot/manager | Pass | Pass | Pass | Pass | Child-only public registry/Team snapshots; inspection distinct from command-ready |
++| Activity store / pure native reconciliation | Pass | Pass | Pass | Pass | Shared terminal retention/confirmation remains below public store boundary |
+ 
+ ## Dependency Direction / Forbidden Shortcut Verdict
+ 
+-| Owner / Boundary | Allowed Clear | Forbidden Explicit | Direction Coherent | Verdict | Notes |
++| Boundary | Allowed Dependencies | Forbidden Shortcuts | Direction | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Core -> reporter/notifier -> stream | Pass | Pass | Pass | Pass | No server/Vue dependency; persistence remains memory owner |
+-| Backend -> factory/core and source listeners | Pass | Pass | Pass | Pass | No browser ACK/extra queue; concrete session cleanup cannot close replacement |
+-| Command owner -> public activity store -> pure reconciliation/type | Pass | Pass | Pass | Pass | Pure helper has no Pinia/network/root imports; callers do not mix store with internals |
+-| Hydration -> atomic store replacement -> existing context adoption | Pass | Pass | Pass | Pass | No clear/reinsert workaround, post-publication side patch or shadow cache |
++| Host -> child presentation | Pass | Pass | Pass | Pass | No private-map enumeration, child -> host termination recursion or fourth server API |
++| Root -> registry/Team; projector -> shared DTO | Pass | Pass | Pass | Pass | No Org lifecycle import or copied Agent-root queue model |
++| Store -> hydration/context -> public activity commit | Pass | Pass | Pass | Pass | No adopt-before-commit, rollback cache or revision recapture |
++| Viewing -> inspection | Pass | Pass | Pass | Pass | Root is_active/card alone never authorizes host restore |
+ 
+ ## Interface Boundary Verdict
+ 
+-| Interface | Subject Clear | Singular Responsibility | Explicit Identity | Generic Risk | Verdict |
++| Interface | Subject Clear | Singular Responsibility | Identity Explicit | Generic Risk | Verdict |
+ | --- | --- | --- | --- | --- | --- |
+-| Existing terminate APIs/root result | Pass | Pass | Pass—typed run/root IDs and actual accepted/success response | Low | Pass |
+-| executeIfAuthorized/report status | Pass | Pass | Pass—operation/requested/execution turn IDs and signal | Low | Pass |
+-| Native pump/session + remaining timeout | Pass | Pass | Pass—concrete backend instance/session | Low | Pass |
+-| applyConfirmedNativeTermination (example public action) | Pass | Pass | Pass—run + eligible exact native IDs + existing current status | Low | Pass |
+-| replaceProjectionActivitiesIfRevisions | Pass | Pass | Pass—per-run revision and activity identities; all-run check before publish | Low | Pass |
+-| CompressionStrategy/frozen migration interfaces | Pass | Pass | Pass | Low | Pass—unchanged prior review |
++| beginHostTermination(hostRunId) -> confirm()/finish() | Pass | Pass | Pass—captured handle/root/view/child context/state/address/instance/node | Low | Pass |
++| listAgentContextEntries / adoption preflight | Pass | Pass | Pass—exact child run and address, no selection-only subset | Low | Pass |
++| Required inputStates / agent_input_states | Pass | Pass | Pass—existing run-ID/state envelope, validated child index | Low | Pass |
++| inspect versus attach/explicit submit | Pass | Pass | Pass—host/node/read or exact service/socket owner | Low | Pass |
++| commitActivities / replaceProjectionActivitiesIfRevisions | Pass | Pass | Pass—all-run revision vector and duplicate checks | Low | Pass |
++
++Call-scoped exclusion is lifecycle coordination owned by the child view, not a durable result table. Names are concrete local interfaces, not a new wire protocol.
+ 
+ ## Existing Capability / Subsystem Reuse Verdict
+ 
+ | Need | Existing Area Checked | Reuse Sound | New Piece Justified | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Prompt stopped fact | Pass | Pass | N/A | Pass | Existing scoped executor/reporter, not a cancellation service |
+-| Final native events | Pass | Pass | N/A | Pass | Existing AgentEventStream FIFO/sentinel and backend pump |
+-| Root confirmation | Pass | Pass | N/A | Pass | Existing root response/view owners and activity store |
+-| Shared phase/native reconciliation | Pass | Pass | Pass | Pass | Actual duplicated phase checks and one concrete native presentation policy, not generic helpers |
+-| Saved history | Pass | Pass | N/A | Pass | Existing revision-guarded replacement and100-item window; no writer/store addition |
++| Child live input | Pass | Pass | N/A | Pass | Existing registry/Team recursion, LiveAgentInputSnapshot and input handler |
++| Snapshot ordering | Pass | Pass | N/A | Pass | Existing synchronous capture/event barrier; buffer until publication |
++| Stop facts/retention | Pass | Pass | Pass | Pass | Existing activity policy; small child-owner call scope justified by two channels |
++| Read publication | Pass | Pass | N/A | Pass | Existing inspection slot/service lifetime and atomic activity API |
+ 
+ ## Subsystem / Capability-Area Allocation Verdict
+ 
+-| Subsystem | Ownership Clear | Reuse/Extend Sound | Right Spine Owners | Verdict | Notes |
++| Area | Ownership Clear | Reuse/Extend Sound | Correct Spine Owner | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Core compaction/turn | Pass | Pass | Pass | Pass | Execution truth and cancellation/commit fence |
+-| Native server backend | Pass | Pass | Pass | Pass | Session lifetime/drain; root orchestration preserved |
+-| Web command/context owners | Pass | Pass | Pass | Pass | Successful response correlation and local sequencing |
+-| Web activity capability | Pass | Pass | Pass | Pass | Displayed record mutation, source-aware replacement, phase vocabulary |
+-| Memory/history/migration | Pass | Pass | Pass | Pass | Existing meaning preserved; no new persisted responsibility |
++| Server Agent-root | Pass | Pass | Pass | Pass | Aggregate child state, preserve host independence |
++| Shared collaboration contract | Pass | Pass | Pass | Pass | Strict common recovery/input shape, no compatibility default |
++| Web Agent collaboration | Pass | Pass | Pass | Pass | Child read/stream/presentation lifetime |
++| Web host execution | Pass | Pass | Pass | Pass | Existing command/result authority |
++| Core memory/strategy | Pass | Pass | Pass | Pass | No new integration policy assigned here |
+ 
+ ## Reusable Owned Structures Verdict
+ 
+-| Repeated Structure / Logic | Extraction Evaluated | Shared File Sound | Ownership Clear | Verdict | Notes |
++| Structure | Extraction Evaluated | Shared File Sound | Owner Clear | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Five phase values/predicates | Pass | Pass | Pass | Pass | types/activity/compactionPhase.ts replaces unions/guards |
+-| Native identity + confirmed terminal transform + retained-source composition | Pass | Pass | Pass | Pass | services/activity/nativeCompactionActivityReconciliation.ts, pure under store |
+-| Root request ownership | Pass | N/A | Pass | Pass | Bounded captures in existing distinct owners; no shared registry/ambiguous root-ID service |
++| LiveAgentInputSnapshot / agentInputStateSchema | Pass | Pass | Pass | Pass | Reuse exact existing envelope, not parallel queue type |
++| Terminal native activity policy | Pass | Pass | Pass | Pass | Reuse nativeCompactionActivityReconciliation below activity store |
++| Child entry/identity preflight | Pass | Pass | Pass | Pass | Owned context API, not exported mutable private map |
++| Stop/read handles | Pass | N/A | Pass | Pass | Local owner identity sufficient; no generic coordinator extraction |
+ 
+ ## Shared Structure / Data Model Tightness Verdict
+ 
+-| Structure | One Meaning Per Field | Redundancy Removed | Overlap Controlled | Variant Choice Sound | Verdict | Notes |
++| Type / Model | Single Meaning | No Redundancy | Overlap Controlled | Specialization Sound | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- | --- |
+-| stopped phase | Pass | Pass | Pass | Pass | Pass | Terminal execution presentation, not a new retry/gate state |
+-| Operation/turn/request identity | Pass | Pass | Pass | Pass | Pass | No latest-row/reset-turn fallback for confirmation |
+-| Native versus provider-boundary activity | Pass | Pass | Pass | Pass | Pass | Exact operation identity; provider markers excluded; summarizerProvider remains native metadata |
+-| Current status and store record | Pass | Pass | Pass | Pass | Pass | Store returns matching existing status projection; no independent receipt cache |
+-| Call-local confirmation capture | Pass | Pass | Pass | Pass | Pass | Existing context/state/stream/runtime identities, no retained command ledger |
++| Agent-root package snapshot | Pass | Pass | Pass | Pass | Pass | Ephemeral child input/status facts; never host or stored queue |
++| Strict root view | Pass | Pass | Pass | Pass | Pass | Required explicit null recovery / explicit empty historical input list |
++| Stop capture / read owner | Pass | Pass | Pass | Pass | Pass | Authority identity differs from operation identity; both needed, neither durable |
++| Current native activity | Pass | Pass | Pass | Pass | Pass | Native identity remains distinct from external-provider boundary facts |
+ 
+ ## File Responsibility Mapping Verdict
+ 
+-Paths relative to worktree; C=autobyteus-ts/src, S=autobyteus-server-ts/src, W=autobyteus-web.
+-
+-| File | Singular Responsibility | Matches Boundary | Retightened After Extraction | Verdict | Notes |
++| File(s) | Singular | Matches Owner | Retightened | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| C/memory/compaction/pending-compaction-executor.ts; agent/compaction/compaction-runtime-reporter.ts | Pass | Pass | Pass | Pass | Scoped terminal observation and publication; unchanged memory authority |
+-| S/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts; factory.ts | Pass | Pass | Pass | Pass | Concrete pump/deadline; factory forwards remaining budget only if needed |
+-| W/types/activity/compactionPhase.ts | Pass | Pass | Pass | Pass | Vocabulary/predicates only |
+-| W/services/activity/nativeCompactionActivityReconciliation.ts | Pass | Pass | Pass | Pass | Pure native presentation policy; replaces unimplemented terminalization helper proposal |
+-| W/stores/agentRunStore.ts; agentTeamRunStore.ts; agentOrgContextsStore.ts | Pass | Pass | Pass | Pass | Their own supported command/view ownership; call public activity boundary |
+-| W/stores/agentActivityStore.ts | Pass | Pass | Pass | Pass | Existing revisions/window; confirmed mutation and atomic source-aware composition |
+-| W/services/agentStreaming/handlers/{compactionActivityProjection,agentStatusHandler}.ts | Pass | Pass | Pass | Pass | Normal event identity/projected status |
+-| W/services/activity/runActivityWindowPolicy.ts; services/runHydration/runProjectionActivityHydration.ts | Pass | Pass | Pass | Pass | Shared predicates; no new history decoder |
+-| W/utils/compactionActivityPresentation.ts; components/workspace/agent/CompactionStatusRow.vue | Pass | Pass | Pass | Pass | Exact one-word neutral/static display |
+-| AgentRun/root adapters/contracts/hydration orchestration | Pass | Pass | N/A | Pass | Verification-only unless necessary typing; no generic rewrite |
++| server agent-run-collaboration-root.ts / root-manager.ts | Pass | Pass | Pass | Pass | Live aggregation / explicit stored empty input, respectively |
++| server agent-collaboration-view-projector.ts | Pass | Pass | Pass | Pass | One GraphQL/WS mapping, removes omission |
++| collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts | Pass | Pass | Pass | Pass | Required contract; generated outputs via established build |
++| web agentRunCollaborationContext.ts | Pass | Pass | Pass | Pass | Correlation, input projection, complete preflight/nonthrowing adoption |
++| web agentRunCollaborationHydration.ts | Pass | Pass | Pass | Pass | Before-I/O revision vector and unpublished candidate |
++| web agentRunCollaborationStore.ts | Pass | Pass | Pass | Pass | Read/service/Stop ownership, ordered publication, no host command authority |
++| web agentRunCollaborationStreamingService.ts | Pass | Pass | Pass | Pass | Existing transport cancellation, buffer and exact owner qualification |
++| web agentRunStore.ts / useAgentRunCollaborationSync.ts | Pass | Pass | Pass | Pass | Host command coordination / effective liveness, respectively |
+ 
+ ## Subsystem / Folder / File Placement Verdict
+ 
+-| Path / Item | Placement Clear | Folder Matches Owner | Mixed/Over-Split Risk | Verdict | Notes |
++| Path / Item | Placement Clear | Correct Boundary | Split/Mixing Risk | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Core executor/reporter; native backend | Pass | Pass | Low | Pass | Existing capabilities extended |
+-| Web activity type + pure reconciliation | Pass | Pass | Low | Pass | Two concrete reusable concerns; no generic support layer |
+-| Existing root stores and activity store | Pass | Pass | Low | Pass | Sequencing stays with distinct owners; no root polymorphic facade added |
+-| Existing tests by core/server/web boundary | Pass | Pass | Low | Pass | Add target assertions near actual owners, including stage/commit/adopt |
++| Existing server Agent-root and shared root backends | Pass | Pass | Low | Pass | Follow upstream moved shared files, not old Org filenames |
++| Existing web services/agentCollaboration and stores | Pass | Pass | Medium | Pass | Store owns real coordination; if growth requires split, retain authority and split concrete staging only |
++| Shared activity/input handlers | Pass | Pass | Low | Pass | No new common catch-all or forwarding-only wrapper |
+ 
+ ## Removal / Decommission Completeness Verdict
+ 
+-| Item | Obsolete Piece Named | Replacement Clear | Scope Explicit | Verdict | Notes |
++| Area | Obsolete Piece Named | Replacement Clear | Scope Explicit | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Abort-as-failed presentation | Pass | Pass | Pass | Pass | Actual signal produces stopped; ordinary failures stay failed |
+-| Close-before-stop/shared-discard graceful path | Pass | Pass | Pass | Pass | Concrete stream lifetime/sentinel/drain |
+-| Repeated phase unions/guards | Pass | Pass | Pass | Pass | One frontend vocabulary |
+-| Standalone-only reconciliation / projection-complete assumption | Pass | Pass | Pass | Pass | SR034 all owners + source-aware atomic retention |
+-| Unimplemented compactionActivityTerminalization.ts proposal | Pass | Pass | Pass | Pass | Do not create beside nativeCompactionActivityReconciliation.ts |
+-| Prior category/child/legacy/unsupported same-ID machinery | Pass | Pass | Pass | Pass | Prior clean-cut removals/rejections retained; no reintroduction |
++| Projection/publication | Pass | Pass | Pass | Pass | Remove lossy mapping, after-fetch revision capture, adopt-before-commit, unqualified stale callbacks |
++| Host liveness | Pass | Pass | Pass | Pass | Replace blanket Error-is-dead with authoritative recovery qualification |
++| Upstream moves | Pass | Pass | Pass | Pass | Shared root backends; never recreate retired Org files |
++| Retired compactor | Pass | Pass | Pass | Pass | Keep lineage resolver/child runner/old test removed; preserve both current shared exports |
+ 
+ ## Legacy / Backward-Compatibility Verdict
+ 
+-| Area | Compatibility/Dual Runtime Path | Clean-Cut Removal | Verdict | Notes |
++| Area | Dual/Legacy Path | Clean Cut Explicit | Verdict | Notes |
+ | --- | --- | --- | --- | --- |
+-| Native terminal presentation | No | Pass | Pass | One current phase meaning; no old error-text heuristic |
+-| Retained native activity composition | No | Pass | Pass | Current source-coverage difference, not old-version decoding or a second authoritative cache |
+-| Persisted current snapshot/frozen released upgrader | No runtime legacy branch | Pass | Pass | ARCH002/003 boundary preserved; isolated historical converter not runtime compatibility |
+-| Provider-native activity | No new fallback | Pass | Pass | Separate supported subject, not impersonated by native stopped cards |
++| New live DTO fields | No | Pass | Pass | Required producer and consumer change together, no optional fallback |
++| Current/frozen snapshot boundary | Isolated released migration only | Pass | Pass | No new runtime old-version interpretation or settings import |
++| UI history | No new compatibility path | Pass | Pass | Stored-only empty input is truthful absence, not fake recovery |
+ 
+ ## Persisted-Data Transition Verdict (When Applicable)
+ 
+-| Area / Stored Subject | Decision | Reader/Semantic Evidence Sufficient | Choice Proportionate | Migration Safety | Verdict | Notes |
++| Stored Subject | Decision | Evidence Sufficient | Proportionate | Migration Safety | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- | --- |
+-| SR033/034 native activity | Not Affected—no persisted format change | Pass | Pass | N/A | Pass | Reporter logs/notifies; external recorder excludes native; raw replay recognizes provider boundaries only. Retain existing memory records, never invent absent cold records |
+-| Snapshot/raw/archive/settings | Preserved prior Directly Usable / frozen existing migration dispositions | Pass—reused ARCH002/003 and unchanged boundaries | Pass | Pass—existing scope retained | Pass | No new migration ID/history campaign/import/readiness gate; current meanings unchanged |
+-
+-Migration guideline's availability/current-reader/isolation principles remain satisfied. No installed private-data census or new persistence requirement follows from the withdrawn API reload claim. Explicit clear, normal100-item eviction and process lifetime still bound native card retention; this is not guaranteed durable activity history.
++| Agent-root tree/message/raw provenance | Stored Data Not Affected | Pass | Pass | N/A | Pass | New fields belong to ephemeral package/view, existing readers/writers unchanged |
++| Live input and native terminal facts | No new persistence/reconstruction | Pass | Pass | N/A | Pass | Same-process projection/retention only; no cold queue/activity promise |
++| Current working context / fixed released upgrader | Preserve reviewed decision | Pass | Pass | Pass—prior scope retained | Pass | SR019 unfinished writer recognition and IR003 boundary unchanged; no new migration ID |
+ 
+ ## Change / Refactor Safety Verdict
+ 
+ | Area | Sequence Realistic | Temporary Seams Explicit | Cleanup Explicit | Verdict |
+ | --- | --- | --- | --- | --- |
+-| Add stopped + per-call latch/listener | Pass | Pass | Pass | Pass |
+-| Refine concrete native pump under existing deadline | Pass | Pass | Pass | Pass |
+-| Shared phases/store policy and all three command owners together | Pass | Pass | Pass | Pass |
+-| Atomic retained-source replacement before context adoption | Pass | Pass | Pass | Pass |
+-| Preserve cancellation/FIFO/SDK/persistence and verify strict transport | Pass | Pass | Pass | Pass |
+-
+-Mandatory target tests are concrete: already-aborted/backoff/late result/commit-before-abort, reporting failure, final event order and remaining deadline, no self-await/resubscribe/cross-session cleanup, response-before-event, stale/failing root response, all exact members, Org success then inspection failure, actual staged replacement/adoption, multi-run revision-conflict atomicity, no absent-card creation/provider pollution, dedupe/window and genuine live retry. They remain pending implementation; baseline green is not their substitute.
++| Contract/root/projector cut | Pass | Pass—no LF001-only readiness claim | Pass | Pass |
++| Context/staging/publication before Stop inspection | Pass | Pass—preflight then atomic commit then synchronous adoption | Pass | Pass |
++| Child confirmation/host liveness | Pass | Pass—early retirement intentional, finally releases only own scope | Pass | Pass |
++| Integration completion and downstream gates | Pass | Pass—preserve staged merge/backups; full676/69 audit still due | Pass | Pass |
+ 
+ ## Example Adequacy Verdict
+ 
+-| Topic | Example Needed | Present/Clear | Avoided Shape Explained | Verdict | Notes |
++| Topic | Needed | Clear Example | Avoided Shape Explained | Verdict | Notes |
+ | --- | --- | --- | --- | --- | --- |
+-| Org early-retire/success/empty-native projection | Yes | Pass | Pass | Pass | OperationX retained Stopped through actual commit/adopt; laterY separate |
+-| Actual failure vs stopped vs committed | Yes | Pass | Pass | Pass | Per-call latch, successful synchronous commit wins, known results preserved |
+-| History boundary | Yes | Pass | Pass | Pass | Cold empty store does not inventX; in-memory retention is not durable replay |
+-| Root scope/correlation | Yes | Pass | Pass | Pass | All retained exact members, not focused row/turn-number/Offline guess |
+-| Prior held/consumed recovery and successor preservation | Yes | Pass—retained | Pass | Pass | No new safe point or approval reopening |
++| Actual root success vs inactive/failed finish | Yes | Pass | Pass | Pass | Child fail, later host fail, uncertainty and successful inspection failure distinguished |
++| Stale scope/node/instance/read result | Yes | Pass | Pass | Pass | Exact captured batch; null/error/finally cannot erase replacements |
++| Concurrent activity during member I/O | Yes | Pass | Pass | Pass | Two-child oracle, zero partial publication; never recapture expected revision |
++| Live recovery vs cold saved state | Yes | Pass | Pass | Pass | Agent plus hosted Team, held/post-response, no send/replay on hydration |
+ 
+ ## Material Premise Validation (Only When Needed)
+ 
+-### MP008 — Owner abort may precede underlying compression settlement
+-- Authority / behavior: REQ005/013, AC013/018, BEH005/007; Supported Explicit Edge Scenario.
+-- Initiating basis: **User**, normal Terminate during native compaction (also existing Stop generation under preserved cancellation contract).
+-- Support/forward path: exposed control -> existing server prepared termination/interrupt -> native active turn signal -> TurnExecutionScope Promise.race; underlying strategy/provider promise can settle later. Worker/factory shutdown and native event stream are separate owners.
+-- Lifecycle/consequence: waiting only for the turn or moving close alone does not guarantee its eventual async catch emits a timely terminal card; owner abort is already known.
+-- Reachability: **Reachable**. Per-call signal listener/latch plus existing commit fence is proportionate; no new cancellation ledger/provider wait.
+-
+-### MP009 — Team successful response can precede final event receipt
+-- Authority / behavior: REQ013/AC018/BEH007, SCN006; Supported Explicit Edge Scenario.
+-- Initiating basis: **User**, TeamMembersPanel Terminate+confirm or history Team Terminate while a native member compacts.
+-- Forward path: panel/history -> agentTeamRunStore.terminateTeamRun -> GraphQL/service/manager -> frozen root member shutdown -> success; client disconnects Team stream then marks members Offline. It does not call standalone terminateRun. Separate HTTP/WebSocket channels have no renderer receipt ordering guarantee.
+-- Lifecycle/consequence: an already-displayed native member card can remain active despite confirmed root termination unless this actual command owner reconciles it.
+-- Reachability: **Reachable**. ARCH-F003; SR034 adds exact-member successful-response reconciliation under existing owner, not a root shutdown framework.
+-
+-### MP010 — Org stop-and-inspect misses live terminal events and replaces uncovered cards
+-- Authority / behavior: REQ013/AC018/BEH007, related REQ007; Supported Explicit Edge Scenario.
+-- Initiating basis: **User**, visible Org history Terminate to stop and inspect its member conversation.
+-- Forward path: WorkspaceAgentRunsTreePanel -> useWorkspaceHistorySubjectActions(stop) -> stopAndInspect retires stream BEFORE request -> Org/frozen direct+Team shutdown -> successful response -> markHistorical/readInspection -> stage -> commitActivities -> adoptLocalContexts.
+-- Lifecycle/consequence: no old listener remains for stopped; native saved projection contains no native phase record; current replacement drops the retained card. Context adoption cannot preserve activity-store records.
+-- Reachability: **Reachable**. Same ARCH-F003; SR034 settles before inspection and retains actual terminal native records within the existing revision-guarded store boundary. No new persistence.
+-
+-### MP011 — The earlier authored reload label proves native durable card replay
+-- Authority / behavior: REQ007/013, BEH004/007; inspect/reopen itself is supported, but the claimed evidence is not.
+-- Initiating basis: **User**, reopen/reconnect was claimed by API006; retained run-script outputs contain only authored labels, without submitted script/navigation/context-reset/projection response.
+-- Forward checked source: native reporter -> notifier, not a raw activity writer; recorder excludes native; local raw replay maps provider_compaction_boundary only. API-owned synthetic raw captures contain no native status records.
+-- Lifecycle/consequence: the alleged completed renderer-reload/durable-native-card provenance is **Unclear as an observation**; **Not Reachable through the inspected current native raw replay path**. Do not turn it into a persistence finding or a native history journal.
+-- Review consequence: API owner withdrew those proof/score claims. Separate real reopen verification remains required; SR034 uses only already-present in-memory records and actual confirmed response evidence. No design mechanism depends on the unproved claim.
+-
+-Prior MP004 preservation remains supported; MP005 pre-tool-continuation and MP006 user reservation/release mechanisms remain rejected; MP007 post-response gate correction remains. SR031 test-injected identical-ID Team/Org retransmission is not promoted to a supported producer/ledger requirement. Full current root witness: `architecture-review-evidence/arch-rev-004/root-termination-premise.md`.
++### MP012 — Child inactive cannot substitute for successful host Terminate
++
++- Authority / behavior: approved REQ013/AC018/BEH007/SCN006 plus upstream REQ013 root Stop.
++- Basis: **User**, normal standalone run/history Terminate after using @ child chat; not an injected lifecycle event.
++- Forward witness: exposed control -> agentRunStore.terminateRun -> GraphQL AgentRunService -> standalone termination binding -> Agent-root frozen child finish -> root inactive publication -> host shutdown/history -> actual result. Current root publishes inactive before returning a failed child finish result; root manager throws on rejected result. Host completion is later still.
++- Preconditions/consequence: retained native child activity exists; initiating child stream can disappear without a successful whole-command receipt. Treating generic absence as confirmation would falsify the approved stopped result.
++- Reachability: **Reachable**, source-derived contract, not new full-product execution.
++- Response: selected explicit child stream retirement and short current-operation exclusion, then success-qualified exact batch reconciliation. Preserve failure uncertainty. No receipt ledger or inferred partial success required.
++
++### MP013 — Recoverable host Error does not make live child inspection equivalent to dead-host viewing
++
++- Authority / behavior: compaction REQ004/012/AC017/BEH005; upstream direct child chat and live/saved views.
++- Basis: **User/system**, normal native host work reaches approved three-attempt exhaustion while existing hosted children remain managed; user views their conversation.
++- Forward witness: normal native failure -> independent recoverable block/status -> host context projection -> selected-host sync composable -> current blanket Error false -> child detach/inspection. Root registry and configured handles preserve managed execution; command-ready stream attachment can restore a truly dead host, whereas inspection cannot.
++- Consequence: need current recovery-qualified liveness, not status-only disconnection or root-active restore permission.
++- Reachability: **Reachable**, source-derived supported failure path. Target test remains pending.
++- Response: effective recovery liveness/watch plus existing read-only inspection boundary; no changed task-idle policy. Existing handle open-work and AgentRun shutdown/fencing retain their roles.
++
++Other staging guards enforce the already-approved atomic projection and exact-owner contract at its new caller; they do not establish a new product scenario. Prior MP005/006 unsupported pre-tool-continuation/user-reservation recovery and MP011 withdrawn durable-history premise remain excluded and drive no machinery.
+ 
+ ## Unresolved Approved-Behavior Or Current-State Gaps
+ 
+-**None blocking this architecture result.** Exact API006 lost-packet attribution, real renderer reconnect/saved hydration, full Team/Org UI and target execution remain validation gaps, not assumed successful evidence or unapproved behavior. A new durable-native-history expectation would require upstream requirements/design work, not implicit scope expansion.
++**None at the architecture boundary.** IR008-LF001 and DI001.a/b/c remain implementation/validation work; the Ready SR035 target addresses them. The unfinished wider auto-merge audit is explicitly downstream work, not represented as established source correctness.
+ 
+ ## Review Decision
+ 
+-**Pass — ARCH-REV-004**, Approved SR033 / design SR034. Basis Confirmed; material-premise gate Pass. SR034 resolves the in-round root response/inspection omission. Ready for implementation of this bounded delta; not implementation/source review, API acceptance or Delivery.
++**Pass — ARCH-REV-005**, Approved SR033 + applicable upstream Approved SR008; Ready SR035 integration design. Basis Confirmed; material-premise gate Pass. No new requirement approval is needed for this bounded correction. This is design readiness only, not integrated implementation/API/build/delivery acceptance.
+ 
+ ## Findings
+ 
+-**None unresolved.** Prior ARCH-F001/F002 remain resolved. In-round **ARCH-F003 — Medium / Design Impact**:
+-- Protected authority: REQ013/AC018/BEH007, SCN006; **Within Approved Scope**, no approved-behavior change or renewed approval required.
+-- Defect in initial SR033 design: standalone-only success reconciliation did not cover existing Team/Org command owners; Org's mandatory inspection would erase even a pre-inspection settled card.
+-- Evidence: MP009/010; independently inspected exposed controls, actual teardown/inspection path and atomic replacement; review-entry SR033 retained.
+-- Proportionate correction: existing root owners supply confirmed evidence to the existing activity-store public boundary; preserve uncovered terminal native facts in its guarded replacement. No new lifecycle authority, durable history or side cache.
+-- **Resolved at design level by SR034**, independently verified in rules6/8/9, DS011T/O and DS013, full file/removal/target test map. Implementation/validation still required. Reuse ARCH-F003 if this same design gap returns.
++**None new or unresolved.** Rechecked ARCH-F001/F002/F003 remain resolved at design level; details are appended to architecture-review-revision-record.md. IR008 items are independently confirmed design-addressed; no duplicate architecture ID is created merely to restate an acknowledged, now-specified target correction. Do not interpret this as closing LF001 in source or the incomplete IR008 result.
+ 
+ ## Classification
+ 
+-**N/A — Pass.** Resolved in-round classification was Design Impact, not Requirement Gap.
++**N/A — Pass.** Task Large / High unchanged. No Requirement Gap, blocking Design Impact or Unclear item remains in the reviewed design.
+ 
+ ## Recommended Recipient
+ 
+-Fresh `get_handoff_rules` selected **/implementation_engineer**, the primary architecture Pass recipient. One cumulative package under the governing single-most-specific-recipient rule; no duplicate informational/API/Delivery forwarding. Handoff confirmed accepted=true / DELIVERED to implementation_engineer_d565b3adf8074d59878dc089de6d3df1;1,148 cumulative references attached. Receipt and selection retained in reviewer evidence and revision history.
++Fresh get_handoff_rules selected primary architecture-Pass recipient **/implementation_engineer**. Handoff confirmed accepted=true / DELIVERED with3,459 references; receipt retained in architecture-review-evidence/arch-rev-005/handoff-receipt.json. Single most-specific route only; no additional informational/API/Delivery outcome notification. Complete integration and normal downstream gates before Delivery's requested isolated Electron build/user testing.
+ 
+ ## Residual Risks
+ 
+-- SR033/034 is not implemented. Abort timing, one-terminal-per-call, postcommit reporting, remaining-deadline drainage, queue lock order and correct root/member correlation need target tests and independent source review. Preserve existing three-attempt ceiling and no late commit/cancelled dispatch.
+-- Native activity retention remains bounded in memory, not durable after process/browser loss. Actual saved reopen/reconnect must record real actions/projection responses and distinguish absent cold activity from retained presentation. No invented success from authored labels.
+-- **API006 incomplete; latest completed API005 Fail78.6**, API004 Fail90.7 historical. API006 interim90.7 withdrawn, no replacement score. F007 actual Settings closure and346 selected repository Pass remain scoped; this review's85 are separate baseline checks, not additive confidence.
+-- Ten API durable paths still require eventual successful proportional test-code review. Inherited14 / baseline-contract7 / web typecheck6836 / full suite, current semantic fidelity, full Team/Org UI, physical drag, consumed-tool full UI, crash, Delivery and explicit user-verification gates remain unwaived.
+-- F005 accepted known/nonblocking, not fixed/Pass; Qwen stopped. F004 original cause unknown; F006 corrected. SR022 exhausted diagnostics retain1 fidelityFail/3 scoped usable; candidate-v6 unapproved/excluded. No new provider campaign/budget/default/support change authorized.
+-- Preserve pending work/backups/stash and external artifacts. No stage/commit/push/merge/release or cleanup performed. Eventual origin/personal finalization remains Delivery-owned.
++- SR035 target is not implemented.19 baseline Pass do not prove required child recovery snapshots, actual host-stop reconciliation, new stale/atomic publication controls or LF001 resolution. Test old/current native Agent/hosted Team, held and consumed-A paths, failure/stale boundaries and real projection stage/commit/adopt—not mocks alone.
++- Full676 incoming/69 overlap semantic audit remains implementation-owned. Zero textual conflicts and672 staged paths are not semantic assurance. Preserve DR0022982-file backup, IR008 preemit backup, stash/index/WIP; no destructive rebuild or recreation of retired owners.
++- ARCH004/IR007/CRR0119.40/API00895.0/CRR013Pass are **pre-integration only**. API007 unsupported literal claim remains excluded; API006 renderer reload/hydration/durable-card claims and interim score remain withdrawn. Historical failures retain their meaning; no reviewer score adjustment.
++- F005 accepted known/nonfixed/nonPass, Qwen STOP; F004 cause unknown; SR022 exhausted; v6 unapproved. No new provider budget. CG033 preparatory timeout remains unproved/not pump Pass. Plain web tsc OOM then8GBexit2/7078 is not vue-tsc/full Pass; inherited14 wider+7 baseline residuals remain unwaived.
++- Early local child retirement intentionally forfeits unseen final events. Only whole success can settle unresolved retained cards; failed/uncertain results preserve last-known facts. No guarantee about other-client reactivation, browser ACK or broad shutdown SLA.
++- Native retention remains bounded in-memory, not cold activity persistence. Memory commit is per-file, not a power-loss transaction guarantee. Sender provenance and current/frozen restore boundary remain regression obligations.
++- Integrated source/API/successful-test review and Delivery semantic docs/isolated Electron build/launch/user verification remain required. No commit/push/release/finalization/cleanup or Delivery Completed is authorized by this Pass.
+ 
+ ## Latest Authoritative Result
+ 
+-- Review Decision: **Pass — ARCH-REV-004**, design SR034 against Approved SR033.
++- Review Decision: **Pass — ARCH-REV-005 / SR035**.
+ - Material-Premise Gate: **Pass**.
+-- Notes: ARCH-F003 resolved in-round; prior findings remain resolved. Review is structural readiness only. Canonical report authoritative; revision history and evidence preserve the delta and limits. No delivery advancement.
++- Notes: Ready for dependent implementation of the integrated design, not a ready-to-test Electron build. Routing confirmed by the retained tool receipt; reviewer stage complete.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md b/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md
+index d5d5061f3..e62d22e5a 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md
+@@ -2,10 +2,12 @@
+ 
+ ## Solution And Approval Basis
+ 
+-- Package `context-compaction-simplification-analysis`; Solution Designer; 2026-10-01; **SR-034 Ready / Architecture Design Complete; requirements Approved SR033 (SR028 plus REQ013/AC018)**.
++- Package `context-compaction-simplification-analysis`; Solution Designer; 2026-10-01; **SR-035 Ready / Architecture Design Complete; requirements Approved SR033 (SR028 plus REQ013/AC018)**.
+ - Canonical `requirements-doc.md` is consolidated Approved. Latest SR033 approval: **“approve this behavior.”**, following agreement on **Stopped**, no spinner, card retained; follow-up **“follow the design princiles for design thanks”**. Exact approval: solution-recovery-evidence/sr033/approval.json. Prior SR028 user: “Well, I think now you can continue with the design. Yeah, I agree with you. Hold A then B flow.” Approval covers `input-hold-proposal.sr027.md`, supplementing SR012/017/020/022/024/026. No pending retry-owner/content-boundary/A-B question.
+ - Exact v5/output contract, natural-compression assumption and no-import/preservation decisions remain. Prior draft ownership/interfaces are superseded by this complete design; original preserved at `history/design-spec.md.before-sr028.md`. Older evidence/reviews remain historical scoped authorities, not current implementation proof.
+-- Investigation authority: `investigation-notes.md`, especially E21–E34. SR030 corrects the real post-response failure path within the existing approved error/fresh-user policy. SR029 body and supported-ingress clarifications remain; its preservation of old post-response IDLE/different-turn authorization is superseded. ARCH-REV-003 subsequently passed this SR030 target. IR004 historically returned IR004-DI001; IR005/006 and CRR010 subsequently advanced the supported implementation. API006 is now incomplete pending this revised design, not a completed validation result. SR031 is an evidence/premise clarification, not a new target architecture or implementation acceptance. Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`, branch `codex/context-compaction-simplification-analysis`, current HEAD `6908ccff483f1eca522caa65bfaaf6dcfcc26750`, last-refreshed base origin/personal `8caa610ff438c288d9aca9f2efe2c33924fbf517`. No fresh fetch. Delivery owns eventual origin/personal finalization.
++- Investigation authority: `investigation-notes.md`, especially E21–E35. The final **SR035 Agent-root integration** section completes IR008-DI001 under both Approved SR033 compaction and upstream `tickets/done/cross-scope-agent-mentions/requirements-doc.md` Approved SR008 / design SR010 (including sender provenance REQ014/AC016). Requirements and behavior-defining supplements are unchanged; this is technical integration, not new approval.
++- Current workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`, branch `codex/context-compaction-simplification-analysis`; HEAD `026476691c62bda309ce7f2a9342ebb444959f98`, MERGE_HEAD / fetched origin/personal `d057801c89f26bc69a97331b59631c00519aec98`. Delivery DR002 initiated this local integration after the user requested updated origin/personal and Electron for testing. Merge is **in progress/uncommitted**, zero unmerged entries, 672 staged merge paths at entry. No SD fetch/staging/commit/build/finalization. Delivery owns finalization target origin/personal and the eventual isolated build/user test.
++- Current specialist context: ARCH-REV004 passed SR034; IR007 / CRR011 source Pass9.40 / API008 Pass95.0 / CRR013 test Pass (TR001 closed) cover the **pre-integration** candidate only. IR008 returned **Design Impact / NOT integration-ready**. New independent architecture review is required by the resulting route, not self-declared by this spec. Older evidence/status language in prior-round sections is historical; E35 and SR035 govern current state. Full676 incoming/69-overlap implementation audit remains incomplete.
+ 
+ ## SR031 production-scenario premise clarification — no new architecture selected
+ 
+@@ -19,10 +21,12 @@ The unhanded SR031 candidate that proposed shared command admission/claim tokens
+ 
+ Implementation should identify any concrete production producer/actor or applicable Team/Org contract for the precise same-ID resend after a completed send/recovery failure, with its forward path. Generic network possibility, the existence of identity fields, a callable send method or the synthetic test alone is insufficient. No new intended behavior is awaiting user approval. IR004 was incomplete when this clarification was issued; subsequent IR005/006 progress does not turn the unsupported diagnostic into acceptance evidence. Do not erase/relax the retained diagnostic.
+ 
+-## SR033 approved terminal-activity refinement — design completed by SR034
++## SR033 approved terminal-activity refinement — SR034 baseline extended by SR035
+ 
+ The final **SR033 terminal-activity design delta, refined SR034** section is part of this canonical spec. SR034 completes existing Team/Org successful-termination and retained-activity hydration paths for in-round ARCH-F003; it does not change Approved SR033 requirements or claim review closure. It replaces cancellation-status and native backend stream teardown/presentation behavior only; reviewed SR030 retry/hold/commit/queue boundaries remain. User approved exact **Stopped**. ARCH003 covers SR030, not this delta. API006 reload/reopen labels were not navigation proof: the owner withdrew those coverage claims and interim90.7. See E33 and the existing-history boundary below; do not add persistence from that mistaken premise.
+ 
++The SR034 terminal rules below remain the baseline; SR035 adds the incoming standalone Agent-root child path and takes precedence for that integration. The upstream Product-owned UI spec remains external; no compaction Product redesign is requested.
++
+ ## Current-State Read — SR028/SR030 design-entry baseline
+ 
+ The next three paragraphs describe the pre-IR005 investigation, not a claim that IR005/006 never implemented it. Current source facts are in E33/E34 and the final delta section.
+@@ -680,7 +684,7 @@ Off-spine concerns: phase vocabulary/formatting serve presentation; operation/tu
+ 3. **Execution versus gate:** failed/stopped terminate the reported execution, not necessarily the pending gate lifetime. A later genuinely authorized same-live-run recovery may use that gate's existing operation ID and emit started again. Do NOT install a universal terminal-phase monotonicity rule. After normal Terminate, a new runtime uses a separate operation ID; do not correlate by reset turn number or latest-row position. Never bulk overwrite completed/failed cards.
+ 4. **Backend shutdown:** retain the pump Promise and concrete stream/session identity. Keep subscription alive while core shutdown is requested/completed, then close producer subscription/enqueue existing sentinel and drain queued events/source-listener promises before final disposal. Do not set the consumer discard flag before drain. No new subscriptions after terminating/terminated; old pump finally must not close a replacement. Last-subscriber disposal is cleanup, not user-termination evidence. AgentRun keeps backend await outside dispatchQueue and final cleanup/unsubscribe after it. Source listeners cannot await their own pump or termination from inside the queue.
+ 5. **Bounded drainage:** use one native termination deadline (existing10s budget), covering removal and graceful event drain, forwarding remaining timeout through the existing native factory callback if necessary. No extra repeated10s wait. At remaining-budget expiry, dispose the projection stream and diagnose incomplete delivery; do not block confirmed resource shutdown forever waiting for presentation. Keep command/resource outcome truthful: projection loss does not undo successful shutdown, resource failure does not become success, timeout proves no provider result. No browser ACK protocol or generation/termination retry.
+-6. **Backend-confirmation race — common contract, all three existing command owners:** server drain cannot order HTTP response against WebSocket receipt; Org intentionally removes its listener before issuing Terminate. Successful termination evidence must reach presentation at standalone agentRunStore.terminateRun, Team agentTeamRunStore.terminateTeamRun, and Org agentOrgContextsStore.stopAndInspect. No standalone activation bypass. The detailed root flow below is mandatory.
++6. **Backend-confirmation race — common contract, three command entrypoints plus Agent-root child presentation owner (SR035):** server drain cannot order HTTP response against WebSocket receipt; Org intentionally removes its listener before issuing Terminate. Successful termination evidence must reach presentation at standalone agentRunStore.terminateRun, Team agentTeamRunStore.terminateTeamRun, and Org agentOrgContextsStore.stopAndInspect. The standalone command also crosses agentRunCollaborationStore through its public stop scope in SR035; agentRunStore must not read its private maps or settle child activities itself. No standalone activation bypass. The detailed root flows below and SR035 are mandatory.
+    - Capture the request's existing root/context and stream ownership, bound-node revision, member run IDs/addresses and native activity IDs before await; capture each available inputProjection.runInstanceId and state object. Use current native operation-derived identities, not a turn-number/latest-row guess. This is a bounded call-local snapshot of existing data, discarded on return, not a retained command ledger.
+    - After the actual matching backend success only, ask the existing activity store to settle still-unresolved (requested/started) eligible native activities and return the matching current-status projection. Completed/failed/stopped facts are unchanged. Preserve original timestamps, identity and factual metadata. Backend success establishes that the execution is no longer running, not compaction success/exhaustion/rollback.
+    - A same-owner native activity first observed while the request is pending may also qualify; never include a new runtime or another root/member. A different non-null run-instance ID, replaced context/state/transport or changed node binding rejects broad current-state reconciliation/teardown. Null after ordinary terminal input cleanup is not itself evidence of a new runtime: retain the captured identity and require unchanged enclosing ownership and exact native operation identity. When proof is absent do not guess or mark a replacement Offline.
+@@ -692,7 +696,7 @@ Off-spine concerns: phase vocabulary/formatting serve presentation; operation/tu
+    - Native eligibility uses current operation identity (activityId = compaction:operation:<compactionOperationId>, nonempty operation ID) and excludes provider-boundary identity/metadata; command caller also checks the existing autobyteus runtime configuration. summarizerProvider is ordinary native metadata, not an external-runtime marker. No legacy turn-ID fallback, provider-status heuristic expansion or error-string parsing.
+ 9. **Retained native history at the existing activity store:** replaceProjectionActivitiesIfRevisions must still validate all run revisions/duplicates before publishing any run. Within that same synchronous atomic replacement, compose incoming projected activities with existing same-run native compaction activities whose current phase is completed, failed or stopped and whose identity is absent from the projection. Those facts are already in the bounded activity store, whereas native saved projections do not contain them. Keep the actual record fields/timestamps/IDs; one record per identity, chronological stable ordering, then the existing100-item window/highlight/approval rules. Do not copy tool/provider/system activities from the old store under this policy. Do not retain unresolved native cards merely because the run is Offline; no conversion during hydration. Exact duplicate IDs remain single records, and a retained terminal native record must not become nonterminal from a saved projection. A genuine subsequent live started event may still update the same pending gate under rule3; this is NOT universal terminal-phase monotonicity.
+    - Do not clear activities before staging, reinstall them after the atomic commit, or keep a separate root cache/receipt table. A revision conflict still rejects the entire staged commit with no partial publication. A retry reads current facts. Explicit clear and ordinary eviction remove cards normally; cold empty stores reconstruct only actual stored records, never these missing native events.
+-   - This store-level composition covers Org stop-followed-by-inspection, later Org stream hydration, Team root/member hydration, and standalone saved projection using the same public replacement action. It preserves the displayed approved history without modifying native raw writers, persisted schemas, user messages or current runtime-status snapshots. It does not manufacture generation-free-reopen evidence.
++   - This store-level composition covers Agent-root child stop-followed-by-inspection (SR035), Org stop-followed-by-inspection, later root stream hydration, Team root/member hydration, and standalone saved projection using the same public replacement action. It preserves the displayed approved history without modifying native raw writers, persisted schemas, user messages or current runtime-status snapshots. It does not manufacture generation-free-reopen evidence.
+ 
+ 
+ ### Supported root scope and exact success/inspection sequencing (SR034 / ARCH-F003)
+@@ -781,3 +785,116 @@ Prompt abort fact plus ordered drainage is smaller/more authoritative than a par
+ **task_size=Large / architectural_risk=High for the completed cumulative package.** Core/server/web strategy/recovery and retained persistence-boundary scope remains Large/High. SR033/SR034 terminal delta is Medium scope but High risk from cancellation/commit timing, pump/lock lifetime, root response/teardown ownership and atomic projection receipt semantics. Markdown/reference count does not determine classification. ARCH003 applies to SR030 only. Escalate before a new queue/ledger, native activity persistence, broad provider shutdown contract, changed runtime policy or relaxed cancellation/attempt ceiling. Independent review must cover SR033 as corrected by SR034, including in-round ARCH-F003. No reviewer finding is self-declared closed.
+ 
+ **Architecture Design Complete**, not implemented/validated/delivered. API006 incomplete; latest completed API005Fail78.6. F007 desktop closure and346 repository Pass remain scoped. Corrected API006 interim90.7 is withdrawn, no replacement score. Ten-path successful-test review,14 inherited/7baselinecontract/webtypecheck6836/full-suite/current semantic/crash/Delivery/user gates remain. F005 accepted known/nonblocking not fixed/Pass/QwenSTOP; F004 unknown; F006 corrected; SR022 exhausted1fidelityFail/3scopedusable; v6 unapproved. SR031 same-ID machinery stays withdrawn.
++
++
++## SR035 Agent-root integration — authoritative completion of IR008-DI001
++
++### Approved scope, supported scenarios and current evidence
++**Design Impact, not Requirement Gap.** Compaction BEH004/005/007, SCN004/005/006, REQ004/005/007/012/013 and AC008/013/014/017/018 still govern. Upstream UC001/004, REQ001/003/006/008/011/013 establish normal standalone `@` admission, dormant hosted Agents/Teams, direct child chat, reconnect, retained membership and root Stop. Applying already-approved recovery/Stopped behavior to their native AgentRuns changes no intended outcome. Keep upstream REQ014/AC016 sender identity live and after reopen; no inference for old messages without sender facts. No new scenario IDs/requirements, provider/default/retry policy, input retention lifetime or native cold-history promise.
++
++Forward witness: user adds an Agent/Team in the standalone composer -> admission publishes one dormant hosted instance -> user opens/messages the collaborator -> that native AgentRun reaches ordinary pre-parent or post-response compaction -> user reconnects or terminates the host -> exact child projection/history is inspected. The normal path is **Supported Normal Scenario**; compaction exhaustion and termination during compaction are the existing **Supported Explicit Edge Scenarios**. No manually repeated command-ID premise. `delegate_task` extra copies retain upstream semantics; they are not the normal mention-created instance.
++
++E35/source-evidence.json records current source and IR008 evidence. LF001 is an executed **local** production-projector/strict-schema failure on an ordinary dormant child (empty control Pass). DI001.a/b/c consequences are source-derived, not newly executed product proof. The new root owns children, not host; its stream connection can restore a host, whereas GraphQL inspection cannot. Child inactive is not a successful root-Stop receipt: local finish can fail after publishing inactive; host termination is later still. The current web publish mutates retained contexts before activity commit and reads revisions after awaited projections. These are material integration boundaries, not grounds to revive the retired compactor.
++
++### Design health / refactor and persisted-data decisions
++Posture: bounded integration correction. LF001 alone is **Local Implementation Defect**. Overall cause: **Missing Invariant / Boundary Or Ownership Issue** across live snapshots, two frontend presentation owners and asynchronous publication. **Refactor needed now, narrowly:** complete the existing snapshot DTO and root aggregation, establish a public call-scoped child termination boundary in the existing collaboration store, and correct its publication order/ownership. No new root coordinator, generic command framework, queue, retained receipt ledger or activity cache. Reuse the implemented activity store and input-state handler; do not duplicate their policy.
++
++**Stored data Not Affected.** `AgentRunCollaborationPackageSnapshot` is an ephemeral read model, not `AgentRunCollaborationTreeFile`. Current tree/message stores and sender-aware raw trace readers/writers remain unchanged. Live queue/recovery snapshots are never written to the tree or recovered from conversation text. A stored-only inspection explicitly supplies `inputStates: []`; dormant children have Offline/null recovery and no fabricated run instance. Native terminal activity retention remains SR034's bounded in-memory composition, not cold reconstruction. Migration/old-version branches/new schemaVersion/startup gate: **N/A**. Existing released migration and sender provenance contracts remain applicable; no new transformation is selected.
++
++### Integrated spine and ownership inventory
++| Spine | Scope / supported trigger -> meaningful outcome | Owner and narrative |
++|---|---|---|
++| DS014 | Primary: standalone composer `@` -> shared mention admission -> Agent-root collaborator hosting -> direct child composer/stream command -> root exact recipient/handle -> AgentRun existing FIFO/core compaction -> live input/presentation event -> child context/card | Existing root admission/registries own identity and execution. One hosted instance remains Offline until first message. Core/server hold/retry semantics unchanged; no new admission dedupe subsystem. |
++| DS015 | Primary: active-host selection/reconnect -> Agent collaboration stream -> manager command-ready root -> root snapshot barrier -> child status/input aggregation -> strict DTO -> staged member projection -> atomic activity commit/context adoption -> held/recoverable child view | Root captures in-process facts; stream buffers sequenced events until snapshot publication; activity store and context own their existing projections. Host stays on its own Agent stream. |
++| DS011A | Primary: normal host Terminate -> agentRunStore (capture host + begin child stop scope) -> existing GraphQL/AgentRunService -> standalone binding -> Agent-root frozen child shutdown -> host shutdown/history result -> actual success -> child/host public activity reconciliation -> owned cleanup -> child read-only inspection/card | No fourth server termination API. The command remains agentRunStore-owned; child presentation/transport ownership belongs to agentRunCollaborationStore. Three existing command entrypoints remain, with this fourth presentation participant. |
++| DS012A | Return/event: native executor stopped/final fact -> existing backend drain -> configured/Team adapters -> Agent-root publisher -> collaboration stream -> existing generic presentation dispatcher -> child activity/status | Same stopped vocabulary/public store as SR034. Real final events outside a locally retired Stop stream remain authoritative; inactive/disconnect alone is never confirmation. |
++| DS013A | Secondary: normal saved selection or confirmed host Stop -> non-restoring GraphQL inspection -> manager live-or-stored snapshot -> exact member projections -> all-run revision check retaining known terminal native cards -> adopt/publish -> view | Reading cannot call command-ready/attach merely because root is active (root can survive host crash). Empty native saved projection cannot invent a card or replay queued messages. |
++| DS015a | Bounded local: capture read owner + member activity revisions -> asynchronous workspace/projection reads -> recheck exact owner -> preflight retained identities -> atomic commit -> nonthrowing adoption/publication | Store owns publication/exclusion; hydration builds unpublished candidates; activity store owns all-run atomicity. No after-publish repair. |
++
++### Snapshot, status and host-liveness contract (DI001.a / LF001)
++1. Extend the existing Agent-root package snapshot with required `inputStates: readonly LiveAgentInputSnapshot[]`. Aggregate existing public `rootAgents.getInputStateSnapshots()` and root-hosted `teams.list().flatMap(team => team.getInputStateSnapshots())` inside the same synchronous snapshot capture used for tree/messages/status and base sequence. Reuse the existing Team recursion; deduplicate by exact agent run ID, validate against the child index, never include host. No handle materialization or historical queue reconstruction. Dormant/no-live handles contribute no input snapshot; their existing status supplies explicit `recoverableBlock: null`.
++2. Extend `agentRunCollaborationViewDtoSchema` with required `agent_input_states`, using existing `agentInputStateSchema` and the established `{agent_run_id, state}` envelope. Project every child status's `status.details.recoverableBlock` explicitly, including null, and map `snapshot.inputStates`. Both GraphQL and WebSocket already share this projector; fix it once. No `.optional()`/default-array compatibility branch hiding a deficient producer. Stored-only manager snapshot must explicitly supply the empty array. Regenerate dependent contract dist from source, not hand-edited declarations/maps.
++3. Candidate AgentRunCollaborationContext validates root/host, exact child run-ID/address correlation and unique status/input targets before applying them. Status writes both currentStatus and recoverableBlock. After the saved conversation is built, apply each live input state through existing `handleAgentInputState`: same-instance revision, held/queued labels and identity upsert remain centralized. Unknown/host/duplicate targets reject the candidate, not partial published state. Inputs use the validated tree's unique child identity (the established input DTO is keyed by run ID, not a new address-bearing parallel shape). Live generic input events continue through the existing dispatcher; snapshot hydration sends nothing. Historical/dormant contexts remain Offline with null recovery and no input projection.
++4. `useAgentRunCollaborationSync` uses **effective host liveness** rather than blanket Error-is-dead: Initializing/Idle/Running retain existing live behavior; Error with the current authoritative recoverable compaction block is still managed/live; Error without that block and Offline use non-restoring inspection. The computed/watch key must react to block/liveness changes even when status stays Error, and to the bound-node revision. Use the current host context's status/recovery projection, never a compaction card or `root.is_active` as permission to restore. Do not turn viewing a genuinely crashed/stopped host into `resolveCommandReadyRoot`. Ordinary explicit child Send retains upstream authority to attach/wake host. During pending local Stop the child store's exclusion wins over auto-sync.
++5. No change to native held A/queued B transitions or post-response consumed-A nonreplay. Same-process reconnect restores the actual live input projection; backend restart does not recover that queue. A failed attempt card alone is not live-held-input authority. Pure inspection performs no generation.
++
++### Exact child confirmation boundary and sequencing (DI001.b)
++**Selected local shape:** extend `agentRunCollaborationStore` with a public **beginHostTermination(hostRunId)** returning a bounded call-scoped handle with synchronous `confirm()` and idempotent `finish()` operations. Names are concrete implementation guidance, not a new wire contract. Its private ownership is disposed after the request; it stores no durable result and is not a retry/admission ledger. `agentRunStore` calls only this public boundary, not child context maps, child services or child activity reconciliation internals. Host reconciliation remains at its existing owner. Add a read-only `listAgentContextEntries()` to AgentRunCollaborationContext to enumerate all exact children, analogous to Org; callers never reach its private map.
++
++**Preparation before the mutation:**
++- agentRunStore captures its existing exact host context/state/service/node binding/input instance/activity IDs. For non-temp runs it then begins the child scope **before any await**, even if no child context is loaded (absence authorizes no invented card).
++- Child store excludes another Stop/attach/child command/publication for this host while this handle is current. A new Send is rejected before optimistic submission/draft clearing, not queued for later. Existing server admission/shutdown gates are unchanged.
++- Capture bound-node revision, root object and view, every retained child run ID/address/context/state, runtime kind, available `inputProjection.runInstanceId` and native operation/activity IDs. Include hosted Agents, every hosted Team member and retained extra task descendants, not selection/live-only filtering.
++- Invalidate any pending inspection publication. **Intentionally retire the exact child stream now, before the HTTP request, like the existing Org stop-and-inspect path.** Set only the root view's reopen-required/pending presentation; do not set child Offline, clear input identity or mutate activity phases yet. This removes the ambiguity of accepting an arbitrary missing/replaced stream after an early inactive callback. Stream disconnect cancels queued processing/recovery/readiness/commands through existing service lifetime; no new server stop request.
++- This tradeoff deliberately forgoes final-event receipt on this initiating child's retired stream; actual command success supplies the approved stopped evidence. Other observers still use DS012A. No general event-driven lifecycle redesign, and no claim that every runtime terminal result is known to this browser.
++
++**After the one actual GraphQL result:**
++- Only `success:true`, with the host command's ownership guard still valid, permits `childStop.confirm()` plus host reconciliation. Child `confirm()` first validates the entire captured child set and enclosing root/view/current handle/node binding. Services must still be absent **because this handle intentionally retired the captured service**, not because a generic disconnect was interpreted as success. Replaced/released root/view/context/state, changed address/run ID/runtime kind, different non-null input instance or a new service invalidate the whole child batch before any card mutation. Missing input instance after known local cleanup is not a new instance; apply SR034's enclosing-ownership/exact-operation rule. No matching loaded context is a safe no-op.
++- On valid child confirmation, synchronously call public `agentActivityStore.applyConfirmedNativeTermination` for each native child using captured identities (and only additional current IDs proven to belong to that same captured state/instance). Assign its matching current-status result; then mark that owned child root historical/Offline using existing cleanup. Known completed/failed/stopped facts remain, external-provider boundary activities remain, absent cards remain absent. No await between validation, reconciliation and owned cleanup.
++- Host store separately reconciles its host card, tears down only its captured host transport/state and updates history. A stale child scope never grants permission to affect replacement children; a child stale result is not grounds to relabel server success as failure or to tear down the replacement root. A stale host request grants no local confirmation at all. Preserve current boolean/transport reporting conventions, distinguishing backend result from local stale application in diagnostics/tests.
++- `finish()` runs in `finally` for success/failure/stale outcomes, disposes only its own handle and releases exclusion. After current confirmed success and host teardown, trigger/coalesce **one fresh non-restoring inspection**, not a pre-Stop in-flight promise, through the existing store inspection owner. No attachment or host wake on Stop completion. If that inspection fails, keep Stopped/history and report the inspection error; never undo confirmed shutdown or restore spinner.
++- Child/root failure, host failure after children stopped, false/missing result, GraphQL error or transport uncertainty supplies **no root-wide successful confirmation**. No stopped conversion by the scope; retain last-known cards and reopen-required/error state. Real final events received before retirement retain their actual meaning. No automatic reconnect/wake merely to repair a rejected Stop; a subsequent explicit supported action may obtain fresh observation. The server's already-published inactive is neither partial-success receipt nor permission to settle every child.
++- Release or node switch invalidates the scope and stale async callbacks; never apply its result or scheduled inspection to a replacement. Duplicate stop attempts do not return fabricated success. No child store calls agentRunStore to perform termination (no circular orchestration).
++
++**Why not retain the child stream and accept `services.get(id) === undefined`?** Undefined can result from inactive-on-failure, unrelated disconnect, release or replacement. Introducing retained retirement provenance just to distinguish these would duplicate local ownership state. Explicit retirement plus the existing owner's short pending-operation exclusion makes the proof and ordering smaller. No original product outcome depends on the initiating browser receiving the final event before the successful response.
++
++### Atomic staging/publication and read ownership (DI001.c)
++1. Capture the current bound-node revision and concrete request/stream owner **before the first await**. For inspection, bind ownership to that exact in-flight attempt in the existing inspections slot; deleting/replacing it on attach, Stop, release or newer inspection invalidates its result. `finally` may delete only its own slot. `null` result and error callbacks require the same guard as non-null results. Do not let an old read erase a new context or an old `onInactive` remove a newer service.
++2. For streams, callbacks must be qualified by exact service plus binding as well as current socket. Check before reporting errors, clearing service, adopting a snapshot or expanding child rows. Buffered event processing stays behind successful snapshot publication. Stop/release cancels old service work. For inspections, service attachment at any point invalidates the read, even if the new service is not yet ready; the present one-time `isReady()` check is insufficient. New node binding invalidates old work: the collaboration store observes bindingRevision, invalidates its pending read/Stop handles, retires its exact services and releases its owned contexts/selection. It must not reuse an old-node service merely because hostRunId is equal. Extend its existing release mechanics; do not wipe another store's activity data or introduce a global freshness framework.
++3. Once snapshot tree IDs are known, capture **all indexed child activity content revisions synchronously before workspace resolution or projection fetch**. For already-known children in a read-only inspection, capture revisions at inspection start (before the root-view fetch), carrying them into staging; new child IDs are captured when the returned tree is validated, before their member fetch. This prevents pre-view-fetch activity changes from being accepted under a newer revision too. Keep these values; never reread at return/commit as an expected revision. Build every candidate conversation/status/input/activity offscreen. No mutation of old AgentContext/state/config/activity during fetch or candidate construction.
++4. `publish` rechecks read ownership, preflights **all** retained run-ID/address/context associations and any adoption conditions first; then invokes `commitActivities()` once. The existing activity store checks all revisions/duplicates and stages every replacement before publishing any run. Its SR034 terminal-native retention/normal100-item window remains the only retention policy. Only after successful commit may adoption swap old contexts' state/config, preserve local composer identity, publish root reference, update errors/selection/expansion. This is one synchronous no-await section. Preflight must make adoption nonthrowing for valid candidates; no identity validation deferred until after commit.
++5. On stale owner or any revision/identity conflict, discard the whole candidate; old conversations, state/config objects, activities/revisions, selection, expansion and root reference stay unchanged. Existing stream recovery/error path may request a fresh snapshot; explicit inspection reports the conflict and can be requested afresh. Do not mask the conflict by recapturing revisions or retrying the same candidate. No partial commit, destructive clear, post-commit rollback/reinsert or shadow cache. Guarding activities alone does not guard context replacement.
++6. Success Stop must settle old cards **before** its fresh inspection captures revisions; the final empty native history replacement then retains actual stopped/completed/failed cards. Cold empty state still constructs only actual saved records. Live new work may use new operation identity and must not relabel the old one.
++
++### Boundary encapsulation / reuse / draft-to-final placement
++Existing boundaries absorb this correction. Shared `LiveAgentInputSnapshot`/`agentInputStateSchema` and the input handler already own the common shape/meaning; do not create an Agent-root queue type. The root package specializes that existing child snapshot without importing Org run lifecycle. Root event publisher supplies its existing barrier. Frontend activity policy remains below the activity-store API; transient stop/read identity stays at collaboration-store owner. Existing folder placement is sufficient; no new subsystem hierarchy or generic base class.
++
++| Change | Worktree-relative file(s) | Final responsibility / removal |
++|---|---|---|
++| Modify | autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts | Required live input snapshot; child-only aggregation inside existing barrier. Reuse registry/Team methods, no host lifecycle adoption. |
++| Modify | autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts | Stored-only empty input snapshot; inspection still never restores. Termination semantics unchanged. |
++| Modify | autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts | Project recoverableBlock plus input state once for both readers. Remove lossy status mapping. |
++| Modify / generate | autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts; dependent dist outputs/tests | Strict required field using shared schema; regenerate with established contract build. No hand-written dist compatibility. |
++| Modify | autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts | Exact snapshot validation/input hydration, read-only entry enumeration, complete preflight/nonthrowing adoption. No activity store cache. |
++| Modify | autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts | Capture immutable revision vector before I/O; optional owner-supplied earlier known-child revisions; stage only. |
++| Modify | autobyteus-web/stores/agentRunCollaborationStore.ts | Public call-scoped child Stop boundary; service/read ownership and exclusion; commit-before-adopt; post-confirmation inspection. Remove adopt-before-commit and unqualified async publication. |
++| Modify | autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts | Cooperate with owner/service/binding invalidation and existing socket lifetime; no stream-derived Stop inference. |
++| Modify | autobyteus-web/stores/agentRunStore.ts | Coordinate public child scope around existing non-temp mutation, preserving own guarded host reconciliation. Do not enumerate/settle child internals. |
++| Modify | autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts | Effective host recovery liveness/binding-aware sync; pending Stop exclusion remains store-owned. |
++| Reuse / verify | services/agentStreaming/handlers/agentInputStateHandler.ts; stores/agentActivityStore.ts; services/activity/nativeCompactionActivityReconciliation.ts (web) | Existing projection and public retained-activity authority, no duplicated rule. |
++| Verify / unchanged | server standalone lifecycle/service/binding, frozen root/Team scopes, GraphQL resolver/stream handler; web root index/factory/UI components | Existing exact root route, live/cold and host/child split; UI vocabulary/layout unchanged. Narrow fixture adaptation permitted, not a rewrite of shutdown. |
++| Upstream move already present, verify | server agent-collaboration/execution/backends/{root-agent-execution-registry,root-team-execution-directory,frozen-root-termination-scope}.ts | Replace former Org-specific path references with these shared current owners; do not recreate old files. Exact old->new map is in IR008 upstream-renamed-authorities.json. |
++| Keep removed | server agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts; agent-execution/compaction/server-compaction-agent-runner.ts; its old test | Upstream metadata edits do not justify restoring the retired category/child compactor. |
++| Adapt setup / preserve assertions | server tests/unit/agent-execution/root-recovery-command.test.ts | Explicit required teamScoped fixture, matching production builders; failures before ingress are not waived. Implementation owner only. |
++| N/A | Persisted native formats/settings/migrations, direct strategy/v5/provider policies, new Product mockups | No SR035 change. Upstream Product UI and sender requirements remain authoritative. |
++
++Do not add a wrapper that merely forwards activity-store calls or extract a new stop coordinator above both stores. The short stop handle exists inside the child presentation owner because that owner alone can retire/guard its streams and publish its views. If source growth crosses repository/skill size boundaries, split concrete staging or presentation-transaction concerns under services/agentCollaboration without moving command authority or copying policy; return Design Impact for changed authority rather than improvising a framework.
++
++### Implementation sequence and verification obligations
++1. Preserve IR008 staged merge and owner evidence. Complete snapshot/domain/projector/contract changes as one coherent cut; regenerate contract outputs non-destructively with backups retained. Correct implementation-owned teamScoped setup without weakening held-A/B assertions.
++2. Add context input projection, exact entry/preflight API and hydration-before-fetch revision capture. Fix atomic publication and async ownership before wiring post-Stop inspection.
++3. Integrate public child Stop scope with host command and effective host liveness. Keep existing normal final-event path and SR034 host/Team/Org behavior. No half-package LF001-only integration-ready claim.
++4. Implementation finishes the676-path/69-overlap audit and relevant local checks; the inventory is not certified by this architecture investigation. Applicable independent source review, executable API/E2E and successful-test-code review follow. Old passes do not certify merge. Delivery then synchronizes semantic docs, builds/launches the isolated Electron candidate and obtains actual user feedback as requested. No provider campaign/new budget granted.
++
++| Case / approved authority | Required oracle and boundary (not SD-executed) |
++|---|---|
++| LF001 / ordinary @ dormant Agent and Team | Actual root admission/status -> production projector -> strict GraphQL and WS envelope succeeds; recovery null explicit; empty-root control also passes. Not just statuses:[] fixtures. |
++| DI001.a / AC017 pre-parent held and post-response failure | Root-hosted native Agent plus hosted Team member expose actual live input snapshot; same-process reconnect rebuilds correct held/queued labels/instance/revision; A not duplicated, consumed A not replayed; stale revision rejected. Cold inspection has empty input state/no send. |
++| Host recoverable Error / upstream UC001/004 | Child transport remains attached in recoverable Error and receives independent child activity; Error without block/Offline only inspect, no host activation/generation. Watch transitions with unchanged Error status. |
++| DI001.b / AC018 normal host Terminate | Real agentRunStore action invokes child scope; multiple native children including nonfocused/retained descendants and host settle only after one actual success, before real post-stop stage/commit/adopt. Stopped exact/no spinner/metadata retained. External/provider cards and known completed/failed unchanged. |
++| Child finish failure; children succeed but host fails; lost/false result | Inactive/closed transport never substitutes for whole-command success; no confirmation-based child or host Stopped; preserve actual prior final events and truthful failure/reopen state. |
++| Same run ID with replaced root/context/state/service/node/instance; release during await | No old response/inspection/error/inactive callback changes replacement root, host, children or activities. New non-null instance invalidates; absent-card case creates nothing. Duplicate pending Stop not synthetic success. |
++| Successful Stop then inspection failure | Stopped/historical remains, error reported, no automatic host wake; later read-only inspection retains actual terminal cards via public atomic replacement. |
++| DI001.c / deferred view/workspace/member fetch | Change one member activity revision while fetch is pending: all-run commit conflicts, zero activity/context/config/selection/expansion publication. Address mismatch rejected before commit; no read of expectedRevision after awaited work. Include two children so partial publication is observable. |
++| Stale inspection resolves after live attach / Stop / release / binding switch | Both null and non-null results, error and finally callbacks cannot erase/overwrite/remove newer owners. Stream snapshot followed by buffered input events applies in sequence. |
++| History/current scope | Real saved selection/hydration and same-browser retained activity; separately cold empty store with no fabricated native activity. No generation for inspection; next new work has separate native operation. Sender provenance remains correct live/reopened (REQ014/AC016). |
++| Cross-feature regression | Mention failure keeps draft/chips and sends nothing; optimistic message IDs correlate; native host/Team/Org recovery/Stop and strict DTOs still work; no retired compactor; current direct strategy/v5/3-attempt/cancel/late-commit/FIFO unchanged. |
++
++Follow root TESTING.md: focused contract/core/server/web checks first, rendered browser-equivalent behavior, then the real product journey in an isolated worktree Electron instance. Assert routes/results/state/DOM and real navigation; labels in a log are not reconnect/reopen proof. Implementation and API specialists own executable changes/results; SD ran no tests/probes/providers. Electron build/leave-running for user testing is still Delivery's next stage after gates, not an architecture acceptance.
++
++### Tradeoffs / final classification / escalation
++Intentional child pre-retirement is a small, explicit command/view ordering choice; it reuses the proven Org approach instead of adding stream-retirement receipts or redefining ROOT_LIFECYCLE. Failure cannot prove which unseen child stopped; preserve uncertainty rather than fabricate partial success. Holding off hydration during Stop is local publication exclusion, not durable input retention. Snapshot revision guards reject concurrent updates rather than silently overwrite them; fresh reads cost another existing read but no generation. No general shutdown SLA or guarantee about other clients racing reactivation is introduced; qualify only exact evidence and available instance identity.
++
++**Completed cumulative task_size=Large / architectural_risk=High, unchanged. SR035 delta Medium / High:** bounded existing-owner edits across contract/server/web, but shared live snapshot semantics, two-channel Stop ordering, async ownership and atomic multi-child publication are high risk. The3416-reference inventory is not the size rationale. Escalate before new wire termination receipts, broad root lifecycle/restore protocol changes, queue/admission ledgers, native persistence, changed task-idle policy, provider/default/retry scope, or weakened user-approved outcomes. No such addition is selected here.
++
++ARCH-REV004/CRR011/API008/CRR013 remain pre-integration evidence only. F005 accepted known/nonfixed/nonPass Qwen STOP; F004 unknown; SR022 exhausted and v6 unapproved; CG033 preparatory timeout unproved/not pump Pass; web tsc OOM then8GBexit2/7078 not vue-tsc/full Pass; inherited14 wider+7 baseline residuals remain unwaived. Per-file atomicity, model-vs-emulator-vs-renderer evidence and native in-memory-vs-cold replay distinctions remain. This design resolves the requested ownership map for independent review; it does not close implementation findings by execution or certify the merge/build/delivery.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md b/tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md
+index e51b7d54f..5ec582b77 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md
+@@ -1,5 +1,25 @@
+ # Docs Sync Report — DR-001
+ 
++## Current delivery state — DR-002 (2026-10-01)
++
++**Blocked: integration Local Fix; Electron build not yet executed.** User requested
++a new build after origin/personal advanced. Fresh fetch succeeded; target is now
++`d057801c89f26bc69a97331b59631c00519aec98` (23 incoming commits). Local safety
++checkpoint `026476691` preserves the reviewed candidate plus docs, with an
++additional file archive. The base-into-ticket merge has 23 conflicts and is left
++in progress for accountable source reconciliation. No executable post-integration
++check/build/app launch can be claimed for an unresolved candidate.
++
++The DR001 already-current handoff below is historical, **not current readiness**.
++No user verification, push, final merge, release or cleanup has occurred. See
++[DR002 integration blocker](delivery-evidence/dr-002/integration-blocker.json) and
++[recovery instructions](delivery-evidence/dr-002/README.md). Remaining action:
++implementation reconciliation and applicable review/validation, then Delivery
++post-integration checks/docs and isolated Electron build for user verification.
++
++---
++
++
+ Package `context-compaction-simplification-analysis`; 2026-10-01; Delivery Engineer.
+ **Docs sync: Pass / Updated. Overall delivery: Blocked — awaiting explicit user verification.**
+ Large / High; independent architecture/source/test-code reviewed route unchanged.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md b/tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md
+index 20335137f..684eb0e1c 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md
+@@ -1,5 +1,25 @@
+ # Delivery Handoff Summary — DR-001
+ 
++## Current delivery state — DR-002 (2026-10-01)
++
++**Blocked: integration Local Fix; Electron build not yet executed.** User requested
++a new build after origin/personal advanced. Fresh fetch succeeded; target is now
++`d057801c89f26bc69a97331b59631c00519aec98` (23 incoming commits). Local safety
++checkpoint `026476691` preserves the reviewed candidate plus docs, with an
++additional file archive. The base-into-ticket merge has 23 conflicts and is left
++in progress for accountable source reconciliation. No executable post-integration
++check/build/app launch can be claimed for an unresolved candidate.
++
++The DR001 already-current handoff below is historical, **not current readiness**.
++No user verification, push, final merge, release or cleanup has occurred. See
++[DR002 integration blocker](delivery-evidence/dr-002/integration-blocker.json) and
++[recovery instructions](delivery-evidence/dr-002/README.md). Remaining action:
++implementation reconciliation and applicable review/validation, then Delivery
++post-integration checks/docs and isolated Electron build for user verification.
++
++---
++
++
+ **Package:** `context-compaction-simplification-analysis`  
+ **Result:** Blocked — user-verification hold; **not Delivery Completed or release approval**.  
+ **Date/owner:** 2026-10-01 / Delivery Engineer.  
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md b/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md
+index 743ecdce2..2043c11ee 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md
+@@ -1,99 +1,65 @@
+-# Implementation Handoff — IR-007
+-
+-## Current result / upstream package
+-
+-**Completed approved SR033/SR034 implementation delta for independent SOURCE REVIEW; not API/E2E acceptance or Delivery.** Current worktree + this handoff are authoritative. IR005/006 source remains in place; IR007 adds31 bounded source/test changes. This is a new reviewed-design implementation round, not a repeat of the already corrected F007 Local Fix.
+-
+-- Approved intended behavior **SR033** (SR028 retained): `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md`; canonical investigation `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md`; cumulative history `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md`.
+-- Ready design **SR034** correcting SR033, with SR028–031 retained: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr034.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr033.md`.
+-- Trigger **architecture_reviewer / ARCH-REV-004 Pass**: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-004/README.md`. ARCH-F003's all-root/Org atomic-publication correction was resolved at design level in that review and is implemented here for source verification; structural7files/85Pass were characterization only, not target proof. ARCH-F001/F002 retained.
+-- Relevant supplements include exact `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md`, `output-format-and-coverage.md`, `input-hold-proposal.sr027.md`, `acceptance-disposition.sr020.md`, `production-scenario-clarification.sr031.md`, `terminal-compaction-activity.sr032.md` as historical decision input, and SR033 approval/SR034 clarification evidence; all absolute paths carried in the full index.
+-- Prior code-review authority **CRR010 source Pass** for IR006; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md`, `code-review-revision-record.md`. It does not review IR007. Earlier CRR009 F007 failure and corrected readiness rationale retained historically, not current reopen-work instructions.
+-- Current executable authority `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-case-ledger.md`, and API006 SR033 evidence-clarification. **API006 incomplete; latest completed API005 Fail78.6**. API004 Fail90.7 historical. F007 actual Settings save/readback/reopen closure and346 scoped repository Pass are API-owned and retained with their limits; not newly executed here.
+-- Full cumulative received/current absolute package: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/reference-index.json`; existence audit `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/reference-check.json`. Independent architecture/source review applicable, not N/A. Product Design/DR **N/A — not requested/not reached**.
+-
+-## Revision / classification
+-
+-Rework **IR-007**; record `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md` keeps IR001 baseline and IR002–006. Related SR012/017–020/022/024–031/033/034; ARCHREV001–004; CRR001–010; APIREV001–006 +SR022 diagnostics; DR N/A. Triggering design finding **ARCH-F003**, previously resolved structurally, not self-closed as implementation evidence.
+-
+-**task_size=Large / architectural_risk=High — Confirmed unchanged.** Design section “SR033/SR034 Tradeoffs, risks and completed classification” remains valid: core/server/frontend cancellation/commit, concrete pump lifetime, root response ordering and multi-run atomic hydration are High risk within cumulative Large scope. Markdown count does not determine classification. Independent **Code Review** required, not direct API/E2E. Direct-route lightweight review **N/A**; `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-self-check.md` is bounded implementation self-check, not approval. New design/requirement impact **None in the implemented delta**; broader standalone preparatory-quiescence diagnostic explicitly retained below, no policy change made.
+-
+-## IR007 reviewed behavior / actual production trace
+-
+-Paths relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`: C=autobyteus-ts/src, S=autobyteus-server-ts/src, W=autobyteus-web.
+-
+-| Behavior / spine | Actual implementation path | Outcome / boundary |
+-| --- | --- | --- |
+-| BEH007 +BEH005; REQ005/013, AC013/018; DS012a | Actual owner AbortSignal -> C/memory/compaction/pending-compaction-executor -> agent/compaction/compaction-runtime-reporter -> existing notifier/stream | Call-local terminal latch emits stopped promptly before provider settlement, once per authorized call; completed synchronous commit wins later abort. Listener removed; ordinary failure remains failed; retry/hold/commit authority unchanged. Fresh authorized same-gate execution may start again. |
+-| BEH007/005; DS011/012b/012 | Normal Terminate -> existing service/root/AgentRun -> S/agent-execution/backends/autobyteus/{autobyteus-agent-run-backend,autobyteus-agent-run-backend-factory} -> core stop -> FIFO sentinel -> retained pump/source listeners -> AgentRun queue/projectors | Concrete session/pump lifetime; one existing10s budget across removal and drain, remaining seconds forwarded. Backend await stays outside AgentRun dispatch lock. Actual shutdown success is not undone by projection drain loss; resource failure is not success. No new queue/ACK/lifecycle coordinator. |
+-| BEH007; DS011 +DS011T | Existing standalone Terminate / TeamMembersPanel or workspace-history Terminate -> W/stores/{agentRunStore,agentTeamRunStore} -> actual matching success -> public agentActivityStore action -> owned teardown/history | Exact context/state/member address/run ID, available runtime instance, service and node-binding guards. All retained eligible native Team members (including task/new same-owner members), not only selection. Received completed/failed preserved; reject stale/rejected/partial confirmation; no absent card invention. |
+-| BEH007; DS011O | History Org Terminate -> existing stopAndInspect in W/stores/agentOrgContextsStore -> intentional early stream retirement -> agentOrgRunStore/server success -> public activity action -> markHistorical -> readInspection | Preserve existing stop exclusion/generation retirement. Success guard expects transport absent, exact current root/member/context/binding. Reconcile before identity cleanup; inspection failure keeps truthful stopped historical state. No transport-facade redesign. |
+-| BEH004/007; REQ007/013; DS013 | Existing projection fetch -> runProjectionActivityHydration -> agentActivityStore.replaceProjectionActivitiesIfRevisions -> pure services/activity/nativeCompactionActivityReconciliation -> normal atomic publish/adopt | All-run revision/duplicate guard still precedes publication. Preserve only already-held uncovered completed/failed/stopped native records by exact identity, stable chronology/dedupe/normal100window. Tools/provider/system remain projection-owned; no retention of unresolved cards from Offline, no cold reconstruction/persistence/cache. Actual Org stage/commit/adopt exercised locally. |
+-| BEH007; DS012 return/render | Existing standalone/Team/Org phase transport -> shared W/types/activity/compactionPhase -> live/hydration/event-monitor/window projection -> utils/compactionActivityPresentation -> CompactionStatusRow and CompactionActivityItem | One five-phase vocabulary; strict adapter admits stopped. Exact one-word Stopped primary+badge, neutral/static icon, no spinner; identity/known model/count metadata retained. Existing completed/failed presentation preserved. |
+-
+-Scope Guardrail **Yes**. Full IR007 path/action/hash/line inventory: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-inventory.json`; isolated round patch `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source.patch`.22 production +9 implementation-test paths; no API-owned durable test adaptations. AgentRun, server root authority, activity hydration/adoption orchestration, persistence, settings and exact-v5 are unchanged unless explicitly listed above.
+-
+-## Cumulative implementation retained (IR005/006)
+-
+-These retained paths/results are not a claim of a fresh whole-product run. IR007 final checks below state precisely what ran.
+-
+-Paths below are relative to isolated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`; C=autobyteus-ts/src, S=autobyteus-server-ts/src, W=autobyteus-web.
+-
+-| Behavior / spine | Actual implementation path | Result |
+-| --- | --- | --- |
+-| BEH001/003/006, DS001/008; REQ001/005/009–011 | C/memory/compaction/{compaction-content-builder,compression-strategy,direct-llm-compression-strategy,pending-compaction-executor,compaction-summary-parser}; memory-compaction-configuration; S/agent-execution/compaction/compaction-llm-factory | Prepared text -> one host compress call -> untagged validated six-heading body. Direct-only envelope parser, exact v5, no numeric target, prior summary once. Three strategy attempts max, fresh model/identity per attempt, bounded cleanup/delay/abort, host acceptance/commit never retry generation. |
+-| BEH001/005, DS005/008; REQ003/005/008 | C/llm/base and api/{openai-compatible,openai-responses,anthropic,mistral,gemini}; utils/gemini-helper | Single-attempt invocation-local SDK policy; Gemini isolated client. Parent defaults unchanged. Fresh current parent/settings/credentials per attempt; input capacity/hard cap/reserve/final fit retained. |
+-| BEH005, DS009; REQ004/012 | C/memory/memory-manager-compaction-coordinator; agent/compaction/compaction-recovery-controller; agent/runtime/{agent-runtime,agent-worker}; agent/loop/{agent-turn-runner,llm-phase}; agent/llm-request-assembler | Original unsent A keeps its turn/prepared input; server B stays queued. Exact epoch permit, no origin/different-turn fallback or queued/during-cycle credit. Same A continues after commit; no tool-continuation compaction safe point. |
+-| BEH005, DS010; AC017 | Same native phase/worker and status derivation; S/agent-execution/input/agent-run-compaction-recovery, domain/agent-run | Consumed A answer/hooks/completion once, run ERROR/pending gate survives with no active turn. Later C authorizes oldest prequeued B then C. Grant before A settles latches; cancelled/undelivered input revokes permission; uncertain delivery pins claim, never replay. |
+-| BEH005, DS004/009/010 | S/agent-execution/{domain/agent-run,input/agent-run-input-admission-state,input/agent-run-input-lifecycle,services/agent-run-command-registry}; native backend, lifecycle projector | Existing FIFO, identified high-water admission, provider control outside serialized queue, ACK/snapshot reconciliation, early lifecycle buffering; HELD remains outstanding. Recoverable-block termination/root fences interrupt before waiting; ordinary standalone preparation retains its existing quiescence policy (IR007 diagnostic disclosed). No queue/ledger/outbox duplication. Explicit native supported capability, other backends unsupported. |
+-| BEH001/005, DS004; AC014/017 | Shared agent-presentation/team/collaboration contracts; S live snapshots/projectors through ConfiguredHandle/Team/Org; W agentInputStateHandler/agentStatusHandler, agentRuntimeStatusState, stores and localUserSubmission | Strict correlated DTOs; live instance/revision queue view. Optimistic IDs before send; real text/recording attachments merge; no pending replay after restart. Error state does not reactivate backend or finish held answer. Provider-native compaction discriminator retained. |
+-| BEH005, DS004 | W/components/conversation/UserMessage.vue; components/agentInput/AgentUserInputTextArea.vue; en/zh-CN catalogs | Held/queued badges, explicit send-to-retry guidance; existing busy interrupt behavior preserved. Earlier component/state evidence retained; IR007 browser feedback covers only terminal compaction row/card, not this input journey. |
+-| BEH002/004, DS002/003/007; REQ007/008 | Existing memory restore/inspection and frozen released migration/current preservation guard; current settings factory | No new schema/migration/import/default write/category/child behavior. Versionless current restore, writer-cut preservation and historical readers retained. Prior focused memory/migration/settings evidence retained; not rerun in IR007. No actual crash/data-history campaign. |
+-
+-Scope guardrail: **Yes**. No new product scenario, durability contract, broad busy-send feature, default/model/support or historical-data changes. Application SDK stream remains its existing minimal closed event contract; it does not acquire pending user-content exposure. Its projector tests pass; normal desktop standalone/Team/Org live routes own pending UI.
+-
+-IR006 BEH001/005/REQ008/AC010 Settings correction remains: `S/services/server-settings-service.ts` uses one exact public numeric-context exception to unchanged credential-name protection for read/write, ordinary metadata/validation/AppConfig semantics retained. Existing service unit and isolated AppConfig integration remain. CRR010 reviewed it; API006 independently closed normal Settings use. No new F007 edit or regression-test rewrite in IR007.
+-
+-## Design health / removal / persistence / source pressure
+-
+-- Reviewed posture **bounded behavior clarification/lifecycle correctness**, root cause **Missing Invariant / Boundary Or Ownership Issue**; narrow refactor required. Implemented same owners and public boundaries. Pure native reconciliation is below activity store; callers never import both store and helper. No alternate root owner, shared mixed-concern base, ledger or native history cache.
+-- Superseded abort-as-failed presentation, graceful close-before-stop/discard-before-drain and duplicate frontend phase unions/guards replaced cleanly. Unimplemented SR033 helper not added alongside SR034 replacement. No compatibility wrappers/feature flags/old-new dualpath or dead alternate in scope.
+-- Stored formats **Not Affected** per SR034; no migration/current-reader fallback/raw rewrite/native status persistence. Prior approved versionless current restore and frozen released conversion boundaries retained. In-memory terminal retention is not cold durable replay.
+-- All22 modified/added production files <=500 effective nonempty lines; no IR007 delta>220 changed lines (`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-size-check.json`). Tests exempt. Canonical design principles reapplied; no unapproved refactor pressure.
+-- Exact v5 SHA256 `2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7` retained. No v6/provider/default/support/attempt ceiling or SDK modifications.
+-
+-## Fresh local implementation checks / diagnostics
+-
+-Commands/logs/results `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/README.md` and `check-results.json`:
+-- **312 Pass /27 files**: core106/6, server39/6, web167/15 (final disjoint groups; overlapping iterations not added). Real core executor, native stream/AgentRun queue and actual root stores/Org staging covered using local fixtures. Not live inference or API/E2E signoff.
+-- Final core/server production `tsc --noEmit -p tsconfig.build.json` **exit0**, owned diff whitespace **exit0**. No generated output build or fullsuite claim.
+-- Web plain `tsc --noEmit -p tsconfig.json` default-heap OOM,8GB retry **exit2/7078 diagnostics**. Five changed-test `.vue` resolution diagnostics; no changed production TS path diagnostic. Plain tsc is **not Vue SFC typecheck**, not comparable to inherited6836, not a broad Pass.
+-- Initial broader characterization included **8 failures in untouched retainedActivityTermination.spec.ts** at strict Team snapshot setup (missing recoverableBlock/agent_input_states) before command. This fixture/schema was not changed; source-traced setup mismatch, **not executed baseline evidence or waived**. Separate three Team mock failures were fixed via its new public action adapter and final suite passes. Full diagnostic history remains.
+-- Initial first-auto-compaction/never-settling-provider Terminate timed out during unchanged preparatory quiescence **before backend shutdown**; not a pump-drain Pass or hidden failure. `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/shutdown-preparation-diagnostic.md` +source hashes describes it. SR033 is post-confirmation display, SR034 forbids general shutdown redesign; no immediate-preparation-interrupt guarantee is newly claimed. Final actual held-A/recovering-on-B test proves the reviewed recovery witness, events before command return/no late commit/no cancelled dispatch. Review must retain this broader boundary limitation; changed policy would require Solution Designer adjudication.
+-
+-## Frontend rendered feedback
+-
+-`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/rendered-result-check.md`: initially CUA native pipe unavailable, but available browser connector permitted an owned **actual-component** Vite preview with project Tailwind and Iconify. Inspected conversation row and progress card, changed phase states, highlight and360px width. Observed Stopped/static neutral icons, no stale primary error, metadata retained; completed/failed/queued colors preserved, no horizontal overflow in checked states. Corrected missing gray-tone mapping in adjacent progress card found by mounted ActivityFeed. Preview locale/title and data synthetic. Direct DOM interaction plus image inspection, not screenshot-only proof.
+-
+-This is **bounded renderer feedback**, not full desktop/Team/Org control journeys, actual backend response timing, real reconnect/saved hydration/no-generation or accessibility/device matrix. API006 provenance withdrawal remains binding. Only owned preview PID88003 and tab e11144 stopped/closed; other tabs/user services untouched. No isolated desktop or provider campaign launched.
+-
+-## Ownership / environment
+-
+-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`; branch codex/context-compaction-simplification-analysis; **HEAD unchanged6908ccff483f1eca522caa65bfaaf6dcfcc26750**. No stage/commit/fetch/push/merge/release/finalization or external cleanup. Last-refreshed origin/personal8caa610ff438c288d9aca9f2efe2c33924fbf517 remains historical. Delivery owns eventual origin/personal finalization.
+-
+-Entry1736 pending/reference pins, full current audit `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-007/final-audit.json`; all ten API durable paths byte-identical to intake including numeric positive/security negative/versionless restore correction. API owner acknowledged no conflicting edits and no validation restart; not IR007 approval. SDK/generated/source WIP/backups/stash and other-owner artifacts preserved. Owned preview artifacts confined to E7; source/test inventory excludes them.
+-
+-## Unwaived downstream gates / coverage hints
+-
+-1. Independent source review of IR007 including all three command owners, terminal latch/commit race, deadline/session/dispatch lock, actual atomic Org commit/adopt and shared strict phase transport; then **API/E2E**, never direct Delivery. Reviewer determines implementation finding closure.
+-2. Actual normal standalone/Team/Org Terminate during recovering compaction: exact Stopped/no spinner/facts, no cancelled dispatch/latecommit; event and successful response captured separately. Rejected/stale/partial responses must not qualify replacement/absent activity. Broader first-operation preparation latency is not proven by the scoped recovery test.
+-3. **Actually execute** renderer reconnect and saved selection/hydration with navigation/execution-context and projection-response evidence; establish no generation on inspect and separate identity on later new runtime. Do not use authored “reload” text, skip hydration, delete cards or claim cold native durability. Full heldA/attachment/queuedB/retry/cancel/postresponse/resume/semantic verification and fullTeamOrgUI remain incomplete.
+-4. API006 **incomplete**, interim90.7/reconnect/hydration/durable-native claims withdrawn; **API005 Fail78.6** latest completed; API004Fail90.7 historical. F007 product closure/346 repository Pass retained only as attributed scoped evidence. Ten cumulative API durable-path successful-test review pending. No new provider budget.
+-5. F005 SR020 accepted known/nonblocking **NOT fixed/Pass**, Qwen STOPPED; F004 historical unknown; F006 corrected; SR022 exhausted1fidelityFail/3scopedusable;v6unapproved. Unsupported same-ID Team/Org diagnostic remains Fail/not scored; no withdrawn machinery restored.
+-6. Other14 residuals,7baselinecontract failures, historical webtypecheck6836 plus this round's non-green plain tsc and8fixture failures, fullsuite/current fidelity/physicaldrag/consumed-toolfullUI/crash/Delivery/docs/user gates unwaived. No new acceptance score.
+-
+-Fresh result-based routing/receipt is recorded in IR007 evidence after package persistence. No duplicate outcome forwarding.
+-
+-IR007 routing: fresh get_handoff_rules selected solely the completed Large/High approved-design implementation rule to **/code_reviewer**. The older LocalFix request is already disposed by IR006; no direct API/SD/Delivery outcome handoff. Confirmation is recorded only after accepted send_message_to.
+-
+-IR007 handoff confirmed **accepted=true / DELIVERED** to sole /code_reviewer (code_reviewer_7bd4b2c09af543088c0238d792d0fd98),1483 cumulative/current references attached at send. Receipt: implementation-evidence/ir-007/handoff-receipt.json. Stage stopped; no duplicate outcome handoff or validation restart.
++# Implementation Handoff — IR-008
++
++## Current result
++**Design Impact — incomplete integration, not ready for source review/API/E2E/Delivery build.**
++DR002's23 explicit merge conflicts are mechanically resolved and staged; auto-merge investigation found an unrepresented Agent-root lifecycle/snapshot/publication boundary. Current code and this handoff are authoritative. IR007 completion is historical for the pre-integration candidate.
++
++## Upstream authority / revision
++- Trigger: delivery_engineer **DR002 Local Fix**, /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/delivery-evidence/dr-002/README.md, integration-blocker.json, delivery-revision-record.md.
++- Compaction: **Approved SR033 / Ready SR034 / ARCH-REV004**, /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md, investigation-notes.md, design-spec.md, solution-revision-record.md, architecture-review-clarification.sr034.md, design-review-report.md and architecture-review-revision-record.md. Exact v5 and all still-relevant supplements retained in reference-index.json.
++- New upstream: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/cross-scope-agent-mentions/requirements-doc.md (**Approved SR008**, including RD004 sender identity) and design-spec.md (**SR010**), investigation/solution/review/implementation and Product UI supplements included in current package. These do not independently review the merged compaction interactions.
++- Prior **IR007 / CRR011 sourcePass9.40 / API008 Pass95.0 / CRR013 successful-test Pass, TR001 closed**: current respective canonical reports retained; they are pre-integration proof only. API005Fail78.6 and API006withdrawals remain historical, not the latest completed result after API008.
++- Revision record /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md keeps IR001 baseline through IR007; this is IR008 Rework. Related SR028–034 plus cumulative prior IDs; ARCH001–004; CRR001–013; API001–008; DR001/002. Findings **IR008-DI001, IR008-LF001**.
++- Complete cumulative references: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/reference-index.json; current checks: reference-check.json. Independent review applicable. Product compaction N/A; upstream Product artifacts remain applicable. Delivery applicability **DR002**, not N/A.
++
++## Classification and design health
++**task_size=Large; architectural_risk=High — unchanged**, but SR034 production-path map is incomplete for the new root. Posture integration/local-fix investigation. Root cause **Boundary Or Ownership Issue / Missing Invariant**; design health assumption no longer holds across Agent-root child snapshot, host liveness, terminal evidence and publication.
++Selected outcome route: **Solution Designer**, subject to fresh handoff rules. Direct-route lightweight review N/A.
++No intended-behavior choice made. Existing approved behavior appears sufficient; Designer must confirm and obtain renewed approval if it changes. No new generation policy, ledger, owner bypass, history persistence, provider/default or cancellation SLA.
++
++## Implementation / preserved behavior trace
++| IDs | Actual current path | Result |
++|---|---|---|
++| BEH001/005, REQ004/012, AC014/017 + upstream @ admission | agentRunStore/agentOrgContextsStore -> localUserSubmission -> existing mention admission + early message/dedupe identity | Mechanical conflict resolution retains both,35 scoped web tests pass; no full journey claim |
++| BEH001/002/006, direct strategy | retired compaction-lineage-scope-resolver, server-compaction-agent-runner and old test | Remain removed; do not resurrect child/category algorithm to match upstream helper metadata |
++| BEH004/007, REQ007/013, AC018 | three prior root command owners / shared activity store | Prior design retained; **new Agent-root child owner not covered**, DI001 |
++| BEH005, held reconnect + upstream UC001/004 | new AgentRunCollaborationRoot -> projector/strict DTO -> AgentRunCollaborationContext | **LF001 executed red** on ordinary dormant child; input snapshots and recovery/liveness mapping absent by source trace |
++| BEH007, DS011/012/013 + upstream explicit root Stop | standalone service stops collaboration children then host; separate child stream retires; host UI receipt settles host only | Design must complete exact child confirmation/teardown/publication path; no fabricated Stopped |
++| BEH004/007 and upstream child inspection | agentRunCollaborationStore.publish -> adoptLocalContexts before atomic activity commit | Source-detectable publication inconsistency; staged revision conflict could mutate visible context before rejecting |
++| upstream REQ014/AC016 + BEH004 | memory sender ingestion / main memory doc | Incoming sender facts retained; direct-summary/versionless preserved; final semantic doc sync Delivery-owned |
++
++Scope guardrail: preserved, no unapproved behavior implementation. Detailed independently supported witnesses, source/inference distinctions and requested decisions: **/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/design-impact-request.md**.
++Full676-path auto-merge assurance remains incomplete; audit intentionally stopped at material design boundary.
++
++## Delta / cleanup / persistence / size
++26 exact resolution/derived paths;23 initial conflicts, plus3 regenerated declarations. /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/integration-resolution.md and intervention-paths.json; beforeimages, entry/checkpoint/upstream patches preserved.
++No backward compatibility wrappers or old/new dual paths. Three retired paths deleted. Shared contract index retains both exports; dist regenerated from merged source, maps not hand-edited.
++Mechanically edited source index5, AgentRunStore450, OrgContextsStore352 nonempty lines; checkpoint deltas1/34/15, none over limits. This does not certify all incoming source sizes.
++Compaction persistence decision remains **Not Affected** by these resolutions; versionless direct-summary readers unchanged. Incoming collaborator/sender storage follows its own approved authority; no migration invented. Native in-memory terminal retention is not cold durable replay.
++
++## Local checks
++Exact commands/logs: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/README.md.
++- Three contract package builds exit0; core production noEmit exit0.
++- First server noEmit exit2 due missing freshly upstream inter-agent-sender built module; core tsc emit (without destructive clean) exit0, repeat server noEmit exit0.
++- Server5files:20Pass/2Fail. Both failures at old test fixture constructor missing new teamScoped, before recovery trigger; production builders supply true. Not source runtime proof or baseline waiver.
++- Web3files:35Pass; narrow real-store/context assertions with external I/O mocked.
++- Separate evidence-only production-projector probe:1Pass/1Fail, strict child recoverableBlock missing. Existing empty-child tests passing do not validate new child contract.
++- Owned whitespace check and global staged diagnostic persisted; incoming whitespace not silently cleaned.
++No overall implementation Pass; no API confidence rescore. Twelve cumulative API-owned durable files unchanged from this entry. No new provider campaign/budget.
++
++## Rendered result
++Applicable but **not verified this round**. No preview/Electron or full product journey launched because the new root boundary remains incomplete. Existing layout/component vocabulary retained. See /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/rendered-result-check.md. Prior renderer/product Pass cannot certify merged state.
++
++## Git / ownership / environment
++Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis; branch codex/context-compaction-simplification-analysis.
++HEAD **026476691c62bda309ce7f2a9342ebb444959f98**, MERGE_HEAD/origin-personal target **d057801c89f26bc69a97331b59631c00519aec98** unchanged.
++**Zero unmerged index entries; merge remains in progress and UNCOMMITTED.** Exact staged and unstaged state/hash in git-state.json and final audit. Resolving stages is not finalization authorization.
++No fetch, install, commit, push, rebase/reset/abort, release, app launch or external cleanup in IR008. Backup/stash preserved; no concurrent Delivery edits. Core dist pre-emit archive preserves1744 existing files; generation changed11, added4, removed0; core output not staged as a broad add. Contract generation changes explicitly staged. DR002 pending archive remains untouched. Final docs semantic sync and isolated Electron build/leave-running request stay Delivery-owned.
++
++## Remaining gates / next work
++Solution Designer completes integration design, selected review if applicable, then Implementation finishes known mapping/test adaptations and all relevant auto-merge checks. Normal Large/High source review -> API/E2E -> successful-test review if applicable -> Delivery build/docs/user testing remains required.
++Preserve F005 accepted known/nonblocking NOTfixed/Pass and QwenSTOP; F004unknown; SR022 exhausted/v6unapproved; CG033 preparatory timeout unproved/notpumpPass; plain webtsc OOM then8GBexit2/7078 notvue-tsc/fullPass; inherited14wider+7baseline residuals unwaived. Exact model vs emulator/UI/repository scopes, native in-memory vs cold replay and per-file atomicity remain.
++No Delivery Completed, user verification or push/release authority.
++
++## Fresh routing decision
++Fresh get_handoff_rules selected solely **/solution_designer** for Design Impact before implementation continues. Completed Local Fix/source-review rules do not apply to this incomplete integration. No duplicate reviewer/API/Delivery outcome. Rules and selection: implementation-evidence/ir-008/handoff-rules.json and handoff-selection.json.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md b/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md
+index 47f43c0da..da6eade74 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md
+@@ -16,6 +16,8 @@ The current source and `/Users/normy/autobyteus_org/autobyteus-worktrees/context
+ 
+ | IR-007 | architecture_reviewer / design-review-report.md / ARCH-REV004 Pass | ARCH-F003 design correction implemented for source verification | Approved-design revision | SR033/034 +SR028–031; ARCHREV004; CRR010 prior; API006 incomplete/API005 latest completed; DR N/A | Terminal activity delta complete for source review; Large/High unchanged;312 scoped Pass, bounded renderer feedback and non-green limits disclosed |
+ 
++| IR-008 | delivery_engineer / DR002 integration Local Fix | IR008-DI001, IR008-LF001 | Design Impact | SR033/034; ARCH004; CRR011/013; API008; DR002; upstream SR008/SR010 |23 conflicts resolved/staged, merge open; Agent-root contract/lifecycle design gap, not ready; Large/High |
++
+ ## Revision Entries
+ 
+ ### IR-001 — Direct single-summary compaction baseline
+@@ -137,3 +139,18 @@ IR006 handoff confirmed **accepted=true / DELIVERED** to sole /code_reviewer (co
+ IR007 fresh routing selected only the completed Large/High approved-design rule to /code_reviewer; not the superseded CRR009 LocalFix or direct-validation routes. Rules and selection persisted in implementation-evidence/ir-007.
+ 
+ IR007 handoff confirmed **accepted=true / DELIVERED** to sole /code_reviewer (code_reviewer_7bd4b2c09af543088c0238d792d0fd98),1483 cumulative/current references attached at send. Receipt: implementation-evidence/ir-007/handoff-receipt.json. Stage stopped; no duplicate outcome handoff or validation restart.
++
++### IR-008 — Reconcile DR002 conflicts; return Agent-root design impact
++
++- Trigger Delivery DR002 Local Fix: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/delivery-evidence/dr-002/README.md and integration-blocker.json.
++- Prior result IR007 implementation complete -> CRR011 sourcePass9.40 -> API008Pass95.0 -> CRR013 successful-test Pass/TR001closed -> DR002 new upstream merge conflicts. These are pre-integration results only.
++- Current **Design Impact / not integration-ready**, **Large/High unchanged**. Findings IR008-DI001 (new Agent-root snapshot/liveness/Stop/publication ownership), IR008-LF001 (executed strict child-status mismatch). Current code + handoff authoritative; no intended-behavior decision made.
++- Related compaction SR028–034/cumulative earlier; ARCH001–004; CRR001–013; API001–008; DR001/002. Upstream cross-scope-agent-mentions ApprovedSR008/ReadySR010 and Product RD004 now part of cumulative integration authority.
++- Affected BEH004/005/007, REQ004/007/012/013, AC014/017/018; upstream UC001/004 and sender REQ014/AC016.
++- Delta: resolved23 initial conflicts and regenerated three further declaration artifacts (26paths); preserve both exports, mention admission plus early optimistic IDs, new standalone tools, current direct-summary/versionless docs + sender facts; keep retired child/category runner/resolver/test deleted. No auto-merge wholesale acceptance or new root coordination/persistence machinery.
++- Local checks: three contracts build0; core noEmit0; initial server noEmit2 missing new built module, core non-clean emit0 then server noEmit0. Server20Pass/2fixtureFail; web35Pass. Separate strict projector probe1Pass/1Fail on ordinary child recoverableBlock. API-owned12 paths unchanged; no E2E/provider/UI/semantic signoff. Actual renderer feedback incomplete, not N/A.
++- HEAD026476691c62bda309ce7f2a9342ebb444959f98 and MERGE_HEADd057801c89f26bc69a97331b59631c00519aec98 unchanged; exact resolutions staged, zero unmerged entries, merge left in progress. No commit/fetch/push/release/install/app. Delivery backup and additional core-dist preemit backup retained; no dist files deleted.
++- Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/README.md, design-impact-request.md, integration-resolution.md, final-audit.json, git-state.json, reference-index.json. Original source/reports at entry preserved.
++- Next: fresh result-rule Design Impact route; not completed-source review or Delivery. Source/API/test-review/build/user gates remain. Earlier residual/model/provider/cold-history/atomicity limitations retained. Full676-path/69-overlap automerge assurance not completed.
++
++IR008 fresh rules select solely the Design Impact / Requirement Gap / Unclear rule to **/solution_designer**. The DR002 Local Fix completion/source-review conditions do not match because integration is incomplete. No duplicate reviewer/API/Delivery outcome. Rules/selection persisted in implementation-evidence/ir-008; delivery confirmation follows only after accepted send_message_to.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md b/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md
+index 319a1d056..26a911a17 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md
+@@ -808,3 +808,49 @@ API006 incomplete; latest completed API005Fail78.6. Corrected API006 reconnect/s
+ Only four owned canonical docs plus SR034 result/evidence/history authored. No source/durable tests/specialist reports/Git finalization edits; preserve all other owners' WIP.
+ 
+ Supplement inventory addition: architecture-review-clarification.sr034.md (SD full ongoing-review result; Ready); solution-recovery-evidence/sr034 (source/audit/delta/routing); architecture-review-evidence/arch-rev-004/root-termination-premise.md (reviewer-owned ongoing premise, not verdict). Approved supplements unchanged. Product/DR N/A—not requested. Cumulative classification Large/High unchanged; terminal delta Medium/High due real concurrency/atomic projection boundaries, not file count.
++
++
++## E35 / SR035 — origin/personal Agent-root integration design recovery
++
++**Current status:** Approved SR033 compaction requirements unchanged; upstream cross-scope-agent-mentions Approved SR008 / Ready SR010 retained; design Ready SR035. IR008 findings require completed architecture, not an intended-behavior change. This section supersedes older current-status claims for the integrated candidate, not historical observations. Full result architecture-integration-handoff.sr035.md.
++
++### Trigger, workspace and investigation method
++Read incoming implementation-handoff.md, implementation-revision-record.md IR008 and focused implementation-evidence/ir-008/design-impact-request.md, README, integration-resolution/renamed-path map and projector log. Read Delivery DR002 README: user “the remote origin perosnal has updated. now build teh electron so i could test”. Local integration/build is authorized, not successful verification or remote finalization. Read upstream requirements/design and current specialist report headers. Current source/index—not HEAD alone—is the integration candidate.
++
++Read-only git checks establish HEAD026476691c62bda309ce7f2a9342ebb444959f98, MERGE_HEAD/origin-personal d057801c89f26bc69a97331b59631c00519aec98, task branch codex/context-compaction-simplification-analysis, zero unmerged entries. IR008 reports23 resolved conflicts+3 derived paths and672 total staged paths. SD did not change index. Entry preservation hashes39260 repository-visible and incoming referenced files before owned writes; exact entry index/status and before-states retained in solution-recovery-evidence/sr035 and history/*before-sr035.md. This broader pin inventory is a preservation check, not39260 reviewed sources. No fetch/install/build/test/model/app execution, no source/test/specialist report edit, no staging/commit/reset/abort/push/release/cleanup.
++
++### Current evidence — facts separate from target
++All paths below are relative to the task worktree. Exact source SHA256 and bounded line excerpts are in solution-recovery-evidence/sr035/source-evidence.json. The inspection commands were cat/sed/grep of these files and git rev-parse/branch/ls-files/diff; no executable product probe by SD.
++
++| Evidence | Sources | Observation / limits |
++|---|---|---|
++| E35-1 approved scenario | tickets/done/cross-scope-agent-mentions/{requirements-doc,design-spec}.md | SR008/SR010 supports standalone @ hosted Agent/Team, Offline at admission, direct child chat/wake, persisted membership/root stop; REQ014/AC016 sender provenance. Combined with compaction SR033, no new intent needed for recovery/terminal-card integration. |
++| E35-2 strict boundary | server services/agent-streaming/agent-collaboration-view-projector.ts; collaboration-contracts agent-run-collaboration-dtos.ts; IR008 projector log | Projector omits required status recovery field. IR008 executed1Pass/1Fail on current projector; exact failing path root_agent.agent_statuses[0].recoverableBlock. Independently source-confirmed omission, not SD reexecution or full API proof. |
++| E35-3 live snapshot | server agent-run-collaboration/domain/agent-run-collaboration-root.ts; root-manager; shared root-agent registry; TeamRun; Org snapshot/projector | Agent-root package holds tree/messages/statuses only. Existing root registry and Team getters already expose LiveAgentInputSnapshot; Org already aggregates it. Root snapshot publisher captures barrier sequence/queues events. Dormant status has recovery null; stored-only manager currently supplies statuses[] and no live input. |
++| E35-4 child presentation | web agentRunCollaborationContext/ChildContextFactory/Hydration; shared input handler; strict DTO | Factory starts Offline; constructor applies only status, no recovery/input snapshot; live generic presentation events already reach handleAgentInputState. Target gap is initial/reconnect, not all live events. Input handler upserts user identity/held status and never submits input. |
++| E35-5 liveness | web useAgentRunCollaborationSync; runtime-status handler; server root-manager/stream handler/GraphQL resolver | Sync treats every Error as inactive. WS resolveCommandReadyRoot may restore host; getInspection never restores; registered root survives host crash. Cannot attach merely from is_active root or history card. Recoverable host Error is distinct from ordinary Error/Offline. |
++| E35-6 child/host stop | server AgentRunService.terminateAgentRun, standalone binding/lifecycle, AgentRunCollaborationRoot.terminateOnce/root-manager | Children shut down before host. Root publishes inactive/unregisters even when local finish yields rejected result; manager throws; later host stop may also fail. Only actual successful enclosing command proves whole requested stop. No event-only/root inactive equivalence. |
++| E35-7 UI ownership | web agentRunStore.terminateRun; agentRunCollaborationStore; collaboration streaming/context; Org stopAndInspect | Host fallback covers host only. Child store owns its own private contexts/services and currently has no confirmed-stop boundary. Org already captures, intentionally retires transport, confirms, then inspects. Reusing that local approach avoids new retirement provenance/ledger. |
++| E35-8 atomicity | web child hydration/store/context; agentActivityStore.replaceProjectionActivitiesIfRevisions | Current child publish adopts old state/config first, then commit can conflict. Current expectedRevision is read after awaits. Activity-store replacement already validates all run revisions before publishing and retains terminal native facts. Fix at these existing owners, not a new cache. |
++| E35-9 async stale state | web child store inspect/attach callbacks; stream snapshot/socket guard; windowNodeContextStore.bindingRevision | Inspection rechecks service only once before staging and does not pass isCurrent; release does not invalidate that read. onInactive unconditionally deletes service. Stream socket check alone lacks store/service/binding ownership. New integrated stop-before-inspection needs exact callback/attempt invalidation; old read/null/error/finally must not alter replacement. Source consequences, no race execution by SD. |
++| E35-10 unchanged data/history | server collaboration tree schema/store and member view service; LiveAgentInputSnapshot definition; SR034 activity helper/store | Tree fields are persisted collaborator identities, not live input state; member view uses existing saved projection and sender resolution. Required snapshot additions are ephemeral; cold read uses explicit empty input state. Native retained terminal cards remain in memory only, no new migration. Migration guideline need/gate policy read; no transformation chosen. |
++
++### Design decisions derived (not observed implementation)
++The canonical SR035 section defines DS014/015/011A/012A/013A and DS015a. Complete input snapshot/projector/context chain; keep managed recoverable Error connected. Keep agentRunStore as the sole host command owner and add a public call-scoped child presentation stop handle in the existing collaboration store: capture, invalidate read, intentionally retire child stream, then qualify actual success before cards/cleanup and fresh read-only inspection. Inactive/failed/partial result never confirms. Child scope does not own a server stop or call back to agentRunStore. Commit activities before nonthrowing adoption, immutable before-fetch revisions and exact read/service/binding guards. No source implemented by SD.
++
++### Approval, source moves, evidence and residual scope
++Requirements remain byte-identical Approved SR033. Upstream ApprovedSR008 sender/mention behavior is read-only authority; no new Product work or visual redesign. Existing exact v5, output/coverage, SR027 held-input proposal, SR020 accepted deviation and current natural-compression assumption remain applicable. Candidate-v6 and SR031 same-ID machinery remain excluded.
++
++Upstream moved three Org owners to shared agent-collaboration/execution/backends: root-agent-execution-registry.ts, root-team-execution-directory.ts and frozen-root-termination-scope.ts; exact map retained in IR008/upstream-renamed-authorities.json. Their older canonical references are historical, not files to resurrect. Retired compaction-lineage resolver/child runner/old test stay deleted.
++
++IR008 executed local checks only:3 contract builds0, core noEmit0, initial server noEmit2 missing new built sender module followed by non-clean core emit0/server noEmit0; server20Pass/2 fixture-constructor Fail in5files; web35Pass/3files; separate projector1Pass/1Fail. Production Team/Org constructors supply required teamScoped; old test setup does not—fix setup without weakening recovery assertions. No integrated acceptance or UI/Electron proof. Source-derived race/liveness predictions remain unexecuted.
++
++ARCH004/SR034, IR007, CRR0119.40, API00895.0 and CRR013/TR001 closure are completed **pre-integration** results, not pending API006 or current merge Pass. Historical API006 withdrawal remains truthful. Full676/69-overlap implementation audit and all selected downstream gates remain. F005 accepted known/nonfixed/nonPass Qwen STOP; F004 unknown; SR022 exhausted/v6 unapproved; CG033 preparatory timeout unproved/not pump Pass; web tsc OOM then8GBexit2/7078 notvue-tsc/fullPass;14 wider+7 baseline residuals. No new provider budget, persistence/queue/idle-policy/general-shutdown SLA, browser cold native journal or per-file-to-transaction guarantee.
++
++### Supplement inventory addition
++| Artifact | Owner | Purpose / related IDs | Status / approval |
++|---|---|---|---|
++| architecture-integration-handoff.sr035.md | Solution Designer | Full IR008-DI001/LF001 design recovery context; current SR035 package | Architecture Design Complete; no changed behavior, prior approvals apply; new independent review pending |
++| solution-recovery-evidence/sr035/{source-evidence,entry-preservation,final-audit,reference-index}.json and design-delta.diff | Solution Designer | Reproducible source evidence and preservation/navigation for E35 | Documentary evidence, not execution/approval/test Pass |
++| implementation-evidence/ir-008/*; delivery-evidence/dr-002/* | Respective specialist owners | Trigger, mechanical resolutions, local red probe, preserved merge/build request | External read-only evidence; not changed or reclassified as integrated Pass |
++| tickets/done/cross-scope-agent-mentions authority + Product ui-ux-spec/visual references linked there | Software/Product owners | Approved upstream UC001/004, REQ014/AC016, SR008/SR010 | Remain applicable; not copied/re-authored or re-approved by SD |
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md b/tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md
+index b2f1a3e06..a88f708e8 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md
+@@ -1,5 +1,25 @@
+ # Delivery / Release / Deployment Report — DR-001
+ 
++## Current delivery state — DR-002 (2026-10-01)
++
++**Blocked: integration Local Fix; Electron build not yet executed.** User requested
++a new build after origin/personal advanced. Fresh fetch succeeded; target is now
++`d057801c89f26bc69a97331b59631c00519aec98` (23 incoming commits). Local safety
++checkpoint `026476691` preserves the reviewed candidate plus docs, with an
++additional file archive. The base-into-ticket merge has 23 conflicts and is left
++in progress for accountable source reconciliation. No executable post-integration
++check/build/app launch can be claimed for an unresolved candidate.
++
++The DR001 already-current handoff below is historical, **not current readiness**.
++No user verification, push, final merge, release or cleanup has occurred. See
++[DR002 integration blocker](delivery-evidence/dr-002/integration-blocker.json) and
++[recovery instructions](delivery-evidence/dr-002/README.md). Remaining action:
++implementation reconciliation and applicable review/validation, then Delivery
++post-integration checks/docs and isolated Electron build for user verification.
++
++---
++
++
+ Package `context-compaction-simplification-analysis`; 2026-10-01; Large / High /
+ reviewed route. **Blocked — explicit user verification pending.** No Delivery
+ Completed claim. Prior delivery result **N/A**; no prior delivery record existed.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/release-notes.md b/tickets/in-progress/context-compaction-simplification-analysis/release-notes.md
+index f30c321d8..16948c807 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/release-notes.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/release-notes.md
+@@ -1,5 +1,8 @@
+ # Draft release notes — context-compaction-simplification-analysis
+ 
++DR002: latest-base integration is conflicted; no Electron build or release from
++that state. These notes remain an unverified draft.
++
+ Prepared before user verification on 2026-10-01. **Unreleased candidate, not a
+ version/tag/publication approval.** See `handoff-summary.md` for exact evidence
+ and residual limits.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md b/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md
+index 6d27e5bf7..e2ad1924d 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md
+@@ -1,10 +1,13 @@
+-# SR034 — Team/Org termination design correction complete
+-Approved SR033 behavior is unchanged: **Stopped**, no spinner, historical card retained. Existing Team/Org root Terminate is included for native member executions; there is no standalone-only exception.
++# SR035 — Agent-root integration design complete
+ 
+-Canonical design now completes the real root controls through successful member shutdown, guarded backend-response reconciliation at existing UI owners, and Org's post-stop inspection. The existing activity store atomically retains terminal native cards omitted by native saved projection. No native persistence, ledger, extra root lifecycle owner or blanket Offline inference.
++Approved SR033 compaction and upstream SR008 behavior remain unchanged. Ready SR035 / Architecture Design Complete, cumulative Large/High; bounded integration delta Medium/High.
+ 
+-Architecture Design Complete / Ready SR034, cumulative Large/High. Full result architecture-review-clarification.sr034.md; E34 and solution-recovery-evidence/sr034. In-round ARCH-F003 awaits independent verification, not self-declared closure. Fresh route follows persistence.
++The design completes live child recovery snapshots, recoverable host liveness, successful host-Stop reconciliation through the existing child store, and atomic guarded child hydration. No new runtime owner, ledger, native persistence, provider/retry policy or broad shutdown SLA.
+ 
+-API006 remains incomplete, latest completed API005Fail78.6; overstated reconnect/reopen proof and interim90.7 remain withdrawn. No source/test changes, tests/provider campaign or finalization. Existing specialist gates and WIP preserved.
++Full result: architecture-integration-handoff.sr035.md. Canonical evidence E35 and solution-recovery-evidence/sr035. Independent architecture review is next; implementation/validation are not complete. Prior ARCH004/IR007/CRR011/API008/CRR013 apply only before upstream integration.
+ 
+-SR034 routing: fresh get_handoff_rules selects only **/architecture_reviewer** for Architecture Design Complete / Large / High with Approved SR033 requirements. Continue existing review of in-round ARCH-F003; no duplicate implementation/API/Delivery forwarding. Selection/rules recorded in solution-recovery-evidence/sr034. Confirmed accepted=true / DELIVERED to existing architecture_reviewer_589564a0573e47b8b09f3e098800233f; same full result attached. Receipt retained in solution-recovery-evidence/sr034/handoff-receipt.json. Stop after this sole handoff; no other recipients.
++Merge remains in progress/uncommitted at HEAD026476691 / MERGE_HEADd057801c; index/WIP preserved. No source/test edits, build/app/provider work or finalization by Solution Designer. Delivery builds the isolated Electron candidate for user testing only after integration and normal gates. Fresh routing/receipt follow below.
++
++SR035 routing: fresh get_handoff_rules selects solely **/architecture_reviewer** for Architecture Design Complete / Large / High with current Approved SR033 and upstream Approved SR008 behavior. Direct implementation and Delivery-receipt rules do not match. New integration independent review is required; no duplicate implementation/API/Delivery forwarding. Exact lookup/selection: solution-recovery-evidence/sr035/handoff-rules.json and handoff-selection.json. Handoff not yet confirmed at this persistence; only an accepted tool receipt establishes delivery.
++
++SR035 handoff confirmed accepted=true / DELIVERED to sole /architecture_reviewer, existing architecture_reviewer_589564a0573e47b8b09f3e098800233f. Tool receipt: solution-recovery-evidence/sr035/handoff-receipt.json. Pre-send preservation audit and3434-reference count remain the audited send basis; the receipt is the additional indexed reference. No duplicate implementation/API/Delivery forwarding. Solution Designer stops after this handoff.
+diff --git a/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md b/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md
+index e61dccd91..7809aa763 100644
+--- a/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md
++++ b/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md
+@@ -509,3 +509,19 @@ SR033 route selected after fresh rule lookup: sole /architecture_reviewer, Archi
+ - No source/test implementation, tests, app/provider use, new campaign authorization, source review result, commit/staging/push/merge/release or cleanup. WIP/backups/stash preserved. Product/UI prototype/DR N/A—not requested.
+ 
+ SR034 routing: fresh get_handoff_rules selects only **/architecture_reviewer** for Architecture Design Complete / Large / High with Approved SR033 requirements. Continue existing review of in-round ARCH-F003; no duplicate implementation/API/Delivery forwarding. Selection/rules recorded in solution-recovery-evidence/sr034. Confirmed accepted=true / DELIVERED to existing architecture_reviewer_589564a0573e47b8b09f3e098800233f; same full result attached. Receipt retained in solution-recovery-evidence/sr034/handoff-receipt.json. Stop after this sole handoff; no other recipients.
++
++
++## SR-035 — Complete incoming Agent-root recovery/termination/publication integration
++- Trigger: IR008 **Design Impact / not integration-ready**, IR008-DI001.a/b/c and LF001 after Delivery DR002 user-requested latest origin/personal integration and Electron testing build. Read full incoming/current authorities first. Prior design ReadySR034/ARCH004 -> **ReadySR035 / Architecture Design Complete**; requirements **ApprovedSR033 unchanged** plus read-only upstream ApprovedSR008/ReadySR010.
++- Approval impact: None. Ordinary standalone @/direct child chat/reconnect/root Terminate independently supported by upstream UC001/004 and compaction BEH004/005/007, REQ004/005/007/012/013, AC008/013/014/017/018. Sender provenance upstream REQ014/AC016 preserved. No new intended behavior, no renewed approval required; no v6, policy/provider/queue/persistence/broad shutdown changes.
++- E35 distinguishes executed LF001 projector1Pass/1Fail from source-derived snapshot, recoverable host liveness, split child/host Stop and atomic publication gaps. No SD tests/product execution. Three upstream Org owners now shared root backends; retired compactor files stay removed.
++- Design adds DS014/015/011A/012A/013A/015a. Complete live child input/recovery snapshot, effective host liveness, exact public child-store Stop handle with intentional pre-retirement and actual-success-only confirmation, before-inspection stopped retention, commit-before-adopt and before-fetch all-run revisions plus request/service/binding guards. Existing host command, core/backend, activity policy and native cold-history boundaries stay authoritative.
++- Ownership/refactor: bounded changes inside existing owners; no fourth server command endpoint, second root owner or retained receipt ledger. Cumulative **Large/High unchanged**; SR035 delta Medium/High due to contract/concurrency/publication boundaries, not documentation volume. Independent architecture review must cover integration before dependent implementation. No finding execution closure or merge acceptance self-declared.
++- Owned canonical changes: design-spec, investigation-notes, this record, solution-progress-result; exact four before-states in history/*before-sr035.md. Full result architecture-integration-handoff.sr035.md and source/preservation/delta/reference evidence under solution-recovery-evidence/sr035. Requirements/supplements/upstream Product/source/tests/specialist reports preserved.
++- Current git: HEAD026476691c62bda309ce7f2a9342ebb444959f98, MERGE_HEAD/origin-personal d057801c89f26bc69a97331b59631c00519aec98, task worktree/branch unchanged,672 staged merge paths and zero unmerged; merge remains IN PROGRESS/UNCOMMITTED. No index/ref edits/build/app/provider/commit/fetch/install/push/cleanup. Entry39260 preservation pins are not a source-review count.
++- Gates/evidence: ARCH004/IR007/CRR011source9.40/API00895.0/CRR013testPass/TR001closed are pre-integration only. IR008 local checks retained (20Pass/2setupFail,35webPass,1Pass/1projectorFail); no rescore. Full676incoming/69-overlap audit unfinished; implementation completion, selected source/API/test-review gates, then Delivery docs/isolated Electron/user testing. F005 known/nonfixed/nonPass/QwenSTOP; F004unknown; SR022exhausted/v6unapproved; CG033preparatorytimeoutunproved; webtscOOM->8GBexit2/7078notvue-tsc/fullPass;14wider+7baseline remain. No Delivery Completed/finalization.
++- Fresh routing selection and confirmed receipt are recorded after result persistence, with no duplicate implementation/API/Delivery forwarding.
++
++SR035 routing: fresh get_handoff_rules selects solely **/architecture_reviewer** for Architecture Design Complete / Large / High with current Approved SR033 and upstream Approved SR008 behavior. Direct implementation and Delivery-receipt rules do not match. New integration independent review is required; no duplicate implementation/API/Delivery forwarding. Exact lookup/selection: solution-recovery-evidence/sr035/handoff-rules.json and handoff-selection.json. Handoff not yet confirmed at this persistence; only an accepted tool receipt establishes delivery.
++
++SR035 handoff confirmed accepted=true / DELIVERED to sole /architecture_reviewer, existing architecture_reviewer_589564a0573e47b8b09f3e098800233f. Tool receipt: solution-recovery-evidence/sr035/handoff-receipt.json. Pre-send preservation audit and3434-reference count remain the audited send basis; the receipt is the additional indexed reference. No duplicate implementation/API/Delivery forwarding. Solution Designer stops after this handoff.

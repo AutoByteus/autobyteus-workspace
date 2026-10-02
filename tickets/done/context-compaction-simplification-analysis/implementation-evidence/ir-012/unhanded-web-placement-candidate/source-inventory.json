@@ -1,0 +1,20 @@
+[
+  {
+    "path": "TESTING.md",
+    "sha256": "26d2d7269ef95a9782c5403a1a29b943ed7ff480e62d3b982bb2267992ee5671",
+    "nonempty_lines": 124,
+    "kind": "testing guidance"
+  },
+  {
+    "path": "autobyteus-web/tests/integration/native-accepted-input-history.integration.test.ts",
+    "sha256": "a6695cd48a36e80ab3967d6c68fcb7cbd2760d659e8004744f5a07efb4b87ccc",
+    "nonempty_lines": 113,
+    "kind": "test"
+  },
+  {
+    "path": "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+    "sha256": "1ecc92d6228a94ce87d26a9015c3fb5ead2561694e2379c9dad62231ea0f4b8a",
+    "nonempty_lines": 42,
+    "kind": "test"
+  }
+]

@@ -1,0 +1,59 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts (3 tests | 1 failed) 9ms
+   ✓ captures synthetic request/output/finish without headers or raw reasoning; enforces no substitute request 3ms
+   ✓ captures bounded transport errors but never arbitrary exception text 0ms
+   × actual LMStudio SDK fetch is intercepted without provider traffic 5ms
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-UyqCFF/workspace.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/secret-management/live-e2e-compaction-observation.test.ts > captures post failure before termination/deletion and rethrows original without provider traffic
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+ ✓ tests/unit/secret-management/live-e2e-compaction-observation.test.ts (2 tests) 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts > actual LMStudio SDK fetch is intercepted without provider traffic
+TypeError: Cannot read properties of undefined (reading '0')
+ ❯ LMStudioLLM._sendMessagesToLLM ../autobyteus-ts/src/llm/api/openai-compatible-llm.ts:137:31
+    135|       const client = await this.getClient();
+    136|       const response = await client.chat.completions.create(params as …
+    137|       const choice = response.choices[0];
+       |                               ^
+    138|       const message = choice.message;
+    139|       
+ ❯ LMStudioLLM.sendMessages ../autobyteus-ts/src/llm/base.ts:95:22
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts:31:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 4 passed (5)
+   Start at  23:54:30
+   Duration  3.37s (transform 2.14s, setup 0ms, import 3.19s, tests 19ms, environment 0ms)
+

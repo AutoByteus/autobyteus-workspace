@@ -1,0 +1,21 @@
+{
+  "case": "API-C05",
+  "attempt": "",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "tests/e2e/memory/memory-view-graphql.e2e.test.ts",
+    "tests/e2e/memory/memory-explorer-graphql.e2e.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T12:20:31.604571+00:00",
+  "finished": "2026-09-30T12:20:39.211892+00:00",
+  "exit_code": 1,
+  "log": "API-C05.log"
+}

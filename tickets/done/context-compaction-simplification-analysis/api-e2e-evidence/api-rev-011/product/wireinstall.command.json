@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T18:09:05.477452+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "2EBDE1BCA8FCFB7F5A2DAACA80B77548",
+    "--script",
+    "async()=>{window.__api11wire=[];const O=window.WebSocket;window.WebSocket=class extends O{constructor(...a){super(...a);this.addEventListener(\"message\",e=>window.__api11wire.push({at:Date.now(),url:String(a[0]),direction:\"in\",data:String(e.data)}));}send(data){window.__api11wire.push({at:Date.now(),url:this.url,direction:\"out\",data:String(data)});return super.send(data);}};return {installed:true,timeOrigin:performance.timeOrigin};}"
+  ],
+  "controlPort": 62666
+}

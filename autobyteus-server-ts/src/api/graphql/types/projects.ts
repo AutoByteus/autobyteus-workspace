@@ -67,10 +67,20 @@ export class Project {
   /** Number of this Project's Tasks whose status is not DONE. */
   @Field(() => Int)
   openTaskCount!: number;
+
+  @Field(() => Int)
+  taskCount!: number;
+}
+
+@InputType()
+export class ProjectWorkspaceFormInput {
+  @Field(() => String) workspaceId!: string;
+  @Field(() => String, { nullable: true }) description?: string | null;
 }
 
 @InputType()
 export class CreateProjectInput {
+  @Field(() => [ProjectWorkspaceFormInput], { nullable: true }) workspaces?: ProjectWorkspaceFormInput[] | null;
   @Field(() => String)
   name!: string;
 
@@ -80,6 +90,7 @@ export class CreateProjectInput {
 
 @InputType()
 export class UpdateProjectInput {
+  @Field(() => [ProjectWorkspaceFormInput], { nullable: true }) workspaces?: ProjectWorkspaceFormInput[] | null;
   @Field(() => String)
   projectId!: string;
 
@@ -140,6 +151,7 @@ const toGraphqlProject = (project: ProjectView): Project => ({
   updatedAt: project.updatedAt,
   workspaces: project.workspaces.map(toGraphqlWorkspace),
   openTaskCount: project.openTaskCount,
+  taskCount: project.taskCount,
 });
 
 export const withProjectErrors = async <T>(operation: () => Promise<T>): Promise<T> => {

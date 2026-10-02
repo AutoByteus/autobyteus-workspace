@@ -1,0 +1,26 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/clients/autobyteus-client-utils.test.ts (2 tests) 2ms
+stdout | tests/unit/clients/cert-utils.test.ts > cert_utils > verifies fingerprint when certificate is valid
+Certificate fingerprint verified successfully
+Certificate valid from 2026-05-14T07:31:28.000Z to 2126-04-20T07:31:28.000Z
+Certificate fingerprint (SHA256): 3F:E1:9A:79:41:7F:39:C4:E2:0E:6F:03:F7:A0:49:D0:CD:4A:64:D9:61:85:80:56:D3:8D:EF:F4:64:80:9D:8E
+Certificate subject: CN=autobyteus-test
+
+ ✓ tests/unit/clients/cert-utils.test.ts (3 tests) 6ms
+ ✓ tests/unit/clients/autobyteus-client.test.ts (17 tests) 16ms
+stderr | tests/unit/memory/direct-llm-compaction-summarizer.test.ts > direct compaction summary > rejects late results after cancellation; cleanup failure does not mask success/error
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_179b7c38-b183-4a27-bfa6-aae2e0927aa0' }
+
+stderr | tests/unit/memory/direct-llm-compaction-summarizer.test.ts > direct compaction summary > rejects late results after cancellation; cleanup failure does not mask success/error
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_4f855bdc-6428-4112-9ba2-169e797611c4' }
+
+ ✓ tests/unit/memory/direct-llm-compaction-summarizer.test.ts (19 tests) 229ms
+ ✓ tests/unit/llm/llm-factory-config-composition.test.ts (4 tests) 4ms
+
+ Test Files  5 passed (5)
+      Tests  45 passed (45)
+   Start at  21:22:37
+   Duration  887ms (transform 675ms, setup 80ms, import 1.20s, tests 256ms, environment 0ms)
+

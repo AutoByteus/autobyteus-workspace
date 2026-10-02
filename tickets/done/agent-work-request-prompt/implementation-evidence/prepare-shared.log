@@ -1,0 +1,28 @@
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/agent-work-request-prompt/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: src/application-agent-target-address.ts(6,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/application-agent-target-address.ts(7,52): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/application-agent-target-address.ts(59,22): error TS7006: Parameter 'member' implicitly has an 'any' type.
+autobyteus-application-backend-sdk build: src/index.ts(1,51): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/index.ts(82,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(5,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corresponding type declarations.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(35,53): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(48,54): error TS7006: Parameter 'scope' implicitly has an 'any' type.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(54,56): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(56,52): error TS7006: Parameter 'leaf' implicitly has an 'any' type.
+autobyteus-application-backend-sdk build: src/launch-profile.ts(64,55): error TS2304: Cannot find name 'structuredClone'.
+autobyteus-application-backend-sdk build: Failed
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-work-request-prompt/autobyteus-application-backend-sdk:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @autobyteus/application-backend-sdk@0.1.0 build: `tsc -p tsconfig.build.json`
+Exit status 2
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+ ELIFECYCLE  Command failed with exit code 2.

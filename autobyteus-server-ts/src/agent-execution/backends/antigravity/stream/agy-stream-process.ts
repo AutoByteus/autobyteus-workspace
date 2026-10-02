@@ -19,14 +19,16 @@ export class AgyStreamProcess {
 
   async start(input: {
     capsulePath: string; agentName: string; workspacePath: string;
-    model: string; autoExecuteTools: boolean; conversationId: string | null;
+    model: string; conversationId: string | null;
   }): Promise<Extract<AgyStreamMessage, { event: "init" }>> {
     if (this.child) throw new Error("AGY_PROCESS_ALREADY_STARTED");
     const argv = [
       ...(input.conversationId ? ["--conversation", input.conversationId] : ["--new-project"]),
       "--agent", input.agentName, "--add-dir", input.workspacePath,
       "--model", input.model, "--input-format", "stream-json", "--output-format", "stream-json",
-      ...(input.autoExecuteTools ? ["--dangerously-skip-permissions"] : []),
+      // Always auto-approve: linked skill folders live outside the capsule and headless AGY
+      // cannot prompt for the reads it would otherwise deny.
+      "--dangerously-skip-permissions",
     ];
     const promise = new Promise<Extract<AgyStreamMessage, { event: "init" }>>((resolve, reject) => {
       this.startupResolve = resolve; this.startupReject = reject;

@@ -17,6 +17,8 @@ import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
+import { registerProjectTaskContextRoutes } from "./project-task-context-files.js";
+
 export async function registerRestRoutes(
   app: FastifyInstance,
   dependencies: {
@@ -32,6 +34,7 @@ export async function registerRestRoutes(
   await registerUploadRoutes(app);
   await registerWorkspaceRoutes(app);
   await registerContextFileRoutes(app);
+  await registerProjectTaskContextRoutes(app);
   await registerRunFileChangeRoutes(app);
   await registerTeamCommunicationRoutes(app);
   await registerAgentOrgReferenceRoutes(app);

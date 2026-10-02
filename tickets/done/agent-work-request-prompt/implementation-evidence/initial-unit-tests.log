@@ -1,0 +1,164 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-work-request-prompt/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-work-request-prompt/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ✓ tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts (27 tests) 10ms
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-tools/team-communication/send-message-to.test.ts (0 test)
+ ❯ tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts (4 tests | 1 failed) 7ms
+     ✓ requires skill-governed work and preserves intermediate handoffs and requester fallback 1ms
+     × pins the exact approved prompt, tool descriptions, and field descriptions 5ms
+     ✓ describes the one instance at an address, a new copy per delegation, and run-ID follow-up (REQ-009) 0ms
+     ✓ encodes SCN-001 as one most-specific rule and at most one recipient 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-tools/team-communication/send-message-to.test.ts [ tests/unit/agent-tools/team-communication/send-message-to.test.ts ]
+Error: Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-work-request-prompt/autobyteus-server-ts/src/application-bundles/utils/application-manifest.ts:17:7
+  5  |    APPLICATION_MANIFEST_VERSION,
+  6  |    parseApplicationAgentToolDeclarations
+  7  |  } from "@autobyteus/application-sdk-contracts";
+     |          ^
+  8  |  export const APPLICATION_MANIFEST_FILE_NAME = "application.json";
+  9  |  const SLOT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
+ ❯ packageEntryFailure ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32816:32
+ ❯ resolvePackageEntry ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32813:2
+ ❯ tryNodeResolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32716:70
+ ❯ ResolveIdContext.handler ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:32555:16
+ ❯ EnvironmentPluginContainer.resolveId ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28717:56
+ ❯ TransformPluginContext.resolve ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:28929:13
+ ❯ normalizeUrl ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27111:22
+ ❯ ../node_modules/.pnpm/vite@7.3.1_@types+node@25.3.0_jiti@2.6.1_terser@5.46.0_yaml@2.8.2/node_modules/vite/dist/node/chunks/config.js:27177:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts > approved AgentTeam collaboration LLM contract > pins the exact approved prompt, tool descriptions, and field descriptions
+AssertionError: expected { …(8) } to deeply equal { …(8) }
+
+- Expected
++ Received
+
+  {
+-   "collaborationPrompt": "8bbb75a854846220183f819729557db5e2b9e85eb85b697931c25b0b97e943c2",
++   "collaborationPrompt": "06ad3be7f11e934988a94fce4d70547324a86cb9b5e0c3077e1de28c8e737b03",
+    "delegateDescription": "b5e9223456da4f02bd95fa69a1b0298b255f62839f3a8ea657adece6ad4a88dc",
+    "delegateRecipient": "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
+    "delegateReferences": "7d4b59ec1a78e52a8c09657dbb5e296cf424bb0b5f9148c06fc59b3b10997c69",
+    "delegateTool": "6119c6b09eba5dd0ba706de167daca3e0507b9d96d0fb703bc1b8611384ec7e6",
+-   "sendExactRun": "80516600b7452a84f2ba972cb32aca0a2521f98959318386a94c5bb58cdf7bfd",
++   "sendExactRun": "c847864e1dfe9745cab69b255ad3960185cf6c93ff78b647f809ec9fa85971cb",
+    "sendRecipient": "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
+-   "sendTool": "9f1573a4fde6535ecb87ac75f0e8c28c06637bb4745723e4c3d9c1d3ab44b10c",
++   "sendTool": "c2911fdc939324ebfa2cc7d66c32e479a4b4b996004e8628b2900ce78c365909",
+  }
+
+ ❯ tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts:46:8
+     44|       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIP…
+     45|       collaborationPrompt: sha256(AGENT_TEAM_COLLABORATION_LLM_INSTRUC…
+     46|     }).toEqual({
+       |        ^
+     47|       sendTool: "9f1573a4fde6535ecb87ac75f0e8c28c06637bb4745723e4c3d9c…
+     48|       sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577be…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+  Snapshots  1 updated
+ Test Files  2 failed | 1 passed (3)
+      Tests  1 failed | 30 passed (31)
+   Start at  14:34:39
+   Duration  3.30s (transform 1.48s, setup 21ms, import 119ms, tests 17ms, environment 0ms)

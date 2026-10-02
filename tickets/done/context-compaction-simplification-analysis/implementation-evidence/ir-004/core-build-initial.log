@@ -1,0 +1,7 @@
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+src/agent/loop/llm-phase.ts(154,183): error TS2339: Property 'context' does not exist on type 'LlmPhase'.
+src/agent/loop/llm-phase.ts(376,48): error TS2339: Property 'context' does not exist on type 'LlmPhase'.
+ ELIFECYCLE  Command failed with exit code 2.

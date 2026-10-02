@@ -1,0 +1,26 @@
+# API006 evidence clarification for SR033 — no new validation campaign
+
+2026-10-01. Evidence-only answer to Solution Designer. No app/tool journey, test execution, production/durable-test edit, normative AC018 validation, or confidence rescore. SR033 user approval of **Stopped** / no spinner / retained card is acknowledged; design investigation is ongoing, not a returned implementation package. API006 remains incomplete, latest completed API005 Fail78.6.
+
+## Exact retained evidence about ui-59
+The intended operation was a renderer reload requested through browser CLI run-script in the existing tab, not an explicitly captured saved-run list selection. However, the retained ui-59-saved-reopen.json does **not retain the submitted JavaScript payload**. It proves only command=run-script, ok=true, tab D5EA1151E173F54DDD7C833290F9E1A7, the unchanged file://...#/workspace URL, and returned string "Reload stopped saved run". That string is authored by the probe, not a browser navigation acknowledgement.
+
+I cannot truthfully supply the exact JavaScript statement/flags from this artifact, or certify hard renderer reload, execution-context replacement, cache bypass, or a normal saved-run hydration transaction. The prior checkpoint treated the requested reload as completed; that exceeded the retained proof. Same tab ID does not settle whether a renderer reloaded. No explicit saved-run selection action or GetRunProjection response was retained for this interval.
+
+ui-60 proves that a subsequent DOM observation in that tab showed Offline and the old turn_0013 COMPACTING card. ui-62 later proves it remained visible beside a different completed turn_0001 and an Idle header. These establish visible historical-card retention across the observed sequence, **not its durable replay provenance**. Do not use them to infer that GetRunProjection supplied the native card or that new persistence is required.
+
+## Network / raw evidence
+No retained GraphQL GetRunProjection response body or browser network trace correlates turn_0013 with hydration. loopback-wire.jsonl captures synthetic model-adapter requests/responses and fixture controls only, not application GraphQL responses. F007-http-readback captures only the settings query, not run projection. No GetRunProjection/getRunProjection occurrence exists in the retained isolated-app log; absence of such a log line alone cannot prove the API was never called.
+
+Native raw capture types are: terminated-files assistant11,user13,operation_boundary2,system_instruction1; final-run-files assistant12,user14,operation_boundary2,system_instruction2. No native compaction status trace or provider_compaction_boundary exists in those captured raw records. Textual mentions of compaction in user/system content are not compaction-status records. This agrees with the designer's source observation; it does not establish where the renderer card came from.
+
+Retained app log shows original run WebSocket connected at22:02:25.005Z and disconnected at22:12:32.504Z during termination, then new session connected at22:13:28.154Z with new runtime initialization during I submission. There is no earlier run-WebSocket disconnect/reconnect around the purported ui-40 live reload. This makes the prior completed-reconnect assertion unsubstantiated, not proof that a reload succeeded or failed. No new runtime/persistence design should rest on it.
+
+## Correction of prior coverage claims
+- Withdraw the completed full-product **same-process reconnect** claim based on ui-40/ui-41: only reload-request label plus later retained DOM was captured. Actual disconnect/context replacement and rehydration not established.
+- Withdraw the completed full-product **saved-reopen hydration** claim based on ui-59/ui-60 and the native card's alleged survival through durable replay. Keep as an attempted reload plus subsequent same-tab observation, provenance unresolved.
+- The request count stayed30 through that observation interval, but without a proven reopen action it is not a standalone acceptance proof of zero generation caused by saved hydration. The older lifecycle-assertions.json boolean no_generation_merely_reopen is preserved as historical derivation, superseded by this evidence qualification.
+- Preserve actual normal termination, aborted request30/late-result discard/no H parent, actual I fresh admission/new runtime/parent31/post-response summary32, persisted working-context continuity, held-A/B/C order, normal Settings F007 closure and346 repository Pass. Those do not prove frontend durable card replay. No cancelled E/H provider dispatch occurred.
+- The prior interim90.7 score depended partly on overstated reconnect/reopen evidence; **withdraw its use as a current confidence assessment** pending resumed investigation. Do not replace it with an invented final score; no completed API006 outcome or API005 historical score changes.
+
+Original DOM/log/wire/assertion artifacts remain unchanged. This correction is reporting/evidence provenance only; no new campaign or normative test/fix. Current supported stale-card observation remains useful for approved SR033 same-session terminal presentation; refreshed-context/saved-hydration provenance requires separately planned evidence after the design returns, not a claim now.

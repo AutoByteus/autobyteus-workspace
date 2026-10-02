@@ -3,7 +3,7 @@ import { AgentTeamDefinitionService } from "../../agent-team-definition/services
 import type { CollaboratorDefinitionCatalog } from "./collaborator-candidate-policy.js";
 import { CollaboratorCandidatePolicy } from "./collaborator-candidate-policy.js";
 import { CollaboratorEntryBuilder } from "./collaborator-entry-builder.js";
-import { CollaboratorMentionAdmission } from "./collaborator-mention-admission.js";
+import { CollaboratorAdmission } from "./collaborator-admission.js";
 import { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
 import { RunModelSelectionService, type RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import { getModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
@@ -19,20 +19,20 @@ export const createCollaboratorDefinitionCatalog = (services: Readonly<{
 });
 
 /** Process wiring: one policy and one admission coordinator over the shared catalogs. */
-export const createCollaboratorMentionAdmission = (
+export const createCollaboratorAdmission = (
   catalog: CollaboratorDefinitionCatalog,
   modelSelectionValidator: RunModelSelectionValidator,
-): CollaboratorMentionAdmission =>
-  new CollaboratorMentionAdmission({
+): CollaboratorAdmission =>
+  new CollaboratorAdmission({
     policy: new CollaboratorCandidatePolicy(catalog),
     entries: new CollaboratorEntryBuilder(catalog),
     runnability: new CollaboratorRunnabilityValidator(modelSelectionValidator),
   });
 
-let processAdmission: CollaboratorMentionAdmission | null = null;
+let processAdmission: CollaboratorAdmission | null = null;
 /** The process admission coordinator over the shared definition services. */
-export const getCollaboratorMentionAdmission = (): CollaboratorMentionAdmission =>
-  processAdmission ??= createCollaboratorMentionAdmission(createCollaboratorDefinitionCatalog({
+export const getCollaboratorAdmission = (): CollaboratorAdmission =>
+  processAdmission ??= createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
     agents: AgentDefinitionService.getInstance(),
     teams: AgentTeamDefinitionService.getInstance(),
   }), new RunModelSelectionService(getModelCatalogService()));

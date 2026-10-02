@@ -1,0 +1,48 @@
+{
+  "finding": "API-F007",
+  "records": [
+    {
+      "ref": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+      "source_sha256": "87fff3116dbd3f2fa2f45749e3577651df3621ca14e7af61c9dfe82880be04cd",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "guard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "guard_sha256": "0ee8149d462ec7efc9d9d75b75fad69430ed9ff52d69d0d79c278edfa2f685c1",
+      "predefined_registration": "    this.registerPredefinedSetting(\n      \"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE\",\n      \"Optional effective context ceiling override in tokens for compaction budgeting\",\n    );",
+      "matched_substring": "TOKEN",
+      "guard_precedes_metadata": true
+    },
+    {
+      "ref": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+      "source_sha256": "67811fdb7d7369f7bd8f7cc262be553cd1d319f8f8a7e7c9eba1586a9fad8997",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "guard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "guard_sha256": "0ee8149d462ec7efc9d9d75b75fad69430ed9ff52d69d0d79c278edfa2f685c1",
+      "predefined_registration": "    this.registerPredefinedSetting(\n      \"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE\",\n      \"Optional effective context ceiling override in tokens for compaction budgeting\",\n    );",
+      "matched_substring": "TOKEN",
+      "guard_precedes_metadata": true
+    },
+    {
+      "ref": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+      "source_sha256": "67811fdb7d7369f7bd8f7cc262be553cd1d319f8f8a7e7c9eba1586a9fad8997",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "guard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "guard_sha256": "0ee8149d462ec7efc9d9d75b75fad69430ed9ff52d69d0d79c278edfa2f685c1",
+      "predefined_registration": "    this.registerPredefinedSetting(\n      \"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE\",\n      \"Optional effective context ceiling override in tokens for compaction budgeting\",\n    );",
+      "matched_substring": "TOKEN",
+      "guard_precedes_metadata": true
+    },
+    {
+      "ref": "worktree",
+      "source_sha256": "67811fdb7d7369f7bd8f7cc262be553cd1d319f8f8a7e7c9eba1586a9fad8997",
+      "regex": "const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;",
+      "guard": "      if (SENSITIVE_SETTING_NAME.test(key)) {\n        return [false, \"Sensitive settings must use their write-only credential editor.\"];\n      }",
+      "guard_sha256": "0ee8149d462ec7efc9d9d75b75fad69430ed9ff52d69d0d79c278edfa2f685c1",
+      "predefined_registration": "    this.registerPredefinedSetting(\n      \"AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE\",\n      \"Optional effective context ceiling override in tokens for compaction budgeting\",\n    );",
+      "matched_substring": "TOKEN",
+      "guard_precedes_metadata": true
+    }
+  ],
+  "same_guard_all_refs": true,
+  "baseline_execution": false,
+  "conclusion": "Existing production defect in supported numeric Settings save; source identity is not baseline execution, waiver, or proof every historical product build failed."
+}

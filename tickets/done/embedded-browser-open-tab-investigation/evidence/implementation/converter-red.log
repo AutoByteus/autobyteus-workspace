@@ -1,0 +1,379 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts (62 tests | 9 failed) 27ms
+     ✓ shows native image parameters, redacts native image denial, and does not classify an MCP image call as native 2ms
+     ✓ enriches native image DONE with AGY's step output text and resolved file_path 1ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (OUTPUT_MISSING) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (OUTPUT_UNSAFE) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (OUTPUT_TOO_LARGE) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (PATH_NOT_FOUND_IN_OUTPUT) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (PATH_OUTSIDE_CONVERSATION) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (IMAGE_MISSING) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (READ_FAILED) 0ms
+     ✓ keeps native image DONE successful with output null and a content-free warning when unresolved (INVALID_IDENTITY) 0ms
+     ✓ never lets a throwing resolver escape convert 1ms
+     ✓ resolves distinct paths for parallel native image steps 0ms
+     ✓ reports distinct native image steps without duplicating terminal events 0ms
+       ✓ closes an unfinished daemon step as a succeeded background task before TURN_COMPLETED 1ms
+       ✓ reports unfinished steps as background tool steps at result, and nothing when every step finished 0ms
+       ✓ does not report steps closed by an interrupt as background steps 0ms
+       ✓ closes every unfinished step in ascending step order 0ms
+       ✓ closes an unfinished step as background before the turn error on a non-SUCCESS result 0ms
+       ✓ adds no background closure for steps AGY finished as DONE, ERROR or denied 0ms
+       ✓ keeps interruption semantics for an unfinished step and does not leak it into the next turn 0ms
+     ✓ redacts failed terminal result with status ERROR, even without a tool 0ms
+     ✓ redacts failed terminal result with status UNKNOWN, even without a tool 0ms
+     ✓ redacts failed terminal result with status undefined, even without a tool 0ms
+     ✓ treats SUCCESS with an explicit error as a failed terminal turn and keeps prior tool DONE factual 0ms
+     ✓ fails a undefined status without an explicit error and leaves canonical status error 0ms
+     ✓ fails a UNKNOWN status without an explicit error and leaves canonical status error 0ms
+     ✓ fails a ERROR status without an explicit error and leaves canonical status error 0ms
+     ✓ keeps multi-turn text/tool order without repeating result.response 2ms
+     ✓ keeps headless denial failed despite result SUCCESS 0ms
+     ✓ maps exit0 DONE to provider-step success without inventing shell exit 1ms
+     ✓ maps exit8_empty DONE to provider-step success without inventing shell exit 0ms
+     ✓ maps not_found DONE to provider-step success without inventing shell exit 1ms
+     ✓ does not mark headless denial green when the turn reports SUCCESS 0ms
+     ✓ prioritizes an explicit tool error even when AGY labels the step DONE 0ms
+         × emits canonical object with unchanged identity and exactly one start/terminal 5ms
+         × emits canonical JSON text with unchanged identity and exactly one start/terminal 1ms
+         × emits canonical structured content with unchanged identity and exactly one start/terminal 1ms
+         × emits canonical MCP text content with unchanged identity and exactly one start/terminal 1ms
+         × emits canonical reused tab with unchanged identity and exactly one start/terminal 1ms
+         × does not fabricate a tab identity for output null 0ms
+         × does not fabricate a tab identity for output undefined 0ms
+         × does not fabricate a tab identity for output "not JSON" 0ms
+         × does not fabricate a tab identity for output {"status":"opened"} 0ms
+         ✓ preserves ERROR with explicit navigation failed instead of canonicalizing success 0ms
+         ✓ preserves DONE with explicit navigation failed instead of canonicalizing success 0ms
+         ✓ preserves ERROR with explicit permission denied instead of canonicalizing success 0ms
+         ✓ preserves DONE with explicit permission denied instead of canonicalizing success 0ms
+         ✓ preserves the generic envelope for third-party open_tab 0ms
+         ✓ preserves the generic envelope for other browser tool 0ms
+         ✓ preserves the generic envelope for non-browser MCP tool 0ms
+         ✓ preserves the generic envelope for incomplete MCP identity 0ms
+         ✓ does not normalize a native tool named open_tab 1ms
+       ✓ presents an AutoByteus agent tool under its bare name and own arguments on start and success 0ms
+       ✓ presents send_message_to with no arguments as an empty argument object 0ms
+       ✓ presents a third-party tool as mcp__<server>__<tool> and keeps plain text output unchanged 0ms
+       ✓ reports a failed MCP call under the real tool name with the provider's error message 0ms
+       ✓ reports a denied MCP call under the real tool name 0ms
+       ✓ falls back to the provider presentation for a wrapper with missing ServerName and lets the turn continue 0ms
+       ✓ falls back to the provider presentation for a wrapper with blank ToolName and lets the turn continue 0ms
+       ✓ never treats an AutoByteus MCP generate_image call as AGY's native image tool 0ms
+       ✓ leaves native tool names, parameters and JSON-looking output untouched 0ms
+     ✓ emits assistant text that satisfies the canonical segment lifecycle contract 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > emits canonical object with unchanged identity and exactly one start/terminal
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > emits canonical JSON text with unchanged identity and exactly one start/terminal
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+@@ -6,14 +6,17 @@
+        "url": "about:blank",
+      },
+      "invocation_id": "agy-tool-turn-6",
+      "provider_state": "DONE",
+      "result": {
++       "output": {
+          "status": "opened",
+          "tab_id": "c1c04e",
+          "title": "Probe",
+          "url": "about:blank",
++       },
++       "provider_state": "DONE",
+      },
+      "tool_name": "open_tab",
+      "turn_id": "turn",
+    },
+    "runId": "run",
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:385:27
+    383|         expect(events[0]?.payload).toEqual({ turn_id: "turn", invocati…
+    384|           tool_name: "open_tab", arguments: parameters.Arguments });
+    385|         expect(events[1]).toEqual({ eventType: AgentRunEventType.TOOL_…
+       |                           ^
+    386|           runId: "run", statusHint: null, payload: { ...events[0]?.pay…
+    387|             result: { ...result, status: _label === "reused tab" ? "re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > emits canonical structured content with unchanged identity and exactly one start/terminal
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+@@ -6,14 +6,19 @@
+        "url": "about:blank",
+      },
+      "invocation_id": "agy-tool-turn-6",
+      "provider_state": "DONE",
+      "result": {
++       "output": {
++         "structuredContent": {
+            "status": "opened",
+            "tab_id": "c1c04e",
+            "title": "Probe",
+            "url": "about:blank",
++         },
++       },
++       "provider_state": "DONE",
+      },
+      "tool_name": "open_tab",
+      "turn_id": "turn",
+    },
+    "runId": "run",
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:385:27
+    383|         expect(events[0]?.payload).toEqual({ turn_id: "turn", invocati…
+    384|           tool_name: "open_tab", arguments: parameters.Arguments });
+    385|         expect(events[1]).toEqual({ eventType: AgentRunEventType.TOOL_…
+       |                           ^
+    386|           runId: "run", statusHint: null, payload: { ...events[0]?.pay…
+    387|             result: { ...result, status: _label === "reused tab" ? "re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > emits canonical MCP text content with unchanged identity and exactly one start/terminal
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+@@ -6,14 +6,19 @@
+        "url": "about:blank",
+      },
+      "invocation_id": "agy-tool-turn-6",
+      "provider_state": "DONE",
+      "result": {
+-       "status": "opened",
+-       "tab_id": "c1c04e",
+-       "title": "Probe",
+-       "url": "about:blank",
++       "output": {
++         "content": [
++           {
++             "text": "{\"tab_id\":\"c1c04e\",\"status\":\"opened\",\"url\":\"about:blank\",\"title\":\"Probe\"}",
++             "type": "text",
++           },
++         ],
++       },
++       "provider_state": "DONE",
+      },
+      "tool_name": "open_tab",
+      "turn_id": "turn",
+    },
+    "runId": "run",
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:385:27
+    383|         expect(events[0]?.payload).toEqual({ turn_id: "turn", invocati…
+    384|           tool_name: "open_tab", arguments: parameters.Arguments });
+    385|         expect(events[1]).toEqual({ eventType: AgentRunEventType.TOOL_…
+       |                           ^
+    386|           runId: "run", statusHint: null, payload: { ...events[0]?.pay…
+    387|             result: { ...result, status: _label === "reused tab" ? "re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > emits canonical reused tab with unchanged identity and exactly one start/terminal
+AssertionError: expected { …(4) } to deeply equal { …(4) }
+
+- Expected
++ Received
+
+@@ -6,14 +6,17 @@
+        "url": "about:blank",
+      },
+      "invocation_id": "agy-tool-turn-6",
+      "provider_state": "DONE",
+      "result": {
++       "output": {
+          "status": "reused",
+          "tab_id": "c1c04e",
+          "title": "Probe",
+          "url": "about:blank",
++       },
++       "provider_state": "DONE",
+      },
+      "tool_name": "open_tab",
+      "turn_id": "turn",
+    },
+    "runId": "run",
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:385:27
+    383|         expect(events[0]?.payload).toEqual({ turn_id: "turn", invocati…
+    384|           tool_name: "open_tab", arguments: parameters.Arguments });
+    385|         expect(events[1]).toEqual({ eventType: AgentRunEventType.TOOL_…
+       |                           ^
+    386|           runId: "run", statusHint: null, payload: { ...events[0]?.pay…
+    387|             result: { ...result, status: _label === "reused tab" ? "re…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > does not fabricate a tab identity for output null
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > does not fabricate a tab identity for output undefined
+AssertionError: expected { Object (provider_state, output) } to deeply equal null
+
+- Expected:
+null
+
++ Received:
+{
+  "output": null,
+  "provider_state": "DONE",
+}
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:398:51
+    396|           try {
+    397|             const events = start().convert(mcpStep(6, "DONE", paramete…
+    398|             expect(events.at(-1)?.payload.result).toEqual(output ?? nu…
+       |                                                   ^
+    399|             expect(events.at(-1)?.payload.provider_state).toBe("DONE");
+    400|           } finally { warn.mockRestore(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > does not fabricate a tab identity for output "not JSON"
+AssertionError: expected { provider_state: 'DONE', …(1) } to deeply equal 'not JSON'
+
+- Expected:
+"not JSON"
+
++ Received:
+{
+  "output": "not JSON",
+  "provider_state": "DONE",
+}
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:398:51
+    396|           try {
+    397|             const events = start().convert(mcpStep(6, "DONE", paramete…
+    398|             expect(events.at(-1)?.payload.result).toEqual(output ?? nu…
+       |                                                   ^
+    399|             expect(events.at(-1)?.payload.provider_state).toBe("DONE");
+    400|           } finally { warn.mockRestore(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > MCP calls (wrapper shapes from the AGY 1.2.14 probe) > AutoByteus open_tab result contract > does not fabricate a tab identity for output {"status":"opened"}
+AssertionError: expected { provider_state: 'DONE', …(1) } to deeply equal { status: 'opened' }
+
+- Expected
++ Received
+
+  {
++   "output": {
+      "status": "opened",
++   },
++   "provider_state": "DONE",
+  }
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:398:51
+    396|           try {
+    397|             const events = start().convert(mcpStep(6, "DONE", paramete…
+    398|             expect(events.at(-1)?.payload.result).toEqual(output ?? nu…
+       |                                                   ^
+    399|             expect(events.at(-1)?.payload.provider_state).toBe("DONE");
+    400|           } finally { warn.mockRestore(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 53 passed (62)
+   Start at  19:24:40
+   Duration  934ms (transform 95ms, setup 16ms, import 101ms, tests 27ms, environment 0ms)

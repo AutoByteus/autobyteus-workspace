@@ -1,0 +1,14 @@
+# IR012 implementation self-check — CRR018 applied
+
+## Supported contract and dependency ownership
+The documented full worktree build and explicit user architecture are independent governing contracts. Native input correctness remains Approved SR033 / SR038; web cannot directly depend on core and its intentional guard cannot be removed/weakened/bypassed. CRR018 withdraws CRR017's guard-policy option. No new product behavior or design recovery is needed.
+
+Root test-support/native-input-history now owns the combined native/server+web harness. Dependency direction is workspace integration -> both product boundaries; no web source, local test, setup or config imports that harness. Core classes are explicitly imported and instantiated only by the workspace test. No core alias, dynamic import, server re-export, helper laundering, production dependency or guard exception. Existing Nuxt tooling is reused from above by the workspace config; shared-tool dedupe is not a native bridge. Root package adds one test command (guard && explicitly selected external config); web manifest/lock/config/build chain/guard unchanged.
+
+The first in-web tests/integration move was insufficient under CRR018 and is withdrawn, not used as a loophole. Both old web native test locations are removed. Complete original native mock/test body is byte-identical after import-depth/normal frontend alias retargeting. No Agent/Team/attachment/FIFO/no-send assertion deletion. The original body already uses controlled model/provisioning and mocked Apollo; no new masking or fake historical keys. Existing web-local acceptedInputIdentity.spec.ts stays unchanged: it operates on DTO-shaped entries and a pure server dedupe function (presentation-contract dependency, no core instantiation or native fixture bridge).
+
+## Guard and local verification
+New web-local guard test invokes actual unchanged guard against disposable roots: direct static core import rejected under services and services/__tests__; production core manifest dependency rejected. It only writes static negative sample text to its own temp roots, never imports/executes core. The earlier allowed-test-directory check was withdrawn with the interim candidate; no assertion approving core dependency within web remains. Real root command runs unchanged guard first and passes before2 native cases; web suite17 passes. Prior candidate19 and repeats are not additional final coverage.
+
+## Source/data/render scope
+All17 IR011 production paths unchanged. Test config is25 effective nonempty lines, no >500 / >220 pressure; tests excluded from hard production size limit. No new runtime structures/owners/wrappers or old behavior retained. SR038 Directly Usable—No Migration remains: no migration/backfill, old capture repair, startup work or restart-queue promise. No rendered behavior change; feedback loop N/A, IR011 preview remains historical bounded evidence. No full build/API/typing/provider signoff.

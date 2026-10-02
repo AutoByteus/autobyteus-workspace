@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { composeCollaboratorMentionNote } from '@autobyteus/agent-presentation-contracts'
 import {
   presentSentUserMessage,
-  removeMentionFromText,
   splitMentionText,
   textHasMention,
   toCollaboratorMentionDtos,
@@ -23,10 +22,6 @@ describe('collaborator mention text', () => {
   it('sends only the mentions still in the text, and nothing when none are', () => {
     expect(toCollaboratorMentionDtos('ask @Product Team', [reviewer, team])).toEqual([{ kind: 'agent_team', definition_id: 'product-team' }])
     expect(toCollaboratorMentionDtos('no mentions', [reviewer])).toBeUndefined()
-  })
-
-  it('removing a chip keeps the words', () => {
-    expect(removeMentionFromText('ask @Product Team and @Product Team', 'Product Team')).toBe('ask Product Team and Product Team')
   })
 
   it('splits known mentions for inline chips, longest names first', () => {

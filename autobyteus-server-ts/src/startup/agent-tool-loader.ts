@@ -7,7 +7,9 @@ export type RequiredAgentToolUnitKey =
   | "core"
   | "browser"
   | "task_delegation"
+  | "project_tasks"
   | "agent_communication"
+  | "agent_discovery"
   | "published_artifact"
   | "media"
   | "search";
@@ -41,6 +43,7 @@ const coreSpec: LoaderSpec = {
 };
 
 const serverOwnedSpecs: LoaderSpec[] = [
+  {key: "project_tasks", displayName: "Project Task Tools", modulePath: "../agent-tools/project-tasks/project-task-native-tools.js", exportName: "registerProjectTaskTools"},
   {
     key: "browser",
     displayName: "Browser Tools",
@@ -58,6 +61,12 @@ const serverOwnedSpecs: LoaderSpec[] = [
     displayName: "Agent Communication Tools",
     modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js",
     exportName: "registerAgentCommunicationTools",
+  },
+  {
+    key: "agent_discovery",
+    displayName: "Agent Discovery Tools",
+    modulePath: "../agent-tools/agent-discovery/list-available-agents-tool.js",
+    exportName: "registerAgentDiscoveryTools",
   },
   {
     key: "published_artifact",

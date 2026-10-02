@@ -29,8 +29,32 @@ export type ConfiguredTeamExecutionNode = Readonly<{
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
 
 /**
+ * The definition snapshot of a task copy started from the catalog (a listed Agent that is not
+ * in the run): what the copy ran with, so it restores without the catalog.
+ */
+export type TaskAgentExecutionSource = Readonly<{
+  kind: "agent";
+  agentDefinitionId: string;
+  launchConfiguration: AgentLaunchConfiguration;
+}>;
+
+/** The Team counterpart: its layout (mounted at the copy's address), handoffs and settings. */
+export type TaskTeamExecutionSource = Readonly<{
+  kind: "agent_team";
+  teamDefinitionId: string;
+  coordinatorAddress: AgentTeamAddress;
+  members: readonly Readonly<{ address: AgentTeamAddress; agentDefinitionId: string }>[];
+  handoffs: readonly CollaborationHandoff[];
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
+}>;
+
+export type TaskExecutionSource = TaskAgentExecutionSource | TaskTeamExecutionSource;
+
+/**
  * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
  * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.
+ * `source` is present only for a copy started from the catalog; otherwise the copy's source is
+ * the configured placement or collaborator at its address.
  */
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
@@ -38,6 +62,7 @@ export type TaskAgentExecution = Readonly<{
   platformAgentRunId: string | null;
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
+  source?: TaskAgentExecutionSource;
 }>;
 
 export type TaskTeamAgentExecution = Readonly<{
@@ -55,7 +80,7 @@ export type TaskTeamNestedTeamExecution = Readonly<{
 
 export type TaskTeamMemberExecution = TaskTeamAgentExecution | TaskTeamNestedTeamExecution;
 
-/** A delegated child Team. Liveness is runtime-only; `delegatorAgentRunId` as on `TaskAgentExecution`. */
+/** A delegated child Team. Liveness is runtime-only; `delegatorAgentRunId` and `source` as on `TaskAgentExecution`. */
 export type TaskTeamExecution = Readonly<{
   address: AgentTeamAddress;
   teamRunId: string;
@@ -63,6 +88,7 @@ export type TaskTeamExecution = Readonly<{
   taskExecutions: readonly TaskExecution[];
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
+  source?: TaskTeamExecutionSource;
 }>;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;

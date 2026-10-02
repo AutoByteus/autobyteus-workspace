@@ -1,0 +1,62 @@
+[
+  {
+    "diagnostic": "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts(374,40): error TS2540: Cannot assign to 'is_active' because it is a read-only property.",
+    "line": "  const view = taskBearingView(); view.is_active = active",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts(375,21): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.",
+    "line": "  if (!active) view.agent_statuses = []",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/__tests__/TeamStreamingService.spec.ts(200,52): error TS2339: Property 'segments' does not exist on type 'AIMessage | UserMessage'.",
+    "line": "    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(115,9): error TS2554: Expected 4 arguments, but got 3.",
+    "line": "        setStreamSegmentIdentity(textSegment, 'text-1', 'text');",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(451,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.",
+    "line": "      const payload: ErrorPayload = { code: 'TEST_ERR', message: 'Something went wrong' };",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(466,7): error TS2554: Expected 4 arguments, but got 3.",
+    "line": "      setStreamSegmentIdentity(textSegment, 'text-1', 'text');",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(473,19): error TS2345: Argument of type '{ code: string; message: string; }' is not assignable to parameter of type 'ErrorPayload'.",
+    "line": "      handleError({ code: 'STREAM_ERROR', message: 'stream failed' }, mockContext);",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(495,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.",
+    "line": "      const payload: ErrorPayload = {",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(528,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.",
+    "line": "      const payload: ErrorPayload = {",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/teamExecution/__tests__/teamExecutionViewState.spec.ts(238,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.",
+    "line": "    executionTree.root_team.task_executions = [{ ...taskAgent('old-student-run', 'teacher-run'), delegator_agent_run_id: null }];",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/teamExecution/__tests__/teamExecutionViewState.spec.ts(247,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.",
+    "line": "    executionTree.root_team.task_executions = [taskAgent('dormant-student-run', 'teacher-run')];",
+    "exactLinePresentBeforeIR005": true
+  },
+  {
+    "diagnostic": "services/teamExecution/__tests__/teamExecutionViewState.spec.ts(261,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.",
+    "line": "    executionTree.root_team.task_executions = [taskAgent('dormant-student-run', 'teacher-run')];",
+    "exactLinePresentBeforeIR005": true
+  }
+]

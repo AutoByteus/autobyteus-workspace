@@ -1,4 +1,7 @@
+import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
+import { OPEN_TAB_TOOL_NAME } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
+import { projectAgyMcpToolCall, projectAgyMcpToolOutput } from "./agy-mcp-tool-call.js";
 import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-message.js";
 import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sink.js";
 import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
@@ -91,10 +94,14 @@ export class AgyStreamEventConverter {
     const info = agyRecord(payload.tool_info);
     const name = agyString(payload.tool_name) ?? agyString(info?.name);
     if (!name) throw new Error("AGY_STREAM_INVALID_TOOL_NAME");
+    // Native image handling is decided on the provider's tool name, never on a projected MCP tool name.
     const nativeImage = name === "generate_image";
-    const args = agyRecord(info?.parameters) ?? {};
+    const parameters = agyRecord(info?.parameters);
+    const mcpCall = projectAgyMcpToolCall(name, parameters);
+    const output = mcpCall ? projectAgyMcpToolOutput(info?.output ?? null) : info?.output ?? null;
     const invocationId = `agy-tool-${turnId}-${stepIndex}`;
-    const common = { turn_id: turnId, invocation_id: invocationId, tool_name: name, arguments: args };
+    const common = { turn_id: turnId, invocation_id: invocationId,
+      tool_name: mcpCall?.toolName ?? name, arguments: mcpCall?.arguments ?? parameters ?? {} };
     const events: AgentRunEvent[] = [];
     if (!this.toolStarts.has(stepIndex)) {
       this.toolStarts.add(stepIndex);
@@ -117,14 +124,18 @@ export class AgyStreamEventConverter {
       const message = errorText(explicitError) || "Antigravity tool failed.";
       events.push(this.event(denial(message) ? AgentRunEventType.TOOL_DENIED : AgentRunEventType.TOOL_EXECUTION_FAILED,
         { ...common, error: message, reason: message, provider_state: state,
-          result: { provider_state: state, output: info?.output ?? null } }, "ERROR"));
+          result: { provider_state: state, output } }, "ERROR"));
     } else if (nativeImage) {
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
         ...common, result: this.nativeImageResult(stepIndex), provider_state: "DONE",
       }));
     } else {
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
-        ...common, result: { provider_state: "DONE", output: info?.output ?? null }, provider_state: "DONE",
+        ...common,
+        result: mcpCall?.toolName === OPEN_TAB_TOOL_NAME
+          ? normalizeBrowserMcpToolResult(OPEN_TAB_TOOL_NAME, output)
+          : { provider_state: "DONE", output },
+        provider_state: "DONE",
       }));
     }
     return events;

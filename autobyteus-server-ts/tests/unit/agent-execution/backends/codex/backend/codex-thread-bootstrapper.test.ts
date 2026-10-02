@@ -1,3 +1,5 @@
+import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
+import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
@@ -14,7 +16,7 @@ import {
   BROWSER_BRIDGE_TOKEN_ENV,
 } from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
-import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
+import { MemberCollaborationContext, MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { WorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../../src/skills/domain/configured-agent-skill-binding.js";
@@ -28,8 +30,7 @@ import { testMemberExecutionContext } from "../../../../../fixtures/current-team
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
-const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill,
-  source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } });
+const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill });
 
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
@@ -242,6 +243,43 @@ describe("CodexThreadBootstrapper", () => {
       delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
     }
   });
+
+  it.each(["team", "standalone", "no-context"] as const)(
+    "projects work-request guidance through %s create and restore bootstrap",
+    async (scope) => {
+      const root = createAgentRootExecutionIdentity("host-run");
+      const memberExecutionContext = scope === "team" ? createMemberExecutionContext()
+        : scope === "standalone" ? new MemberExecutionContext({
+          identity: createCollaborationMemberExecutionIdentity({
+            root, memberAddress: "/collaborator", agentRunId: "run-1",
+          }),
+          teamScoped: false,
+          collaboration: new MemberCollaborationContext({
+            deliverLogicalMessage: async () => ({ accepted: true }),
+          }),
+          tasks: {
+            root,
+            delegateTask: async () => ({ target_agent_run_id: null, message: "unused" }),
+          },
+        }) : null;
+      const { bootstrapper } = createBootstrapper({
+        skills: [], requestImplementation: async () => ({ data: [] }),
+      });
+      const created = await bootstrapper.bootstrapForCreate(createRunContext({ memberExecutionContext }));
+      const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ memberExecutionContext }));
+      for (const context of [created, restored]) {
+        const prompt = context.runtimeContext.codexThreadConfig.baseInstructions!;
+        expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(scope === "no-context" ? 1 : 2);
+        if (scope !== "no-context") {
+          expect(prompt).toContain("only at a workflow-defined handoff point or when blocked and needing external input");
+          expect(prompt).toContain("return the result or specific blocker to the requesting agent");
+          expect(prompt.indexOf(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toBeLessThan(prompt.indexOf("`delegate_task`"));
+        }
+        if (scope !== "team") expect(prompt).not.toContain("get_handoff_rules");
+      }
+      expect(restored.runtimeContext.threadId).toBe("thread-existing");
+    },
+  );
 
   it("resolves Codex sandbox mode from the shared setting normalizer", () => {
     process.env.CODEX_APP_SERVER_SANDBOX = " read-only ";

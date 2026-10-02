@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { mount, flushPromises } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import { parseTeamStreamServerMessage } from '@autobyteus/team-stream-contracts'
+import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from '@autobyteus/team-stream-contracts'
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
 import { useAgentTeamContextsStore } from '../agentTeamContextsStore'
 import { useAgentTeamRunStore } from '../agentTeamRunStore'
@@ -41,7 +41,19 @@ const setup = () => {
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
   const ready = () => {
     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
-    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, execution_tree: team.view.getExecutionTree(), messages: [], agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null })) })
+    const snapshot: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>['payload'] = {
+      root_team_run_id: ROOT,
+      base_change_sequence: 0,
+      execution_tree: team.view.getExecutionTree(),
+      messages: [],
+      agent_input_states: [],
+      agent_statuses: team.view.listAgentContextEntries().map(e => ({
+        agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle',
+        trigger: null, tool_name: null, error_message: null, error_details: null,
+        recoverableBlock: null,
+      })),
+    }
+    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot)
   }
   ready()
   const lead = seed('lead'), worker = seed('worker')

@@ -181,3 +181,14 @@ export const buildSingleMessageProvenance = (
   rawTraceIds: [...new Set(rawTraceIds.map((id) => id.trim()).filter(Boolean))],
   turnId: turnId?.trim() || null,
 });
+
+export const countCompactedMemoryRegions = (messages: readonly Message[]): number =>
+  messages.reduce((count, message) => {
+    const provenance = getWorkingContextMessageProvenance(message);
+    return count + (provenance?.kind === 'composed_user'
+      ? provenance.constituents.filter(({ kind }) => kind === 'compacted_memory').length : 0);
+  }, 0);
+
+export const assertAtMostOneCompactedMemoryRegion = (messages: readonly Message[]): void => {
+  if (countCompactedMemoryRegions(messages) > 1) throw new Error('Working context contains multiple compacted-memory regions.');
+};

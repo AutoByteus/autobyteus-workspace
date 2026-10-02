@@ -1,0 +1,4 @@
+PASS Writer cut point after 0 of 2 results restores without losing summary
+PASS Writer cut point after 1 of 2 results restores without losing summary
+PASS Writer cut point after 2 of 2 results restores without losing summary
+Owned temporary data removed

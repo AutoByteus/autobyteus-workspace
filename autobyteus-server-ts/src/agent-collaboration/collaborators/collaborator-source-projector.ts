@@ -4,11 +4,13 @@ import type {
   TeamRunAgentNode,
   TeamRunAgentTeamNode,
 } from "../../agent-team-execution/domain/team-run-config.js";
-import { getAgentTeamAddressSegments } from "../domain/agent-team-address.js";
+import { getAgentTeamAddressSegments, type AgentTeamAddress } from "../domain/agent-team-address.js";
 import type {
   CollaboratorAgentEntry,
   CollaboratorEntry,
   CollaboratorTeamEntry,
+  TaskExecution,
+  TaskExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 /** Extra copies get fresh identities from the task lifecycle; these only fill the shape. */
@@ -106,6 +108,65 @@ export const resolveCollaboratorCopySource = (
   return null;
 };
 
+/**
+ * A catalog task copy's runtime source (DS-003): its recorded definition snapshot at the
+ * copy's address, with pending identities that the task lifecycle replaces (activation) or
+ * the persisted execution supplies (restore).
+ */
+export const projectTaskExecutionSource = (address: AgentTeamAddress, source: TaskExecutionSource): CollaboratorCopySource => {
+  if (source.kind === "agent") {
+    return Object.freeze({ kind: "agent", node: Object.freeze({
+      kind: "agent",
+      address,
+      agentDefinitionId: source.agentDefinitionId,
+      agentRunId: PENDING_RUN_ID,
+      platformAgentRunId: null,
+      role: null,
+      description: null,
+      ...source.launchConfiguration,
+    }) });
+  }
+  return Object.freeze({
+    kind: "agent_team",
+    handoffs: source.handoffs,
+    node: Object.freeze({
+      kind: "agent_team",
+      address,
+      teamDefinitionId: source.teamDefinitionId,
+      teamRunId: PENDING_RUN_ID,
+      coordinatorAddress: source.coordinatorAddress,
+      defaultLaunchConfiguration: source.defaultLaunchConfiguration,
+      role: null,
+      description: null,
+      children: Object.freeze(source.members.map((member): TeamRunAgentNode => Object.freeze({
+        kind: "agent",
+        address: member.address,
+        agentDefinitionId: member.agentDefinitionId,
+        agentRunId: PENDING_RUN_ID,
+        platformAgentRunId: null,
+        role: null,
+        description: null,
+        ...source.defaultLaunchConfiguration,
+      }))),
+    }),
+  });
+};
+
+/**
+ * The agent source at `address` inside a catalog Team copy's snapshot: a teammate delegated
+ * from inside that copy (REQ-007 keeps the copy one unit). Null when the snapshot has none.
+ */
+export const projectTaskSourceMember = (
+  source: TaskExecutionSource,
+  address: AgentTeamAddress,
+): Extract<TaskExecutionSource, { kind: "agent" }> | null => {
+  if (source.kind !== "agent_team") return null;
+  const member = source.members.find((candidate) => candidate.address === address);
+  return member
+    ? Object.freeze({ kind: "agent", agentDefinitionId: member.agentDefinitionId, launchConfiguration: source.defaultLaunchConfiguration })
+    : null;
+};
+
 export type CollaboratorExecutionSource = Readonly<{
   agentDefinitionId: string;
   launchConfiguration: AgentLaunchConfiguration;
@@ -133,3 +194,49 @@ export const collaboratorExecutionSource = (
     ? Object.freeze({ agentDefinitionId: member.agentDefinitionId, launchConfiguration: entry.defaultLaunchConfiguration })
     : null;
 };
+
+/**
+ * The definition and launch settings of `agentRunId` inside a catalog copy (REQ-011): the
+ * copied Agent itself, or a member of a copied Team, read from the copy's recorded `source`.
+ * `taskExecutions` are a tree's task-execution lists (root, mounted Teams, collaborator Teams);
+ * copies nested inside other copies are searched too. Null for every other run.
+ */
+export const catalogCopyExecutionSource = (
+  taskExecutions: Iterable<readonly TaskExecution[]>,
+  agentRunId: string,
+): CollaboratorExecutionSource | null => {
+  const visit = (tasks: readonly TaskExecution[]): CollaboratorExecutionSource | null => {
+    for (const task of tasks) {
+      if ("agentRunId" in task) {
+        if (task.agentRunId === agentRunId && task.source) {
+          return Object.freeze({ agentDefinitionId: task.source.agentDefinitionId, launchConfiguration: task.source.launchConfiguration });
+        }
+        continue;
+      }
+      const member = task.source ? task.members.find((candidate) => "agentRunId" in candidate && candidate.agentRunId === agentRunId) : null;
+      const definition = member && task.source?.members.find((candidate) => candidate.address === member.address);
+      if (definition && task.source) {
+        return Object.freeze({ agentDefinitionId: definition.agentDefinitionId, launchConfiguration: task.source.defaultLaunchConfiguration });
+      }
+      const nested = visit(task.taskExecutions);
+      if (nested) return nested;
+    }
+    return null;
+  };
+  for (const tasks of taskExecutions) {
+    const found = visit(tasks);
+    if (found) return found;
+  }
+  return null;
+};
+
+/** Every task-execution list of a tree: its root's, its mounted Teams' and its collaborator Teams'. */
+export const taskExecutionListsOf = (input: Readonly<{
+  taskExecutions: readonly TaskExecution[];
+  teams?: readonly Readonly<{ taskExecutions: readonly TaskExecution[] }>[];
+  collaborators: readonly CollaboratorEntry[];
+}>): readonly (readonly TaskExecution[])[] => [
+  input.taskExecutions,
+  ...(input.teams ?? []).map((team) => team.taskExecutions),
+  ...input.collaborators.flatMap((entry) => entry.kind === "agent_team" ? [entry.taskExecutions] : []),
+];

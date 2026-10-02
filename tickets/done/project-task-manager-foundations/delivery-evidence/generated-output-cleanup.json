@@ -1,0 +1,16 @@
+{
+  "removedOwnUntrackedDirectories": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-application-backend-sdk/dist",
+      "ownership": "New untracked output from own shared-prepare; pre-run status clean",
+      "files": 12
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-application-sdk-contracts/dist",
+      "ownership": "New untracked output from own shared-prepare; pre-run status clean",
+      "files": 52
+    }
+  ],
+  "otherIgnoredPackageOutput": "Untouched",
+  "worktreeBranchCleanup": "Not performed \u2014 unsafe during rework"
+}

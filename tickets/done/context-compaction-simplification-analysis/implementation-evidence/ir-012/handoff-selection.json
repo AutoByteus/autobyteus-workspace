@@ -1,0 +1,11 @@
+{
+  "revision": "IR-012",
+  "trigger": "CRR017/CRR018, API010-F001",
+  "outcome": "Implementation complete for independent source review; Local Fix; Large/High unchanged",
+  "selected": {
+    "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "reason": "Most-specific completed reviewer-requested implementation Local Fix on Large/High route. No guard change, new design issue, direct-validation eligibility or second outcome recipient.",
+  "other_recipients": []
+}

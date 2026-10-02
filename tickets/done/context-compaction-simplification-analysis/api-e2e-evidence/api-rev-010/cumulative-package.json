@@ -1,0 +1,8 @@
+{
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/cumulative-package.tar.gz",
+  "fileCount": 5081,
+  "size": 104469189,
+  "sha256": "39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5",
+  "reason": "Full direct reference list exceeded transport body limit; complete file bytes plus checksummed manifest attached instead, with direct primary authorities and API15",
+  "created": "2026-10-01T17:08:04.007140+00:00"
+}

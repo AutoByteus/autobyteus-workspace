@@ -1,0 +1,15 @@
+{
+  "runId": "daily_assistant_161623b0886f4211bb52cad91023d79f",
+  "agentDefinitionId": "autobyteus-daily-assistant",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6yH09Q/server-data/temp_workspace",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-6yH09Q/server-data/memory/agents/daily_assistant_161623b0886f4211bb52cad91023d79f",
+  "llmModelIdentifier": "gemini-3.8-flash-medium",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "runtimeKind": "antigravity_cli",
+  "platformAgentRunId": "bab5d454-0775-41f8-a326-585bebba6da9",
+  "preparedAt": "2026-10-02T17:46:27.928Z",
+  "preparedExpiresAt": "2026-10-03T17:46:27.928Z",
+  "startedAt": "2026-10-02T17:46:32.523Z",
+  "applicationExecutionContext": null
+}

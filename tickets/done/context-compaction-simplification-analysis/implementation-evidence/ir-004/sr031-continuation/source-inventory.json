@@ -1,0 +1,1031 @@
+{
+  "base": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "owned_or_adapted_paths": [
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts",
+      "sha256": "b7344c2d9ec5f8f60e1a30741299f77d45fc0c5bbb1848ed0ae0bd6984b237c4",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 32
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "sha256": "7711abe653499dcbac7740326abfa88c4f1e300246b798503cc10663750772e7",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 132
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+      "sha256": "227502ab040349bee1c23b7016f751e8a293a914c8c867ecab7e3c7ef3392bb8",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 4
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "sha256": "91283a43679bef3c41355bb8481810e18418b8cda6e69355959e2e0789b06b10",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 124
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "sha256": "fc29c9ec57014896acc79f7ccf0beb37877f4cdde7811a24bd513652234cf261",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 142
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+      "sha256": "c943b87ec4cd002357c51ac4dcb8a0411beb80c5657afc5c6cb77ee97386567b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 33
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs",
+      "sha256": "3538b1c0a591cdc0e6af91e8e80feff330e9fbcd928add91cb56852fb684c52d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 306
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "sha256": "f0d3dc371006265c79dacbbc955fb0696380757ae74474e70c7e4fa37684d01a",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 377
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-status-overlay.ts",
+      "sha256": "737041f502aac148b457d3d9edcc37b1bcaee7b3c1671473caf29bb2ff8efd71",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 35
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts",
+      "sha256": "376ec4b8e8706b85f2690db538a7d7e423859b24c315ef7e270582b701dcb2ab",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 51
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts",
+      "sha256": "f886ff182719331ce9af39afadf066135fa7fffbe2636530e5072399b852e08b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+      "sha256": "3a6809e29f55c01b26c5727128e79e47e31c45cf11df97cf52a7305b7a0526e2",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 128
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+      "sha256": "b13ea2da91faabcc3d6138274ea661dcdbb047a74b748bd70d9f8181159dda74",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 99
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "sha256": "f08a71d138a57a1b15fada0cebaa538f93c613b7176696abd1259bc589407992",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 367
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.ts",
+      "sha256": "d0c309c8c41524c94ae5cedc6045273e5a8c2d82883f7830a04672eadca89305",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 94
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "sha256": "e96cdcb8e66ce11c42778c6cb3eac63f74c650d3a39a7acba2d358b96886531c",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 121
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts",
+      "sha256": "a2348af2be55578f7563602598ab061a5fdf8cda048ad602ce7272dd455eb4b5",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 46
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "sha256": "986546c04e924c492aabd2405fa2c0e54d6cbc657a6c32288b9128158d43cc2f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 143
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "sha256": "2f1db2c063929b947a61fad8a414eff9395c1488dcc0d986fa7a3cd19204a096",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 444
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "sha256": "3ffa0e271ea0b0237dc44a17f452b7490cb4d026484d63a2ee42c8212c8cfeab",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 276
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts",
+      "sha256": "ddcc4e5c0b48674e01c7f54ecbaf204670684bee5e1d59ef3d0b124cb3e9a8b1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 82
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts",
+      "sha256": "081ace9a2d2ae8434eae0c0c1c7bbb064079b66e1128bcdc2adbae268a08c6df",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 203
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts",
+      "sha256": "08d778985a2257abbe3a669ab8792052aa600d1c77257f23ad7bb87208c4e085",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 173
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "sha256": "b12b19140d392634a2c10ab4a1060efd6cda01fd43ace1b8e6438884180ad3be",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 228
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts",
+      "sha256": "4764067c06338d45bb45aea7e6ed2a017a633a2dbcf1576f148366a12a1d687b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 40
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run-command-observer-dispatch.ts",
+      "sha256": "83ce0bc9a1078dd12781df7f7fcb3338b751fd9b6a2fa2cd491bb3c782ac057d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 48
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run-event.ts",
+      "sha256": "d90c897a2a85ec4ca69aca3bc4ca82dce52a342e7deb15e63f666fdcd4c3afaa",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 53
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 490
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts",
+      "sha256": "863fcaf35523a3445fbef8e1d3be06fce69f8b6d03da6cb5fef4afc3ff3282ec",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 16
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+      "sha256": "223d2e4b7349c92bbbc9ea18b1ee7db908bc6792732413f5d429902a69469ec7",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 42
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts",
+      "sha256": "6d951a41a7d3c83a618ca1e217416a53d9e506e642ebd3a8c0317544dad5f831",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 304
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts",
+      "sha256": "b01acec2b14f364fcb17a60463920e775c956402bd8cc922c4071538249cdb1e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 70
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts",
+      "sha256": "31f9014f0fae1a9d1ada0fd98f1d5c620389275e8ee1579af06a74b2e8a7b66d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 68
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts",
+      "sha256": "f2b629df02a77c2d5c09c980199c2ebb6ccce03dc151bad0c246c3785f2598f2",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 464
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-contract.ts",
+      "sha256": "81f8c815a39a8dc696bae2716806daa52c5d3871602627455f3103174cba698d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 69
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts",
+      "sha256": "e4d38bead1b663ec6374d6df3e1337db015f6e84b88d957307a48ad6f5973c0b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 48
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "sha256": "8834b92b0bff8e5614c00bd649c36387813d8a34a2123f376205c6b85c8e8790",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 210
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+      "sha256": "3ded75bfabde0eb0b4d369e832991e50d0ae3e7f9ecec9cf3210e45af3a86ad1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 275
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+      "sha256": "9afe7761f9ad88377bbfee3632fa37a72057a9066cfc17972399df90ab892304",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 186
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+      "sha256": "882dcec48cd72bd3377f814ee04840d9e9517ea2e55bb9e87e3a3f493de1e865",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 64
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts",
+      "sha256": "51b87daca30487c9182ebe4360ff3baf4bb8e4a1fb6a22edb5b5cf2dac86157e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 186
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "sha256": "32c0fdacb5857e6ebd4f650cd4f4fd29c4040a1374b164ea362dfd8afac8cf6f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 495
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+      "sha256": "5eb3f58c9699639427e2927c85ba72c48d8a7ba1098eb50cc01469d7c32263e9",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 258
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "sha256": "769aca848213d31270943a4068bec69470e046911b21b3124e39cf21678e8a03",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 410
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+      "sha256": "469bd6b291cf8c730f6b72001db5ed83e303d1a3f76fdea828477b678225c110",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 38
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "sha256": "c9e53944061bb16034014a01437258b8a86291a93f5ee6d5dcc928b3d645e07d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 467
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+      "sha256": "5da933f682462002529add8d56baf1a74d8112f93c82d8eece4a171a0a7443c1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 116
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-status.ts",
+      "sha256": "0f1615972b63e589f1766cf994dad70059af042273315040890cb6648a7b1486",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 64
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+      "sha256": "09b718d4e5436f677dc69276850976f5516478078c80dc6d5f5e4e7831ec9461",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 44
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+      "sha256": "3080d79e8826fde5386c3df4b90ef5b19b232807e756a0be2c0469cd27b57df6",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 174
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "sha256": "a71396476d0a81579a6e888baa1982ad3609a0404f6936fb2bb971c0b43c4e4d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 445
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+      "sha256": "54dbece9ee4ff52372f381a0c3df9010d175545ce63d2f037b8b3155166d20b1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 46
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+      "sha256": "5bae77ff57738782b9e1d9fff8dfbf59c7ae1102c1e4d381c6f2d45a4bfa0d1e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 230
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "sha256": "d8088e5a067fc6db71ad469b91eb93e95722ae9fb357b0415280eb227da762cf",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 78
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "sha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 154
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/models.ts",
+      "sha256": "efaf840876e7412b9de89191a388a17d81275392f01cf80391d65de1209eccc6",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 71
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "sha256": "01b1fae9d94997af9c4cf3f11bbba703c3327a569b08032e42171861247a1aad",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 122
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-status-websocket-projector.ts",
+      "sha256": "e57d243038ac7be6885298186fc2f6d862194b31b8ae69a3675d7662743f4edb",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 33
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts",
+      "sha256": "8a17e18ded470ec97458ae03b1215464ba6d7dc335d13ac5c05372af84ec15d1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 195
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "entry_pending_sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "effective_nonempty_lines": 113
+    },
+    {
+      "path": "autobyteus-server-ts/tests/fixtures/accepted-attachment-message.ts",
+      "sha256": "b3d05e000bce330a4dc9a77f633a167ad866e08b0684751abec6f077c8fa18fe",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 63
+    },
+    {
+      "path": "autobyteus-server-ts/tests/helpers/org-migration-continuation-fixtures.ts",
+      "sha256": "b479c1f42afa72bdd079e848dae861fa3f71604d01e96e5c0ae139127ef6bb12",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 88
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-compaction-races.test.ts",
+      "sha256": "73b9253c60393c5daebb11254c1afcaad9816f12bb29fdba4fbf0531ef5fdde6",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 76
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-compaction-recovery.test.ts",
+      "sha256": "de8e8077f3f2cb55bc631209a99c852316afaf1cc3920bcde0b9213bff8fbbfb",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 116
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run.test.ts",
+      "sha256": "b32cea7aaa15ae803925f0239540471947783201ef0ef1c07f11c517d29ed381",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 893
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts",
+      "sha256": "0178cb134448e3e98690b333eda2e639762f7b2e4417c2160e53c3ae2d4cb61b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 779
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts",
+      "sha256": "2676efb8c9107c87bea618bb6372b01ed5912c8dd838ceea9b013e18a8df9d41",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 274
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture.ts",
+      "sha256": "826436b51ba1d280002ebb6ba15bd7d6739711509e3d144768204bf3bc429e57",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 64
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+      "sha256": "701894c28c8a99989a557e0b6b48f4d4b738358e7d4473409558132264ddebbd",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 72
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts",
+      "sha256": "e44bb317e5d50082bda7a84c47c66b9e6776d13bfe6a39112d9cb302694a5a8f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 192
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "fac1aec30d5ac2e988b96ce99d7103e4edbe26da7c68e323ab8b4b9909863e34",
+      "entry_pending_sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "effective_nonempty_lines": 109
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "entry_pending_sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "effective_nonempty_lines": 456
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts",
+      "sha256": "22e472ffaf1bdf0f6f5563a8440bdeb2ddea67cb3de1ccc1658bc756b4c36615",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 251
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts",
+      "sha256": "64eb959102da729197ea1a052a43230d1a081549ce95187cf53aa0d60d3e1eb6",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 235
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts",
+      "sha256": "1292b1fea52f39449370c73ab6627937857f3cf4cc6ab363bbdefab753dc21bd",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 63
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts",
+      "sha256": "366031eadb0330f16c5ea95fbbacb2abd5270374efd61f240e9aa9ef615cca43",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 161
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/src/team-stream-server-message.ts",
+      "sha256": "3ec08651f0bbf852a2a6167710aa32de1210c5a6f4b5a06cf10111d582d5c11d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 88
+    },
+    {
+      "path": "autobyteus-ts/src/agent/agent.ts",
+      "sha256": "9771b180b024a6faad3895f90a2e5a07982da3c5ff1be7473d654bd31f3e47f1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 138
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts",
+      "sha256": "4f2421db77738d8d5f2898d09c93075098c550bb37d5f035b3521f4f4278ffad",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 66
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts",
+      "sha256": "0b153559a650bef3781f1f4a5d3ba2fcb8c54336a12421411b41123a9b0bb008",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 9
+    },
+    {
+      "path": "autobyteus-ts/src/agent/context/agent-runtime-state.ts",
+      "sha256": "b1878eb4c31751219205a1561033284c0fae48ff30bf230b300e32046209fe3b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 230
+    },
+    {
+      "path": "autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts",
+      "sha256": "e8aa8d2cd2542e4d08b3d629d608274a15434a29626ca4e9eaea673008a84880",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 220
+    },
+    {
+      "path": "autobyteus-ts/src/agent/events/notifiers.ts",
+      "sha256": "1c2842fffb1ffb936fdc1e03d50caf5e9e04b7eb7a32a2847ad14a2c49ff5286",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 213
+    },
+    {
+      "path": "autobyteus-ts/src/agent/llm-request-assembler.ts",
+      "sha256": "0bae750afcfd679104c5788f2bd3d0a9900691adf53d527949e3e4787134eb4e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 119
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+      "sha256": "0ef3a4673b6cf010c9f21a77b301394ed8e852540b49338fbdcea5ef6004e116",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 238
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "sha256": "d38d0ce310c2be7ed9ab9625296cee2d441f5ae70e0983bf0fb679ecd76cc45d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 369
+    },
+    {
+      "path": "autobyteus-ts/src/agent/runtime/agent-runtime.ts",
+      "sha256": "647488615800b593e1e1775e433df55c4bd14ec8b784f81efd8646b9c70dce06",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 218
+    },
+    {
+      "path": "autobyteus-ts/src/agent/runtime/agent-worker.ts",
+      "sha256": "4e5acd6c7b09a4f8fb3ef205626e6cdc7f9623f2acf4d92366ffe6829b9ba54d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 335
+    },
+    {
+      "path": "autobyteus-ts/src/agent/status/manager.ts",
+      "sha256": "b2ed6c3d83477ac724251b2bbe2aa13cf70dc58ac5b2c4f0b1b72ff317a5f015",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 79
+    },
+    {
+      "path": "autobyteus-ts/src/agent/status/status-deriver.ts",
+      "sha256": "7e7d202bd37b1dfd5c0a27e49171947fed1bea65be0c30fe512d46f74b4f5b38",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 126
+    },
+    {
+      "path": "autobyteus-ts/src/agent/status/status-update-utils.ts",
+      "sha256": "ac4fd7dc273978f8fab0905c0c27113931a62ad31a1b43eb65e47ea75c6c48c8",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 95
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts",
+      "sha256": "ed60843a8a2a1b1e370698ac644f0bc86f037762192770605627e58c51a76a0c",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 11
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payloads.ts",
+      "sha256": "7a6ebd318c4a9fa40c739700024433ea30df59f37e5b4eeef8a1ba863ef3f6bb",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 98
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-events.ts",
+      "sha256": "fc1135f4f18b523117c7e39b2f000afc7b9bba4eac4e4d2171e7146f4c8cb760",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 132
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts",
+      "sha256": "0297bc01af9aaaca18155bb1a3c76cb37525a740c84398d923e3b042c6ace9e1",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 331
+    },
+    {
+      "path": "autobyteus-ts/src/events/event-types.ts",
+      "sha256": "69538f5f08b3ba06dd49b158531da6520d47736799834f8d7ace551c4f132523",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 32
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/anthropic-llm.ts",
+      "sha256": "9ea4c7128d244810184e6124636d5199b8f59adf160e352442581240b150273b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 308
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/gemini-llm.ts",
+      "sha256": "d901f8072d40754596c7a9c580cf40d1af6d1bf4fcada324626b5968f6ba4791",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 265
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/mistral-llm.ts",
+      "sha256": "c443c873bbff08e87ee062321c17e3533ff735f5d950744eb4569b043f5fc164",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 130
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/openai-compatible-llm.ts",
+      "sha256": "c1d42f84ae057ea95f7bfee4a5b97d796e8b3f2476e021816e606cc945870b33",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 179
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/openai-responses-llm.ts",
+      "sha256": "e1ba691526ce196ea7137223e3dee4bad2c0d3c5e64a90d98f92d9f46dfbcb0f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 370
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/provider-request-kwargs.ts",
+      "sha256": "73c7cc6f87b58a5f9c383e949a0deaf98ef0c61b60c38299fc90097e8ae894e0",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 42
+    },
+    {
+      "path": "autobyteus-ts/src/llm/base.ts",
+      "sha256": "0be6991efe386b800273ab9352e562a346ffe070f1ee4c1591037a34fe6e038f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 174
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-content-builder.ts",
+      "sha256": "b6688f9e14bdad5539f8f8bdb45ab426d37fed8a2effabb53db58fd7ba3a013b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 59
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-execution.ts",
+      "sha256": "0fce99c6c5ace1ea8486e657528e5a977e099611b90179b0e6f57a9174c68455",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 30
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-recovery.ts",
+      "sha256": "1294a9e603f70ed8099897420f1f89c0b3873dce8de5f76102b8003b56cab11f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 20
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+      "sha256": "5acf2342deb9c69b80de22577218c1d1c2a596c7ade0b261b1019847bbf3b524",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 40
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compression-strategy.ts",
+      "sha256": "3a8f9cdea327481141d1563cf7250ba28c8f304cd3d3eeeceb41f08c19bcbd28",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 4
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts",
+      "sha256": null,
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 0
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts",
+      "sha256": "46202eb6724893a27be1f2d93a6f20ad532296e5f7a0860de3a62852262f03c6",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 94
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts",
+      "sha256": "343ecfd65fabec8cc790cc9fb56e7da8ef5394094b30a80909d7ffb7f914fa58",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 46
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "sha256": "aefb343aed80844c1cf5f7585d27a0f5b86aba68d33159d7721d1a0b0beb60ce",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 96
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts",
+      "sha256": null,
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 0
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts",
+      "sha256": "58e8311ded1e62fa7428f51850e629b817dff740b99a09f870f5b24e5c8c7c8c",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 27
+    },
+    {
+      "path": "autobyteus-ts/src/memory/index.ts",
+      "sha256": "07f128bf72654c337f54cda02b061929c28298f67c158604a4d7b3ae5383905e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 73
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "sha256": "b214d5ae6f5ffac68bdc2073c612f14bf1236ea2ac7c992562cf7ce0f075d6ef",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 391
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager.ts",
+      "sha256": "d38add0a14510f2c3d8a6168c4cb7cb45fdb652d4432fe7ebc4bc5e77cf64d61",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 496
+    },
+    {
+      "path": "autobyteus-ts/src/utils/gemini-helper.ts",
+      "sha256": "7d5147bbab6721c52ca66e2418bbc37a764ff55f1ded5c6d757dacfc727836ec",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 48
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+      "sha256": "ad3ac1a194b1dba283f62467cc1196d110206782ced3c5a9fbe4b2780d37ad46",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 188
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/context/agent-config.test.ts",
+      "sha256": "b62ed21c8e27546bbd1a1cec1b92b173cdd890c1856e3a317c90e32b9d560a45",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 99
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts",
+      "sha256": "2670baf58ddbc59eafe6e2d28cba2d8dca4e503e5d2ff6b918c15cf97e4e314d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 215
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts",
+      "sha256": "8e6d98b29015797139ec4236773bd84c8a4581371a047b295713147634c98b83",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 279
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/runtime/agent-runtime.test.ts",
+      "sha256": "58ea08b65f23f850b974eb084740a06ddf429162b393841c82107a1bba09191a",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 315
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/runtime/agent-worker.test.ts",
+      "sha256": "d9387fd97243cff55e5010ef71ac1f8d5a3b9d313ad96fe607c01a3bb055b505",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 200
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/agent/status/status-update-utils.test.ts",
+      "sha256": "f4f749950e958c0e874e3c7bd0aaed2d4d451855b627147078f8a22e98c4a9f2",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 133
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/llm/api/compaction-single-attempt-transport.test.ts",
+      "sha256": "f38d4354f10fb7f47c1c6254f5e711e2fcd2b074480f386036e0397b92428417",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 82
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/accepted-compaction-committer.test.ts",
+      "sha256": "351a8ec7e38d0ec2d9dc83cb34d12305acaf190fd5405871580152aca5b8e92e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 51
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/compaction-content-builder.test.ts",
+      "sha256": "5a834aaa8df694062cdba4d58aadc65a57295cd883679e19b2f1cb5f5635cbe9",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 264
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/direct-compaction-harness.ts",
+      "sha256": "2aee42a1b16cc5f48b521454a0365bf3a8980cbc7476a210e9ece4bea5f4e1bd",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 39
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/direct-llm-compaction-summarizer.test.ts",
+      "sha256": null,
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 0
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/direct-llm-compression-strategy.test.ts",
+      "sha256": "cab618cfd09a71beb5bf3572b70a4a9f0a1c2ddc750d78bfca70dac9c10b0084",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 106
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-compaction-configuration.test.ts",
+      "sha256": "8940e04c9606953687350d987c8d38031477b72c2bb28b2c11cd742182b5f238",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 59
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-compaction-configuration.test.ts",
+      "sha256": "66339317085cdb9eadb4e3b853bd7a430957af187f17524eb971efbdad6d3ec4",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 65
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-compaction-coordinator.test.ts",
+      "sha256": "e75f77312ca0219f84329ec4f27dcfc8d0a4f4afccac25b47229b516e5964200",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 103
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts",
+      "sha256": "b031295d01aa7d94fe5ab7d5ce945d7eed414a4841a8e3d1a9f44643a48b69f6",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 61
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-compaction-output-validator.test.ts",
+      "sha256": "fff2e0f8cda7799acd6aa53b3b7617f86328684a0406f3076b7890472bdf185d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 80
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts",
+      "sha256": null,
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 0
+    },
+    {
+      "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+      "sha256": "ca0bda1be8d60981edacf06e00ed6ed58010a1db2fa6a3fe5297c7e5c62e060a",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 273
+    },
+    {
+      "path": "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts",
+      "sha256": "16e662f17c154827b49586e06085ea4a935f32e6f9d42edf88a4140d8926f3ce",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 342
+    },
+    {
+      "path": "autobyteus-web/components/conversation/UserMessage.vue",
+      "sha256": "24ded1c54f46cda30f3388c2f18d8f63c4e7e6b5a32529aaedeea4cb1d5a2383",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 137
+    },
+    {
+      "path": "autobyteus-web/components/conversation/__tests__/UserMessage.spec.ts",
+      "sha256": "0d5262d43973430271b1bfd09ce5f10cbe1a9485f33f83e443d27dba65ea837e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 159
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/agentInput.generated.ts",
+      "sha256": "3648021bb04d55bc2b15b99e70a55f29681a8fa0f267cd918a1eba9c923e1a2c",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 18
+    },
+    {
+      "path": "autobyteus-web/localization/messages/en/workspace.generated.ts",
+      "sha256": "eeee389ce1df31a3ca9703350c802ab7969703b8e61abf2ba09f8824c969928f",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 167
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/agentInput.generated.ts",
+      "sha256": "eefbbe6bb910db541d06ab13efbc3eb811ebfee4b71f0ede4fe5f92d412ef7c5",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 18
+    },
+    {
+      "path": "autobyteus-web/localization/messages/zh-CN/workspace.generated.ts",
+      "sha256": "2bae18b00b31481dc92b7f25914ef35fff752db938e26b7545b84b6eef5a28ce",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 167
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+      "sha256": "d078c1e76c57764f6118d0cd00bdd734f0a0abbb2373e6a51b4c6f0c3f314db8",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 565
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+      "sha256": "bb3a16ccb046d9d360dc8dacc45d466c2835ac3be7433acc57367ef9a246dab4",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 175
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+      "sha256": "7ecdf31709dbdc9da2e470bea83e8e31538d7ef3339147f5e63f3a293893c5ee",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 547
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/__tests__/taskBearingOrgFixture.ts",
+      "sha256": "493e2e65b3551859023dc8893b836ec177402ee2c8a17156314a06ad5748fa1c",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 94
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "sha256": "223bdcb8e66eb3ecb2463de326e671d1be67b757ae2a1cfd000f8c64948cbbaa",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 276
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts",
+      "sha256": "c7ae7a64a20135cbcbfefd3a9b31116e574d57344c9f1ec5eb0915b9a35e9f25",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 539
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts",
+      "sha256": "9f45304fc4826152f3fcfa177f7973ee24000178334d170c49c4c69aa324775b",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 196
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts",
+      "sha256": "ff9d6008e21e1f1f6ab63f7bdab1d67220a01865ceae34d29ddfe78342758977",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 370
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts",
+      "sha256": "af24a017c96f6242d1a5b00d426fcf82aff79a8f53e21dcedcfd963b355e708c",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 237
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts",
+      "sha256": "57a63eb876a96ffb6ee8014eabdc274360d5917e482a4f428318ec7023bcc091",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 48
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts",
+      "sha256": "79a7e9676d8ac515b6babb8c55949f3485b28a8b520688ce35eaded0c4cb84d8",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 497
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts",
+      "sha256": "c76e1b7d62ab1d6ca367b61b4eb39f513324f30319d3e2abb09a6d2e5b16a361",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 28
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts",
+      "sha256": "f0b262cde4a943dc6f7f7d02bed4cdda27abef3cc47c7850094ed9cc4ce199cf",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 294
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/messageParser.ts",
+      "sha256": "a7c277860402df4ea75201d3bc22b5f003b487bd4c2ed495507b6cd26b1724e7",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 128
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/messageTypes.ts",
+      "sha256": "d25b5b0ffb91c52c3368145236637bd126bdbe1a2d442f01c20904e40f560b2e",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 311
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "sha256": "0a3cfc66833f02a6cd19ba4bfe62d9a3a8595a6625e3b1a54a0773923a156bad",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 155
+    },
+    {
+      "path": "autobyteus-web/services/runStatus/agentRuntimeStatusState.ts",
+      "sha256": "ee472d8cda0d29ae651a80c7fc1f146f4ce2295eb061278777247d0c96ace9ca",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 67
+    },
+    {
+      "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "sha256": "e2e6e7f103b6283387d9b7e58a56a211acf6cb6fa7a2c40579249becca98898d",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 119
+    },
+    {
+      "path": "autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts",
+      "sha256": "883bd07e3be82bcd59f18c3d8156b40d62580e3a75bb6ee95d88b5fd2e019c46",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 366
+    },
+    {
+      "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "sha256": "4af416e7fcc9dc84d377819904bfbe77d81f842aff63ef878e5350e08d405e61",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 386
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "sha256": "675aa834310bf3f5ea12da80d3c255964527935276b74ddbe9c0d5c876d5d8d4",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 326
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "sha256": "bca4fd40a660c1d318cece9f96af920c8a60aa5bf55b0e87743d78ac754c4976",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 418
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "sha256": "04b13f076f27c3bcd2635e9892b05586c7c92dff15b17319f87cae1c9c120bfd",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 447
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentRunState.ts",
+      "sha256": "e629ccd2de6b6901b4c35d328d6ac53ef69ed4f19771e4f16adc3a508a4277b0",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 80
+    },
+    {
+      "path": "autobyteus-web/types/conversation.ts",
+      "sha256": "14fab6e34975c88a789437c6d122b697fe7d95ef3f90d52958b8b01832594181",
+      "entry_pending_sha256": null,
+      "effective_nonempty_lines": 90
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "d0527b871e4132f3423204f05c033f6259d31b62e2b60485c5343df9597e321c",
+      "entry_pending_sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "effective_nonempty_lines": 1275
+    }
+  ]
+}

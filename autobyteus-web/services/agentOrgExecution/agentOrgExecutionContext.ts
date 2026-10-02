@@ -1,3 +1,4 @@
+import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
@@ -25,7 +26,7 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
-import { collaboratorAgentSourceAt, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { collaboratorAgentSourceAt, collaboratorTeamSourceAt, catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
 import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
@@ -80,6 +81,12 @@ export class AgentOrgExecutionContext {
         throw new Error(`AgentOrg status '${status.agent_run_id}' has no exact context identity.`)
       }
       this.contexts.get(status.agent_run_id)!.state.currentStatus = status.status as AgentStatus
+      this.contexts.get(status.agent_run_id)!.state.recoverableBlock = status.recoverableBlock
+    }
+    for (const entry of input.view.agent_input_states) {
+      const context = this.contexts.get(entry.agent_run_id)
+      if (!context) throw new Error('AgentOrg input-state target mismatch.')
+      handleAgentInputState(entry.state, context)
     }
     this.phase = input.view.is_active ? 'live' : 'historical'
   }
@@ -240,7 +247,7 @@ export class AgentOrgExecutionContext {
   setActive(active: boolean): void {
     this.view = { ...this.view, is_active: active }
     if (!active) {
-      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline' })) })
+      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline', recoverableBlock: null })) })
       this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
       this.phase = 'historical'
     }
@@ -289,9 +296,12 @@ export class AgentOrgExecutionContext {
     const address = parseAgentTeamAddress(execution.address)
     const configured = this.index.configured.get(address)
     const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
+    // A catalog copy carries its own source (REQ-011).
     const source = configured
       ?? collaboratorAgentSourceAt(collaborators, address)
       ?? collaboratorTeamSourceAt(collaborators, address)
+      ?? catalogAgentSourceAt([execution], address)
+      ?? catalogTeamSourceAt([execution], address)
     const hostKnown = event.host_kind === 'root'
       ? event.host_run_id === this.orgRunId
       : this.index.teams.has(event.host_run_id)

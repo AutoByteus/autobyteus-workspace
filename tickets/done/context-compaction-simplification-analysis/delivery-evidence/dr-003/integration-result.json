@@ -1,0 +1,9 @@
+{
+  "time": "2026-10-01T19:07:51.395732+00:00",
+  "resolvedReviewedMergeCommit": "724493221d7bac0575c853850a4a82ae00de9529",
+  "latestBase": "84224a58d8975d0b016af340e6b48e51d715af78",
+  "latestMergeExit": 0,
+  "head": "a73f0481655f4cce288c0a7a2aae20bdd5285535",
+  "unmerged": "",
+  "scope": "local safety/base-into-ticket integration only; not user verification or finalization"
+}

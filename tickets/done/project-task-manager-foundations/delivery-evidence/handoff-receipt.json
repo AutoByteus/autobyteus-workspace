@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "code": "DELIVERED",
+  "recipient": "/software_engineering_team/implementation_engineer",
+  "target_agent_run_id": "implementation_engineer_e70dfac3655941e8ab6d4dcf0f116eea",
+  "messageType": "Delivery Blocked \u2014 Local Fix",
+  "referencesAtSend": 375,
+  "selectedRule": "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue.",
+  "terminalCompletion": false
+}

@@ -1,0 +1,50 @@
+{
+  "base": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "rows": [
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs",
+      "matchesBase": true,
+      "sha256": "542fc2a7ea58c946f58e3211e8576fe704c4091f327c43652364acea92427aca"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "matchesBase": true,
+      "sha256": "96a4dc8d611ac22fa0ee3f3d64dec8144d09741e749b2d8c78c3e7550f49b70c"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "matchesBase": true,
+      "sha256": "fec4d706d3263db90c80922922a82b283f1da33dee792ea2fb178b40d91d1b0c"
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/index.ts",
+      "matchesBase": true,
+      "sha256": "5f7ec328172cc5b0efb9f06bef3690ab8843662c7231713289f9b21040690024"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/tests/agent-presentation-contracts.test.mjs",
+      "matchesBase": true,
+      "sha256": "da291d93ae320a7f67d817dd0071322dee1039e3a83494177b3afa9cd2a6dd32"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "matchesBase": true,
+      "sha256": "1dba0c5399d962b881e82bc3d7221ea3fc186cd859ce96709c2d003c7ff56196"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/schema-helpers.ts",
+      "matchesBase": true,
+      "sha256": "9a26e7ac454ef670d435b6aa32be48804366b704e1f986559b727248f6bbc48e"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/token-usage-presentation-dto.ts",
+      "matchesBase": true,
+      "sha256": "dc61cc813c7fc086991649e96ec3e673cf42e056f454a66148875065d0ffc957"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+      "matchesBase": true,
+      "sha256": "fe3c65f624412f2032a304188c452e983bc58e14317b5c53b46714a8520f59d3"
+    }
+  ]
+}

@@ -4,7 +4,8 @@ import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communi
 import type { GlobalAgentRunMessageRouter } from "../../../../src/agent-communication/services/global-agent-run-message-router.js";
 import { SendMessageToDispatcher } from "../../../../src/agent-communication/services/send-message-to-dispatcher.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
-import { createBoundAutoByteusSendMessageToTool } from "../../../../src/agent-tools/agent-communication/send-message-to.js";
+import { SEND_MESSAGE_TO_FIELD_DESCRIPTIONS, SEND_MESSAGE_TO_TOOL_DESCRIPTION } from "../../../../src/agent-communication/services/send-message-to-tool-contract.js";
+import { AutoByteusSendMessageToTool, createBoundAutoByteusSendMessageToTool } from "../../../../src/agent-tools/agent-communication/send-message-to.js";
 import { SendMessageToMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/send-message-to-mcp-adapter-provider.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
@@ -48,6 +49,26 @@ const createDispatcher = (globalResult = {
 describe("AutoByteus server-owned send_message_to", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+  });
+
+  it("projects work/result/blocker guidance through native and MCP tool contracts without changing fields", () => {
+    const { dispatcher } = createDispatcher();
+    const adapter = new SendMessageToMcpAdapterProvider(dispatcher).getAdapters()[0]!;
+    expect(AutoByteusSendMessageToTool.getDescription()).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
+    expect(adapter.definition.description).toBe(SEND_MESSAGE_TO_TOOL_DESCRIPTION);
+    expect(adapter.definition.description).toContain("work request, result, or blocker");
+    const schema = AutoByteusSendMessageToTool.getArgumentSchema();
+    expect(adapter.definition.inputSchema).toEqual(schema);
+    expect(schema.parameters.map(({ name, required }) => ({ name, required }))).toEqual([
+      { name: "recipient_address", required: false },
+      { name: "target_agent_run_id", required: false },
+      { name: "content", required: true },
+      { name: "message_type", required: false },
+      { name: "reference_files", required: false },
+    ]);
+    expect(schema.parameters.find(({ name }) => name === "content")?.description).toBe(SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.content);
+    expect(SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.content).toContain("Self-contained work request, result, or specific blocker");
+    expect(SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.content).not.toContain("email body");
   });
 
   it("routes a hierarchical recipient_address through Team delivery and returns canonical JSON", async () => {

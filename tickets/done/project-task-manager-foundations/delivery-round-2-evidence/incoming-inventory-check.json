@@ -1,0 +1,21 @@
+{
+  "input": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-package-inventory.json",
+  "referencesChecked": 537,
+  "referencesWithSelf": 538,
+  "missing": [],
+  "mismatches": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-review-report.md",
+      "expected": "fa2cf0b337ca04d0928ab1c214ba5fc5c254a19163ef2183d364d77a52890453",
+      "actual": "106b42dd7e97f6e15a6f355817264b74e23d2a19c54b947d554351cf2f5ee379",
+      "disposition": "Expected CRR-004 reviewer report/history update"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-revision-record.md",
+      "expected": "a5bdc38c3dbf84e52d47fcde65ccda564cd098883059243f327228eb917f9117",
+      "actual": "76db471a864973f767b0197269705f67b5f78cc49d15859cbffb6fa2b04b0df3",
+      "disposition": "Expected CRR-004 reviewer report/history update"
+    }
+  ],
+  "unexpectedMismatches": 0
+}

@@ -1,0 +1,217 @@
+{
+  "base": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-team-mcp-live-qjOSmR",
+  "deliveries": [
+    {
+      "recipientAddress": "/recipient",
+      "content": "MCP-MARKER-TEAM-5127",
+      "messageType": "agent_message",
+      "referenceFiles": []
+    }
+  ],
+  "dispatch": {
+    "forwarded": true,
+    "turnId": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+    "platformAgentRunId": "08e5f292-2146-4cec-b32c-74249a9c5948"
+  },
+  "events": [
+    {
+      "eventType": "TURN_STARTED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "invocation_id": "agy-tool-4f69d56d-ce55-4fd7-99b7-3eeb01149828-2",
+        "tool_name": "view_file",
+        "arguments": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/send_message_to.json"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "invocation_id": "agy-tool-4f69d56d-ce55-4fd7-99b7-3eeb01149828-2",
+        "tool_name": "view_file",
+        "arguments": {
+          "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/send_message_to.json"
+        },
+        "result": {
+          "provider_state": "DONE",
+          "output": "1 lines, 2439 bytes"
+        },
+        "provider_state": "DONE"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_STARTED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "invocation_id": "agy-tool-4f69d56d-ce55-4fd7-99b7-3eeb01149828-4",
+        "tool_name": "send_message_to",
+        "arguments": {
+          "content": "MCP-MARKER-TEAM-5127",
+          "recipient_address": "/recipient"
+        }
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOOL_EXECUTION_SUCCEEDED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "invocation_id": "agy-tool-4f69d56d-ce55-4fd7-99b7-3eeb01149828-4",
+        "tool_name": "send_message_to",
+        "arguments": {
+          "content": "MCP-MARKER-TEAM-5127",
+          "recipient_address": "/recipient"
+        },
+        "result": {
+          "provider_state": "DONE",
+          "output": {
+            "accepted": true,
+            "code": "DELIVERED",
+            "message": "Delivered message to /recipient.",
+            "target_agent_run_id": "team-recipient-run"
+          }
+        },
+        "provider_state": "DONE"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_START",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "segment_type": "text",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "delta": "The `send_"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "delta": "message_to` tool was executed with t"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "delta": "he following result:\n\n``"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "delta": "`json\n{\n  \"accepted\": true,\n  \"code\""
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "delta": ": \"DELIVERED\",\n  \"message\": \"Deliver"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_CONTENT",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "delta": "ed message to /recipient.\",\n  \"target_agent_run_id\": \"team-recipient-run\"\n}\n```\n"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "SEGMENT_END",
+      "runId": "team-live-member",
+      "payload": {
+        "id": "agy-text-4f69d56d-ce55-4fd7-99b7-3eeb01149828-5",
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828"
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TOKEN_USAGE_UPDATED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "idempotency_key": "agy:08e5f292-2146-4cec-b32c-74249a9c5948:1",
+        "runtime_kind": "antigravity_cli",
+        "ingestion_kind": "agy_result",
+        "usage_scope": "cumulative_snapshot",
+        "snapshot_series_key": "08e5f292-2146-4cec-b32c-74249a9c5948",
+        "model_identifier": "gemini-3.8-flash-low",
+        "model_value": "gemini-3.8-flash-low",
+        "model_provider": "GEMINI",
+        "provider_name": "Antigravity CLI",
+        "reported_input_tokens": 29914,
+        "reported_output_tokens": 228,
+        "reported_total_tokens": 30142,
+        "input_token_semantic": "gross_includes_cache",
+        "cache_read_input_tokens": 0,
+        "cache_state": "zero_reported",
+        "reasoning_output_tokens": 0,
+        "raw_usage_json": {
+          "input_tokens": 29914,
+          "output_tokens": 228,
+          "thinking_tokens": 0,
+          "cache_read_tokens": 0,
+          "total_tokens": 30142
+        },
+        "quality_flags": [
+          "agy_provider_reported_cumulative_usage"
+        ]
+      },
+      "statusHint": null
+    },
+    {
+      "eventType": "TURN_COMPLETED",
+      "runId": "team-live-member",
+      "payload": {
+        "turn_id": "4f69d56d-ce55-4fd7-99b7-3eeb01149828",
+        "provider_status": "SUCCESS"
+      },
+      "statusHint": "IDLE"
+    }
+  ]
+}

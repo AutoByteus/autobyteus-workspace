@@ -1,0 +1,17 @@
+{
+  "scope": "Implementation rendered-result self-check; not independent API/E2E sign-off",
+  "observationsConsistent": true,
+  "sourceCommit": "e67f6f4f3",
+  "openResults": [
+    "9a16eb",
+    "f23a11"
+  ],
+  "automaticRepeatActiveTab": "f23a11",
+  "browserSelected": true,
+  "viewport": [
+    400,
+    608
+  ],
+  "manualFocusOrPayloadInjection": false,
+  "firstOpenLimitation": "First result acquired shell membership, but panel selection was overwritten by my Activity click before it was captured. Repeat captures automatic Browser selection."
+}

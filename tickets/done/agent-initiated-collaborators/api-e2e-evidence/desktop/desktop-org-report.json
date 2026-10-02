@@ -1,0 +1,120 @@
+{
+  "checks": [
+    {
+      "ok": true,
+      "label": "Org started; solution designer found",
+      "details": [
+        "/product_team/product_prototyper",
+        "/product_team/prototype_bootstrapper",
+        "/software_engineering_team/solution_designer",
+        "/software_engineering_team/architecture_reviewer",
+        "/software_engineering_team/implementation_engineer",
+        "/software_engineering_team/code_reviewer",
+        "/software_engineering_team/api_e2e_engineer",
+        "/software_engineering_team/delivery_engineer"
+      ]
+    },
+    {
+      "ok": true,
+      "label": "Org: the solution designer brought in Software Tutorial Video Maker",
+      "details": {
+        "kind": "agent",
+        "address": "/software_tutorial_video_maker",
+        "agentDefinitionId": "software-tutorial-video-maker",
+        "agentRunId": "software_tutorial_video_maker_06cf530db74948b1a5299401b49b80fe",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null,
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-desktop-org-ws-NoNETO"
+        },
+        "addedAt": "2026-10-01T19:12:45.172Z",
+        "addedViaAgentRunId": "solution_designer_f1678c60d56f4163b4d576a81e3d6ad0"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Org: catalog copy of Marketing Team with source",
+      "details": {
+        "address": "/marketing_team",
+        "teamRunId": "marketing_team_a63165a5810249dcb35261dffda69de9",
+        "members": [
+          {
+            "address": "/marketing_team/marketing_content_creator",
+            "agentRunId": "marketing_content_creator_004c25b2d1c64ba8aaf39688aa3e09ae",
+            "platformAgentRunId": null
+          },
+          {
+            "address": "/marketing_team/computer_use_operator",
+            "agentRunId": "computer_use_operator_4627da0d05ea47c3ac0df658c41b7a2e",
+            "platformAgentRunId": null
+          }
+        ],
+        "taskExecutions": [],
+        "delegatorAgentRunId": "solution_designer_f1678c60d56f4163b4d576a81e3d6ad0",
+        "startedAt": "2026-10-01T19:12:46.825Z",
+        "source": {
+          "kind": "agent_team",
+          "teamDefinitionId": "marketing-team",
+          "coordinatorAddress": "/marketing_team/marketing_content_creator",
+          "members": [
+            {
+              "address": "/marketing_team/marketing_content_creator",
+              "agentDefinitionId": "team-local-agent:marketing-team:marketing-content-creator"
+            },
+            {
+              "address": "/marketing_team/computer_use_operator",
+              "agentDefinitionId": "computer-use-operator"
+            }
+          ],
+          "handoffs": [
+            {
+              "from": "/marketing_team/marketing_content_creator",
+              "to": "/marketing_team/computer_use_operator",
+              "rules": [
+                "When a publish-request.md for a user-approved channel package is saved and ready for publishing.",
+                "When a task-request.md for other computer work (site data, research, reply candidates, source capture, media download, screenshots, or tool work) is saved and ready."
+              ]
+            },
+            {
+              "from": "/marketing_team/computer_use_operator",
+              "to": "/marketing_team/marketing_content_creator",
+              "rules": [
+                "When task-result.md for a Marketing Content Creator request is saved with outcome Completed, Blocked, or Needs Decision."
+              ]
+            }
+          ],
+          "defaultLaunchConfiguration": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-desktop-org-ws-NoNETO"
+          }
+        }
+      }
+    },
+    {
+      "ok": false,
+      "label": "Org tree: brought-in agent row present",
+      "details": null
+    },
+    {
+      "ok": false,
+      "label": "Org tree: catalog-copy row present",
+      "details": null
+    },
+    {
+      "ok": false,
+      "label": "Org tree: catalog-copy row shows the team name (not the raw address)",
+      "details": null
+    }
+  ],
+  "notes": [
+    "org run row not found by run id; tree as rendered"
+  ],
+  "orgRunId": "software_development_department_f1aeed52798d4320955b3b1b4b4baf00",
+  "rows": []
+}

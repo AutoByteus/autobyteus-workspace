@@ -1,0 +1,7 @@
+{
+  "sha256": "48feda591e25c30d29d301cc5492abfb5bd68552dd0f339203f5c3fe1df5a2ba",
+  "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+  "disposition": "Technically possible; supported initiating same-ID resend not established (SR031). Retained verbatim, not relabeled Pass. Default supported tests retain fresh-ID controls only.",
+  "prior_result": "2 controls pass, 2 injected duplicates fail",
+  "original_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/root-command-final.log"
+}

@@ -6,10 +6,15 @@ import {
   supportedModelDefinitions,
 } from 'autobyteus-ts/llm/supported-model-definitions.js';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
+import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
+import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
+import { AgentRunMetadataStore } from '../../../src/run-history/store/agent-run-metadata-store.js';
+import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../src/run-history/services/root-run-package-readiness-index.js';
+import { ContextFileLayout } from '../../../src/context-files/store/context-file-layout.js';
+import type { AgentRunBackendInputDispatch } from '../../../src/agent-execution/input/agent-run-input-contract.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import {
-  classifyCanonicalCompactorRunTopology,
   classifyAutoByteusDiscoveryUnavailable,
   databaseTargetsMatch,
   runLiveE2eAgentFlow,
@@ -79,12 +84,40 @@ describe('one-database live E2E runtime and evidence boundary', () => {
     expect(databaseTargetsMatch(application, tracked)).toBe(true);
   });
 
-  it('adapts the raw product backend through the canonical AgentRun event facade', async () => {
+  it.each([true, false])('adapts the actual facade with admitted attachment owner=%s', async (admitted) => {
     const runId = 'live-e2e-adapter-run';
+    const appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'live-e2e-facade-'));
+    cleanup.push(() => fs.rmSync(appDataDir, { recursive: true, force: true }));
+    const environment = { appDataDir, memoryDir: path.join(appDataDir, 'memory'), baseUrl: 'http://127.0.0.1:32123' };
+    const layout = new ContextFileLayout(environment);
+    cleanup.push(() => resetRootRunPackageReadinessIndex(environment.memoryDir));
+    if (admitted) {
+      await new AgentRunMetadataStore(environment.memoryDir).writeMetadata(runId, {
+        runId,
+        agentDefinitionId: 'live-e2e-agent-flow',
+        workspaceRootPath: appDataDir,
+        memoryDir: environment.memoryDir,
+        llmModelIdentifier: 'deepseek-v4-flash',
+        llmConfig: null,
+        autoExecuteTools: false,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        platformAgentRunId: null,
+      });
+    }
+    const storedPath = layout.getFinalFilePath({ kind: 'agent_final', runId }, 'notes.txt');
+    fs.mkdirSync(path.dirname(storedPath), { recursive: true });
+    fs.writeFileSync(storedPath, 'Synthetic context for provider normalization.');
+    // Real package scan, not a mocked admission flag. A file alone cannot admit an owner.
+    const readiness = new RootRunPackageReadinessIndex(environment.memoryDir);
+    await readiness.awaitReady();
+    expect(readiness.isAdmitted('agent', runId)).toBe(admitted);
+    const locator = `${environment.baseUrl}/rest/runs/${runId}/context-files/notes.txt`;
+    const original = new AgentInputUserMessage('ping', undefined, [new ContextFile(locator)]);
+    let dispatched: AgentRunBackendInputDispatch | undefined;
     const context = new AgentRunContext({
       runId,
       config: new AgentRunConfig({
-        runtimeKind: 'autobyteus',
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
         agentDefinitionId: 'live-e2e-agent-flow',
         llmModelIdentifier: 'deepseek-v4-flash',
         autoExecuteTools: false,
@@ -98,7 +131,8 @@ describe('one-database live E2E runtime and evidence boundary', () => {
     const rawBackend = {
       runId,
       runtimeKind: context.config.runtimeKind,
-      inputCapabilities: { activeTurnAppend: 'unsupported' },
+      compactionRecovery: { kind: "unsupported" } as const,
+    inputCapabilities: { activeTurnAppend: 'unsupported' },
       getContext: () => context,
       isActive: () => true,
       getPlatformAgentRunId: () => runId,
@@ -113,7 +147,8 @@ describe('one-database live E2E runtime and evidence boundary', () => {
           sourceListener = null;
         };
       },
-      dispatchUserInput: async () => {
+      dispatchUserInput: async (input: AgentRunBackendInputDispatch) => {
+        dispatched = input;
         void sourceListener?.([
           {
             eventType: AgentRunEventType.TURN_STARTED,
@@ -140,16 +175,25 @@ describe('one-database live E2E runtime and evidence boundary', () => {
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
       terminate,
     };
-    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never);
+    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never, environment);
+    cleanup.push(async () => { await run.terminate(); });
     const observed: AgentRunEventType[] = [];
     run.subscribeToEvents((event) => observed.push(event.eventType));
 
-    await expect(run.postUserMessage(new AgentInputUserMessage('ping')))
+    await expect(run.postUserMessage(original))
       .resolves.toEqual({ accepted: true, turnId: null });
     expect(observed).toContain(AgentRunEventType.AGENT_STATUS);
     await vi.waitFor(() => {
       expect(observed).toContain(AgentRunEventType.ASSISTANT_COMPLETE);
+      expect(observed).toContain(AgentRunEventType.TURN_COMPLETED);
     });
+    expect(dispatched?.kind).toBe('start_turn');
+    expect(dispatched?.message).not.toBe(original);
+    expect(dispatched?.message.content).toBe('ping');
+    expect(dispatched?.message.contextFiles?.[0]?.uri).toBe(admitted ? storedPath : locator);
+    // Unadmitted locators stay opaque under the existing normalizer contract; no local path leaks.
+    expect(dispatched?.message.recordingFileAttachments?.[0]?.uri).toBe(locator);
+    expect(original.contextFiles?.[0]?.uri).toBe(locator);
     await expect(run.terminate()).resolves.toEqual({ accepted: true });
     expect(terminate).toHaveBeenCalledTimes(1);
   });
@@ -301,45 +345,6 @@ describe('one-database live E2E runtime and evidence boundary', () => {
       providerId: 'LMSTUDIO',
       requiredSecretId: null,
       model: 'qwen/qwen3.6-35b-a3b',
-    });
-  });
-
-  it('accepts a final correction run as the second bounded sibling of one compaction', () => {
-    expect(classifyCanonicalCompactorRunTopology({
-      completedOperationCount: 1,
-      acceptedRunIds: ['memory_compactor_correction'],
-      runs: [
-        { runId: 'memory_compactor_initial', attemptKind: 'initial' },
-        { runId: 'memory_compactor_correction', attemptKind: 'correction' },
-      ],
-    })).toEqual({
-      valid: true,
-      siblingRunIds: ['memory_compactor_initial', 'memory_compactor_correction'],
-      initialSiblingRunIds: ['memory_compactor_initial'],
-      correctionSiblingRunIds: ['memory_compactor_correction'],
-      descendantRunIds: [],
-    });
-  });
-
-  it('counts only runs beyond the initial-plus-one-correction bound as descendants', () => {
-    expect(classifyCanonicalCompactorRunTopology({
-      completedOperationCount: 1,
-      acceptedRunIds: ['memory_compactor_correction'],
-      runs: [
-        { runId: 'memory_compactor_initial', attemptKind: 'initial' },
-        { runId: 'memory_compactor_correction', attemptKind: 'correction' },
-        { runId: 'memory_compactor_extra_correction', attemptKind: 'correction' },
-        { runId: 'memory_compactor_nested', attemptKind: null },
-      ],
-    })).toEqual({
-      valid: false,
-      siblingRunIds: ['memory_compactor_initial', 'memory_compactor_correction'],
-      initialSiblingRunIds: ['memory_compactor_initial'],
-      correctionSiblingRunIds: ['memory_compactor_correction'],
-      descendantRunIds: [
-        'memory_compactor_extra_correction',
-        'memory_compactor_nested',
-      ],
     });
   });
 

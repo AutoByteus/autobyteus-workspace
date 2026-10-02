@@ -1,0 +1,10 @@
+{
+  "cumulative_count": 5111,
+  "direct_transport_count": 145,
+  "missing": [],
+  "complete_upstream_archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/cumulative-package.tar.gz",
+  "archive_sha256": "39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5",
+  "snapshot_override": "direct current canonical authorities, especially CRR017 report and record",
+  "cumulative_count_after_receipt": 5112,
+  "receipt_added_after_confirmed_delivery": true
+}

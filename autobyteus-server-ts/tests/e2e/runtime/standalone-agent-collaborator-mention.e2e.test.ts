@@ -17,8 +17,9 @@ import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/
  *
  * Collaborator mention journey, per enabled runtime, for a standalone agent whose definition lists
  * neither collaboration tool:
- * - `delegate_task` exists from the first turn; before any mention it starts nothing and returns the
- *   "bring one in with @" reason, and no Agent-root package is written (AC-014, REQ-012);
+ * - `delegate_task` exists from the first turn; to an address that is neither in the run nor an available
+ *   agent it starts nothing and returns its reason, and no Agent-root package is written (AC-014, REQ-012;
+ *   agent-initiated-collaborators REQ-005 lets a listed catalog address start a copy);
  * - a send with `mentions` adds ONE collaborator instance before the agent's turn: the entry carries its
  *   AgentRun ID and the run's own launch settings, Offline (AC-003, REQ-003/004);
  * - the host's `send_message_to(<address>)` starts it; the briefing and the report are both
@@ -336,15 +337,19 @@ describeLive("Standalone Agent collaborators on real runtimes (SR-010)", () => {
 
       const host = await openSocket(`/ws/agent/${hostRunId}`);
 
-      // AC-014: first turn, no mention yet — delegate_task exists and starts nothing.
+      // AC-014: first turn, no mention yet — delegate_task exists; an address that is neither in the run nor an
+      // available agent starts nothing and returns its reason (agent-initiated-collaborators REQ-003/005: a
+      // listed catalog address would now start a copy).
+      const missingAddress = `/no_such_helper_${suffix}`;
       const first = await sendTurn(host, hostRunId,
-        "Call the delegate_task tool exactly once with recipient_address \"/mention_helper\" and description \"ping\". "
+        `Call the delegate_task tool exactly once with recipient_address "${missingAddress}" and description "ping". `
         + "Do not call any other AutoByteus tool. Then reply with one short sentence quoting the tool result.");
       expect(first.ack.payload.accepted, JSON.stringify(first.ack.payload)).toBe(true);
       const firstDelegate = await waitFor(host.messages, first.from, (message) => isToolDone(message) && isDelegateTask(message), "pre-mention delegate_task result");
       const firstResult = JSON.stringify(firstDelegate.payload);
-      expect(firstResult, firstResult.slice(0, 1500)).toContain("bring one in with @");
+      expect(firstResult, firstResult.slice(0, 1500)).toContain("is not a mounted Agent or Agent Team, a collaborator or an available agent of this run");
       expect(delegatedRunId(firstDelegate.payload)).toBeNull();
+      expect((await collaborationView(hostRunId))?.execution_tree.taskExecutions ?? []).toEqual([]);
       await waitIdle(host, first.from, "first turn");
       expect((await collaborationView(hostRunId))?.execution_tree.collaborators ?? []).toEqual([]);
       expect(await packageExists(hostRunId), "no package before the first mention").toBe(false);

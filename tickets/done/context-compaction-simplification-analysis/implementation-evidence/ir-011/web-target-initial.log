@@ -1,0 +1,86 @@
+
+> autobyteus@1.4.92-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runHydration/__tests__/acceptedInputIdentity.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts (5 tests) 5ms
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (14 tests) 8ms
+ ❯ services/runHydration/__tests__/acceptedInputIdentity.spec.ts (12 tests | 1 failed) 13ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":"A","dedupeKey":"x"} / {"messageId":"B","dedupeKey":"x"} -> 2 2ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":"A","dedupeKey":"x"} / {"dedupeKey":"x"} -> 2 0ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":"x"} / {"dedupeKey":"x"} -> 2 0ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":" A ","dedupeKey":"old"} / {"messageId":"A","dedupeKey":"new"} -> 1 0ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"dedupeKey":" x "} / {"dedupeKey":"x"} -> 1 1ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":"A"} / {} -> 2 0ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":"a"} / {"messageId":"A"} -> 2 0ms
+   ✓ saved input identity in both independently applied dedupe layers > primary policy {"messageId":" "} / {} -> 1 0ms
+   × saved input identity in both independently applied dedupe layers > never collapses exact sender provenance, even keyless same-body/time rows 4ms
+     → expected 1 to be 4 // Object.is equality
+   ✓ saved input identity in both independently applied dedupe layers > does not read untyped input identity aliases or transitively join dedupe-only entries 0ms
+   ✓ saved input identity in both independently applied dedupe layers > unions saved media and exact locator+type files, preserves first timestamp/known keys/names 2ms
+   ✓ named pending overlay, not accepted-echo attachment replacement > preserves history media, timestamp, provenance and richer names, and remains local to the recipient 1ms
+ ✓ services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts (3 tests) 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/runHydration/__tests__/acceptedInputIdentity.spec.ts > saved input identity in both independently applied dedupe layers > never collapses exact sender provenance, even keyless same-body/time rows
+AssertionError: expected 1 to be 4 // Object.is equality
+
+- Expected
++ Received
+
+- 4
++ 1
+
+ ❯ services/runHydration/__tests__/acceptedInputIdentity.spec.ts:34:73
+     32|       for (const field of ['senderId', 'senderAgentRunId', 'senderAddr…
+     33|         const entries = [undefined, 'sender', ' sender', 'other'].map(…
+     34|         expect(server(entries)).toHaveLength(4); expect(count(entries)…
+       |                                                                         ^
+     35|       }
+     36|       const entries = [{ ...base, ...identity }, { ...base, ...identit…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 33 passed (34)
+   Start at  18:11:06
+   Duration  5.69s (transform 3.26s, setup 20.24s, collect 188ms, tests 34ms, environment 828ms, prepare 595ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

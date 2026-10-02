@@ -1,0 +1,8 @@
+{
+  "classification": "User-directed design revision / Design Impact routing; no new completed review verdict",
+  "selected": {
+    "when": "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.",
+    "recipient_address": "/solution_designer"
+  },
+  "singleRecipient": true
+}

@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T13:00:15.200546+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "() => ({text:document.body.innerText,textarea:[...document.querySelectorAll(\"textarea\")].map(x=>({label:x.getAttribute(\"aria-label\"),placeholder:x.placeholder}))})"
+  ],
+  "controlPort": 56935
+}

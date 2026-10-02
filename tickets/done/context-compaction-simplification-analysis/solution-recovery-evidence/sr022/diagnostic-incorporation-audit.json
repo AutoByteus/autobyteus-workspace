@@ -1,0 +1,123 @@
+{
+  "at": "2026-09-30T15:00:50.884365+00:00",
+  "purpose": "Solution Designer evidence incorporation; not independent API acceptance or a source review",
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "productionDiff": [],
+  "promptV5Sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "apiReportedGenerations": 4,
+  "newProviderRequestsByDesigner": 0,
+  "offlineChecks": [
+    {
+      "arm": "F-withTarget",
+      "bodyCodePoints": 3869,
+      "completionTokens": 1396,
+      "reasoningTokens": 435,
+      "derivedNonReasoningTokens": 961,
+      "sourceEqualsFrozen": true,
+      "apiOutputHashMatches": true
+    },
+    {
+      "arm": "F-withoutTarget",
+      "bodyCodePoints": 3410,
+      "completionTokens": 2508,
+      "reasoningTokens": 1532,
+      "derivedNonReasoningTokens": 976,
+      "sourceEqualsFrozen": true,
+      "apiOutputHashMatches": true
+    },
+    {
+      "arm": "R-withoutTarget",
+      "bodyCodePoints": 2766,
+      "completionTokens": 1830,
+      "reasoningTokens": 1168,
+      "derivedNonReasoningTokens": 662,
+      "sourceEqualsFrozen": true,
+      "apiOutputHashMatches": true
+    },
+    {
+      "arm": "R-withTarget",
+      "bodyCodePoints": 2875,
+      "completionTokens": 1878,
+      "reasoningTokens": 1179,
+      "derivedNonReasoningTokens": 699,
+      "sourceEqualsFrozen": true,
+      "apiOutputHashMatches": true
+    }
+  ],
+  "exactPrefixOnlyPairs": true,
+  "apiDurableHashes": {
+    "test-support/live-e2e/live-e2e-harness.ts": {
+      "sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "matchesApiFinalAudit": true
+    },
+    "test-support/live-e2e/run-live-e2e.mjs": {
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "matchesApiFinalAudit": true
+    },
+    "test-support/live-e2e/compaction-quality-checks.ts": {
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "matchesApiFinalAudit": true
+    },
+    "test-support/live-e2e/live-e2e-safe-error.ts": {
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "matchesApiFinalAudit": true
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts": {
+      "sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "matchesApiFinalAudit": true
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts": {
+      "sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "matchesApiFinalAudit": true
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts": {
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "matchesApiFinalAudit": true
+    },
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts": {
+      "sha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "matchesApiFinalAudit": true
+    },
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts": {
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "matchesApiFinalAudit": true
+    }
+  },
+  "evidenceReadHashes": {
+    "README.md": "8ccc601250d4eeef387bee11692069e9ba2c569b94f506dc0fc8999e66d42ff5",
+    "semantic-adjudication.md": "e928f283a615519c6cb1437c6d8df5ceecf59efbce7682ca6718d786d5f019dc",
+    "comparison.json": "bd425a800ff5bd01301a2fb674b8a84f5589f76201ad26302b44fad146aacf39",
+    "final-audit.json": "9f5f5c841a5bd076519a66c70390d5a7868423b97f83013c1610155487fd4468",
+    "F-withTarget.json": "ddefda4b660f0de371bda291e712b339a004d71f5ba734ec4d918334bc7e046d",
+    "F-withoutTarget.json": "2a61c3d3523380287b8983246a322ef858d5ef20a9ef95609c27563bd3d58afb",
+    "R-withoutTarget.json": "6b77055d0837145f6e195a38ad2337658957dbcf24ee7aa9b3ac8c85d8ffef90",
+    "R-withTarget.json": "3d9db90bd135b3ff735fd1d79a1c7f8a809c9458e62a3e002fc0f8fc2af4a4b4"
+  },
+  "ownedBefore": {
+    "requirements-doc.md": "6de72be44c71ac9d5336c3db4a69bb8f9a14c52163a0a309a1beba467e35eff0",
+    "investigation-notes.md": "4141e86b776b7453a016e85345e938969854c2a40b1046570da10a558e66f96f",
+    "solution-revision-record.md": "22c0c8e4919f7d73ac762ab92b394ffd823354ff311c34215503b91575ebb23a",
+    "solution-progress-result.md": "8f3360226930251e178c8849e0cdf965c3a1edcd81356594be5a2a3892c681eb",
+    "solution-revision.sr022.md": "928414398e27b55f6020d07713e92bf1296a7320bb8a9482af5c3c0882ddee79",
+    "summary-budget-removal-experiment.sr022.md": "284abfb9cd68874589007c2a62702bb2589e63ee00795fa5d62fd936d871ff89",
+    "solution-recovery-evidence/sr022/README.md": "7412612a23e05d620ef1ddd0db92099e147b14ba0fccc429deac85e603c9c892"
+  },
+  "limits": [
+    "API transport/control and cleanup execution attributed to retained API audit, not rerun",
+    "Manual full-body/source reading corroborates bounded Q01 and other three sample judgments; not broad reliability",
+    "No executable test rerun, source/durable-test change, provider/private-vault access, fetch/rebase/commit or cleanup"
+  ],
+  "ownedAfter": {
+    "requirements-doc.md": "682fc6032d1f21174dc207e2cffff00a7e3d7e833d3f827b80d1ffd47fb98e21",
+    "investigation-notes.md": "7efcbb493524c5d1cbe8fe368f1404df9c153bf2e3f11b02b46f2a810f73eade",
+    "solution-revision-record.md": "f59868f6fe4cbe254b0756835cba083ea25dbb860bcfbd772703793080221732",
+    "solution-progress-result.md": "b4c27a32e63bed090916323a91f5cd737740ae556035831c0b6769f1e4774ccf",
+    "solution-revision.sr022.md": "cb83bde38e902b93107ecb116afa812b9e26bc849a4eb116e450082746c2d7ef",
+    "summary-budget-removal-experiment.sr022.md": "0fa86ff7c6ef4bc4aeb6596672074d973e2faa90d4c25b689a89922f6e1153c4",
+    "solution-recovery-evidence/sr022/README.md": "717e3050a8619892f3afbadf0c19281b82b4819c0fac2977cadb1ed35aa1a314"
+  },
+  "postEditProductionDiff": [],
+  "postEditPromptV5Unchanged": true,
+  "apiPacketReadFilesUnchanged": true,
+  "postEditApiDurableUnchanged": true
+}

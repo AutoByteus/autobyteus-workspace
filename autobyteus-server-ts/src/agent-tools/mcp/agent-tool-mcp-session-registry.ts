@@ -99,7 +99,9 @@ const cloneRuntimeExposure = (
   enabledBrowserToolNames: [...exposure.enabledBrowserToolNames],
   enabledMediaToolNames: [...exposure.enabledMediaToolNames],
   enabledTaskDelegationToolNames: [...exposure.enabledTaskDelegationToolNames],
+  enabledProjectTaskToolNames: [...exposure.enabledProjectTaskToolNames],
   sendMessageToEnabled: exposure.sendMessageToEnabled,
   getHandoffRulesEnabled: exposure.getHandoffRulesEnabled,
   publishArtifactsEnabled: exposure.publishArtifactsEnabled,
+  listAvailableAgentsEnabled: exposure.listAvailableAgentsEnabled,
 });

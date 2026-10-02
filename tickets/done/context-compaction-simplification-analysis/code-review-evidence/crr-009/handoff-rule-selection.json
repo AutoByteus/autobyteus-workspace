@@ -1,0 +1,9 @@
+{
+  "outcome": "Fail \u2014 Local Fix, implementation-owned API-F007",
+  "selected": {
+    "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+    "recipient_address": "/implementation_engineer"
+  },
+  "sole_recipient": true,
+  "not_selected": "Generic source-Local-Fix rule is less specific; API-owned, pass, upstream and Delivery conditions do not apply."
+}

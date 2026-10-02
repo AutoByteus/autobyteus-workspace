@@ -22,8 +22,6 @@ export class CollaboratorAddError extends Error {
   }
 }
 
-/** `delegate_task` to an address that is neither mounted nor mentioned in this run. */
-export const delegationTargetUnavailableMessage = (address: string, hasAnyTarget: boolean): string =>
-  hasAnyTarget
-    ? `'${address}' is not a mounted Agent or Agent Team or a collaborator of this run; the user can bring one in with @.`
-    : "No agents or teams are available to delegate to in this run; the user can bring one in with @.";
+/** `delegate_task` to an address that is not mounted, not a collaborator and not an available agent of this run. */
+export const delegationTargetUnavailableMessage = (address: string): string =>
+  `'${address}' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run.`;

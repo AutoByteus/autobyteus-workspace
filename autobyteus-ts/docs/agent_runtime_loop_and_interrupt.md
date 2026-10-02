@@ -102,15 +102,16 @@ always agent-origin; `UserMessageReceivedEvent` uses its `SenderType.USER`,
 external turn-start origin. `AgentTurn` retains the resolved origin through LLM
 request assembly and compaction attempt authorization.
 
-When memory has a failed pending compaction in `awaiting_user_retry`, the
-compaction retry admission policy makes only user-origin turn starts
-dispatchable. The scheduler selects the earliest matching user entry without
-claiming or moving earlier agent/system entries. A distinct user turn authorizes
-one pending retry before that user's message is appended or dispatched to the
-model. Success allows the user turn to continue and ordinary FIFO service to
-resume; failure ends that turn and leaves both the pending operation and the
-deferred non-user entries intact. This is an in-memory scheduling gate, not a
-persistent deferred-message store.
+When compaction exhausts its bounded direct-generation attempts, it retains the
+pending operation with a fresh failure epoch. A later accepted user-origin input
+may grant one exact retry permit; agent/system input, stale/duplicate permits and
+input queued before failure cannot. At a pre-parent gate input A remains held
+with its identity/content/attachments. After B grants recovery, success resumes A
+before B once each. Exhaustion retains the gate; B is not future retry credit.
+After-visible-final-response failure gates the next turn rather than replaying
+completed work. This is in-memory admission, not a durable deferred-message
+store or same-ID workflow across backend restart. See
+[Memory Design](./agent_memory_design.md#4-failure-held-input-and-retry-permission).
 
 `AgentRuntime.submitEvent(...)` rejects unsupported operational events instead
 of hiding them in the lifecycle queue. Tool approval decisions are not
@@ -150,13 +151,11 @@ uses these collaborators:
     inter-agent input when structured `reference_files` are present.
 - `LlmPhase`
   - assembles memory-backed LLM requests;
-  - executes an authorized pending compaction before appending the new turn's
-    user message, and treats final compaction failure as a fail-closed turn
-    result rather than dispatching the target model;
-  - treats completed compaction-prompt Unicode validation failure as typed
-    `input_construction_failure` before any child launch or correction; the
-    target dispatch remains stopped and the pending operation keeps its
-    user-authorized retry gate;
+  - executes an authorized pending compaction before parent dispatch; pre-parent
+    input remains held rather than being silently consumed on final failure;
+  - constructs and validates provider-safe compaction input before generation;
+    `input_construction_failure` makes no summary call, blocks parent dispatch
+    and retains the user-authorized recovery gate;
   - reads one complete memory-owned automatic-compaction configuration:
     enabled runs retain request-capacity resolution plus the existing
     policy/strategy/executor/observation path, while disabled leaf runs resolve

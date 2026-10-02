@@ -1,0 +1,51 @@
+{
+  "pin_count": 9613,
+  "changes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md": {
+      "before": {
+        "sha256": "427e7bd34d825f0e5f753e2c279829e11c5bcafc0e71b8505627114ece3d2f81",
+        "bytes": 15526
+      },
+      "after": {
+        "sha256": "e216e11382849a8163cecb3f12f06266218d43fab03b31c942690c82aaebc1eb",
+        "bytes": 9532
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md": {
+      "before": {
+        "sha256": "b51404d9c1ab6d0b4115046ae78e5a7e3d3e4c5c81e4d6ac224f721316cb572a",
+        "bytes": 40293
+      },
+      "after": {
+        "sha256": "6edc8c4b76fd2fe03ea1b6e703461eacc4c8f3d41ea5bc6b9f7a5f7b2020e0b2",
+        "bytes": 43771
+      }
+    }
+  },
+  "unexpected_changes": [],
+  "git_before": {
+    "HEAD": "026476691c62bda309ce7f2a9342ebb444959f98",
+    "MERGE_HEAD": "d057801c89f26bc69a97331b59631c00519aec98",
+    "branch": "codex/context-compaction-simplification-analysis",
+    "raw_index": {
+      "sha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+      "bytes": 5880285
+    },
+    "logical_index_sha256": "12d0c9edc9a9195cd04b05d2e2c7f55db01c601bee80f34f9afbd29497719b16",
+    "stash": "86fa5f5445364220cb5c4e3b55fa5040a329f6ea\ndba3b62524050b93b319cb9e76d6c2bf5c9cf3a8\na79d3229bd3db18a676e3046fb8a739194cbecda\n7d5d58049503a74b8f836842231ea3d20bc20c12\n892ac5e95c9226683443f150ba725cee2bab6386\n5f6e6f75bc642511a389f7cf02c6a956593611d7\nd13667337bc3c0c8b31dbd45fcbc0cffe317b96f\n866a6983204b8fbf9d73c16190fa510dede024b9\ne5a77d947ef6a91f048a1fc36405a7761ec8001a\nc9989c105d524854e0cc030904cf0a1f68b555d4\n8d372026d457278790bde0212ff362dfa92fa987\n75e205549569483510315ab8714ad4a88a1d3c79\nc047e321cef842e75278f65497108b6492211761\n045af3b2a55d5811f73fcd5489b4033a87391801\n7a4fcdb8198c2d71161c5fed7d70bca23c359fad\n2d8cd6c1ec56e21bfa4efc3ddf2fb97040d4ae48\na106d4e0011ee83608c77c91bd6984febf0e7ddf\n143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee\n2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964\n8a46238a0e7480df845f32992f8a281be7ca9e38\n92fe82e95eb123bdfa259c74eeb1c534b26d909b\n88fbe8331d472f08678c9588766023c19d044fc6\n75ac08606b3289ea7e8ffa8bf803283da3b0605e\nc4ee4ad846608a9be11d4f9cfa9a2bd8a56f75b3\nd2e0a8347a9b5e540934a96e192952a487df0e1a\nba7597ece66ffcf3880ee692b5c0168b2f2f9fb2\n46cbb525bdd3a04922deb6aade405a7f30fc7c84\n5c45418dd1746e0fbbb99616fcaf2ccd6a77e35a\n2381de084512eaed1ae5dae13ed1f231179b7953\n34a114b2d83bcbe5dcfac52b49ef7ae55d30c0bd\n7dda370b1ee1c519b6adae93fce51b1428b22505\n7b6d701ee5ee6442538a605209229e6ca3f0bf7f\n698787e1cf2671ed9495f607812e27ce69d00eb8\nafb33236be4639cfc51f69c070169f0cce1a7976\n",
+    "unmerged": ""
+  },
+  "git_after": {
+    "HEAD": "026476691c62bda309ce7f2a9342ebb444959f98",
+    "MERGE_HEAD": "d057801c89f26bc69a97331b59631c00519aec98",
+    "branch": "codex/context-compaction-simplification-analysis",
+    "raw_index": {
+      "sha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+      "bytes": 5880285
+    },
+    "logical_index_sha256": "12d0c9edc9a9195cd04b05d2e2c7f55db01c601bee80f34f9afbd29497719b16",
+    "stash": "86fa5f5445364220cb5c4e3b55fa5040a329f6ea\ndba3b62524050b93b319cb9e76d6c2bf5c9cf3a8\na79d3229bd3db18a676e3046fb8a739194cbecda\n7d5d58049503a74b8f836842231ea3d20bc20c12\n892ac5e95c9226683443f150ba725cee2bab6386\n5f6e6f75bc642511a389f7cf02c6a956593611d7\nd13667337bc3c0c8b31dbd45fcbc0cffe317b96f\n866a6983204b8fbf9d73c16190fa510dede024b9\ne5a77d947ef6a91f048a1fc36405a7761ec8001a\nc9989c105d524854e0cc030904cf0a1f68b555d4\n8d372026d457278790bde0212ff362dfa92fa987\n75e205549569483510315ab8714ad4a88a1d3c79\nc047e321cef842e75278f65497108b6492211761\n045af3b2a55d5811f73fcd5489b4033a87391801\n7a4fcdb8198c2d71161c5fed7d70bca23c359fad\n2d8cd6c1ec56e21bfa4efc3ddf2fb97040d4ae48\na106d4e0011ee83608c77c91bd6984febf0e7ddf\n143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee\n2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964\n8a46238a0e7480df845f32992f8a281be7ca9e38\n92fe82e95eb123bdfa259c74eeb1c534b26d909b\n88fbe8331d472f08678c9588766023c19d044fc6\n75ac08606b3289ea7e8ffa8bf803283da3b0605e\nc4ee4ad846608a9be11d4f9cfa9a2bd8a56f75b3\nd2e0a8347a9b5e540934a96e192952a487df0e1a\nba7597ece66ffcf3880ee692b5c0168b2f2f9fb2\n46cbb525bdd3a04922deb6aade405a7f30fc7c84\n5c45418dd1746e0fbbb99616fcaf2ccd6a77e35a\n2381de084512eaed1ae5dae13ed1f231179b7953\n34a114b2d83bcbe5dcfac52b49ef7ae55d30c0bd\n7dda370b1ee1c519b6adae93fce51b1428b22505\n7b6d701ee5ee6442538a605209229e6ca3f0bf7f\n698787e1cf2671ed9495f607812e27ce69d00eb8\nafb33236be4639cfc51f69c070169f0cce1a7976\n",
+    "unmerged": ""
+  },
+  "git_unchanged": true
+}

@@ -12,6 +12,8 @@ export const buildRunProjectionConversation = (
         role: "user",
         senderAgentRunId: event.senderId,
         senderAddress: null,
+        ...(event.messageId ? { messageId: event.messageId } : {}),
+        ...(event.dedupeKey ? { dedupeKey: event.dedupeKey } : {}),
         ...(event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
         content: event.content,
         media: event.media,
@@ -23,6 +25,8 @@ export const buildRunProjectionConversation = (
       return [{
         kind: "message",
         role: event.role,
+        ...(event.role === "user" && event.messageId ? { messageId: event.messageId } : {}),
+        ...(event.role === "user" && event.dedupeKey ? { dedupeKey: event.dedupeKey } : {}),
         ...(event.role === "user" && event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
         content: event.content,
         media: event.media,

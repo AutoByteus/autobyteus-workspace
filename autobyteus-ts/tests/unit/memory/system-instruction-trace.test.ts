@@ -1,3 +1,4 @@
+import { WorkingContext } from '../../../src/memory/working-context.js';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -61,7 +62,10 @@ describe('system instruction trace persistence', () => {
       traceType: 'user', content: 'later', sourceEvent: 'test',
     }));
 
-    store.archiveCompactedRawTraces(['selected-turn-trace']);
+    const prepared = store.prepareCompactionArchive(['selected-turn-trace']);
+    expect(store.listRawTraceDicts()).toHaveLength(3);
+    store.writeWorkingContextSnapshotState(new WorkingContext(), { agentId: 'agent' });
+    store.prunePreparedCompactionArchive(prepared, ['kept-turn-trace']);
 
     expect(store.listRawTraceDicts().map((row) => row.id)).toEqual(['kept-turn-trace']);
     expect(store.readCompleteArchiveRawTraceDicts().map((row) => row.id)).toEqual([

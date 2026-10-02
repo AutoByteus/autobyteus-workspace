@@ -55,7 +55,7 @@ every member's provider conversation. Member activation remains lazy.
 Each new run creates an `agy-project` capsule under its own memory directory.
 The capsule contains the generated **main** agent, a manifest binding the
 AutoByteus run ID and real workspace path, enabled AutoByteus-configured
-skills, and a run-scoped AutoByteus Agent Tools MCP configuration. It snapshots
+skill links, and a run-scoped AutoByteus Agent Tools MCP configuration. It snapshots
 the composed Agent/Team/Org identity before the first real user input. It does
 not write generated configuration into the selected workspace or global AGY
 configuration.
@@ -76,50 +76,55 @@ them. A file whose content cannot be parsed as JSON fails activation with
 `Cannot inspect AGY MCP collision at '<path>'`, and a same-name server fails
 with `AGY_MCP_NAME_COLLISION`.
 
-Configured skill bindings carry the resolver's winning source provenance.
-For an agent-private skill in a Team, or a team-shared skill, AGY trusts only
-that owning Team package root; a standalone private skill uses its Agent
-package root, and a global fallback uses only the global skill's own root.
-The capsule materializer snapshots regular files and file links that resolve
-to existing regular files **within** that root as ordinary private files.
-It rejects links that escape the root, dangling/cyclic/directory links,
-nonregular targets, collisions, or a source changed during copying; a failed
-candidate is removed. It does not dereference unchecked links into the real
-task workspace or retain symlinks in the capsule.
-Restore uses the already checked capsule bytes rather than re-resolving
-possibly edited source links. The actual Team-local Solution Designer skill's
-two links into its Team `shared/` directory passed a disposable full-Org
-first prompt and distinct-backend same-member browser continuation, with
-ordinary exact-byte capsule files and an unchanged selected workspace.
+AGY uses the same configured skill bindings as Codex, Claude and ACP
+(`SkillService.resolveConfiguredSkillBindingsForAgent`). The capsule linker
+(`capsule/agy-configured-skill-linker.ts`) exposes each resolved skill as one
+directory link `<capsule>/.agents/skills/<name>` to the skill's real folder.
+It checks only that the folder exists and holds a `SKILL.md` file; it never
+walks, copies or fingerprints the rest of the folder. A skill's local
+environment (`.venv`, `node_modules`), large files and links pointing outside
+its folder therefore do not affect run start, and file links inside a
+Team-local skill (for example the Solution Designer's links into its Team
+`shared/` directory) resolve through the capsule link. Links live only inside
+the run's private capsule, never in the selected workspace. Deleting run memory
+removes the link, not the skill. Like Codex and Claude runs, a running or
+resumed AGY run sees the skill folder's current content.
 
-For AGY configured skills, a missing source or semantically invalid
-`SKILL.md` (including malformed/unreadable content or a mismatched name) is
-warned about with a sanitized identity/reason and omitted; other valid skills
-and an otherwise healthy startup continue. Merely copying a skill does not
-claim the provider loaded it. Unsafe provenance, source mutation, escaping or
-invalid links, protected destination collisions, and unrelated provider
-startup failures still fail closed. The one exception is a skill name that
-already exists in the user's `<workspace>/.agents/skills/` when the run's
-`workspaceCollisionPolicy` is `prefer_workspace` (an `ALL_INSTALLED` agent):
-AGY leaves the workspace skill in place, omits its own copy and logs
-`skipped-workspace-owned`. With `fail` (a configured agent) it still fails with
-`AGY_SKILL_NAME_COLLISION` (see `skills.md`, Rule 1). A Codex definition may name
+The run's request strength comes from the definition's skill scope
+(`workspaceCollisionPolicyForScope`). A skill that cannot be exposed (unsafe or
+duplicate name, a same-name skill in `<workspace>/.agents/skills/`, a vanished
+folder, a missing `SKILL.md`, or a failed link) is handled as follows:
+
+- `prefer_workspace` (an `ALL_INSTALLED` agent such as the Daily Assistant):
+  skipped with one sanitized warning (`disposition=skipped-unusable`, or
+  `skipped-workspace-owned` for a workspace skill, with `reason=…`); the run
+  starts with the remaining skills.
+- `fail` (an agent that names its skills): the run does not start. The
+  linker throws an `AgentCreationError` such as `Antigravity could not use
+  skill 'browser-automation': its folder no longer exists.`, which reaches the
+  chat error and the server log unchanged.
+
+An `unresolved` binding (a named skill the catalog does not have, including a
+folder whose `SKILL.md` is malformed or declares another name) is always
+warned about (`disposition=skipped-missing`) and omitted. Merely linking a
+skill does not claim the provider loaded it. A Codex definition may name
 `software-engineering-workflow-skill`, but this server change does not bundle
 or guarantee that content in `autobyteus-agents`. If it is absent from the
-selected source and global fallback roots, AGY warns, omits it, and can answer
-the first turn without claiming the skill loaded. If a run depends on an
-independently available skill, verify the selected definition's source identity
-and actual content rather than assuming a same-name package checkout is
-current. Live updates to already-running skill links are not provided by this
-AGY capsule snapshot.
+catalog, AGY warns, omits it, and can answer the first turn without claiming
+the skill loaded.
 
 `AgyStreamProcess` communicates over stdin/stdout stream-JSON pipes, not a PTY.
 The created provider `init.conversation_id` is stored as
 `platformAgentRunId`, distinct from the AutoByteus AgentRun ID. Restore reuses
-the saved capsule and workspace, verifies the capsule snapshot, and requires
+the saved capsule and workspace, verifies the identity snapshot, and requires
 the resumed `init.conversation_id` to equal the saved provider ID **before**
 input is admitted. Missing/changed workspace or mismatched provider ID fails
 closed; there is no latest-conversation guess or fake bootstrap message.
+A recorded skill whose `SKILL.md` is no longer reachable (its source was
+deleted or moved) does not block restore: its dangling link is removed, a
+warning names the skill (`disposition=skipped-missing-source`) and the run
+resumes without it. Capsules created before skills were linked hold copied
+skill folders; restore reads them the same way.
 
 ## Tools, permissions, and events
 
@@ -137,13 +142,16 @@ granted in that frontmatter. Separately configured, run-scoped AutoByteus MCP
 remains available through its own authority; an MCP image tool is not proof of
 native `generate_image` exposure.
 
-For a new editable AGY launch selection, the web draft defaults
-`autoExecuteTools` to true; a later explicit off choice is retained, including
-Team/Org member overrides. True maps to AGY's broad headless permission flag.
-False uses its normal headless permission policy, where an action can be
-denied. AGY headless runs provide no interactive approval-response command:
-AutoByteus cannot turn a denial into a pending chat approval. These semantics
-do not change the default for non-AGY runtimes.
+AGY always runs with auto-approve. `AgyStreamProcess.start` always passes
+`--dangerously-skip-permissions` and the factory requires the CLI's
+`permission_mode: always-proceed`, for new and resumed runs from every entry
+point, whatever `autoExecuteTools` the run config stores. Linked skill folders
+live outside the capsule, and headless AGY would deny reads of them that it
+cannot prompt for. AGY headless runs provide no interactive approval-response
+command either. Every web launch and configuration surface shows the
+auto-approve control on and locked for AGY, with an explanation
+(`isAutoApproveLockedForRuntime` in `autobyteus-web/utils/agentRunRuntimeDraftPolicy.ts`).
+Non-AGY runtimes keep their editable setting.
 
 `AgyStreamEventConverter` converts provider steps to canonical AgentRun events.
 The ordinary recorder, WebSocket stream, run-history projection, conversation,
@@ -154,6 +162,41 @@ convention. `ERROR` or explicit permission denial is failed/denied and
 non-green, even if the overall turn succeeds. A `DONE` step does **not** prove
 that an underlying shell command exited zero: retain provider state/output and
 do not invent an exit code.
+
+AGY carries every MCP call through its own `call_mcp_tool` step with wrapper
+parameters `ServerName`, `ToolName` and `Arguments`. The converter presents
+such a call as the tool that was actually called (`agy-mcp-tool-call.ts`): a
+tool on the run-scoped AutoByteus Agent Tools server keeps its bare canonical
+name (for example `send_message_to` or `delegate_task`), as in other runtimes;
+a tool on any other MCP server is named `mcp__<server>__<tool>`. The event's
+arguments are the wrapper's `Arguments` only (empty when absent), identical on
+the start and terminal events. Except for successful AutoByteus `open_tab`
+(described below), the result keeps `{ provider_state, output }`;
+output text that is a JSON object or array is presented as structured JSON,
+and any other output is unchanged. A wrapper without a non-blank `ServerName`
+and `ToolName` is presented as AGY reported it (`call_mcp_tool` with the
+provider parameters). Native image handling is decided from the provider's
+tool name, so an MCP tool named `generate_image` is never treated as AGY's
+native image tool. Runs recorded before this behavior keep their stored
+`call_mcp_tool` presentation.
+
+For a successful `open_tab` projected from `autobyteus_agent_tools`, the
+converter passes the projected MCP output through the shared
+`normalizeBrowserMcpToolResult` and emits that canonical result directly:
+`result.tab_id`, not `result.output.tab_id`. Event-level `provider_state: DONE`,
+invocation/turn identity and event ordering are preserved. This lets the
+existing eligible embedded-window handler focus the returned local session and
+select Browser; it does not change shell leases or remote/unavailable-shell
+suppression. Native tools named `open_tab`, third-party MCP tools, other browser
+tools and failure/denial paths retain their existing behavior. Missing output
+does not manufacture a tab identity.
+
+This is producer-side contract normalization, not renderer envelope parsing or
+browser-session recovery. Existing nested historical results remain opaque and
+readable without rewriting stored traces; reopening a saved run does not replay
+browser focus. No cookie/session reset or migration is required. See
+[Browser Sessions](../../../autobyteus-web/docs/browser_sessions.md#antigravity)
+for the presentation boundary.
 
 AGY turns have no idle timeout. A turn ends only on AGY `result`, AGY process
 exit/error or a stream protocol violation, or user Stop/Terminate; the 60 s

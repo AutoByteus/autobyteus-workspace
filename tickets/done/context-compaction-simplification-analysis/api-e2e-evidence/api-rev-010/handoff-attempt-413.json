@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "tool call error: tool call failed for `autobyteus_agent_tools/send_message_to`\n\nCaused by:\n    Transport send error: Transport [codex_rmcp_client::event_notification_transport::EventNotificationTransport<rmcp::transport::worker::WorkerTransport<rmcp::transport::streamable_http_client::StreamableHttpClientWorker<codex_rmcp_client::http_client_adapter::StreamableHttpClientAdapter>>>] error: unexpected server response: HTTP 413: {\"statusCode\":413,\"code\":\"FST_ERR_CTP_BODY_TOO_LARGE\",\"error\":\"Payload Too Large\",\"message\":\"Request body is too large\"}"
+    }
+  ],
+  "isError": true
+}

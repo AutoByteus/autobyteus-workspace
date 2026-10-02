@@ -154,16 +154,20 @@ single explicit `GEMINI_SETUP_MODE` selects exactly one construction strategy:
 - Vertex Project: `{ vertexai: true, project, location }`, with no API-key
   lookup.
 
-The Gemini 3.8 speech catalog is independent of mode selection and credential
-status. An available catalog row is not proof that the current AI Studio or
-Vertex identity can generate from it. The scoped real-provider harness uses an
-explicit test-owned SQLite vault and reports missing credentials as missing,
-not as a passing generation. `pnpm test:e2e:real:preflight` checks setup and
-selected scenarios without making a paid provider request; a real generation
-requires explicit provisioning and execution. Never import an owner-private
-source into the production vault merely to validate a model upgrade. A prior
-Vertex Express 3.8 speech success is route/key/time-specific evidence, not an
-entitlement guarantee or an AI Studio success claim.
+Speech model/voice availability is separate from catalog presence and credential
+status. Additional voice-ID synthesis and per-turn dialogue styles use only the
+configured Gemini mode; they do not query a different mode's voice catalog,
+switch credentials or fall back after rejection. The speech adapter exposes
+fixed failure categories and safe HTTP status rather than raw provider
+messages/bodies/causes. A prior successful Vertex Express generation proves
+that specific route/key/time, not all voices, languages or future entitlement.
+
+Real-provider preflight checks setup/scenario readiness, not paid generation.
+Live validation requires explicit supported import into an isolated test-owned
+SQLite vault and bounded execution authorization; do not provision or mutate the
+production vault merely to test speech. Review, docs sync and deterministic
+post-integration checks do not authorize another paid request or private-source
+read after the authorized calls have been consumed.
 
 Gemini catalog metadata has a separate provenance contract:
 

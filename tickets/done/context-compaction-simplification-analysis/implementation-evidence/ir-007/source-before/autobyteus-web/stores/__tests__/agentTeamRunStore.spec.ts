@@ -1,0 +1,1040 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+import { mount } from '@vue/test-utils'
+import { computed, nextTick } from 'vue'
+import { useAgentTeamRunStore } from '../agentTeamRunStore'
+import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue'
+import TeamRunConfigForm from '~/components/workspace/config/TeamRunConfigForm.vue'
+import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
+import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useWorkspaceStore } from '~/stores/workspace'
+import { TeamStreamingService } from '~/services/agentStreaming'
+import { AgentStatus } from '~/types/agent/AgentStatus'
+import {
+  buildTestTeamContext,
+  testAgentNode,
+  testSubTeamNode,
+} from '~/test-support/currentTeamTestFixtures'
+import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
+import type { TeamLaunchDraft } from '~/types/agent/TeamLaunchDraft'
+import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
+import type { ContextAttachment } from '~/types/conversation'
+
+const {
+  mockConnect,
+  mockDisconnect,
+  mockAttachContext,
+  mockConnectionState,
+  mockIsReady,
+  mockIsReopenRequired,
+  mockConnectCandidate,
+  mockSendMessage,
+  mockApproveTool,
+  mockDenyTool,
+  mockInterruptGeneration,
+  mockMutate,
+  mockReplaceProjectionActivitiesIfRevisions,
+  mockHydrateLiveTeamRunContext,
+  teamContextsStoreMock,
+  runHistoryStoreMock,
+  contextFileUploadStoreMock,
+  teamDefinitions,
+  teamDefinitionRevision,
+  mockServiceOptions,
+} = vi.hoisted(() => ({
+  mockConnect: vi.fn(),
+  mockDisconnect: vi.fn(),
+  mockAttachContext: vi.fn(),
+  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
+  mockIsReady: { value: true },
+  mockIsReopenRequired: { value: false },
+  mockConnectCandidate: vi.fn(),
+  mockSendMessage: vi.fn(),
+  mockApproveTool: vi.fn(),
+  mockDenyTool: vi.fn(),
+  mockInterruptGeneration: vi.fn(),
+  mockMutate: vi.fn(),
+  mockReplaceProjectionActivitiesIfRevisions: vi.fn(() => 'replaced' as const),
+  mockHydrateLiveTeamRunContext: vi.fn(),
+  teamContextsStoreMock: {
+    activeTeamContext: null as AgentTeamContext | null,
+    getTeamContextById: vi.fn(),
+    addTeamContext: vi.fn(),
+    replaceTeamContext: vi.fn(),
+  },
+  runHistoryStoreMock: {
+    markTeamAsActive: vi.fn(),
+    markTeamAsInactive: vi.fn(),
+    refreshTeamResumeConfig: vi.fn().mockResolvedValue(undefined),
+    refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+    applyRunNavigationEffect: vi.fn(),
+  },
+  contextFileUploadStoreMock: {
+    finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: unknown[] }) => attachments),
+  },
+  teamDefinitions: new Map<string, unknown>(),
+  teamDefinitionRevision: { current: null as { value: number } | null },
+  mockServiceOptions: { value: null as unknown },
+}))
+
+vi.mock('~/services/agentStreaming', () => ({
+  ConnectionState: {
+    DISCONNECTED: 'disconnected',
+    CONNECTING: 'connecting',
+    CONNECTED: 'connected',
+    RECONNECTING: 'reconnecting',
+  },
+  TeamStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
+    mockServiceOptions.value = options
+    return {
+      get connectionState() { return mockConnectionState.value },
+      get isReady() { return mockIsReady.value },
+      get isReopenRequired() { return mockIsReopenRequired.value },
+      connect: mockConnect,
+      connectCandidate: mockConnectCandidate,
+      disconnect: mockDisconnect,
+      attachContext: mockAttachContext,
+      sendMessage: mockSendMessage,
+      approveTool: mockApproveTool,
+      denyTool: mockDenyTool,
+      interruptGeneration: mockInterruptGeneration,
+    }
+  }),
+}))
+
+vi.mock('~/stores/windowNodeContextStore', () => ({
+  useWindowNodeContextStore: () => ({ getBoundEndpoints: () => ({ teamWs: 'ws://node-a.example/ws/agent-team' }) }),
+}))
+
+vi.mock('~/stores/agentTeamContextsStore', () => ({
+  useAgentTeamContextsStore: () => teamContextsStoreMock,
+}))
+
+vi.mock('~/utils/apolloClient', () => ({
+  getApolloClient: () => ({ mutate: mockMutate }),
+}))
+
+vi.mock('~/stores/agentActivityStore', () => ({
+  useAgentActivityStore: () => ({
+    getCompactionActivities: vi.fn(() => []),
+    replaceProjectionActivitiesIfRevisions: mockReplaceProjectionActivitiesIfRevisions,
+  }),
+}))
+
+vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => runHistoryStoreMock }))
+vi.mock('~/stores/contextFileUploadStore', () => ({ useContextFileUploadStore: () => contextFileUploadStoreMock }))
+
+vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
+  hydrateLiveTeamRunContext: mockHydrateLiveTeamRunContext,
+}))
+
+vi.mock('~/stores/runHistoryLoadActions', () => ({
+  ensureRunHistoryWorkspaceByRootPath: vi.fn(),
+  resolveRunHistoryWorkspaceMetadataByRootPath: vi.fn(),
+}))
+
+vi.mock('~/composables/useRightSideTabs', () => ({
+  useRightSideTabs: () => ({ setActiveTab: vi.fn() }),
+}))
+
+vi.mock('~/composables/useTeamRunRuntimeCatalogSync', () => ({
+  useTeamRunRuntimeCatalogSync: () => ({ reloadRuntimeKind: vi.fn() }),
+}))
+
+vi.mock('~/stores/agentTeamDefinitionStore', async () => {
+  const { ref } = await import('vue')
+  const revision = ref(0)
+  teamDefinitionRevision.current = revision
+  return {
+    useAgentTeamDefinitionStore: () => ({
+      getCatalogAgentTeamDefinitionById: (id: string) => {
+        revision.value
+        return teamDefinitions.get(id) ?? null
+      },
+    }),
+  }
+})
+
+const notifyTeamDefinitionChange = (): void => {
+  if (!teamDefinitionRevision.current) throw new Error('Team definition revision is unavailable.')
+  teamDefinitionRevision.current.value += 1
+}
+
+const setActiveTeam = (team: AgentTeamContext): void => {
+  teamContextsStoreMock.activeTeamContext = team
+  teamContextsStoreMock.getTeamContextById.mockImplementation((rootTeamRunId: string) =>
+    rootTeamRunId === team.view.getRootTeamRunId() ? team : undefined)
+}
+
+const teamHydrationCandidate = (hydratedContext: AgentTeamContext): any => {
+  const teamRunId = hydratedContext.view.getRootTeamRunId()
+  const focusedAgentRunId = hydratedContext.view.getFocusedAgentRunId()
+  return {
+    teamRunId,
+    focusedAgentRunId,
+    resumeConfig: { teamRunId, isActive: hydratedContext.view.isRootTeamActive(), metadata: {} },
+    hydratedContext,
+    projectionByAgentRunId: new Map([[focusedAgentRunId, { agentRunId: focusedAgentRunId }]]),
+    activityReplacements: [],
+  }
+}
+
+const twoMemberTeam = (input: {
+  teamRunId?: string
+  focusedMemberAddress?: string
+  isActive?: boolean
+} = {}): AgentTeamContext => {
+  const teamRunId = input.teamRunId ?? 'team-1'
+  return buildTestTeamContext({
+    teamRunId,
+    coordinatorAddress: '/coordinator',
+    rootChildren: [
+      testAgentNode('/coordinator', {
+        displayName: 'Coordinator',
+        agentRunId: `${teamRunId}-coordinator-run`,
+        currentStatus: AgentStatus.Running,
+      }),
+      testAgentNode('/worker', {
+        displayName: 'Worker',
+        agentRunId: `${teamRunId}-worker-run`,
+        currentStatus: AgentStatus.Idle,
+      }),
+    ],
+    focusedAgentRunId: input.focusedMemberAddress === '/coordinator'
+      ? `${teamRunId}-coordinator-run`
+      : `${teamRunId}-worker-run`,
+    isActive: input.isActive,
+  })
+}
+
+const configureSelectedFlatLaunchDraft = (): Readonly<{
+  configStore: ReturnType<typeof useTeamRunConfigStore>
+  draft: TeamLaunchDraft
+}> => {
+  teamDefinitions.set('root-definition', {
+    id: 'root-definition',
+    name: 'Flat Mixed Team',
+    coordinatorMemberName: 'program_manager',
+    nodes: [
+      { memberName: 'program_manager', ref: 'pm-definition' },
+      { memberName: 'review_lead', ref: 'review-definition' },
+      { memberName: 'implementer', ref: 'impl-definition' },
+    ],
+  })
+  notifyTeamDefinitionChange()
+  const configStore = useTeamRunConfigStore()
+  configStore.setRuntimeModelCatalog('codex_app_server', ['gpt-5.4'])
+  configStore.setRuntimeModelCatalog('claude_agent_sdk', ['claude-sonnet'])
+  configStore.setRuntimeModelCatalog('autobyteus', ['gpt-5.6-luna'])
+  const config: TeamRunConfig = {
+    teamDefinitionId: 'root-definition',
+    teamDefinitionName: 'Flat Mixed Team',
+    rootConfig: {
+      runtimeKind: 'codex_app_server',
+      workspace: {
+        workspaceId: 'test-workspace',
+        workspaceMetadata: {
+          workspaceId: 'test-workspace',
+          workspaceRootPath: '/tmp/test-workspace',
+          displayName: 'test-workspace',
+          kind: 'filesystem',
+        },
+      },
+      llmModelIdentifier: 'gpt-5.4',
+      llmConfig: null,
+      autoExecuteTools: true,
+    },
+    teamOverrides: {},
+    agentOverrides: {
+      '/review_lead': {
+        runtimeKind: 'claude_agent_sdk',
+        llmModelIdentifier: 'claude-sonnet',
+      },
+      '/implementer': {
+        runtimeKind: 'autobyteus',
+        llmModelIdentifier: 'gpt-5.6-luna',
+      },
+    },
+    isLocked: true,
+  }
+  configStore.setConfig(config)
+  configStore.focusMember('/review_lead')
+  const draft = configStore.selectedDraft
+  if (!draft) throw new Error('Expected the real selected Team launch draft.')
+  useAgentSelectionStore().selectTeamDraft(draft.draftId)
+  return { configStore, draft }
+}
+
+const flatHydratedTeam = (): AgentTeamContext => buildTestTeamContext({
+  teamRunId: 'team-flat-live',
+  teamDefinitionId: 'root-definition',
+  coordinatorAddress: '/program_manager',
+  rootChildren: [
+    testAgentNode('/program_manager', { agentRunId: 'pm-run' }),
+    testAgentNode('/review_lead', { agentRunId: 'review-run' }),
+    testAgentNode('/implementer', { agentRunId: 'impl-run' }),
+  ],
+})
+
+const nestedHydratedTeam = (): AgentTeamContext => {
+  const programManager = testAgentNode('/program_manager', { agentRunId: 'pm-run' })
+  const reviewer = testAgentNode('/BuildSquad/review_lead', { agentRunId: 'review-run' })
+  const implementer = testAgentNode('/BuildSquad/implementer', { agentRunId: 'impl-run' })
+  return buildTestTeamContext({
+    teamRunId: 'team-nested-live',
+    teamDefinitionId: 'root-definition',
+    coordinatorAddress: programManager.address,
+    rootChildren: [
+      programManager,
+      testSubTeamNode('/BuildSquad', [reviewer, implementer], {
+        teamDefinitionId: 'build-definition',
+        teamRunId: 'build-run',
+        coordinatorAddress: reviewer.address,
+      }),
+    ],
+  })
+}
+
+describe('agentTeamRunStore current rooted execution contract', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    mockConnectionState.value = 'connected'
+    mockIsReady.value = true
+    mockIsReopenRequired.value = false
+    mockConnectCandidate.mockResolvedValue(undefined)
+    mockInterruptGeneration.mockReturnValue(true)
+    mockServiceOptions.value = null
+    teamContextsStoreMock.activeTeamContext = null
+    teamContextsStoreMock.getTeamContextById.mockReset()
+    teamDefinitions.clear()
+    notifyTeamDefinitionChange()
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(
+      async ({ attachments }: { attachments: unknown[] }) => attachments,
+    )
+  })
+
+  it('connects the exact Team context to the bound Team WebSocket endpoint', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-connect' })
+    setActiveTeam(team)
+
+    const service = useAgentTeamRunStore().connectToTeamStream('team-connect')
+
+    expect(service).toBeTruthy()
+    expect(TeamStreamingService).toHaveBeenCalledWith(
+      'ws://node-a.example/ws/agent-team',
+      expect.objectContaining({
+        onInterruptCommandResult: expect.any(Function),
+        onInterruptCommandTransportFailure: expect.any(Function),
+      }),
+    )
+    expect(mockConnect).toHaveBeenCalledWith('team-connect', team)
+  })
+
+  it('reattaches an existing service to the latest context with the same root identity', () => {
+    const original = twoMemberTeam({ teamRunId: 'team-reattach' })
+    setActiveTeam(original)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-reattach')
+    const replacement = twoMemberTeam({ teamRunId: 'team-reattach' })
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(replacement)
+
+    store.connectToTeamStream('team-reattach')
+
+    expect(TeamStreamingService).toHaveBeenCalledTimes(1)
+    expect(mockAttachContext).toHaveBeenCalledWith(replacement)
+  })
+
+  it('latches one persistent recovery notice and blocks ordinary service reuse', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-reopen-latched' })
+    setActiveTeam(team)
+    const store = useAgentTeamRunStore()
+    const service = store.connectToTeamStream('team-reopen-latched')
+    const options = mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }
+    options.onStreamRecoveryRequired({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-reopen-latched',
+    })
+    mockIsReopenRequired.value = true
+    const replacement = twoMemberTeam({ teamRunId: 'team-reopen-latched' })
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(replacement)
+
+    expect(store.connectToTeamStream('team-reopen-latched')).toBe(service)
+    expect(mockAttachContext).not.toHaveBeenCalledWith(replacement)
+    expect(mockConnect).toHaveBeenCalledTimes(1)
+    expect(store.getTeamStreamRecoveryNotice('team-reopen-latched')).toEqual({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-reopen-latched',
+    })
+  })
+
+  it('commits one ready recovery candidate over the unchanged failed entries', async () => {
+    const failed = twoMemberTeam({ teamRunId: 'team-recovery-commit' })
+    setActiveTeam(failed)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-recovery-commit')
+    ;(mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }).onStreamRecoveryRequired({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-commit',
+    })
+    mockIsReopenRequired.value = true
+    const candidate = twoMemberTeam({ teamRunId: 'team-recovery-commit', focusedMemberAddress: '/coordinator' })
+
+    await expect(store.replaceFailedTeamStream({
+      rootTeamRunId: 'team-recovery-commit',
+      candidateContext: candidate,
+      expectedBaseChangeSequence: 14,
+    })).resolves.toBeTruthy()
+
+    expect(mockConnectCandidate).toHaveBeenCalledWith('team-recovery-commit', candidate, 14)
+    expect(teamContextsStoreMock.replaceTeamContext).toHaveBeenCalledWith(
+      'team-recovery-commit', failed, candidate,
+    )
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
+    expect(store.getTeamStreamRecoveryNotice('team-recovery-commit')).toBeNull()
+  })
+
+  it('preserves failed entries and notice when the candidate handshake rejects', async () => {
+    const failed = twoMemberTeam({ teamRunId: 'team-recovery-reject' })
+    setActiveTeam(failed)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-recovery-reject')
+    ;(mockServiceOptions.value as { onStreamRecoveryRequired(notice: unknown): void }).onStreamRecoveryRequired({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-reject',
+    })
+    mockIsReopenRequired.value = true
+    mockConnectCandidate.mockRejectedValueOnce(new Error('snapshot mismatch'))
+    const candidate = twoMemberTeam({ teamRunId: 'team-recovery-reject' })
+
+    await expect(store.replaceFailedTeamStream({
+      rootTeamRunId: 'team-recovery-reject',
+      candidateContext: candidate,
+      expectedBaseChangeSequence: 14,
+    })).rejects.toThrow('snapshot mismatch')
+
+    expect(teamContextsStoreMock.replaceTeamContext).not.toHaveBeenCalled()
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
+    expect(store.getTeamStreamRecoveryNotice('team-recovery-reject')).toEqual({
+      kind: 'team_stream_recovery_required', rootTeamRunId: 'team-recovery-reject',
+    })
+  })
+
+  it('terminates once, disconnects, and preserves an offline context for history restore', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-terminate' })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-terminate-worker-run')!
+    worker.submissionPending = true
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-terminate')
+    mockMutate.mockResolvedValue({
+      data: { terminateAgentTeamRun: { success: true, message: 'terminated' } },
+      errors: [],
+    })
+
+    expect(await store.terminateTeamRun('team-terminate')).toBe(true)
+
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockDisconnect).toHaveBeenCalledTimes(1)
+    expect(team.view.isRootTeamActive()).toBe(false)
+    expect(worker.state.currentStatus).toBe(AgentStatus.Offline)
+    expect(worker.submissionPending).toBe(false)
+    expect(runHistoryStoreMock.markTeamAsInactive).toHaveBeenCalledWith('team-terminate')
+    expect(runHistoryStoreMock.refreshTeamResumeConfig).not.toHaveBeenCalled()
+  })
+
+  it('does not mutate local lifecycle when backend termination rejects', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-terminate-reject' })
+    setActiveTeam(team)
+    mockMutate.mockResolvedValue({
+      data: { terminateAgentTeamRun: { success: false, message: 'not found' } },
+      errors: [],
+    })
+
+    expect(await useAgentTeamRunStore().terminateTeamRun('team-terminate-reject')).toBe(false)
+
+    expect(team.view.isRootTeamActive()).toBe(true)
+    expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled()
+  })
+
+  it('deduplicates concurrent Stop requests while the first mutation is pending', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-stop-dedupe' })
+    setActiveTeam(team)
+    let complete!: (value: unknown) => void
+    mockMutate.mockReturnValue(new Promise((resolve) => { complete = resolve }))
+    const store = useAgentTeamRunStore()
+
+    const first = store.terminateTeamRun('team-stop-dedupe')
+    expect(await store.terminateTeamRun('team-stop-dedupe')).toBe(false)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    complete({ data: { terminateAgentTeamRun: { success: true, message: 'terminated' } }, errors: [] })
+    expect(await first).toBe(true)
+  })
+
+  it('sends to the exact focused persistent execution and records the local submission', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-send', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-send-worker-run')!
+    const coordinator = team.view.getAgentContext('team-send-coordinator-run')!
+    const retainedImage: ContextAttachment = {
+      kind: 'workspace_path', id: 'retained-image', locator: '/tmp/retained-image.png',
+      displayName: 'retained-image.png', type: 'Image',
+    }
+    const removedFile: ContextAttachment = {
+      kind: 'workspace_path', id: 'removed-file', locator: '/tmp/removed-file.txt',
+      displayName: 'removed-file.txt', type: 'Text',
+    }
+    worker.requirement = 'inspect exact identity'
+    worker.contextFilePaths = [retainedImage, removedFile]
+    const visibleRequirement = computed(() => worker.requirement)
+    const visibleAttachmentIds = computed(() => worker.contextFilePaths.map((attachment) => attachment.id))
+    const visiblePending = computed(() => worker.submissionPending)
+
+    expect(visibleRequirement.value).toBe('inspect exact identity')
+    expect(visibleAttachmentIds.value).toEqual(['retained-image', 'removed-file'])
+    expect(visiblePending.value).toBe(false)
+    worker.contextFilePaths = worker.contextFilePaths.filter(
+      (attachment) => attachment.id !== removedFile.id,
+    )
+    expect(visibleAttachmentIds.value).toEqual(['retained-image'])
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember(
+      worker.requirement,
+      worker.contextFilePaths,
+    )
+
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'inspect exact identity',
+      'team-send-worker-run',
+      [],
+      ['/tmp/retained-image.png'],
+      expect.objectContaining({
+        messageId: expect.any(String),
+        dedupeKey: expect.stringContaining('team-send'),
+      }),
+    )
+    expect(mockSendMessage).toHaveBeenCalledTimes(1)
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      attachments: [retainedImage],
+    }))
+    expect(worker.state.conversation.messages).toEqual([
+      expect.objectContaining({
+        type: 'user', text: 'inspect exact identity', contextFilePaths: [retainedImage],
+      }),
+    ])
+    expect(visibleRequirement.value).toBe('')
+    expect(visibleAttachmentIds.value).toEqual([])
+    expect(visiblePending.value).toBe(true)
+    expect(coordinator.requirement).toBe('')
+    expect(coordinator.contextFilePaths).toEqual([])
+    expect(coordinator.submissionPending).toBe(false)
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-send')
+  })
+
+  it('finalizes a nested Agent upload with its containing TeamRun while preserving root send scope', async () => {
+    const team = nestedHydratedTeam()
+    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+    setActiveTeam(team)
+    const draftImage: ContextAttachment = {
+      kind: 'uploaded', id: 'nested-image', locator: '/rest/drafts/nested-image.png',
+      storedFilename: 'ctx_nested__image.png', displayName: 'image.png', phase: 'draft', type: 'Image',
+    }
+    const finalImage: ContextAttachment = {
+      ...draftImage, locator: '/rest/team-runs/build-run/agent-runs/review-run/context-files/ctx_nested__image.png',
+      phase: 'final',
+    }
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockResolvedValueOnce([finalImage])
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('inspect nested image', [draftImage])
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
+      draftOwner: {
+        kind: 'team_member_draft',
+        teamDraftId: 'team-nested-live',
+        memberAddress: '/BuildSquad/review_lead',
+      },
+      finalOwner: {
+        kind: 'team_member_final',
+        teamRunId: 'build-run',
+        agentRunId: 'review-run',
+      },
+      attachments: [draftImage],
+    })
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'inspect nested image',
+      'review-run',
+      [],
+      [finalImage.locator],
+      expect.objectContaining({ dedupeKey: expect.stringContaining('team-nested-live') }),
+    )
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-nested-live')
+  })
+
+  it('finalizes attachments from an explicit source owner (a Team started from a New chat)', async () => {
+    const team = nestedHydratedTeam()
+    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+    setActiveTeam(team)
+    const draftFile: ContextAttachment = {
+      kind: 'uploaded', id: 'chat-file', locator: '/rest/drafts/agent-runs/temp-chat-1/context-files/ctx__notes.txt',
+      storedFilename: 'ctx__notes.txt', displayName: 'notes.txt', phase: 'draft', type: 'Text',
+    }
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('from chat', [draftFile], {
+      attachmentDraftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+    })
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      draftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'build-run', agentRunId: 'review-run' },
+    }))
+  })
+
+  it('keeps attachment ownership and dispatch fixed while focus changes during finalization', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-focus', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+    let finish!: (value: ContextAttachment[]) => void
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockReturnValueOnce(new Promise(resolve => { finish = resolve }))
+    const sending = useAgentTeamRunStore().sendMessageToFocusedMember('captured target', [])
+    await vi.waitFor(() => expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledOnce())
+    team.view.focusAgent('team-focus-coordinator-run')
+    finish([])
+    await sending
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      finalOwner: { kind: 'team_member_final', teamRunId: 'team-focus', agentRunId: 'team-focus-worker-run' },
+    }))
+    expect(mockSendMessage).toHaveBeenCalledWith('captured target', 'team-focus-worker-run', [], [], expect.any(Object))
+    expect(team.view.getAgentContext('team-focus-coordinator-run')!.state.conversation.messages).toEqual([])
+  })
+
+  it('does not send after finalization rejects the selected owner and retains retry input', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-rejected' })
+    setActiveTeam(team)
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockRejectedValueOnce(new Error('wrong Team owner'))
+    await useAgentTeamRunStore().sendMessageToFocusedMember('keep prompt', [])
+    expect(mockSendMessage).not.toHaveBeenCalled()
+    expect(team.view.getAgentContext('team-rejected-worker-run')!.requirement).toBe('keep prompt')
+  })
+
+  it('rejects a focused Agent with no canonical execution location before admission or dispatch', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-location-missing', focusedMemberAddress: '/worker' })
+    setActiveTeam(team)
+    vi.spyOn(team.view, 'getAgentExecutionLocation').mockReturnValue(null)
+    const worker = team.view.getAgentContext('team-location-missing-worker-run')!
+
+    await expect(useAgentTeamRunStore().sendMessageToFocusedMember('do not dispatch', []))
+      .rejects.toThrow("Focused Team AgentRun 'team-location-missing-worker-run' has no exact execution location.")
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).not.toHaveBeenCalled()
+    expect(mockSendMessage).not.toHaveBeenCalled()
+    expect(worker.state.conversation.messages).toEqual([])
+  })
+
+  it('preserves the real associated Team draft when restore fails before local admission', async () => {
+    const team = twoMemberTeam({
+      teamRunId: 'team-pre-admission-failure', focusedMemberAddress: '/worker', isActive: false,
+    })
+    setActiveTeam(team)
+    const worker = team.view.getAgentContext('team-pre-admission-failure-worker-run')!
+    const stagedAttachment: ContextAttachment = {
+      kind: 'workspace_path', id: 'staged-file', locator: '/tmp/staged.txt',
+      displayName: 'staged.txt', type: 'Text',
+    }
+    worker.requirement = 'Keep this draft'
+    worker.contextFilePaths = [stagedAttachment]
+    const visibleRequirement = computed(() => worker.requirement)
+    const visibleAttachmentIds = computed(() => worker.contextFilePaths.map((attachment) => attachment.id))
+    const visiblePending = computed(() => worker.submissionPending)
+    expect(visibleRequirement.value).toBe('Keep this draft')
+    expect(visibleAttachmentIds.value).toEqual(['staged-file'])
+    expect(visiblePending.value).toBe(false)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: false, teamRunId: null } }, errors: [],
+    })
+
+    await expect(useAgentTeamRunStore().sendMessageToFocusedMember(
+      worker.requirement,
+      worker.contextFilePaths,
+    )).rejects.toThrow('Team restore failed')
+
+    expect(visibleRequirement.value).toBe('Keep this draft')
+    expect(visibleAttachmentIds.value).toEqual(['staged-file'])
+    expect(visiblePending.value).toBe(false)
+    expect(worker.state.conversation.messages).toEqual([])
+    expect(mockSendMessage).not.toHaveBeenCalled()
+  })
+
+  it('restores an inactive Team and sends to the unchanged exact execution address', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-restore', focusedMemberAddress: '/coordinator', isActive: true })
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-restore' } },
+      errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('restore then send', [])
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { teamRunId: 'team-restore' } }))
+    expect(mockHydrateLiveTeamRunContext).toHaveBeenCalledWith(expect.objectContaining({
+      teamRunId: 'team-restore',
+      agentRunId: 'team-restore-worker-run',
+    }))
+    expect(teamContextsStoreMock.replaceTeamContext).toHaveBeenCalledWith('team-restore', stale, hydrated)
+    expect(teamContextsStoreMock.addTeamContext).not.toHaveBeenCalled()
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'restore then send',
+      'team-restore-worker-run',
+      [],
+      [],
+      expect.any(Object),
+    )
+  })
+
+  it('keeps the lazy-restore submission pending until exact Team admission is confirmed', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-admission', focusedMemberAddress: '/worker', isActive: true })
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-admission' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+    let admit!: () => void
+    mockSendMessage.mockReturnValueOnce(new Promise<void>((resolve) => { admit = resolve }))
+
+    let completed = false
+    const sending = useAgentTeamRunStore().sendMessageToFocusedMember('exact lazy prompt', [])
+      .then(() => { completed = true })
+    await vi.waitFor(() => expect(mockSendMessage).toHaveBeenCalledOnce())
+    expect(completed).toBe(false)
+    expect(hydrated.view.getAgentContext('team-admission-worker-run')?.submissionPending).toBe(true)
+
+    admit()
+    await sending
+    expect(completed).toBe(true)
+  })
+
+  it('retains the exact lazy-restore prompt and attachments for retry after admission failure', async () => {
+    const stale = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: false })
+    const hydrated = twoMemberTeam({ teamRunId: 'team-retry', focusedMemberAddress: '/worker', isActive: true })
+    const attachment: ContextAttachment = {
+      kind: 'workspace_path', id: 'retry-file', locator: '/tmp/retry.txt',
+      displayName: 'retry.txt', type: 'Text',
+    }
+    setActiveTeam(stale)
+    mockMutate.mockResolvedValue({
+      data: { restoreAgentTeamRun: { success: true, teamRunId: 'team-retry' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+    mockSendMessage.mockRejectedValueOnce(new Error('runtime is stopping'))
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('retry this exact prompt', [attachment])
+
+    const worker = hydrated.view.getAgentContext('team-retry-worker-run')!
+    expect(worker.requirement).toBe('retry this exact prompt')
+    expect(worker.contextFilePaths).toEqual([attachment])
+    expect(worker.submissionPending).toBe(false)
+    expect(worker.state.currentStatus).toBe(AgentStatus.Error)
+    expect(worker.state.conversation.messages).toEqual([
+      expect.objectContaining({ type: 'user', text: 'retry this exact prompt' }),
+      expect.objectContaining({ type: 'ai', text: 'Error Occurred' }),
+    ])
+  })
+
+  it('launches a flat mixed-runtime draft with exact direct memberAddress inputs and focus', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
+    configStore.setPendingInput('/review_lead', {
+      text: 'Review the exact launch.',
+      attachments: [],
+    })
+    const draft = configStore.selectedDraft!
+    const hydrated = flatHydratedTeam()
+    mockMutate.mockResolvedValue({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+      errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+
+    const result = await useAgentTeamRunStore().launchDraft(draft)
+
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: {
+        input: {
+          teamDefinitionId: 'root-definition',
+          teamConfigs: [
+            expect.objectContaining({
+              teamAddress: '/',
+              runtimeKind: 'codex_app_server',
+              llmModelIdentifier: 'gpt-5.4',
+            }),
+          ],
+          memberConfigs: expect.arrayContaining([
+            expect.objectContaining({
+              memberAddress: '/program_manager',
+              runtimeKind: 'codex_app_server',
+              llmModelIdentifier: 'gpt-5.4',
+            }),
+            expect.objectContaining({
+              memberAddress: '/review_lead',
+              runtimeKind: 'claude_agent_sdk',
+              llmModelIdentifier: 'claude-sonnet',
+            }),
+            expect.objectContaining({
+              memberAddress: '/implementer',
+              runtimeKind: 'autobyteus',
+              llmModelIdentifier: 'gpt-5.6-luna',
+            }),
+          ]),
+        },
+      },
+    }))
+    expect(result.rootTeamRunId).toBe('team-flat-live')
+    expect(result.agentRunId).toBe('review-run')
+    expect(result.context.view.getFocusedAgentRunId()).toBe('review-run')
+    expect(result.context.view.getAgentContext('review-run')?.requirement).toBe('Review the exact launch.')
+    expect(configStore.selectedDraft).toBeNull()
+    expect(configStore.hasInFlightLaunch).toBe(false)
+    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
+    expect(teamContextsStoreMock.addTeamContext).toHaveBeenCalledTimes(1)
+  })
+
+  it('registers the one flat Team root workspace and creates exactly one TeamRun', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
+    const initialDraftId = configStore.selectedDraft!.draftId
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: initialDraftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: 'test-workspace', newWorkspacePath: '/workspace/root-new' },
+    })
+    const workspaces = useWorkspaceStore()
+    const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockImplementation(async ({ root_path }) => {
+      const workspaceId = 'ws-root-new'
+      workspaces.workspaceMetadataById[workspaceId] = {
+        workspaceId, workspaceRootPath: root_path, displayName: workspaceId, kind: 'filesystem',
+      }
+      return workspaceId
+    })
+    mockMutate.mockResolvedValue({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } }, errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(flatHydratedTeam()))
+
+    await useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
+
+    expect(createWorkspace).toHaveBeenCalledOnce()
+    expect(createWorkspace).toHaveBeenCalledWith({ root_path: '/workspace/root-new' })
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockMutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { input: expect.objectContaining({
+        teamConfigs: [
+          expect.objectContaining({ teamAddress: '/', workspaceRootPath: '/workspace/root-new' }),
+        ],
+      }) },
+    }))
+  })
+
+  it('keeps a root workspace registration failure on the flat Team draft and does not create a TeamRun', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
+    const draftId = configStore.selectedDraft!.draftId
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/shared-new/' },
+    })
+    const workspaces = useWorkspaceStore()
+    const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockRejectedValue(new Error('registration unavailable'))
+
+    await expect(useAgentTeamRunStore().launchDraft(configStore.selectedDraft!))
+      .rejects.toThrow('registration unavailable')
+
+    expect(createWorkspace).toHaveBeenCalledOnce()
+    expect(createWorkspace).toHaveBeenCalledWith({ root_path: '/workspace/shared-new' })
+    expect(mockMutate).not.toHaveBeenCalled()
+    expect(configStore.teamWorkspaceAuthoringViewFor('/').operation).toEqual({ status: 'error', error: 'registration unavailable' })
+    expect(configStore.teamWorkspaceAuthoringViewFor('/').selection.mode).toBe('new')
+  })
+
+  it('repairs a removed flat Agent before launch and performs zero registration or create', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
+    teamDefinitions.set('root-definition', {
+      id: 'root-definition', name: 'Flat Mixed Team', coordinatorMemberName: 'program_manager',
+      nodes: [{ memberName: 'program_manager', ref: 'pm-definition' }],
+    })
+    notifyTeamDefinitionChange()
+    await nextTick()
+    const createWorkspace = vi.spyOn(useWorkspaceStore(), 'createWorkspace')
+    const runStore = useAgentTeamRunStore()
+    const launchDraft = vi.spyOn(runStore, 'launchDraft')
+    const wrapper = mount(RunConfigPanel, {
+      global: {
+        stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true },
+      },
+    })
+
+    expect(configStore.launchReadiness).toEqual(expect.objectContaining({ canLaunch: true, blockingIssues: [] }))
+    expect(configStore.repairNotice).toBeNull()
+    expect(wrapper.find('.run-btn').attributes('disabled')).toBeUndefined()
+    await wrapper.find('.run-btn').trigger('click')
+    await vi.waitFor(() => expect(configStore.repairNotice?.addresses).toEqual(['/implementer', '/review_lead']))
+
+    expect(createWorkspace).not.toHaveBeenCalled()
+    expect(mockMutate).not.toHaveBeenCalled()
+    expect(configStore.selectedDraft!.config.agentOverrides).toEqual({})
+    expect(wrapper.findComponent(TeamRunConfigForm).props('model').repairAddresses).toEqual(['/implementer', '/review_lead'])
+    expect(launchDraft).toHaveBeenCalledOnce()
+  })
+
+  it('rejects a workspace result when topology changes after registration dispatch and never creates a TeamRun', async () => {
+    const { configStore } = configureSelectedFlatLaunchDraft()
+    configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: configStore.selectedDraft!.draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/root-dispatched' },
+    })
+    const workspaces = useWorkspaceStore()
+    let resolveWorkspace!: (workspaceId: string) => void
+    const createWorkspace = vi.spyOn(workspaces, 'createWorkspace').mockReturnValue(new Promise((resolve) => {
+      resolveWorkspace = resolve
+    }))
+    const launch = useAgentTeamRunStore().launchDraft(configStore.selectedDraft!)
+    await vi.waitFor(() => expect(createWorkspace).toHaveBeenCalledOnce())
+    teamDefinitions.set('root-definition', {
+      id: 'root-definition', name: 'Flat Mixed Team', coordinatorMemberName: 'program_manager',
+      nodes: [{ memberName: 'program_manager', ref: 'pm-definition' }],
+    })
+    workspaces.workspaceMetadataById['ws-dispatched'] = {
+      workspaceId: 'ws-dispatched', workspaceRootPath: '/workspace/root-dispatched',
+      displayName: 'dispatched', kind: 'filesystem',
+    }
+    resolveWorkspace('ws-dispatched')
+
+    await expect(launch).rejects.toThrow('Team topology changed during workspace preparation')
+    expect(mockMutate).not.toHaveBeenCalled()
+    expect(configStore.selectedDraft!.config.agentOverrides).toEqual({})
+    expect(configStore.repairNotice?.addresses).toEqual(['/implementer', '/review_lead'])
+  })
+
+  it('admits one exact draft before allocation and blocks edits, selection changes, and duplicate allocation until success', async () => {
+    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+    const hydrated = flatHydratedTeam()
+    let resolveAllocation!: (value: unknown) => void
+    mockMutate.mockReturnValue(new Promise((resolve) => { resolveAllocation = resolve }))
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+    const runStore = useAgentTeamRunStore()
+
+    const launch = runStore.launchDraft(draft)
+
+    expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(true)
+    expect(runStore.isDraftLaunchPending(draft.draftId)).toBe(true)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(() => configStore.applyConfigEdit({ kind: 'set_root_model', llmModelIdentifier: 'other-model' })).toThrow(/in flight/)
+    expect(() => configStore.focusMember('/implementer')).toThrow(/in flight/)
+    expect(() => configStore.setPendingInput('/review_lead', { text: 'late', attachments: [] })).toThrow(/in flight/)
+    expect(() => configStore.applyTeamWorkspaceAuthoringCommand({
+      kind: 'set_selection', draftId: draft.draftId, teamAddress: '/',
+      selection: { mode: 'new', existingWorkspaceId: 'test-workspace', newWorkspacePath: '/tmp/late' },
+    })).toThrow(/in flight/)
+    expect(() => configStore.removeDraft(draft.draftId)).toThrow(/in flight/)
+    expect(() => configStore.clearConfig()).toThrow(/in flight/)
+    expect(() => useAgentSelectionStore().selectRun('other-run', 'team')).toThrow(/cannot change/)
+    await expect(runStore.launchDraft(draft)).rejects.toThrow(/in flight/)
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+
+    resolveAllocation({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+      errors: [],
+    })
+    await expect(launch).resolves.toMatchObject({ rootTeamRunId: 'team-flat-live' })
+
+    expect(configStore.hasInFlightLaunch).toBe(false)
+    expect(configStore.selectedDraft).toBeNull()
+    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
+  })
+
+  it('preserves and unlocks the exact selected draft after allocation failure, then permits one later canonical launch', async () => {
+    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+    const selectionStore = useAgentSelectionStore()
+    mockMutate.mockRejectedValueOnce(new Error('allocation unavailable'))
+
+    await expect(useAgentTeamRunStore().launchDraft(draft)).rejects.toThrow('allocation unavailable')
+
+    expect(configStore.selectedDraft).toEqual(draft)
+    expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(false)
+    expect(selectionStore.subject).toEqual({ kind: 'team_draft', draftId: draft.draftId })
+    expect(() => configStore.applyConfigEdit({ kind: 'set_root_auto_execute_tools', autoExecuteTools: false })).not.toThrow()
+    const retryDraft = configStore.selectedDraft!
+    expect(retryDraft).not.toBe(draft)
+    expect(retryDraft.config.rootConfig.autoExecuteTools).toBe(false)
+
+    mockMutate.mockResolvedValueOnce({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+      errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(flatHydratedTeam()))
+    await expect(useAgentTeamRunStore().launchDraft(retryDraft)).resolves.toMatchObject({
+      rootTeamRunId: 'team-flat-live',
+    })
+    expect(mockMutate).toHaveBeenCalledTimes(2)
+    expect(configStore.selectedDraft).toBeNull()
+    expect(selectionStore.subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
+  })
+
+  it('first-send launch uses the admitted selected draft and sends once to the exact promoted execution', async () => {
+    const { configStore, draft } = configureSelectedFlatLaunchDraft()
+    const hydrated = flatHydratedTeam()
+    mockMutate.mockResolvedValue({
+      data: { createAgentTeamRun: { success: true, teamRunId: 'team-flat-live' } },
+      errors: [],
+    })
+    mockHydrateLiveTeamRunContext.mockResolvedValue(teamHydrationCandidate(hydrated))
+    teamContextsStoreMock.addTeamContext.mockImplementation((team: AgentTeamContext) => setActiveTeam(team))
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('FIRST_SEND_EXACT', [])
+
+    const target = 'review-run'
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      draftOwner: { kind: 'team_member_draft', teamDraftId: draft.draftId, memberAddress: '/review_lead' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'team-flat-live', agentRunId: target },
+    }))
+    expect(mockMutate).toHaveBeenCalledTimes(1)
+    expect(mockSendMessage).toHaveBeenCalledTimes(1)
+    expect(mockSendMessage).toHaveBeenCalledWith(
+      'FIRST_SEND_EXACT',
+      target,
+      [],
+      [],
+      expect.objectContaining({ dedupeKey: expect.stringContaining('team-flat-live') }),
+    )
+    expect(hydrated.view.getAgentContext(target)?.state.conversation.messages).toEqual([
+      expect.objectContaining({ type: 'user', text: 'FIRST_SEND_EXACT' }),
+    ])
+    expect(hydrated.view.getAgentContext(target)?.requirement).toBe('')
+    expect(configStore.selectedDraft).toBeNull()
+    expect(configStore.isDraftLaunchInFlight(draft.draftId)).toBe(false)
+    expect(useAgentSelectionStore().subject).toEqual({ kind: 'team_run', rootTeamRunId: 'team-flat-live' })
+  })
+
+  it('preserves an explicit approval target and never synthesizes a default target', async () => {
+    const team = twoMemberTeam({ teamRunId: 'team-approval' })
+    setActiveTeam(team)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-approval')
+    const explicit = { agentRunId: 'team-approval-worker-run' }
+
+    await store.postToolExecutionApproval('inv-default', true)
+    await store.postToolExecutionApproval('inv-exact', false, 'no', explicit)
+
+    expect(mockApproveTool).toHaveBeenCalledWith('inv-default', null, undefined)
+    expect(mockDenyTool).toHaveBeenCalledWith('inv-exact', explicit, 'no')
+  })
+
+  it('interrupts only an AgentRun in the exact current Team execution', () => {
+    const team = twoMemberTeam({ teamRunId: 'team-interrupt' })
+    setActiveTeam(team)
+    const store = useAgentTeamRunStore()
+    store.connectToTeamStream('team-interrupt')
+    expect(store.interruptFocusedMemberGeneration({
+      teamRunId: 'team-interrupt',
+      agentRunId: 'team-interrupt-worker-run',
+    })).toBe(true)
+    expect(mockInterruptGeneration).toHaveBeenCalledWith(expect.any(String), { agentRunId: 'team-interrupt-worker-run' })
+    expect(store.interruptFocusedMemberGeneration({
+      teamRunId: 'team-interrupt',
+      agentRunId: 'foreign-run',
+    })).toBe(false)
+    expect(mockInterruptGeneration).toHaveBeenCalledTimes(1)
+  })
+})

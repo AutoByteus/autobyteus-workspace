@@ -25,6 +25,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
     is_active: input.isActive,
     execution_tree: input.snapshot.tree,
     communication_messages: input.snapshot.messages,
+    agent_input_states: input.snapshot.inputStates,
     agent_statuses: input.snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
       agent_run_id: status.execution.agentRunId,
@@ -33,6 +34,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
       tool_name: null,
       error_message: status.details.errorMessage,
       error_details: null,
+      recoverableBlock: status.details.recoverableBlock,
     })),
   },
 });

@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/finding/vitest.config.mjs",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started_utc": "2026-10-01T13:45:47.789141+00:00",
+  "ended_utc": "2026-10-01T13:45:48.855874+00:00",
+  "exit": 1,
+  "scope": "Local read-only-input captured-response regression; not real product rerun; API config/probe read first; stdout owned by IR010."
+}

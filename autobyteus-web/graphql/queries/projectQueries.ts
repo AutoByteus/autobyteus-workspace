@@ -15,6 +15,7 @@ export const ProjectFields = gql`
       addedAt
       availability
     }
+    taskCount
     openTaskCount
   }
 `

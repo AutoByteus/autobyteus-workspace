@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T12:58:51.307635+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "() => [...document.querySelectorAll(\"[data-test]\")].filter(x=>x.getAttribute(\"data-test\").includes(\"model\")).map(x=>({test:x.getAttribute(\"data-test\"),text:x.innerText}))"
+  ],
+  "controlPort": 56935
+}

@@ -1,4 +1,4 @@
-import type { AgentOrgIndexedAgentExecution, AgentOrgMessagePlacement } from "../services/agent-org-execution-index.js";
+import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
 import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { buildMemberInputPresentationEvent } from "../../agent-collaboration/execution/events/member-input-presentation-event-builder.js";
@@ -6,7 +6,7 @@ import { projectAgentPresentationMessage } from "../../agent-collaboration/execu
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
-import { assertAgentTeamAddress, getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { createCollaborationMemberExecutionIdentity, sameCollaborationMemberExecutionIdentity, sameRootExecutionIdentity, type CollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberLogicalMessageInput } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { RootTaskExecutionLifecycle, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
@@ -36,7 +36,8 @@ import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-re
 import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
 import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import type { CollaboratorMentionAdmission, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
@@ -53,6 +54,7 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   messages: AgentOrgCommunicationMessagesFileV1;
   statuses: readonly CollaborationAgentStatusSnapshot[];
+  inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
 
 /** Native coordinator-free AgentOrg aggregate and sole live owner of its scope. */
@@ -65,7 +67,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly communication: RootCommunicationEngine;
   private readonly presentation: CollaborationAgentPresentationEventAdapter;
   private readonly operationGate: RootOperationGate;
-  private readonly recipients = new AgentOrgRecipientResolver();
+  private readonly recipients: AgentOrgRecipientResolver;
   private readonly collaborators: AgentOrgRunCollaborators;
   private readonly eventRetirement: AgentOrgTaskEventRetirement;
   private termination: Promise<AgentOperationResult> | null = null;
@@ -86,7 +88,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
-    collaboratorAdmission?: CollaboratorMentionAdmission;
+    collaboratorAdmission?: CollaboratorAdmission;
     /** Prepares hosted handles for new collaborator entries (published after the tree write). */
     prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
     onTerminated?(): void;
@@ -139,6 +141,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
     });
+    this.recipients = new AgentOrgRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators });
     this.communication = new RootCommunicationEngine(new AgentOrgCommunicationAdapter({
       root: options.root,
       initial: options.messages,
@@ -188,26 +191,20 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     });
   }
 
-  /** Message ingress: a configured Agent or direct Team, then a collaborator (or its member). */
-  resolveMessageRecipient(address: string): AgentOrgMessagePlacement {
-    this.assertAdmitting();
-    return this.recipients.resolveMessageRecipient(this.index, address);
-  }
-
-  /** Delegation target: a configured placement first, then a collaborator of this run. */
-  resolveDelegationPlacement(address: string): ResolvedAgentOrgRecipient {
-    this.assertAdmitting();
-    return this.recipients.resolveDelegationPlacement(this.index, address);
-  }
-
-  /** Admits mentions for the focused agent in one gate; the caller posts the returned content. */
-  admitCollaboratorMentions(input: Parameters<AgentOrgRunCollaborators["admit"]>[0]): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: ensures the mentioned collaborators for the focused agent in one gate; the caller composes the note. */
+  admitCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.admit(input)
+        ? this.collaborators.ensure({ senderRunId: input.focusedAgentRunId, definitions: input.mentions })
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in AgentOrg '${this.orgRunId}'.` };
     });
+  }
+
+  /** `list_available_agents` (DS-001): read-only, so it takes no gate. */
+  listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> {
+    this.authorizeIdentity(sender);
+    return this.collaborators.listAvailable();
   }
 
   collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
@@ -220,10 +217,13 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (!this.isCurrentAgent(identity)) throw new Error(`AgentRun '${identity.agentRunId}' is not a live execution at '${identity.memberAddress}' in AgentOrg '${this.orgRunId}'.`);
   }
 
+  /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   async deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => {
       this.authorizeIdentity(sender);
-      const { receiver: target } = this.resolveMessageRecipient(input.recipientAddress);
+      const resolution = await this.recipients.resolveMessageRecipient(sender, input.recipientAddress);
+      if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
+      const target = resolution.placement.receiver;
       const receiver = this.identityFor(target.agentRunId, target.address);
       return this.communication.deliver({
         senderIdentity: sender,
@@ -259,7 +259,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
     return this.operationGate.run(async () => {
       this.authorizeIdentity(context.identity);
-      return delegateToResolvedTarget(() => this.resolveDelegationPlacement(input.recipient_address), (placement) => {
+      return delegateToResolvedTarget(() => this.recipients.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
         if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
           throw new Error("An Agent cannot delegate a task to its own logical placement.");
         }
@@ -317,6 +317,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       tree: this.tree,
       messages: this.messages,
       statuses: this.getAgentStatusSnapshots(),
+      inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
+        ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]
+        .map(input => [input.agent_run_id, input])).values()],
     }));
   }
 

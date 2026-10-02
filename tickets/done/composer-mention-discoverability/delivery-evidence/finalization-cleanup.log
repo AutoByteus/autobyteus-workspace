@@ -1,0 +1,24 @@
+2026-10-02 finalization after UV-001
+User verification: “Okay, the task is done. I checked them finalize. No need to release a new version.”
+Ticket archived BEFORE final commit; git add only autobyteus-web/docs/chat.md and exact old/new ticket directories.
+git diff --cached --check: Pass.
+git commit -m "docs(delivery): archive verified composer mention discoverability": exit 0, 1a5ff3914ffa4ecf38c581f2950188965a4452b9
+git push origin HEAD:refs/heads/codex/composer-mention-discoverability: exit 0, new remote branch.
+Shared personal: no tracked/staged edits. git fetch origin personal: exit 0, unchanged e04cfef23550c3b78286a53befc6bd5d71fb1061.
+git merge --ff-only origin/personal: exit 0, Already up to date.
+git merge --no-ff codex/composer-mention-discoverability -m "merge: verified composer mention discoverability": exit 0, ort/no conflicts, merge e44e6b8baf22fecc72624a852fde69e0655540b2.
+git push origin personal: exit 0, e04cfef23550c3b78286a53befc6bd5d71fb1061 -> e44e6b8baf22fecc72624a852fde69e0655540b2.
+git ls-remote origin refs/heads/personal: e44e6b8baf22fecc72624a852fde69e0655540b2 (matched).
+Version: 1.4.92-beta.9, unchanged; release/tag/deployment commands not run per explicit user instruction.
+git diff --exit-code 74762c9f5c0d1b32560138c4656873e9d63ae7c5 HEAD -- autobyteus-web ':!autobyteus-web/docs/chat.md' autobyteus-server-ts: Pass; merged runtime and tests identical to validated candidate.
+git merge-base --is-ancestor 1a5ff3914ffa4ecf38c581f2950188965a4452b9 HEAD: Pass.
+Clean rebuild + subsequent 52-file hash comparison: existing task-local SDK dist entirely generated/untracked; removed only exact verified directory. No unrelated generated output removed from shared root.
+Ticket worktree git status after scoped generated cleanup: empty.
+git worktree remove /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability: exit 0, without force.
+git worktree prune: exit 0.
+git branch -d codex/composer-mention-discoverability: exit 0, merged branch removed.
+Task path absent and refs/heads/codex/composer-mention-discoverability absent: Pass.
+Remote ticket branch retained at 1a5ff3914ffa4ecf38c581f2950188965a4452b9; git ls-remote confirmed.
+Product worktree/preview and user app/data untouched.
+Shared-root unrelated untracked paths unchanged: .article-work/, applications/brief-studio/dist/, applications/socratic-math-teacher/dist/, autobyteus-application-backend-sdk/dist/, autobyteus-application-sdk-contracts/dist/, tickets/done/chat-composer-menus-open-upward/solution-designer-terminal-receipt.md.
+A follow-up docs-only final receipt commit publishes this report after cleanup; resolve it with git log -1 --format=%H -- tickets/done/composer-mention-discoverability/release-deployment-report.md. Its push is confirmed separately before terminal handoff.

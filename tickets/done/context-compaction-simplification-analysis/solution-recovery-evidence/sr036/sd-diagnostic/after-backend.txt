@@ -1,0 +1,2 @@
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 25193 normy   32u  IPv4 0xb5022b2aebd2d8ce      0t0  TCP *:64588 (LISTEN)

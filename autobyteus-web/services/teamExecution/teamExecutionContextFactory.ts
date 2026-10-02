@@ -18,7 +18,7 @@ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { teamAgentSourceAt, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
-import { isCollaboratorAddress } from './teamExecutionTreeSelectors'
+import { readsAsDisplayName } from './teamExecutionTreeSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
 import { resolvedTeamRunLaunchConfigsEqual } from '~/utils/teamRunConfigUtils'
 
@@ -65,8 +65,8 @@ export const createTeamAgentContext = (input: {
   // A task execution at a collaborator address takes its source from the collaborator entry.
   const source = teamAgentSourceAt(input.tree, input.address)
   if (!source) return null
-  // F-03: a collaborator (and its members and copies) reads as a spaced name, as in its row.
-  const name = isCollaboratorAddress(input.tree, source.address)
+  // F-03 / CR-002: a collaborator or catalog copy (and its members) reads as a spaced name, as in its row.
+  const name = readsAsDisplayName(input.tree, source.address)
     ? memberDisplayName(source.address)
     : memberAddressBasename(source.address)
   const conversation = {

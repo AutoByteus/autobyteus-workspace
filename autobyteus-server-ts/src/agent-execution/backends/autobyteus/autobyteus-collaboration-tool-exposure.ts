@@ -3,6 +3,8 @@ import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.
 import type { MemberExecutionContext } from "../../../agent-collaboration/execution/domain/member-execution-context.js";
 import { TASK_DELEGATION_TOOL_NAMES } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 
+import { isProjectTaskToolName } from "../../../agent-tools/project-tasks/project-task-tool-contract.js";
+
 const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
   "assign_task_to",
   "create_task",
@@ -39,7 +41,7 @@ export const resolveAutoByteusExecutionToolNames = (input: {
     if (REMOVED_TASK_DELEGATION_RESULT_TOOL_NAMES.has(normalizedToolName)) {
       return false;
     }
-    if (TASK_DELEGATION_TOOL_NAMES.has(normalizedToolName)) {
+    if (TASK_DELEGATION_TOOL_NAMES.has(normalizedToolName) || isProjectTaskToolName(normalizedToolName)) {
       return true;
     }
 

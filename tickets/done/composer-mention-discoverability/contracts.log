@@ -1,0 +1,11 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json

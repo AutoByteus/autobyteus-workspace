@@ -1,0 +1,6 @@
+{
+  "quote": "We don't have to do any immigration, just keep the future code correct.",
+  "interpretation": "No migration/backfill for this fix; correct future native writes and normal projection, existing history untouched.",
+  "approvalImpact": "Confirms selected technical scope; Approved SR033 intended behavior unchanged.",
+  "status": "Recorded before handoff; no message sent before interruption."
+}

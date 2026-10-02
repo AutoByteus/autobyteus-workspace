@@ -1,0 +1,1257 @@
+--- before/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
++++ current/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+@@ -458,7 +458,7 @@
+     const pendingSystemInstructionCapture = agent.context?.state.takePendingSystemInstructionCapture() ?? null;
+     return new AutoByteusAgentRunBackend(context, agent, {
+       isActive: () => this.resolveAutoByteusAgent(agent.agentId) !== null,
+-      removeAgent: async (runId: string) => this.agentFactory.removeAgent(runId),
++      removeAgent: async (runId: string, shutdownTimeout: number) => this.agentFactory.removeAgent(runId, shutdownTimeout),
+       pendingSystemInstructionCapture,
+     });
+   }
+--- before/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts
++++ current/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts
+@@ -57,8 +57,14 @@
+ 
+ type AutoByteusAgentRunBackendOptions = {
+   isActive: () => boolean;
+-  removeAgent: (runId: string) => Promise<boolean>;
++  removeAgent: (runId: string, shutdownTimeout: number) => Promise<boolean>;
+   pendingSystemInstructionCapture?: SystemInstructionTraceRecord | null;
++};
++
++type StreamSession = {
++  stream: AgentEventStream;
++  pump: Promise<void>;
++  disposed: boolean;
+ };
+ 
+ const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
+@@ -86,8 +92,7 @@
+   private readonly eventConverter: AutoByteusStreamEventConverter;
+   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
+   private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
+-  private stream: AgentEventStream | null = null;
+-  private isStreamClosed = true;
++  private session: StreamSession | null = null;
+   private lifecycleState: "active" | "terminating" | "terminated" = "active";
+   private terminationPromise: Promise<AgentOperationResult> | null = null;
+   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
+@@ -127,12 +132,13 @@
+   }
+ 
+   subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
++    if (this.lifecycleState !== "active") return () => {};
+     this.sourceListeners.add(listener);
+     this.ensureSubscribed();
+     return () => {
+       this.sourceListeners.delete(listener);
+       if (this.sourceListeners.size === 0) {
+-        this.closeStream();
++        this.disposeSession(this.session);
+       }
+     };
+   }
+@@ -236,15 +242,36 @@
+     }
+ 
+     this.lifecycleState = "terminating";
++    const session = this.session;
++    const deadline = Date.now() + 10_000;
++    const expired = Symbol("shutdown deadline");
++    let timer: ReturnType<typeof setTimeout>;
++    const timeout = new Promise<typeof expired>((resolve) => {
++      timer = setTimeout(() => resolve(expired), Math.max(0, deadline - Date.now()));
++    });
+     this.terminationPromise = (async () => {
+       try {
+-        this.closeStream();
+-        await this.options.removeAgent(this.runId);
++        const removed = await Promise.race([
++          this.options.removeAgent(this.runId, Math.max(0, deadline - Date.now()) / 1000), timeout,
++        ]);
++        if (removed === expired) throw new Error("Native shutdown deadline exceeded.");
++        if (!removed && this.options.isActive()) throw new Error("Native run remains registered.");
++        // Resource shutdown succeeded. Projection delivery cannot undo that result.
+         this.lifecycleState = "terminated";
++        if (session) {
++          const drained = await Promise.race([
++            session.stream.close().then(() => session.pump).catch((error) => {
++              console.warn(`Native event drain failed for '${this.runId}'.`, error);
++            }), timeout,
++          ]);
++          if (drained === expired) console.warn(`Native event drain deadline exceeded for '${this.runId}'.`);
++        }
+         return { accepted: true };
+       } catch (error) {
+         return buildCommandFailure("terminate run", error);
+       } finally {
++        clearTimeout(timer!);
++        this.disposeSession(session);
+         this.terminationPromise = null;
+       }
+     })();
+@@ -252,45 +279,35 @@
+   }
+ 
+   private ensureSubscribed(): void {
+-    if (!this.isStreamClosed) {
+-      return;
+-    }
+-
+-    const stream = new AgentEventStream(this.agent as any);
+-    this.stream = stream;
+-    this.isStreamClosed = false;
+-
+-    void (async () => {
++    if (this.session || this.lifecycleState !== "active") return;
++    const session: StreamSession = {
++      stream: new AgentEventStream(this.agent as any), pump: Promise.resolve(), disposed: false,
++    };
++    this.session = session;
++    session.pump = (async () => {
+       try {
+-        for await (const event of stream.allEvents()) {
+-          if (this.isStreamClosed) {
+-            break;
+-          }
++        for await (const event of session.stream.allEvents()) {
++          if (session.disposed) break;
+           const convertedEvent = this.eventConverter.convert(event);
+-          if (!convertedEvent) {
+-            continue;
+-          }
++          if (!convertedEvent) continue;
+           for (const listener of this.sourceListeners) {
+-            await listener([convertedEvent]);
++            if (session.disposed) break;
++            try { await listener([convertedEvent]); }
++            catch (error) { console.warn(`Native event listener failed for '${this.runId}'.`, error); }
+           }
+         }
+-      } catch {
+-        // Ignore transport shutdown races; callers observe disconnection through inactivity.
++      } catch (error) {
++        console.warn(`Native event pump failed for '${this.runId}'.`, error);
+       } finally {
+-        if (!this.isStreamClosed) {
+-          this.closeStream();
+-        }
++        this.disposeSession(session);
+       }
+     })();
+   }
+ 
+-  private closeStream(): void {
+-    if (this.isStreamClosed) {
+-      return;
+-    }
+-    this.isStreamClosed = true;
+-    const stream = this.stream;
+-    this.stream = null;
+-    void stream?.close().catch(() => {});
++  private disposeSession(session: StreamSession | null): void {
++    if (!session || session.disposed) return;
++    session.disposed = true;
++    if (this.session === session) this.session = null;
++    void session.stream.close().catch(() => {});
+   }
+ }
+--- before/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts
+@@ -1,3 +1,6 @@
++import { EventEmitter } from 'autobyteus-ts/events/event-emitter.js';
++import { EventType } from 'autobyteus-ts/events/event-types.js';
++import { afterEach } from 'vitest';
+ import { describe, expect, it, vi } from "vitest";
+ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
+@@ -192,7 +195,7 @@
+ 
+     const result = await backend.terminate();
+ 
+-    expect(removeAgent).toHaveBeenCalledWith("agent-1");
++    expect(removeAgent).toHaveBeenCalledWith("agent-1", expect.any(Number));
+     expect(result).toEqual({ accepted: true });
+   });
+ 
+@@ -308,3 +311,73 @@
+     });
+   });
+ });
++
++const flushPump = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
++const deferred = <T>() => { let resolve!: (value: T) => void; const promise = new Promise<T>(done => { resolve = done; }); return { promise, resolve }; };
++afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
++const withStream = (removeAgent: (id: string, seconds: number) => Promise<boolean>) => {
++  const notifier = new EventEmitter();
++  const h = createBackend({ agent: { context: { statusManager: { notifier } } as any }, removeAgent: removeAgent as any });
++  const emit = (phase: string) => notifier.emit(EventType.AGENT_COMPACTION_STATUS_UPDATED,
++    { payload: { phase, compaction_operation_id: 'native-operation', turn_id: 'turn-1' }, agent_id: 'agent-1' });
++  return { ...h, emit };
++};
++describe('native shutdown event drain', () => {
++  it('keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription', async () => {
++    const remove = deferred<boolean>(); const listenerDone = deferred<void>(); const received: string[] = [];
++    const h = withStream(() => remove.promise);
++    h.backend.subscribeToSourceEventBatches(async ([event]) => {
++      received.push((event as any).payload.phase);
++      if (received.length === 1) await listenerDone.promise;
++    });
++    h.emit('started'); await flushPump();
++    let settled = false;
++    const termination = h.backend.terminate().then(result => { settled = true; return result; });
++    h.emit('stopped'); remove.resolve(true);
++    await Promise.resolve(); await Promise.resolve();
++    expect(settled).toBe(false);
++    listenerDone.resolve();
++    await expect(termination).resolves.toEqual({ accepted: true });
++    expect(received).toEqual(['started', 'stopped']);
++    const late = vi.fn(); h.backend.subscribeToSourceEventBatches(late); h.emit('started');
++    await Promise.resolve(); expect(late).not.toHaveBeenCalled();
++  });
++  it('uses only the remainder of one ten-second deadline for a hung listener without undoing resource success', async () => {
++    vi.useFakeTimers(); const remove = deferred<boolean>(); const listenerDone = deferred<void>();
++    const removeAgent = vi.fn(() => remove.promise); const h = withStream(removeAgent);
++    h.backend.subscribeToSourceEventBatches(() => listenerDone.promise);
++    h.emit('started'); await flushPump();
++    const termination = h.backend.terminate();
++    await vi.advanceTimersByTimeAsync(9000); remove.resolve(true); await vi.advanceTimersByTimeAsync(0);
++    let settled = false; void termination.then(() => { settled = true; });
++    await vi.advanceTimersByTimeAsync(999); expect(settled).toBe(false);
++    await vi.advanceTimersByTimeAsync(1); await expect(termination).resolves.toEqual({ accepted: true });
++    expect(removeAgent).toHaveBeenCalledWith('agent-1', 10);
++    listenerDone.resolve();
++  });
++  it('does not turn an unfinished removal or a still-registered run into success', async () => {
++    vi.useFakeTimers(); const remove = deferred<boolean>(); const h = withStream(() => remove.promise);
++    const termination = h.backend.terminate(); await vi.advanceTimersByTimeAsync(10000);
++    await expect(termination).resolves.toMatchObject({ accepted: false });
++    remove.resolve(true);
++    const active = withStream(async () => false);
++    await expect(active.backend.terminate()).resolves.toMatchObject({ accepted: false });
++  });
++  it('old pump disposal cannot close a replacement stream, and unsubscribe alone emits no stopped', async () => {
++    const h = withStream(async () => true); const oldDone = deferred<void>();
++    const old = vi.fn(() => oldDone.promise); const unsubscribe = h.backend.subscribeToSourceEventBatches(old);
++    h.emit('started'); await vi.waitFor(() => expect(old).toHaveBeenCalledOnce()); unsubscribe();
++    const next = vi.fn(); const stop = h.backend.subscribeToSourceEventBatches(next);
++    oldDone.resolve(); await flushPump();
++    h.emit('completed'); await vi.waitFor(() => expect(next).toHaveBeenCalledOnce());
++    expect((next.mock.calls[0][0][0] as any).payload.phase).toBe('completed');
++    stop();
++  });
++  it('continues draining other listeners when one observer fails', async () => {
++    const h = withStream(async () => true); const seen = vi.fn();
++    h.backend.subscribeToSourceEventBatches(async () => { throw new Error('projection failed'); });
++    h.backend.subscribeToSourceEventBatches(seen); h.emit('stopped');
++    await expect(h.backend.terminate()).resolves.toEqual({ accepted: true });
++    expect(seen).toHaveBeenCalledOnce();
++  });
++});
+--- before/autobyteus-server-ts/tests/unit/agent-execution/native-compaction-terminal-drain.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-execution/native-compaction-terminal-drain.test.ts
+@@ -0,0 +1,30 @@
++import { describe, it, expect } from 'vitest';
++import { createRecoveryFixture, eventually, summary } from './recovery-native-fixture.js';
++
++describe('actual AgentRun/native shutdown queue ordering', () => {
++  it('drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch', async () => {
++    const f = await createRecoveryFixture(); let release!: (value: string) => void;
++    const phases: string[] = [];
++    const unsubscribe = f.run.subscribeToEvents(event => {
++      if (event.eventType === 'COMPACTION_STATUS') phases.push((event.payload as any).phase);
++    });
++    try {
++      f.request(); f.compress.mockRejectedValueOnce(new Error('hold first'));
++      await f.submit('cancelled-A'); await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
++      phases.length = 0;
++      f.compress.mockImplementationOnce(() => new Promise(done => { release = done; }));
++      await f.submit('queued-B'); await eventually(() => !!release && phases.includes('started'));
++      const memory = f.native.context.state.memoryManager!;
++      await expect(f.run.terminate()).resolves.toMatchObject({ accepted: true });
++      expect(phases).toEqual(['started', 'stopped']);
++      expect(f.run.getStatusSnapshot().status).toBe('offline');
++      expect(f.run.getInputStateSnapshot().entries).toEqual([]);
++      expect(f.parent.requests).toHaveLength(3);
++      const afterStop = memory.getWorkingContextMessages();
++      release(summary); for (let i=0;i<20;i++) await Promise.resolve();
++      expect(memory.getWorkingContextMessages()).toEqual(afterStop);
++      expect(phases).toEqual(['started', 'stopped']);
++      expect(f.parent.requests).toHaveLength(3);
++    } finally { release?.(summary); unsubscribe(); await f.close(); }
++  }, 15000);
++});
+--- before/autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts
++++ current/autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts
+@@ -1,5 +1,5 @@
+ import type { AgentExternalEventNotifier } from '../events/notifiers.js';
+-export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed';
++export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed' | 'stopped';
+ 
+ export type CompactionStatusPayload = {
+   phase: CompactionStatusPhase;
+--- before/autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts
++++ current/autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts
+@@ -42,12 +42,21 @@
+     });
+     if (!begin.authorized) throw new CompactionPreparationError(`Memory compaction execution was not authorized (${begin.code}).`);
+     const pending = begin.request;
+-    this.publishRecovery();
+     let status: Omit<CompactionStatusPayload, 'phase'> = {
+       turn_id: input.turnId, compaction_operation_id: pending.operationId,
+       requested_turn_id: pending.requestedTurnId, execution_turn_id: input.turnId,
+     };
++    let terminal = false;
++    const finish = (payload: CompactionStatusPayload) => {
++      if (terminal) return;
++      terminal = true;
++      this.emit(payload);
++    };
++    const onAbort = () => finish({ ...status, phase: 'stopped' });
++    input.signal.addEventListener('abort', onAbort, { once: true });
+     try {
++      if (input.signal.aborted) onAbort();
++      this.publishRecovery();
+       input.signal.throwIfAborted();
+       const baseline = this.memoryManager.captureCompactionBaseline();
+       const source = baseline.context.copy();
+@@ -66,6 +75,7 @@
+             completion_status: metadata.completionStatus, completion_reason: metadata.completionReason };
+         },
+       });
++      input.signal.throwIfAborted();
+       const result = await strategy.compress(content);
+       input.signal.throwIfAborted();
+       const summary = validateCompactionSummaryBody(result);
+@@ -78,16 +88,18 @@
+       });
+       this.validator.assertValid(baseline.context, source, accepted, plan);
+       this.memoryManager.commitAcceptedCompaction(accepted, input.signal);
++      // Latch durable success before observers can synchronously abort the owner.
++      finish({ ...status, phase: 'completed', compacted_block_count: status.selected_block_count });
+     } catch (error) {
+       const kind = (error as { code?: string }).code ?? 'execution_failure';
+       this.memoryManager.retainCompactionFailure(pending.operationId, input.turnId, kind, input.executionSite);
+       const message = `Memory compaction failed before dispatch [${kind}]: ${error instanceof Error ? error.message : String(error)}`;
+-      this.emit({ ...status, phase: 'failed', error_message: message });
++      finish({ ...status, phase: 'failed', error_message: message });
+       throw new CompactionPreparationError(message, error);
++    } finally {
++      input.signal.removeEventListener('abort', onAbort);
+     }
+     this.publishRecovery(previousRecovery);
+-    // Outside the failure path: durable success cannot become a semantic retry.
+-    this.emit({ ...status, phase: 'completed', compacted_block_count: status.selected_block_count });
+     return true;
+   }
+ 
+--- before/autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts
++++ current/autobyteus-ts/tests/unit/memory/pending-compaction-executor.test.ts
+@@ -59,3 +59,51 @@
+     expect(collectMessageRawTraceIds(resumed.getWorkingContextMessages()).length).toBeGreaterThan(0);
+   });
+ });
++
++describe('terminal activity is scoped to an authorized executor call', () => {
++  it.each(['resolve', 'reject'])('emits stopped before an ignoring provider settles (%s), never commits late', async (mode) => {
++    const h = setup(); const before = h.snapshotStore.read('agent');
++    let resolve!: (value: string) => void; let reject!: (reason: Error) => void;
++    h.compress.mockImplementationOnce(() => new Promise((yes, no) => { resolve = yes; reject = no; }));
++    const execution = h.executor.executeIfAuthorized(h.input);
++    const failed = expect(execution).rejects.toThrow();
++    h.controller.abort();
++    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'stopped']);
++    expect(h.emitStatus.mock.calls.at(-1)?.[0]).toMatchObject({ compaction_operation_id: h.operationId,
++      requested_turn_id: 'turn-request', execution_turn_id: 'execute-1', selected_block_count: expect.any(Number) });
++    if (mode === 'resolve') resolve(summary); else reject(new Error('late provider failure'));
++    await failed;
++    expect(h.snapshotStore.read('agent')).toEqual(before);
++    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'stopped']);
++  });
++  it('reports an already aborted owner once without invoking the provider and removes the listener', async () => {
++    const h = setup(); h.controller.abort();
++    const removed = vi.spyOn(h.input.signal, 'removeEventListener');
++    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
++    expect(h.compress).not.toHaveBeenCalled();
++    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['stopped']);
++    expect(removed).toHaveBeenCalledWith('abort', expect.any(Function));
++  });
++  it('latches committed success before a synchronous observer abort, even if that observer throws', async () => {
++    const h = setup();
++    h.emitStatus.mockImplementation((status) => {
++      if (status.phase === 'completed') { h.controller.abort(); throw new Error('observer'); }
++    });
++    await expect(h.executor.executeIfAuthorized(h.input)).resolves.toBe(true);
++    expect(h.manager.hasPendingCompaction()).toBe(false);
++    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'completed']);
++  });
++  it('does not infer stopped from a provider error string or emit it after a failed call has ended', async () => {
++    const h = setup(); h.compress.mockRejectedValueOnce(new Error('cancelled timeout abort'));
++    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow('cancelled timeout abort');
++    h.controller.abort();
++    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'failed']);
++  });
++  it('allows a genuinely authorized fresh execution of the pending gate after stopped', async () => {
++    const h = setup(); h.compress.mockImplementationOnce(async () => { h.controller.abort(); return summary; });
++    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
++    expect(h.manager.authorizeCompactionRetry({ block: h.manager.getCompactionRecovery()!, userAdmissionId: 'fresh' })).toBe('accepted');
++    await expect(h.executor.executeIfAuthorized({ ...h.input, signal: new AbortController().signal })).resolves.toBe(true);
++    expect(h.emitStatus.mock.calls.map(([status]) => status.phase)).toEqual(['started', 'stopped', 'started', 'completed']);
++  });
++});
+--- before/autobyteus-web/components/progress/CompactionActivityItem.vue
++++ current/autobyteus-web/components/progress/CompactionActivityItem.vue
+@@ -13,7 +13,7 @@
+             <span class="truncate text-sm font-bold text-gray-800">{{ $t('workspace.components.progress.CompactionActivityItem.memory_compaction') }}</span>
+             <span class="font-mono text-xs text-gray-600">#{{ shortId }}</span>
+           </div>
+-          <p class="mt-0.5 line-clamp-2 text-xs text-gray-600">{{ activity.message }}</p>
++          <p class="mt-0.5 line-clamp-2 text-xs text-gray-600">{{ activity.phase === 'stopped' ? 'Stopped' : activity.message }}</p>
+         </div>
+       </div>
+       <span class="shrink-0 rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide shadow-sm" :class="statusChipClasses">
+@@ -47,6 +47,12 @@
+ const shortId = computed(() => props.activity.activityId.slice(-6));
+ 
+ const toneClasses = {
++  gray: {
++    icon: 'text-gray-500',
++    chip: 'bg-gray-100 text-gray-700 border-gray-200',
++    border: 'border-gray-200 hover:border-gray-300',
++    highlight: 'ring-2 ring-gray-500 ring-inset bg-gray-50/60 border-transparent',
++  },
+   amber: {
+     icon: 'text-amber-500',
+     chip: 'bg-amber-100 text-amber-700 border-amber-200',
+--- before/autobyteus-web/components/progress/__tests__/CompactionActivityItem.spec.ts
++++ current/autobyteus-web/components/progress/__tests__/CompactionActivityItem.spec.ts
+@@ -1,3 +1,4 @@
++import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
+ import { mount } from '@vue/test-utils';
+ import { describe, expect, it } from 'vitest';
+ import type { CompactionActivity } from '~/types/activity/RunActivity';
+@@ -51,3 +52,13 @@
+     wrapper.unmount();
+   });
+ });
++
++it('shows stopped with neutral static treatment and exact terminal message', () => {
++  const wrapper = mountItem('stopped');
++  expect(wrapper.get('p').text()).toBe('Stopped');
++  expect(getCompactionPhasePresentation('stopped').icon).toBe('heroicons:stop-circle-solid');
++  const icon = wrapper.get('[data-testid="compaction-activity-icon"]');
++  expect(icon.classes()).toContain('text-gray-500');
++  expect(icon.classes()).not.toContain('motion-safe:animate-spin');
++  wrapper.unmount();
++});
+--- before/autobyteus-web/components/workspace/agent/CompactionStatusRow.vue
++++ current/autobyteus-web/components/workspace/agent/CompactionStatusRow.vue
+@@ -10,7 +10,7 @@
+         />
+         <div class="min-w-0 flex-1">
+           <div class="flex flex-wrap items-center gap-2">
+-            <span class="font-semibold">{{ activity.message }}</span>
++            <span class="font-semibold">{{ activity.phase === 'stopped' ? 'Stopped' : activity.message }}</span>
+             <span class="rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide" :class="chipClasses">
+               {{ presentation.label }}
+             </span>
+@@ -38,6 +38,11 @@
+ const presentation = computed(() => getCompactionPhasePresentation(props.activity.phase));
+ 
+ const toneClasses = {
++  gray: {
++    row: 'border-gray-200 bg-gray-50 text-gray-900',
++    icon: 'text-gray-600',
++    chip: 'border-gray-200 bg-gray-100 text-gray-700',
++  },
+   amber: {
+     row: 'border-amber-200 bg-amber-50 text-amber-900',
+     icon: 'text-amber-600',
+--- before/autobyteus-web/components/workspace/agent/__tests__/CompactionStatusRow.spec.ts
++++ current/autobyteus-web/components/workspace/agent/__tests__/CompactionStatusRow.spec.ts
+@@ -1,3 +1,4 @@
++import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
+ import { mount } from '@vue/test-utils';
+ import { describe, expect, it } from 'vitest';
+ import type { CompactionActivity } from '~/types/activity/RunActivity';
+@@ -48,3 +49,13 @@
+     wrapper.unmount();
+   });
+ });
++
++it('renders stopped with exact primary/status text, neutral static icon and no inherited error', () => {
++  const wrapper = mountRow('stopped');
++  expect(wrapper.findAll('span').map(span => span.text())).toEqual(['Stopped', 'Stopped']);
++  const icon = wrapper.get('[data-testid="compaction-status-icon"]');
++  expect(getCompactionPhasePresentation('stopped').icon).toBe('heroicons:stop-circle-solid');
++  expect(icon.classes()).toContain('text-gray-600');
++  expect(icon.classes()).not.toContain('motion-safe:animate-spin');
++  wrapper.unmount();
++});
+--- before/autobyteus-web/services/activity/nativeCompactionActivityReconciliation.ts
++++ current/autobyteus-web/services/activity/nativeCompactionActivityReconciliation.ts
+@@ -0,0 +1,36 @@
++import type { CompactionActivity, RunActivity } from '~/types/activity/RunActivity';
++import type { AgentCompactionStatus } from '~/types/agent/AgentRunState';
++import { isActiveCompactionPhase, isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
++
++export const isNativeCompactionIdentity = (value: AgentCompactionStatus): boolean => {
++  const operation = value.compactionOperationId;
++  return typeof operation === 'string' && operation.trim().length > 0
++    && value.activityId === `compaction:operation:${operation}`
++    && ![value.provider, value.sourceSurface, value.boundaryKey,
++      value.providerEventId, value.providerSessionId].some(Boolean);
++};
++
++export const isNativeCompactionActivity = (activity: RunActivity): activity is CompactionActivity =>
++  activity.kind === 'compaction' && isNativeCompactionIdentity(activity);
++
++export const stopNativeCompactionActivity = (activity: CompactionActivity, at: Date): CompactionActivity =>
++  isNativeCompactionIdentity(activity) && isActiveCompactionPhase(activity.phase)
++    ? { ...activity, phase: 'stopped', message: 'Stopped', updatedAt: at,
++        centerTimelineTimestamp: activity.centerTimelineTimestamp ?? at }
++    : activity;
++
++// Projection covers saved facts, not native live status. Only preserve facts already held
++// by this run's bounded activity window; live events remain free to start a fresh attempt.
++export const retainTerminalNativeActivities = (
++  projected: readonly RunActivity[], current: readonly RunActivity[],
++): RunActivity[] => {
++  const combined = new Map(projected.map((activity) => [activity.activityId, activity]));
++  for (const activity of current) {
++    if (!isNativeCompactionActivity(activity) || !isCompleteCompactionPhase(activity.phase)) continue;
++    const incoming = combined.get(activity.activityId);
++    if (!incoming || (isNativeCompactionActivity(incoming) && !isCompleteCompactionPhase(incoming.phase))) {
++      combined.set(activity.activityId, activity);
++    }
++  }
++  return [...combined.values()].sort((left, right) => left.timestamp.getTime() - right.timestamp.getTime());
++};
+--- before/autobyteus-web/services/activity/runActivityWindowPolicy.ts
++++ current/autobyteus-web/services/activity/runActivityWindowPolicy.ts
+@@ -1,3 +1,4 @@
++import { isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
+ import type { RunActivity } from '~/types/activity/RunActivity';
+ import type { ToolInvocationStatus } from '~/types/segments';
+ import { assertUnreachableRunActivity } from './runActivityPresentation';
+@@ -16,7 +17,7 @@
+     case 'system_instruction':
+       return true;
+     case 'compaction':
+-      return activity.phase === 'completed' || activity.phase === 'failed';
++      return isCompleteCompactionPhase(activity.phase);
+     case 'tool':
+       return TERMINAL_TOOL_STATUSES.has(activity.status);
+     default:
+--- before/autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts
++++ current/autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts
+@@ -1,15 +1,15 @@
+-import type { AgentCompactionStatus, CompactionStatusPhase } from '~/types/agent/AgentRunState';
++import type { AgentCompactionStatus } from '~/types/agent/AgentRunState';
++import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ import type { CompactionActivity } from '~/types/activity/RunActivity';
+ import type { CompactionStatusPayload } from '../protocol/messageTypes';
+ import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
+ 
+-const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
+-  value === 'requested' || value === 'started' || value === 'completed' || value === 'failed';
++import { isCompactionPhase, isActiveCompactionPhase, isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
+ 
+ export const isCenterFeedCompactionPhase = (
+   phase: CompactionStatusPhase | null | undefined,
+ ): boolean =>
+-  phase === 'started' || phase === 'completed' || phase === 'failed';
++  phase === 'started' || isCompleteCompactionPhase(phase);
+ 
+ const normalizeText = (value: unknown): string | null =>
+   typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
+@@ -61,9 +61,6 @@
+ 
+ const getTurnId = (payload: CompactionStatusPayload): string | null =>
+   normalizeText(payload.turn_id) ?? normalizeText(payload.turnId);
+-
+-const isActiveCompactionPhase = (phase: CompactionStatusPhase | null | undefined): boolean =>
+-  phase === 'requested' || phase === 'started';
+ 
+ const isProviderCompactionPayload = (payload: CompactionStatusPayload): boolean =>
+   payload.kind === 'provider_compaction_boundary' ||
+--- before/autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts
++++ current/autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts
+@@ -1,6 +1,7 @@
++import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ 
+ export interface CompactionStatusPayload {
+-  phase?: 'requested' | 'started' | 'completed' | 'failed' | null;
++  phase?: CompactionStatusPhase | null;
+   kind?: string | null;
+   status?: string | null;
+   turn_id?: string | null;
+--- before/autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
++++ current/autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts
+@@ -1,3 +1,4 @@
++import { isCompactionPhase, type CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ import type { JsonValue } from '@autobyteus/team-stream-contracts';
+ import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts';
+ import type { ServerMessage } from './protocol';
+@@ -14,8 +15,8 @@
+   if (!object) throw new Error(`${boundary} requires one JSON object.`);
+   return object;
+ };
+-const compactionPhase = (value: string | null): 'requested' | 'started' | 'completed' | 'failed' | null => {
+-  if (value === null || value === 'requested' || value === 'started' || value === 'completed' || value === 'failed') return value;
++const compactionPhase = (value: string | null): CompactionStatusPhase | null => {
++  if (value === null || isCompactionPhase(value)) return value;
+   throw new Error(`Unsupported Team Agent compaction phase '${value}'.`);
+ };
+ 
+--- before/autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation.ts
++++ current/autobyteus-web/services/eventMonitor/eventMonitorActiveTraceBrowsePresentation.ts
+@@ -1,7 +1,7 @@
+ import type { ContextAttachment, UserMessage } from '~/types/conversation';
+ import type { MediaSegment, ToolApprovalTarget } from '~/types/segments';
+ import type { CompactionActivity } from '~/types/activity/RunActivity';
+-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
++import { isCompactionPhase, type CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ import type { ToolCardPresentation, ToolCardStatusPresentationKey } from '~/utils/toolCardPresentation';
+ import { buildEventMonitorPageToolCardPresentation } from '~/utils/toolCardPresentation';
+ import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+@@ -78,7 +78,7 @@
+   visual: Extract<EventMonitorActiveTracePageVisualDto, { __typename?: 'EventMonitorCompactionVisual' }>,
+   occurredAtMs: number | null | undefined,
+ ): CompactionActivity => {
+-  if (!['requested', 'started', 'completed', 'failed'].includes(visual.phase)) {
++  if (!isCompactionPhase(visual.phase)) {
+     throw new Error(`Unsupported active-trace compaction phase '${visual.phase}'.`);
+   }
+   const timestamp = new Date(occurredAtMs ?? 0);
+--- before/autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts
++++ current/autobyteus-web/services/eventMonitor/recentEventMonitorWindow.ts
+@@ -1,3 +1,4 @@
++import { isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
+ import type { AIMessage, Conversation } from '~/types/conversation';
+ import type { AIResponseSegment } from '~/types/segments';
+ import type { CompactionActivity } from '~/types/activity/RunActivity';
+@@ -160,7 +161,7 @@
+   const conversationDescriptors = flattenConversation(conversation);
+   const compactionDescriptors: CompactionDescriptor[] = compactions
+     .filter((activity) => Boolean(activity.centerTimelineTimestamp)
+-      && (activity.phase === 'started' || activity.phase === 'completed' || activity.phase === 'failed'))
++      && (activity.phase === 'started' || isCompleteCompactionPhase(activity.phase)))
+     .map((activity, index) => ({
+       source: 'compaction', activity,
+       completed: isRecentEventMonitorActivityComplete(activity),
+--- before/autobyteus-web/services/runHydration/runProjectionActivityHydration.ts
++++ current/autobyteus-web/services/runHydration/runProjectionActivityHydration.ts
+@@ -4,7 +4,7 @@
+   SystemInstructionActivity,
+   ToolActivity,
+ } from '~/types/activity/RunActivity';
+-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
++import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ import type { ToolInvocationStatus } from '~/types/segments';
+ import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
+ 
+@@ -93,8 +93,7 @@
+   value === 'denied' ||
+   value === 'interrupted';
+ 
+-const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
+-  value === 'requested' || value === 'started' || value === 'completed' || value === 'failed';
++import { isCompactionPhase, isCompleteCompactionPhase } from '~/types/activity/compactionPhase';
+ 
+ const inferActivityType = (
+   toolName: string,
+@@ -191,7 +190,7 @@
+   const phase = isCompactionPhase(entry.phase) ? entry.phase : 'completed';
+   const timestamp = toDate(entry.ts);
+   const message =
+-    typeof entry.message === 'string' && entry.message.trim().length > 0
++    phase === 'stopped' ? 'Stopped' : typeof entry.message === 'string' && entry.message.trim().length > 0
+       ? entry.message.trim()
+       : getCompactionMessage({
+           phase,
+@@ -230,7 +229,7 @@
+     timestamp,
+     updatedAt: toDate(entry.updatedTs ?? entry.ts),
+     centerTimelineTimestamp:
+-      phase === 'started' || phase === 'completed' || phase === 'failed'
++      phase === 'started' || isCompleteCompactionPhase(phase)
+         ? timestamp
+         : null,
+   };
+--- before/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
++++ current/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+@@ -117,6 +117,8 @@
+ vi.mock('~/stores/agentActivityStore', () => ({
+   useAgentActivityStore: () => ({
+     getCompactionActivities: vi.fn(() => []),
++    getNativeCompactionActivityIds: vi.fn(() => []),
++    applyConfirmedNativeTermination: vi.fn((_id, _ids, status) => status),
+     replaceProjectionActivitiesIfRevisions: mockReplaceProjectionActivitiesIfRevisions,
+   }),
+ }))
+--- before/autobyteus-web/stores/__tests__/nativeCompactionActivity.spec.ts
++++ current/autobyteus-web/stores/__tests__/nativeCompactionActivity.spec.ts
+@@ -0,0 +1,100 @@
++import { beforeEach, expect, it } from 'vitest';
++import { createPinia, setActivePinia } from 'pinia';
++import { useAgentActivityStore } from '../agentActivityStore';
++import type { CompactionActivity } from '~/types/activity/RunActivity';
++import { projectCompactionStatusToActivity } from '~/services/agentStreaming/handlers/compactionActivityProjection';
++import { buildActivitiesFromProjection } from '~/services/runHydration/runProjectionActivityHydration';
++import { isRunActivityComplete } from '~/services/activity/runActivityWindowPolicy';
++import { getCompactionMessage } from '~/utils/compactionActivityPresentation';
++
++const native = (id = 'op', phase: CompactionActivity['phase'] = 'started'): CompactionActivity => ({
++  kind: 'compaction', activityId: `compaction:operation:${id}`, compactionOperationId: id,
++  phase, message: getCompactionMessage({ phase }), timestamp: new Date(1000), updatedAt: new Date(2000),
++  centerTimelineTimestamp: new Date(2000), turnId: 'turn-7', requestedTurnId: 'turn-6', executionTurnId: 'turn-7',
++  selectedBlockCount: 4, rawTraceCount: 12, summarizerProvider: 'openai', compactionModelIdentifier: 'model',
++});
++beforeEach(() => setActivePinia(createPinia()));
++it.each(['requested', 'started'] as const)('settles exact native %s without inventing metadata, idempotently', phase => {
++  const s = useAgentActivityStore(), a = native('op', phase); s.upsertCompactionActivity('run', a);
++  const status = s.applyConfirmedNativeTermination('run', [a.activityId], a, new Date(3000));
++  const stopped = s.getCompactionActivities('run')[0];
++  expect(stopped).toEqual({ ...a, phase: 'stopped', message: 'Stopped', updatedAt: new Date(3000) });
++  expect(status).toMatchObject({ phase: 'stopped', message: 'Stopped', rawTraceCount: 12 });
++  expect(isRunActivityComplete(stopped)).toBe(true);
++  const revision = s.getActivityContentRevision('run');
++  s.applyConfirmedNativeTermination('run', [a.activityId], status, new Date(9000));
++  expect(s.getActivityContentRevision('run')).toBe(revision); expect(s.getCompactionActivities('run')[0]).toEqual(stopped);
++});
++it.each(['completed', 'failed', 'stopped'] as const)('never overwrites known %s or creates absent cards', phase => {
++  const s = useAgentActivityStore(), a = native('op', phase); s.upsertCompactionActivity('run', a);
++  const revision = s.getActivityContentRevision('run');
++  expect(s.applyConfirmedNativeTermination('run', [a.activityId], a)).toEqual(a);
++  expect(s.getActivityContentRevision('run')).toBe(revision);
++  s.applyConfirmedNativeTermination('absent', [a.activityId], a);
++  expect(s.getActivities('absent')).toEqual([]);
++});
++it.each(['provider','sourceSurface','boundaryKey','providerEventId','providerSessionId'])('excludes external boundary metadata %s', field => {
++  const s = useAgentActivityStore(), a = { ...native(), [field]: 'external' };
++  s.upsertCompactionActivity('run', a); s.applyConfirmedNativeTermination('run', [a.activityId], a);
++  expect(s.getNativeCompactionActivityIds('run')).toEqual([]); expect(s.getCompactionActivities('run')[0].phase).toBe('started');
++  s.replaceProjectionActivitiesIfRevisions([{ runId: 'run', expectedRevision: s.getActivityContentRevision('run'), activities: [] }]);
++  expect(s.getActivities('run')).toEqual([]);
++});
++it('requires native operation identity and exact run/id, never a latest-row or turn fallback', () => {
++  const s = useAgentActivityStore(), a = { ...native(), activityId: 'compaction:turn-7', compactionOperationId: null };
++  s.upsertCompactionActivity('run', a); s.upsertCompactionActivity('other', native());
++  s.applyConfirmedNativeTermination('run', [a.activityId, native().activityId], a);
++  expect(s.getCompactionActivities('run')[0].phase).toBe('started'); expect(s.getCompactionActivities('other')[0].phase).toBe('started');
++});
++it('atomically retains only uncovered terminal native facts, dedupes and never downgrades them from projection', () => {
++  const s = useAgentActivityStore();
++  for (const phase of ['completed','failed','stopped','started'] as const) s.upsertCompactionActivity('a', native(phase, phase));
++  s.upsertSystemInstructionActivity('a', { kind: 'system_instruction', activityId: 'old-system', content: 'old', timestamp: new Date(500) });
++  s.upsertCompactionActivity('b', native('b', 'stopped'));
++  const replacement = { runId: 'a', expectedRevision: s.getActivityContentRevision('a'), activities: [native('completed', 'started')] };
++  expect(s.replaceProjectionActivitiesIfRevisions([replacement, { runId: 'b', expectedRevision: 0, activities: [] }])).toBe('conflict');
++  expect(s.getActivities('a')).toHaveLength(5);
++  expect(s.replaceProjectionActivitiesIfRevisions([replacement, { runId: 'b', expectedRevision: s.getActivityContentRevision('b'), activities: [] }])).toBe('applied');
++  expect(s.getCompactionActivities('a').map(a => a.phase)).toEqual(['completed','failed','stopped']);
++  expect(s.getActivities('b')).toHaveLength(1);
++  s.upsertCompactionActivity('a', native('failed','started')); // a genuine fresh live attempt is not a projection
++  expect(s.getCompactionActivities('a').find(a => a.compactionOperationId === 'failed')?.phase).toBe('started');
++});
++it('rejects duplicate run replacement atomically; explicit clear and cold hydration do not reconstruct facts', () => {
++  const s = useAgentActivityStore(); s.upsertCompactionActivity('run', native('op','stopped'));
++  const r = { runId:'run', expectedRevision:s.getActivityContentRevision('run'), activities: [] };
++  expect(s.replaceProjectionActivitiesIfRevisions([r,r])).toBe('conflict');
++  s.clearActivities('run');
++  s.replaceProjectionActivitiesIfRevisions([{ ...r, expectedRevision:s.getActivityContentRevision('run') }]);
++  expect(s.getActivities('run')).toEqual([]);
++});
++it('sorts merged facts chronologically, preserves highlight/approval and applies the normal hundred-item window', () => {
++  const s = useAgentActivityStore(), a = native('early','stopped'); s.upsertCompactionActivity('run', a);
++  s.setHighlightedActivity('run', a.activityId);
++  const projected = Array.from({ length:101 }, (_,i) => ({ kind:'system_instruction' as const, activityId:`s-${i}`, content:'saved', timestamp:new Date(4000+i) }));
++  s.replaceProjectionActivitiesIfRevisions([{runId:'run', expectedRevision:s.getActivityContentRevision('run'), activities:projected}]);
++  expect(s.getActivities('run')).toHaveLength(100); expect(s.getHighlightedActivityId('run')).toBeNull();
++  expect(s.getActivities('run')[0].activityId).toBe('s-1'); expect(s.hasAwaitingApproval('run')).toBe(false);
++});
++it('maps stopped through live and saved presentation with exact copy and existing operation identity', () => {
++  const live = projectCompactionStatusToActivity({ phase:'stopped', compaction_operation_id:'op', turn_id:'turn-7', raw_trace_count:12 }, {runId:'run', previousStatus:null, now:new Date(4000)});
++  expect(live.activity).toMatchObject({ activityId:native().activityId, phase:'stopped', message:'Stopped', rawTraceCount:12 });
++  const saved = buildActivitiesFromProjection([{kind:'compaction', activityId:native().activityId, compactionOperationId:'op', phase:'stopped', message:'obsolete error', ts:4}]);
++  expect(saved[0]).toMatchObject({ phase:'stopped', message:'Stopped', centerTimelineTimestamp:new Date(4000) });
++});
++
++import { agentPresentationPayloadSchemas } from '@autobyteus/agent-presentation-contracts';
++import { toAgentPresentationProjectionMessage, toAgentProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters';
++import { parseTeamStreamServerMessage } from '@autobyteus/team-stream-contracts';
++it('strict shared and Team envelopes carry stopped through both Team and Org renderer adapters', () => {
++  const fields = Object.keys(agentPresentationPayloadSchemas.COMPACTION_STATUS.shape);
++  const payload = agentPresentationPayloadSchemas.COMPACTION_STATUS.parse({
++    ...Object.fromEntries(fields.map(field => [field, null])),
++    phase:'stopped', compaction_operation_id:'op', turn_id:'turn-7', raw_trace_count:12,
++  });
++  const org = toAgentPresentationProjectionMessage({type:'COMPACTION_STATUS',payload},'run');
++  const team = parseTeamStreamServerMessage({type:'COMPACTION_STATUS',payload:{...payload,agent_run_id:'run',change_sequence:1}});
++  const projected = toAgentProjectionMessage(team as any,'run');
++  expect(org.payload).toMatchObject({phase:'stopped',compaction_operation_id:'op',raw_trace_count:12});
++  expect(projected.payload).toMatchObject(org.payload);
++});
+--- before/autobyteus-web/stores/__tests__/nativeCompactionTermination.spec.ts
++++ current/autobyteus-web/stores/__tests__/nativeCompactionTermination.spec.ts
+@@ -0,0 +1,93 @@
++import { afterEach, beforeEach, expect, it, vi } from 'vitest';
++import { createPinia, setActivePinia } from 'pinia';
++import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
++import { useAgentTeamContextsStore } from '../agentTeamContextsStore';
++import { useAgentTeamRunStore } from '../agentTeamRunStore';
++import { useAgentContextsStore } from '../agentContextsStore';
++import { useAgentRunStore } from '../agentRunStore';
++import { useAgentActivityStore } from '../agentActivityStore';
++import { handleCompactionStatus } from '~/services/agentStreaming/handlers/agentStatusHandler';
++import type { AgentContext } from '~/types/agent/AgentContext';
++const io = vi.hoisted(() => ({ mutate: vi.fn(), bindingRevision: 1, inactive: vi.fn(), teamInactive: vi.fn() }));
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ mutate: io.mutate, query: vi.fn() }) }));
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ bindingRevision:io.bindingRevision, getBoundEndpoints: () => ({agentWs:'ws://fixture.invalid',teamWs:'ws://fixture.invalid'}) }) }));
++vi.mock('~/stores/runHistoryStore', () => ({useRunHistoryStore:()=>({ markRunAsInactive:io.inactive,markTeamAsInactive:io.teamInactive,refreshTreeQuietly:vi.fn() })}));
++vi.mock('~/services/agentStreaming', async original => {
++  const actual = await original<any>();
++  class Stream { connectionState='connected'; connect=vi.fn(); disconnect=vi.fn(); attachContext=vi.fn(); constructor(..._args: any[]) {} }
++  return {...actual, AgentStreamingService:Stream,TeamStreamingService:Stream};
++});
++const ROOT='native-team';
++beforeEach(()=>{setActivePinia(createPinia());vi.clearAllMocks();io.bindingRevision=1;});
++afterEach(()=>{useAgentRunStore().disconnectAgentStream('lead');useAgentTeamRunStore().disconnectTeamStream(ROOT);});
++const seed = (context:AgentContext,id='op',phase:'requested'|'started'|'completed'|'failed'='started') => {
++  handleCompactionStatus({ phase, compaction_operation_id:id,turn_id:'turn-7',requested_turn_id:'turn-6',execution_turn_id:'turn-7',raw_trace_count:12,compaction_model_identifier:'native-model' },context);
++};
++const setup=()=>{
++  const raw=buildTestTeamContext({teamRunId:ROOT,coordinatorAddress:'/lead',delegations:[{delegatorAgentRunId:'lead',recipientAddress:'/worker',target:{agentRunId:'task-before'}}],rootChildren:['lead','worker','external','empty'].map(id=>testAgentNode(`/${id}`,{agentRunId:id,runtimeKind:id==='external'?'codex_app_server':'autobyteus'}))});
++  useAgentTeamContextsStore().teams=new Map([[ROOT,raw]]);
++  const team=useAgentTeamContextsStore().getTeamContextById(ROOT)!;
++  const context=team.view.getAgentContext('lead')!;
++  useAgentContextsStore().runs=new Map([['lead',context]]);
++  const lead=useAgentContextsStore().getRun('lead')!;
++  lead.state.inputProjection={runInstanceId:'runtime-A',revision:1};
++  seed(lead);seed(team.view.getAgentContext('task-before')!,'retained-task');seed(team.view.getAgentContext('worker')!,'worker');seed(team.view.getAgentContext('external')!,'external');
++  return {team,lead,activities:useAgentActivityStore()};
++};
++const response=(kind:'agent'|'team',success=true)=>({data:{[kind==='agent'?'terminateAgentRun':'terminateAgentTeamRun']:{success}}});
++const deferred=()=>{let resolve!:(v:any)=>void;io.mutate.mockImplementation(()=>new Promise(done=>{resolve=done}));return(v:any)=>resolve(v);};
++it.each(['agent','team'] as const)('%s success before final event settles exact native cards before disconnect/history',async kind=>{
++  const {team,lead,activities}=setup();const store=kind==='agent'?useAgentRunStore():useAgentTeamRunStore();
++  const service=kind==='agent'?useAgentRunStore().connectToAgentStream('lead')!:useAgentTeamRunStore().connectToTeamStream(ROOT)!;
++  vi.spyOn(service,'disconnect').mockImplementation(()=>expect(activities.getCompactionActivities('lead')[0].phase).toBe('stopped'));
++  io.mutate.mockResolvedValue(response(kind));
++  expect(await (kind==='agent'?(store as ReturnType<typeof useAgentRunStore>).terminateRun('lead'):(store as ReturnType<typeof useAgentTeamRunStore>).terminateTeamRun(ROOT))).toBe(true);
++  expect(lead.state.compactionStatus).toMatchObject({phase:'stopped',message:'Stopped',rawTraceCount:12});
++  expect(lead.state.currentStatus).toBe('offline');
++  expect(activities.getCompactionActivities('external')[0].phase).toBe('started');expect(activities.getActivities('empty')).toEqual([]);
++  expect(activities.getCompactionActivities('worker')[0].phase).toBe(kind==='team'?'stopped':'started');
++  expect(activities.getCompactionActivities('task-before')[0].phase).toBe(kind==='team'?'stopped':'started');
++  expect(team.view.isRootTeamActive()).toBe(kind!=='team');
++});
++it.each(['completed','failed'] as const)('event %s before response keeps real result while newly observed pending operation is settled',async phase=>{
++  const {lead,activities}=setup();const finish=deferred();const pending=useAgentRunStore().terminateRun('lead');
++  seed(lead,'op',phase);seed(lead,'late');lead.state.inputProjection=null;
++  finish(response('agent'));expect(await pending).toBe(true);
++  expect(activities.getCompactionActivities('lead').map(a=>a.phase)).toEqual([phase,'stopped']);
++});
++it.each(['agent','team'] as const)('%s rejection/partial failure does not confer stopped or teardown',async kind=>{
++  const {lead,activities}=setup();io.mutate.mockResolvedValue(response(kind,false));
++  expect(await(kind==='agent'?useAgentRunStore().terminateRun('lead'):useAgentTeamRunStore().terminateTeamRun(ROOT))).toBe(false);
++  expect(activities.getCompactionActivities('lead')[0].phase).toBe('started');expect(lead.state.currentStatus).toBe('idle');
++  expect(io.inactive).not.toHaveBeenCalled();expect(io.teamInactive).not.toHaveBeenCalled();
++});
++it.each(['binding','state','instance','context','transport'] as const)('standalone stale %s success cannot settle or tear down a replacement',async change=>{
++  const {lead,activities}=setup();useAgentRunStore().connectToAgentStream('lead');const finish=deferred();const pending=useAgentRunStore().terminateRun('lead');
++  if(change==='binding')io.bindingRevision++;
++  if(change==='state')lead.state=Object.assign(Object.create(Object.getPrototypeOf(lead.state)),lead.state);
++  if(change==='instance')lead.state.inputProjection={runInstanceId:'runtime-B',revision:1};
++  if(change==='context')useAgentContextsStore().runs=new Map([['lead',Object.assign(Object.create(Object.getPrototypeOf(lead)),lead)]]);
++  if(change==='transport'){useAgentRunStore().disconnectAgentStream('lead');useAgentRunStore().connectToAgentStream('lead');}
++  finish(response('agent'));expect(await pending).toBe(false);
++  expect(activities.getCompactionActivities('lead')[0].phase).toBe('started');expect(io.inactive).not.toHaveBeenCalled();
++});
++it.each(['binding','member-state','member-instance','root','transport'] as const)('Team stale %s success cannot mutate any member or root',async change=>{
++  const {team,lead,activities}=setup();useAgentTeamRunStore().connectToTeamStream(ROOT);const finish=deferred();const pending=useAgentTeamRunStore().terminateTeamRun(ROOT);
++  if(change==='binding')io.bindingRevision++;
++  if(change==='member-state')lead.state=Object.assign(Object.create(Object.getPrototypeOf(lead.state)),lead.state);
++  if(change==='member-instance')lead.state.inputProjection={runInstanceId:'runtime-B',revision:1};
++  if(change==='root')useAgentTeamContextsStore().teams=new Map([[ROOT,{...team}]]);
++  if(change==='transport'){useAgentTeamRunStore().disconnectTeamStream(ROOT);useAgentTeamRunStore().connectToTeamStream(ROOT);}
++  finish(response('team'));expect(await pending).toBe(false);
++  expect(activities.getCompactionActivities('lead')[0].phase).toBe('started');expect(activities.getCompactionActivities('worker')[0].phase).toBe('started');
++  expect(team.view.isRootTeamActive()).toBe(true);expect(io.teamInactive).not.toHaveBeenCalled();
++});
++
++it('Team includes a newly published native task member from the same root/service while Stop is pending',async()=>{
++  const {team,activities}=setup();const finish=deferred();const pending=useAgentTeamRunStore().terminateTeamRun(ROOT);
++  expect(team.view.applyMessage({type:'TASK_EXECUTION_STARTED',payload:{change_sequence:1,parent_team_run_id:ROOT,
++    execution:{kind:'task_agent',address:'/worker',agent_run_id:'task-during',platform_agent_run_id:null,delegator_agent_run_id:'lead',started_at:'2026-10-01T00:00:00Z'}}})).toMatchObject({disposition:'applied'});
++  const task=team.view.getAgentContext('task-during')!;seed(task,'during-request');
++  finish(response('team'));expect(await pending).toBe(true);
++  expect(activities.getCompactionActivities('task-during')[0].phase).toBe('stopped');expect(task.state.currentStatus).toBe('offline');
++});
+--- before/autobyteus-web/stores/__tests__/nativeOrgCompactionTermination.spec.ts
++++ current/autobyteus-web/stores/__tests__/nativeOrgCompactionTermination.spec.ts
+@@ -0,0 +1,125 @@
++import { mount } from '@vue/test-utils'
++import { nextTick } from 'vue'
++import { createPinia, setActivePinia } from 'pinia'
++import { afterEach, beforeEach, expect, it, vi } from 'vitest'
++import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
++import { GetAgentOrgExecutionCheckpoint, GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
++import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
++import { useAgentActivityStore } from '../agentActivityStore'
++import ActivityFeed from '~/components/progress/ActivityFeed.vue'
++
++// IR007: actual Org command, stream retirement, stage/commit/adopt and store. Only external I/O substituted.
++const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), binding: 1 }))
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query, mutate: io.mutate }) }))
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ bindingRevision: io.binding, waitForBoundBackendReady: async () => true, getBoundEndpoints: () => ({ orgWs: 'ws://fixture.invalid/org' }) }) }))
++vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
++vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
++vi.mock('vue-router', async original => ({ ...await original<any>(), useRoute: () => ({ query: { rootSubjectKind: 'agent_org', mode: 'active', orgRunId: 'org-run' } }) }))
++class Socket {
++  static OPEN = 1; static CONNECTING = 0; static instances: Socket[] = []
++  readyState = 1; onmessage: ((event: { data: string }) => void) | null = null; onclose: (() => void) | null = null; onerror = null
++  sent: string[] = []
++  constructor() { Socket.instances.push(this) }
++  send(value: string) { this.sent.push(value) }
++  close() { this.readyState = 3; this.onclose?.() }
++  emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
++}
++const envelope = (active: boolean) => ({ root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...JSON.parse(JSON.stringify(taskBearingView()).replaceAll('codex_app_server', 'autobyteus')), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0 } : {}) } })
++const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,
++  conversation: [{ kind: 'message', role: 'assistant', content: 'Retained conversation', ts: 1 }],
++  activities: [{ kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `System ${variables.agentRunId}`, ts: 1 },
++    { kind: 'tool', invocationId: `${variables.agentRunId}-tool`, toolName: 'send_message_to', status: 'success', arguments: { message: variables.agentRunId }, result: `Delivered ${variables.agentRunId}`, ts: 2 }], hasEarlierActiveTraceEvents: false,
++} } })
++let active: boolean, failInspection: boolean, wrapper: ReturnType<typeof mount> | undefined
++beforeEach(() => {
++  setActivePinia(createPinia()); vi.clearAllMocks(); vi.useFakeTimers(); vi.stubGlobal('WebSocket', Socket); Socket.instances = []; active = true; failInspection = false; io.binding = 1
++  io.query.mockImplementation(async ({ query, variables }) => {
++    if (query === GetAgentOrgRunInspection) { if (failInspection) throw new Error('inspection unavailable'); return { data: { getAgentOrgRunInspection: envelope(active) } } }
++    if (query === GetAgentOrgExecutionCheckpoint) return { data: { getAgentOrgExecutionCheckpoint: { orgRunId: 'org-run', changeSequence: 8, hasOpenExecutionWork: true } } }
++    return variables?.agentRunId ? projection(variables) : { data: {} }
++  })
++  io.mutate.mockImplementation(async () => { active = false; return { data: { terminateAgentOrgRun: { success: true } } } })
++})
++afterEach(() => { wrapper?.unmount(); useAgentOrgContextsStore().releaseContext('org-run'); vi.useRealTimers(); vi.unstubAllGlobals() })
++const open = async (address: string) => {
++  const store = useAgentOrgContextsStore()
++  await store.openForInspection('org-run'); store.select('org-run', address)
++  const socket = Socket.instances[0]!
++  socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 's' } })
++  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: envelope(true) }); await vi.advanceTimersByTimeAsync(0)
++  expect(store.contextFor('org-run')!.phase).toBe('live')
++  wrapper = mount(ActivityFeed)
++  return { store, socket, context: store.activeTargetFor('org-run')!.context }
++}
++
++import { handleCompactionStatus } from '~/services/agentStreaming/handlers/agentStatusHandler'
++const seedMembers = (store: ReturnType<typeof useAgentOrgContextsStore>) => {
++  const entries = store.contextFor('org-run')!.listAgentContextEntries()
++  for (const { agentRunId, context } of entries) {
++    context.state.inputProjection = { runInstanceId: `runtime-${agentRunId}`, revision: 1 }
++    handleCompactionStatus({phase:'started',compaction_operation_id:`op-${agentRunId}`,turn_id:'turn-4',raw_trace_count:9,compaction_model_identifier:'native-model'},context)
++  }
++  return entries
++}
++it('Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption', async () => {
++  const {store,socket}=await open('/director');const entries=seedMembers(store);const activities=useAgentActivityStore()
++  expect(entries.length).toBe(7)
++  const beforeStates=entries.map(e=>e.context.state)
++  const query=io.query.getMockImplementation()!
++  io.query.mockImplementation(async (request:any)=>{
++    if(request.query===GetAgentOrgRunInspection) {
++      for(const e of entries) expect(activities.getCompactionActivities(e.agentRunId)[0].phase).toBe('stopped')
++      expect(socket.readyState).toBe(3)
++    }
++    return query(request)
++  })
++  await store.stopAndInspect('org-run');await nextTick()
++  for(const [i,e] of entries.entries()) {
++    const current=store.contextFor('org-run')!.getAgentContext(e.agentRunId)!
++    expect(current).toBe(e.context);expect(current.state).not.toBe(beforeStates[i]);expect(current.state.currentStatus).toBe('offline')
++    expect(activities.getCompactionActivities(e.agentRunId)).toEqual([expect.objectContaining({phase:'stopped',message:'Stopped',rawTraceCount:9,compactionModelIdentifier:'native-model'})])
++    expect(activities.getActivities(e.agentRunId)).toHaveLength(3)
++  }
++  expect(socket.sent).toHaveLength(0);expect(io.mutate).toHaveBeenCalledTimes(1)
++  expect(store.contextFor('org-run')!.phase).toBe('historical')
++})
++it.each(['completed','failed'] as const)('Org retains actual %s and excludes external runtime while settling other members',async phase=>{
++  const {store}=await open('/director');const entries=seedMembers(store)
++  const first=entries[0],external=entries[1]
++  handleCompactionStatus({phase,compaction_operation_id:`op-${first.agentRunId}`,turn_id:'turn-4'},first.context)
++  external.context.config.runtimeKind='codex_app_server'
++  failInspection=true
++  await expect(store.stopAndInspect('org-run')).rejects.toThrow('inspection unavailable')
++  const activities=useAgentActivityStore()
++  expect(activities.getCompactionActivities(first.agentRunId)[0].phase).toBe(phase)
++  expect(activities.getCompactionActivities(external.agentRunId)[0].phase).toBe('started')
++  expect(activities.getCompactionActivities(entries[2].agentRunId)[0].phase).toBe('stopped')
++  expect(store.contextFor('org-run')!.phase).toBe('historical')
++})
++it('Org rejected Stop retires transport but does not synthesize stopped or inspect',async()=>{
++  const {store,socket}=await open('/director');const entries=seedMembers(store);io.query.mockClear()
++  io.mutate.mockResolvedValue({data:{terminateAgentOrgRun:{success:false,message:'member failure'}}})
++  await expect(store.stopAndInspect('org-run')).rejects.toThrow('member failure')
++  for(const e of entries) expect(useAgentActivityStore().getCompactionActivities(e.agentRunId)[0].phase).toBe('started')
++  expect(socket.readyState).toBe(3);expect(io.query).not.toHaveBeenCalled();expect(store.contextFor('org-run')!.phase).toBe('reopen_required')
++})
++it.each(['binding','state','instance','view'] as const)('Org stale %s response does not reconcile, mark historical, or inspect',async change=>{
++  const {store}=await open('/director');const entries=seedMembers(store);const org=store.contextFor('org-run')!
++  let resolve!:(value:any)=>void;io.mutate.mockImplementation(()=>new Promise(done=>{resolve=done}));io.query.mockClear()
++  const pending=store.stopAndInspect('org-run')
++  if(change==='binding')io.binding++
++  if(change==='state')entries[0].context.state=Object.assign(Object.create(Object.getPrototypeOf(entries[0].context.state)),entries[0].context.state)
++  if(change==='instance')entries[0].context.state.inputProjection={runInstanceId:'new-runtime',revision:1}
++  if(change==='view')org.view={...org.view}
++  resolve({data:{terminateAgentOrgRun:{success:true}}});await pending
++  for(const e of entries)expect(useAgentActivityStore().getCompactionActivities(e.agentRunId)[0].phase).toBe('started')
++  expect(io.query).not.toHaveBeenCalled();expect(org.isActive).toBe(true)
++})
++it('success plus inspection failure preserves stopped historical state, without manufacturing a new native activity',async()=>{
++  const {store}=await open('/director');const entries=seedMembers(store);failInspection=true
++  useAgentActivityStore().clearActivities(entries[0].agentRunId)
++  await expect(store.stopAndInspect('org-run')).rejects.toThrow('inspection unavailable')
++  expect(useAgentActivityStore().getActivities(entries[0].agentRunId)).toEqual([])
++  expect(useAgentActivityStore().getCompactionActivities(entries[1].agentRunId)[0].phase).toBe('stopped')
++  expect(store.contextFor('org-run')!.phase).toBe('historical')
++})
+--- before/autobyteus-web/stores/agentActivityStore.ts
++++ current/autobyteus-web/stores/agentActivityStore.ts
+@@ -1,3 +1,6 @@
++import type { AgentCompactionStatus } from '~/types/agent/AgentRunState';
++import { isNativeCompactionActivity, isNativeCompactionIdentity, stopNativeCompactionActivity, retainTerminalNativeActivities } from '~/services/activity/nativeCompactionActivityReconciliation';
++import { isActiveCompactionPhase } from '~/types/activity/compactionPhase';
+ import { defineStore } from 'pinia';
+ import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
+ import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+@@ -77,6 +80,10 @@
+       return activities.filter(isCompactionActivity);
+     },
+ 
++    getNativeCompactionActivityIds: (state) => (runId: string): string[] =>
++      (state.activitiesByRunId.get(runId)?.activities ?? [])
++        .filter(isNativeCompactionActivity).map((activity) => activity.activityId),
++
+     hasAwaitingApproval: (state) => (runId: string): boolean => {
+       return state.activitiesByRunId.get(runId)?.hasAwaitingApproval ?? false;
+     },
+@@ -323,6 +330,28 @@
+     setHighlightedActivity(runId: string, activityId: string | null) {
+       const state = this._ensureRunState(runId);
+       state.highlightedActivityId = activityId;
++    },
++
++    applyConfirmedNativeTermination(
++      runId: string, activityIds: readonly string[], currentStatus: AgentCompactionStatus | null, at = new Date(),
++    ): AgentCompactionStatus | null {
++      const ids = new Set(activityIds);
++      const state = this.activitiesByRunId.get(runId);
++      if (!state) return currentStatus;
++      let matching: CompactionActivity | undefined;
++      let changed = false;
++      state.activities = state.activities.map((activity) => {
++        if (!ids.has(activity.activityId) || !isNativeCompactionActivity(activity)) return activity;
++        const next = stopNativeCompactionActivity(activity, at);
++        changed ||= next !== activity;
++        if (next.activityId === currentStatus?.activityId) matching = next;
++        return next;
++      });
++      if (changed) { this._enforceRecentWindow(state); this._incrementContentRevision(runId); }
++      if (!matching || !currentStatus || !isNativeCompactionIdentity(currentStatus)
++        || !isActiveCompactionPhase(currentStatus.phase)) return currentStatus;
++      return { ...currentStatus, phase: matching.phase, message: matching.message,
++        centerTimelineTimestamp: matching.centerTimelineTimestamp };
+     },
+ 
+     replaceProjectionActivitiesIfRevisions(
+@@ -352,7 +381,7 @@
+           return true;
+         });
+         const next: AgentActivities = {
+-          activities: [...activities],
++          activities: retainTerminalNativeActivities(activities, current?.activities ?? []),
+           hasAwaitingApproval: false,
+           highlightedActivityId: current?.highlightedActivityId ?? null,
+         };
+--- before/autobyteus-web/stores/agentOrgContextsStore.ts
++++ current/autobyteus-web/stores/agentOrgContextsStore.ts
+@@ -1,3 +1,4 @@
++import { useAgentActivityStore } from '~/stores/agentActivityStore';
+ import type { TeamWorkspacePatch } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
+ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+ import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
+@@ -257,6 +258,14 @@
+     if (operations.value[id]) throw new Error('AgentOrg operation is already pending.')
+     errors.value = { ...errors.value, [id]: null }
+     operations.value = { ...operations.value, [id]: 'stop' }
++    const context = contexts.value[id]
++    const view = context?.view
++    const binding = useWindowNodeContextStore().bindingRevision
++    const activities = useAgentActivityStore()
++    const members = context?.listAgentContextEntries().map((entry) => ({
++      ...entry, state: entry.context.state, instance: entry.context.state.inputProjection?.runInstanceId,
++      ids: activities.getNativeCompactionActivityIds(entry.agentRunId),
++    })) ?? []
+     generations.delete(id)
+     retireStream(id)
+     // The old transport cannot publish during Stop, including a rejected Stop.
+@@ -264,6 +273,18 @@
+     if (contexts.value[id]?.isActive) contexts.value[id]?.requireReopen('AgentOrg stop is pending.')
+     try {
+       await useAgentOrgRunStore().terminate(id)
++      // This owner intentionally retired its transport before the mutation.
++      if (contexts.value[id] !== context || context?.view !== view || services.has(id)
++        || operations.value[id] !== 'stop' || useWindowNodeContextStore().bindingRevision !== binding
++        || members.some((entry) => context?.getAgentContext(entry.agentRunId) !== entry.context
++          || context.index.requireAgent(entry.agentRunId).address !== entry.memberAddress
++          || entry.context.state !== entry.state || entry.state.runId !== entry.agentRunId
++          || (entry.state.inputProjection?.runInstanceId && entry.state.inputProjection.runInstanceId !== entry.instance))) return
++      for (const { agentRunId, context: member, ids } of members) {
++        if (member.config.runtimeKind !== 'autobyteus') continue
++        member.state.compactionStatus = activities.applyConfirmedNativeTermination(agentRunId,
++          [...ids, ...activities.getNativeCompactionActivityIds(agentRunId)], member.state.compactionStatus)
++      }
+       markHistorical(id)
+       await readInspection(id)
+     } catch (cause) { report(id, cause); throw cause }
+--- before/autobyteus-web/stores/agentRunStore.ts
++++ current/autobyteus-web/stores/agentRunStore.ts
+@@ -1,3 +1,4 @@
++import { useAgentActivityStore } from '~/stores/agentActivityStore';
+ import { defineStore } from 'pinia';
+ import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
+ import { getApolloClient } from '~/utils/apolloClient'
+@@ -410,6 +411,16 @@
+       const agentContextsStore = useAgentContextsStore();
+       const runHistoryStore = useRunHistoryStore();
+       const context = agentContextsStore.getRun(runId);
++      const state = context?.state;
++      const instance = state?.inputProjection?.runInstanceId;
++      const service = streamingServices.get(runId);
++      const binding = useWindowNodeContextStore().bindingRevision;
++      const activities = useAgentActivityStore();
++      const activityIds = activities.getNativeCompactionActivityIds(runId);
++      const ownsRequest = () => agentContextsStore.getRun(runId) === context
++        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId) === service
++        && useWindowNodeContextStore().bindingRevision === binding
++        && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);
+ 
+       const teardownLocalRuntime = () => {
+         this.clearActivationPending(runId);
+@@ -444,6 +455,11 @@
+           throw new Error(result?.message || `Failed to terminate run '${runId}'.`);
+         }
+ 
++        if (!ownsRequest()) return false;
++        if (context?.config.runtimeKind === 'autobyteus' && state) {
++          state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
++            [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
++        }
+         teardownLocalRuntime();
+         runHistoryStore.markRunAsInactive(runId);
+         runHistoryStore.refreshTreeQuietly();
+--- before/autobyteus-web/stores/agentTeamRunStore.ts
++++ current/autobyteus-web/stores/agentTeamRunStore.ts
+@@ -1,3 +1,4 @@
++import { useAgentActivityStore } from '~/stores/agentActivityStore';
+ import { defineStore } from 'pinia';
+ import { getApolloClient } from '~/utils/apolloClient';
+ import { CreateAgentTeamRun, RestoreAgentTeamRun, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
+@@ -203,11 +204,35 @@
+     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
+       const team = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
+       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRunId] || (team && !team.view.isRootTeamActive())) return false;
++      const view = team?.view;
++      const service = teamStreamingServices.get(rootTeamRunId);
++      const binding = useWindowNodeContextStore().bindingRevision;
++      const activities = useAgentActivityStore();
++      const members = new Map(view?.listAgentContextEntries().map((entry) => [entry.agentRunId, {
++        ...entry, state: entry.agentContext.state,
++        instance: entry.agentContext.state.inputProjection?.runInstanceId,
++        ids: activities.getNativeCompactionActivityIds(entry.agentRunId),
++      }]));
+       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTeamRunId]: true };
+       try {
+         const { data, errors } = await getApolloClient().mutate<TerminatePayload>({ mutation: TerminateAgentTeamRun, variables: { teamRunId: rootTeamRunId } });
+         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+         if (!data?.terminateAgentTeamRun?.success) throw new Error(data?.terminateAgentTeamRun?.message || 'Team termination failed.');
++        if (useAgentTeamContextsStore().getTeamContextById(rootTeamRunId) !== team
++          || team?.view !== view || teamStreamingServices.get(rootTeamRunId) !== service
++          || useWindowNodeContextStore().bindingRevision !== binding) return false;
++        const entries = view?.listAgentContextEntries() ?? [];
++        if (entries.some((entry) => entry.agentContext.state.runId !== entry.agentRunId)) return false;
++        if ([...members.values()].some((old) => !entries.some((entry) =>
++          entry.agentRunId === old.agentRunId && entry.memberAddress === old.memberAddress
++          && entry.agentContext === old.agentContext && entry.agentContext.state === old.state
++          && (!old.state.inputProjection?.runInstanceId || old.state.inputProjection.runInstanceId === old.instance)))) return false;
++        for (const { agentRunId, agentContext } of entries) {
++          if (agentContext.config.runtimeKind !== 'autobyteus') continue;
++          agentContext.state.compactionStatus = activities.applyConfirmedNativeTermination(agentRunId,
++            [...(members.get(agentRunId)?.ids ?? []), ...activities.getNativeCompactionActivityIds(agentRunId)],
++            agentContext.state.compactionStatus);
++        }
+         this.disconnectTeamStream(rootTeamRunId);
+         team?.view.setRootTeamActive(false);
+         team?.view.listAgentContextEntries().forEach(({ agentContext }) => {
+--- before/autobyteus-web/types/activity/RunActivity.ts
++++ current/autobyteus-web/types/activity/RunActivity.ts
+@@ -1,4 +1,4 @@
+-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
++import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
+ 
+ export type RunActivityKind = 'tool' | 'compaction' | 'system_instruction';
+--- before/autobyteus-web/types/activity/compactionPhase.ts
++++ current/autobyteus-web/types/activity/compactionPhase.ts
+@@ -0,0 +1,8 @@
++export const COMPACTION_PHASES = ['requested', 'started', 'completed', 'failed', 'stopped'] as const;
++export type CompactionStatusPhase = typeof COMPACTION_PHASES[number];
++export const isCompactionPhase = (value: unknown): value is CompactionStatusPhase =>
++  COMPACTION_PHASES.some((phase) => phase === value);
++export const isActiveCompactionPhase = (phase: CompactionStatusPhase | null | undefined): boolean =>
++  phase === 'requested' || phase === 'started';
++export const isCompleteCompactionPhase = (phase: CompactionStatusPhase | null | undefined): boolean =>
++  phase === 'completed' || phase === 'failed' || phase === 'stopped';
+--- before/autobyteus-web/types/agent/AgentRunState.ts
++++ current/autobyteus-web/types/agent/AgentRunState.ts
+@@ -3,7 +3,7 @@
+ import { generateBaseInvocationId } from '~/utils/toolUtils';
+ import { AgentStatus } from '~/types/agent/AgentStatus';
+ 
+-export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed';
++import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ 
+ export interface AgentCompactionStatus {
+   phase: CompactionStatusPhase;
+--- before/autobyteus-web/utils/compactionActivityPresentation.ts
++++ current/autobyteus-web/utils/compactionActivityPresentation.ts
+@@ -1,7 +1,7 @@
+-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
++import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
+ import type { CompactionActivity } from '~/types/activity/RunActivity';
+ 
+-export type CompactionTone = 'amber' | 'blue' | 'emerald' | 'red';
++export type CompactionTone = 'amber' | 'blue' | 'emerald' | 'red' | 'gray';
+ 
+ export interface CompactionPhasePresentation {
+   label: string;
+@@ -14,6 +14,8 @@
+   phase: CompactionStatusPhase,
+ ): CompactionPhasePresentation => {
+   switch (phase) {
++    case 'stopped':
++      return { label: 'Stopped', icon: 'heroicons:stop-circle-solid', tone: 'gray', isCompacting: false };
+     case 'failed':
+       return { label: 'Failed', icon: 'heroicons:x-circle-solid', tone: 'red', isCompacting: false };
+     case 'completed':
+@@ -40,6 +42,7 @@
+   errorMessage?: string | null;
+   isProviderBoundary?: boolean;
+ }): string => {
++  if (input.phase === 'stopped') return 'Stopped';
+   if (input.isProviderBoundary) {
+     switch (input.phase) {
+       case 'failed':

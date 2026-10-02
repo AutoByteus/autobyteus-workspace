@@ -5,6 +5,7 @@ const messages = {
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.teamCopy.failed": "无法复制此团队配置：{error}。请点击新建（+）重试。" ,
+  "workspace.runModelConfig.agyAutoApproveLocked": "Antigravity 始终自动批准工具，因此无法关闭此项。",
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
   "workspace.agentOrg.runConfig.modelRequired": "启动前请为 {address} 选择模型。",
   "workspace.agentOrg.runConfig.retryInitialization": "重试加载配置",
@@ -146,12 +147,8 @@ const messages = {
     "配置",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
-  "workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help":
-    "Antigravity CLI 高信任模式：工具无需交互式确认即可运行。关闭后，被拒绝的操作无法在聊天中批准。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
-  "workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help":
-    "Antigravity CLI 成员高信任模式：工具无需交互式确认即可运行。关闭后，被拒绝的操作无法在聊天中批准。",
   "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
     "团队成员覆盖",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":

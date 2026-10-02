@@ -6,9 +6,8 @@ import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
 import { listAntigravityModels } from "../../../../../src/runtime-management/antigravity-cli-capability.js";
-import { fingerprintConfiguredSkillSource } from "../../../../../src/skills/services/configured-skill-source-fingerprint.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
-import { realpathSync } from "node:fs";
+import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
 const { start, stop } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn() }));
 
 vi.mock("../../../../../src/runtime-management/antigravity-cli-capability.js", () => ({
@@ -45,12 +44,12 @@ describe("AGY backend capability admission and preserved bindings", () => {
     start.mockImplementation(async (input) => ({
       event: "init", conversation_id: conversationId ?? input.conversationId ?? "provider-conversation",
       init: { agent: input.agentName, model: input.model, cwd: input.capsulePath,
-        permission_mode: input.autoExecuteTools ? "always-proceed" : "default", ...initOverride },
+        permission_mode: "always-proceed", ...initOverride },
     }));
     factory = new AgyAgentRunBackendFactory(
       { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test",
         instructions, toolNames: [], skillNames: [] }) } as never,
-      { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgentDetailed: () => [] } as never,
+      { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
       { activateForRun: () => ({ kind: "not_exposed" }) } as never,
     );
@@ -70,19 +69,19 @@ describe("AGY backend capability admission and preserved bindings", () => {
       await fs.mkdir(source, { recursive: true });
       await fs.writeFile(path.join(source, "SKILL.md"), "---\nname: example-skill\n---\n# Installed");
       await fs.mkdir(path.join(workspace, ".agents", "skills", "example-skill"), { recursive: true });
-      const binding = { kind: "resolved", skill: new Skill({ name: "example-skill", description: "d", content: "", rootPath: source }),
-        source: { origin: "global", sourceRoot: realpathSync(source), trustedRoot: realpathSync(source) },
-        sourceTreeSha256: fingerprintConfiguredSkillSource(source, source) };
+      const binding = { kind: "resolved", skill: new Skill({ name: "example-skill", description: "d", content: "", rootPath: source }) };
       vi.spyOn(console, "warn").mockImplementation(() => undefined);
       const scoped = new AgyAgentRunBackendFactory(
         { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test", instructions, toolNames: [], skillNames: [] }) } as never,
-        { resolveSkillScope: () => scope, hasEffectiveSkills: () => true, resolveConfiguredSkillBindingsForAgentDetailed: () => [binding] } as never,
+        { resolveSkillScope: () => scope, hasEffectiveSkills: () => true, resolveConfiguredSkillBindingsForAgent: () => [binding] } as never,
         { resolveWorkingDirectory: async () => workspace } as never,
         { activateForRun: () => ({ kind: "not_exposed" }) } as never,
       );
       const preloaded = new AgentRunConfig({ ...config } as never);
       if (outcome === "rejects") {
-        await expect(scoped.createBackend(preloaded, "run")).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
+        const failure = await scoped.createBackend(preloaded, "run").catch((error: unknown) => error);
+        expect(failure).toBeInstanceOf(AgentCreationError);
+        expect((failure as Error).message).toBe("Antigravity could not use skill 'example-skill': the selected workspace already has a skill with this name.");
         return;
       }
       const backend = await scoped.createBackend(preloaded, "run");
@@ -109,6 +108,23 @@ describe("AGY backend capability admission and preserved bindings", () => {
     expect(await fs.readFile(manifestPath, "utf8")).toBe(manifest);
     expect(await fs.readFile(agentPath, "utf8")).toBe(markdown);
     await restored.terminate();
+  });
+
+  it("always launches and restores with auto-approve, even when the run config stores it off", async () => {
+    const off = new AgentRunConfig({ ...config, autoExecuteTools: false } as never);
+    const initial = await factory.createBackend(off, "run");
+    await initial.terminate();
+    const restored = await factory.restoreBackend(initial.getContext());
+    await restored.terminate();
+    expect(start).toHaveBeenCalledTimes(2);
+    for (const [input] of start.mock.calls) expect(input).not.toHaveProperty("autoExecuteTools");
+  });
+
+  it("requires the always-proceed permission mode when the run config stores auto-approve off", async () => {
+    initOverride = { permission_mode: "default" };
+    const off = new AgentRunConfig({ ...config, autoExecuteTools: false } as never);
+    await expect(factory.createBackend(off, "run")).rejects.toThrow("AGY_PERMISSION_MODE_MISMATCH");
+    expect(stop).toHaveBeenCalled();
   });
 
   it("rejects a missing selected model before creating a capsule or launching", async () => {

@@ -1,0 +1,25 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts [ ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts ]
+Error: Cannot find module '../../../test-support/live-e2e/live-e2e-harness.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts'
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/review-probes.test.ts:5:1
+      3| import path from 'node:path';
+      4| import { describe, it, expect, vi } from 'vitest';
+      5| import { LiveE2eScenarioExecution } from '../../../test-support/live-e…
+       | ^
+      6| import { CompactionStatusData } from '../../../autobyteus-ts/src/agent…
+      7| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  21:40:34
+   Duration  223ms (transform 52ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

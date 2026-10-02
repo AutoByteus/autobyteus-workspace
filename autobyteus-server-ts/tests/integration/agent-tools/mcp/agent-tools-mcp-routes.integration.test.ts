@@ -308,9 +308,21 @@ describe("Agent Tools MCP tokenless route integration", () => {
     );
     try {
       await client.connect(transport);
-      await expect(client.listTools()).resolves.toMatchObject({
-        tools: [expect.objectContaining({ name: SEND_MESSAGE_TO_TOOL_NAME })],
+      const listed = await client.listTools();
+      expect(listed.tools).toHaveLength(1);
+      const [sendTool] = listed.tools;
+      expect(sendTool.name).toBe(SEND_MESSAGE_TO_TOOL_NAME);
+      expect(sendTool.description).toContain("Send a self-contained work request, result, or blocker");
+      expect(sendTool.description).not.toContain("ordinary message");
+      expect(sendTool.inputSchema.properties).toMatchObject({
+        content: { type: "string", description: expect.stringContaining("Self-contained work request, result, or specific blocker") },
+        recipient_address: { type: "string", description: expect.stringContaining("never both") },
+        target_agent_run_id: { type: "string", description: expect.stringContaining("work request, result, or blocker") },
       });
+      expect(Object.keys(sendTool.inputSchema.properties ?? {}).sort()).toEqual([
+        "content", "message_type", "recipient_address", "reference_files", "target_agent_run_id",
+      ]);
+      expect(sendTool.inputSchema.required).toEqual(["content"]);
       await expect(client.ping()).resolves.toEqual({});
       await expect(client.callTool({
         name: SEND_MESSAGE_TO_TOOL_NAME,

@@ -1,0 +1,292 @@
+{
+  "startedAt": "2026-10-01T21:13:41.996Z",
+  "commit": "e5edfafdfdc8aecb1c4be6c736247e022f1035e8",
+  "agyVersion": "1.2.14",
+  "cases": {
+    "B01": {
+      "title": "Live Chat on AGY with the real skill set incl. browser-automation/.venv (AC-001, ASM-001)",
+      "result": "Pass",
+      "ms": 14817,
+      "details": {
+        "runId": "daily_assistant_366c2ce3ec65484d8d514dbf07d0e645",
+        "model": "gemini-3.8-flash-low",
+        "metadataConfig": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "autoExecuteTools": true,
+          "agentDefinitionId": "autobyteus-daily-assistant"
+        },
+        "linkedSkills": {
+          "bilingual-author-style-writer": "/Users/normy/autobyteus_org/autobyteus-skills/bilingual-author-style-writer",
+          "browser-automation": "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation",
+          "deep-research-article": "/Users/normy/autobyteus_org/autobyteus-skills/deep-research-article",
+          "emotion-metaphor-image-prompting": "/Users/normy/autobyteus_org/autobyteus-skills/emotion-metaphor-image-prompting",
+          "infographic-powerpoint-deck": "/Users/normy/autobyteus_org/autobyteus-skills/infographic-powerpoint-deck",
+          "llm-fine-tuning-skill": "/Users/normy/autobyteus_org/autobyteus-skills/llm-fine-tuning-skill",
+          "product-prototyping": "/Users/normy/autobyteus_org/autobyteus-skills/product-prototyping",
+          "product-ui-prototyping": "/Users/normy/autobyteus_org/autobyteus-skills/product-ui-prototyping",
+          "retrospective-skill-improver": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-api-e2e-probe-fTWJd3/server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver",
+          "shell-first-operating-practice": "/Users/normy/autobyteus_org/autobyteus-skills/shell-first-operating-practice",
+          "skill-optimizer": "/Users/normy/autobyteus_org/autobyteus-skills/skill-optimizer",
+          "software-engineering-workflow-skill": "/Users/normy/autobyteus_org/autobyteus-skills/software-engineering-workflow-skill",
+          "ux-journey-definition": "/Users/normy/autobyteus_org/autobyteus-skills/ux-journey-definition",
+          "video-audio-editing": "/Users/normy/autobyteus_org/autobyteus-skills/video-audio-editing",
+          "web-ui-automation": "/Users/normy/autobyteus_org/autobyteus-skills/web-ui-automation"
+        },
+        "skillCount": 15,
+        "runLogLines": []
+      },
+      "browserErrors": []
+    },
+    "B02": {
+      "title": "New Team run form + member override with AGY: locked on with explanation; other runtime editable (AC-007)",
+      "result": "Pass",
+      "ms": 5391,
+      "details": {
+        "agyTeam": {
+          "root": {
+            "checked": "true",
+            "disabled": true
+          },
+          "help": "Antigravity always runs with auto-approve, so it can't be turned off.",
+          "members": [
+            {
+              "name": "lead",
+              "checked": true,
+              "disabled": true,
+              "lockedNote": "Antigravity always runs with auto-approve, so it can't be turned off."
+            },
+            {
+              "name": "member",
+              "checked": true,
+              "disabled": true,
+              "lockedNote": "Antigravity always runs with auto-approve, so it can't be turned off."
+            }
+          ]
+        },
+        "afterClick": {
+          "checked": "true",
+          "disabled": true
+        },
+        "codexTeam": {
+          "root": {
+            "checked": "false",
+            "disabled": false
+          },
+          "help": "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+          "members": [
+            {
+              "name": "lead",
+              "checked": false,
+              "disabled": false,
+              "lockedNote": null
+            },
+            {
+              "name": "member",
+              "checked": false,
+              "disabled": false,
+              "lockedNote": null
+            }
+          ]
+        },
+        "agyMember": {
+          "root": {
+            "checked": "false",
+            "disabled": false
+          },
+          "help": "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
+          "members": [
+            {
+              "name": "lead",
+              "checked": false,
+              "disabled": false,
+              "lockedNote": null
+            },
+            {
+              "name": "member",
+              "checked": true,
+              "disabled": true,
+              "lockedNote": "Antigravity always runs with auto-approve, so it can't be turned off."
+            }
+          ]
+        }
+      },
+      "browserErrors": []
+    },
+    "B03": {
+      "title": "New Org run panel with AGY root and AGY nested team: locked on with explanation (AC-007)",
+      "result": "Pass",
+      "ms": 4445,
+      "details": {
+        "agyRoot": {
+          "switches": [
+            {
+              "id": "org-root",
+              "checked": "true",
+              "disabled": true
+            },
+            {
+              "id": "override-auto--director",
+              "checked": "true",
+              "disabled": true
+            },
+            {
+              "id": "team-scope-team-auto-execute",
+              "checked": "true",
+              "disabled": true
+            },
+            {
+              "id": "override-auto--team-lead",
+              "checked": "true",
+              "disabled": true
+            },
+            {
+              "id": "override-auto--team-member",
+              "checked": "true",
+              "disabled": true
+            }
+          ],
+          "orgHelp": "Antigravity always runs with auto-approve, so it can't be turned off.",
+          "teamHelp": "Antigravity always runs with auto-approve, so it can't be turned off."
+        },
+        "codexRoot": {
+          "switches": [
+            {
+              "id": "org-root",
+              "checked": "true",
+              "disabled": false
+            },
+            {
+              "id": "override-auto--director",
+              "checked": "true",
+              "disabled": false
+            },
+            {
+              "id": "team-scope-team-auto-execute",
+              "checked": "true",
+              "disabled": false
+            },
+            {
+              "id": "override-auto--team-lead",
+              "checked": "true",
+              "disabled": false
+            },
+            {
+              "id": "override-auto--team-member",
+              "checked": "true",
+              "disabled": false
+            }
+          ],
+          "orgHelp": "Automatically allows tool calls and access requests for this run.",
+          "teamHelp": "Inherited by descendant scopes without an override."
+        },
+        "agyNestedTeam": {
+          "switches": [
+            {
+              "id": "org-root",
+              "checked": "true",
+              "disabled": false
+            },
+            {
+              "id": "override-auto--director",
+              "checked": "true",
+              "disabled": false
+            },
+            {
+              "id": "team-scope-team-auto-execute",
+              "checked": "true",
+              "disabled": true
+            },
+            {
+              "id": "override-auto--team-lead",
+              "checked": "true",
+              "disabled": true
+            },
+            {
+              "id": "override-auto--team-member",
+              "checked": "true",
+              "disabled": true
+            }
+          ],
+          "orgHelp": "Automatically allows tool calls and access requests for this run.",
+          "teamHelp": "Antigravity always runs with auto-approve, so it can't be turned off."
+        }
+      },
+      "browserErrors": []
+    },
+    "B04": {
+      "title": "Paired phone: mobile launch card with AGY locked on with explanation; mobile AGY run launches (AC-007, AC-006)",
+      "result": "Pass",
+      "ms": 217526,
+      "details": {
+        "agy": {
+          "switch": {
+            "checked": "true",
+            "disabled": true
+          },
+          "help": "Antigravity always runs with auto-approve, so it can't be turned off."
+        },
+        "afterClick": {
+          "switch": {
+            "checked": "true",
+            "disabled": true
+          },
+          "help": "Antigravity always runs with auto-approve, so it can't be turned off."
+        },
+        "codex": {
+          "switch": {
+            "checked": "false",
+            "disabled": false
+          },
+          "help": "High-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default."
+        },
+        "launchedRunId": "probe_lead_ceacc1f5653d4d268c1798a5daa277e7",
+        "launchedMetadata": {
+          "isActive": true,
+          "metadataConfig": {
+            "runtimeKind": "antigravity_cli",
+            "autoExecuteTools": true
+          }
+        }
+      },
+      "browserErrors": []
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 37903
+    },
+    {
+      "label": "frontend",
+      "pid": 37927
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 37927,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 37903,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-api-e2e-probe-fTWJd3"
+    }
+  ],
+  "ownedRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-api-e2e-probe-fTWJd3",
+  "backendUrl": "http://127.0.0.1:56573",
+  "frontUrl": "http://127.0.0.1:56574",
+  "realSkills": "/Users/normy/autobyteus_org/autobyteus-skills",
+  "seed": {
+    "lead": "probe-lead",
+    "member": "probe-member",
+    "director": "probe-director",
+    "team": "probe-agy-team",
+    "org": "probe-agy-org"
+  },
+  "mobileModelOption": "Gemini 3.6 Flash (High)",
+  "realSkillsGitStatus": "?? bilingual-author-style-writer/optimization-analysis.md\n?? deep-research-article/optimization-analysis.md\n",
+  "completedAt": "2026-10-01T21:17:54.922Z"
+}

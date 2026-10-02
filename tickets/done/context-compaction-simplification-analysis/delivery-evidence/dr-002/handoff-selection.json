@@ -1,0 +1,10 @@
+{
+  "result": "Blocked",
+  "classification": "Local Fix \u2014 source integration conflicts",
+  "selectedRecipient": "/implementation_engineer",
+  "when": "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue.",
+  "reason": "New upstream feature conflicts with reviewed compaction source/contracts/lifecycle and deleted runner; no safe integrated Electron candidate. Reconcile within both existing authorities and escalate only any discovered intended-behavior ambiguity.",
+  "notSelected": "No Delivery Completed; routine existing feature integration currently has accountable implementation owner, not a known new requirement/design decision.",
+  "userRequest": "Build Electron from latest origin/personal for testing",
+  "stage": "Artifacts persisted; send pending"
+}

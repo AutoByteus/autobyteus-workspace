@@ -1,0 +1,38 @@
+
+> autobyteus@1.4.92-beta.9 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web
+> vitest --config ./electron/vitest.config.ts electron/browser/__tests__/browser-shell-controller.spec.ts electron/browser/__tests__/browser-tab-manager.spec.ts --run
+
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web/electron
+
+Error: failed to create directory '/Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/node_modules/.pnpm/electron@42.4.1/node_modules/electron/dist/Electron.app': File exists (os error 17)
+stdout | browser/__tests__/browser-tab-manager.spec.ts
+Downloading Electron binary...
+
+stdout | browser/__tests__/browser-shell-controller.spec.ts
+Downloading Electron binary...
+
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 7ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  browser/__tests__/browser-tab-manager.spec.ts [ browser/__tests__/browser-tab-manager.spec.ts ]
+Error: Electron failed to install correctly. Please delete `node_modules/electron` and run "npx install-electron --no" manually.
+ ❯ getElectronPath ../../node_modules/.pnpm/electron@42.4.1/node_modules/electron/index.js:43:13
+ ❯ Object.<anonymous> ../../node_modules/.pnpm/electron@42.4.1/node_modules/electron/index.js:52:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  8 passed (8)
+   Start at  19:25:40
+   Duration  2.28s (transform 153ms, setup 0ms, collect 1.95s, tests 7ms, environment 0ms, prepare 119ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

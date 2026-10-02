@@ -1,0 +1,14 @@
+{
+  "fetchCommand": "git fetch origin refs/heads/personal:refs/remotes/origin/personal",
+  "fetchExit": 0,
+  "baseBefore": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "baseAfter": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "aheadBehind": "7 0",
+  "integrationMethod": "Already current",
+  "newBaseCommitsIntegrated": false,
+  "checkpoint": "Not needed; no integration would change reviewed candidate",
+  "postIntegrationRerun": "Not needed: no new base or effective code change; upstream API008 and CRR013 evidence reused, subject to pin audit",
+  "bootstrapContext": "requirements-doc.md workspace paragraph; implementation-handoff.md repository state; branch config remote=origin merge=refs/heads/personal",
+  "finalizationTarget": "origin/personal",
+  "noPushMergeReleaseOrSourceEdit": true
+}

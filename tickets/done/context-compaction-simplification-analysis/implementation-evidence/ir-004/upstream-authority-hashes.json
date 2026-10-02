@@ -1,0 +1,22 @@
+{
+  "requirements-doc.md": {
+    "current_sha256": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12",
+    "entry_pending_sha256": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12"
+  },
+  "design-spec.md": {
+    "current_sha256": "723325eda359fc007a413007eade69fd2ce26bf66b8bccfedbd1c31fc3835f28",
+    "entry_pending_sha256": "723325eda359fc007a413007eade69fd2ce26bf66b8bccfedbd1c31fc3835f28"
+  },
+  "design-review-report.md": {
+    "current_sha256": "2df83ee4f45e7ffbbe244afd692fecff4e1813c3935c6b64d01c43a20c01b81c",
+    "entry_pending_sha256": "2df83ee4f45e7ffbbe244afd692fecff4e1813c3935c6b64d01c43a20c01b81c"
+  },
+  "solution-revision-record.md": {
+    "current_sha256": "619655caedcaec6e054f3cd86192c85d73cb43cc877626b4878fd1b33da705a5",
+    "entry_pending_sha256": "619655caedcaec6e054f3cd86192c85d73cb43cc877626b4878fd1b33da705a5"
+  },
+  "architecture-review-revision-record.md": {
+    "current_sha256": "19a52021866457c1f2e034ea77f59305da606c3753226cc01b4077d37a0e4f46",
+    "entry_pending_sha256": "19a52021866457c1f2e034ea77f59305da606c3753226cc01b4077d37a0e4f46"
+  }
+}

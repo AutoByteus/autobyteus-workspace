@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "pnpm",
+    "--silent",
+    "isolated-app",
+    "start",
+    "--build"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "stdout": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/isolated-start.json",
+  "stderr": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/isolated-start.stderr",
+  "exit": 3,
+  "timing": "Exact start time not instrumented; files retain filesystem timestamps. Command shown in tool transcript."
+}

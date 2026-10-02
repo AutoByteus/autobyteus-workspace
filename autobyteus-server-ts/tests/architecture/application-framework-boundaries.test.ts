@@ -2114,6 +2114,7 @@ describe("application framework architecture boundaries", () => {
       { key: "browser", name: undefined, modulePath: "../agent-tools/browser/register-browser-tools.js", exportName: "registerBrowserTools" },
       { key: "task_delegation", name: undefined, modulePath: "../agent-tools/task-delegation/register-task-delegation-tools.js", exportName: "registerTaskDelegationTools" },
       { key: "agent_communication", name: undefined, modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js", exportName: "registerAgentCommunicationTools" },
+      { key: "agent_discovery", name: undefined, modulePath: "../agent-tools/agent-discovery/list-available-agents-tool.js", exportName: "registerAgentDiscoveryTools" },
       { key: "published_artifact", name: undefined, modulePath: "../agent-tools/published-artifacts/register-published-artifact-tools.js", exportName: "registerPublishedArtifactTools" },
       { key: "media", name: undefined, modulePath: "../agent-tools/media/register-media-tools.js", exportName: "registerMediaTools" },
       { key: "search", name: undefined, modulePath: "../agent-tools/search/register-search-tool.js", exportName: "registerProvisionedSearchTool" },
@@ -3046,7 +3047,6 @@ describe("application framework architecture boundaries", () => {
       return imported;
     }).sort();
     expect(ambientRunServiceImports).toEqual([
-      "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts:getAgentRunService",
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",

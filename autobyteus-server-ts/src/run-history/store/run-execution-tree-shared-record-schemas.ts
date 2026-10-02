@@ -17,6 +17,7 @@ import type {
   TeamRunApplicationBinding,
 } from "../domain/run-execution-tree-shared-records.js";
 import { isCollaboratorTeamEntry } from "../domain/run-execution-tree-shared-records.js";
+import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -197,17 +198,20 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
       platformAgentRunId: nullableString(execution.platformAgentRunId, `${label}.platformAgentRunId`),
       ...parseDelegator(execution, label),
       startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
+      ...parseTaskAgentExecutionSource(execution, label),
     };
   }
   requireKeys(execution, ["address", "teamRunId", "members", "taskExecutions", "startedAt"], label);
+  const address = canonicalNonRootAddress(execution.address, `${label}.address`);
   return {
-    address: canonicalNonRootAddress(execution.address, `${label}.address`),
+    address,
     teamRunId: requiredString(execution.teamRunId, `${label}.teamRunId`),
     members: requiredArray(execution.members, `${label}.members`).map((member, index) =>
       parseTaskTeamMember(member, `${label}.members[${index}]`)),
     taskExecutions: parseTaskExecutions(execution.taskExecutions, `${label}.taskExecutions`),
     ...parseDelegator(execution, label),
     startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
+    ...parseTaskTeamExecutionSource(execution, address, label),
   };
 };
 
@@ -396,7 +400,7 @@ export const collectTaskExecutionRunIds = (tasks: readonly TaskExecution[]): str
  * - addresses are unique and never collide with a configured (or host) address;
  * - collaborator run IDs are unique and never collide with any other run ID of the tree;
  * - an extra copy (a task execution at a collaborator address) has the collaborator's kind
- *   and, for a Team, its member layout.
+ *   and, for a Team, its member layout; a catalog copy (with `source`) has its own source's.
  * `owners` are every holder of task executions outside the collaborators themselves.
  */
 export const validateCollaboratorInvariants = (input: Readonly<{
@@ -428,7 +432,13 @@ export const validateCollaboratorInvariants = (input: Readonly<{
     byAddress.set(entry.address, entry);
   }
   const visit = (task: TaskExecution): void => {
-    const entry = byAddress.get(task.address);
+    const entry = task.source ? null : byAddress.get(task.address);
+    if ("teamRunId" in task && task.source) {
+      const layout = new Set<string>(task.source.members.map((member) => member.address));
+      if (task.members.length !== layout.size || task.members.some((member) => !layout.has(member.address))) {
+        throw new Error(`Task TeamRun '${task.teamRunId}' does not match its catalog source.`);
+      }
+    }
     if (entry) {
       if (entry.kind === "agent" && !("agentRunId" in task)) {
         throw new Error(`Task execution at collaborator '${task.address}' must be an Agent.`);

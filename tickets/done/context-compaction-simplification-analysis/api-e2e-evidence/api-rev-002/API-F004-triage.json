@@ -1,0 +1,13 @@
+{
+  "failureId": "API-F004",
+  "case": "API-C08",
+  "failureLog": "API-C08-first-attempt3.log",
+  "diagnosticLog": "API-C08-first.log",
+  "unchangedBehaviorBetweenAttempts": true,
+  "onlyDelta": "synthetic parent/summary/next-request logging before final artifact read",
+  "failedAttemptToolSuccessNotifications": 3,
+  "diagnosticToolSuccessNotifications": 4,
+  "failureError": "LIVE_E2E_PROVIDER_OPERATION_FAILED:lmstudio.qwen36.compaction-agent-flow",
+  "resolved": false,
+  "origin": "Unclear: prior attempt completed summary then final parent turn without final tool dispatch; generic wrapper suppressed underlying exception; later same-behavior pass is not closure."
+}

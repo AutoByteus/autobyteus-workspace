@@ -66,6 +66,10 @@ export class RootAgentExecutionRegistry {
       : handle.hasOpenExecutionWork());
   }
   /** Status leaves of every registered Agent; a non-live task Agent always reports `offline`. */
+  getInputStateSnapshots() {
+    return [...this.active].flatMap(([id, handle]) => this.taskAgentRunIds.has(id) && !this.isTaskLive(id)
+      ? [] : handle.getInputStateSnapshots());
+  }
   getStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
     return [...this.active].map(([agentRunId, handle]) => this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)
       ? createCollaborationAgentStatusSnapshot({ execution: handle.identity, status: "offline" })

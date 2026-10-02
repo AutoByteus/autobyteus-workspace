@@ -11,6 +11,7 @@ const translations: Record<string, string> = {
   auto_approve_tools: 'Auto approve tools',
   auto_approve_tools_help: 'High-trust mode for Codex team members.',
   auto_help: 'Inherited by descendant scopes without an override.',
+  agyAutoApproveLocked: "Antigravity always runs with auto-approve, so it can't be turned off.",
   customized: 'Customized',
   default_llm_model_global: 'Default LLM Model (Global)',
   inherited: 'Inherited',
@@ -203,6 +204,7 @@ describe('TeamScopeConfigEditor presentation', () => {
       'runtime-model-fields',
       'workspace-selector',
       'team-auto-approve-row',
+      'team-auto-approve-help',
     ])
 
     runtime.vm.$emit('update:llmModelIdentifier', 'gpt-5.5')
@@ -352,7 +354,7 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(workspace.props('model')).toEqual(expect.objectContaining({ isLoading: true }))
   })
 
-  it('keeps the AGY default through synchronous runtime, model and config edits, then allows explicit off', async () => {
+  it('keeps the AGY default through synchronous runtime, model and config edits, then locks auto-approve on', async () => {
     const wrapper = mountEditor()
     const runtime = wrapper.getComponent(RuntimeModelConfigFieldsStub)
     runtime.vm.$emit('update:runtimeKind', 'antigravity_cli')
@@ -372,8 +374,41 @@ describe('TeamScopeConfigEditor presentation', () => {
       effectiveConfig: { ...inheritedConfig, runtimeKind: 'antigravity_cli', autoExecuteTools: true, llmConfig: null },
     } })
     await wrapper.get('button[aria-expanded]').trigger('click')
+    const toggle = wrapper.get('[role="switch"]')
+    expect(toggle.attributes('aria-checked')).toBe('true')
+    expect(toggle.attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="team-scope-auto-approve-help"]').text()).toBe("Antigravity always runs with auto-approve, so it can't be turned off.")
+    await toggle.trigger('click')
+    expect(wrapper.emitted('update-override')).toHaveLength(3)
+  })
+
+  it('shows the root AGY auto-approve on and locked even when the stored value is off, and editable again for another runtime', async () => {
+    const scope = (runtimeKind: string): EditableTeamScopeFormModel => ({
+      mode: 'editable',
+      address: '/',
+      displayName: 'Nested Classroom',
+      effectiveConfig: { ...inheritedConfig, runtimeKind, autoExecuteTools: false },
+      isCustomized: false,
+      workspaceSelection,
+      inheritedConfig: null,
+      override: null,
+      workspaceOperation: { status: 'idle', error: null },
+      runtimeCatalogState: { status: 'idle', error: null },
+    })
+    const wrapper = mountEditor({ scope: scope('antigravity_cli'), isRoot: true })
+    const toggle = wrapper.get('[role="switch"]')
+    expect(toggle.attributes('aria-checked')).toBe('true')
+    expect(toggle.attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="team-auto-approve-help"]').text()).toBe("Antigravity always runs with auto-approve, so it can't be turned off.")
+    await toggle.trigger('click')
+    expect(wrapper.emitted('update-root')).toBeUndefined()
+
+    await wrapper.setProps({ scope: scope('codex_app_server') })
+    expect(wrapper.get('[role="switch"]').attributes('aria-checked')).toBe('false')
+    expect(wrapper.get('[role="switch"]').attributes('disabled')).toBeUndefined()
+    expect(wrapper.get('[data-test="team-auto-approve-help"]').text()).toBe('High-trust mode for Codex team members.')
     await wrapper.get('[role="switch"]').trigger('click')
-    expect(wrapper.emitted('update-override')?.at(-1)).toEqual([{ runtimeKind: 'antigravity_cli', llmConfig: null }])
+    expect(wrapper.emitted('update-root')).toEqual([['auto', true]])
   })
 
   it('keeps disclosure access while disabling nested edits and omitting stored Reset', async () => {

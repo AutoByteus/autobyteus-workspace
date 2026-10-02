@@ -1,0 +1,19 @@
+from pathlib import Path
+import hashlib,json,subprocess,difflib
+w=Path('/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis');p=w/'tickets/in-progress/context-compaction-simplification-analysis';e=p/'solution-recovery-evidence/sr029'
+d=(p/'design-spec.md').read_text();d=d.replace('| No private installed-data census/power-loss proof |\n\n| E29-1','| No private installed-data census/power-loss proof |\n| E29-1');(p/'design-spec.md').write_text(d)
+before=json.loads((e/'input-audit.json').read_text()); owned={'design-spec.md','investigation-notes.md','solution-revision-record.md','solution-progress-result.md','output-format-and-coverage.md'};changed=[];unexpected=[]
+sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest()
+for n,h in before['files'].items():
+ f=w/n
+ if not f.is_file() or sha(f)!=h:
+  changed.append(n)
+  if not(f.is_relative_to(p) and str(f.relative_to(p)) in owned):unexpected.append(n)
+r=(p/'requirements-doc.md').read_text();prompt=sha(p/'proposed-compaction-prompt.md');old=(p/'history/design-spec.md.before-sr029.md').read_text();ass=lambda x:x.split('**ASM-022-01 — Natural summary compression.**')[1].split('## Main Domain')[0].strip()
+audit={'head_unchanged':subprocess.check_output(['git','rev-parse','HEAD'],cwd=w,text=True).strip()==before['head'],'changed_owned_existing_files':changed,'unexpected_existing_file_changes':unexpected,'nine_api_unchanged':all(sha(w/n)==before['files'][n] for n in before['api_paths']),'requirements_unchanged':sha(p/'requirements-doc.md')==before['files'][str((p/'requirements-doc.md').relative_to(w))],'prompt_sha256':prompt,'prompt_unchanged':prompt=='2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7','assumption_unchanged':ass(d)==ass(old),'production_diff_empty':not subprocess.check_output(['git','diff','--stat','HEAD','--','autobyteus-ts/src','autobyteus-server-ts/src','autobyteus-web','autobyteus-agent-presentation-contracts/src'],cwd=w,text=True).strip(),'history_append_only':all((p/n).read_bytes().startswith((p/'history'/f'{n}.before-sr029.md').read_bytes()) for n in ['investigation-notes.md','solution-revision-record.md']),'document_contract_checks':{'no_continuation_phase_union':'phase: before_first_parent_dispatch|continuation' not in d,'no_positive_continuation_pause_test':'tool-continuation pause resumes' not in d,'no_tag_parse_host_claim':'builder/validator still check framing' not in d,'body_validator_specified':'validateCompactionSummaryBody(content: string): string' in d,'reservation_not_new_authority':'No release ordinal or reservation wakeup protocol is introduced.' in d,'postresponse_path_distinguished':'post-response compaction call' in d},'tests_run':0,'runtime_probes':0,'provider_calls':0,'new_migrations':0,'review_verdict':None,'result':'Architecture Design Complete (continuing same independent review)','requirements_approval':'SR028 unchanged','design_revision':'SR029','task_size':'Large','architectural_risk':'High'}
+(e/'final-audit.json').write_text(json.dumps(audit,indent=2)+'\n');(e/'audit.py').write_bytes(Path(__file__).read_bytes());(e/'design-clarification.diff').write_text(''.join(difflib.unified_diff(old.splitlines(keepends=True),d.splitlines(keepends=True),fromfile='SR028 design',tofile='SR029 design')))
+assert not unexpected,unexpected
+assert all(audit[k] for k in ['head_unchanged','nine_api_unchanged','requirements_unchanged','prompt_unchanged','assumption_unchanged','production_diff_empty','history_append_only'])
+assert all(audit['document_contract_checks'].values())
+print('PRESERVATION PASS:',len(changed),'owned existing docs; requirements/prompt/assumption/source/9 API paths and other inventoried files unchanged. No tests/probes/provider calls.')
+print('Design clarification diff lines:', len((e/'design-clarification.diff').read_text().splitlines()))

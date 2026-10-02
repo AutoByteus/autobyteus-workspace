@@ -8,9 +8,9 @@ import { AgyStreamProcess } from "../../../src/agent-execution/backends/antigrav
 import { AgyStreamEventConverter } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
 import { readAgyNativeImagePath } from "../../../src/agent-execution/backends/antigravity/stream/agy-step-output-reader.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { fingerprintConfiguredSkillSource } from "../../../src/skills/services/configured-skill-source-fingerprint.js";
 import { Skill } from "../../../src/skills/domain/models.js";
-import type { DetailedConfiguredSkillResolution } from "../../../src/skills/domain/configured-agent-skill-binding.js";
+import type { ConfiguredAgentSkillBinding } from "../../../src/skills/domain/configured-agent-skill-binding.js";
+import type { WorkspaceCollisionPolicy } from "../../../src/agent-execution/backends/shared/workspace-skill-collision-policy.js";
 import type { AgyStreamMessage } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 
 const enabled = process.env["RUN_AGY_CAPABILITY_E2E"] === "1";
@@ -36,30 +36,27 @@ const summarize = (messages: AgyStreamMessage[]) => messages.filter((m) => m.eve
   }) : null);
 
 async function run(input: { name: string; prompt: string; skillSource?: string;
-  extraSkillBindings?: DetailedConfiguredSkillResolution[] }) {
+  extraSkillBindings?: ConfiguredAgentSkillBinding[]; workspaceCollisionPolicy?: WorkspaceCollisionPolicy }) {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-capability-e2e-"));
   const workspace = path.join(base, "workspace");
   await fs.mkdir(workspace);
   const source = input.skillSource;
-  const bindings: DetailedConfiguredSkillResolution[] = source ? [{
+  const bindings: ConfiguredAgentSkillBinding[] = source ? [{
     kind: "resolved" as const,
     skill: new Skill({ name: "software-engineering-workflow-skill",
       description: "Software engineering workflow", content: "", rootPath: source }),
-    source: { origin: "agent_private" as const, sourceRoot: await fs.realpath(source),
-      trustedRoot: await fs.realpath(path.dirname(path.dirname(source))) },
-    sourceTreeSha256: fingerprintConfiguredSkillSource(source, path.dirname(path.dirname(source))),
   }] : [];
   const capsule = await createAgyRunCapsule({ runId: input["name"], memoryDir: path.join(base, "memory"),
     workspacePath: workspace, identity: "You are an AutoByteus agent. Follow the user's request using your available tools and configured skills.",
     agentDefinitionId: "codex", configuredSkillBindings: [...bindings, ...(input.extraSkillBindings ?? [])],
-    workspaceCollisionPolicy: "fail",
+    workspaceCollisionPolicy: input.workspaceCollisionPolicy ?? "fail",
     mcpDescriptor: null });
   const stream = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const closed: string[] = [];
   try {
     const init = await stream.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
-      workspacePath: workspace, model, autoExecuteTools: true, conversationId: null });
+      workspacePath: workspace, model, conversationId: null });
     stream.subscribe((message) => observed.push(message));
     stream.onClose((error) => closed.push(error.message));
     await stream.sendUserMessage(input.prompt);
@@ -126,18 +123,20 @@ it.skipIf(!enabled || !packageRoot)("starts bundled Codex skill on a real AGY fi
   expect(output.report["response"]?.length).toBeGreaterThan(0);
 }, 180_000);
 
-it.skipIf(!enabled)("warns/omits absent and semantic-invalid skills but completes a real AGY first turn", async () => {
+it.skipIf(!enabled)("warns/omits unresolved and unusable all-installed skills but completes a real AGY first turn", async () => {
   const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
   try {
     const output = await run({ name: "real-skills-warn-skip",
-      extraSkillBindings: [{ kind: "certified_absent", name: "missing-skill" },
-        { kind: "invalid_candidate", name: "invalid-skill", reason: "malformed_manifest" }],
+      workspaceCollisionPolicy: "prefer_workspace",
+      extraSkillBindings: [{ kind: "unresolved", name: "missing-skill" },
+        { kind: "resolved", skill: new Skill({ name: "vanished-skill", description: "Vanished", content: "",
+          rootPath: path.join(os.tmpdir(), "agy-capability-e2e-vanished-skill-does-not-exist") }) }],
       prompt: "Reply with exactly READY and nothing else." });
     expect(output.capsule.manifest.skills).toEqual([]);
     expect(output.report.resultStatus).toBe("SUCCESS");
     expect(output.report["response"]).toMatch(/READY/);
     const warnings = warning.mock.calls.flat().join(" ");
     expect(warnings).toContain("skill=missing-skill, disposition=skipped-missing");
-    expect(warnings).toContain("skill=invalid-skill, disposition=skipped-invalid, reason=malformed_manifest");
+    expect(warnings).toContain("skill=vanished-skill, disposition=skipped-unusable, reason=source_unavailable");
   } finally { warning.mockRestore(); }
 }, 180_000);

@@ -1,0 +1,746 @@
+
+> autobyteus@1.4.92-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/retainedActivityTermination.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | stores/__tests__/retainedActivityTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/retainedActivityTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts (8 tests | 8 failed) 25ms
+   × BEH-001/004: successful Stop retains same-focus expanded completed/system Activity, other members and genuine empty state 12ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: rejected Stop preserves Activity and last-known lifecycle 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: graphql Stop preserves Activity and last-known lifecycle 3ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: network Stop preserves Activity and last-known lifecycle 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: concurrent and already-stopped duplicate Stop sends one command 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-001/003: retained old approval cannot dispatch via retired store or old service and viewing never restores 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-002: real standalone Agent stop retains Activity in same renderer and context 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-003: later normal Send restores, hydrates and admits exact input without duplicating retained Activity 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-001/004: successful Stop retains same-focus expanded completed/system Activity, other members and genuine empty state
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:53:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: rejected Stop preserves Activity and last-known lifecycle
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: graphql Stop preserves Activity and last-known lifecycle
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: network Stop preserves Activity and last-known lifecycle
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:85:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: concurrent and already-stopped duplicate Stop sends one command
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:94:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-001/003: retained old approval cannot dispatch via retired store or old service and viewing never restores
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:103:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-002: real standalone Agent stop retains Activity in same renderer and context
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:114:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-003: later normal Send restores, hydrates and admits exact input without duplicating retained Activity
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:126:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed (8)
+   Start at  06:52:27
+   Duration  8.28s (transform 4.30s, setup 6.95s, collect 326ms, tests 25ms, environment 295ms, prepare 283ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

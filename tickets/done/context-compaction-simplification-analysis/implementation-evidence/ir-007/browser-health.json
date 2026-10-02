@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"sessions\": [\n    {\n      \"tab_id\": \"289da4\",\n      \"title\": \"@ mentions prototype\",\n      \"url\": \"http://127.0.0.1:3282/workspace?rootSubjectKind=agent_org&definitionId=org-product-launch&orgRunId=org-run-001&mode=history&memberAddress=/analyst\",\n      \"device_emulation\": {\n        \"mode\": \"desktop\",\n        \"profile\": null\n      }\n    },\n    {\n      \"tab_id\": \"2fb071\",\n      \"title\": \"@ mentions \u2014 SR-008 revision\",\n      \"url\": \"http://127.0.0.1:3284/workspace?rootSubjectKind=agent_org&definitionId=org-product-launch&orgRunId=org-run-001&mode=history&memberAddress=/review-team/researcher\",\n      \"device_emulation\": {\n        \"mode\": \"desktop\",\n        \"profile\": null\n      }\n    },\n    {\n      \"tab_id\": \"01a839\",\n      \"title\": \"127.0.0.1:3291/applications\",\n      \"url\": \"http://127.0.0.1:3291/nodes\",\n      \"device_emulation\": {\n        \"mode\": \"desktop\",\n        \"profile\": null\n      }\n    }\n  ]\n}"
+    }
+  ]
+}

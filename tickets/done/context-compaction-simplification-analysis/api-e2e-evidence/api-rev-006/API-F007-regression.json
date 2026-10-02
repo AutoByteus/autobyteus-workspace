@@ -1,0 +1,18 @@
+{
+  "case": "API-F007-regression",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "-t",
+    "numeric compaction context ceiling|credential-like settings",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T21:51:36.291910+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T21:51:42.058605+00:00"
+}

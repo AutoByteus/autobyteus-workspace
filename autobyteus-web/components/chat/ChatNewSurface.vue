@@ -62,7 +62,11 @@
           </template>
           <template #footer-left>
             <ChatWorkspaceMenu :workspace="draft.workspace" @select="chatDraftStore.setWorkspace" />
-            <ChatApprovalToggle :model-value="draft.autoExecuteTools" @update:model-value="chatDraftStore.setAutoExecuteTools" />
+            <ChatApprovalToggle
+              :model-value="effectiveAutoExecuteTools(controls.runtimeKind.value, draft.autoExecuteTools)"
+              :locked="isAutoApproveLockedForRuntime(controls.runtimeKind.value)"
+              @update:model-value="chatDraftStore.setAutoExecuteTools"
+            />
           </template>
           <template #footer-right>
             <ChatModelMenu
@@ -119,6 +123,7 @@ import { resolveChatLaunchReadiness } from '~/services/chat/chatLaunchService'
 import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction'
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
+import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import { useLocalization } from '~/composables/useLocalization'
 
 const router = useRouter()

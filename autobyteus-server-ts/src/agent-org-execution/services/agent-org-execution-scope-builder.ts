@@ -1,6 +1,5 @@
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createRootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
@@ -23,6 +22,11 @@ import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode }
 import { prepareCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import {
+  resolveMemberCollaborationScope,
+  type MemberHostTeam,
+  type MemberInstructionDefinition,
+} from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 
@@ -59,24 +63,41 @@ export class AgentOrgExecutionScopeBuilder {
     });
     // Collaborators join after launch, so member contexts read the live tree.
     const liveTree = (): AgentOrgRunExecutionTreeSnapshot => run?.getExecutionTreeSnapshot() ?? input.state.executionTree;
-    const buildMemberContext = async (identity: CollaborationMemberExecutionIdentity, mode: ConfiguredAgentActivationMode) => {
+    const buildMemberContext = async (
+      identity: CollaborationMemberExecutionIdentity,
+      mode: ConfiguredAgentActivationMode,
+      hostTeam: MemberHostTeam | null | undefined,
+    ) => {
       const tree = liveTree();
+      // CR-001: the one owner decides the member's handoffs and enclosing instruction.
+      const scope = resolveMemberCollaborationScope({
+        memberAddress: identity.memberAddress,
+        hostTeam,
+        root: {
+          configuredRootAddresses: tree.rootOrg.members.flatMap((member) => "agentRunId" in member ? [member.address] : []),
+          handoffs: tree.handoffs,
+          definition: { kind: "agent_org", definitionId: tree.rootOrg.orgDefinitionId },
+        },
+      });
       return new MemberExecutionContext({
         identity,
         teamScoped: true,
-        authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveFreshInstruction(tree, identity.memberAddress) : null,
+        authoredEnclosingScopeInstruction: mode === "fresh" ? await this.resolveInstruction(scope.instructionDefinition) : null,
         collaboration: new MemberCollaborationContext({
-          outgoingHandoffs: agentOrgHandoffs(tree).filter((handoff) => handoff.from === identity.memberAddress),
+          outgoingHandoffs: scope.outgoingHandoffs,
           deliverLogicalMessage: (message) => {
             if (!run) return Promise.resolve({ accepted: false, code: "AGENT_ORG_ROOT_NOT_BOUND", message: "AgentOrg construction is incomplete." });
             return run.deliverLogicalMessage(identity, message);
           },
+          listAvailableAgents: () => run
+            ? run.listAvailableAgents(identity)
+            : Promise.reject(new Error("AgentOrg construction is incomplete.")),
         }),
         tasks: taskCommands,
       });
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
-      buildMemberExecutionContext: ({ identity }) => buildMemberContext(identity, input.activationMode),
+      buildMemberExecutionContext: ({ identity, hostTeam }) => buildMemberContext(identity, input.activationMode, hostTeam),
       publishAgentEvent: (identity, event) => {
         if (!run?.isActive()) {
           retainedAgentEvents.push(Object.freeze({ identity, event }));
@@ -120,7 +141,7 @@ export class AgentOrgExecutionScopeBuilder {
     const prepareCollaborators = (entries: Parameters<typeof prepareCollaboratorHandles>[0]["entries"], mode: ConfiguredAgentActivationMode) =>
       prepareCollaboratorHandles({
         root, rootAgents, teams, entries, mode,
-        teamCallbacks: Object.freeze({ ...callbacks, buildMemberExecutionContext: ({ identity }) => buildMemberContext(identity, mode) }),
+        teamCallbacks: Object.freeze({ ...callbacks, buildMemberExecutionContext: ({ identity, hostTeam }) => buildMemberContext(identity, mode, hostTeam) }),
       });
     const plans: Array<Readonly<{
       commitAfterDurability(): void;
@@ -189,25 +210,13 @@ export class AgentOrgExecutionScopeBuilder {
    * Agent, the Team definition for a member of a configured or collaborator Team. A
    * collaborator Agent (and an extra copy at its address) gets none.
    */
-  private async resolveFreshInstruction(tree: AgentOrgRunExecutionTreeSnapshot, address: string): Promise<string | null> {
-    const parent = getParentAgentTeamAddress(address);
-    if (parent === "/") {
-      // Only a configured direct Agent (or a copy at its address); a collaborator Agent is
-      // prepared before its entry is committed, so this is decided positively.
-      if (!tree.rootOrg.members.some((member) => member.address === address)) return null;
-      const definition = await this.dependencies.orgDefinitions.getDefinitionById(tree.rootOrg.orgDefinitionId);
-      return definition?.instructions?.trim() || null;
-    }
-    const team = tree.rootOrg.members.find((member) => "teamRunId" in member && member.address === parent)
-      ?? tree.rootOrg.collaborators.find((entry) => entry.kind === "agent_team" && entry.address === parent);
-    if (!team || !("teamDefinitionId" in team)) return null;
-    const definition = await this.dependencies.teamDefinitions.getDefinitionById(team.teamDefinitionId);
-    return definition?.instructions?.trim() || null;
+  /** The authored instruction of a member's enclosing Org or Team definition (read fresh). */
+  private async resolveInstruction(definition: MemberInstructionDefinition | null): Promise<string | null> {
+    if (!definition) return null;
+    const found = definition.kind === "agent_org"
+      ? await this.dependencies.orgDefinitions.getDefinitionById(definition.definitionId)
+      : await this.dependencies.teamDefinitions.getDefinitionById(definition.definitionId);
+    return found?.instructions?.trim() || null;
   }
 }
 
-/** Every handoff of the run: the Org's and those of each collaborator Team (addresses are disjoint). */
-const agentOrgHandoffs = (tree: AgentOrgRunExecutionTreeSnapshot) => [
-  ...tree.handoffs,
-  ...tree.rootOrg.collaborators.flatMap((entry) => entry.kind === "agent_team" ? entry.handoffs : []),
-];

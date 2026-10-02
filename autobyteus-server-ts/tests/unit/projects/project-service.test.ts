@@ -9,8 +9,12 @@ import { ProjectError } from "../../../src/projects/domain/project-errors.js";
 const WS_A = "agent_ws_aaa";
 const WS_B = "agent_ws_bbb";
 
+import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
+import { ProjectTaskContextLayout } from "../../../src/projects/context/project-task-context-layout.js";
+
 const createHarness = async () => {
   const appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "projects-service-"));
+  const contextStore = new ProjectTaskContextStore(new ProjectTaskContextLayout(path.join(appDataDir, "projects")));
   const store = new ProjectStore({ getAppDataDir: () => appDataDir });
   const registry = new Map<string, string>([
     [WS_A, "/work/autobyteus-web-prototype"],
@@ -25,6 +29,7 @@ const createHarness = async () => {
   let idCounter = 0;
   const service = new ProjectService({
     store,
+    contextStore,
     workspaceLookup,
     now: () => new Date(Date.UTC(2026, 8, 26, 0, 0, tick++)),
     createId: () => `project_${++idCounter}`,
@@ -67,6 +72,7 @@ describe("ProjectService", () => {
       updatedAt: "2026-09-26T00:00:00.000Z",
       workspaces: [],
       openTaskCount: 0,
+      taskCount: 0,
     });
     expect(await harness.readFile()).toEqual([
       {
@@ -346,6 +352,7 @@ describe("ProjectService", () => {
       description: "Hello",
       updatedAt: "2026-09-21T00:00:00.000Z",
       openTaskCount: 0,
+      taskCount: 0,
     });
     expect(project?.workspaces.map((link) => [link.workspaceId, link.description, link.availability])).toEqual([
       [WS_A, "UI", "AVAILABLE"],
@@ -395,7 +402,7 @@ describe("ProjectService", () => {
     await harness.service.removeWorkspaceLink({ projectId: created.projectId, workspaceId: WS_A });
 
     const [after] = await harness.readFile();
-    expect(after.tasks).toEqual(stored.tasks);
+    expect(after.tasks).toEqual(stored.tasks.map((task: object) => ({...task, contextFiles: []})));
     expect((await harness.service.getProject(created.projectId))?.openTaskCount).toBe(1);
   });
 
@@ -421,4 +428,46 @@ describe("ProjectService", () => {
     expect(remaining[0].tasks.map((t: { taskId: string }) => t.taskId)).toEqual([`task_of_${keep.projectId}`]);
     expect(JSON.stringify(remaining)).not.toContain(`task_of_${drop.projectId}`);
   });
+  it("atomically saves aggregate workspace rows, preserves unregistered snapshots and current Tasks", async () => {
+    const created = await harness.service.createProject({name: "Aggregate", workspaces: [{workspaceId: WS_A, description: "a"}]});
+    const original = created.workspaces[0]!;
+    harness.registry.delete(WS_A);
+    await harness.store.updateRecords((rows) => rows.map((row) => ({...row, tasks: [{
+      taskId: "concurrent", description: "current", status: "DONE", createdAt: "1", updatedAt: "2",
+    }]})));
+    const saved = await harness.service.updateProject({projectId: created.projectId, name: "Changed", workspaces: [
+      {workspaceId: WS_A, description: "retained"}, {workspaceId: WS_B, description: "b"},
+    ]});
+    expect(saved.workspaces.find((w) => w.workspaceId === WS_A)).toMatchObject({
+      workspaceRootPath: original.workspaceRootPath, addedAt: original.addedAt, description: "retained", availability: "UNREGISTERED",
+    });
+    expect(saved.taskCount).toBe(1);
+    expect(saved.openTaskCount).toBe(0);
+    const before = await harness.readFile();
+    await expect(harness.service.updateProject({projectId: created.projectId, name: "No partial rename", workspaces: [
+      {workspaceId: WS_B}, {workspaceId: WS_B},
+    ]})).rejects.toMatchObject({code: "WORKSPACE_ALREADY_LINKED"});
+    expect(await harness.readFile()).toEqual(before);
+  });
+
+  it("projects known fields only without a migration and never persists derived locators/counts", async () => {
+    const p = await harness.service.createProject({name: "Known"});
+    const rows = await harness.readFile();
+    rows[0].prototypeField = "extra"; rows[0].taskCount = 999;
+    rows[0].tasks = [{
+      taskId: "task", description: "read", status: "TODO", createdAt: "1", updatedAt: "2", unknown: true,
+      contextFiles: [{storedFilename: "ctx_test__note.txt", displayName: "note.txt", mimeType: "text/plain", sizeBytes: 3, locator: "evil", localPath: "/external"}],
+    }];
+    await fs.writeFile(harness.store.getFilePath(), JSON.stringify(rows));
+    const source = await fs.readFile(harness.store.getFilePath(), "utf8");
+    const read = await harness.store.listRecords();
+    expect(read[0]).not.toHaveProperty("prototypeField");
+    expect(read[0]!.tasks[0]).not.toHaveProperty("unknown");
+    expect(read[0]!.tasks[0]!.contextFiles![0]).not.toHaveProperty("localPath");
+    expect(await fs.readFile(harness.store.getFilePath(), "utf8")).toBe(source);
+    await harness.service.updateProject({projectId: p.projectId, name: "Saved"});
+    const json = await fs.readFile(harness.store.getFilePath(), "utf8");
+    expect(json).not.toContain("locator"); expect(json).not.toContain("localPath"); expect(json).not.toContain("taskCount");
+  });
+
 });

@@ -1,0 +1,54 @@
+{
+  "entry_pending_count": 747,
+  "unchanged_count": 739,
+  "changed": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "entry_sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "current_sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "owner": "API mechanical adaptation"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "entry_sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "current_sha256": "fac1aec30d5ac2e988b96ce99d7103e4edbe26da7c68e323ab8b4b9909863e34",
+      "owner": "API mechanical adaptation"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "entry_sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "current_sha256": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "owner": "API mechanical adaptation"
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "entry_sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "current_sha256": "d0527b871e4132f3423204f05c033f6259d31b62e2b60485c5343df9597e321c",
+      "owner": "API mechanical adaptation"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "entry_sha256": "723325eda359fc007a413007eade69fd2ce26bf66b8bccfedbd1c31fc3835f28",
+      "current_sha256": "3da8a3b11359c089a5cced19fcfb3419c4211fbe83a74a7dce9c0c03ccbff95b",
+      "owner": "upstream Solution Designer SR031 clarification (not edited here)"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "entry_sha256": "34f063f3eb8c5adbd58b182687bd8989c21815c9c8bd1462d3784e9c923fc86f",
+      "current_sha256": "eacf219c35882cd9f33d7788262fc8c1ea46ad6ce67cb1c202a1972811714fc7",
+      "owner": "upstream Solution Designer SR031 clarification (not edited here)"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "entry_sha256": "ad5f16972e17b21c93e6fbe2a4b40c90e7d6cabb31b5bc81adabb8b75fd2340b",
+      "current_sha256": "6bcc5d64cd75bab0d54cdf00a7bf9756e3eaafecd7b6c0ff4b6c974893e1a483",
+      "owner": "upstream Solution Designer SR031 clarification (not edited here)"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "entry_sha256": "619655caedcaec6e054f3cd86192c85d73cb43cc877626b4878fd1b33da705a5",
+      "current_sha256": "2597612099d557135ce6bce7ffbe159a6e37eb3117abf215531b56fc0cd5d9ea",
+      "owner": "upstream Solution Designer SR031 clarification (not edited here)"
+    }
+  ]
+}

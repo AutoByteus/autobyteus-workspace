@@ -1,0 +1,212 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-uY3jGO' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-uY3jGO' completed in 0.0040 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-UoN02f' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-UoN02f' completed in 0.0030 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-UoN02f' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-UoN02f' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-H5jfpS' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-H5jfpS' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-H5jfpS' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-H5jfpS' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-EcAjVr' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-EcAjVr' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-RnkvfZ' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-RnkvfZ' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-VBAL8Y' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-VBAL8Y' completed in 0.0000 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-OPmL7P' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-OPmL7P' completed in 0.0010 seconds.
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-OPmL7P' with max_depth=null
+
+stdout | tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-explorer-OPmL7P' completed in 0.0020 seconds.
+
+ ✓ tests/unit/file-explorer/file-explorer.test.ts (7 tests) 27ms
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-2133mm' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-2133mm' completed in 0.0080 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-Vo42Xy' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-Vo42Xy' completed in 0.0010 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-bGGBpA' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-bGGBpA' completed in 0.0020 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-IlxSgF' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-IlxSgF' completed in 0.0000 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-o1ekBV' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-o1ekBV' completed in 0.0030 seconds.
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-Q9soab' with max_depth=null
+
+stdout | tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-Q9soab' completed in 0.0020 seconds.
+
+ ✓ tests/integration/file-explorer/file-explorer.integration.test.ts (6 tests) 47ms
+stdout | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-move-watch-wFH7RX' with max_depth=null
+
+stdout | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-move-watch-wFH7RX' completed in 0.0170 seconds.
+
+stdout | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+FileSystemWatcher initialized for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-move-watch-wFH7RX' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+
+stdout | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+Started filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-move-watch-wFH7RX
+
+stdout | tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+Logically stopped filesystem watcher for workspace /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-ts-move-watch-wFH7RX
+
+ ✓ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts (1 test) 1528ms
+     ✓ returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move  1527ms
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  12:39:58
+   Duration  3.06s (transform 398ms, setup 33ms, import 449ms, tests 1.60s, environment 0ms)
+

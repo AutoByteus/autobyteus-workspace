@@ -1,0 +1,17 @@
+{
+  "stage": "post-broader-selected-campaign",
+  "categoryScores": {
+    "requirements_and_acceptance": 95,
+    "changed_boundary_directness": 95,
+    "integration_realism_mock_gap": 95,
+    "environment_configuration_identity": 95,
+    "failure_lifecycle_recovery": 90,
+    "user_browser_desktop": 90,
+    "durable_regression_relevance": 90
+  },
+  "overall": 92.9,
+  "overallStage": "Incomplete \u2014 not Pass/Fail/Blocked",
+  "selectedCampaign": "Pass",
+  "broaderValidation": "Required for remaining material gaps; selected real-provider work completed",
+  "rationale": "Current manual semantic and actual threshold/commit/continuation close provider-quality gap. Remaining CG033/lifecycle/full TeamOrg UI/fullsuite/typecheck/review residuals unchanged. No permission/credential blocker. Do not inflate categories to reach95."
+}

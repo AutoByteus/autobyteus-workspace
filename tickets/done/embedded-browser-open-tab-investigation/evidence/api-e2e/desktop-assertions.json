@@ -1,0 +1,34 @@
+{
+  "checks": [
+    {
+      "case": "C-005",
+      "open": "second",
+      "result": "Pass",
+      "tabId": "874f12",
+      "viewport": [
+        696,
+        757
+      ],
+      "automaticBrowserSelection": true
+    },
+    {
+      "case": "C-005",
+      "open": "third",
+      "result": "Pass",
+      "tabId": "2a801b",
+      "viewport": [
+        696,
+        757
+      ],
+      "automaticBrowserSelection": true
+    },
+    {
+      "case": "C-006",
+      "result": "Pass",
+      "opaqueResultsPreserved": 3,
+      "noHistoryFocus": true,
+      "sessionsUnchanged": true
+    }
+  ],
+  "passed": true
+}

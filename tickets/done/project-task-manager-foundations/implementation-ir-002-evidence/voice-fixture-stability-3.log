@@ -1,0 +1,31 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/integration/voice-input-extension.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+stderr | tests/integration/voice-input-extension.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/voice-input-extension.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+nvm is not compatible with the "npm_config_prefix" environment variable: currently set to "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web"
+Run `unset npm_config_prefix` to unset it.
+ ✓ tests/integration/voice-input-extension.integration.test.ts (2 tests) 2556ms
+   ✓ voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads  1137ms
+   ✓ voice input extension integration > installs, enables, and inserts transcript text into the draft  1419ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  19:50:45
+   Duration  7.95s (transform 3.17s, setup 4.82s, collect 80ms, tests 2.56s, environment 161ms, prepare 138ms)

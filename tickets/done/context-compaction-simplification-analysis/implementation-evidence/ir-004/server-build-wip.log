@@ -1,0 +1,42 @@
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 100ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+src/agent-collaboration/execution/events/agent-presentation-message-projector.ts(46,47): error TS2322: Type '{ status: "error" | "offline" | "initializing" | "idle" | "running"; trigger: string | null; tool_name: string | null; error_message: string | null; error_details: string | null; }' is not assignable to type 'Readonly<{ trace_id: string; content: string; ts: number; }> | Readonly<{ turn_id: string | null; }> | Readonly<{ turn_id: string | null; reason: string | null; }> | ... 24 more ... | Readonly<...>'.
+  Type '{ status: "error" | "offline" | "initializing" | "idle" | "running"; trigger: string | null; tool_name: string | null; error_message: string | null; error_details: string | null; }' is not assignable to type 'Readonly<{ trace_id: string; content: string; ts: number; }> | Readonly<{ turn_id: string | null; }> | Readonly<{ turn_id: string | null; reason: string | null; }> | ... 25 more ... | Readonly<...>'.
+    Property 'recoverableBlock' is missing in type '{ status: "error" | "offline" | "initializing" | "idle" | "running"; trigger: string | null; tool_name: string | null; error_message: string | null; error_details: string | null; }' but required in type 'Readonly<{ recoverableBlock: { operationId: string; failureEpoch: number; position: { kind: "held_turn"; turnId: string; } | { kind: "next_turn"; failedTurnId: string; }; state: "recovering" | "awaiting_user" | "authorized"; code: string; message: string; } | null; ... 4 more ...; error_details: string | null; }>'.
+src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts(270,45): error TS2366: Function lacks ending return statement and return type does not include 'undefined'.
+src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts(1,49): error TS2307: Cannot find module 'autobyteus-agent-presentation-contracts' or its corresponding type declarations.
+src/agent-execution/domain/agent-status-payload.ts(1,49): error TS2307: Cannot find module 'autobyteus-agent-presentation-contracts' or its corresponding type declarations.
+src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts(1,49): error TS2307: Cannot find module 'autobyteus-agent-presentation-contracts' or its corresponding type declarations.
+src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts(57,84): error TS2307: Cannot find module 'autobyteus-agent-presentation-contracts' or its corresponding type declarations.
+ ELIFECYCLE  Command failed with exit code 2.
+ ELIFECYCLE  Command failed with exit code 2.

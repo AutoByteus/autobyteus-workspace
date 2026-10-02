@@ -1,0 +1,673 @@
+ .../dist/collaborator-mention-note.d.ts            |   56 +
+ .../dist/collaborator-mention-note.d.ts.map        |    1 +
+ .../dist/collaborator-mention-note.js              |   96 +
+ .../dist/collaborator-mention-note.js.map          |    1 +
+ .../dist/index.d.ts                                |    1 +
+ .../dist/index.d.ts.map                            |    2 +-
+ .../dist/index.js                                  |    1 +
+ .../dist/index.js.map                              |    2 +-
+ .../src/collaborator-mention-note.ts               |  117 +
+ .../src/index.ts                                   |    1 +
+ .../tests/collaborator-mention-note.test.mjs       |   45 +
+ .../dist/agent-org-execution-dtos.d.ts             |  229 ++
+ .../dist/agent-org-execution-dtos.d.ts.map         |    2 +-
+ .../dist/agent-org-execution-dtos.js               |   28 +-
+ .../dist/agent-org-execution-dtos.js.map           |    2 +-
+ .../dist/agent-run-collaboration-dtos.d.ts         |  743 +++++
+ .../dist/agent-run-collaboration-dtos.d.ts.map     |    1 +
+ .../dist/agent-run-collaboration-dtos.js           |   43 +
+ .../dist/agent-run-collaboration-dtos.js.map       |    1 +
+ .../dist/index.d.ts                                |    1 +
+ .../dist/index.d.ts.map                            |    2 +-
+ .../dist/index.js                                  |    1 +
+ .../dist/index.js.map                              |    2 +-
+ .../dist/root-execution-view-dtos.d.ts             | 3149 ++++++++++++++++----
+ .../dist/root-execution-view-dtos.d.ts.map         |    2 +-
+ .../dist/root-execution-view-dtos.js               |   88 +-
+ .../dist/root-execution-view-dtos.js.map           |    2 +-
+ .../src/agent-org-execution-dtos.ts                |   30 +-
+ .../src/agent-run-collaboration-dtos.ts            |   60 +
+ .../src/index.ts                                   |    1 +
+ .../src/root-execution-view-dtos.ts                |   92 +-
+ .../tests/agent-run-collaboration-dtos.test.mjs    |  109 +
+ .../tests/root-execution-view-dtos.test.mjs        |    1 +
+ autobyteus-server-ts/docs/modules/README.md        |    1 +
+ .../docs/modules/agent_communication.md            |   81 +
+ autobyteus-server-ts/docs/modules/agent_orgs.md    |   24 +-
+ .../docs/modules/agent_run_collaboration.md        |  115 +
+ .../docs/modules/agent_team_execution.md           |   43 +-
+ autobyteus-server-ts/docs/modules/agent_tools.md   |   56 +-
+ autobyteus-server-ts/docs/modules/run_history.md   |   32 +-
+ .../collaborator-address-allocator.ts              |   39 +
+ .../collaborators/collaborator-candidate-policy.ts |  142 +
+ .../collaborator-definition-catalog.ts             |   38 +
+ .../collaborators/collaborator-entry-builder.ts    |  101 +
+ .../collaborators/collaborator-errors.ts           |   29 +
+ .../collaborator-identity-allocator.ts             |   62 +
+ .../collaborator-mention-admission.ts              |  147 +
+ .../collaborators/collaborator-root-port.ts        |   27 +
+ .../collaborator-runnability-validator.ts          |   47 +
+ .../collaborators/collaborator-source-projector.ts |  135 +
+ .../backends/collaborator-handle-preparation.ts    |   60 +
+ .../backends/frozen-root-termination-scope.ts}     |   13 +-
+ .../backends/root-agent-execution-registry.ts}     |   65 +-
+ .../backends/root-team-execution-directory.ts}     |   51 +-
+ .../domain/located-execution-structure.ts          |    9 +-
+ .../execution/domain/member-execution-context.ts   |    9 +
+ .../execution/domain/root-execution-identity.ts    |   21 +-
+ .../collaboration-agent-presentation-adapter.ts    |    7 +-
+ .../collaboration-execution-location-service.ts    |   86 +-
+ .../execution/services/root-operation-gate.ts}     |   11 +-
+ .../execution/task/task-delegation-command.ts      |    4 +-
+ .../execution/task/task-delegation-target.ts       |   23 +
+ .../token-usage/token-usage-context-enricher.ts    |    2 +
+ .../prompt/carpenter-prompt-composer.ts            |   11 +-
+ .../runtime/general-process-run-supervisor.ts      |   41 +
+ .../services/agent-run-command-coordinator.ts      |   38 +-
+ .../services/agent-run-command-registry.ts         |    3 +
+ .../services/agent-run-command-types.ts            |   10 +
+ .../services/agent-run-provisioning-service.ts     |    1 +
+ .../agent-execution/services/agent-run-service.ts  |   11 +-
+ .../standalone-agent-run-collaboration-binding.ts  |   21 +
+ .../standalone-agent-run-lifecycle-service.ts      |   22 +-
+ .../shared/runtime-agent-tool-exposure.ts          |   19 +-
+ .../agent-memory/domain/memory-recording-models.ts |    2 +
+ .../collaboration-member-memory-targets.ts         |    5 +
+ .../services/runtime-memory-event-accumulator.ts   |    2 +
+ .../services/runtime-memory-location-classifier.ts |   42 +-
+ .../src/agent-memory/store/agent-memory-layout.ts  |   21 +-
+ .../store/external-runtime-memory-writer.ts        |    5 +-
+ .../domain/agent-org-run-event.ts                  |    3 +
+ .../domain/agent-org-run-execution-tree.ts         |    3 +
+ .../agent-org-execution/domain/agent-org-run.ts    |  160 +-
+ .../agent-org-agent-status-snapshot-projector.ts   |    8 +-
+ .../services/agent-org-execution-index.ts          |   75 +-
+ .../services/agent-org-execution-scope-builder.ts  |   62 +-
+ .../services/agent-org-recipient-resolver.ts       |   49 +
+ .../agent-org-reference-content-service.ts         |   11 +-
+ .../services/agent-org-run-collaborators.ts        |   96 +
+ .../agent-org-run-execution-tree-mutator.ts        |   34 +-
+ .../services/agent-org-run-planner.ts              |    2 +-
+ .../services/agent-org-task-event-retirement.ts    |   55 +
+ .../services/agent-org-task-execution-adapter.ts   |   47 +-
+ .../services/agent-org-task-source-resolver.ts     |   42 +
+ .../domain/agent-run-collaboration-root-event.ts   |   16 +
+ .../domain/agent-run-collaboration-root.ts         |  487 +++
+ .../domain/agent-run-collaboration-tree.ts         |   51 +
+ .../prompt/standalone-collaboration-instruction.ts |   21 +
+ .../agent-run-collaboration-collaborators.ts       |   92 +
+ ...gent-run-collaboration-communication-adapter.ts |   77 +
+ .../agent-run-collaboration-execution-index.ts     |  245 ++
+ ...agent-run-collaboration-host-context-builder.ts |   68 +
+ .../agent-run-collaboration-location-service.ts    |  201 ++
+ ...collaboration-member-view-projection-service.ts |  104 +
+ ...nt-run-collaboration-persistence-coordinator.ts |  150 +
+ .../agent-run-collaboration-recipient-resolver.ts  |   47 +
+ .../agent-run-collaboration-root-builder.ts        |  178 ++
+ .../agent-run-collaboration-root-manager.ts        |  259 ++
+ ...ent-run-collaboration-task-execution-adapter.ts |  284 ++
+ ...agent-run-collaboration-task-source-resolver.ts |   28 +
+ .../agent-run-collaboration-tree-mutator.ts        |  135 +
+ .../agent-team-execution/domain/root-team-run.ts   |  112 +-
+ .../agent-team-execution/domain/team-run-event.ts  |    7 +
+ .../domain/team-run-execution-tree.ts              |    7 +
+ .../local/flat-team-execution-factory.ts           |    8 +
+ .../local/flat-team-execution-manager.ts           |   61 +-
+ .../collaborator-team-execution-registry.ts        |   78 +
+ .../configured-agent-execution-registry.ts         |    4 +-
+ .../registries/flat-team-member-config-resolver.ts |   29 +-
+ .../services/member-team-context-builder.ts        |   28 +-
+ .../services/resolved-team-recipient.ts            |   13 +-
+ .../services/team-execution-index.ts               |   87 +-
+ .../services/team-flat-execution-callbacks.ts      |    5 +-
+ .../services/team-recipient-resolver.ts            |   57 +-
+ .../services/team-root-collaborator-hosting.ts     |   54 +
+ .../services/team-root-materializer.ts             |   12 +-
+ .../services/team-run-collaborators.ts             |  119 +
+ .../services/team-run-execution-tree-builder.ts    |    1 +
+ .../services/team-run-execution-tree-mutator.ts    |   46 +-
+ .../task-delegation-execution-resolution.ts        |    5 -
+ .../task-delegation/team-task-execution-adapter.ts |   44 +-
+ .../task-delegation/team-task-execution-service.ts |    6 +-
+ .../task-delegation/team-task-source-resolver.ts   |   45 +
+ .../task-delegation-tool-contract.ts               |    3 +-
+ autobyteus-server-ts/src/api/graphql/schema.ts     |    2 +
+ .../services/collaborator-root-port-resolver.ts    |   75 +
+ .../api/graphql/types/agent-run-collaboration.ts   |   87 +
+ .../src/api/graphql/types/run-history.ts           |    3 +
+ .../src/api/rest/agent-collaboration-references.ts |   42 +
+ autobyteus-server-ts/src/api/rest/context-files.ts |   39 +
+ autobyteus-server-ts/src/api/rest/index.ts         |    2 +
+ autobyteus-server-ts/src/api/websocket/agent.ts    |   24 +
+ autobyteus-server-ts/src/api/websocket/index.ts    |   13 +-
+ .../services/application-agent-tool-capability.ts  |    5 +-
+ .../domain/context-file-owner-types.ts             |   70 +-
+ .../services/context-file-finalization-service.ts  |    7 +
+ .../services/context-file-local-path-resolver.ts   |   24 +-
+ .../services/context-file-owner-resolver.ts        |   44 +-
+ .../src/context-files/store/context-file-layout.ts |    4 +
+ .../domain/agent-run-history-index-types.ts        |    2 +
+ .../domain/collaborator-entry-tree-mapping.ts      |   39 +
+ .../domain/run-execution-tree-shared-records.ts    |   55 +
+ .../projection/historical-replay-event-types.ts    |    9 +-
+ .../run-history/projection/run-projection-types.ts |   15 +
+ .../historical-replay-events-to-conversation.ts    |   14 +
+ .../raw-trace-to-historical-replay-events.ts       |    3 +-
+ ...agent-org-member-run-view-projection-service.ts |   27 +-
+ .../services/agent-run-history-catalog-service.ts  |   42 +-
+ .../services/agent-run-history-service.ts          |    1 +
+ .../services/run-file-change-projection-service.ts |    5 +-
+ .../services/standalone-run-liveness.ts            |   60 +
+ .../team-member-run-view-projection-service.ts     |   31 +-
+ .../store/agent-org-run-execution-tree-schema.ts   |   26 +-
+ .../store/agent-run-collaboration-tree-path.ts     |   15 +
+ .../store/agent-run-collaboration-tree-schema.ts   |   96 +
+ .../store/agent-run-collaboration-tree-store.ts    |   75 +
+ .../store/agent-run-history-index-record-types.ts  |    2 +
+ .../store/agent-run-history-index-store.ts         |    6 +-
+ .../run-history/store/agent-run-metadata-store.ts  |    1 +
+ .../run-history/store/agent-run-metadata-types.ts  |    8 +
+ .../run-execution-tree-shared-record-schemas.ts    |  167 ++
+ .../store/team-run-execution-tree-schema.ts        |   17 +-
+ .../agent-collaboration-stream-handler.ts          |  161 +
+ .../agent-collaboration-view-projector.ts          |   80 +
+ .../agent-org-execution-view-projector.ts          |   42 +-
+ .../agent-streaming/agent-org-stream-handler.ts    |   29 +-
+ .../agent-streaming/agent-stream-handler.ts        |   12 +
+ .../agent-streaming/agent-team-stream-handler.ts   |   26 +-
+ .../team-execution-view-projector.ts               |   41 +-
+ .../skill-improvement-improver-session-service.ts  |    1 +
+ .../token-usage-display-field-capturer.ts          |   20 +
+ ...ndalone-error-termination-lifecycle.e2e.test.ts |    4 +-
+ .../runtime/grok-build-runtime-replay.e2e.test.ts  |    9 +-
+ ...andalone-agent-collaborator-mention.e2e.test.ts |  512 ++++
+ .../tests/fixtures/current-team-run-fixtures.ts    |    1 +
+ .../tests/fixtures/grok-acp/fake-acp-agent.mjs     |   19 +-
+ .../tests/fixtures/released-run-tree-fixtures.ts   |   13 +-
+ ...k-delegation-tool-lifecycle.integration.test.ts |   21 +-
+ ...ll-improvement-improver-session-service.test.ts |    2 +
+ .../collaborator-mention-admission.test.ts         |  239 ++
+ .../configured-agent-execution-handle.test.ts      |    1 +
+ .../frozen-root-termination-scope.test.ts}         |    6 +-
+ .../agent-run-termination-service.test.ts          |   29 +
+ .../backends/antigravity/agy-mcp-team-live.test.ts |    2 +-
+ .../autobyteus-runtime-tool-exposure.test.ts       |   14 +-
+ .../codex/thread/codex-thread-manager.test.ts      |    1 +
+ .../backends/codex/thread/codex-thread.test.ts     |    1 +
+ ...oken-usage-event-enrichment-transformer.test.ts |    1 +
+ .../carpenter-prompt-composer.test.ts.snap         |   23 +
+ .../prompt/carpenter-prompt-composer.test.ts       |   42 +
+ .../shared/runtime-agent-tool-exposure.test.ts     |   15 +-
+ .../standalone-agent-run-lifecycle-service.test.ts |   68 +
+ .../runtime-memory-event-accumulator.test.ts       |   24 +
+ .../agent-org-collaborators.test.ts                |  208 ++
+ ...ent-org-execution-tree-location-service.test.ts |    3 +-
+ .../agent-org-task-idle-shutdown.test.ts           |    8 +-
+ .../agent-org-task-publication.test.ts             |   16 +-
+ .../helpers/task-publication-handles.ts            |    2 +
+ .../agent-run-collaboration-root.test.ts           |  330 ++
+ .../task-agent-execution-registry-liveness.test.ts |    3 +-
+ .../team-root-collaborators.test.ts                |  224 ++
+ .../context-file-agent-collaboration-owner.test.ts |  100 +
+ .../run-history/collaborator-tree-records.test.ts  |  152 +
+ .../user-file-attachment-projection.test.ts        |   11 +
+ .../agent-run-history-catalog-service.test.ts      |   64 +
+ .../services/agent-run-history-service.test.ts     |    2 +
+ .../agent-collaboration-stream-handler.test.ts     |   73 +
+ .../dist/team-agent-message-dtos.d.ts              |    3 +
+ .../dist/team-agent-message-dtos.d.ts.map          |    2 +-
+ .../dist/team-agent-message-dtos.js                |    2 +
+ .../dist/team-agent-message-dtos.js.map            |    2 +-
+ .../dist/team-control-message-dtos.d.ts            |    7 +
+ .../dist/team-control-message-dtos.d.ts.map        |    2 +-
+ .../dist/team-control-message-dtos.js              |    3 +
+ .../dist/team-control-message-dtos.js.map          |    2 +-
+ .../dist/team-execution-view-dtos.d.ts             |   37 +
+ .../dist/team-execution-view-dtos.d.ts.map         |    2 +-
+ .../dist/team-execution-view-dtos.js               |   23 +-
+ .../dist/team-execution-view-dtos.js.map           |    2 +-
+ .../dist/team-stream-client-message.d.ts           |    7 +
+ .../dist/team-stream-client-message.d.ts.map       |    2 +-
+ .../dist/team-stream-server-message.d.ts           |   18 +-
+ .../dist/team-stream-server-message.d.ts.map       |    2 +-
+ .../dist/team-stream-server-message.js             |    3 +-
+ .../dist/team-stream-server-message.js.map         |    2 +-
+ .../dist/team-task-execution-message-dtos.d.ts     |    6 +
+ .../dist/team-task-execution-message-dtos.d.ts.map |    2 +-
+ .../dist/team-task-execution-message-dtos.js       |    7 +-
+ .../dist/team-task-execution-message-dtos.js.map   |    2 +-
+ .../src/team-agent-message-dtos.ts                 |    2 +
+ .../src/team-control-message-dtos.ts               |    3 +
+ .../src/team-execution-view-dtos.ts                |   60 +-
+ .../src/team-stream-server-message.ts              |    7 +-
+ .../src/team-task-execution-message-dtos.ts        |    9 +
+ .../tests/team-collaborators.test.mjs              |   43 +
+ autobyteus-ts/docs/agent_memory_design.md          |    8 +
+ .../memory-ingest-input-processor.ts               |    6 +-
+ .../src/agent/message/inter-agent-sender.ts        |   10 +
+ autobyteus-ts/src/memory/memory-manager.ts         |    5 +-
+ autobyteus-ts/src/memory/raw-trace-ingestion.ts    |    3 +-
+ .../memory-ingest-input-processor.test.ts          |   19 +-
+ .../components/agentInput/AgentUserInputForm.vue   |   22 +-
+ .../agentInput/AgentUserInputTextArea.vue          |   69 +-
+ .../agentInput/CollaboratorAddFailureNotice.vue    |   42 +
+ .../components/agentInput/MentionChipRow.vue       |   34 +
+ .../AgentUserInputTextArea.runMentions.spec.ts     |  148 +
+ .../__tests__/CollaboratorAddFailureNotice.spec.ts |   31 +
+ autobyteus-web/components/chat/ChatTargetMenu.vue  |   40 +-
+ .../components/conversation/UserMessage.vue        |   15 +-
+ .../segments/InterAgentMessageSegment.vue          |    6 +-
+ .../__tests__/InterAgentMessageSegment.spec.ts     |   11 +
+ .../workspace/agent/AgentEventMonitor.vue          |    7 +-
+ .../workspace/agent/AgentWorkspaceSurface.vue      |   11 +-
+ .../workspace/agent/AgentWorkspaceView.vue         |   24 +-
+ .../agent/__tests__/AgentWorkspaceView.spec.ts     |   20 +-
+ .../workspace/history/AgentRunTaskRows.vue         |   70 +
+ .../history/WorkspaceAgentOrgHistoryCollection.vue |   18 +-
+ .../history/WorkspaceHistoryWorkspaceSection.vue   |   31 +-
+ .../history/WorkspaceTransientExecutionRow.vue     |   39 +-
+ .../WorkspaceAgentOrgDelegatedRows.spec.ts         |   10 +-
+ .../__tests__/WorkspaceAgentOrgDisclosure.spec.ts  |    1 +
+ .../__tests__/WorkspaceAgentRunsTreePanel.spec.ts  |    4 +-
+ .../WorkspaceHistoryWorkspaceSection.spec.ts       |    9 +-
+ .../history/workspaceHistorySectionContracts.ts    |    2 +
+ .../AgentOrgWorkspaceConfigBoundary.spec.ts        |    2 +-
+ .../org/__tests__/AgentOrgWorkspaceView.spec.ts    |    2 +-
+ .../useWorkspaceHistorySubjectActions.spec.ts      |    2 +-
+ .../useAgentRunCollaborationSync.ts                |   31 +
+ .../composables/agentInput/runMentionScope.ts      |   57 +
+ .../composables/agentInput/useComposerTarget.ts    |    6 +
+ .../composables/agentInput/useRunMentionMenu.ts    |  159 +
+ .../composables/useContextAttachmentComposer.ts    |    3 +
+ .../composables/useWorkspaceHistoryTreeState.ts    |    7 +-
+ .../docs/agent_execution_architecture.md           |   15 +-
+ autobyteus-web/docs/agent_orgs.md                  |   23 +-
+ autobyteus-web/docs/agent_teams.md                 |   24 +-
+ autobyteus-web/docs/chat.md                        |   80 +
+ autobyteus-web/docs/settings.md                    |   15 +-
+ .../graphql/queries/collaboratorQueries.ts         |   39 +
+ .../graphql/queries/runHistoryQueries.ts           |    2 +
+ autobyteus-web/localization/messages/en/chat.ts    |    8 +
+ autobyteus-web/localization/messages/zh-CN/chat.ts |    8 +
+ autobyteus-web/package.json                        |    3 +-
+ .../__tests__/agentRootFixture.ts                  |   35 +
+ .../__tests__/agentRunCollaborationContext.spec.ts |   97 +
+ .../agentRunCollaborationChildContextFactory.ts    |   31 +
+ .../agentRunCollaborationContext.ts                |  282 ++
+ .../agentRunCollaborationHydration.ts              |  117 +
+ .../agentRunCollaborationIndex.ts                  |  123 +
+ .../agentRunCollaborationStreamingService.ts       |  266 ++
+ .../__tests__/agentOrgContextHydration.spec.ts     |   19 +
+ .../__tests__/agentOrgStreamingService.spec.ts     |    1 +
+ .../__tests__/taskBearingOrgFixture.ts             |    1 +
+ .../agentOrgCommunicationPerspective.ts            |    5 +-
+ .../agentOrgExecution/agentOrgContextHydration.ts  |   40 +-
+ .../agentOrgExecution/agentOrgExecutionContext.ts  |   54 +-
+ .../agentOrgExecutionViewIndex.ts                  |   32 +-
+ .../agentOrgMemberContextFactory.ts                |   48 +
+ .../agentOrgExecution/agentOrgStreamingService.ts  |    9 +-
+ .../agentStreaming/AgentStreamingService.ts        |   43 +-
+ .../agentStreaming/TeamStreamingService.ts         |   15 +-
+ .../__tests__/AgentStreamingService.spec.ts        |   17 +
+ .../TeamStreamingService.execution-address.spec.ts |   37 +
+ .../__tests__/TeamStreamingService.spec.ts         |    4 +-
+ .../agentStreaming/agentStreamMessageProjector.ts  |   14 +-
+ .../__tests__/memberInputMessageHandler.spec.ts    |   20 +
+ .../handlers/memberInputMessageHandler.ts          |   27 +
+ .../agentStreaming/protocol/agentCommandTypes.ts   |    5 +
+ .../agentStreaming/protocol/messageTypes.ts        |    2 +
+ .../agentStreaming/teamClientMessageFactory.ts     |    3 +
+ .../__tests__/agentSourceSelectors.spec.ts         |  117 +
+ .../__tests__/collaboratorAddFailures.spec.ts      |   22 +
+ .../services/collaborators/agentSourceSelectors.ts |  133 +
+ .../collaborators/collaboratorAddFailures.ts       |   30 +
+ .../collaborators/collaboratorCandidatesService.ts |  104 +
+ .../__tests__/rootExecutionViewState.spec.ts       |    1 +
+ .../existingAgentOrgModelConfigDraft.spec.ts       |    2 +-
+ .../__tests__/existingTeamModelConfigDraft.spec.ts |    1 +
+ .../__tests__/runProjectionConversation.spec.ts    |   14 +
+ .../runHydration/runProjectionConversation.ts      |   21 +
+ .../teamMemberProjectionHydrationService.ts        |    6 +-
+ .../runHydration/teamRunContextHydrationService.ts |    5 +-
+ .../__tests__/localUserSubmission.spec.ts          |   62 +
+ .../services/runSubmission/localUserSubmission.ts  |   66 +-
+ .../__tests__/teamExecutionContextFactory.spec.ts  |    5 +-
+ .../__tests__/teamExecutionViewState.spec.ts       |    1 +
+ .../teamExecution/teamExecutionContextFactory.ts   |   22 +-
+ .../teamExecution/teamExecutionTreeMutations.ts    |   29 +-
+ .../teamExecution/teamExecutionTreeSelectors.ts    |   74 +-
+ .../teamExecution/teamExecutionViewModels.ts       |    6 +-
+ .../teamExecution/teamExecutionViewState.ts        |   22 +-
+ .../__tests__/agentRunCollaborationStore.spec.ts   |   85 +
+ .../__tests__/existingRunConfigStore.spec.ts       |    3 +-
+ .../stores/__tests__/runHistoryStore.spec.ts       |    1 +
+ autobyteus-web/stores/activeContextStore.ts        |    7 +
+ autobyteus-web/stores/agentOrgContextsStore.ts     |   15 +-
+ .../stores/agentRunCollaborationStore.ts           |  216 ++
+ autobyteus-web/stores/agentRunStore.ts             |   34 +-
+ autobyteus-web/stores/agentTeamRunStore.ts         |   14 +-
+ .../stores/runHistoryTeamExecutionRows.ts          |    1 +
+ autobyteus-web/stores/runHistoryTypes.ts           |    4 +
+ .../test-support/currentTeamTestFixtures.ts        |    1 +
+ .../historyFamilyPublicationFixture.ts             |    1 +
+ .../e2e/cross-scope-agent-mentions-live-probe.mjs  | 1070 +++++++
+ .../tests/e2e/existing-run-model-config-probe.mjs  |    1 +
+ .../e2e/interrupt-result-presentation-probe.mjs    |    1 +
+ autobyteus-web/types/agent/AgentContext.ts         |    8 +
+ autobyteus-web/types/conversation.ts               |    2 +
+ autobyteus-web/types/node.ts                       |    2 +
+ autobyteus-web/types/segments.ts                   |    3 +
+ .../types/workspace/activeAgentWorkspaceTarget.ts  |   19 +
+ .../workspace/collaborationMessagesContextView.ts  |    2 +-
+ autobyteus-web/utils/agentOrgHistoryRows.ts        |   21 +-
+ .../__tests__/memberDisplayName.spec.ts            |   25 +
+ .../utils/collaboration/interAgentDelivery.ts      |   15 +
+ .../utils/collaboration/memberDisplayName.ts       |   14 +
+ .../__tests__/collaboratorMentionText.spec.ts      |   59 +
+ .../utils/collaborators/collaboratorMentionText.ts |   84 +
+ .../utils/contextFiles/contextAttachmentModel.ts   |   10 +
+ .../utils/contextFiles/contextFileOwner.ts         |   28 +-
+ autobyteus-web/utils/nodeEndpoints.ts              |    1 +
+ autobyteus-web/utils/runTreeProjection.ts          |    3 +
+ autobyteus-web/utils/runTreeSummary.ts             |   11 +-
+ .../teamCommunicationPerspective.ts                |    5 +-
+ .../api-e2e-coverage-investigation.md              |  294 ++
+ .../F-01-team-mention-send-probe.md                |   28 +
+ .../api-e2e-evidence/browser-2/L01-failure.png     |  Bin 0 -> 172978 bytes
+ .../api-e2e-evidence/browser-2/L02-failure.png     |  Bin 0 -> 86987 bytes
+ .../browser-2/O01-01-org-run-at-menu-VIS-008.png   |  Bin 0 -> 85924 bytes
+ .../browser-2/O01-02-org-run-task-rows-VIS-009.png |  Bin 0 -> 252630 bytes
+ .../O02-01-org-task-agent-conversation-VIS-010.png |  Bin 0 -> 125654 bytes
+ .../api-e2e-evidence/browser-2/O02-failure.png     |  Bin 0 -> 128459 bytes
+ .../browser-2/T01-01-team-run-at-menu-VIS-001.png  |  Bin 0 -> 95404 bytes
+ .../T01-02-team-run-task-team-VIS-004.png          |  Bin 0 -> 213182 bytes
+ .../api-e2e-evidence/browser-2/T01-failure.png     |  Bin 0 -> 214853 bytes
+ .../api-e2e-evidence/browser-2/T02-failure.png     |  Bin 0 -> 214892 bytes
+ .../api-e2e-evidence/browser-2/T03-failure.png     |  Bin 0 -> 193710 bytes
+ .../api-e2e-evidence/browser-2/backend.log         |  389 +++
+ .../cross-scope-agent-mentions-evidence.json       |  179 ++
+ .../api-e2e-evidence/browser-2/frontend.log        |   21 +
+ .../browser-3/O01-01-org-run-at-menu-VIS-008.png   |  Bin 0 -> 85982 bytes
+ .../browser-3/O01-02-org-run-task-rows-VIS-009.png |  Bin 0 -> 161972 bytes
+ .../O02-01-org-task-agent-conversation-VIS-010.png |  Bin 0 -> 119833 bytes
+ .../browser-3/T01-01-team-run-at-menu-VIS-001.png  |  Bin 0 -> 93406 bytes
+ .../T01-02-team-run-task-team-VIS-004.png          |  Bin 0 -> 246592 bytes
+ .../api-e2e-evidence/browser-3/T01-failure.png     |  Bin 0 -> 245480 bytes
+ .../T02-01-task-member-conversation-VIS-005.png    |  Bin 0 -> 188537 bytes
+ .../api-e2e-evidence/browser-3/T02-failure.png     |  Bin 0 -> 188726 bytes
+ .../api-e2e-evidence/browser-3/T03-failure.png     |  Bin 0 -> 71165 bytes
+ .../api-e2e-evidence/browser-3/backend.log         |  225 ++
+ .../cross-scope-agent-mentions-evidence.json       |  125 +
+ .../api-e2e-evidence/browser-3/frontend.log        |   21 +
+ .../T01-01-team-run-at-menu-VIS-001.png            |  Bin 0 -> 94266 bytes
+ .../T01-02-team-run-task-team-VIS-004.png          |  Bin 0 -> 116234 bytes
+ .../T01-03-second-send-pending-admission-error.png |  Bin 0 -> 147822 bytes
+ .../browser-4-team/T01-failure.png                 |  Bin 0 -> 147995 bytes
+ .../T02-01-task-member-conversation-VIS-005.png    |  Bin 0 -> 180152 bytes
+ .../T03-01-add-failed-notice-VIS-007.png           |  Bin 0 -> 101735 bytes
+ .../api-e2e-evidence/browser-4-team/backend.log    |  185 ++
+ .../cross-scope-agent-mentions-evidence.json       |  144 +
+ .../api-e2e-evidence/browser-4-team/frontend.log   |   21 +
+ .../L01-01-after-crash-and-wake.png                |  Bin 0 -> 136335 bytes
+ .../browser-agy-lifecycle/L01-failure.png          |  Bin 0 -> 133824 bytes
+ .../browser-agy-lifecycle/backend.log              |  519 ++++
+ .../cross-scope-agent-mentions-evidence.json       |   74 +
+ .../browser-agy-lifecycle/evidence-run1.json       |   82 +
+ .../browser-agy-lifecycle/frontend.log             |   63 +
+ .../A01-01-agent-run-at-menu-VIS-011.png           |  Bin 0 -> 94919 bytes
+ .../A01-02-at-menu-empty-VIS-002.png               |  Bin 0 -> 84052 bytes
+ .../A01-03-composer-chip-VIS-003.png               |  Bin 0 -> 81475 bytes
+ .../A01-04-task-agent-and-team-tab-VIS-012.png     |  Bin 0 -> 152892 bytes
+ .../A01-05-task-agent-conversation-VIS-013.png     |  Bin 0 -> 111836 bytes
+ .../A01-06-task-team-VIS-012.png                   |  Bin 0 -> 173488 bytes
+ .../A01-07-menu-after-adds.png                     |  Bin 0 -> 176005 bytes
+ .../A01-08-menu-small-window-VIS-014.png           |  Bin 0 -> 91500 bytes
+ .../A02-child-woken-after-stop.png                 |  Bin 0 -> 137405 bytes
+ .../browser-final-standalone/backend-restart.log   |  203 ++
+ .../browser-final-standalone/backend.log           |  166 ++
+ .../cross-scope-agent-mentions-evidence.json       |  325 ++
+ .../browser-final-standalone/frontend.log          |   21 +
+ .../A01-01-agent-run-at-menu-VIS-011.png           |  Bin 0 -> 93974 bytes
+ .../browser-final/A01-02-at-menu-empty-VIS-002.png |  Bin 0 -> 83125 bytes
+ .../browser-final/A01-03-composer-chip-VIS-003.png |  Bin 0 -> 80527 bytes
+ .../A01-04-task-agent-and-team-tab-VIS-012.png     |  Bin 0 -> 152212 bytes
+ .../A01-05-task-agent-conversation-VIS-013.png     |  Bin 0 -> 111782 bytes
+ .../browser-final/A01-06-task-team-VIS-012.png     |  Bin 0 -> 176613 bytes
+ .../browser-final/A01-07-menu-after-adds.png       |  Bin 0 -> 182290 bytes
+ .../A01-08-menu-small-window-VIS-014.png           |  Bin 0 -> 95582 bytes
+ .../api-e2e-evidence/browser-final/A02-failure.png |  Bin 0 -> 129154 bytes
+ .../api-e2e-evidence/browser-final/A03-failure.png |  Bin 0 -> 129096 bytes
+ .../O01-01-org-run-at-menu-VIS-008.png             |  Bin 0 -> 88671 bytes
+ .../O01-02-org-run-task-rows-VIS-009.png           |  Bin 0 -> 174250 bytes
+ .../O02-01-org-task-agent-conversation-VIS-010.png |  Bin 0 -> 168948 bytes
+ .../api-e2e-evidence/browser-final/P01-failure.png |  Bin 0 -> 83023 bytes
+ .../T01-01-team-run-at-menu-VIS-001.png            |  Bin 0 -> 95032 bytes
+ .../T01-02-team-run-task-team-VIS-004.png          |  Bin 0 -> 269292 bytes
+ .../T01-03-second-send-pending-admission-error.png |  Bin 0 -> 250939 bytes
+ .../api-e2e-evidence/browser-final/T01-failure.png |  Bin 0 -> 250968 bytes
+ .../T02-01-task-member-conversation-VIS-005.png    |  Bin 0 -> 187941 bytes
+ .../T03-01-add-failed-notice-VIS-007.png           |  Bin 0 -> 104146 bytes
+ .../browser-final/backend-restart.log              |  292 ++
+ .../api-e2e-evidence/browser-final/backend.log     |  159 +
+ .../cross-scope-agent-mentions-evidence.json       |  404 +++
+ .../api-e2e-evidence/browser-final/frontend.log    |   21 +
+ .../browser/A01-01-agent-run-at-menu-VIS-011.png   |  Bin 0 -> 94531 bytes
+ .../browser/A01-02-at-menu-empty-VIS-002.png       |  Bin 0 -> 83676 bytes
+ .../browser/A01-03-composer-chip-VIS-003.png       |  Bin 0 -> 81099 bytes
+ .../A01-04-task-agent-and-team-tab-VIS-012.png     |  Bin 0 -> 154932 bytes
+ .../A01-05-task-agent-conversation-VIS-013.png     |  Bin 0 -> 123462 bytes
+ .../browser/A01-06-task-team-VIS-012.png           |  Bin 0 -> 179260 bytes
+ .../browser/A01-07-menu-after-adds.png             |  Bin 0 -> 185077 bytes
+ .../browser/A01-08-menu-small-window-VIS-014.png   |  Bin 0 -> 96895 bytes
+ .../api-e2e-evidence/browser/A01-failure.png       |  Bin 0 -> 124818 bytes
+ .../browser/A02-child-woken-after-stop.png         |  Bin 0 -> 149188 bytes
+ .../api-e2e-evidence/browser/O01-failure.png       |  Bin 0 -> 60209 bytes
+ .../api-e2e-evidence/browser/O02-failure.png       |  Bin 0 -> 60209 bytes
+ .../api-e2e-evidence/browser/T01-failure.png       |  Bin 0 -> 76597 bytes
+ .../api-e2e-evidence/browser/T02-failure.png       |  Bin 0 -> 76641 bytes
+ .../api-e2e-evidence/browser/T03-failure.png       |  Bin 0 -> 76641 bytes
+ .../api-e2e-evidence/browser/backend-restart.log   |  163 +
+ .../api-e2e-evidence/browser/backend.log           | 1152 +++++++
+ .../cross-scope-agent-mentions-evidence.json       |  339 +++
+ .../api-e2e-evidence/browser/frontend.log          |   84 +
+ .../api-e2e-evidence/c-02-observation.log          |   45 +
+ .../api-e2e-evidence/le-01-agy.log                 |  325 ++
+ .../api-e2e-evidence/le-01-all-runtimes.log        | 1503 ++++++++++
+ .../api-e2e-evidence/le-01-autobyteus.log          | 1118 +++++++
+ .../api-e2e-evidence/le-01-claude.log              |  328 ++
+ .../api-e2e-evidence/le-01-codex.log               |  343 +++
+ .../le-01-grok-acp-wire-summary.txt                |   36 +
+ .../api-e2e-evidence/le-01-grok.log                |  325 ++
+ .../A01-01-agent-run-at-menu-VIS-011.png           |  Bin 0 -> 92718 bytes
+ .../r2-browser-1/A01-02-at-menu-empty-VIS-002.png  |  Bin 0 -> 83494 bytes
+ .../r2-browser-1/A01-03-composer-chip-VIS-003.png  |  Bin 0 -> 80919 bytes
+ ...A01-04-collaborator-offline-on-send-VIS-015.png |  Bin 0 -> 84508 bytes
+ .../A01-05-briefed-and-reported-VIS-012.png        |  Bin 0 -> 145707 bytes
+ .../A01-06-collaborator-conversation-VIS-013.png   |  Bin 0 -> 112266 bytes
+ .../A01-07-collaborator-team-VIS-012.png           |  Bin 0 -> 213571 bytes
+ .../A01-08-menu-small-window-VIS-014.png           |  Bin 0 -> 97499 bytes
+ .../A02-collaborator-woken-after-stop.png          |  Bin 0 -> 145267 bytes
+ .../api-e2e-evidence/r2-browser-1/A04-failure.png  |  Bin 0 -> 153743 bytes
+ .../F01-agent-add-failed-notice-VIS-007.png        |  Bin 0 -> 101390 bytes
+ .../api-e2e-evidence/r2-browser-1/F01-failure.png  |  Bin 0 -> 94584 bytes
+ .../F01-org-add-failed-notice-VIS-007.png          |  Bin 0 -> 94837 bytes
+ .../F01-team-add-failed-notice-VIS-007.png         |  Bin 0 -> 85195 bytes
+ .../O01-01-org-run-at-menu-VIS-008.png             |  Bin 0 -> 88636 bytes
+ .../O01-02-org-collaborators-offline-on-send.png   |  Bin 0 -> 86794 bytes
+ .../O01-03-org-run-collaborators-VIS-009.png       |  Bin 0 -> 203612 bytes
+ ...02-01-org-collaborator-conversation-VIS-010.png |  Bin 0 -> 128499 bytes
+ .../T01-01-team-run-at-menu-VIS-001.png            |  Bin 0 -> 94440 bytes
+ ...T01-02-collaborator-offline-on-send-VIS-015.png |  Bin 0 -> 89298 bytes
+ .../T01-03-collaborator-briefed-VIS-004.png        |  Bin 0 -> 156346 bytes
+ .../T01-04-collaborator-agent-and-team-VIS-006.png |  Bin 0 -> 201612 bytes
+ ...01-collaborator-member-conversation-VIS-005.png |  Bin 0 -> 208256 bytes
+ .../r2-browser-1/backend-restart.log               |  473 +++
+ .../api-e2e-evidence/r2-browser-1/backend.log      |  162 +
+ .../cross-scope-agent-mentions-evidence.json       |  632 ++++
+ .../api-e2e-evidence/r2-browser-1/frontend.log     |   21 +
+ .../A01-01-agent-run-at-menu-VIS-011.png           |  Bin 0 -> 92854 bytes
+ .../r2-browser-2/A01-02-at-menu-empty-VIS-002.png  |  Bin 0 -> 83633 bytes
+ .../r2-browser-2/A01-03-composer-chip-VIS-003.png  |  Bin 0 -> 81057 bytes
+ ...A01-04-collaborator-offline-on-send-VIS-015.png |  Bin 0 -> 84125 bytes
+ .../A01-05-briefed-and-reported-VIS-012.png        |  Bin 0 -> 153057 bytes
+ .../A01-06-collaborator-conversation-VIS-013.png   |  Bin 0 -> 106187 bytes
+ .../A01-07-collaborator-team-VIS-012.png           |  Bin 0 -> 209082 bytes
+ .../A01-08-menu-small-window-VIS-014.png           |  Bin 0 -> 100170 bytes
+ .../A02-collaborator-woken-after-stop.png          |  Bin 0 -> 139530 bytes
+ .../api-e2e-evidence/r2-browser-2/A03-failure.png  |  Bin 0 -> 220454 bytes
+ .../r2-browser-2/A04-old-trace-user-style.png      |  Bin 0 -> 225835 bytes
+ .../F01-agent-add-failed-notice-VIS-007.png        |  Bin 0 -> 100833 bytes
+ .../F01-org-add-failed-notice-VIS-007.png          |  Bin 0 -> 87740 bytes
+ .../F01-team-add-failed-notice-VIS-007.png         |  Bin 0 -> 81806 bytes
+ .../r2-browser-2/backend-restart.log               |  287 ++
+ .../api-e2e-evidence/r2-browser-2/backend.log      |  162 +
+ .../cross-scope-agent-mentions-evidence.json       |  378 +++
+ .../api-e2e-evidence/r2-browser-2/frontend.log     |   21 +
+ .../A01-01-agent-run-at-menu-VIS-011.png           |  Bin 0 -> 93450 bytes
+ .../A01-02-at-menu-empty-VIS-002.png               |  Bin 0 -> 84218 bytes
+ .../A01-03-composer-chip-VIS-003.png               |  Bin 0 -> 81635 bytes
+ ...A01-04-collaborator-offline-on-send-VIS-015.png |  Bin 0 -> 85119 bytes
+ .../A01-05-briefed-and-reported-VIS-012.png        |  Bin 0 -> 146345 bytes
+ .../A01-06-collaborator-conversation-VIS-013.png   |  Bin 0 -> 107335 bytes
+ .../r2-browser-a05/A01-failure.png                 |  Bin 0 -> 211605 bytes
+ .../A05-reload-with-collaborator-selected.png      |  Bin 0 -> 226414 bytes
+ .../api-e2e-evidence/r2-browser-a05/backend.log    |  155 +
+ .../cross-scope-agent-mentions-evidence.json       |   66 +
+ .../api-e2e-evidence/r2-browser-a05/frontend.log   |   21 +
+ .../L01-01-after-crash-and-wake.png                |  Bin 0 -> 134115 bytes
+ .../r2-browser-agy-lifecycle/backend.log           |  177 ++
+ .../cross-scope-agent-mentions-evidence.json       |   87 +
+ .../r2-browser-agy-lifecycle/frontend.log          |   21 +
+ .../A01-01-agent-run-at-menu-VIS-011.png           |  Bin 0 -> 92853 bytes
+ .../A01-02-at-menu-empty-VIS-002.png               |  Bin 0 -> 83632 bytes
+ .../A01-03-composer-chip-VIS-003.png               |  Bin 0 -> 81056 bytes
+ ...A01-04-collaborator-offline-on-send-VIS-015.png |  Bin 0 -> 84150 bytes
+ .../A01-05-briefed-and-reported-VIS-012.png        |  Bin 0 -> 143373 bytes
+ .../A01-06-collaborator-conversation-VIS-013.png   |  Bin 0 -> 97431 bytes
+ .../A01-07-collaborator-team-VIS-012.png           |  Bin 0 -> 219498 bytes
+ .../A01-08-menu-small-window-VIS-014.png           |  Bin 0 -> 96610 bytes
+ .../A02-collaborator-woken-after-stop.png          |  Bin 0 -> 128960 bytes
+ .../r2-browser-final/A04-old-trace-user-style.png  |  Bin 0 -> 248681 bytes
+ .../A05-reload-with-collaborator-selected.png      |  Bin 0 -> 250291 bytes
+ .../F01-agent-add-failed-notice-VIS-007.png        |  Bin 0 -> 101123 bytes
+ .../F01-org-add-failed-notice-VIS-007.png          |  Bin 0 -> 94454 bytes
+ .../F01-team-add-failed-notice-VIS-007.png         |  Bin 0 -> 84821 bytes
+ .../O01-01-org-run-at-menu-VIS-008.png             |  Bin 0 -> 88714 bytes
+ .../O01-02-org-collaborators-offline-on-send.png   |  Bin 0 -> 86806 bytes
+ .../O01-03-org-run-collaborators-VIS-009.png       |  Bin 0 -> 258848 bytes
+ ...02-01-org-collaborator-conversation-VIS-010.png |  Bin 0 -> 233040 bytes
+ .../T01-01-team-run-at-menu-VIS-001.png            |  Bin 0 -> 96675 bytes
+ ...T01-02-collaborator-offline-on-send-VIS-015.png |  Bin 0 -> 91374 bytes
+ .../T01-03-collaborator-briefed-VIS-004.png        |  Bin 0 -> 162236 bytes
+ .../T01-04-collaborator-agent-and-team-VIS-006.png |  Bin 0 -> 223263 bytes
+ ...01-collaborator-member-conversation-VIS-005.png |  Bin 0 -> 191845 bytes
+ .../r2-browser-final/backend-restart.log           |  525 ++++
+ .../api-e2e-evidence/r2-browser-final/backend.log  |  161 +
+ .../cross-scope-agent-mentions-evidence.json       |  779 +++++
+ .../api-e2e-evidence/r2-browser-final/frontend.log |   21 +
+ .../api-e2e-evidence/r2-browser-tr001/backend.log  |  157 +
+ .../cross-scope-agent-mentions-evidence.json       |   78 +
+ .../api-e2e-evidence/r2-browser-tr001/frontend.log |   21 +
+ .../api-e2e-evidence/r2-latency/latency-probe.mjs  |   71 +
+ .../api-e2e-evidence/r2-le-agy.log                 |  450 +++
+ .../api-e2e-evidence/r2-le-claude-codex-final.log  |  709 +++++
+ .../api-e2e-evidence/r2-le-claude.log              |  464 +++
+ .../api-e2e-evidence/r2-le-codex.log               |  492 +++
+ .../api-e2e-evidence/r2-le-grok.log                |  398 +++
+ .../api-e2e-evidence/r2-le-lmstudio-di001.log      | 1106 +++++++
+ .../api-e2e-evidence/r2-le-lmstudio.log            | 2126 +++++++++++++
+ .../r3-desktop/BI-1-01-collaborator-opened.png     |  Bin 0 -> 349658 bytes
+ .../r3-desktop/BI-1-02-collaborator-sent.png       |  Bin 0 -> 422183 bytes
+ .../r3-desktop/BI-1-03-host-received.png           |  Bin 0 -> 433967 bytes
+ .../r3-desktop/BI-2-01-collaborator-opened.png     |  Bin 0 -> 331708 bytes
+ .../r3-desktop/BI-2-02-collaborator-sent.png       |  Bin 0 -> 404113 bytes
+ .../r3-desktop/BI-2-03-host-received.png           |  Bin 0 -> 441939 bytes
+ .../r3-desktop/BI-3-01-collaborator-opened.png     |  Bin 0 -> 451348 bytes
+ .../r3-desktop/BI-3-02-collaborator-sent.png       |  Bin 0 -> 472290 bytes
+ .../r3-desktop/BI-3-03-host-received.png           |  Bin 0 -> 475127 bytes
+ .../r3-desktop/BI-4-01-collaborator-opened.png     |  Bin 0 -> 522358 bytes
+ .../r3-desktop/BI-4-02-collaborator-sent.png       |  Bin 0 -> 541563 bytes
+ .../r3-desktop/BI-4-03-host-received.png           |  Bin 0 -> 508518 bytes
+ .../r3-desktop/D0-public-package-imported.png      |  Bin 0 -> 200953 bytes
+ .../r3-desktop/D1-01-daily-assistant-at-menu.png   |  Bin 0 -> 183921 bytes
+ .../r3-desktop/D1-02-se-team-added-offline.png     |  Bin 0 -> 232705 bytes
+ .../api-e2e-evidence/r3-desktop/D1-03-briefed.png  |  Bin 0 -> 394767 bytes
+ .../r3-desktop/D1-05-solution-designer-view.png    |  Bin 0 -> 499995 bytes
+ .../api-e2e-evidence/r3-desktop/D1-error.png       |  Bin 0 -> 276690 bytes
+ .../r3-desktop/D2-01-solution-designer-at-menu.png |  Bin 0 -> 309484 bytes
+ .../r3-desktop/D2-02-product-prototyper-added.png  |  Bin 0 -> 297562 bytes
+ .../r3-desktop/D2-03-product-prototyper-view.png   |  Bin 0 -> 254508 bytes
+ .../r3-desktop/D2-04-product-team-added.png        |  Bin 0 -> 269081 bytes
+ .../D2-05-solution-designer-collaborators.png      |  Bin 0 -> 341650 bytes
+ .../api-e2e-evidence/r3-desktop/D2b-error.png      |  Bin 0 -> 268620 bytes
+ .../r3-desktop/D3-01-delivery-engineer-at-menu.png |  Bin 0 -> 172178 bytes
+ .../r3-desktop/D3-02-marketing-team-added.png      |  Bin 0 -> 189903 bytes
+ .../D3-03-delivery-engineer-collaborator.png       |  Bin 0 -> 437582 bytes
+ .../r3-desktop/RESTORE-00-before-tree.png          |  Bin 0 -> 468547 bytes
+ .../r3-desktop/RESTORE-01-after-tree.png           |  Bin 0 -> 293297 bytes
+ .../api-e2e-evidence/r3-desktop/RESTORE-error.png  |  Bin 0 -> 292746 bytes
+ .../r3-desktop/RS-1-01-collaborator-opened.png     |  Bin 0 -> 306094 bytes
+ .../r3-desktop/RS-1-02-collaborator-sent.png       |  Bin 0 -> 283335 bytes
+ .../r3-desktop/RS-1-03-host-received.png           |  Bin 0 -> 275475 bytes
+ .../r3-desktop/RS-1-04-host-to-collaborator.png    |  Bin 0 -> 263573 bytes
+ .../r3-desktop/RS-2-01-collaborator-opened.png     |  Bin 0 -> 309671 bytes
+ .../r3-desktop/RS-2-02-collaborator-sent.png       |  Bin 0 -> 322337 bytes
+ .../r3-desktop/RS-2-03-host-received.png           |  Bin 0 -> 273516 bytes
+ .../r3-desktop/RS-2-04-host-to-collaborator.png    |  Bin 0 -> 295676 bytes
+ .../r3-desktop/RS-3-01-collaborator-opened.png     |  Bin 0 -> 310649 bytes
+ .../r3-desktop/RS-3-02-collaborator-sent.png       |  Bin 0 -> 322744 bytes
+ .../r3-desktop/RS-3-03-host-received.png           |  Bin 0 -> 306448 bytes
+ .../r3-desktop/RS-3-04-host-to-collaborator.png    |  Bin 0 -> 304629 bytes
+ .../r3-desktop/RS-4-01-collaborator-opened.png     |  Bin 0 -> 310250 bytes
+ .../r3-desktop/RS-4-02-collaborator-sent.png       |  Bin 0 -> 291771 bytes
+ .../r3-desktop/RS-4-03-host-received.png           |  Bin 0 -> 311778 bytes
+ .../r3-desktop/RS-4-04-host-to-collaborator.png    |  Bin 0 -> 299330 bytes
+ .../api-e2e-evidence/r3-desktop/SNAP-error.png     |  Bin 0 -> 498297 bytes
+ .../r3-desktop/desktop-journeys-report.json        |  743 +++++
+ .../r3-desktop/desktop-journeys.mjs                |  364 +++
+ .../api-e2e-execution-coverage-report.md           |  272 ++
+ .../api-e2e-revision-record.md                     |  104 +
+ .../api-e2e-test-case-ledger.md                    |  144 +
+ .../api-e2e-test-review-report.md                  |   83 +
+ .../architecture-design-handoff.md                 |   90 +
+ .../architecture-review-revision-record.md         |  138 +
+ .../code-review-report.md                          |  441 +++
+ .../code-review-revision-record.md                 |  266 ++
+ .../delivery-revision-record.md                    |   85 +
+ .../design-history/design-spec-SR-007.md           |  795 +++++
+ .../design-review-report.md                        |  284 ++
+ .../done/cross-scope-agent-mentions/design-spec.md |  668 +++++
+ .../cross-scope-agent-mentions/docs-sync-report.md |   87 +
+ .../cross-scope-agent-mentions/handoff-summary.md  |  125 +
+ .../implementation-evidence/render-check-sr010.mjs |  305 ++
+ ...t-run-collaborator-offline-on-send-1512x952.png |  Bin 0 -> 100461 bytes
+ .../A2-agent-run-collaborator-briefed-1512x952.png |  Bin 0 -> 154983 bytes
+ ...A3-collaborator-agent-conversation-1512x952.png |  Bin 0 -> 143758 bytes
+ .../A4-agent-run-team-collaborator-1512x952.png    |  Bin 0 -> 264162 bytes
+ ...m-run-collaborator-offline-on-send-1512x952.png |  Bin 0 -> 81491 bytes
+ .../B2-team-run-collaborator-briefed-1512x952.png  |  Bin 0 -> 220077 bytes
+ ...n-collaborator-member-conversation-1512x952.png |  Bin 0 -> 212346 bytes
+ ...-add-failed-notice-with-kept-draft-1512x952.png |  Bin 0 -> 213281 bytes
+ .../render-check-sr010/render-check-report.json    |  378 +++
+ .../render-check-sr010/zz-failure.png              |  Bin 0 -> 79374 bytes
+ .../implementation-evidence/render-check.mjs       |  220 ++
+ .../render-check/01-agent-run-at-menu-1512x952.png |  Bin 0 -> 109066 bytes
+ .../render-check/02-at-menu-empty-1512x952.png     |  Bin 0 -> 93462 bytes
+ .../03-composer-mention-chip-1512x952.png          |  Bin 0 -> 90752 bytes
+ .../04-agent-run-task-agent-added-1512x952.png     |  Bin 0 -> 139541 bytes
+ .../05-task-agent-conversation-1512x952.png        |  Bin 0 -> 153751 bytes
+ .../06-agent-run-task-team-added-1512x952.png      |  Bin 0 -> 174704 bytes
+ .../07-at-menu-after-adds-1512x952.png             |  Bin 0 -> 182569 bytes
+ .../08-at-menu-small-window-1024x640.png           |  Bin 0 -> 100153 bytes
+ .../09-chip-icon-and-team-tab-1512x952.png         |  Bin 0 -> 180990 bytes
+ .../render-check/render-check-report.json          |  318 ++
+ .../implementation-handoff.md                      |  273 ++
+ .../implementation-revision-record.md              |  190 ++
+ .../investigation-notes.md                         |  328 ++
+ .../product-design-request-handoff.md              |   86 +
+ .../product-design-revision-request-handoff.md     |   70 +
+ .../release-deployment-report.md                   |  153 +
+ .../cross-scope-agent-mentions/release-notes.md    |   33 +
+ .../cross-scope-agent-mentions/requirements-doc.md |  274 ++
+ .../solution-revision-record.md                    |  173 ++
+ 672 files changed, 45717 insertions(+), 1414 deletions(-)

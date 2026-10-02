@@ -406,7 +406,16 @@ Team persisted files:
   root carries a complete `defaultLaunchConfiguration`; every direct configured
   Agent carries a complete `launchConfiguration`. The root also carries
   `collaborators` (entries for shared Agents and Agent Teams brought in with
-  `@`; read as `[]` when absent, always written). The tree is read tolerantly
+  `@` or by an agent's first message; read as `[]` when absent, always written).
+  A delegated child that is a **catalog copy** carries an optional `source`
+  (`store/task-execution-source-schema.ts`):
+  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration}`;
+  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration}`.
+
+  Activation and restore read it first. When it is absent, the copy's source is
+  the configured placement or collaborator at its address, as for every record
+  written before catalog copies. The same field is used in the Org and Agent-root
+  trees. The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use
@@ -765,12 +774,28 @@ Claude, or AutoByteus display rows should be fixed by ensuring live normalized
 events and local raw traces are written correctly, not by merging native runtime
 history into UI projection.
 
-Projection dedupe is identity-aware at the run-history projection boundary. Rows
-with explicit message or tool invocation identity are merged by that identity;
-semantic duplicates with one missing timestamp may merge into the richer row.
-Repeated user/assistant rows that have no explicit identity and no timestamp are
-preserved as separate rows so repeated direct messages do not disappear during
-restore/open.
+### Accepted Input Presentation Identity
+
+Projection dedupe is identity-aware at the run-history boundary. For accepted
+user/inter-agent inputs, the pure shared presentation-contract helper chooses a
+normalized, **tagged primary key**: `messageId` when present, otherwise
+`dedupeKey`. Both sides must have the same key type and value, in the same
+recipient conversation and kind/role/sender scope. Different message IDs never
+merge because text/time matches or a secondary dedupe token is shared. An
+ID-bearing row does not automatically join a dedupe-only or keyless row. Tool
+invocation and non-input projection policies remain separate.
+
+The raw normalizer → typed historical replay → conversation chain preserves the
+optional keys from new native writes. Exact input matches preserve original
+timestamp and sender facts, media and attachment metadata; files match by exact
+locator plus type, retaining richer names. Browser history hydration uses the
+same primary-key policy rather than a second OR/semantic identity rule.
+
+Keyless history stays unknown; no migration/backfill or old-row repair is
+performed. Existing semantic fallback applies only when neither input has a
+known key, never to bridge identified and unknown inputs. Repeated keyless
+user/assistant rows with no timestamps remain separate. Reading saved history
+must not imply admission, a retry permit, parent dispatch or a new summary.
 
 Normalization model:
 

@@ -135,7 +135,7 @@ describe('AgentEventMonitor live compaction flow', () => {
     expect(feed.text()).not.toContain('Student compaction failed');
   });
 
-  it('updates one native deferred semantic compaction row across requested, started, and failed events', () => {
+  it('updates one direct summary compaction row across requested, started, and failed events', () => {
     const conversation = createConversation('run-native-deferred');
     const context = createContext('run-native-deferred', conversation);
 
@@ -155,8 +155,8 @@ describe('AgentEventMonitor live compaction flow', () => {
       execution_turn_id: 'turn-3',
       selected_block_count: 4,
       compacted_block_count: null,
-      compaction_run_id: 'child-run-1',
-      compaction_task_id: 'child-task-1',
+      compaction_invocation_id: 'child-run-1',
+      summarizer_provider: 'openai',
     }, context as any);
     handleCompactionStatus({
       phase: 'failed',
@@ -166,8 +166,8 @@ describe('AgentEventMonitor live compaction flow', () => {
       execution_turn_id: 'turn-3',
       selected_block_count: 4,
       compacted_block_count: null,
-      compaction_run_id: 'child-run-1',
-      compaction_task_id: 'child-task-1',
+      compaction_invocation_id: 'child-run-1',
+      summarizer_provider: 'openai',
       error_message: 'Memory compaction failed before dispatch',
     }, context as any);
 
@@ -181,8 +181,8 @@ describe('AgentEventMonitor live compaction flow', () => {
       compactionOperationId: 'operation-native-1',
       requestedTurnId: 'turn-2',
       executionTurnId: 'turn-3',
-      compactionRunId: 'child-run-1',
-      compactionTaskId: 'child-task-1',
+      compactionInvocationId: 'child-run-1',
+      summarizerProvider: 'openai',
       errorMessage: 'Memory compaction failed before dispatch',
     });
 

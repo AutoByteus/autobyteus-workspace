@@ -1,5 +1,5 @@
 import {
-  agentTokenUsageRunSummarySchema,
+  agentTokenUsageRunSummarySchema, agentInputStateSchema, compactionRecoveryEventSchema, compactionRecoveryBlockSchema,
   jsonValueSchema,
   type JsonValue,
 } from "@autobyteus/agent-presentation-contracts";
@@ -315,13 +315,19 @@ export class AgentRunPresentationAdapter {
           status: normalizeAgentApiStatus(p.status), trigger: text(p.trigger),
           toolName: text(raw(p, "tool_name", "toolName")), errorMessage: text(raw(p, "error_message", "errorMessage")),
           errorDetails: text(raw(p, "error_details", "errorDetails")),
+          recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(p.recoverableBlock ?? null),
         }, statusHint: hint });
+      case AgentRunEventType.AGENT_INPUT_STATE:
+        return correlated({ eventType: "AGENT_INPUT_STATE", details: agentInputStateSchema.parse(p), statusHint: null });
+      case AgentRunEventType.COMPACTION_BLOCKED:
+      case AgentRunEventType.COMPACTION_RESUMED:
+        return correlated({ eventType: event.eventType, details: compactionRecoveryEventSchema.parse(p), statusHint: null });
       case AgentRunEventType.COMPACTION_STATUS:
         return correlated({ eventType: "COMPACTION_STATUS", details: {
           phase: text(p.phase), kind: text(p.kind), status: text(p.status), turnId: text(raw(p, "turn_id", "turnId")),
           compactionOperationId: text(raw(p, "compaction_operation_id", "compactionOperationId")), requestedTurnId: text(raw(p, "requested_turn_id", "requestedTurnId")), executionTurnId: text(raw(p, "execution_turn_id", "executionTurnId")),
-          selectedBlockCount: number(raw(p, "selected_block_count", "selectedBlockCount")), compactedBlockCount: number(raw(p, "compacted_block_count", "compactedBlockCount")), rawTraceCount: number(raw(p, "raw_trace_count", "rawTraceCount")), semanticFactCount: number(raw(p, "semantic_fact_count", "semanticFactCount")),
-          compactionAgentDefinitionId: text(raw(p, "compaction_agent_definition_id", "compactionAgentDefinitionId")), compactionAgentName: text(raw(p, "compaction_agent_name", "compactionAgentName")), compactionRuntimeKind: text(raw(p, "compaction_runtime_kind", "compactionRuntimeKind")), compactionModelIdentifier: text(raw(p, "compaction_model_identifier", "compactionModelIdentifier")), compactionRunId: text(raw(p, "compaction_run_id", "compactionRunId")), compactionTaskId: text(raw(p, "compaction_task_id", "compactionTaskId")),
+          selectedBlockCount: number(raw(p, "selected_block_count", "selectedBlockCount")), compactedBlockCount: number(raw(p, "compacted_block_count", "compactedBlockCount")), rawTraceCount: number(raw(p, "raw_trace_count", "rawTraceCount")), summaryCharCount: number(raw(p, "summary_char_count", "summaryCharCount")),
+          compactionInvocationId: text(raw(p, "compaction_invocation_id", "compactionInvocationId")), summarizerProvider: text(raw(p, "summarizer_provider", "summarizerProvider")), completionStatus: text(raw(p, "completion_status", "completionStatus")), compactionModelIdentifier: text(raw(p, "compaction_model_identifier", "compactionModelIdentifier")), completionReason: text(raw(p, "completion_reason", "completionReason")), summaryTokenCount: number(raw(p, "summary_token_count", "summaryTokenCount")),
           errorMessage: text(raw(p, "error_message", "errorMessage")), provider: text(p.provider), sourceSurface: text(raw(p, "source_surface", "sourceSurface")), boundaryKey: text(raw(p, "boundary_key", "boundaryKey")), providerEventId: text(raw(p, "provider_event_id", "providerEventId")), providerSessionId: text(raw(p, "provider_session_id", "providerSessionId")), providerThreadId: text(raw(p, "provider_thread_id", "providerThreadId")), providerTimestamp: number(raw(p, "provider_timestamp", "providerTimestamp")), trigger: text(p.trigger), preTokens: number(raw(p, "pre_tokens", "preTokens")), rotationEligible: boolean(raw(p, "rotation_eligible", "rotationEligible")),
         }, statusHint: hint });
       case AgentRunEventType.TOKEN_USAGE_UPDATED: {

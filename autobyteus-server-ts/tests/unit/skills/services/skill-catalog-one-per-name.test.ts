@@ -226,8 +226,8 @@ describe("SkillService catalog: one skill per name (D-19)", () => {
         skillNames: ["tone"], sourceInfo: { agentDirPath: bundleAgent } });
 
       expect(service.resolveConfiguredSkillsForAgent(appAgent).map((skill) => skill.rootPath)).toEqual([bundledCopy, catalogOnly]);
-      expect(service.resolveConfiguredSkillBindingsForAgentDetailed(appAgent)[0]).toMatchObject({ kind: "resolved",
-        skill: { rootPath: bundledCopy }, source: { origin: "agent_private" } });
+      expect(service.resolveConfiguredSkillBindingsForAgent(appAgent)[0]).toEqual({ kind: "resolved",
+        skill: expect.objectContaining({ rootPath: bundledCopy }) });
       expect(service.resolveConfiguredSkillsForAgent(installedAgent).map((skill) => skill.rootPath))
         .toEqual([path.join(skillsDir, "tone")]);
     });

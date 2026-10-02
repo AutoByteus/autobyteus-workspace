@@ -4,7 +4,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import ServerSettingsManager from '../ServerSettingsManager.vue'
 import { useServerSettingsStore, type ServerSetting } from '~/stores/serverSettings'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import { useWorkingContextCompactionStrategyCatalogStore } from '~/stores/workingContextCompactionStrategyCatalog'
 import { getApolloClient } from '~/utils/apolloClient'
 
 vi.mock('~/utils/apolloClient', () => ({
@@ -46,7 +45,6 @@ const settingsAt = (ratio: string, override: string, logs: string): ServerSettin
 
 const settingsResponse = (ratio: string, override: string, logs: string) => ({
   data: {
-    getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
     getEffectiveStreamingContentFlushIntervalMs: 500,
     getServerSettings: settingsAt(ratio, override, logs),
   },
@@ -68,6 +66,7 @@ describe('Server settings Compaction failure journey', () => {
         MediaDefaultModelsCard: true,
         CodexFullAccessCard: true,
         LiveResponseStreamingCard: true,
+        CompactionModelSettings: true,
         FeaturedCatalogItemsCard: true,
         WebSearchConfigurationCard: true,
       },
@@ -84,14 +83,8 @@ describe('Server settings Compaction failure journey', () => {
     const settingsStore = useServerSettingsStore()
     settingsStore.settings = settingsAt('0.75', '4096', 'true')
     settingsStore.settingsBindingRevision = 0
-    settingsStore.effectiveWorkingContextCompactionStrategyId = 'structured-json'
 
-    const catalogStore = useWorkingContextCompactionStrategyCatalogStore()
-    catalogStore.strategies = [
-      { id: 'structured-json', name: 'Structured JSON' },
-      { id: 'future-test', name: 'Future Test' },
-    ]
-    catalogStore.bindingRevision = 0
+
   })
 
   afterEach(() => {
@@ -191,9 +184,7 @@ describe('Server settings Compaction failure journey', () => {
     expect(wrapper.find('[data-testid="server-settings-initial-error"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="compaction-config-card"]').exists()).toBe(true)
     expect(wrapper.text()).not.toContain('Failed to load server settings')
-    expect((wrapper.get('[data-testid="compaction-strategy-select"]').element as HTMLSelectElement).value).toBe(
-      'structured-json',
-    )
+
     expect((wrapper.get('[data-testid="compaction-ratio-input"]').element as HTMLInputElement).value).toBe('75')
   })
 })

@@ -1,0 +1,736 @@
+{
+  "reason": "Repository release hygiene rejects tracked paths longer than200 characters. Long-path evidence retained losslessly in short-path archive and external safety originals; source/test behavior unchanged. Do not extract members directly into Git checkout without considering platform limits.",
+  "archive": "evidence-long-paths.tar.gz",
+  "sha256": "276410f75d74d4ae44e65f567562239f9329f44b71a6bd7c50f4b0e4ed0bcf9e",
+  "members": [
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/agent_org_communication_messages.json",
+      "sha256": "1a6f2469154be42fcb5e78425906ae65450f6d51ecace189a5b0259c505f10d4",
+      "size": 141,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/agent_org_communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/agent_org_run_execution_tree.json",
+      "sha256": "eeecfdeff6c88ce6a347035fef9890d175e6b638b3aaa66c72f66f09baf42f56",
+      "size": 3672,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/agent_org_run_execution_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/api6_terminal_fixture_f8ef08a2dc704243ba72c69ae876a7f8/raw_traces_active.jsonl",
+      "sha256": "0df5e4160dc9b762c95c00723e355633a025732a1ff5b6808d1f08b81419d1d5",
+      "size": 46058,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/api6_terminal_fixture_f8ef08a2dc704243ba72c69ae876a7f8/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/api6_terminal_fixture_f8ef08a2dc704243ba72c69ae876a7f8/working_context_snapshot.json",
+      "sha256": "b783bc92f3fe480301e70c4482db54af2f77fb0e4afb0d47fdfef31dfa41adb7",
+      "size": 46631,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_orgs/api6_terminal_org_fb3b9603e9714b4dadda9717c6c0cb6b/api6_terminal_fixture_f8ef08a2dc704243ba72c69ae876a7f8/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/api6_terminal_fixture_1e278cce390a483b9dcdfc63296ead00/raw_traces_active.jsonl",
+      "sha256": "2715635a6790bae580fa72f69bc27e4ecf2a9cf613e6d5bfd9bbcebc74b6f0cb",
+      "size": 46165,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/api6_terminal_fixture_1e278cce390a483b9dcdfc63296ead00/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/api6_terminal_fixture_1e278cce390a483b9dcdfc63296ead00/working_context_snapshot.json",
+      "sha256": "77a61fed54b1734c4cbffddd23e88b1ea5bae97d6d59373b547f9172e04dec55",
+      "size": 46736,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/api6_terminal_fixture_1e278cce390a483b9dcdfc63296ead00/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/team_communication_messages.json",
+      "sha256": "5f8f9a2bfbe83572b69f4d5364391e736ca68544fac8064c55f4e71693de16e9",
+      "size": 117,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/team_communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/team_run_execution_tree.json",
+      "sha256": "91faf1a3f5c8cb93ea876c662a3554cab28500d5b462420a48300fac2f9b1c64",
+      "size": 2117,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agent_teams/api6_terminal_team_cf6f03954ed14d1995b1777b0da26643/team_run_execution_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agents/api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e/raw_traces_active.jsonl",
+      "sha256": "ea8a20111edc6df87be9687ada570184007a965eee03998aa2f97dac62315f5d",
+      "size": 43350,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agents/api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agents/api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e/working_context_snapshot.json",
+      "sha256": "2b19725db02322053eb9a21b0b2a917181ab36f28a1eb02bae5671ce507bd356",
+      "size": 44018,
+      "archiveMember": "api-e2e-evidence/api-rev-006/ir007-resume/final-owned-memory/agents/api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_communication_messages.json",
+      "sha256": "c859d1a3a797f222952b29c17385087d8cebfc397dc4c3dc9279880bf51ea3ca",
+      "size": 141,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_run_execution_tree.json",
+      "sha256": "75233fd997409dbeb52b8b31827621288fe9a016f48ce5db8782c42decb56f8a",
+      "size": 3672,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_run_execution_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_000001.jsonl",
+      "sha256": "9a9add30f4aeef6b65a12958f3dc0e3eb64c9b3c2639deec4aa45f2e29b0a37c",
+      "size": 44993,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_active.jsonl",
+      "sha256": "bba5dd61d3ab26073e76f1f883a5a32115d1d9ab1bf838087b60545006bbc458",
+      "size": 1080,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_manifest.json",
+      "sha256": "9a52792deb0eea1d7cfa62d334b9c6865d1c3a1738e75caf0bf014258bc1e62e",
+      "size": 565,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/working_context_snapshot.json",
+      "sha256": "cd23a135b9142f6021af34bd1e3eab674ed8cf8611eb70cc25c06c6675efaf57",
+      "size": 9830,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_000001.jsonl",
+      "sha256": "8972fe3e053a98412fd39a8ee329304812bf79e376d69e153af93017a12c6be3",
+      "size": 45097,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl",
+      "sha256": "d5b5430c168e164134814aa27af10ddac8a0f475078a99f1e56b90ecc66eb56b",
+      "size": 1533,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_manifest.json",
+      "sha256": "9a9c1e0bfbafc5e15abfbeec2a941f492b3320a0305a297314078246c7738007",
+      "size": 564,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/working_context_snapshot.json",
+      "sha256": "83a28541b5b08636fa067dbaffb7103bfb8795a6ca79f60037305bd107f31117",
+      "size": 10714,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_communication_messages.json",
+      "sha256": "9cad3104244bbab8525f27c495cdb3231aa53888fa3b067dd8a04fc528fd6403",
+      "size": 117,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_run_execution_tree.json",
+      "sha256": "d0b0a3a4f4961324824f0f5cfd6b681c0d015a98b194067c5fd80ff2bf41d471",
+      "size": 2117,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_run_execution_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agents/api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195/working_context_snapshot.json",
+      "sha256": "5145489a576ad27a843c902d1e94a8afd3832a8633bff2b403e7b674264371b1",
+      "size": 5896,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/final-memory/agents/api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_communication_messages.json",
+      "sha256": "c859d1a3a797f222952b29c17385087d8cebfc397dc4c3dc9279880bf51ea3ca",
+      "size": 141,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_run_execution_tree.json",
+      "sha256": "75233fd997409dbeb52b8b31827621288fe9a016f48ce5db8782c42decb56f8a",
+      "size": 3672,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/agent_org_run_execution_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_000001.jsonl",
+      "sha256": "9a9add30f4aeef6b65a12958f3dc0e3eb64c9b3c2639deec4aa45f2e29b0a37c",
+      "size": 44993,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_active.jsonl",
+      "sha256": "bba5dd61d3ab26073e76f1f883a5a32115d1d9ab1bf838087b60545006bbc458",
+      "size": 1080,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_manifest.json",
+      "sha256": "9a52792deb0eea1d7cfa62d334b9c6865d1c3a1738e75caf0bf014258bc1e62e",
+      "size": 565,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/working_context_snapshot.json",
+      "sha256": "cd23a135b9142f6021af34bd1e3eab674ed8cf8611eb70cc25c06c6675efaf57",
+      "size": 9830,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_orgs/api7_recovery_org_bda670c8d79d40689fd6341610894baf/api7_recovery_fixture_af756933a9744e989de6989b9d098646/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_000001.jsonl",
+      "sha256": "8972fe3e053a98412fd39a8ee329304812bf79e376d69e153af93017a12c6be3",
+      "size": 45097,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl",
+      "sha256": "d5b5430c168e164134814aa27af10ddac8a0f475078a99f1e56b90ecc66eb56b",
+      "size": 1533,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_manifest.json",
+      "sha256": "9a9c1e0bfbafc5e15abfbeec2a941f492b3320a0305a297314078246c7738007",
+      "size": 564,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/working_context_snapshot.json",
+      "sha256": "83a28541b5b08636fa067dbaffb7103bfb8795a6ca79f60037305bd107f31117",
+      "size": 10714,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/api7_recovery_fixture_a77787c35d35432585d1f45b95ba3e9b/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_communication_messages.json",
+      "sha256": "9cad3104244bbab8525f27c495cdb3231aa53888fa3b067dd8a04fc528fd6403",
+      "size": 117,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_run_execution_tree.json",
+      "sha256": "d0b0a3a4f4961324824f0f5cfd6b681c0d015a98b194067c5fd80ff2bf41d471",
+      "size": 2117,
+      "archiveMember": "api-e2e-evidence/api-rev-007/ui-continuation/memory-after-team-org/agent_teams/api7_recovery_team_c9fe5026a5ea41738f0e8dccd5148fd0/team_run_execution_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_000001.jsonl",
+      "sha256": "0c794ebe078b41b70c379492a90bdddd0b938e551c7a7b8b672f669605b6a449",
+      "size": 41877,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_active.jsonl",
+      "sha256": "44528cf405a8d2544d0ea9b1fbd40f977f7505eebcf8f7f68ddb6d72a6e6d693",
+      "size": 47243,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_manifest.json",
+      "sha256": "2476a89ba05ae34570565bacf4abd1563d72ca92316d76b05c2a050baf58b4b2",
+      "size": 564,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/working_context_snapshot.json",
+      "sha256": "214576ca3272556a86e64958f108622b2c7c844a1e8cf1a663370562b35f9332",
+      "size": 49852,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_000001.jsonl",
+      "sha256": "ddfb6658f17696a15ba13a1a87dcfe22faff5e82d964a123ee91fa4ec85fe4d8",
+      "size": 44994,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_active.jsonl",
+      "sha256": "48427bacb421b98ef1574541de09d875f5efac0cfbaa119c6a717ed8cbcc3da4",
+      "size": 51638,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_manifest.json",
+      "sha256": "5eb66af455b21c903f7c4bb85bd7574572945acbe9d06325d906eeea78dd0c8c",
+      "size": 564,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/working_context_snapshot.json",
+      "sha256": "3a6a22a44107cf063646522c874d231b41ff35b50cbb5a5977c572451e776629",
+      "size": 54103,
+      "archiveMember": "api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_reviewer_558729981d9749d89b2e91fc8558ab19/context_files/ctx_d7cfafc2a27f__attachment.txt",
+      "sha256": "70acc0d3bcca4d72564529723ed73af4ebaf69c1e15894375b5abb7d78d31dcc",
+      "size": 86,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_reviewer_558729981d9749d89b2e91fc8558ab19/context_files/ctx_d7cfafc2a27f__attachment.txt"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_reviewer_558729981d9749d89b2e91fc8558ab19/working_context_snapshot.json",
+      "sha256": "bb2b4ac7c45cfc43c8d374290108a462defd0c1e1d2d6e0eb3f1bf0f677430a8",
+      "size": 47558,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_reviewer_558729981d9749d89b2e91fc8558ab19/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/context_files/ctx_557c727f2a1b__attachment.txt",
+      "sha256": "70acc0d3bcca4d72564529723ed73af4ebaf69c1e15894375b5abb7d78d31dcc",
+      "size": 86,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/context_files/ctx_557c727f2a1b__attachment.txt"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_000001.jsonl",
+      "sha256": "9c2826f079aa97b68cddc061b1e2034d0b173193594d268273e2da8d4b3f9796",
+      "size": 45410,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_000001.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_active.jsonl",
+      "sha256": "27758073dcc40ebdd40a5797e4f35bd92cdfc51c4b928a544e8c39a10f0f601c",
+      "size": 42305,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_manifest.json",
+      "sha256": "ca6cd7a7754593a01b1c79c486e24dbc44f2e7d8740f332b98e2161104d41663",
+      "size": 565,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_manifest.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/working_context_snapshot.json",
+      "sha256": "52d71552e6ee9e4e6ac9d39ed3b444bf08773045f899e34facb57233f53feb71",
+      "size": 50751,
+      "archiveMember": "api-e2e-evidence/api-rev-011/product/final-native-memory/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/collaboration_tree.json",
+      "sha256": "4b70ba39e89c8c05f56541f46ce650f01e589e0787158afca16a4c0264b63d77",
+      "size": 2246,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/collaboration_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/communication_messages.json",
+      "sha256": "ab5a9c84ed6bbaa88bf2b9e58bb3f6948c0f938bbfec45f4cc34ad6b5071f55c",
+      "size": 136,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/context_files/ctx_29e0524390ff__attachment.txt",
+      "sha256": "f94645bd6fab68452282e4159f794c643dbecb11ef35168b9c5c8ec4c5612447",
+      "size": 85,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/context_files/ctx_29e0524390ff__attachment.txt"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/raw_traces_active.jsonl",
+      "sha256": "a4fad00f8e3b328ec1b672cc190702b111707798720d8a6577350599f70b0442",
+      "size": 43771,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/working_context_snapshot.json",
+      "sha256": "6518681ecab673b7ee2fb5af807bd8755e60c2a9aae25934d5f75705d10ce056",
+      "size": 43498,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_team_e5ed81d3e1cc4a60ab7576fe6ee865a0/sr036_lead_6da9c91041b54d8e82937a24c2821592/raw_traces_active.jsonl",
+      "sha256": "e28b4f20a5f3e5645d7a35fae8ce12a78aa131e4f48dd2b85efdafbdfc3852af",
+      "size": 46008,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_team_e5ed81d3e1cc4a60ab7576fe6ee865a0/sr036_lead_6da9c91041b54d8e82937a24c2821592/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_team_e5ed81d3e1cc4a60ab7576fe6ee865a0/sr036_lead_6da9c91041b54d8e82937a24c2821592/working_context_snapshot.json",
+      "sha256": "160eea39b0348aa9dd3e61eab35b148311e3eda3a95c3dbbd9b1f73200fe849e",
+      "size": 46606,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_team_e5ed81d3e1cc4a60ab7576fe6ee865a0/sr036_lead_6da9c91041b54d8e82937a24c2821592/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/collaboration_tree.json",
+      "sha256": "cecf40ad70d55ef083870589689766529d5967a3961836be816c2a2ee5aea434",
+      "size": 2246,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/collaboration_tree.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/communication_messages.json",
+      "sha256": "70fc617da10fb2d3b4fc7dcc02a5877f29cebfb50a1bbbbbf5a41b47cd8bf7dd",
+      "size": 136,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/communication_messages.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311/raw_traces_active.jsonl",
+      "sha256": "8f6ada79d5a15e669550dc7b58a04365c033e4e9b5d634954b2ccde27bbc83e9",
+      "size": 42896,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311/working_context_snapshot.json",
+      "sha256": "88ff6d83e6d0904964ea6b8bef5a4e50278215c48b8baea6076c8bf423b11f17",
+      "size": 43498,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_team_77ef0209929342edacac8b3af89d6ee7/sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f/raw_traces_active.jsonl",
+      "sha256": "ba6871a17b12c4db750793ad5ed7377148e1880b94f793ac7ad56d2e3fa96c17",
+      "size": 46008,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_team_77ef0209929342edacac8b3af89d6ee7/sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f/raw_traces_active.jsonl"
+    },
+    {
+      "originalTicketRelativePath": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_team_77ef0209929342edacac8b3af89d6ee7/sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f/working_context_snapshot.json",
+      "sha256": "ee8a902a86887179645390480230f4e3c605a57bd7fa211ea4a649b4434c0e51",
+      "size": 46606,
+      "archiveMember": "api-e2e-evidence/sr036-fresh-reproduction/product/owned-memory/daily_assistant_f1b315041c244c00aac39dd26022c568/collaboration/sr036_team_77ef0209929342edacac8b3af89d6ee7/sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f/working_context_snapshot.json"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts",
+      "sha256": "738cc62afe6439ca01db99d6eec94776ba75404642e04a7e2977bd0d7431a7cb",
+      "size": 24916,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map",
+      "sha256": "846dfe3d37dffecd60cabc730e4cf90b558d9b4c46eeeffe3f6394d88a97cbc0",
+      "size": 1550,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js",
+      "sha256": "223fbae2fffb65be17e57d94cc93b9e0b3c9ed775e030915f7045dad4e0ea540",
+      "size": 11026,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map",
+      "sha256": "ef971cd72c0749d776556869f21cf76bae5d6b50d4585bcd22ad51f495338152",
+      "size": 9198,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts",
+      "sha256": "ec86b398ebe42be36396c1648180238b4c24fdcba80eaf14f1f44ce228ce27b3",
+      "size": 5986,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts.map",
+      "sha256": "d728d5c0359b4ce6c41d0ea7e393ee80f57eeacf7a5c621d4caf3b8a971034e1",
+      "size": 442,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.d.ts.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js.map",
+      "sha256": "77417cb2a32c1e5d9e0245b069f883beffcfceef0d18138eaf86f50dd3b99cf5",
+      "size": 2170,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "sha256": "1dba0c5399d962b881e82bc3d7221ea3fc186cd859ce96709c2d003c7ff56196",
+      "size": 11635,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/tests/agent-presentation-contracts.test.mjs",
+      "sha256": "da291d93ae320a7f67d817dd0071322dee1039e3a83494177b3afa9cd2a6dd32",
+      "size": 2826,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/tests/agent-presentation-contracts.test.mjs"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map",
+      "sha256": "ade886234a357687d39615713f2cd06895fd5ca010aef9f91752c3b08e981716",
+      "size": 1915,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map",
+      "sha256": "21497bca3f2ae6f5829582567d632d5f62bbeff9493a364ce82648757b715c77",
+      "size": 5265,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+      "sha256": "594de3ef953128d229c0242eb7783d07f9145ded9d9a9e3df37f1374e2499312",
+      "size": 1982,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map",
+      "sha256": "8d9b977fdecb64f1064a25ad7c00b94121732f88e6c61cab41ea65a976fb24fe",
+      "size": 8215,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs",
+      "sha256": "542fc2a7ea58c946f58e3211e8576fe704c4091f327c43652364acea92427aca",
+      "size": 13635,
+      "archiveMember": "implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "sha256": "f0d3dc371006265c79dacbbc955fb0696380757ae74474e70c7e4fa37684d01a",
+      "size": 18552,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts",
+      "sha256": "376ec4b8e8706b85f2690db538a7d7e423859b24c315ef7e270582b701dcb2ab",
+      "size": 2201,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+      "sha256": "b13ea2da91faabcc3d6138274ea661dcdbb047a74b748bd70d9f8181159dda74",
+      "size": 11705,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "sha256": "f08a71d138a57a1b15fada0cebaa538f93c613b7176696abd1259bc589407992",
+      "size": 27725,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.ts",
+      "sha256": "d0c309c8c41524c94ae5cedc6045273e5a8c2d82883f7830a04672eadca89305",
+      "size": 4493,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "sha256": "2f1db2c063929b947a61fad8a414eff9395c1488dcc0d986fa7a3cd19204a096",
+      "size": 19315,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts",
+      "sha256": "081ace9a2d2ae8434eae0c0c1c7bbb064079b66e1128bcdc2adbae268a08c6df",
+      "size": 8179,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts",
+      "sha256": "6d951a41a7d3c83a618ca1e217416a53d9e506e642ebd3a8c0317544dad5f831",
+      "size": 9854,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts",
+      "sha256": "b01acec2b14f364fcb17a60463920e775c956402bd8cc922c4071538249cdb1e",
+      "size": 2595,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts",
+      "sha256": "66405aa065cd6790133c1156fe2ae3ccaebd211ec4e712f8835bad6875838915",
+      "size": 4277,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+      "sha256": "d2db90a864dc12fe45c2d741c379ea89e94aa08d5c6639ec224c3a327af41325",
+      "size": 11436,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts",
+      "sha256": "2676efb8c9107c87bea618bb6372b01ed5912c8dd838ceea9b013e18a8df9d41",
+      "size": 10355,
+      "archiveMember": "implementation-evidence/ir-007/source-before/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts",
+      "sha256": "b7344c2d9ec5f8f60e1a30741299f77d45fc0c5bbb1848ed0ae0bd6984b237c4",
+      "size": 2037,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts",
+      "sha256": "f886ff182719331ce9af39afadf066135fa7fffbe2636530e5072399b852e08b",
+      "size": 258,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts",
+      "sha256": "32999e436b687e14791b6373b2bc6e75e1db28e5553cf8da656f7a2bd1a71143",
+      "size": 3425,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts",
+      "sha256": "e4d38bead1b663ec6374d6df3e1337db015f6e84b88d957307a48ad6f5973c0b",
+      "size": 2222,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts",
+      "sha256": "4f2421db77738d8d5f2898d09c93075098c550bb37d5f035b3521f4f4278ffad",
+      "size": 3209,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts",
+      "sha256": "ed60843a8a2a1b1e370698ac644f0bc86f037762192770605627e58c51a76a0c",
+      "size": 675,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-content-builder.ts",
+      "sha256": "b6688f9e14bdad5539f8f8bdb45ab426d37fed8a2effabb53db58fd7ba3a013b",
+      "size": 2398,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-content-builder.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-recovery.ts",
+      "sha256": "1294a9e603f70ed8099897420f1f89c0b3873dce8de5f76102b8003b56cab11f",
+      "size": 1060,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-recovery.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/compression-strategy.ts",
+      "sha256": "3a8f9cdea327481141d1563cf7250ba28c8f304cd3d3eeeceb41f08c19bcbd28",
+      "size": 159,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/compression-strategy.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts",
+      "sha256": "46202eb6724893a27be1f2d93a6f20ad532296e5f7a0860de3a62852262f03c6",
+      "size": 5045,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/new-source-snapshot/autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "sha256": "1dba0c5399d962b881e82bc3d7221ea3fc186cd859ce96709c2d003c7ff56196",
+      "size": 11635,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/index.ts",
+      "sha256": "fe3c65f624412f2032a304188c452e983bc58e14317b5c53b46714a8520f59d3",
+      "size": 142,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/index.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/schema-helpers.ts",
+      "sha256": "9a26e7ac454ef670d435b6aa32be48804366b704e1f986559b727248f6bbc48e",
+      "size": 1045,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/schema-helpers.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/token-usage-presentation-dto.ts",
+      "sha256": "dc61cc813c7fc086991649e96ec3e673cf42e056f454a66148875065d0ffc957",
+      "size": 3279,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/src/token-usage-presentation-dto.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "sha256": "96a4dc8d611ac22fa0ee3f3d64dec8144d09741e749b2d8c78c3e7550f49b70c",
+      "size": 6714,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/src/index.ts",
+      "sha256": "5f7ec328172cc5b0efb9f06bef3690ab8843662c7231713289f9b21040690024",
+      "size": 94,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/src/index.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "sha256": "fec4d706d3263db90c80922922a82b283f1da33dee792ea2fb178b40d91d1b0c",
+      "size": 9034,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts",
+      "sha256": "b7344c2d9ec5f8f60e1a30741299f77d45fc0c5bbb1848ed0ae0bd6984b237c4",
+      "size": 2037,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts",
+      "sha256": "f886ff182719331ce9af39afadf066135fa7fffbe2636530e5072399b852e08b",
+      "size": 258,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts",
+      "sha256": "31f9014f0fae1a9d1ada0fd98f1d5c620389275e8ee1579af06a74b2e8a7b66d",
+      "size": 3602,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts",
+      "sha256": "e4d38bead1b663ec6374d6df3e1337db015f6e84b88d957307a48ad6f5973c0b",
+      "size": 2222,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts",
+      "sha256": "4f2421db77738d8d5f2898d09c93075098c550bb37d5f035b3521f4f4278ffad",
+      "size": 3209,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts",
+      "sha256": "ed60843a8a2a1b1e370698ac644f0bc86f037762192770605627e58c51a76a0c",
+      "size": 675,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-content-builder.ts",
+      "sha256": "b6688f9e14bdad5539f8f8bdb45ab426d37fed8a2effabb53db58fd7ba3a013b",
+      "size": 2398,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-content-builder.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-recovery.ts",
+      "sha256": "1294a9e603f70ed8099897420f1f89c0b3873dce8de5f76102b8003b56cab11f",
+      "size": 1060,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/compaction-recovery.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/compression-strategy.ts",
+      "sha256": "3a8f9cdea327481141d1563cf7250ba28c8f304cd3d3eeeceb41f08c19bcbd28",
+      "size": 159,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/compression-strategy.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts",
+      "sha256": "46202eb6724893a27be1f2d93a6f20ad532296e5f7a0860de3a62852262f03c6",
+      "size": 5045,
+      "archiveMember": "implementation-evidence/ir-007/source-before/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/new-source-snapshot/autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-008/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "sha256": "6fd55ac7ca9b0e56b9a65ac8f56f7304b5c4380dc9355c74477d2554d7bcf2d7",
+      "size": 27876,
+      "archiveMember": "implementation-evidence/ir-008/source-before/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-008/source-before/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts",
+      "sha256": "26695181f99ab749d17cea95edb463fde8946dafac3faf25284650c08604e601",
+      "size": 2687,
+      "archiveMember": "implementation-evidence/ir-008/source-before/autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-011/source-before/autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+      "sha256": "93253b7d10009631180240fd97f3ad138ae4d8f1e532fbee12a24a60eb44492e",
+      "size": 2115,
+      "archiveMember": "implementation-evidence/ir-011/source-before/autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-011/source-before/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+      "sha256": "c96e43c566ca2240dfdf00bbadc2464804e77a248878e850a98f3f0a81ed30b6",
+      "size": 11504,
+      "archiveMember": "implementation-evidence/ir-011/source-before/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts"
+    },
+    {
+      "originalTicketRelativePath": "implementation-evidence/ir-012/unhanded-web-placement-candidate/autobyteus-web/tests/integration/native-accepted-input-history.integration.test.ts",
+      "sha256": "a6695cd48a36e80ab3967d6c68fcb7cbd2760d659e8004744f5a07efb4b87ccc",
+      "size": 8693,
+      "archiveMember": "implementation-evidence/ir-012/unhanded-web-placement-candidate/autobyteus-web/tests/integration/native-accepted-input-history.integration.test.ts"
+    }
+  ],
+  "originalsBackup": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-delivery-safety/dr-004-20261001T193431Z/long-path-originals",
+  "historicalAbsolutePaths": "Resolve old worktree/tickets/in-progress prefix to current tickets/done first; then consult archive member table. Historical logs/reports/pins are not rewritten.",
+  "dependencySymlinks": "Seven ignored node_modules dependency symlinks are environment setup, not portable evidence; preserved in full pre-finalization safety archive, excluded from Git."
+}

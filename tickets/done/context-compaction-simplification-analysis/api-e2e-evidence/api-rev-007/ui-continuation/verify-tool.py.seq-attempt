@@ -1,0 +1,19 @@
+import pathlib,json,collections,socket
+u=pathlib.Path(__file__).parent
+r=json.loads((u/'tool-preliminary-assertions.json').read_text())
+tr=[json.loads(x) for f in r['tool_raw_files'] for x in (u/f).read_text().splitlines()]
+# Raw shards are enumerated in arbitrary filesystem order: sort actual monotonic sequence, not filenames.
+tr.sort(key=lambda t:t['seq'])
+assert sum(t['trace_type']=='tool_call' for t in tr)==1
+assert sum(t['trace_type']=='tool_result' for t in tr)==1
+assert [t['content'] for t in tr if t['trace_type']=='user'][-2:]==['API7-TOOL-A Continue after the consumed read. Do not read again.','API7-TOOL-B Retry compaction. Continue A then B; never repeat the consumed tool.']
+assert r['wire_event_counts']['TOOL_EXECUTION_STARTED']==1 and r['wire_event_counts']['TOOL_EXECUTION_SUCCEEDED']==1
+r.update(result='Pass',raw_tool_call=1,raw_tool_result=1,raw_user=3,actual_tool_executions=1,decoderCorrection='Initial assertion used unsorted glob shard order; corrected seq sort; unchanged raw evidence')
+(u/'tool-assertions.json').write_text(json.dumps(r,indent=2))
+ports={}
+for port in (58629,58630,58634):
+ s=socket.socket();ports[str(port)]=s.connect_ex(('127.0.0.1',port))!=0;s.close()
+cleanup={'ownedApp':json.loads((u/'isolated-stop.json').read_text()),'portsReleased':ports,'dataRootAbsent':not pathlib.Path("/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn").exists()}
+assert all(ports.values()) and cleanup['dataRootAbsent']
+(u/'cleanup.json').write_text(json.dumps(cleanup,indent=2))
+print(json.dumps({'tool':r,'cleanup':cleanup},indent=2))

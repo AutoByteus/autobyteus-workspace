@@ -1,0 +1,15 @@
+{
+  "runId": "api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e",
+  "agentDefinitionId": "api6-terminal-fixture",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aTgPtO/server-data/temp_workspace",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aTgPtO/server-data/memory/agents/api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e",
+  "llmModelIdentifier": "api6-deterministic-32768:lmstudio@127.0.0.1:51536",
+  "llmConfig": null,
+  "autoExecuteTools": false,
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e",
+  "preparedAt": "2026-10-01T05:17:08.230Z",
+  "preparedExpiresAt": "2026-10-02T05:17:08.230Z",
+  "startedAt": "2026-10-01T05:17:08.358Z",
+  "applicationExecutionContext": null
+}

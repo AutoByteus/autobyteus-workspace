@@ -144,21 +144,22 @@ describe("SkillService", () => {
     expect(service.getSkill("nonexistent")).toBeNull();
   });
 
-  it("certifies absence only when the catalog has no copy of the name (D-19)", () => {
+  it("records an unresolved binding only when the catalog has no copy of the name (D-19)", () => {
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const agentDir = path.join(tempRoot, "agents", "codex");
     fs.mkdirSync(agentDir, { recursive: true });
     const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
       skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([
-      { kind: "certified_absent", name: "workflow" },
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)).toEqual([
+      { kind: "unresolved", name: "workflow" },
     ]);
-    writeSkill(skillsDir, "workflow", "Global", "Global content");
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "resolved",
-      source: { origin: "global" } });
+    const globalRoot = writeSkill(skillsDir, "workflow", "Global", "Global content");
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)[0]).toMatchObject({ kind: "resolved",
+      skill: { rootPath: globalRoot } });
     // A folder without a manifest is not a catalog copy; the catalog's copy still resolves.
     fs.mkdirSync(path.join(agentDir, "skills", "workflow"), { recursive: true });
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "resolved",
-      source: { origin: "global" } });
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)[0]).toMatchObject({ kind: "resolved",
+      skill: { rootPath: globalRoot } });
   });
 
   it("does not take malformed or wrong-name manifests into the catalog under the configured name", () => {
@@ -169,47 +170,13 @@ describe("SkillService", () => {
     const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
       skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
     fs.writeFileSync(path.join(candidate, "SKILL.md"), "malformed");
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([{ kind: "certified_absent", name: "workflow" }]);
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)).toEqual([{ kind: "unresolved", name: "workflow" }]);
     writeSkillDirectory(candidate, "other", "Wrong name", "Body");
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([{ kind: "certified_absent", name: "workflow" }]);
     expect(service.resolveConfiguredSkillBindingsForAgent(definition)).toEqual([{ kind: "unresolved", name: "workflow" }]);
   });
 
-  it("classifies a catalog copy whose manifest becomes unreadable as an invalid candidate", () => {
-    const agentDir = path.join(tempRoot, "agents", "codex");
-    const candidate = writeSkillDirectory(path.join(agentDir, "skills", "workflow"), "workflow", "Test", "Body");
-    const manifest = path.join(candidate, "SKILL.md");
-    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
-      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
-    const readFile = fs.readFileSync;
-    let manifestReads = 0;
-    vi.spyOn(fs, "readFileSync").mockImplementation(((file: fs.PathOrFileDescriptor, ...args: unknown[]) => {
-      // The catalog scan reads the manifest first; the detailed check re-reads it.
-      if (file === manifest && ++manifestReads > 1) throw Object.assign(new Error("private-content-marker"), { code: "EACCES" });
-      return readFile(file, ...args as []);
-    }) as typeof fs.readFileSync);
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({
-      kind: "invalid_candidate", reason: "unreadable_manifest",
-    });
-  });
-
-  it("keeps unsafe source links and oversized source files outside semantic invalidity", () => {
-    const agentDir = path.join(tempRoot, "agents", "codex");
-    const candidate = writeSkillDirectory(path.join(agentDir, "skills", "workflow"), "workflow", "Test", "Body");
-    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
-      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
-    const outside = path.join(tempRoot, "outside-secret");
-    fs.writeFileSync(outside, "private");
-    fs.symlinkSync(outside, path.join(candidate, "reference.md"));
-    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
-    fs.unlinkSync(path.join(candidate, "reference.md"));
-    const large = path.join(candidate, "large.bin");
-    fs.closeSync(fs.openSync(large, "w"));
-    fs.truncateSync(large, 32 * 1024 * 1024 + 1);
-    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_TOO_LARGE");
-  });
-
   it("never takes a symlinked skill folder into the catalog", () => {
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const agentDir = path.join(tempRoot, "agents", "codex");
     const outside = writeSkillDirectory(path.join(tempRoot, "outside", "workflow"), "workflow", "Test", "Body");
     fs.mkdirSync(path.join(agentDir, "skills"), { recursive: true });
@@ -218,23 +185,7 @@ describe("SkillService", () => {
     const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
       skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
     expect(service.getSkill("workflow")).toBeNull();
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([{ kind: "certified_absent", name: "workflow" }]);
-  });
-
-  it("checks team-shared source safety under the team root", () => {
-    const teamDir = path.join(tempRoot, "agent-teams", "team");
-    const agentDir = path.join(teamDir, "agents", "worker");
-    fs.mkdirSync(agentDir, { recursive: true });
-    const shared = writeSkillDirectory(path.join(teamDir, "skills", "workflow"), "workflow", "Team", "Body");
-    const definition = new AgentDefinition({ name: "Worker", description: "Test", instructions: "",
-      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir } });
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({
-      kind: "resolved", source: { origin: "team_shared", trustedRoot: fs.realpathSync(teamDir) },
-    });
-    const outside = path.join(tempRoot, "outside-secret");
-    fs.writeFileSync(outside, "private");
-    fs.symlinkSync(outside, path.join(shared, "reference.md"));
-    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)).toEqual([{ kind: "unresolved", name: "workflow" }]);
   });
 
   it("does not loop on a cyclic nested skills link", () => {
@@ -244,7 +195,7 @@ describe("SkillService", () => {
     const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
       skillNames: ["missing"] });
     expect(service.listSkills().map((skill) => skill.name)).toEqual(["present"]);
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([{ kind: "certified_absent", name: "missing" }]);
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)).toEqual([{ kind: "unresolved", name: "missing" }]);
   });
 
   it("returns resolved skills by configured names and skips unknown entries", () => {
@@ -380,11 +331,11 @@ describe("SkillService", () => {
       path.resolve(path.join(agentDir, "skills", "tone")),
       path.resolve(path.join(agentDir, "skills", "outline")),
     ]);
-    expect(service.resolveConfiguredSkillBindingsForAgent(writer)[0]).toMatchObject({ kind: "resolved",
-      source: { origin: "agent_private", trustedRoot: fs.realpathSync(agentDir) } });
+    expect(service.resolveConfiguredSkillBindingsForAgent(writer)[0]).toEqual({ kind: "resolved",
+      skill: expect.objectContaining({ name: "tone" }) });
   });
 
-  it("resolves team-shared and team-local private skills from the catalog with the team as trusted root", () => {
+  it("resolves team-shared and team-local private skills from the catalog", () => {
     const packageRoot = path.join(tempRoot, "package-root");
     additionalDefinitionRoots = [packageRoot];
     const teamDir = path.join(packageRoot, "agent-teams", "editorial");
@@ -396,10 +347,7 @@ describe("SkillService", () => {
       sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir } });
 
     expect(service.resolveConfiguredSkillBindingsForAgent(reviewer).map((binding) =>
-      binding.kind === "resolved" ? binding.source : null)).toEqual([
-      { origin: "team_shared", sourceRoot: fs.realpathSync(rubric), trustedRoot: fs.realpathSync(teamDir) },
-      { origin: "agent_private", sourceRoot: fs.realpathSync(style), trustedRoot: fs.realpathSync(teamDir) },
-    ]);
+      binding.kind === "resolved" ? binding.skill.rootPath : null)).toEqual([path.resolve(rubric), path.resolve(style)]);
   });
 
   it("gives a configured agent the catalog's copy even when it ships its own (DEC-017)", () => {
@@ -413,12 +361,12 @@ describe("SkillService", () => {
       skillNames: ["style"], sourceInfo: { agentDirPath: agentDir } });
 
     expect(service.resolveConfiguredSkillBindingsForAgent(definition)[0]).toMatchObject({ kind: "resolved",
-      source: { origin: "global", sourceRoot: fs.realpathSync(globalRoot), trustedRoot: fs.realpathSync(globalRoot) } });
+      skill: { rootPath: globalRoot } });
     const allInstalled = new AgentDefinition({ name: "Daily Assistant", description: "All", instructions: "",
       skillNames: [], skillScope: "ALL_INSTALLED" });
     const fromCatalog = service.resolveConfiguredSkillBindingsForAgent(allInstalled)
       .find((binding) => binding.kind === "resolved" && binding.skill.name === "style");
-    expect(fromCatalog).toMatchObject({ kind: "resolved", source: { sourceRoot: fs.realpathSync(globalRoot) } });
+    expect(fromCatalog).toMatchObject({ kind: "resolved", skill: { rootPath: globalRoot } });
   });
 
   it("resolves a skill bundled in another package agent for a configured agent (one catalog)", () => {

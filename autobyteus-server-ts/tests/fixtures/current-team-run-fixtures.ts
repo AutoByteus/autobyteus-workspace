@@ -106,6 +106,7 @@ export const testMemberExecutionContext = (input: {
   outgoingHandoffs?: MemberCollaborationContext["outgoingHandoffs"];
   teamInstruction?: string | null;
   taskCommands?: MemberTaskCommandCapability;
+  listAvailableAgents?: MemberCollaborationContext["listAvailableAgents"];
 } = {}): MemberExecutionContext => {
   const memberAddress = assertAgentTeamAddress(input.memberAddress ?? "/coordinator");
   const rootTeamRunId = input.rootTeamRunId ?? "root-team-run";
@@ -123,6 +124,7 @@ export const testMemberExecutionContext = (input: {
       deliverLogicalMessage: async (message) => input.deliverInterAgentMessage
         ? input.deliverInterAgentMessage(message)
         : { accepted: true },
+      listAvailableAgents: input.listAvailableAgents ?? null,
     }),
     tasks: input.taskCommands ?? testMemberTaskCommandCapability(rootTeamRunId),
   });

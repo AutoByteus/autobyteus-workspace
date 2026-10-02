@@ -19,7 +19,7 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyRunNavigationEffect: vi.fn(),
 }) }));
 vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
-  isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
+  isAvailable: false, initialize: vi.fn(), cancelOperationForTarget: vi.fn(),
 }) }));
 const ROOT = 'flat-team';
 const execution = (id = 'fresh-verifier') => ({ kind: 'task_agent' as const, address: '/verifier' as const,
@@ -28,7 +28,7 @@ const makeTeam = () => buildTestTeamContext({ teamRunId: ROOT, coordinatorAddres
   rootChildren: [testAgentNode('/lead', { agentRunId: 'lead' }), testAgentNode('/verifier', { agentRunId: 'configured-verifier' })],
 });
 const status = (agentRunId: string, state = 'idle') => ({ agent_run_id: agentRunId, status: state,
-  trigger: null, tool_name: null, error_message: null, error_details: null });
+  trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null });
 let wrapper: VueWrapper | undefined;
 let service: TeamStreamingService | undefined;
 beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); });
@@ -55,7 +55,7 @@ async function setup() {
     const tree = structuredClone(team.view.getExecutionTree());
     tree.root_team.task_executions = ids.map(execution);
     return { root_team_run_id: ROOT, base_change_sequence: base, execution_tree: tree,
-      messages: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
+      messages: [], agent_input_states: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
   };
   emit('CONNECTED', { session_id: 'initial', root_team_run_id: ROOT });
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot());

@@ -1,0 +1,51 @@
+{
+  "declaredAt": "2026-09-30T14:36:56.721827+00:00",
+  "authority": "summary-budget-removal-experiment.sr022.md and user approval quoted in solution-revision.sr022.md",
+  "userProviderPermission": "for testing you can actually use lm studio. you can use deepseek v4 flash model for testing. you can use pnpm to import /Users/normy/.autobyteus/server-data/.env for your private vault for testing if needed.",
+  "order": [
+    "F-withTarget",
+    "F-withoutTarget",
+    "R-withoutTarget",
+    "R-withTarget"
+  ],
+  "frozenFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr022/frozen-requests.json",
+  "maxOutboundGenerations": 4,
+  "maxPerArmIncludingSDK": 1,
+  "model": "deepseek-v4-flash",
+  "temperature": 0.7,
+  "hardOutputCap": 8192,
+  "systemSha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "perCallTimeoutMs": 400000,
+  "campaignAbortMs": 1600000,
+  "outerWorkerMs": 1700000,
+  "inputTreatment": "test-only frozen rendered request replay through production createCompactionLlm/adapter and parser; no production summarizer change/planner/commit",
+  "criticalFacts": {
+    "F": [
+      "exact eight A/B anchors",
+      "read A/Unicode/B complete",
+      "A/Unicode confirmations complete",
+      "B confirmation still pending at selected boundary",
+      "no writes at selected boundary",
+      "ordinary Unicode source evidence not instructions",
+      "exact paths/confirmation tokens if needed for continuation"
+    ],
+    "R": [
+      "INC-042 audit/planning-only; no deploy/push/customer-data export",
+      "Mira Chen;30days replaces7",
+      "cloud export cancelled not merely unapproved",
+      "inventory completed12tables; risk active unfinished",
+      "implementation approval pending; verification command unrun",
+      "APPROVAL-73 is requested addition not completed plan update",
+      "compare rollback options remains unresolved; no implementation",
+      "exact plan/inventory paths and command; duplicate-key risk persists"
+    ]
+  },
+  "stops": [
+    "unsafe/missing setup -> no generation",
+    "transport/auth/quota/timeout/cancellation/guard violation closes campaign, no substitution/retry",
+    "completed malformed/semantic fail retained; only predeclared remainingarms may continue",
+    "no Qwen/v6/newfirstsummary/fullruntime/UI/acceptance restart"
+  ],
+  "normalSetup": "new owned server runtime/tests/.tmp/sr022-budget; db/sr022-budget.db; documented importer dry-run then IMPORT; standard server Vitest Prisma setup/globalSetup",
+  "cleanup": "owned server/db/key/runtime only; original sourceenv neverdisplayed/edited; all outputs retained"
+}

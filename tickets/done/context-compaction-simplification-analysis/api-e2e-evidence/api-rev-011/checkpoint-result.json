@@ -1,0 +1,148 @@
+{
+  "at": "2026-10-01T18:18:59.666148+00:00",
+  "scope": "Actual product pre-reload checkpoint only; no new-document proof or overall Pass",
+  "cases": [
+    {
+      "kind": "a",
+      "result": "Pass for pre-reload admission/native identity/attachment/held-and-queued checkpoint ONLY",
+      "agentRunId": "api11_reviewer_558729981d9749d89b2e91fc8558ab19",
+      "instance": "20846854-7813-40de-891a-cb3fc477a9e0",
+      "state": {
+        "run_instance_id": "20846854-7813-40de-891a-cb3fc477a9e0",
+        "revision": 20,
+        "entries": [
+          {
+            "sequence": 3,
+            "message_id": "61fda7c8-1dd2-4c12-8283-e8928c56da7b",
+            "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_reviewer_558729981d9749d89b2e91fc8558ab19:61fda7c8-1dd2-4c12-8283-e8928c56da7b",
+            "turn_id": "turn_0003",
+            "state": "held",
+            "content": "API11-A-HELD-A",
+            "sender_type": "user",
+            "file_attachments": [
+              {
+                "uri": "/rest/agent-collaborations/daily_assistant_3fad328986b54a2282fff7e7e0b737cb/agent-runs/api11_reviewer_558729981d9749d89b2e91fc8558ab19/context-files/ctx_d7cfafc2a27f__attachment.txt",
+                "file_type": "text",
+                "file_name": "ctx_d7cfafc2a27f__attachment.txt"
+              }
+            ]
+          },
+          {
+            "sequence": 4,
+            "message_id": "c4d461e5-e5b7-46d7-af21-9fbc59415adf",
+            "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_reviewer_558729981d9749d89b2e91fc8558ab19:c4d461e5-e5b7-46d7-af21-9fbc59415adf",
+            "turn_id": null,
+            "state": "queued",
+            "content": "API11-A-QUEUED-B",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupunwu6_1",
+          "failureEpoch": 3,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0003"
+          },
+          "state": "awaiting_user",
+          "code": "API11_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      },
+      "rawIdentity": {
+        "id": "rt_1790878510150",
+        "message_id": "61fda7c8-1dd2-4c12-8283-e8928c56da7b",
+        "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_reviewer_558729981d9749d89b2e91fc8558ab19:61fda7c8-1dd2-4c12-8283-e8928c56da7b"
+      },
+      "rawHashBeforeAfterB": "fd8e69bf524ca3605095dc9894a27c07c95b17038cb99cf00c778edef18c7dbc",
+      "heldRawRows": 1,
+      "heldSavedRows": 1,
+      "heldVisibleBubbles": 1,
+      "queuedVisibleBubbles": 1,
+      "timeOrigin": 1790878010930.6
+    },
+    {
+      "kind": "t",
+      "result": "Pass for pre-reload admission/native identity/attachment/held-and-queued checkpoint ONLY",
+      "agentRunId": "api11_lead_9e45116625bd4373835c9b67ca0e4014",
+      "instance": "ed1a639f-3dc6-4d94-af49-86cd007d36c9",
+      "state": {
+        "run_instance_id": "ed1a639f-3dc6-4d94-af49-86cd007d36c9",
+        "revision": 20,
+        "entries": [
+          {
+            "sequence": 3,
+            "message_id": "e7dc9e53-b751-4066-ae3e-f951d9ad29a0",
+            "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_lead_9e45116625bd4373835c9b67ca0e4014:e7dc9e53-b751-4066-ae3e-f951d9ad29a0",
+            "turn_id": "turn_0003",
+            "state": "held",
+            "content": "API11-T-HELD-A",
+            "sender_type": "user",
+            "file_attachments": [
+              {
+                "uri": "/rest/agent-collaborations/daily_assistant_3fad328986b54a2282fff7e7e0b737cb/agent-runs/api11_lead_9e45116625bd4373835c9b67ca0e4014/context-files/ctx_557c727f2a1b__attachment.txt",
+                "file_type": "text",
+                "file_name": "ctx_557c727f2a1b__attachment.txt"
+              }
+            ]
+          },
+          {
+            "sequence": 4,
+            "message_id": "625b2c64-6b4b-4424-b804-3ed1b1a44d2a",
+            "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_lead_9e45116625bd4373835c9b67ca0e4014:625b2c64-6b4b-4424-b804-3ed1b1a44d2a",
+            "turn_id": null,
+            "state": "queued",
+            "content": "API11-T-QUEUED-B",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupuqzm9_1",
+          "failureEpoch": 3,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0003"
+          },
+          "state": "awaiting_user",
+          "code": "API11_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      },
+      "rawIdentity": {
+        "id": "rt_1790878503005",
+        "message_id": "e7dc9e53-b751-4066-ae3e-f951d9ad29a0",
+        "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_lead_9e45116625bd4373835c9b67ca0e4014:e7dc9e53-b751-4066-ae3e-f951d9ad29a0"
+      },
+      "rawHashBeforeAfterB": "98168442a92e116f1474cc9d75d83a68219ac484c5f88ae5a1422fdd1946c0fe",
+      "heldRawRows": 1,
+      "heldSavedRows": 1,
+      "heldVisibleBubbles": 1,
+      "queuedVisibleBubbles": 1,
+      "timeOrigin": 1790878010930.6
+    }
+  ],
+  "reload": {
+    "result": "Not established; attempted script ineffective",
+    "sentinel": "77420203-4d99-4f25-8ac1-de6f6b915b8e",
+    "timeOrigin": 1790878010930.6
+  },
+  "provider": {
+    "acceptedRequests": 24,
+    "parent": 6,
+    "compaction": 18,
+    "synthetic503": 18,
+    "remoteInference": 0
+  },
+  "disarmed": {
+    "armed": false,
+    "mode": "disarm",
+    "requests": 24,
+    "parent": 6,
+    "compaction": 18,
+    "phase": 2,
+    "closed": false,
+    "held": 0
+  }
+}

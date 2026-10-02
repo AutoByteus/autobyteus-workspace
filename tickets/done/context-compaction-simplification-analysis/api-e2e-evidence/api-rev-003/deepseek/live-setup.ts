@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import {afterAll,vi} from 'vitest';
+import {observe} from './observer.js';
+import {LiveE2eEvidenceScanner} from '../../../../../../test-support/live-e2e/live-e2e-evidence-scanner.js';
+const scanner=new LiveE2eEvidenceScanner(['synthetic-live-e2e-scan-canary']);
+const output=new URL('wire.jsonl',import.meta.url);fs.writeFileSync(output,'',{flag:'wx'});
+const state={count:0,closed:false,pending:[] as Promise<unknown>[],promptHash:'2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7'};
+const emit=(v:any)=>{scanner.assertEvidenceClean(v);fs.appendFileSync(output,JSON.stringify({time:new Date().toISOString(),...v})+'\n');};
+vi.stubGlobal('fetch',observe(globalThis.fetch,emit,state));
+afterAll(async()=>{await Promise.all(state.pending);emit({event:'finished',outboundGenerationRequests:state.count,guardClosed:state.closed});vi.unstubAllGlobals();});

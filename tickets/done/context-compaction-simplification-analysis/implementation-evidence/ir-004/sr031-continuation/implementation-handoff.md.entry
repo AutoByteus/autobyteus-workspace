@@ -1,0 +1,139 @@
+# Implementation Handoff — IR-004
+
+## Current result
+
+**Design Impact — IR004-DI001. Implementation is incomplete and NOT ready for
+source review, API/E2E or Delivery.** Large/High unchanged. Return the missing
+Team/Org duplicate-admission ownership decision to Solution Designer. Current
+code and this handoff are authoritative; the previous completed IR003 handoff is
+preserved at `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/entry-implementation-handoff.md`.
+
+## Upstream Artifact Package
+
+Approved requirements **SR028**, design **SR030** (SR029 clarification retained),
+independent architecture **ARCH-REV-003 Pass**. Earlier SR012/017/018/019/020/022/024/
+026 decisions and cumulative evidence remain; review applicability is not N/A.
+Canonical requirements-doc.md, investigation-notes.md, design-spec.md,
+solution-revision-record.md, solution-progress-result.md, design-review-report.md,
+architecture-review-revision-record.md are all under `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis`.
+Full absolute cumulative index: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/reference-index.json` (extends reviewer
+handoff-reference-files.json). Includes exactv5/output supplements, SR028 handoff,
+SR029/030 clarifications, historical/source/API evidence and records. Product and
+DR **N/A—not requested/not reached**. v6 is indexed as unapproved/excluded only;
+superseded external three-output WIP remains untouched.
+
+## Implementation summary / classification
+
+- Cycle Rework; current revision **IR004**, recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md`.
+- Trigger ARCH-REV-003; new **IR004-DI001**; prior ARCH-F001/F002 design resolutions
+  remain separate, not reopened by this finding. Related CRR001–007/API001–005 and
+  SR022 diagnostics retain their original evidence scope; no new score.
+- **task_size=Large / architectural_risk=High confirmed** by cross-core/provider,
+  admission/lifecycle, server contract and web projection changes.
+- Selected outcome **Solution Designer**, most-specific Design Impact rule;
+  no direct source/API/Delivery handoff. Lightweight direct-route review N/A.
+- Workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`, branch codex/context-compaction-simplification-analysis,
+  HEAD5cb7b049ae3158108bff2cb70ed80e89540586d9 unchanged. Last-refreshed
+  origin/personal8caa610ff438c288d9aca9f2efe2c33924fbf517, no remote refresh.
+- **No development commit this blocked round**: all partial source remains WIP,
+  inventoried/hashed/snapshotted, not staged with unrelated pending work. No push,
+  merge, release, backups/stash disposal or private-history/provider access.
+  Delivery retains eventual origin/personal finalization.
+
+## Design Impact / health assessment
+
+`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/design-impact-request.md` records source facts and executable reproducer.
+The reviewed posture (Behavior Change + Refactor; ownership repair needed now)
+is still correct, but its existing command-deduplication premise does not hold
+for the actual Team/Org route. Standalone coordinator intercepts duplicate IDs;
+Team/Org roots/configured handle do not. Fresh sequence therefore does not prove
+fresh user intent there. Replaying identical B after recovery fails starts a
+third compression operation and adds duplicate B, reproduced on both routes.
+
+The current design supplies the intended outcome, but not the shared identity
+boundary, lifetime, duplicate ACK/history or settled/rejected-command policy
+needed across these owners. No guessed in-memory/durable ledger, duplicate queue,
+standalone-readiness bypass or weaker retry policy is introduced. Return for a
+proportionate technical decision; requirements need renewed approval only if
+Solution Designer determines intended behavior must change.
+
+## Reviewed behavior implementation trace (partial target, not completion)
+
+| Behavior / spines | Actual paths and current state |
+|---|---|
+| BEH001/003/006; DS001/008 | Core compression-strategy.ts text contract; direct-llm-compression-strategy.ts three attempts with1s/2s waits; compaction-content-builder.ts caller preparation; body/envelope split; pending executor single host call; optional observation controls. SDK per-invocation single_attempt incl Gemini client-level. Target implemented, focused synthetic checks pass, final sweep incomplete. |
+| BEH005; DS004/009/010 | MemoryManager/coordinator failure epoch/one-use permit; runtime compaction-recovery-controller and same-input LlmPhase wait; post-response returns actual answer and settles A once with run gate surviving. Server AgentRun/input admission/lifecycle observes held/resumed, FIFO/ACK/delivery uncertainty, stop fencing. Standalone tests pass; Team/Org duplicate admission **blocked by IR004-DI001**. |
+| BEH005 UI/stream | Shared agent-input-state-dto; standalone/Team/Org adapters and live snapshots; optimistic IDs; held/queued labels; error notice/composer without recoverable-error reactivation.28files266focusedtests pass. No rendered verification or full typecheck/build. |
+| BEH001/005 config DS005 | Current parent getter/default/settings factory retained per attempt; no old importer/default write. API callers mechanically adapted on3pinned paths only. |
+| BEH002/004; DS002/003/007 | IR003 versionless current writer/reader, frozen migration preservation/normal resume repair, historical inspectors and copy->atomiccommit->ownedinstall->guardedprune retained; no new migration/durable queue. Final preserved-behavior rerun not complete for IR004. |
+
+Scope guardrail retained; no Requirement Gap claimed. The blocker is technical
+ownership needed for already-approved duplicate/fresh-admission behavior.
+
+## Key areas, removal and size review
+
+Full155owned/adapted source/test-path inventory and hashes in `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/source-inventory.json`.
+New files captured in new-source-snapshot; tracked diff in source-wip.patch.
+Old concrete summarizer/builder paths replaced, no compatibility aliases or old
+numeric target introduced. Exact v5 unchanged; no category/child/tool-continuation
+safe point/restored importer. Final dead-code audit, obsolete origin-parameter
+cleanup, stronger native-supported/external-unsupported capability shape and
+>220changed-line split review remain unfinished. Conservative source size audit
+currently finds no changed production source above500nonempty lines; this is not
+completed implementation self-review. API-owned harness is excluded from source
+500limit but remains separately reviewed test support.
+
+## Persisted transition / environment
+
+SR028 delta **Not Affected** in persisted formats: live gate/permit/input projection
+only, no outbox or restart replay. IR003 current/frozen snapshot and no-import
+contracts preserved; no unapproved migration/history write added. Current code
+has not undergone the full final persistence/resume regression rerun. Basic atomic
+rename remains not fsync/power-loss proof. Node/pnpm installed dependencies used;
+no dependency/lockfile or credentials edit this round.
+
+## Local checks and remaining limitations
+
+Authoritative scoped results/commands/iteration logs: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/README.md`.
+- Synthetic strategy/config33PASS; installed SDK fake-transport37PASS.
+- Core recovery-position6PASS; native server/coordinator7PASS; stream/boundary26PASS.
+- Web local component/projection30PASS and broader focused28files266PASS (overlap).
+- Core production build and server production tsc build PASS.
+- Final root command probe2PASS/2FAIL, exactly IR004-DI001; not waived.
+- Latest broader core393PASS/1FAIL fixture subsequently corrected but not rerun;
+  collaboration contracts1PASS/7FAIL unresolved current/obsolete fixture issues.
+  Presentation/team contracts3PASS each. No repository-wide Pass asserted.
+- Web native typecheck tool resolution failure; alternate repo-TypeScript attempt
+  OOM at4GB. Full web build/typecheck incomplete. Wrong server test-root typecheck
+  invocation was not production build evidence; correct build passed separately.
+- No live semantic-quality/API/crash campaign, no provider budget consumed.
+
+## Frontend rendered-result check
+
+Applicable: real message labels, run error and composer. Built a synthetic real-
+component fixture on owned Nuxt preview31478 per TESTING.md. CUA reports no browser
+or native surface (native pipe startup failure), so no viewport/layout/keyboard/
+interaction verification. Task preview stopped, temporary product page removed;
+fixture/log retained. `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/rendered-result-check.md` documents exact limitation.
+Unit/component passes do not substitute for rendered inspection or API acceptance.
+
+## Ownership and downstream work
+
+API owner coordination explicitly permitted mechanical callers only and reports
+no active concurrent edits/campaign. `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/api-owner-comparison.json` records nine
+entry/current hashes;6unchanged,3adapted. Exact reverse-delta verification is
+available for harness and boundary; quality test preimage onlyhash-pinned, its
+full byte-exact before/after diff is not claimed. Cumulative nine-path successful-
+test review still required, not transferred to this implementation stage.
+
+After technical design recovery: finish duplicate identity/ACK integration and
+remaining target races/root fence/cancel/hooks/reconnect tests, unresolved
+contract fixtures, final core/server/web/snapshot checks, source cleanup/size
+review and rendered feedback; then development commit and Large/High source
+review. API/E2E owns broader durable/executable/live validation and confidence.
+
+Carry forward **API005 interrupted / API004 last complete Fail90.7**, F005 accepted
+known/nonblocking/notfixed, QwenSTOPPED, F004causeunknown, F006correctedCRR007;
+SR022one fidelityFail/three scoped usable, exhausted. v6unapproved, no model/
+default/support change. Inherited/fullsuite/typecheck/integrated browser/desktop/
+retry/resume/crash/Delivery/user verification gates remain; no Delivery advance.

@@ -19,7 +19,8 @@ import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
-import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 
 export type WebSocketConnection = { send(data: string): void; close(code?: number): void };
 type TeamStreamSink = AgentStreamServerMessageSink<TeamStreamServerMessage>;
@@ -175,7 +176,6 @@ export class AgentTeamStreamHandler {
       try {
         const admission = await root.admitCollaboratorMentions({
           focusedAgentRunId: agentRunId,
-          content: payload.content,
           mentions: toCollaboratorMentions(payload.mentions),
         });
         if (!admission.admitted) {
@@ -185,7 +185,7 @@ export class AgentTeamStreamHandler {
             : errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));
           return;
         }
-        content = admission.content;
+        content = composeCollaboratorMentionNote(payload.content, admission.collaborators);
       } catch (error) {
         sink?.send(errorMessage(TEAM_SEND_MESSAGE_FAILED, error instanceof Error ? error.message : String(error), agentRunId));
         return;

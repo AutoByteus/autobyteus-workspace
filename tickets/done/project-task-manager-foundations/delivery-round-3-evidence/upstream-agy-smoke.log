@@ -1,0 +1,9 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+
+No test files found, exiting with code 1
+
+filter: tests/unit/runtime-execution/antigravity/agy-stream-event-converter.test.ts, tests/unit/run-history/raw-trace-to-historical-replay-events.test.ts
+include: tests/**/*.test.ts
+exclude:  tests/unit/prompt-engineering/**/*.test.ts, tests/unit/agent-tools/prompt-engineering/**/*.test.ts, tests/integration/prompt-engineering/**/*.test.ts
+

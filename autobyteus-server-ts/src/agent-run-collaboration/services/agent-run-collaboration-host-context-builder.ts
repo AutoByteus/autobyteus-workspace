@@ -1,4 +1,4 @@
-import { collaboratorSegmentForName } from "../../agent-collaboration/collaborators/collaborator-address-allocator.js";
+import { collaboratorSegmentForName } from "../../agent-collaboration/collaborators/catalog-address-map.js";
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   MemberCollaborationContext,
@@ -52,6 +52,11 @@ export class AgentRunCollaborationHostContextBuilder {
           return active
             ? active.deliverLogicalMessage(identity, message)
             : { accepted: false, code: "COLLABORATION_ROOT_NOT_ACTIVE", message: ROOT_NOT_ACTIVE };
+        },
+        listAvailableAgents: async () => {
+          const active = this.options.getActiveRoot(metadata.runId);
+          if (!active) throw new Error(ROOT_NOT_ACTIVE);
+          return active.listAvailableAgents(identity);
         },
       }),
       tasks: Object.freeze({

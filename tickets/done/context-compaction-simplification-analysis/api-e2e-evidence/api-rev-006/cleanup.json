@@ -1,0 +1,15 @@
+{
+  "at": "2026-09-30T22:20:09.718818+00:00",
+  "instance": "iso-50926-5811",
+  "dataRootRemoved": true,
+  "portsStillListening": {
+    "50926": false,
+    "50927": false,
+    "51087": false
+  },
+  "fixturePid": 48130,
+  "stopExit": "0",
+  "onlyOwnedResourcesStopped": true,
+  "remote": 0,
+  "generatedOutputsPreserved": true
+}

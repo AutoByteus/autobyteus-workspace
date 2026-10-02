@@ -1,0 +1,53 @@
+{
+  "finding": "TR-001",
+  "gate": "Promote",
+  "basis": "TESTING.md rule 6 assertions first; successful-test review requires asserted coverage to agree with execution; F006/SR031 preserve ordinary Unicode, not a whole-history shield-absence requirement.",
+  "actor": "API validator/release reviewer assessing documented real-provider compaction evidence",
+  "trigger": "Normal registered compaction-agent-flow successful return",
+  "path": "run-live-e2e -> real-e2e-provider-capabilities -> executeCompactionAgentFlow -> literal true result -> toMatchObject(true) -> stdout evidence",
+  "consequence": "Removed predicate remains an asserted/reported Verified claim; successful exit cannot establish that specific claimed observation.",
+  "scope": "Test reporting only; no production defect or new glyph requirement.",
+  "entries": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/live-e2e-harness.ts",
+      "excerpts": [
+        {
+          "from": 145,
+          "to": 154,
+          "text": "145:   summaryModelIdentifiers: string[];\n146:   completionStatuses: string[];\n147:   directSummaryTaskFramingVerified: true;\n148:   directSummarySourceToolTailVerified: true;\n149:   directSummaryProviderSafeUnicodeVerified: true;\n150:   directSummaryShieldOmissionPressureVerified: true;\n151:   noCategoryArtifactsVerified: true;\n152:   unicodeShieldSourceImmutableVerified: true;\n153:   summaryPromptSha256: string;\n154:   qualityEvidence: {"
+        },
+        {
+          "from": 235,
+          "to": 257,
+          "text": "235: \n236: export const inspectDirectSummaryRequest = (invocation: InvocationSnapshot): {\n237:   sourceToolTailVerified: boolean;\n238: } => {\n239:   const [system, user] = invocation.messages;\n240:   const task = user?.content ?? '';\n241:   if (invocation.messages.length !== 2 || system?.role !== MessageRole.SYSTEM\n242:       || system.content !== COMPACTION_SUMMARY_PROMPT || user?.role !== MessageRole.USER\n243:       || invocation.messages.some(({ toolPayload }) => toolPayload != null)\n244:       || !task.startsWith(COMPACTION_TASK_INTRO + '\\n\\n')\n245:       || countOccurrences(task, COMPACTION_TASK_INTRO) !== 1\n246:       || countOccurrences(task, TARGET_HISTORY_OPEN_TAG) !== 1\n247:       || countOccurrences(task, TARGET_HISTORY_CLOSE_TAG) !== 1\n248:       || !task.endsWith(COMPACTION_TASK_END_SEPARATOR)) {\n249:     throw new Error('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');\n250:   }\n251:   if (!providerSafeCompactionText.isProviderSafeText(task)) {\n252:     throw new Error('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');\n253:   }\n254:   return {\n255:     sourceToolTailVerified: hasDirectSummarySourceToolTail(task),\n256:   };\n257: };"
+        },
+        {
+          "from": 890,
+          "to": 902,
+          "text": "890:           || completionStatuses.some((status) => status !== 'complete' && status !== 'unknown')) {\n891:         throw new Error('LIVE_E2E_DIRECT_SUMMARY_EXECUTION_METADATA_INVALID');\n892:       }\n893:       const requestInspections = summaryRequests.map(inspectDirectSummaryRequest);\n894:       process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_direct_source_probe',\n895:         requestInspections, summaryResponses: summaryResponses.map(({ content, completionStatus }) => ({ content, completionStatus })) })}\\n`);\n896:       if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)) {\n897:         throw new Error('LIVE_E2E_DIRECT_SUMMARY_SOURCE_EVIDENCE_MISSING');\n898:       }\n899:       const acceptedSummary = parseCompactionSummary(summaryResponses[0]!.content);\n900:       const summaryPromptSha256 = createHash('sha256').update(COMPACTION_SUMMARY_PROMPT).digest('hex');\n901: \n902:       const successfulTools = events.filter("
+        },
+        {
+          "from": 1056,
+          "to": 1066,
+          "text": "1056:         summaryInvocationIds: summaryInvocationIds as string[],\n1057:         summaryModelIdentifiers: summaryModelIdentifiers as string[],\n1058:         completionStatuses: completionStatuses as string[],\n1059:         directSummaryTaskFramingVerified: true,\n1060:         directSummarySourceToolTailVerified: true,\n1061:         directSummaryProviderSafeUnicodeVerified: true,\n1062:         directSummaryShieldOmissionPressureVerified: true,\n1063:         noCategoryArtifactsVerified: true,\n1064:         unicodeShieldSourceImmutableVerified: true,\n1065:         summaryPromptSha256,\n1066:         qualityEvidence: { snapshotSummary, nextRequestSummary, nextCurrentUserRegion },"
+        }
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+      "excerpts": [
+        {
+          "from": 116,
+          "to": 146,
+          "text": "116:         return;\n117:       }\n118: \n119:       if (scenario.operation === 'compaction-agent-flow') {\n120:         const result = await safeExternalOperation(\n121:           scenarioId,\n122:           () => execution.executeCompactionAgentFlow(assertEvidenceClean),\n123:         );\n124:         assertEvidenceClean(result);\n125:         expect(result).toMatchObject({\n126:           scenarioId,\n127:           capability: 'agent-compaction-turns',\n128:           status: 'PASSED',\n129:           compactionRatio: 0.05,\n130:           observedBelowThreshold: true,\n131:           observedAtOrAboveThreshold: true,\n132:           successfulToolCount: 4,\n133:           orderedToolTracePairsVerified: true,\n134:           continuationTraceAbsent: true,\n135:           exactRetainedArtifactVerified: true,\n136:           summaryAndCurrentUserVerified: true,\n137:           directSummaryRequestCount: 1,\n138:           directSummaryTaskFramingVerified: true,\n139:           directSummarySourceToolTailVerified: true,\n140:           directSummaryProviderSafeUnicodeVerified: true,\n141:           directSummaryShieldOmissionPressureVerified: true,\n142:           noCategoryArtifactsVerified: true,\n143:           unicodeShieldSourceImmutableVerified: true,\n144:         });\n145:         expect(result.modelIdentifier).toContain(scenario.model!);\n146:         expect(result.summaryPromptSha256).toMatch(/^[a-f0-9]{64}$/);"
+        },
+        {
+          "from": 150,
+          "to": 160,
+          "text": "150:         expect(result.completedCompactionCount).toBe(1);\n151:         expect(result.summaryInvocationIds).toHaveLength(result.completedCompactionCount);\n152:         expect(result.summaryModelIdentifiers).toHaveLength(result.completedCompactionCount);\n153:         expect(result.completionStatuses).toHaveLength(result.completedCompactionCount);\n154:         expect(result.completionStatuses.every((status) => status === 'complete' || status === 'unknown')).toBe(true);\n155:         expect(result.qualityEvidence.snapshotSummary).toBe(result.qualityEvidence.nextRequestSummary);\n156:         expect(result.recoverableToolFailureCount).toBe(0);\n157:         process.stdout.write(`${JSON.stringify(result)}\\n`);\n158:         return;\n159:       }\n160: "
+        }
+      ]
+    }
+  ],
+  "rerun": "None; current source, correction diff and original API007 successful log establish the issue."
+}

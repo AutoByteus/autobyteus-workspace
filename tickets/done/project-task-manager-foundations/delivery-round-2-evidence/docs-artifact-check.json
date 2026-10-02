@@ -1,0 +1,23 @@
+{
+  "docDeltaFiles": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/docs/modules/projects.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/AGENTS.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/docs/electron_packaging.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/docs/projects.md"
+  ],
+  "productionTestDependencyChanges": false,
+  "gitDiffCheckExit": 0,
+  "missingLinkedFiles": [],
+  "trailingWhitespace": [],
+  "DR001EntryBytePreserved": true,
+  "currentHead": "ba1e6c94d0670ecac8ac59a883fab4dacfdcc3a2",
+  "newRuntimeRerun": false,
+  "heldScope": "Not whole-product/user acceptance",
+  "sourceTrace": {
+    "tools": "Raw parse/schema/manifest and current MCP adapter inspected; exact opt-in three names and current-record masks documented",
+    "persistence": "Current normalized ProjectStore + ProjectService/Task service/context store/layout/REST inspected; commit/cleanup and registration limits preserved",
+    "frontend": "Actual routes/editor/detail/board/draft/context client and VoiceInputStore/target adapter/button inspected; ordinary events not switching journey",
+    "evidence": "Retained serial150/combined135/Electron9 raw summaries, Projects16 and composer4 JSON/cleanup read; not rerun"
+  }
+}

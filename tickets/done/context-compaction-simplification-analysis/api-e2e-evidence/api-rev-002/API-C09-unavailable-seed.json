@@ -1,0 +1,6 @@
+{
+  "value": "{\"modelIdentifier\":\"api-rev-002-unavailable-model\",\"llmConfig\":{\"temperature\":0.2}}",
+  "result": {
+    "updateServerSetting": "Server setting 'AUTOBYTEUS_COMPACTION_MODEL_SETTINGS' has been updated successfully."
+  }
+}

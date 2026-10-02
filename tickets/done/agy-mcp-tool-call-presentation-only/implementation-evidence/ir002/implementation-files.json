@@ -1,0 +1,194 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/README.md",
+    "sha256": "ce12b58c496549f9a87c60e01e473854c7baefc1cc79a02bed2f85159133f3d6"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/addresses-and-handoffs.ts",
+    "sha256": "ab627a9243a5b8d13ee392627029321ef73372960b216ce43206b91317813ee9"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/collaborators.ts",
+    "sha256": "3f51b0853c8a617d9f38a3b4f78e1a998517fd8e20af379d82b6999770953298"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/record-primitives.ts",
+    "sha256": "f3b378936dca9659c3bce43039e1b2d50f9aa41e44fe5a5e9ec75bf879a58a6e"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/schema.ts",
+    "sha256": "c64972c49c21280a8ba27c4c3f7a1ba3bfe0255a8b9a42a0b75de7387f014bc4"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/task-records.ts",
+    "sha256": "464d3c11acaf3609b8feee01b18215fa87153c1194d8b77ba5ade94c056dea94"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/types.ts",
+    "sha256": "f64426cfd4d3dedab1dee2d84d3b2d8bd3b336dc4dcd7ae3eec6efa2925750f4"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts",
+    "sha256": "2b625bf688938f4ef2067c80ad0b488e132d90fd364b87377af9ad38c7ca6b96"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/complete-collaboration-packages.ts",
+    "sha256": "487c99a5fa22e5ca1189d62e3ab89352e0f2d9aebe2f83205eccea375ec95ac7"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-definition/md-centric-provider.integration.test.ts",
+    "sha256": "a864b1256bc456944f6f1b839554bbeb1fdbf07a6015abbc0394a69c82bea64f"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts",
+    "sha256": "ef8595c33465de7c735d6ce497682de911aa67962927f8b3572dc7f7a4ed1e2c"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts",
+    "sha256": "4c6026659d010e9b04d6406f44e7b848b7ca01c5820260f07d975e100386b355"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts",
+    "sha256": "810a2e333dfc66c1f0c2de45ad59a9fac67d6a276a5c041fa3d4875efa481e60"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/rest/upload-file.integration.test.ts",
+    "sha256": "52e3bab2f27d4056ac96d029faf23d569a402a0ffb98d2bf833b53e92719f2a9"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/run-file-changes-api.integration.test.ts",
+    "sha256": "62220db993ac0975b6ec3dfd86a69ef9c066ccb5effd801dced2754a188abe75"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/team-communication-api.integration.test.ts",
+    "sha256": "b025845fa53d14ff2947eec6e6fe8831e964a4bb8d61bb1342715ee21b30a08b"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts",
+    "sha256": "e038819f452fce1bfeb1f41e1af9cf7152714f0e516688ccea061520115d605c"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/services/media-storage-service.integration.test.ts",
+    "sha256": "0fb31c19a45d7526a1fcb02f13b3e822ca9493f0a5bac7230b72b644a91cb541"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts",
+    "sha256": "a12e980aa29beac2824812bf512c657dc9b8c254ff18924903700800eb62a565"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts",
+    "sha256": "e39c7a6aa25ea3c6bf2b6f8508c7da07362fca0b89325083854812f256f06c68"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+    "sha256": "8f25e16c8a1d9c3f85cd1ded90fb6cd7ef3ac393a0ddab8fbac24b0b41f98459"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
+    "sha256": "698fa40e1ba15d337bfc08fd8a7c2bed2a0844858d0744b59754b99a269f1830"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-memory/agent-memory-location-service.test.ts",
+    "sha256": "ab5caf789f362fbb4df5bcf497c668d05a9ba23c1f3a00c74f9fff8c5904f07c"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts",
+    "sha256": "2607223ff597719aabda3d049e10405fab919e317a980bf8315ec73a1fd4fc50"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-packages/package-root-summary.test.ts",
+    "sha256": "846f2bff5e1a0329515f67e3353018733a6c3051d08362134f08e9424b97da7a"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+    "sha256": "393c506607347ab79ef878972784b9864b30af1a11ec954720596ca4adc221b4"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.ts",
+    "sha256": "6cfaa8370d8418818e538bb551e430af45e9ddcdd0345d7d8914dca840e071d9"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/studio-application-api-services.test.ts",
+    "sha256": "cfa40eccd11a50e128e0f8a8791c82f4a1c2db9eee49a331d0f4e589f1918233"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/types/memory-view-member-resolver.test.ts",
+    "sha256": "4484956f01494b520e310574516b5d28384b7974358b96e110b2fdd180c10b80"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+    "sha256": "17566024e39d1da42393380062bba49c8655fa2f479db9a2c287121342e63268"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+    "sha256": "fa343b09f88465b476a5f7e6779dbe2198a29ab7fe7239ccbd49e884200c1c13"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/released-unversioned-flat-team-shapes.test.ts",
+    "sha256": "65c2a13f4d72ab35af8a02cfeb5b004daf1aad35ee40a7e08ec769245ec7a198"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+    "sha256": "b02a2e2143e1c60801eadae45702364e1e0f01bffcc86674387ceb73a23edd62"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+    "sha256": "f511e2a63edd0e9e0f323a0a2c639362eb03a09044f7a80d22f2bd249f46222e"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+    "sha256": "e5e01e1cb34e5925ea8234f45fdacbb1671e8bffb759db22470e3df28177c341"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts",
+    "sha256": "4217a217aa81fd322e3055f26ab978138bc75a222e8357bea75819046637a8d1"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts",
+    "sha256": "d5b0ffb5689b6c70c2db1aaa38255c8345f081b518d2a240a0b160451ee967de"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts",
+    "sha256": "50adbd1c8b5111ccfeb8db77b050b450201513de12fc716f81fbac1176190052"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+    "sha256": "2b59aa97176823f541b840e9524fb25a4c79837bb2e9fe988499a72867d920a2"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/config/streaming-content-flush-interval-setting.test.ts",
+    "sha256": "3f40b36d1bb1b34ad28d60bf5eea0a0d4515d00385d3f163ba8ca618226d01b3"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/llm-management/gemini-configuration-service.test.ts",
+    "sha256": "9275479c739083cb64f69fdc14c9f5b2a78afa89ef79550f9ea04b422528ea10"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts",
+    "sha256": "310e3bdf2e5307737d229ae64fbaf9a6672d259d2120c6c7c146a8776250ca62"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/published-artifact-projection-service.test.ts",
+    "sha256": "4db53e02803e598b533978279e73ad1d93128d2e536acd0a7d9822675592cf56"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/team-run-history-catalog-service.test.ts",
+    "sha256": "3547b34bfafa48b5527f335401306e877f0fc753385a0fad7fe0b020459174ea"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/services/media-storage-service.test.ts",
+    "sha256": "06e968d62eff5bf7a1d9186da8b7d96180d9ae7f9ec26e6b799843787ac32b70"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/workspaces/workspace-manager-skill-integration.test.ts",
+    "sha256": "2648cdca632747c365d0b8e872b6a118f855253fe1f004d966c6248dada27600"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/workspaces/workspace-manager.test.ts",
+    "sha256": "c23bfa33229a1a235b4b10a039eee10e9a4dbc8e4c577eef1d4e43596ffcf969"
+  },
+  {
+    "path": "test-support/live-e2e/live-e2e-harness.ts",
+    "sha256": "948094f320d176250458fca8ce0a2aebcbb31ae7da68e80fd5cc41f64692fa50"
+  }
+]

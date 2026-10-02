@@ -6,7 +6,8 @@ import {
   type CollaborationStreamServerMessage,
 } from "@autobyteus/collaboration-stream-contracts";
 import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-ts";
-import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
 import { projectAgentCollaborationEvent, projectAgentCollaborationView } from "./agent-collaboration-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
@@ -115,7 +116,7 @@ export class AgentCollaborationStreamHandler {
         let content = message.payload.content;
         if (message.payload.mentions?.length) {
           const admission = await root.admitCollaboratorMentions({
-            focusedAgentRunId: target, content, mentions: toCollaboratorMentions(message.payload.mentions),
+            focusedAgentRunId: target, mentions: toCollaboratorMentions(message.payload.mentions),
           });
           if (!admission.admitted) {
             session.connection.send(serialize(commandAck(
@@ -124,7 +125,7 @@ export class AgentCollaborationStreamHandler {
             )));
             return;
           }
-          content = admission.content;
+          content = composeCollaboratorMentionNote(content, admission.collaborators);
         }
         const contextFiles = [
           ...message.payload.context_file_paths.map((filePath) => new ContextFile(filePath)),

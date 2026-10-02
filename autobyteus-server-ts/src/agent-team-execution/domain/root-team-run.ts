@@ -1,15 +1,9 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
-import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
-import type {
-  InterAgentMessageDeliveryIntent,
-  InterAgentMessageParticipant,
-} from "./inter-agent-message-delivery.js";
-import { buildDeliveryEndpointForParticipant } from "./inter-agent-message-delivery.js";
+import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import {
   createTeamAgentStatusDetails,
   createTeamAgentStatusSnapshot,
@@ -26,19 +20,19 @@ import type { TeamRunEvent } from "./team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
 import type { AgentLaunchConfiguration } from "./team-run-config.js";
 import type { TeamRun } from "./team-run.js";
-import { TeamExecutionIndex, type TeamMessagePlacement } from "../services/team-execution-index.js";
+import { TeamExecutionIndex } from "../services/team-execution-index.js";
 import type { FlatTeamCollaboratorHost } from "../local/flat-team-execution-factory.js";
 import type { ConfiguredMemberActivationMode } from "../local/flat-team-execution-context.js";
 import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";
 import { TeamRunResolver } from "../services/team-run-resolver.js";
 import type { RootEventListener, RootSnapshotConnection } from "../services/team-run-event-publisher.js";
 import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
-import { TeamRecipientResolver } from "../services/team-recipient-resolver.js";
-import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
+import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
 import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import type { CollaboratorMentionAdmission, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import {
   TaskDelegationError,
   type DelegateTaskInput,
@@ -60,6 +54,7 @@ export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
   messages: TeamCommunicationMessagesSnapshot;
   statuses: readonly TeamAgentStatusSnapshot[];
+  inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
 
 export type TeamRunExecutionCheckpoint = Readonly<{
@@ -76,13 +71,13 @@ export class RootTeamRun {
   private tree: TeamRunExecutionTreeSnapshot;
   private messages: TeamCommunicationMessagesSnapshot;
   private index: TeamExecutionIndex;
-  private readonly recipientResolver = new TeamRecipientResolver();
   private readonly teamRunResolver: TeamRunResolver;
   private readonly taskExecutions: TeamTaskExecutionService;
   private readonly communication: TeamCommunicationService;
   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
   private readonly materializationGate: RootTeamRunMaterializationGate;
   private readonly collaborators: TeamRunCollaborators;
+  private readonly delivery: TeamRunMessageDelivery;
   private readonly unsubscribeTaskExecutionEvents: () => void;
   private termination: Promise<AgentOperationResult> | null = null;
   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
@@ -101,7 +96,7 @@ export class RootTeamRun {
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
-    collaboratorAdmission?: CollaboratorMentionAdmission;
+    collaboratorAdmission?: CollaboratorAdmission;
     disposeRootSubjects?(): void;
     onTerminated?(): void;
   }) {
@@ -159,6 +154,15 @@ export class RootTeamRun {
       registerTeamRun: (run) => this.teamRunResolver.registerManaged(run),
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
+    });
+    this.delivery = new TeamRunMessageDelivery({
+      rootTeamRunId: this.teamRunId,
+      getIndex: () => this.index,
+      collaborators: this.collaborators,
+      communication: this.communication,
+      authorizeIdentity: (identity) => this.authorizeIdentity(identity),
+      isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
+      withLiveLease: (agentRunId, operation) => this.withLiveLease(agentRunId, operation),
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -248,26 +252,19 @@ export class RootTeamRun {
     return this.executeAgentCommand(targetAgentRunId, { kind: "post_message", message });
   }
 
-  /** Message ingress: a configured Agent, then a collaborator (its coordinator) or a collaborator Team member. */
-  resolveMessageRecipient(recipientAddress: string): TeamMessagePlacement {
-    this.assertAdmitting();
-    return this.recipientResolver.resolveMessageRecipient(this.index, recipientAddress);
-  }
-
-  /** Delegation target: a configured Agent, else a collaborator of this run. */
-  resolveDelegationPlacement(recipientAddress: string): TeamDelegationPlacement {
-    this.assertAdmitting();
-    return this.recipientResolver.resolveDelegationPlacement(this.index, recipientAddress);
-  }
-
-  /** Admits mentions for the focused agent in one gate; the caller posts the returned content. */
-  admitCollaboratorMentions(input: Parameters<TeamRunCollaborators["admit"]>[0]): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: ensures the mentioned collaborators for the focused agent in one gate; the caller composes the note. */
+  admitCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.materializationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.admit(input)
+        ? this.collaborators.ensure({ senderRunId: input.focusedAgentRunId, definitions: input.mentions })
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
     });
+  }
+
+  /** `list_available_agents` (DS-001): read-only, so it takes no gate. */
+  listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> {
+    return this.delivery.listAvailableAgents(sender);
   }
 
   collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
@@ -292,7 +289,7 @@ export class RootTeamRun {
   delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
-      return delegateToResolvedTarget(() => this.resolveDelegationPlacement(input.recipient_address), (placement) => {
+      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) => {
         if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
           throw new CollaborationContractError(
             "COLLABORATION_SELF_TARGET_REJECTED",
@@ -304,58 +301,13 @@ export class RootTeamRun {
     });
   }
 
-  async deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
-    return this.materializationGate.run(async () => {
-      if (intent.rootTeamRunId !== this.teamRunId) {
-        return { accepted: false, code: "COLLABORATION_ROOT_MISMATCH", message: "Message root does not match the selected RootTeamRun." };
-      }
-      this.authorizeIdentity(intent.sender.participant.identity);
-      const { receiver: target } = this.resolveMessageRecipient(intent.recipientAddress);
-      if (!this.isLiveAgent(target.agentRunId)) {
-        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration recipient '${intent.recipientAddress}' has no live Agent ingress.`);
-      }
-      const receiver = createCollaborationMemberExecutionIdentity({
-        root: createTeamRootExecutionIdentity(this.teamRunId), memberAddress: target.address, agentRunId: target.agentRunId,
-      });
-      return this.communication.deliver({
-        intent,
-        receiverIdentity: receiver,
-        receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
-      });
-    });
+  /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
+  deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
+    return this.materializationGate.run(() => this.delivery.deliverToAddress(intent));
   }
 
-  async deliverExactAgentMessage(input: {
-    sender: InterAgentMessageParticipant;
-    targetAgentRunId: string;
-    content: string;
-    messageType?: string | null;
-    referenceFiles?: readonly string[] | null;
-  }): Promise<AgentOperationResult> {
-    return this.materializationGate.run(async () => {
-      this.authorizeIdentity(input.sender.identity);
-      const execution = this.index.getAgent(input.targetAgentRunId.trim());
-      if (!execution) {
-        return { accepted: false, code: "TARGET_AGENT_RUN_NOT_FOUND", message: `Exact AgentRun target '${input.targetAgentRunId}' is not in root '${this.teamRunId}'.` };
-      }
-      const receiver = createCollaborationMemberExecutionIdentity({
-        root: createTeamRootExecutionIdentity(this.teamRunId),
-        memberAddress: execution.address,
-        agentRunId: execution.agentRunId,
-      });
-      return this.withLiveLease(execution.agentRunId, () => this.communication.deliver({
-        intent: {
-          rootTeamRunId: this.teamRunId,
-          sender: buildDeliveryEndpointForParticipant(input.sender),
-          recipientAddress: execution.address,
-          content: input.content,
-          messageType: input.messageType,
-          referenceFiles: input.referenceFiles ? [...input.referenceFiles] : null,
-        },
-        receiverIdentity: receiver,
-        receiverDisplayName: getAgentTeamAddressBasename(receiver.memberAddress) ?? receiver.agentRunId,
-      }));
-    });
+  deliverExactAgentMessage(input: ExactTeamAgentMessageInput): Promise<AgentOperationResult> {
+    return this.materializationGate.run(() => this.delivery.deliverToRunId(input));
   }
 
   async executeAgentCommand(
@@ -411,6 +363,7 @@ export class RootTeamRun {
         tree: this.tree,
         messages: this.messages,
         statuses: this.getLeafAgentStatusSnapshots(),
+        inputStates: this.options.rootRun.getInputStateSnapshots(),
       })),
     );
   }

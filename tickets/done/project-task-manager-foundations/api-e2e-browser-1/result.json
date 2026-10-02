@@ -1,0 +1,180 @@
+{
+  "startedAt": "2026-10-02T16:47:06.442Z",
+  "result": "Fail",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PT-E2E-001": {
+      "title": "Fresh node default off, guarded routes, selected native tools do not enable UI",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:47:33.507Z",
+      "observations": {
+        "otherNode": "project_1b275978-8fa5-4397-8e8a-4fea741a29c2"
+      },
+      "finishedAt": "2026-10-02T16:47:34.539Z"
+    },
+    "PT-E2E-002": {
+      "title": "Ordinary New Project validation/focus/Cancel and zero-link save to Tasks",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:47:34.540Z",
+      "observations": {
+        "projectId": "project_511ce0fe-3dc2-4125-8a15-f7063e25271c"
+      },
+      "finishedAt": "2026-10-02T16:47:38.383Z"
+    },
+    "PT-E2E-003": {
+      "title": "Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:47:38.384Z",
+      "observations": {
+        "links": [
+          {
+            "workspaceId": "agent_ws_8224d71e2abd606784efb6840629e52a45fa37527039c39f7e5705ec862b0a2e",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/original-workspace",
+            "displayName": "original-workspace",
+            "description": "existing context",
+            "availability": "AVAILABLE"
+          },
+          {
+            "workspaceId": "agent_ws_f8d0ab722acaadd2bf984747d070b2b5e6a71e7a86386e5deebbeb354f529ad4",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/never-mkdir",
+            "displayName": "never-mkdir",
+            "description": "registered only",
+            "availability": "AVAILABLE"
+          }
+        ]
+      },
+      "finishedAt": "2026-10-02T16:47:39.482Z"
+    },
+    "PT-E2E-004": {
+      "title": "Aggregate save failure retains Project; separate successful registration remains, no mkdir",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:47:39.483Z",
+      "observations": {
+        "registeredPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/registration-survives"
+      },
+      "finishedAt": "2026-10-02T16:47:40.046Z"
+    },
+    "PT-E2E-005": {
+      "title": "Task ordinary composer validation, search-preserving Cancel, typed/file save clears search",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:47:40.046Z",
+      "observations": {
+        "task": {
+          "taskId": "project_task_af090e25-8301-4c52-b387-1b4fbec117e0",
+          "projectId": "project_511ce0fe-3dc2-4125-8a15-f7063e25271c",
+          "description": "Browser task\nFull second line",
+          "status": "TODO",
+          "createdAt": "2026-10-02T16:47:40.902Z",
+          "updatedAt": "2026-10-02T16:47:40.902Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_63c43bdf5719__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_511ce0fe-3dc2-4125-8a15-f7063e25271c/tasks/project_task_af090e25-8301-4c52-b387-1b4fbec117e0/context-files/ctx_63c43bdf5719__note.txt"
+            },
+            {
+              "storedFilename": "ctx_0befb28c871e__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_511ce0fe-3dc2-4125-8a15-f7063e25271c/tasks/project_task_af090e25-8301-4c52-b387-1b4fbec117e0/context-files/ctx_0befb28c871e__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-02T16:47:41.022Z"
+    },
+    "PT-E2E-006": {
+      "title": "Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:47:41.022Z",
+      "observations": {
+        "edited": {
+          "taskId": "project_task_af090e25-8301-4c52-b387-1b4fbec117e0",
+          "projectId": "project_511ce0fe-3dc2-4125-8a15-f7063e25271c",
+          "description": "Browser task revised\nFull second line",
+          "status": "TODO",
+          "createdAt": "2026-10-02T16:47:40.902Z",
+          "updatedAt": "2026-10-02T16:47:41.478Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_63c43bdf5719__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_511ce0fe-3dc2-4125-8a15-f7063e25271c/tasks/project_task_af090e25-8301-4c52-b387-1b4fbec117e0/context-files/ctx_63c43bdf5719__note.txt"
+            },
+            {
+              "storedFilename": "ctx_0befb28c871e__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_511ce0fe-3dc2-4125-8a15-f7063e25271c/tasks/project_task_af090e25-8301-4c52-b387-1b4fbec117e0/context-files/ctx_0befb28c871e__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-02T16:47:41.726Z"
+    },
+    "PT-E2E-007": {
+      "title": "External selected tool commit -> physical non-deduplicated Refresh preserves search/route and moves status",
+      "result": "Fail",
+      "startedAt": "2026-10-02T16:47:41.727Z",
+      "observations": {},
+      "error": "Error: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-tool-writer.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/node-a create_or_update_task {\"project_id\":\"project_511ce0fe-3dc2-4125-8a15-f7063e25271c\",\"description\":\"Browser external\"} /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool-1.json exited 1/null; see /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool.log\n    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:74:73)\n    at Object.onceWrapper (node:events:634:26)\n    at ChildProcess.emit (node:events:531:35)\n    at maybeClose (node:internal/child_process:1101:16)\n    at Socket.<anonymous> (node:internal/child_process:456:11)\n    at Socket.emit (node:events:519:28)\n    at Pipe.<anonymous> (node:net:347:12)\n    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)",
+      "finishedAt": "2026-10-02T16:47:41.850Z"
+    },
+    "PT-E2E-008": {
+      "title": "Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct",
+      "result": "Fail",
+      "startedAt": "2026-10-02T16:47:41.850Z",
+      "observations": {},
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('project-tasks-error').getByRole('button', { name: 'Retry' })\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:310:90\n    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:173:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:304:3",
+      "finishedAt": "2026-10-02T16:48:15.165Z"
+    },
+    "PT-E2E-009": {
+      "title": "Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping",
+      "result": "Fail",
+      "startedAt": "2026-10-02T16:48:15.166Z",
+      "observations": {},
+      "error": "Error: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-tool-writer.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/node-a create_or_update_task {\"project_id\":\"project_511ce0fe-3dc2-4125-8a15-f7063e25271c\",\"description\":\"Second contiguous To Do\\nQuieter preview\"} /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool-2.json exited 1/null; see /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool.log\n    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:74:73)\n    at Object.onceWrapper (node:events:634:26)\n    at ChildProcess.emit (node:events:531:35)\n    at maybeClose (node:internal/child_process:1101:16)\n    at Socket.<anonymous> (node:internal/child_process:456:11)\n    at Socket.emit (node:events:519:28)\n    at Pipe.<anonymous> (node:net:347:12)\n    at Pipe.callbackTrampoline (node:internal/async_hooks:130:17)",
+      "finishedAt": "2026-10-02T16:48:15.281Z"
+    },
+    "PT-E2E-010": {
+      "title": "Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting",
+      "result": "Pass",
+      "startedAt": "2026-10-02T16:48:15.282Z",
+      "observations": {
+        "restarted": true
+      },
+      "finishedAt": "2026-10-02T16:48:19.204Z"
+    },
+    "PT-E2E-011": {
+      "title": "All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project",
+      "result": "Fail",
+      "startedAt": "2026-10-02T16:48:19.205Z",
+      "observations": {},
+      "error": "Error: Full/open counts distinct\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:43:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:333:64\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:173:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs:332:3",
+      "finishedAt": "2026-10-02T16:48:19.266Z"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontend": "terminated:77717",
+    "nodeA": "terminated:82473",
+    "nodeB": "terminated:77706",
+    "tempRootRemoved": true
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K",
+    "nodeA": "http://127.0.0.1:54303",
+    "nodeB": "http://127.0.0.1:54304",
+    "frontend": "http://127.0.0.1:54351"
+  },
+  "finishedAt": "2026-10-02T16:48:19.995Z"
+}

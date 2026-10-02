@@ -1,0 +1,20 @@
+{
+  "ownedFlowTemporaryRoots": [
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-twAaHz",
+      "exists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-xKtsPs",
+      "exists": false
+    },
+    {
+      "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-y5rpCS",
+      "exists": false
+    }
+  ],
+  "newProviderCampaigns": 0,
+  "newUiSessions": 0,
+  "newServices": 0,
+  "databasePolicy": "Standard worktree-designated tests/.tmp/autobyteus-server-test.db retained; normal global setup reset test database. No user data involved."
+}

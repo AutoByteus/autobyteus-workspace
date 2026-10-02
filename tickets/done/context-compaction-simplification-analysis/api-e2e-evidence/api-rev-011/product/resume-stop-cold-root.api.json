@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-01T18:43:49.998558+00:00",
+  "endpoint": "http://127.0.0.1:62667/graphql",
+  "request": {
+    "query": "query{agentRunCollaboration(runId:\"daily_assistant_3fad328986b54a2282fff7e7e0b737cb\")}",
+    "variables": {}
+  },
+  "response": {
+    "data": {
+      "agentRunCollaboration": {
+        "root_subject_kind": "agent",
+        "root_run_id": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb",
+        "root_agent": {
+          "base_change_sequence": 0,
+          "is_active": false,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-01T18:09:47.285Z",
+            "host": {
+              "address": "/daily_assistant",
+              "agentRunId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb",
+              "agentDefinitionId": "autobyteus-daily-assistant"
+            },
+            "collaborators": [
+              {
+                "kind": "agent",
+                "address": "/api11_reviewer",
+                "agentDefinitionId": "api11-reviewer",
+                "agentRunId": "api11_reviewer_558729981d9749d89b2e91fc8558ab19",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "api11-deterministic-32768:lmstudio@127.0.0.1:62749",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/temp_workspace"
+                },
+                "addedAt": "2026-10-01T18:10:09.556Z",
+                "addedViaAgentRunId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb"
+              },
+              {
+                "kind": "agent_team",
+                "address": "/api11_team",
+                "teamDefinitionId": "api11-team",
+                "teamRunId": "api11_team_fc475e18be474df087e5473a9fbb161a",
+                "coordinatorAddress": "/api11_team/lead",
+                "members": [
+                  {
+                    "address": "/api11_team/lead",
+                    "agentDefinitionId": "api11-lead",
+                    "agentRunId": "api11_lead_9e45116625bd4373835c9b67ca0e4014",
+                    "platformAgentRunId": null
+                  },
+                  {
+                    "address": "/api11_team/peer",
+                    "agentDefinitionId": "api11-peer",
+                    "agentRunId": "api11_peer_e46b89ec5b944c88a7e450c07e3e61e4",
+                    "platformAgentRunId": null
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "api11-deterministic-32768:lmstudio@127.0.0.1:62749",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/temp_workspace"
+                },
+                "taskExecutions": [],
+                "addedAt": "2026-10-01T18:10:09.556Z",
+                "addedViaAgentRunId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb"
+              }
+            ],
+            "taskExecutions": []
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb",
+            "messages": []
+          },
+          "agent_statuses": [],
+          "agent_input_states": []
+        }
+      }
+    }
+  }
+}

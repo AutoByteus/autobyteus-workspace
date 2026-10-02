@@ -162,16 +162,21 @@ and then renders two sibling sections from the validated current member context:
 `AgentTeam Addressing` followed by `AgentTeam Collaboration`. They appear before
 native `Working Environment`. The first teaches one canonical absolute non-root
 address grammar and the member's exact address. The second explains universal
-same-root collaboration through an intent-first distinction: `send_message_to`
-contacts an existing execution, while `delegate_task` starts a fresh instance of
-an Agent or AgentTeam and delivers its complete assignment as the first message.
-A "Delegated Agents" subsection explains the returned `target_agent_run_id` (or
-null plus `message` when nothing started), two-way follow-up only through
-`send_message_to` with that run ID, and that a quiet delegated agent is shut
-down and restored with its conversation on the next message. The section also
+collaboration through an intent-first distinction (REQ-009 wording):
+`send_message_to` reaches the one instance at an address, and an available
+agent or team that is not yet in the run is brought in on first use;
+`delegate_task` always spawns a new copy of an Agent or AgentTeam and delivers
+its complete assignment as the first message. A "Work Requests and Results"
+subsection covers Agent and AgentTeam (coordinator) addresses, teammates inside
+the sender's own team instance, first-use bring-in, and run-ID selection, which
+never brings anything in. A "Delegated Agents" subsection explains that every
+call spawns another copy (copies can work in parallel), the returned
+`target_agent_run_id` (or null plus `message` when nothing started), follow-up
+on a copy only through `send_message_to` with its run ID, and that a quiet copy
+is shut down and restored with its conversation on the next message. The section also
 covers duplicate-dispatch prohibition, Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
 the single rule whose condition most specifically applies, notification of only
-that rule's recipient, no-rule completion, and delivery confirmation. The
+that rule's recipient, requester-return when no rule applies to incoming work, and delivery confirmation. The
 renderer contains no flat recipient or delegation-target roster.
 
 For example, a Team-bound Agent can receive this shape:
@@ -179,47 +184,101 @@ For example, a Team-bound Agent can receive this shape:
 ```markdown
 ## AgentTeam Addressing
 
+(The directory/file analogy and the `/A`…`/C/E` example are omitted here.)
+
 Every Agent and nested AgentTeam is identified by one canonical absolute address beginning with `/` at the root AgentTeam. Copy that exact address when a tool asks for `recipient_address`. Relative addresses, bare names, `../`, backslashes, and the structural root `/` itself are not valid recipients.
 
 Your Agent address is:
 
 /release_team/release_reviewer
 
+Sending a message to an AgentTeam address delivers it through that AgentTeam's configured coordinator.
+
 ## AgentTeam Collaboration
 
+### Work Requests and Outcomes
+
+On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
+
 Choose the collaboration mode based on your primary intent.
-`send_message_to` communicates with an existing execution.
-`delegate_task` starts a fresh instance of an Agent or AgentTeam with new work.
+`send_message_to` reaches the one instance at an address, brought in on first use.
+`delegate_task` always spawns a new copy of an Agent or AgentTeam for new work.
 Never use both to deliver the same work.
+
+### Work Requests and Results
+
+Use `send_message_to` to communicate with the one Agent or AgentTeam instance
+at an address.
+
+- When `recipient_address` identifies an Agent, the message is delivered to
+  that Agent's instance.
+- When `recipient_address` identifies an AgentTeam, the message is delivered
+  to that Team instance's coordinator.
+- Inside your own team instance, a teammate's address reaches the member of
+  that same instance.
+- An available agent or team that is not yet in the run is brought in on
+  first use; later messages to its address reach the same instance.
+- When an exact AgentRun ID is known, `target_agent_run_id` may instead
+  select that specific execution: any AgentRun in the same root, including a
+  shut-down delegated agent, or a currently active AgentRun elsewhere. A run ID
+  never brings anything in.
+
+A successful call returns the exact AgentRun that accepted the message as
+`target_agent_run_id`. For an AgentTeam recipient, this is its coordinator
+AgentRun.
 
 ### Delegated Agents
 
-Use `delegate_task` to start a fresh instance of a mounted Agent or AgentTeam
-for new work. The `recipient_address` identifies the definition to
-instantiate; it is not an alias for the new instance.
+Use `delegate_task` to spawn a new copy of an Agent or AgentTeam for new work.
+The `recipient_address` identifies what to copy (a mounted Agent or AgentTeam,
+a collaborator, or an available agent or team); it is not an alias for the new
+copy. Every call spawns another copy, so copies can work in parallel.
 
-- The work description and reference files become the new instance's first
-  message, together with your address and AgentRun ID.
-- On success, `target_agent_run_id` is the new instance (for an AgentTeam, its
+- The work description and reference files become the copy's first message,
+  together with your address and AgentRun ID.
+- On success, `target_agent_run_id` is the new copy (for an AgentTeam, its
   coordinator). If `target_agent_run_id` is null, nothing was started and
   `message` explains why; correct the problem and delegate again, or report
   the failure.
 
-After delegation, communicate with the instance only through `send_message_to`
-with its `target_agent_run_id`, in both directions. A delegated agent that
-stays quiet is shut down after a while; a message to its run ID restores it
-with its conversation, so follow-ups remain possible at any time.
+Follow up on a copy only through `send_message_to` with its
+`target_agent_run_id`, in both directions. A copy that stays quiet is shut
+down after a while; a message to its run ID restores it with its
+conversation, so follow-ups remain possible at any time.
 
 ### Rule-Based Handoffs
 
-When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.
+When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies to an incoming work request, return the result or specific blocker to the requesting agent using `send_message_to`; otherwise, finish normally.
+
+Do not claim that a message, delegation, or handoff succeeded unless the
+corresponding tool confirms success.
 ```
 
 The runtime renderer owns the complete exact wording and is shared by
 AutoByteus, Codex App Server, and Claude Agent SDK composition. Agent/team
 authors should not copy dynamic member addresses or tool schemas into `agent.md`
 or `team.md`. Standalone runs render neither Team Instruction nor either
-AgentTeam section.
+AgentTeam section. An eligible standalone run (not a server helper or
+application-owned run), and an Agent directly under its Agent root, instead get
+one short `## Collaboration` section
+(`src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts`).
+Both renderers reuse the same `Work Requests and Outcomes` paragraph: assigned work
+follows the recipient’s instructions and applicable skills, without acknowledgement-only
+replies. Skill-defined intermediate handoffs and blockers remain valid. This guidance
+does not turn informational notifications into new assignments.
+The standalone section also covers the `[Mentioned collaborators]` note, `send_message_to` reaching the
+one instance at an address (brought in on first use), `delegate_task` always
+spawning a new copy, `list_available_agents` when selected, and the member's
+own address. It does not instruct standalone agents to call `get_handoff_rules`;
+without applicable rules, results or specific blockers return to the requesting agent.
+
+The shared wording owner is `WORK_REQUEST_EXECUTION_LLM_INSTRUCTION` in
+`src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`.
+The `send_message_to` tool and content-field descriptions likewise frame work
+requests, results, and blockers; argument fields and runtime dispatch are unchanged.
+This is model guidance, not runtime enforcement or a guarantee of compliance.
+Saved prompts/history are not rewritten, and this change does not force already
+running sessions to refresh their instructions.
 
 The shared composition used by Codex App Server and Claude Agent SDK stops
 after the shared identity/team sections. Those adapters place the resulting

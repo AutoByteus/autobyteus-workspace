@@ -1,0 +1,16 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "tests/integration/web-boundary-guard.integration.test.ts",
+    "services/runHydration/__tests__/acceptedInputIdentity.spec.ts",
+    "tests/integration/electron-package-boundary.integration.test.ts",
+    "--run"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T18:00:00.438875+00:00",
+  "finished": "2026-10-01T18:00:07.788456+00:00",
+  "exit": 0
+}

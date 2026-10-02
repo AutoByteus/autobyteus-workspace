@@ -1,0 +1,52 @@
+{
+  "instance": {
+    "instanceId": "iso-55019-e50e",
+    "pid": 96521,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:55020",
+    "graphqlUrl": "http://127.0.0.1:55020/graphql",
+    "controlEndpoint": "http://127.0.0.1:55019",
+    "controlPort": 55019,
+    "serverPort": 55020,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-CO1sBJ",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-CO1sBJ/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-55019-e50e.log"
+  },
+  "controller": "CUA exact worktree bundle; AX file URL and owned temp_workspace confirm isolation",
+  "observed_native_steps": [
+    "Chat composer present, microphone absent when extension not installed",
+    "Settings -> Extensions: Voice Input Not Installed / Install",
+    "Settings -> Server Settings: Projects disabled; enabled only own node; nav Projects visible",
+    "Projects -> New Project ordinary page focused heading; required Name/optional Description/Workspaces",
+    "Created Isolated desktop validation -> Tasks 0/0/0",
+    "New Task ordinary page; typed Description editable; text explicitly states optional desktop extension required",
+    "Saved Desktop typed fallback -> same board To Do 1, In Progress 0, Done 0",
+    "Saved Task detail: Task details, To Do, adjacent Edit task/Delete task, single Desktop typed fallback description, no visible IDs/dates",
+    "External native status Done read on ordinary return to board",
+    "While board open with search Desktop, external selected native tool commits IN_PROGRESS; no automatic AX state change",
+    "CUA clicks visible Refresh: In Progress 1 / Done 0; same search Desktop and same Project route retained"
+  ],
+  "backend_after_ui_save": {
+    "data": {
+      "projectsCapability": {
+        "enabled": true
+      },
+      "projects": [
+        {
+          "projectId": "project_1a7883ec-9477-4bd4-a379-2a4d89092d9e",
+          "name": "Isolated desktop validation",
+          "description": "Disposable API/E2E fixture",
+          "taskCount": 1,
+          "openTaskCount": 1
+        }
+      ]
+    }
+  },
+  "voice": "UNVERIFIED; install/microphone consent requested asynchronously; no sample or injected transcription used",
+  "external_tool_evidence": [
+    "api-e2e-desktop-tool-write.json",
+    "api-e2e-desktop-tool-refresh.json"
+  ]
+}

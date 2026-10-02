@@ -81,19 +81,19 @@
 
     <div class="mt-4 flex items-center justify-between gap-4 py-2" data-test="team-auto-approve-row">
       <div class="min-w-0">
-        <label :for="autoExecuteId" class="block select-none text-base text-gray-900" :class="{ 'text-gray-400': isInteractionDisabled }">
+        <label :for="autoExecuteId" class="block select-none text-base text-gray-900" :class="{ 'text-gray-400': isInteractionDisabled && !autoApproveLocked }">
           {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}
         </label>
-        <p class="mt-1 text-xs leading-relaxed text-gray-500">
-          {{ t(scope.effectiveConfig.runtimeKind === 'antigravity_cli'
-            ? 'workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help'
+        <p class="mt-1 text-xs leading-relaxed text-gray-500" data-test="team-auto-approve-help">
+          {{ t(autoApproveLocked
+            ? 'workspace.runModelConfig.agyAutoApproveLocked'
             : 'workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
         </p>
       </div>
       <AutoApproveSwitch
         :id="autoExecuteId"
-        :checked="scope.effectiveConfig.autoExecuteTools"
-        :disabled="isFixedFieldDisabled"
+        :checked="autoExecuteChecked"
+        :disabled="isFixedFieldDisabled || autoApproveLocked"
         :label="t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools')"
         @toggle="updateField('auto', $event)"
       />
@@ -241,12 +241,14 @@
           <label :for="autoExecuteId" class="block text-sm font-medium text-gray-700">
             {{ t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve') }}
           </label>
-          <p class="mt-1 text-xs text-gray-500">{{ t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_help') }}</p>
+          <p class="mt-1 text-xs text-gray-500" data-test="team-scope-auto-approve-help">
+            {{ t(autoApproveLocked ? 'workspace.runModelConfig.agyAutoApproveLocked' : 'workspace.components.workspace.config.TeamScopeConfigEditor.auto_help') }}
+          </p>
         </div>
         <AutoApproveSwitch
           :id="autoExecuteId"
-          :checked="scope.effectiveConfig.autoExecuteTools"
-          :disabled="isFixedFieldDisabled"
+          :checked="autoExecuteChecked"
+          :disabled="isFixedFieldDisabled || autoApproveLocked"
           :label="t('workspace.components.workspace.config.TeamScopeConfigEditor.auto_approve')"
           @toggle="updateField('auto', $event)"
         />
@@ -271,7 +273,7 @@ import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelCo
 import type { TeamScopeFormModel } from '~/types/agent/TeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { hasMeaningfulLaunchOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils'
-import { withNewRuntimeOverridePolicy } from '~/utils/agentRunRuntimeDraftPolicy'
+import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime, withNewRuntimeOverridePolicy } from '~/utils/agentRunRuntimeDraftPolicy'
 
 const props = withDefaults(defineProps<{
   scope: Readonly<TeamScopeFormModel>
@@ -298,6 +300,8 @@ const editableScope = computed(() => props.scope.mode === 'editable' ? props.sco
 const existingScope = computed(() => props.scope.mode === 'existing' ? props.scope : null)
 const isInteractionDisabled = computed(() => props.disabled)
 const isFixedFieldDisabled = computed(() => props.disabled || props.scope.mode === 'existing')
+const autoApproveLocked = computed(() => isAutoApproveLockedForRuntime(props.scope.effectiveConfig.runtimeKind))
+const autoExecuteChecked = computed(() => effectiveAutoExecuteTools(props.scope.effectiveConfig.runtimeKind, props.scope.effectiveConfig.autoExecuteTools))
 const expanded = ref(false)
 const pendingOverride = ref<TeamScopeConfigOverride>({
   ...(props.scope.mode === 'editable' ? props.scope.override ?? {} : {}),

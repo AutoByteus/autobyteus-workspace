@@ -1,0 +1,277 @@
+--- autobyteus-server-ts/src/agent-org-execution/domain/frozen-agent-org-termination-scope.ts
++++ autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts
+@@ -1,16 +1,17 @@
+-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+-import type { ConfiguredAgentExecutionHandle } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
+-import type { FrozenTeamRunTerminationScope } from "../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
++import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
++import type { ConfiguredAgentExecutionHandle } from "./configured-agent-execution-handle.js";
++import type { FrozenTeamRunTerminationScope } from "../../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
+ 
+-export type FrozenAgentOrgTerminationScope = Readonly<{
++/** Frozen root-hosted executions (Agents and Teams) of an AgentOrg or Agent root, fenced then finished. */
++export type FrozenRootTerminationScope = Readonly<{
+   fenceAgentRunsForRootShutdown(): Promise<AgentOperationResult>;
+   finish(): Promise<AgentOperationResult>;
+ }>;
+ 
+-export const createFrozenAgentOrgTerminationScope = (input: Readonly<{
++export const createFrozenRootTerminationScope = (input: Readonly<{
+   agentHandles: readonly ConfiguredAgentExecutionHandle[];
+   teamScopes: readonly FrozenTeamRunTerminationScope[];
+-}>): FrozenAgentOrgTerminationScope => {
++}>): FrozenRootTerminationScope => {
+   let fencing: Promise<AgentOperationResult> | null = null;
+   let finishing: Promise<AgentOperationResult> | null = null;
+   return Object.freeze({
+--- autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts
++++ autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts
+@@ -1,32 +1,35 @@
+ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+-import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
+-import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+-import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
+-import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
+-import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
+-import type { ConfiguredAgentExecutionHandle, PreparedConfiguredAgentActivation } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
+-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
+-import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+-import { TaskAgentDurabilityEventGate } from "../../agent-collaboration/execution/services/task-agent-durability-event-gate.js";
+-import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
+-import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
+-import { TaskExecutionTeardownIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+-import { isRunningTaskExecutionStatus } from "../../agent-collaboration/execution/task/task-execution-running-work.js";
+-import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
+-import type { PrepareTaskAgentInput } from "../../agent-team-execution/domain/task-agent-execution.js";
+-import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
+-import type { TeamRunAgentNode } from "../../agent-team-execution/domain/team-run-config.js";
+-import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
+-
+-export type PreparedAgentOrgConfiguredAgent = Readonly<{
++import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
++import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
++import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
++import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
++import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
++import { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
++import type { ConfiguredAgentExecutionHandle, PreparedConfiguredAgentActivation } from "./configured-agent-execution-handle.js";
++import type { RootedAgentMemoryLocator } from "../services/rooted-agent-memory-locator.js";
++import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
++import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
++import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
++import type { PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
++import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
++import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
++import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
++import type { PrepareTaskAgentInput } from "../../../agent-team-execution/domain/task-agent-execution.js";
++import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
++import type { TeamRunAgentNode } from "../../../agent-team-execution/domain/team-run-config.js";
++import type { ConfiguredAgentActivationMode } from "../domain/configured-agent-execution.js";
++
++export type PreparedRootConfiguredAgent = Readonly<{
+   handle: ConfiguredAgentExecutionHandle;
+   commitAfterDurability(): void;
+   abort(): Promise<void>;
+ }>;
+ 
+-/** Direct Agent and Org-root task-Agent local mechanics; the resource lifecycle policy stays in the shared lifecycle. */
+-export class AgentOrgRootAgentExecutionRegistry {
++/**
++ * Root-level Agent hosting shared by the AgentOrg and Agent roots: configured root Agents and
++ * root-hosted task Agents. The resource lifecycle policy stays in the shared task lifecycle.
++ */
++export class RootAgentExecutionRegistry {
+   private readonly active = new Map<string, ConfiguredAgentExecutionHandle>();
+   private readonly prepared = new Map<string, ConfiguredAgentExecutionHandle>();
+   private readonly taskAgentRunIds = new Set<string>();
+@@ -50,7 +53,7 @@
+   }
+   get(agentRunId: string): ConfiguredAgentExecutionHandle | null { return this.active.get(agentRunId) ?? null; }
+   /**
+-   * AR-005 liveness for Org-root task Agents: live only while the registered handle's
++   * AR-005 liveness for root-hosted task Agents: live only while the registered handle's
+    * AgentRun is active. A retained handle whose run was shut down or died is not live.
+    */
+   isTaskLive(agentRunId: string): boolean {
+@@ -75,7 +78,7 @@
+   isActive(agentRunId: string): boolean { return this.active.get(agentRunId)?.isActive() ?? false; }
+   freezeMaterialization(): void { this.materializationOpen = false; }
+ 
+-  async prepareConfigured(sourceNode: TeamRunAgentNode, mode: ConfiguredAgentActivationMode): Promise<PreparedAgentOrgConfiguredAgent> {
++  async prepareConfigured(sourceNode: TeamRunAgentNode, mode: ConfiguredAgentActivationMode): Promise<PreparedRootConfiguredAgent> {
+     const handle = await this.createHandle(sourceNode, mode, this.options.callbacks);
+     this.reserve(sourceNode.agentRunId, handle);
+     try {
+@@ -84,7 +87,7 @@
+         handle,
+         commitAfterDurability: () => {
+           if (state !== "prepared" || this.prepared.get(sourceNode.agentRunId) !== handle) {
+-            throw new Error(`AgentRun '${sourceNode.agentRunId}' is not prepared for AgentOrg publication.`);
++            throw new Error(`AgentRun '${sourceNode.agentRunId}' is not prepared for root publication.`);
+           }
+           this.prepared.delete(sourceNode.agentRunId);
+           this.active.set(sourceNode.agentRunId, handle);
+@@ -105,7 +108,7 @@
+   }
+ 
+   async prepareTask(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
+-    if (!this.materializationOpen) throw new Error("AgentOrg root task Agent materialization is closed.");
++    if (!this.materializationOpen) throw new Error("Root task Agent materialization is closed.");
+     const eventGate = new TaskAgentDurabilityEventGate(this.options.callbacks.publishAgentEvent);
+     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
+       ...this.options.callbacks,
+@@ -158,11 +161,11 @@
+     const handle = this.active.get(agentRunId);
+     return handle
+       ? handle.reserveInput(message, options)
+-      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `AgentOrg direct AgentRun '${agentRunId}' is not active.` });
++      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `Root-hosted AgentRun '${agentRunId}' is not active.` });
+   }
+   async executeCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+     const handle = this.active.get(agentRunId);
+-    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentOrg direct AgentRun '${agentRunId}' is not active.` };
++    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `Root-hosted AgentRun '${agentRunId}' is not active.` };
+     // AR-005: never let approve/interrupt re-activate a shut-down task run through the handle.
+     if (command.kind !== "post_message" && this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)) {
+       return { accepted: false, code: "RUN_NOT_ACTIVE", message: `Task AgentRun '${agentRunId}' is shut down.` };
+@@ -174,12 +177,12 @@
+     }
+   }
+   /**
+-   * Wakes one shut-down Org-root task Agent inside a live lease: registers a `restore`-mode
++   * Wakes one shut-down root-hosted task Agent inside a live lease: registers a `restore`-mode
+    * handle when none exists (after a root reopen), then activates its AgentRun. A retained
+    * handle re-activates in `restore` mode, continuing the persisted conversation.
+    */
+   async restoreTask(sourceNode: TeamRunAgentNode): Promise<void> {
+-    if (!this.materializationOpen) throw new Error("AgentOrg root task Agent materialization is closed.");
++    if (!this.materializationOpen) throw new Error("Root task Agent materialization is closed.");
+     if (this.prepared.has(sourceNode.agentRunId)) throw new Error(`Task AgentRun '${sourceNode.agentRunId}' is prepared.`);
+     let handle = this.active.get(sourceNode.agentRunId);
+     if (!handle) {
+@@ -196,7 +199,7 @@
+     await handle.getOrCreateAgentRun();
+   }
+ 
+-  /** Shuts one Org-root task Agent down only when it is quiet; the handle stays registered. */
++  /** Shuts one root-hosted task Agent down only when it is quiet; the handle stays registered. */
+   async tryShutDownTaskIfQuiet(agentRunId: string): Promise<boolean> {
+     const handle = this.active.get(agentRunId);
+     if (!handle || !this.isTaskLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
+--- autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts
++++ autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts
+@@ -1,23 +1,26 @@
+-import type { RootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+-import { TaskAgentDurabilityEventGate } from "../../agent-collaboration/execution/services/task-agent-durability-event-gate.js";
+-import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
+-import { FlatTeamExecutionFactory, type PreparedFlatTeamExecution } from "../../agent-team-execution/local/flat-team-execution-factory.js";
+-import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+-import type { TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
+-import type { PrepareTaskTeamInput } from "../../agent-team-execution/domain/task-team-execution.js";
+-import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
+-import { TaskExecutionTeardownIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+-import { isRunningTaskExecutionStatus } from "../../agent-collaboration/execution/task/task-execution-running-work.js";
+-import type { ConfiguredMemberActivationMode } from "../../agent-team-execution/local/flat-team-execution-context.js";
+-import type { FrozenTeamRunTerminationScope } from "../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
+-
+-export type AgentOrgTeamRegistrationReservation = Readonly<{
++import type { RootExecutionPhysicalScope } from "../domain/root-execution-identity.js";
++import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
++import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
++import { FlatTeamExecutionFactory, type PreparedFlatTeamExecution } from "../../../agent-team-execution/local/flat-team-execution-factory.js";
++import type { TeamRun } from "../../../agent-team-execution/domain/team-run.js";
++import type { TeamRunAgentTeamNode } from "../../../agent-team-execution/domain/team-run-config.js";
++import type { PrepareTaskTeamInput } from "../../../agent-team-execution/domain/task-team-execution.js";
++import type { PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
++import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
++import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
++import type { ConfiguredMemberActivationMode } from "../../../agent-team-execution/local/flat-team-execution-context.js";
++import type { FrozenTeamRunTerminationScope } from "../../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
++
++export type RootTeamRegistrationReservation = Readonly<{
+   commit(): void;
+   cancel(): void;
+ }>;
+ 
+-/** Org-private mounted/task TeamRun registry; never registers a standalone Team root. */
+-export class AgentOrgTeamExecutionDirectory {
++/**
++ * Root-level TeamRun hosting shared by the AgentOrg and Agent roots: mounted Teams and
++ * root-hosted task Teams. It never registers a standalone Team root.
++ */
++export class RootTeamExecutionDirectory {
+   private readonly active = new Map<string, TeamRun>();
+   private readonly reserved = new Set<string>();
+   private readonly taskTeamRunIds = new Set<string>();
+@@ -30,7 +33,7 @@
+   freezeForRootTermination(): readonly FrozenTeamRunTerminationScope[] {
+     this.materializationOpen = false;
+     if (this.reserved.size) {
+-      throw new Error("AgentOrg Team publication was still reserved at root-scope freeze.");
++      throw new Error("Root Team publication was still reserved at root-scope freeze.");
+     }
+     return Object.freeze([...this.active.values()].map((run) => run.freezeForRootTermination()));
+   }
+@@ -63,7 +66,7 @@
+   }
+   require(teamRunId: string): TeamRun {
+     const run = this.get(teamRunId);
+-    if (!run) throw new Error(`AgentOrg TeamRun '${teamRunId}' is not active.`);
++    if (!run) throw new Error(`Root-hosted TeamRun '${teamRunId}' is not active.`);
+     return run;
+   }
+ 
+@@ -104,13 +107,13 @@
+     });
+   }
+ 
+-  reserveTaskSubtree(runs: readonly TeamRun[]): AgentOrgTeamRegistrationReservation {
++  reserveTaskSubtree(runs: readonly TeamRun[]): RootTeamRegistrationReservation {
+     const ids = runs.map((run) => run.teamRunId);
+     this.reserveIds(ids);
+     let state: "reserved" | "committed" | "cancelled" = "reserved";
+     return Object.freeze({
+       commit: () => {
+-        if (state !== "reserved") throw new Error("AgentOrg task TeamRun reservation is not committable.");
++        if (state !== "reserved") throw new Error("Root task TeamRun reservation is not committable.");
+         this.commitRuns(runs, true);
+         state = "committed";
+       },
+@@ -182,7 +185,7 @@
+     });
+   }
+ 
+-  /** Re-creates one shut-down Org-root task Team in `restore` mode; members activate lazily on input. */
++  /** Re-creates one shut-down root-hosted task Team in `restore` mode; members activate lazily on input. */
+   async restoreRootTaskTeam(input: Readonly<{
+     teamNode: TeamRunAgentTeamNode;
+     handoffs: PrepareTaskTeamInput["handoffs"];
+@@ -210,7 +213,7 @@
+     return prepared.teamRun;
+   }
+ 
+-  /** Shuts one Org-root task Team down as a whole only when it is quiet. */
++  /** Shuts one root-hosted task Team down as a whole only when it is quiet. */
+   async tryShutDownRootTaskTeamIfQuiet(teamRunId: string): Promise<boolean> {
+     const run = this.active.get(teamRunId);
+     if (!run || !this.taskTeamRunIds.has(teamRunId) || this.shuttingDown.has(teamRunId)) return false;
+@@ -237,15 +240,15 @@
+   }
+ 
+   private reserveIds(ids: readonly string[]): void {
+-    if (!this.materializationOpen) throw new Error("AgentOrg Team materialization is closed.");
++    if (!this.materializationOpen) throw new Error("Root Team materialization is closed.");
+     const duplicate = ids.find((id) => this.active.has(id) || this.reserved.has(id));
+-    if (duplicate) throw new Error(`AgentOrg TeamRun '${duplicate}' is already active or reserved.`);
++    if (duplicate) throw new Error(`Root-hosted TeamRun '${duplicate}' is already active or reserved.`);
+     ids.forEach((id) => this.reserved.add(id));
+   }
+   private releaseIds(ids: readonly string[]): void { ids.forEach((id) => this.reserved.delete(id)); }
+   private commitRuns(runs: readonly TeamRun[], taskTeams = false): void {
+     for (const run of runs) {
+-      if (!this.reserved.delete(run.teamRunId)) throw new Error(`AgentOrg TeamRun '${run.teamRunId}' is not reserved.`);
++      if (!this.reserved.delete(run.teamRunId)) throw new Error(`Root-hosted TeamRun '${run.teamRunId}' is not reserved.`);
+       this.active.set(run.teamRunId, run);
+       if (taskTeams) this.taskTeamRunIds.add(run.teamRunId);
+     }

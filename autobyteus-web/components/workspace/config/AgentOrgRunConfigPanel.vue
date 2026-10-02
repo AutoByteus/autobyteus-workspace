@@ -48,18 +48,21 @@
           <div class="flex items-center justify-between gap-4 py-2" data-test="org-auto-approve-row">
             <div class="min-w-0">
               <label class="block text-base text-gray-900">{{ t('workspace.agentOrg.runConfig.autoApprove') }}</label>
-              <p class="mt-1 text-xs text-gray-500">{{ t('workspace.agentOrg.runConfig.autoApproveHelp') }}</p>
+              <p class="mt-1 text-xs text-gray-500" data-test="org-auto-approve-help">
+                {{ t(autoApproveLocked ? 'workspace.runModelConfig.agyAutoApproveLocked' : 'workspace.agentOrg.runConfig.autoApproveHelp') }}
+              </p>
             </div>
             <button
               type="button"
               role="switch"
-              :aria-checked="autoExecuteTools"
-              class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500"
-              :class="autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
+              :aria-checked="effectiveRootAutoExecuteTools"
+              :disabled="autoApproveLocked"
+              class="relative inline-flex h-6 w-11 flex-none rounded-full border-2 border-transparent transition-colors focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+              :class="effectiveRootAutoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
               @click="configStore.setRootAutoExecuteTools(!autoExecuteTools)"
             >
               <span class="sr-only">{{ t('workspace.agentOrg.runConfig.autoApprove') }}</span>
-              <span class="inline-block h-5 w-5 rounded-full bg-white shadow transition" :class="autoExecuteTools ? 'translate-x-5' : 'translate-x-0'" />
+              <span class="inline-block h-5 w-5 rounded-full bg-white shadow transition" :class="effectiveRootAutoExecuteTools ? 'translate-x-5' : 'translate-x-0'" />
             </button>
           </div>
         </AgentOrgRunConfigForm>
@@ -143,6 +146,7 @@ import { loadAgentOrgDefinitionReferences, type AgentOrgDefinitionReferences } f
 import { readAgentOrgRunInspection } from '~/services/agentOrgExecution/agentOrgRunInspection'
 import { buildEditableAgentOrgRunSeed } from '~/services/runConfigEditing/agentOrgRunLaunchSeed'
 import { toAgentOrgPlacementLaunchConfiguration } from '~/utils/agentOrgLaunchPatch'
+import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 
 const route = useRoute()
 const router = useRouter()
@@ -160,6 +164,9 @@ const {
   teamOverrides, agentOverrides, projectionError, launchError,
   firstModelSchemaBlock, allModelSchemaScopesReady,
 } = storeToRefs(configStore)
+
+const autoApproveLocked = computed(() => isAutoApproveLockedForRuntime(runtimeKind.value))
+const effectiveRootAutoExecuteTools = computed(() => effectiveAutoExecuteTools(runtimeKind.value, autoExecuteTools.value))
 
 const definitionId = computed(() => String(route.query.definitionId || ''))
 const org = computed(() => orgStore.byId(definitionId.value))
@@ -268,7 +275,7 @@ const rootConfig = computed<Readonly<ResolvedTeamRunLaunchConfig>>(() => Object.
   workspaceRootPath: rootWorkspacePath.value,
   llmModelIdentifier: llmModelIdentifier.value,
   llmConfig: llmConfig.value,
-  autoExecuteTools: autoExecuteTools.value,
+  autoExecuteTools: effectiveRootAutoExecuteTools.value,
 }))
 const projection = computed(() => {
   if (!org.value || !referencesReady.value || !initializationReady.value) return null
@@ -431,7 +438,7 @@ const runOrg = async () => {
         runtimeKind: runtimeKind.value,
         llmModelIdentifier: llmModelIdentifier.value,
         llmConfig: llmConfig.value,
-        autoExecuteTools: autoExecuteTools.value,
+        autoExecuteTools: effectiveRootAutoExecuteTools.value,
         workspaceRootPath,
       },
       teamOverrides: serializedTeams,

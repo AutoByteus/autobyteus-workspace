@@ -1,3 +1,5 @@
+import type { ProjectTaskContextFile, ProjectTaskContextFileView, ProjectTaskContextDraft, ProjectTaskContextChanges } from "./project-task-context.js";
+
 /** A workspace link as persisted inside a Project record. */
 export interface ProjectWorkspaceLink {
   workspaceId: string;
@@ -14,6 +16,7 @@ export interface ProjectTask {
   taskId: string;
   description: string;
   status: ProjectTaskStatus;
+  contextFiles?: ProjectTaskContextFile[];
   createdAt: string;
   updatedAt: string;
 }
@@ -41,19 +44,25 @@ export interface ProjectView extends Omit<Project, "workspaces" | "tasks"> {
   workspaces: ProjectWorkspaceView[];
   /** Number of Tasks whose status is not `DONE`; computed at read time. */
   openTaskCount: number;
+  taskCount: number;
 }
 
 /** A Task as returned to clients; `projectId` is added for client keying and is not stored in the Task. */
-export interface ProjectTaskView extends ProjectTask {
+export interface ProjectTaskView extends Omit<ProjectTask, "contextFiles"> {
+  contextFiles: ProjectTaskContextFileView[];
   projectId: string;
 }
 
+export interface ProjectWorkspaceInput { workspaceId: string; description?: string | null }
+
 export interface CreateProjectCommand {
+  workspaces?: ProjectWorkspaceInput[] | null;
   name: string;
   description?: string | null;
 }
 
 export interface UpdateProjectCommand {
+  workspaces?: ProjectWorkspaceInput[] | null;
   projectId: string;
   name: string;
   description?: string | null;
@@ -77,6 +86,7 @@ export interface RemoveProjectWorkspaceCommand {
 }
 
 export interface CreateProjectTaskCommand {
+  contextDraft?: ProjectTaskContextDraft | null;
   projectId: string;
   description: string;
 }
@@ -84,7 +94,9 @@ export interface CreateProjectTaskCommand {
 export interface UpdateProjectTaskCommand {
   projectId: string;
   taskId: string;
-  description: string;
+  description?: string;
+  status?: ProjectTaskStatus;
+  contextChanges?: ProjectTaskContextChanges | null;
 }
 
 export interface DeleteProjectTaskCommand {

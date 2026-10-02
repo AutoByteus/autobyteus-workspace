@@ -64,6 +64,7 @@ const voiceInputStoreMock = reactive({
   isTranscribing: false,
   initialize: vi.fn().mockResolvedValue(undefined),
   cleanup: vi.fn().mockResolvedValue(undefined),
+  cancelOperationForTarget: vi.fn().mockResolvedValue(undefined),
   toggleRecording: vi.fn().mockResolvedValue(undefined),
 });
 
@@ -179,6 +180,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
       base_change_sequence: 0,
       execution_tree: teamContext.view.getExecutionTree(),
       messages: [],
+      agent_input_states: [],
       agent_statuses: teamContext.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,
         member_address: entry.memberAddress,
@@ -187,6 +189,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
         tool_name: null,
         error_message: null,
         error_details: null,
+        recoverableBlock: null,
       })),
     });
 

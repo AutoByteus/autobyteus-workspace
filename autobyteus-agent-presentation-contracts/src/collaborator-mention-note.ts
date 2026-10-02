@@ -44,6 +44,9 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 
 const NOTE_HEADING = "[Mentioned collaborators]";
 const NOTE_GUIDANCE =
+  "Message a collaborator with send_message_to and its address; it starts on its first message. delegate_task to its address spawns a new copy instead, which you follow up by run ID.";
+/** The guidance line of notes written before REQ-009; still recognized so saved history reads unchanged. */
+const RELEASED_NOTE_GUIDANCE =
   "Message a collaborator with send_message_to and its address; it starts on its first message.";
 const KIND_LABELS: Readonly<Record<CollaboratorMentionKind, string>> = Object.freeze({
   agent: "Agent",
@@ -80,7 +83,7 @@ export const composeCollaboratorMentionNote = (
 
 /** Recognizes only a note at the very end of the content, in exactly the composed form. */
 export const parseCollaboratorMentionNote = (content: string): ParsedCollaboratorMentionNote | null => {
-  if (!content.endsWith(`\n${NOTE_GUIDANCE}`)) return null;
+  if (![NOTE_GUIDANCE, RELEASED_NOTE_GUIDANCE].some((guidance) => content.endsWith(`\n${guidance}`))) return null;
   const headingAt = content.startsWith(`${NOTE_HEADING}\n`)
     ? 0
     : content.lastIndexOf(`\n\n${NOTE_HEADING}\n`);

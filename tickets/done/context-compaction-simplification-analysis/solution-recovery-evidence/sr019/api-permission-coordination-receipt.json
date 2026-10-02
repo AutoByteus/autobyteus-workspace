@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"api_e2e_engineer_96e63b834264434986f16a8037990c3f\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Message delivered.",
+    "target_agent_run_id": "api_e2e_engineer_96e63b834264434986f16a8037990c3f"
+  }
+}

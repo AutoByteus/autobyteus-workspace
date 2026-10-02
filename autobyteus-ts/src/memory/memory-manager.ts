@@ -1,3 +1,4 @@
+import type { CompactionRecoveryBlock, CompactionRetryRequest, CompactionExecutionSite } from './compaction/compaction-recovery.js';
 import { LLMUserMessage } from '../llm/user-message.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
@@ -11,8 +12,6 @@ import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
 import { MemoryStore } from './store/base-store.js';
 import type { SystemInstructionCaptureResult } from './models/system-instruction-trace.js';
-import type { CompactionLineageStore } from './lineage/compaction-lineage-store.js';
-import type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
 import { TurnTracker } from './turn-tracker.js';
 import { WorkingContext } from './working-context.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
@@ -23,7 +22,6 @@ import type {
   AcceptedWorkingContextCompaction,
   WorkingContextCompactionProposal,
 } from './compaction/working-context-compaction-proposal.js';
-import type { CompactedMemoryProjectionBundle } from './projection/compacted-memory-projection-bundle.js';
 import {
   MemoryManagerCompactionCoordinator,
   type BeginPendingCompactionAttemptResult,
@@ -46,7 +44,6 @@ export type {
 } from './memory-manager-compaction-coordinator.js';
 import type { CompactionPlanningBudget } from './compaction/compaction-planning-budget.js';
 import { DEFAULT_MEMORY_COMPACTION_CONFIGURATION, type MemoryCompactionConfiguration } from './compaction/memory-compaction-configuration.js';
-import type { TurnStartOrigin } from '../agent/event-inbox/agent-event-inbox-entry.js';
 import {
   buildNativeAssistantResponseTraces,
   buildNativeUserMessageTrace,
@@ -109,8 +106,6 @@ export class MemoryManager {
     memoryCompaction?: MemoryCompactionConfiguration;
     workingContext?: WorkingContext;
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
-    lineageStore?: CompactionLineageStore | null;
-    lineageScope?: CompactionLineageScope | null;
     agentId?: string | null }) {
     this.store = options.store;
     this.turnTracker = options.turnTracker ?? new TurnTracker();
@@ -123,12 +118,9 @@ export class MemoryManager {
     });
     this.compactionCoordinator = new MemoryManagerCompactionCoordinator({
       store: this.store,
-      lineageStore: options.lineageStore ?? null,
-      lineageScope: options.lineageScope ?? null,
+      contextController: this.workingContextController,
       snapshotStore: this.workingContextSnapshotStore,
       agentId: options.agentId ?? this.workingContextSnapshotStore?.agentId ?? null,
-      getContext: () => this.workingContextController.getContext(),
-      installContext: (context) => this.workingContextController.install(context),
     });
     this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listTurnRawTraceCorpusOrdered());
     this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
@@ -183,12 +175,20 @@ export class MemoryManager {
   beginPendingCompactionAttempt(input: {
     operationId: string;
     turnId: string;
-    turnOrigin: TurnStartOrigin;
   }): BeginPendingCompactionAttemptResult { return this.compactionCoordinator.beginPendingAttempt(input); }
 
-  retainCompactionFailure(operationId: string, executionTurnId: string, errorKind: string): void {
-    this.compactionCoordinator.retainFailure(operationId, executionTurnId, errorKind);
+  retainCompactionFailure(operationId: string, executionTurnId: string, errorKind: string, site: CompactionExecutionSite): void {
+    this.compactionCoordinator.retainFailure(operationId, executionTurnId, errorKind, site);
   }
+
+  getCompactionRecovery(): CompactionRecoveryBlock | null { return this.compactionCoordinator.getRecovery(); }
+  authorizeCompactionRetry(input: CompactionRetryRequest) { return this.compactionCoordinator.authorizeRetry(input); }
+  canStartCompactionTurn(): boolean { return this.compactionCoordinator.canStartTurn(); }
+  bindCompactionRetryTurn(turnId: string): boolean { return this.compactionCoordinator.bindRetryTurn(turnId); }
+  isCompactionRetryAuthorizedForTurn(turnId: string): boolean { return this.compactionCoordinator.isRetryAuthorizedForTurn(turnId); }
+  revokeUnusedCompactionRetry(input: CompactionRetryRequest) { return this.compactionCoordinator.revokeUnusedRetry(input); }
+  retireCompactionTurn(turnId: string): void { this.compactionCoordinator.retireTurn(turnId); }
+  revokeCompactionRetry(): void { this.compactionCoordinator.revokeRetry(); }
 
   private nextSeq(turnId: string): number {
     const current = (this.seqByTurn.get(turnId) ?? 0) + 1;
@@ -197,9 +197,9 @@ export class MemoryManager {
   }
 
   /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
-  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null): void {
+  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null, identity: Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'> = {}): void {
     const trace = buildNativeUserMessageTrace(llmUserMessage, {
-      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId,
+      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId, ...identity,
     });
     this.store.add([trace]);
   }
@@ -526,9 +526,7 @@ export class MemoryManager {
 
   installWorkingContextWithoutSnapshot(workingContext: WorkingContext): void { this.workingContextController.install(workingContext); }
 
-  requireCurrentCompactionOutput(): CompactedMemoryProjectionBundle { return this.compactionCoordinator.requireCurrentOutput(); }
 
-  loadCurrentCompactionOutput(): CompactedMemoryProjectionBundle | null { return this.compactionCoordinator.loadCurrentOutput(); }
 
   captureCompactionBaseline(): MemoryManagerCompactionBaseline { return this.compactionCoordinator.captureBaseline(); }
 
@@ -539,7 +537,7 @@ export class MemoryManager {
     return this.compactionCoordinator.prepare(baseline, proposal);
   }
 
-  commitAcceptedCompaction(accepted: AcceptedWorkingContextCompaction): void { this.compactionCoordinator.commit(accepted); }
+  commitAcceptedCompaction(accepted: AcceptedWorkingContextCompaction, signal: AbortSignal): void { this.compactionCoordinator.commit(accepted, signal); }
 
   persistWorkingContextSnapshot(): void { this.workingContextController.persist(); }
 

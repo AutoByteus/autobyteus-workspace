@@ -1,0 +1,15 @@
+{
+  "result": "Design Impact",
+  "findingIds": ["IR008-DI001", "IR008-LF001"],
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues.",
+    "recipient_address": "/solution_designer"
+  },
+  "why": "DR002 Local Fix is not complete: merged Agent-root live snapshot, host recovery liveness, child termination confirmation and atomic publication paths require a completed integration design. Source-review completion conditions do not apply.",
+  "otherRecipientsNotNotified": ["/code_reviewer", "/api_e2e_engineer", "/delivery_engineer"],
+  "mergeInProgress": true,
+  "unmergedIndexEntries": 0,
+  "mergeCommitted": false
+}

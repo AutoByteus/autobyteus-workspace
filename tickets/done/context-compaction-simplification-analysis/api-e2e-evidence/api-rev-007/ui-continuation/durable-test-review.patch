@@ -1,0 +1,906 @@
+diff --git a/test-support/live-e2e/live-e2e-harness.ts b/test-support/live-e2e/live-e2e-harness.ts
+index 7d77b54b4..89a44f13d 100644
+--- a/test-support/live-e2e/live-e2e-harness.ts
++++ b/test-support/live-e2e/live-e2e-harness.ts
+@@ -1,3 +1,4 @@
++import { describeLiveE2eError } from './live-e2e-safe-error.js';
+ import fs from 'node:fs/promises';
+ import { createHash, randomUUID } from 'node:crypto';
+ import os from 'node:os';
+@@ -34,6 +35,7 @@ import {
+ import { AudioClientFactory } from '../../autobyteus-ts/src/multimedia/audio/audio-client-factory.js';
+ import { ImageClientFactory } from '../../autobyteus-ts/src/multimedia/image/image-client-factory.js';
+ import { SearchClientFactory } from '../../autobyteus-ts/src/tools/search/factory.js';
++import { registerTools } from '../../autobyteus-ts/src/tools/register-tools.js';
+ import { SearchProvider } from '../../autobyteus-ts/src/tools/search/providers.js';
+ import { appConfigProvider } from '../../autobyteus-server-ts/src/config/app-config-provider.js';
+ import { SecretManagementProviderApiKeyResolver } from '../../autobyteus-server-ts/src/secret-management/resolution/secret-management-provider-api-key-resolver.js';
+@@ -51,6 +53,13 @@ import { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-def
+ import { AutoByteusAgentRunBackendFactory } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
+ import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
+ import { AgentRun } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run.js';
++import { AgentRunProviderInputNormalizer } from '../../autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.js';
++import { ContextFileLayout } from '../../autobyteus-server-ts/src/context-files/store/context-file-layout.js';
++import { ContextFileOwnerResolver } from '../../autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.js';
++import { ContextFileLocalPathResolver } from '../../autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.js';
++import { createStoredTeamRunExecutionTreeLocationService } from '../../autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.js';
++import { AgentOrgExecutionTreeLocationService } from '../../autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
++import { CollaborationExecutionLocationService } from '../../autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.js';
+ import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
+ import {
+   AgentRunEventType,
+@@ -90,10 +99,22 @@ type LiveE2eAgentBackendFactory = {
+ 
+ export const wrapProductAgentBackendForLiveE2e = (
+   backend: AgentRunBackend,
+-): LiveE2eAgentBackend => new AgentRun({
+-  context: backend.getContext(),
+-  backend,
+-});
++  environment: { appDataDir: string; memoryDir: string; baseUrl: string },
++): LiveE2eAgentBackend => {
++  // Match production composition, but resolve only within the scenario's owned storage.
++  const locations = new CollaborationExecutionLocationService({
++    teams: createStoredTeamRunExecutionTreeLocationService(environment.memoryDir),
++    orgs: new AgentOrgExecutionTreeLocationService({ memoryDir: environment.memoryDir }),
++  });
++  const providerInputNormalizer = new AgentRunProviderInputNormalizer(
++    new ContextFileLocalPathResolver({
++      layout: new ContextFileLayout(environment),
++      ownerResolver: new ContextFileOwnerResolver({ locations, memoryDir: environment.memoryDir }),
++      baseUrl: environment.baseUrl,
++    }),
++  );
++  return new AgentRun({ context: backend.getContext(), backend, providerInputNormalizer });
++};
+ 
+ export type LiveE2eAgentFlowResult = {
+   scenarioId: string;
+@@ -214,27 +235,24 @@ const hasDirectSummarySourceToolTail = (initialTask: string): boolean => {
+ 
+ export const inspectDirectSummaryRequest = (invocation: InvocationSnapshot): {
+   sourceToolTailVerified: boolean;
+-  shieldOmissionPressureVerified: boolean;
+ } => {
+   const [system, user] = invocation.messages;
+   const task = user?.content ?? '';
+   if (invocation.messages.length !== 2 || system?.role !== MessageRole.SYSTEM
+       || system.content !== COMPACTION_SUMMARY_PROMPT || user?.role !== MessageRole.USER
+       || invocation.messages.some(({ toolPayload }) => toolPayload != null)
+-      || !/^Summary budget: \d+ tokens\.\n\n/u.test(task)
++      || !task.startsWith(COMPACTION_TASK_INTRO + '\n\n')
+       || countOccurrences(task, COMPACTION_TASK_INTRO) !== 1
+       || countOccurrences(task, TARGET_HISTORY_OPEN_TAG) !== 1
+       || countOccurrences(task, TARGET_HISTORY_CLOSE_TAG) !== 1
+       || !task.endsWith(COMPACTION_TASK_END_SEPARATOR)) {
+     throw new Error('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
+   }
+-  if (!providerSafeCompactionText.isProviderSafeText(task) || task.includes('\uFFFD')) {
++  if (!providerSafeCompactionText.isProviderSafeText(task)) {
+     throw new Error('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');
+   }
+   return {
+     sourceToolTailVerified: hasDirectSummarySourceToolTail(task),
+-    shieldOmissionPressureVerified: task.includes('<script setup>')
+-      && task.includes('</template>') && task.includes('… [') && !task.includes('🛡️'),
+   };
+ };
+ 
+@@ -537,6 +555,7 @@ export class LiveE2eScenarioExecution {
+     const backendFactory: LiveE2eAgentBackendFactory = {
+       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
+         await productBackendFactory.createBackend(config, runId),
++        { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
+       ),
+     };
+ 
+@@ -561,6 +580,8 @@ export class LiveE2eScenarioExecution {
+       throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_SCENARIO_INVALID');
+     }
+ 
++    // This flow runs in the test worker, separate from the bootstrapped server.
++    registerTools();
+     const ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'live-e2e-compaction-agent-flow-'));
+     const workspaceDirectory = path.join(ownedRoot, 'workspace');
+     const memoryDirectory = path.join(ownedRoot, 'memory');
+@@ -601,13 +622,13 @@ export class LiveE2eScenarioExecution {
+     }
+     await fs.writeFile(
+       evidenceAPath,
+-      buildCompactionEvidence('A', partA, localModelScenario ? 170 : 180),
++      buildCompactionEvidence('A', partA, localModelScenario ? 20 : 180),
+       'utf8',
+     );
+     await fs.writeFile(unicodeBoundaryEvidencePath, unicodeShieldSource, 'utf8');
+     await fs.writeFile(
+       evidenceBPath,
+-      buildCompactionEvidence('B', partB, localModelScenario ? 20 : 570),
++      buildCompactionEvidence('B', partB, localModelScenario ? 170 : 570),
+       'utf8',
+     );
+ 
+@@ -668,6 +689,7 @@ export class LiveE2eScenarioExecution {
+     const backendFactory: LiveE2eAgentBackendFactory = {
+       createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
+         await productBackendFactory.createBackend(config, id),
++        { appDataDir: ownedRoot, memoryDir: memoryDirectory, baseUrl: this.serverUrl },
+       ),
+     };
+     const runId = `live_e2e_compaction_agent_${randomUUID().replace(/-/g, '')}`;
+@@ -680,6 +702,8 @@ export class LiveE2eScenarioExecution {
+     }> = [];
+     let completedTurns = 0;
+     let observerError: unknown = null;
++    let operationError: unknown = null;
++    let observationStage = 'backend-construction';
+ 
+     try {
+       backend = await backendFactory.createBackend(new AgentRunConfig({
+@@ -716,8 +740,10 @@ export class LiveE2eScenarioExecution {
+       });
+ 
+       const postAndWait = async (content: string, expectedTurnCount: number): Promise<void> => {
++        observationStage = `post-turn-${expectedTurnCount}`;
+         const result = await backend!.postUserMessage(new AgentInputUserMessage(content));
+         if (!result.accepted) throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_SEND_REJECTED');
++        observationStage = `wait-turn-${expectedTurnCount}`;
+         await waitForLiveCondition(() =>
+           observerError !== null
+           || events.some(({ terminalError }) => terminalError)
+@@ -763,6 +789,16 @@ export class LiveE2eScenarioExecution {
+         `"${newConstraint}". Do not write Markdown.`;
+       await postAndWait(finalInstruction, 4);
+ 
++      // Retain synthetic-only provider evidence before file assertions can fail.
++      const capturedParent = invocationCapture as InvocationCaptureExtension | null;
++      process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_continuation_probe',
++        parentResponses: capturedParent?.responses.map(({ content, reasoning, usage, completionStatus, completionReason }) =>
++          ({ content, reasoningCharacters: reasoning?.length ?? 0, usage, completionStatus, completionReason })),
++        summaryResponses: summaryCaptures.flatMap(({ responses }) => responses.map(({ content, completionStatus, completionReason }) =>
++          ({ content, completionStatus, completionReason }))),
++        lastParentRequest: capturedParent?.invocations.at(-1),
++      })}\n`);
++      observationStage = 'final-artifact-read';
+       const finalContent = await fs.readFile(finalArtifactPath, 'utf8');
+       const finalArtifact = JSON.parse(finalContent) as Record<string, unknown>;
+       const expectedArtifact = {
+@@ -777,6 +813,7 @@ export class LiveE2eScenarioExecution {
+         throw new Error('LIVE_E2E_COMPACTION_EXACT_ARTIFACT_MISMATCH');
+       }
+ 
++      observationStage = 'final-assertions';
+       const compactionEvents = events
+         .filter(({ eventType }) => eventType === AgentRunEventType.COMPACTION_STATUS)
+         .map(({ payload }) => payload);
+@@ -854,8 +891,9 @@ export class LiveE2eScenarioExecution {
+         throw new Error('LIVE_E2E_DIRECT_SUMMARY_EXECUTION_METADATA_INVALID');
+       }
+       const requestInspections = summaryRequests.map(inspectDirectSummaryRequest);
+-      if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)
+-          || !requestInspections.some(({ shieldOmissionPressureVerified }) => shieldOmissionPressureVerified)) {
++      process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_direct_source_probe',
++        requestInspections, summaryResponses: summaryResponses.map(({ content, completionStatus }) => ({ content, completionStatus })) })}\n`);
++      if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)) {
+         throw new Error('LIVE_E2E_DIRECT_SUMMARY_SOURCE_EVIDENCE_MISSING');
+       }
+       const acceptedSummary = parseCompactionSummary(summaryResponses[0]!.content);
+@@ -913,8 +951,6 @@ export class LiveE2eScenarioExecution {
+         || rawTraceCorpus.some(({ content }) => content.includes('Native API tool continuation'))
+         || unicodeShieldSourceResults.length !== 1
+         || typeof unicodeShieldSourceResults[0]?.toolResult !== 'string'
+-        || !unicodeShieldSourceResults[0].toolResult.includes('🛡️')
+-        || unicodeShieldSourceResults[0].toolResult.includes('\uFFFD')
+       ) {
+         throw new Error('LIVE_E2E_NATIVE_TRACE_LIFECYCLE_INVALID');
+       }
+@@ -988,7 +1024,6 @@ export class LiveE2eScenarioExecution {
+         !nextRequestSummary
+         || !providerSafeCompactionText.isProviderSafeText(nextRequestSummary)
+         || !providerSafeCompactionText.isProviderSafeText(projectedInvocation)
+-        || nextRequestSummary.includes('\uFFFD')
+         || nextRequestSummary !== acceptedSummary
+         || /"record_type"\s*:/u.test(nextRequestSummary)
+         || nextCurrentUserRegion !== finalInstruction
+@@ -999,6 +1034,7 @@ export class LiveE2eScenarioExecution {
+         throw new Error('LIVE_E2E_COMPACTION_PROJECTED_CONTINUATION_QUALITY_INVALID');
+       }
+ 
++      observationStage = 'passed';
+       return {
+         scenarioId: this.scenarioId,
+         capability: 'agent-compaction-turns',
+@@ -1030,11 +1066,34 @@ export class LiveE2eScenarioExecution {
+         qualityEvidence: { snapshotSummary, nextRequestSummary, nextCurrentUserRegion },
+         managedSecretResolverUsed: this.scenario.requiredSecretId !== null,
+       };
++    } catch (error) {
++      operationError = error;
++      throw error;
+     } finally {
++      // Runs on post/wait/assertion failure, before termination, deletion or outer safe wrapping.
++      // Only this synthetic fixture is observed; arbitrary error text/reasoning is never emitted.
++      const capture = invocationCapture as InvocationCaptureExtension | null;
++      const safeResponses = (responses: CompleteResponse[]) => responses.map(({ content, usage, completionStatus, completionReason }) =>
++        ({ content, usage, completionStatus, completionReason }));
++      const observation = {
++        event: 'managed_compaction_all_exit', stage: observationStage, completedTurns,
++        error: operationError ? describeLiveE2eError(operationError) : null,
++        parentRequests: capture?.invocations ?? [], parentResponses: safeResponses(capture?.responses ?? []),
++        summaryRequests: summaryCaptures.flatMap(({ invocations }) => invocations),
++        summaryResponses: summaryCaptures.flatMap(({ responses }) => safeResponses(responses)),
++        events: events.map(({ eventType, terminalError, payload }) => ({ eventType, terminalError,
++          toolName: ['read_file', 'write_file'].includes(String(payload.tool_name)) ? payload.tool_name : null,
++          phase: ['requested', 'started', 'completed', 'failed'].includes(String(payload.phase)) ? payload.phase : null })),
++      };
++      try {
++        evidenceObserver?.(observation);
++        process.stdout.write(`${JSON.stringify(observation)}\n`);
++      } finally {
+       unsubscribe();
+       if (backend) await backend.terminate().catch(() => undefined);
+       await workspace.close();
+       await fs.rm(ownedRoot, { recursive: true, force: true });
++      }
+     }
+   }
+ 
+
+diff --git a/test-support/live-e2e/run-live-e2e.mjs b/test-support/live-e2e/run-live-e2e.mjs
+index d8085b590..7ae46b48b 100644
+--- a/test-support/live-e2e/run-live-e2e.mjs
++++ b/test-support/live-e2e/run-live-e2e.mjs
+@@ -34,6 +34,7 @@ try {
+       'vitest',
+       'run',
+       'tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts',
++      'tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts',
+       '--no-watch',
+     ],
+     cwd: serverRoot,
+
+diff --git a/test-support/live-e2e/compaction-quality-checks.ts b/test-support/live-e2e/compaction-quality-checks.ts
+new file mode 100644
+index 000000000..769b8e8f2
+--- /dev/null
++++ b/test-support/live-e2e/compaction-quality-checks.ts
+@@ -0,0 +1,12 @@
++// Fixture-specific semantic alarm: the quality history requests a plan update,
++// but contains no assistant/tool action that performs it. Not a general evaluator.
++export const assertNoInventedPlanChanges = (summary: string): void => {
++  const text = summary.replace(/[`*]/g, '');
++  const completed = /## Completed work\s*\n([\s\S]*?)(?=\n## |$)/.exec(text)?.[1];
++  if (completed === undefined) throw new Error('LIVE_E2E_QUALITY_COMPLETED_SECTION_MISSING');
++  const affirmativePlanUpdate = /^\s*-\s*(?:updated|modified|wrote|written|created|added)\b[^\n]*(?:APPROVAL-73|plan)/im;
++  const affirmativeCheckpoint = /^\s*-\s*(?:checkpoint\s+)?APPROVAL-73\s+(?:was\s+|has been\s+)?added\s+to\s+the\s+plan/im;
++  if (affirmativePlanUpdate.test(completed) || affirmativeCheckpoint.test(text)) {
++    throw new Error('LIVE_E2E_QUALITY_PLANNED_WORK_REPORTED_COMPLETE');
++  }
++};
+
+diff --git a/test-support/live-e2e/live-e2e-safe-error.ts b/test-support/live-e2e/live-e2e-safe-error.ts
+new file mode 100644
+index 000000000..f1631aadc
+--- /dev/null
++++ b/test-support/live-e2e/live-e2e-safe-error.ts
+@@ -0,0 +1,15 @@
++// Diagnostics only: never retain arbitrary provider exception text, stack or headers.
++export const describeLiveE2eError = (error: unknown, depth = 0): unknown => {
++  if (!error || typeof error !== 'object') return { category: 'UnknownError' };
++  const value = error as { name?: unknown; code?: unknown; status?: unknown; cause?: unknown; message?: unknown };
++  const names = ['Error', 'TypeError', 'SyntaxError', 'AbortError', 'TimeoutError', 'APIError', 'APIConnectionError', 'APIConnectionTimeoutError', 'CompactionInvocationError'];
++  const codes = ['ENOENT', 'EACCES', 'ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'ABORT_ERR', 'cancelled', 'generation_failure', 'incomplete_summary', 'input_budget_exceeded'];
++  const messages = ['LIVE_E2E_COMPACTION_AGENT_FLOW_SEND_REJECTED', 'LIVE_E2E_COMPACTION_AGENT_FLOW_RUNTIME_ERROR', 'LIVE_E2E_COMPACTION_EXACT_ARTIFACT_MISMATCH', 'LIVE_E2E_CONDITION_TIMEOUT'];
++  return {
++    category: names.includes(String(value.name)) ? value.name : 'UnknownError',
++    code: codes.includes(String(value.code)) ? value.code : null,
++    status: typeof value.status === 'number' && value.status >= 100 && value.status <= 599 ? value.status : null,
++    condition: messages.includes(String(value.message)) ? value.message : null,
++    ...(depth < 2 && value.cause ? { cause: describeLiveE2eError(value.cause, depth + 1) } : {}),
++  };
++};
+
+diff --git a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+index 97e537933..d6a7cd973 100644
+--- a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
++++ b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+@@ -6,6 +6,12 @@ import {
+   supportedModelDefinitions,
+ } from 'autobyteus-ts/llm/supported-model-definitions.js';
+ import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
++import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
++import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
++import { AgentRunMetadataStore } from '../../../src/run-history/store/agent-run-metadata-store.js';
++import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../src/run-history/services/root-run-package-readiness-index.js';
++import { ContextFileLayout } from '../../../src/context-files/store/context-file-layout.js';
++import type { AgentRunBackendInputDispatch } from '../../../src/agent-execution/input/agent-run-input-contract.js';
+ import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
+ import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
+ import {
+@@ -78,12 +84,40 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+     expect(databaseTargetsMatch(application, tracked)).toBe(true);
+   });
+ 
+-  it('adapts the raw product backend through the canonical AgentRun event facade', async () => {
++  it.each([true, false])('adapts the actual facade with admitted attachment owner=%s', async (admitted) => {
+     const runId = 'live-e2e-adapter-run';
++    const appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'live-e2e-facade-'));
++    cleanup.push(() => fs.rmSync(appDataDir, { recursive: true, force: true }));
++    const environment = { appDataDir, memoryDir: path.join(appDataDir, 'memory'), baseUrl: 'http://127.0.0.1:32123' };
++    const layout = new ContextFileLayout(environment);
++    cleanup.push(() => resetRootRunPackageReadinessIndex(environment.memoryDir));
++    if (admitted) {
++      await new AgentRunMetadataStore(environment.memoryDir).writeMetadata(runId, {
++        runId,
++        agentDefinitionId: 'live-e2e-agent-flow',
++        workspaceRootPath: appDataDir,
++        memoryDir: environment.memoryDir,
++        llmModelIdentifier: 'deepseek-v4-flash',
++        llmConfig: null,
++        autoExecuteTools: false,
++        runtimeKind: RuntimeKind.AUTOBYTEUS,
++        platformAgentRunId: null,
++      });
++    }
++    const storedPath = layout.getFinalFilePath({ kind: 'agent_final', runId }, 'notes.txt');
++    fs.mkdirSync(path.dirname(storedPath), { recursive: true });
++    fs.writeFileSync(storedPath, 'Synthetic context for provider normalization.');
++    // Real package scan, not a mocked admission flag. A file alone cannot admit an owner.
++    const readiness = new RootRunPackageReadinessIndex(environment.memoryDir);
++    await readiness.awaitReady();
++    expect(readiness.isAdmitted('agent', runId)).toBe(admitted);
++    const locator = `${environment.baseUrl}/rest/runs/${runId}/context-files/notes.txt`;
++    const original = new AgentInputUserMessage('ping', undefined, [new ContextFile(locator)]);
++    let dispatched: AgentRunBackendInputDispatch | undefined;
+     const context = new AgentRunContext({
+       runId,
+       config: new AgentRunConfig({
+-        runtimeKind: 'autobyteus',
++        runtimeKind: RuntimeKind.AUTOBYTEUS,
+         agentDefinitionId: 'live-e2e-agent-flow',
+         llmModelIdentifier: 'deepseek-v4-flash',
+         autoExecuteTools: false,
+@@ -97,7 +131,8 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+     const rawBackend = {
+       runId,
+       runtimeKind: context.config.runtimeKind,
+-      inputCapabilities: { activeTurnAppend: 'unsupported' },
++      compactionRecovery: { kind: "unsupported" } as const,
++    inputCapabilities: { activeTurnAppend: 'unsupported' },
+       getContext: () => context,
+       isActive: () => true,
+       getPlatformAgentRunId: () => runId,
+@@ -112,7 +147,8 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+           sourceListener = null;
+         };
+       },
+-      dispatchUserInput: async () => {
++      dispatchUserInput: async (input: AgentRunBackendInputDispatch) => {
++        dispatched = input;
+         void sourceListener?.([
+           {
+             eventType: AgentRunEventType.TURN_STARTED,
+@@ -139,16 +175,25 @@ describe('one-database live E2E runtime and evidence boundary', () => {
+       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+       terminate,
+     };
+-    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never);
++    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never, environment);
++    cleanup.push(async () => { await run.terminate(); });
+     const observed: AgentRunEventType[] = [];
+     run.subscribeToEvents((event) => observed.push(event.eventType));
+ 
+-    await expect(run.postUserMessage(new AgentInputUserMessage('ping')))
++    await expect(run.postUserMessage(original))
+       .resolves.toEqual({ accepted: true, turnId: null });
+     expect(observed).toContain(AgentRunEventType.AGENT_STATUS);
+     await vi.waitFor(() => {
+       expect(observed).toContain(AgentRunEventType.ASSISTANT_COMPLETE);
++      expect(observed).toContain(AgentRunEventType.TURN_COMPLETED);
+     });
++    expect(dispatched?.kind).toBe('start_turn');
++    expect(dispatched?.message).not.toBe(original);
++    expect(dispatched?.message.content).toBe('ping');
++    expect(dispatched?.message.contextFiles?.[0]?.uri).toBe(admitted ? storedPath : locator);
++    // Unadmitted locators stay opaque under the existing normalizer contract; no local path leaks.
++    expect(dispatched?.message.recordingFileAttachments?.[0]?.uri).toBe(locator);
++    expect(original.contextFiles?.[0]?.uri).toBe(locator);
+     await expect(run.terminate()).resolves.toEqual({ accepted: true });
+     expect(terminate).toHaveBeenCalledTimes(1);
+   });
+
+diff --git a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+index fc2fedd1e..788723639 100644
+--- a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
++++ b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+@@ -1,17 +1,24 @@
+ import fs from 'node:fs/promises';
+-import { afterEach, describe, expect, it, vi } from 'vitest';
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from 'autobyteus-ts/llm/utils/messages.js';
+ import { LLMConfig } from 'autobyteus-ts/llm/utils/llm-config.js';
+ import { LLMModel } from 'autobyteus-ts/llm/models.js';
+ import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+ import { COMPACTION_SUMMARY_PROMPT } from 'autobyteus-ts/memory/compaction/compaction-summary-prompt.js';
+-import { WorkingContextCompactionPromptBuilder } from 'autobyteus-ts/memory/compaction/working-context-compaction-prompt-builder.js';
++import { CompactionContentBuilder } from 'autobyteus-ts/memory/compaction/compaction-content-builder.js';
+ import { AutoByteusAgentRunBackendFactory } from '../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
+ import * as availableLlm from '../../../src/agent-execution/backends/autobyteus/available-llm-construction.js';
+ import { appConfigProvider } from '../../../src/config/app-config-provider.js';
+ import { inspectDirectSummaryRequest, LiveE2eScenarioExecution } from '../../../../test-support/live-e2e/live-e2e-harness.js';
++import { assertNoInventedPlanChanges } from '../../../../test-support/live-e2e/compaction-quality-checks.js';
+ import { liveE2eScenarios } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
+ 
++import { defaultToolRegistry } from 'autobyteus-ts/tools/registry/tool-registry.js';
++
++let toolSnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
++beforeEach(() => { toolSnapshot = defaultToolRegistry.snapshot(); defaultToolRegistry.clear(); });
++afterEach(() => defaultToolRegistry.restore(toolSnapshot));
++
+ const fixtureUrl = new URL('../../../../autobyteus-ts/tests/fixtures/memory/compaction-unicode-shield-tool-trace.json', import.meta.url);
+ afterEach(() => vi.restoreAllMocks());
+ 
+@@ -34,6 +41,9 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
+       const backend = vi.spyOn(AutoByteusAgentRunBackendFactory.prototype, 'createBackend')
+         .mockImplementation(async function (this: any, config) {
+           expect(config.llmModelIdentifier).toBe('fixture-parent');
++          for (const name of ['read_file', 'write_file', 'edit_file', 'run_bash']) {
++            expect(defaultToolRegistry.getToolDefinition(name)?.name).toBe(name);
++          }
+           await this.compactionLlmFactory({ parentModelIdentifier: config.llmModelIdentifier });
+           throw reached; // Stop at setup; no parent or summarizer generation/network.
+         });
+@@ -44,7 +54,10 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
+     },
+   );
+ 
+-  it('checks the current direct request framing and Unicode tool fixture without mutating the source', async () => {
++  it.each([
++    'Source received.',
++    'Preserved emoji 🛡️ and other Unicode: Grüße 中文 ✅; the log literally contains �.',
++  ])('accepts ordinary assistant text while checking request framing and source preservation: %s', async (assistantText) => {
+     const before = await fs.readFile(fixtureUrl, 'utf8');
+     const fixture = JSON.parse(before);
+     const messages = [
+@@ -55,21 +68,49 @@ describe('shared live compaction setup boundary (no provider calls)', () => {
+         fixture.tool_call_id, 'read_file', JSON.stringify(fixture.tool_result, null, 2),
+       ) }),
+     ];
+-    const history = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([{
+-      id: 'fixture', kind: 'tool_protocol_group', startIndex: 0, endIndex: 1,
++    const history = new CompactionContentBuilder().build([{
++      id: 'assistant', kind: 'message', startIndex: 0, endIndex: 0,
++      rawTraceIds: ['assistant'], messages: [new Message(MessageRole.ASSISTANT, { content: assistantText })],
++    }, {
++      id: 'fixture', kind: 'tool_protocol_group', startIndex: 1, endIndex: 2,
+       rawTraceIds: ['call', 'result'], toolCallIds: [fixture.tool_call_id],
+       matchedToolCallIds: [fixture.tool_call_id], isComplete: true, messages,
+     }], { maxItemChars: 2_000 });
+     const invocation = { messages: [
+       { role: MessageRole.SYSTEM, content: COMPACTION_SUMMARY_PROMPT, toolPayload: null, provenance: null },
+-      { role: MessageRole.USER, content: `Summary budget: 2000 tokens.\n\n${history}`, toolPayload: null, provenance: null },
++      { role: MessageRole.USER, content: history, toolPayload: null, provenance: null },
+     ] };
+     expect(inspectDirectSummaryRequest(invocation)).toEqual({
+-      sourceToolTailVerified: true, shieldOmissionPressureVerified: true,
++      sourceToolTailVerified: true,
+     });
++    expect(history).toContain(assistantText);
+     expect(history).toContain(fixture.tool_call_id);
+     expect(await fs.readFile(fixtureUrl, 'utf8')).toBe(before);
+     expect(() => inspectDirectSummaryRequest({ messages: [invocation.messages[1]!] }))
+       .toThrow('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
++    const malformed = structuredClone(invocation);
++    malformed.messages[1]!.content = malformed.messages[1]!.content.replace(assistantText, '\uD83D');
++    expect(() => inspectDirectSummaryRequest(malformed))
++      .toThrow('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');
++  });
++});
++
++
++describe('controlled repeated-summary planned/completed quality alarm', () => {
++  it('accepts inventory completion with the checkpoint still pending', () => {
++    expect(() => assertNoInventedPlanChanges(
++      '## Completed work\n- Inventory phase completed; 12 tables found.\n## Open work and next steps\n- Add checkpoint `APPROVAL-73` to the plan; implementation approval remains pending.',
++    )).not.toThrow();
++  });
++  it('does not classify explicit non-completion as an update', () => {
++    expect(() => assertNoInventedPlanChanges(
++      '## Completed work\n- No plan was modified; checkpoint APPROVAL-73 has not been added.\n## Open work and next steps\n- Add the checkpoint after review.',
++    )).not.toThrow();
++  });
++  it.each([
++    '## Completed work\n- Updated plan with retention policy (30 days) and checkpoint `APPROVAL-73`.\n## Current state\n- Risk assessment active.',
++    '## Decisions and findings\n- Checkpoint `APPROVAL-73` added to the plan to track owner review.\n## Completed work\n- Inventory phase completed.',
++  ])('rejects invented plan completion: %s', (summary) => {
++    expect(() => assertNoInventedPlanChanges(summary)).toThrow('LIVE_E2E_QUALITY_PLANNED_WORK_REPORTED_COMPLETE');
+   });
+ });
+
+diff --git a/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+new file mode 100644
+index 000000000..db9d43d22
+--- /dev/null
++++ b/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+@@ -0,0 +1,41 @@
++import fs from 'node:fs/promises';
++import { afterEach, expect, it, vi } from 'vitest';
++import { AgentRun } from '../../../src/agent-execution/domain/agent-run.js';
++import { AutoByteusAgentRunBackendFactory } from '../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
++import { LiveE2eScenarioExecution } from '../../../../test-support/live-e2e/live-e2e-harness.js';
++import { describeLiveE2eError } from '../../../../test-support/live-e2e/live-e2e-safe-error.js';
++import { liveE2eScenarios } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
++import { defaultToolRegistry } from 'autobyteus-ts/tools/registry/tool-registry.js';
++afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); });
++it('omits arbitrary messages, stacks, headers and unknown codes including nested causes', () => {
++  const error = Object.assign(new Error('synthetic-private-value'), {code:'synthetic-private-value',headers:{value:'synthetic-private-value'},cause:Object.assign(new Error('synthetic-private-value'),{code:'ENOENT'})});
++  const result = describeLiveE2eError(error);
++  expect(JSON.stringify(result)).not.toContain('synthetic-private-value');
++  expect(result).toMatchObject({category:'Error',code:null,cause:{code:'ENOENT'}});
++});
++it('captures post failure before termination/deletion and rethrows original without provider traffic', async () => {
++  const registry = defaultToolRegistry.snapshot();
++  const network = vi.fn(() => { throw new Error('NETWORK_FORBIDDEN'); }); vi.stubGlobal('fetch', network);
++  const scenario = new LiveE2eScenarioExecution('lmstudio.qwen36.compaction-agent-flow',liveE2eScenarios['lmstudio.qwen36.compaction-agent-flow']!,{} as never,'http://127.0.0.1:1');
++  vi.spyOn(scenario as any,'resolveScenarioModelIdentifier').mockResolvedValue('fixture');
++  let root = ''; const order:string[]=[];
++  vi.spyOn(AutoByteusAgentRunBackendFactory.prototype,'createBackend').mockImplementation(async(config,id)=>{
++    root = config.memoryDir!.replace(/\/memory$/,'');
++    return {getContext:()=>({runId:id,config}),getLifecycleSnapshot:()=>({availability:'online',phase:'idle',currentTurn:{kind:'NONE'}}),subscribeToSourceEventBatches:()=>()=>{}} as never;
++  });
++  const failure=Object.assign(new Error('synthetic-private-value'),{code:'ETIMEDOUT'});
++  vi.spyOn(AgentRun.prototype,'postUserMessage').mockRejectedValue(failure);
++  vi.spyOn(AgentRun.prototype,'terminate').mockImplementation(async()=>{order.push('terminate');return {} as never;});
++  const output=vi.spyOn(process.stdout,'write').mockImplementation(()=>true);
++  let observed:any;
++  try {
++    await expect(scenario.executeCompactionAgentFlow((value:any)=>{
++      if(value.event==='managed_compaction_all_exit'){order.push('observe');observed=value;}
++    })).rejects.toBe(failure);
++    expect(order).toEqual(['observe','terminate']);
++    expect(observed).toMatchObject({stage:'post-turn-1',completedTurns:0,error:{code:'ETIMEDOUT'},parentRequests:[],summaryRequests:[]});
++    expect(JSON.stringify(output.mock.calls)).not.toContain('synthetic-private-value');
++    await expect(fs.stat(root)).rejects.toMatchObject({code:'ENOENT'});
++    expect(network).not.toHaveBeenCalled();
++  } finally { defaultToolRegistry.restore(registry); }
++});
+
+diff --git a/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+index 593fada44..fd5893bcb 100644
+--- a/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+@@ -23,6 +23,8 @@ import {
+   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+ } from "../../../src/config/streaming-content-flush-interval-setting.js";
+ 
++import { COMPACTION_MODEL_SETTINGS_KEY } from "../../../src/config/compaction-model-settings.js";
++
+ const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
+ 
+ describe("Server settings GraphQL e2e", () => {
+@@ -34,6 +36,8 @@ describe("Server settings GraphQL e2e", () => {
+   let originalFeaturedCatalogItemsEnv: string | undefined;
+   let originalStreamParserEnv: string | undefined;
+   let originalStreamingContentFlushIntervalEnv: string | undefined;
++  let originalCompactionModelEnv: string | undefined;
++  let originalInitializationEnv: Record<string, string | undefined>;
+   let originalMediaModelEnv: Record<string, string | undefined>;
+ 
+   beforeAll(async () => {
+@@ -47,7 +51,12 @@ describe("Server settings GraphQL e2e", () => {
+ 
+   beforeEach(() => {
+     appConfigProvider.resetForTests();
++    originalInitializationEnv = Object.fromEntries(
++      ["APP_ENV", "DB_TYPE", "DATABASE_URL", "AUTOBYTEUS_MEMORY_DIR"].map(key => [key, process.env[key]]),
++    );
+     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
++    originalCompactionModelEnv = process.env[COMPACTION_MODEL_SETTINGS_KEY];
++    delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
+     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
+     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
+     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+@@ -77,6 +86,12 @@ describe("Server settings GraphQL e2e", () => {
+ 
+   afterEach(() => {
+     appConfigProvider.resetForTests();
++    for (const [key, value] of Object.entries(originalInitializationEnv)) {
++      if (value === undefined) delete process.env[key];
++      else process.env[key] = value;
++    }
++    if (originalCompactionModelEnv === undefined) delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
++    else process.env[COMPACTION_MODEL_SETTINGS_KEY] = originalCompactionModelEnv;
+     if (originalServerHostEnv === undefined) {
+       delete process.env.AUTOBYTEUS_SERVER_HOST;
+     } else {
+@@ -630,4 +645,109 @@ describe("Server settings GraphQL e2e", () => {
+     );
+   });
+ 
++  const initializeOwnedSettingsConfig = () => {
++    // Durable writes require the same initialized AppConfig used by the server.
++    process.env.APP_ENV = "test";
++    process.env.DB_TYPE = "sqlite";
++    process.env.DATABASE_URL = `file:${path.join(tempDir, "db", "test.db")}`;
++    process.env.AUTOBYTEUS_MEMORY_DIR = path.join(tempDir, "memory");
++    appConfigProvider.config.initialize();
++  };
++
++  it("lists inherited compaction without persisting a default selection", async () => {
++    initializeOwnedSettingsConfig();
++    const before = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
++    const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string }> }>(
++      "{ getServerSettings { key value } }",
++    );
++    expect(listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
++    expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBeUndefined();
++    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(before);
++    expect(before).not.toContain(COMPACTION_MODEL_SETTINGS_KEY);
++  });
++
++  it("durably round-trips the current compaction tuple, including inherit and an unavailable explicit model", async () => {
++    initializeOwnedSettingsConfig();
++    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
++    const query = `{ getServerSettings { key value isEditable isDeletable } }`;
++    for (const selection of [
++      { modelIdentifier: null, llmConfig: null },
++      { modelIdentifier: " unavailable-fixture-model ", llmConfig: { temperature: 0.2, max_tokens: 4096 } },
++      { modelIdentifier: null, llmConfig: null, schema_version: 999, obsolete: "ignored" },
++    ]) {
++      const expected = { modelIdentifier: selection.modelIdentifier?.trim() ?? null, llmConfig: selection.llmConfig };
++      const updated = await execGraphql<{ updateServerSetting: string }>(mutation, {
++        key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(selection),
++      });
++      expect(updated.updateServerSetting).toContain("updated successfully");
++      const beforeRestart = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
++      expect(beforeRestart).toContain(COMPACTION_MODEL_SETTINGS_KEY);
++      // Reload from persisted AppConfig, not process.env or a mocked settings store.
++      appConfigProvider.resetForTests();
++      delete process.env[COMPACTION_MODEL_SETTINGS_KEY];
++      appConfigProvider.config.setCustomAppDataDir(tempDir);
++      initializeOwnedSettingsConfig();
++      const listed = await execGraphql<{ getServerSettings: Array<{ key: string; value: string; isEditable: boolean; isDeletable: boolean }> }>(query);
++      const current = listed.getServerSettings.find(item => item.key === COMPACTION_MODEL_SETTINGS_KEY);
++      expect(current).toMatchObject({ isEditable: true, isDeletable: false });
++      expect(JSON.parse(current!.value)).toEqual(expected);
++      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(beforeRestart);
++    }
++  });
++
++  it("rejects invalid compaction tuples without changing the durable baseline or exposing retired strategy queries", async () => {
++    initializeOwnedSettingsConfig();
++    const mutation = `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`;
++    const baseline = JSON.stringify({ modelIdentifier: "fixture-model", llmConfig: { temperature: 0.1 } });
++    expect((await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value: baseline })).updateServerSetting).toContain("updated successfully");
++    const persisted = fs.readFileSync(path.join(tempDir, ".env"), "utf8");
++    for (const value of ["not-json", "{}", JSON.stringify({ modelIdentifier: null, llmConfig: { api_key: "synthetic-not-a-secret" } })]) {
++      const result = await execGraphql<{ updateServerSetting: string }>(mutation, { key: COMPACTION_MODEL_SETTINGS_KEY, value });
++      expect(result.updateServerSetting).toContain("Invalid AUTOBYTEUS_COMPACTION_MODEL_SETTINGS");
++      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
++      expect(appConfigProvider.config.get(COMPACTION_MODEL_SETTINGS_KEY)).toBe(baseline);
++    }
++    const deleted = await execGraphql<{ deleteServerSetting: string }>(
++      `mutation Delete($key: String!) { deleteServerSetting(key: $key) }`, { key: COMPACTION_MODEL_SETTINGS_KEY },
++    );
++    expect(deleted.deleteServerSetting).toContain("managed by the system");
++    expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getWorkingContextCompactionStrategies");
++    expect(schema.getQueryType()?.getFields()).not.toHaveProperty("getEffectiveWorkingContextCompactionStrategyId");
++    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
++  });
++
++  it("saves the numeric compaction context ceiling through ordinary settings", async () => {
++    const key = "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE";
++    const originalValue = process.env[key];
++    delete process.env[key];
++    try {
++      initializeOwnedSettingsConfig();
++      const updated = await execGraphql<{ updateServerSetting: string }>(
++        `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,
++        { key, value: "16000" },
++      );
++      expect(updated.updateServerSetting).toContain("updated successfully");
++      const listed = await execGraphql<{
++        getServerSettings: Array<{ key: string; value: string; isEditable: boolean }>;
++      }>("{ getServerSettings { key value isEditable } }");
++      expect(listed.getServerSettings.find(setting => setting.key === key)).toMatchObject({
++        value: "16000", isEditable: true,
++      });
++    } finally {
++      if (originalValue === undefined) delete process.env[key];
++      else process.env[key] = originalValue;
++    }
++  });
++
++  it("keeps credential-like settings out of the ordinary numeric-control write path", async () => {
++    initializeOwnedSettingsConfig();
++    const updated = await execGraphql<{ updateServerSetting: string }>(
++      `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,
++      { key: "API5_SYNTHETIC_API_KEY", value: "not-a-real-credential" },
++    );
++    expect(updated.updateServerSetting).toContain("write-only credential editor");
++    expect(appConfigProvider.config.get("API5_SYNTHETIC_API_KEY")).toBeUndefined();
++    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain("API5_SYNTHETIC_API_KEY");
++  });
++
+ });
+
+diff --git a/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts b/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+new file mode 100644
+index 000000000..0f8358228
+--- /dev/null
++++ b/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+@@ -0,0 +1,117 @@
++import { afterAll, beforeAll, describe, expect, it } from 'vitest';
++import { LLMFactory, LLMRuntime } from 'autobyteus-ts';
++import { LLMExtension } from 'autobyteus-ts/llm/extensions/base-extension.js';
++import { Message, MessageRole } from 'autobyteus-ts/llm/utils/messages.js';
++import type { CompleteResponse } from 'autobyteus-ts/llm/utils/response-types.js';
++import { CompactionContentBuilder } from 'autobyteus-ts/memory/compaction/compaction-content-builder.js';
++import type { CompactionExecutionMetadata } from 'autobyteus-ts/memory/compaction/compaction-execution.js';
++import { DirectLlmCompressionStrategy } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
++import type { WorkingContextMessageUnit } from 'autobyteus-ts/memory/compaction/working-context-message-unit.js';
++import { createCompactedMemoryUserMessage } from 'autobyteus-ts/memory/working-context-finalizer.js';
++import { createCompactionLlm } from '../../../src/agent-execution/compaction/compaction-llm-factory.js';
++import { LiveE2eHarness, inspectDirectSummaryRequest } from '../../../../test-support/live-e2e/live-e2e-harness.js';
++import { liveE2eScenarios, selectedLiveE2eScenarioIds } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
++import { assertNoInventedPlanChanges } from '../../../../test-support/live-e2e/compaction-quality-checks.js';
++import { LiveE2eEvidenceScanner } from '../../../../test-support/live-e2e/live-e2e-evidence-scanner.js';
++
++const enabled = process.env.RUN_REAL_E2E === '1' && process.env.AUTOBYTEUS_LIVE_E2E_PREFLIGHT_ONLY !== '1';
++const selected = enabled ? selectedLiveE2eScenarioIds().filter(id => liveE2eScenarios[id]?.operation === 'compaction-agent-flow') : [];
++const scanner = new LiveE2eEvidenceScanner(['synthetic-live-e2e-scan-canary']);
++const report = (value: unknown) => { scanner.assertEvidenceClean(value); process.stdout.write(`${JSON.stringify(value)}\n`); };
++const unit = (id: string, message: Message, kind: 'message' | 'compacted_memory' = 'message'): WorkingContextMessageUnit => ({
++  id, kind, startIndex: 0, endIndex: 0, messages: [message], rawTraceIds: [],
++});
++const history = [
++  unit('request', new Message(MessageRole.USER, { content:
++    'Prepare an audit-only migration plan for incident INC-042. Constraints: no deployment, no push, and no customer-data export. Approval is for planning only, not implementation. Owner is Mira Chen. Retention is 7 days. Preserve /workspace/helios/plan.md and command pnpm verify:helios exactly. Work in two phases: inventory, then risk assessment. A cloud export was proposed but is not approved.' })),
++  unit('inventory', new Message(MessageRole.ASSISTANT, { content:
++    'Inventory phase completed: read /workspace/helios/inventory.json; found 12 tables. Risk assessment is active, not finished. Command pnpm verify:helios has NOT RUN. No code or database was changed. The permission decision for implementation remains pending.' })),
++  unit('pending', new Message(MessageRole.USER, { content:
++    'Keep all constraints. In the plan explain the duplicate-key risk. Ask me before any implementation. Do not execute the verification command yet.' })),
++];
++const correction = 'Correction: retention is now 30 days, replacing 7 days. Cancel the proposed cloud export entirely. Inventory remains completed. Keep risk assessment active. Add the owner-review checkpoint APPROVAL-73 to the plan; approval for implementation is still pending. The latest unresolved request is to compare rollback options, not to implement them. pnpm verify:helios is still unrun.';
++
++class Capture extends LLMExtension {
++  requests: Array<{ messages: Array<{ role: MessageRole; content: string | null; toolPayload: unknown; provenance: null }> }> = [];
++  responses: CompleteResponse[] = [];
++  async beforeInvoke(messages: Message[]): Promise<void> {
++    this.requests.push({ messages: messages.map(m => ({ role: m.role, content: m.content, toolPayload: m.tool_payload, provenance: null })) });
++  }
++  async afterInvoke(_messages: Message[], response: CompleteResponse | null): Promise<void> {
++    if (response) this.responses.push(response);
++  }
++}
++
++// Keyword checks are regression alarms, not a semantic completeness oracle.
++// Review the retained input/output evidence separately for contradiction and omission.
++const assertEssentialRetention = (summary: string) => {
++  for (const heading of ['Goal and constraints', 'Decisions and findings', 'Completed work', 'Current state', 'Open work and next steps', 'Essential references']) expect(summary).toContain(`## ${heading}`);
++  for (const exact of ['INC-042', 'Mira Chen', '/workspace/helios/plan.md', 'pnpm verify:helios', '/workspace/helios/inventory.json']) {
++    expect(summary).toContain(exact);
++  }
++  expect(summary).toMatch(/12 tables/i);
++  expect(summary).toMatch(/(?:no|not|without|prohibit|do not)[^\n.]{0,80}(?:deploy|push)/i);
++  expect(summary).toMatch(/(?:planning(?:\/approval)?[ -]only|audit.only[^\n.]*plan)/i);
++  expect(summary).toMatch(/(?:not run|unrun|not executed|unexecuted|has not been run|NOT RUN)/i);
++  expect(summary).toMatch(/(?:implementation[^\n.]{0,60}pending|(?:approval|permission)[^\n.]{0,60}pending|approval before[^\n.]{0,60}implementation)/i);
++  expect(summary).toMatch(/duplicate.key/i);
++};
++
++(enabled ? describe : describe.skip)('first and repeated live compaction semantic retention', () => {
++  let harness: LiveE2eHarness;
++  beforeAll(async () => { harness = await LiveE2eHarness.open(); });
++  afterAll(async () => { await harness?.close(); });
++  for (const scenarioId of selected) {
++    it(`preserves first/repeated decisions for ${scenarioId}`, { timeout: 900_000 }, async ({ skip }) => {
++      const preflight = await harness.preflight(scenarioId);
++      report({ event: 'semantic_preflight', ...preflight });
++      if (preflight.health !== 'READY' || preflight.missing.length) { skip(); return; }
++      const scenario = liveE2eScenarios[scenarioId]!;
++      let parentModelIdentifier = scenario.model!;
++      if (scenario.providerId === 'LMSTUDIO') {
++        const matches = (await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO)).filter(m => m.value === scenario.model);
++        expect(matches).toHaveLength(1);
++        parentModelIdentifier = matches[0]!.model_identifier;
++      }
++      const captures: Capture[] = [];
++      const compress = async (units: WorkingContextMessageUnit[], phase: string) => {
++        let execution: CompactionExecutionMetadata | undefined;
++        const strategy = new DirectLlmCompressionStrategy(async input => {
++          const llm = await createCompactionLlm(input);
++          const capture = new Capture(llm); captures.push(capture); llm.registerExtension(capture);
++          return llm;
++        }, { getParentModelIdentifier: () => parentModelIdentifier,
++          operationId: `quality-${phase}`, executionTurnId: `quality-${phase}`,
++          signal: AbortSignal.timeout(400_000),
++          observe: event => { if (event.outcome === 'succeeded') execution = event.execution; },
++        });
++        const summary = await strategy.compress(new CompactionContentBuilder().build(units));
++        if (!execution) throw new Error('Missing direct compression success observation.');
++        return { summary, execution };
++      };
++      const first = await compress(history, 'first');
++      report({ event: 'semantic_first', scenarioId, source: history.flatMap(u => u.messages.map(m => m.content)), ...first });
++      assertEssentialRetention(first.summary);
++      expect(first.summary).toMatch(/7.day|7 days/i);
++      const repeatedInput = [unit('prior-summary', createCompactedMemoryUserMessage(first.summary), 'compacted_memory'),
++        unit('correction', new Message(MessageRole.USER, { content: correction }))];
++      const repeated = await compress(repeatedInput, 'repeated');
++      report({ event: 'semantic_repeated', scenarioId, correction, ...repeated });
++      assertNoInventedPlanChanges(repeated.summary);
++      assertEssentialRetention(repeated.summary);
++      expect(repeated.summary).toMatch(/30.day|30 days/i);
++      expect(repeated.summary).toContain('APPROVAL-73');
++      expect(repeated.summary).toMatch(/(?:cancel[^\n.]*cloud|cloud[^\n.]*cancel)/i);
++      expect(repeated.summary).toMatch(/rollback options/i);
++      expect(repeated.execution.invocationId).not.toBe(first.execution.invocationId);
++      expect(captures).toHaveLength(2);
++      for (const capture of captures) {
++        expect(capture.requests).toHaveLength(1); expect(capture.responses).toHaveLength(1);
++        inspectDirectSummaryRequest(capture.requests[0]!);
++        expect(capture.responses[0]!.completionStatus).not.toBe('incomplete');
++      }
++      expect(captures[1]!.requests[0]!.messages[1]!.content).toContain(first.summary);
++      report({ event: 'semantic_two_calls_verified', scenarioId, invocationCount: 2 });
++    });
++  }
++});
+
+diff --git a/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts b/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+index 91bcf9a1a..3729bc3b4 100644
+--- a/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
++++ b/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+@@ -92,7 +92,7 @@ describe('Working context snapshot restore flow (agent)', () => {
+     }
+   });
+ 
+-  it('restores an exact strict-v5 snapshot and persists an ordinary continuation', async () => {
++  it('restores a current versionless snapshot and persists an ordinary continuation', async () => {
+     const agentId = 'agent_restore';
+ 
+     const snapshot = new WorkingContextFinalizer().finalize({
+@@ -140,7 +140,7 @@ describe('Working context snapshot restore flow (agent)', () => {
+       agentId,
+       'Continue after restore.',
+     );
+-    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages', 'schema_version']);
++    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages']);
+     expect(WorkingContextSnapshotSerializer.validate(continuedPayload)).toBe(true);
+     const { workingContext: continuedContext } = WorkingContextSnapshotSerializer.deserialize(
+       continuedPayload,
+
+diff --git a/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts b/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts
+index dfcb4064b..2bcdb219e 100644
+--- a/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts
++++ b/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts
+@@ -2,7 +2,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
+ import { createPinia, setActivePinia } from 'pinia'
+ import { mount, flushPromises } from '@vue/test-utils'
+ import { nextTick } from 'vue'
+-import { parseTeamStreamServerMessage } from '@autobyteus/team-stream-contracts'
++import { parseTeamStreamServerMessage, type TeamStreamServerMessage } from '@autobyteus/team-stream-contracts'
+ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures'
+ import { useAgentTeamContextsStore } from '../agentTeamContextsStore'
+ import { useAgentTeamRunStore } from '../agentTeamRunStore'
+@@ -41,7 +41,19 @@ const setup = () => {
+   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
+   const ready = () => {
+     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+-    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, execution_tree: team.view.getExecutionTree(), messages: [], agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null })) })
++    const snapshot: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>['payload'] = {
++      root_team_run_id: ROOT,
++      base_change_sequence: 0,
++      execution_tree: team.view.getExecutionTree(),
++      messages: [],
++      agent_input_states: [],
++      agent_statuses: team.view.listAgentContextEntries().map(e => ({
++        agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle',
++        trigger: null, tool_name: null, error_message: null, error_details: null,
++        recoverableBlock: null,
++      })),
++    }
++    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot)
+   }
+   ready()
+   const lead = seed('lead'), worker = seed('worker')

@@ -25,6 +25,8 @@ export type RawTraceItemOptions = {
   toolError?: string | null;
   correlationId?: string | null;
   senderId?: string | null;
+  messageId?: string;
+  dedupeKey?: string;
 };
 
 export class RawTraceItem implements MemoryItem {
@@ -44,6 +46,8 @@ export class RawTraceItem implements MemoryItem {
   toolError: string | null | undefined;
   correlationId: string | null;
   senderId: string | null;
+  readonly messageId?: string;
+  readonly dedupeKey?: string;
 
   constructor(options: RawTraceItemOptions) {
     this.id = options.id;
@@ -65,6 +69,10 @@ export class RawTraceItem implements MemoryItem {
     this.toolError = options.toolError;
     this.correlationId = options.correlationId ?? null;
     this.senderId = options.senderId ?? null;
+    if (this.traceType === 'user') {
+      this.messageId = normalizeInputKey(options.messageId);
+      this.dedupeKey = normalizeInputKey(options.dedupeKey);
+    }
   }
 
   get memoryType(): MemoryType {
@@ -91,6 +99,10 @@ export class RawTraceItem implements MemoryItem {
     if (this.toolError !== undefined) data.tool_error = this.toolError;
     if (this.correlationId) data.correlation_id = this.correlationId;
     if (this.senderId) data.sender_id = this.senderId;
+    if (this.traceType === 'user') {
+      if (this.messageId) data.message_id = this.messageId;
+      if (this.dedupeKey) data.dedupe_key = this.dedupeKey;
+    }
 
     return data;
   }
@@ -114,7 +126,12 @@ export class RawTraceItem implements MemoryItem {
         ? typeof data.tool_error === 'string' ? data.tool_error : null
         : undefined,
       correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null,
-      senderId: typeof data.sender_id === 'string' ? data.sender_id : null
+      senderId: typeof data.sender_id === 'string' ? data.sender_id : null,
+      messageId: normalizeInputKey(data.message_id),
+      dedupeKey: normalizeInputKey(data.dedupe_key)
     });
   }
 }
+
+const normalizeInputKey = (value: unknown): string | undefined =>
+  typeof value === 'string' ? value.trim() || undefined : undefined;

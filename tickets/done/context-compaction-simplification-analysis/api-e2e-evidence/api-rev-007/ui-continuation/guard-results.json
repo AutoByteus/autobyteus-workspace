@@ -1,0 +1,15 @@
+{
+  "result": "Pass",
+  "checks": [
+    "discovery",
+    "disarmed state",
+    "503",
+    "six-heading parser",
+    "SSE",
+    "hold release",
+    "abort clears deadline; late response discarded",
+    "reject disarmed, closes"
+  ],
+  "accepted": 5,
+  "remote": 0
+}

@@ -1,0 +1,37 @@
+[codex/context-compaction-simplification-analysis 6908ccff4] Implement bounded compression strategy and held-input recovery
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 165 files changed, 2134 insertions(+), 574 deletions(-)
+ create mode 100644 autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts
+ create mode 100644 autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs
+ create mode 100644 autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/agent-run-compaction-races.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/agent-run-compaction-recovery.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts
+ create mode 100644 autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts
+ create mode 100644 autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts
+ rename autobyteus-ts/src/memory/compaction/{working-context-compaction-prompt-builder.ts => compaction-content-builder.ts} (92%)
+ create mode 100644 autobyteus-ts/src/memory/compaction/compaction-recovery.ts
+ create mode 100644 autobyteus-ts/src/memory/compaction/compression-strategy.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts
+ create mode 100644 autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts
+ create mode 100644 autobyteus-ts/tests/unit/llm/api/compaction-single-attempt-transport.test.ts
+ rename autobyteus-ts/tests/unit/memory/{working-context-compaction-prompt-builder.test.ts => compaction-content-builder.test.ts} (92%)
+ delete mode 100644 autobyteus-ts/tests/unit/memory/direct-llm-compaction-summarizer.test.ts
+ create mode 100644 autobyteus-ts/tests/unit/memory/direct-llm-compression-strategy.test.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+ create mode 100644 autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts

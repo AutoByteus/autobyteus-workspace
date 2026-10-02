@@ -1,0 +1,20 @@
+{
+  "durableCumulative": [
+    "test-support/live-e2e/live-e2e-harness.ts",
+    "test-support/live-e2e/run-live-e2e.mjs",
+    "test-support/live-e2e/compaction-quality-checks.ts",
+    "test-support/live-e2e/live-e2e-safe-error.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+    "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+    "autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts"
+  ],
+  "changedThisResume": [
+    "autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts"
+  ],
+  "productionChanges": [],
+  "removedTests": []
+}

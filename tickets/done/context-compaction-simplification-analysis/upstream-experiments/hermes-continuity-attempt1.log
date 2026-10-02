@@ -1,0 +1,93 @@
+▶ not activated — using HERMES_PYTHON: /tmp/autobyteus-compaction-research-20260926.kVSGz5/hermes-probe-venv/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 1 test files (~9 tests) under ['tests/agent/test_context_compressor_summary_continuity.py']; running with -j 1
+[100.0% |     9/~9 | ✓0 | ✗0] ✗ tests/agent/test_context_compressor_summary_continuity.py (1e, 0.9s)
+
+  ╔╍ Failed: tests/agent/test_context_compressor_summary_continuity.py ╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+  ║ configfile: pyproject.toml
+  ║ plugins: asyncio-1.4.0, anyio-4.15.1
+  ║ asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+  ║ collected 0 items / 1 error
+  ║ 
+  ║ ==================================== ERRORS ====================================
+  ║ __ ERROR collecting tests/agent/test_context_compressor_summary_continuity.py __
+  ║ ImportError while importing test module '/private/tmp/autobyteus-compaction-research-20260926.kVSGz5/hermes/tests/agent/test_context_compressor_summary_continuity.py'.
+  ║ Hint: make sure your test modules/packages have valid Python names.
+  ║ Traceback:
+  ║ /Users/normy/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/importlib/__init__.py:126: in import_module
+  ║     return _bootstrap._gcd_import(name[level:], package, level)
+  ║            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ║ tests/agent/test_context_compressor_summary_continuity.py:5: in <module>
+  ║     from agent.context_compressor import (
+  ║ agent/context_compressor.py:19: in <module>
+  ║     from agent.auxiliary_client import (
+  ║ agent/auxiliary_client.py:119: in <module>
+  ║     from agent.credential_pool import load_pool
+  ║ agent/credential_pool.py:21: in <module>
+  ║     from hermes_cli.config import load_env
+  ║ hermes_cli/config.py:34: in <module>
+  ║     import hermes_yaml as yaml
+  ║ hermes_yaml.py:10: in <module>
+  ║     from ruamel.yaml import YAML
+  ║ E   ModuleNotFoundError: No module named 'ruamel'
+  ║ =========================== short test summary info ============================
+  ║ ERROR tests/agent/test_context_compressor_summary_continuity.py
+  ║ !!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+  ║ =============================== 1 error in 0.54s ===============================
+  ║
+  ║  Repro: python -m pytest tests/agent/test_context_compressor_summary_continuity.py
+  ╚╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍
+
+
+=== Summary: 1 files, 0 tests passed, 0 failed (100% complete) in 0.9s (1 workers) ===
+
+=== Per-file subprocess time distribution ===
+  Files:   1
+  Total subprocess CPU-wall: 0.9s  (runner wall: 0.9s, parallelism: 1x)
+  P50: 0.85s  P90: 0.85s  P95: 0.85s  P99: 0.85s  Max: 0.85s
+  <1s: 1 files (100%)  <2s: 1 files (100%)
+  Top 10 slowest:
+      0.85s  tests/agent/test_context_compressor_summary_continuity.py
+
+=== Failure output ===
+
+--- tests/agent/test_context_compressor_summary_continuity.py ---
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.1.1, pluggy-1.6.0
+rootdir: /private/tmp/autobyteus-compaction-research-20260926.kVSGz5/hermes
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+__ ERROR collecting tests/agent/test_context_compressor_summary_continuity.py __
+ImportError while importing test module '/private/tmp/autobyteus-compaction-research-20260926.kVSGz5/hermes/tests/agent/test_context_compressor_summary_continuity.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/Users/normy/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent/test_context_compressor_summary_continuity.py:5: in <module>
+    from agent.context_compressor import (
+agent/context_compressor.py:19: in <module>
+    from agent.auxiliary_client import (
+agent/auxiliary_client.py:119: in <module>
+    from agent.credential_pool import load_pool
+agent/credential_pool.py:21: in <module>
+    from hermes_cli.config import load_env
+hermes_cli/config.py:34: in <module>
+    import hermes_yaml as yaml
+hermes_yaml.py:10: in <module>
+    from ruamel.yaml import YAML
+E   ModuleNotFoundError: No module named 'ruamel'
+=========================== short test summary info ============================
+ERROR tests/agent/test_context_compressor_summary_continuity.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.54s ===============================
+
+=== 1 file where no tests ran (collection/import error, timeout before collection, etc.) ===
+  tests/agent/test_context_compressor_summary_continuity.py

@@ -1,0 +1,11 @@
+{
+  "pid": 78768,
+  "phase": "flow",
+  "started": "2026-10-01T06:18:36.674Z",
+  "deadline": 1790836236638,
+  "closed": true,
+  "timedOut": false,
+  "code": 0,
+  "signal": null,
+  "finished": "2026-10-01T06:19:00.663Z"
+}

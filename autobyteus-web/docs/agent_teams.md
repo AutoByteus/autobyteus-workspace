@@ -184,7 +184,8 @@ No-context history still shows configured members only. This does not add
 nested configured-Team authoring or change Agent Orgs, delegation, identity, or
 persisted data.
 
-A collaborator (a shared Agent or Agent Team brought into the run with `@`) is
+A collaborator (a shared Agent or Agent Team brought into the run by the user's
+`@` or by an agent's first `send_message_to` to its listed address) is
 one hosted instance per entry in `root_team.collaborators`. The views show it
 with the task-row look, Offline until its first message, ahead of the root's
 delegated children: `teamExecutionTreeSelectors.withCollaboratorExecutions`
@@ -196,6 +197,16 @@ appears (`opensOnAppear`). Contexts take the definition and launch settings
 from the entry (`services/collaborators/agentSourceSelectors.ts`). Rows and
 tab labels use `utils/collaboration/memberDisplayName.ts`. An extra copy that
 `delegate_task` starts at a collaborator address is an ordinary task row.
+A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is
+not in the run) is also an ordinary task row, but no configured member or
+collaborator entry describes it. Its task DTO carries `source`, so the view
+reads the definition and launch settings from there:
+- `agentSourceSelectors.teamCatalogAgentSourceAt` for the copy and its members;
+- `source.coordinator_address` for a Team copy's coordinator.
+
+Rows for collaborator and catalog-copy addresses use the display-name formatter
+(`readsAsDisplayName`). Copies are placed by address (REQ-012): a teammate copy
+inside the delegator's own Team instance, any other copy at the run's top level.
 See [Chat](./chat.md#-in-a-live-run-collaborators).
 
 ## History, Restore, Stop, And Delete

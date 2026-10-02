@@ -1,0 +1,11 @@
+{
+  "model": "api10-deterministic-32768",
+  "remoteBudget": 0,
+  "localMax": 80,
+  "durationMs": 3600000,
+  "holdDeadlineMs": 120000,
+  "purpose": "Real product identity/reload/recovery with controlled protocol dependency, not model quality",
+  "guards": "separate disposable process first; fresh product process disarmed by default",
+  "setup": "normal UI + public GraphQL minimum definitions/config, owned isolated built app only",
+  "stop": "defect/cap/deadline; disarm then own host Stop/app stop; keep synthetic evidence only"
+}

@@ -1,0 +1,8 @@
+{
+  "when": "When post-API/E2E test-code review fails and an API/E2E-owned correction is required.",
+  "recipient_address": "/api_e2e_engineer",
+  "result": "Fail — Local Fix",
+  "revision": "CRR-012",
+  "finding": "TR-001",
+  "notSelected": "Not failure-origin or implementation-source review; no source fix, new design, completed API correction, or test-review Pass."
+}

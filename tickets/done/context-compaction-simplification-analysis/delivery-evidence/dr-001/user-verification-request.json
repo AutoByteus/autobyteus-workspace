@@ -1,0 +1,17 @@
+{
+  "status": "Requested; awaiting response",
+  "tool": "request_user_input_async",
+  "accepted": true,
+  "questions": [
+    {
+      "title": "How would you like to complete user verification of the context-compaction candidate? The reviewed checks passed within their stated scope, but broader test/typecheck failures and the documented limitations remain unresolved. No push, merge or release has occurred.",
+      "options": [
+        "Prepare an isolated worktree app first; make no provider calls.",
+        "I will test the candidate and report my result.",
+        "I have tested this candidate successfully; proceed with repository finalization, not release."
+      ]
+    }
+  ],
+  "verificationReceived": false,
+  "defaultOptionIsNotApproval": true
+}

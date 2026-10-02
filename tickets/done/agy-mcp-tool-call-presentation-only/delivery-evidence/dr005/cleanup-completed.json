@@ -1,0 +1,13 @@
+{
+  "ticket_worktree_removed": true,
+  "release_worktree_removed": true,
+  "local_ticket_branch_deleted": true,
+  "local_release_branch_deleted": true,
+  "worktree_pruned": true,
+  "remote_ticket_branch_retained": true,
+  "parent_expanded_worktree_preserved": true,
+  "verification_instance_stopped": true,
+  "verification_data_removed": true,
+  "verification_ports_released": true,
+  "unrelated_main_worktree_files_preserved": true
+}

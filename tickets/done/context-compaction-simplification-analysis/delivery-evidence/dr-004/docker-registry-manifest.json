@@ -1,0 +1,31 @@
+{
+  "time": "2026-10-01T20:13:51.095217+00:00",
+  "image": "autobyteus/autobyteus-server:1.4.92-beta.7",
+  "status": 200,
+  "digest": "sha256:286a8d29f18cc46ba026a5c00588f3414c0c66ad870858a7af03af407dc769aa",
+  "manifest": {
+    "schemaVersion": 2,
+    "mediaType": "application/vnd.oci.image.index.v1+json",
+    "manifests": [
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:ae74674afaba6608aea9deec2ad1e63a18defae034b3518d38cd85dba967c79b",
+        "size": 10889,
+        "platform": {
+          "architecture": "amd64",
+          "os": "linux"
+        }
+      },
+      {
+        "mediaType": "application/vnd.oci.image.manifest.v1+json",
+        "digest": "sha256:a3190dcbe704890b11e6e6fc3e7e9cc32c120b14d54344d4fae04d525d490820",
+        "size": 10889,
+        "platform": {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      }
+    ]
+  },
+  "auth": "Anonymous public pull token held in memory only; no Docker user credential helper used"
+}

@@ -126,12 +126,13 @@ describe('voice input extension integration', () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-extension-integration-'))
     managedExtensionService = new ManagedExtensionService(tempDir)
 
-    server = createServer(async (request, response) => {
-      const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
+    // Model an immutable release: checksum and every download use the same bytes.
+    const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
+    await createWorkerArchive(runtimeArchivePath)
+    const runtimeArchive = await fs.readFile(runtimeArchivePath)
+    const runtimeSha = createHash('sha256').update(runtimeArchive).digest('hex')
 
-      await createWorkerArchive(runtimeArchivePath)
-
-      const runtimeSha = createHash('sha256').update(await fs.readFile(runtimeArchivePath)).digest('hex')
+    server = createServer((request, response) => {
 
       const manifest = {
         schemaVersion: 2,
@@ -164,7 +165,7 @@ describe('voice input extension integration', () => {
       }
 
       if (request.url === '/runtime') {
-        response.end(await fs.readFile(runtimeArchivePath))
+        response.end(runtimeArchive)
         return
       }
 
@@ -214,6 +215,29 @@ describe('voice input extension integration', () => {
     await fs.rm(tempDir, { recursive: true, force: true })
   })
 
+  it('serves the manifest checksum bytes unchanged across repeated downloads', async () => {
+    const manifestResponse = await fetch(`${serverBaseUrl}/manifest.json`)
+    expect(manifestResponse.ok).toBe(true)
+    const manifest = await manifestResponse.json()
+    const asset = manifest.assets[0]
+    const download = async () => {
+      const response = await fetch(asset.url)
+      expect(response.ok).toBe(true)
+      return Buffer.from(await response.arrayBuffer())
+    }
+    const first = await download()
+    expect(createHash('sha256').update(first).digest('hex')).toBe(asset.sha256)
+    // Cross tar's one-second mtime resolution to catch request-time regeneration.
+    await new Promise((resolve) => setTimeout(resolve, 1100))
+    const second = await download()
+    expect(second.equals(first)).toBe(true)
+    expect(createHash('sha256').update(second).digest('hex')).toBe(asset.sha256)
+    const nextManifestResponse = await fetch(`${serverBaseUrl}/manifest.json`)
+    expect(nextManifestResponse.ok).toBe(true)
+    const nextManifest = await nextManifestResponse.json()
+    expect(nextManifest.assets[0].sha256).toBe(asset.sha256)
+  })
+
   it('installs, enables, and inserts transcript text into the draft', async () => {
     const extensionsStore = useExtensionsStore()
     const voiceInputStore = useVoiceInputStore()
@@ -233,7 +257,7 @@ describe('voice input extension integration', () => {
     expect(extensionsStore.voiceInput?.status).toBe('not-installed')
 
     await extensionsStore.installExtension('voice-input')
-    expect(extensionsStore.voiceInput?.status).toBe('installed')
+    expect(extensionsStore.voiceInput?.status, extensionsStore.voiceInput?.lastError ?? undefined).toBe('installed')
     expect(extensionsStore.voiceInput?.enabled).toBe(false)
 
     await extensionsStore.enableExtension('voice-input')
@@ -256,7 +280,11 @@ describe('voice input extension integration', () => {
     } as any
     voiceInputStore.isRecording = true
     voiceInputStore.recordingSource = 'composer'
-    voiceInputStore.composerTargetContext = activeContextStoreMock.activeAgentContext
+    voiceInputStore.transcriptTarget = {
+      key: 'fixture-composer',
+      isCurrent: () => true,
+      appendTranscript: (text) => { activeContextStoreMock.activeAgentContext.requirement += ' ' + text },
+    }
 
     await voiceInputStore.stopRecording()
 

@@ -1,0 +1,12 @@
+[
+  {
+    "runId": "api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195",
+    "agentDefinitionId": "api7-tool-fixture",
+    "agentName": "API7 Tool Fixture",
+    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/temp_workspace",
+    "summary": "API7-TOOL-READ Read /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplific...",
+    "createdAt": "2026-10-01T06:48:56.580Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

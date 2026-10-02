@@ -1,0 +1,17 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "stores/__tests__/agentRootCompactionIntegration.spec.ts",
+    "services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+    "services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+    "composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts",
+    "--run"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T16:58:39.438492+00:00",
+  "finished": "2026-10-01T16:58:48.672078+00:00",
+  "exit": 0
+}

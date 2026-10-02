@@ -1,8 +1,9 @@
+import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { Conversation, Message, AIMessage } from '~/types/conversation';
 import { generateBaseInvocationId } from '~/utils/toolUtils';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
-export type CompactionStatusPhase = 'requested' | 'started' | 'completed' | 'failed';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 
 export interface AgentCompactionStatus {
   phase: CompactionStatusPhase;
@@ -15,6 +16,13 @@ export interface AgentCompactionStatus {
   selectedBlockCount?: number | null;
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;
+  summaryCharCount?: number | null;
+  summaryTokenCount?: number | null;
+  summarizerProvider?: string | null;
+  compactionInvocationId?: string | null;
+  completionStatus?: string | null;
+  completionReason?: string | null;
+  // Historical read-only metadata; never produced by current direct compaction.
   semanticFactCount?: number | null;
   compactionAgentDefinitionId?: string | null;
   compactionAgentName?: string | null;
@@ -36,6 +44,8 @@ export class AgentRunState {
   public currentStatus: AgentStatus = AgentStatus.Offline;
   public conversation: Conversation;
   public agent_tool_invocation_counts = new Map<string, number>();
+  public recoverableBlock: CompactionRecoveryBlockDto | null = null;
+  public inputProjection: { runInstanceId: string; revision: number } | null = null;
   public compactionStatus: AgentCompactionStatus | null = null;
   public eventMonitorPresentationRevision = 0;
   public hasEarlierActiveTraceEvents = false;

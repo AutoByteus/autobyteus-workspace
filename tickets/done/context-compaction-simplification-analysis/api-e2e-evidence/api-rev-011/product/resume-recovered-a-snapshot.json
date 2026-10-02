@@ -1,0 +1,28 @@
+{
+  "agent": {
+    "kind": "agent",
+    "address": "/api11_reviewer",
+    "agentDefinitionId": "api11-reviewer",
+    "agentRunId": "api11_reviewer_558729981d9749d89b2e91fc8558ab19",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "api11-deterministic-32768:lmstudio@127.0.0.1:62749",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/temp_workspace"
+    },
+    "addedAt": "2026-10-01T18:10:09.556Z",
+    "addedViaAgentRunId": "daily_assistant_3fad328986b54a2282fff7e7e0b737cb"
+  },
+  "state": {
+    "run_instance_id": "20846854-7813-40de-891a-cb3fc477a9e0",
+    "revision": 31,
+    "entries": [],
+    "recoverableBlock": null
+  },
+  "rawPaths": [
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/memory/agents/daily_assistant_3fad328986b54a2282fff7e7e0b737cb/collaboration/api11_reviewer_558729981d9749d89b2e91fc8558ab19/raw_traces_active.jsonl",
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/memory/agents/daily_assistant_3fad328986b54a2282fff7e7e0b737cb/collaboration/api11_reviewer_558729981d9749d89b2e91fc8558ab19/raw_traces_000001.jsonl"
+  ]
+}

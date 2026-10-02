@@ -1,0 +1,14 @@
+{
+  "command": [
+    "git",
+    "--no-optional-locks",
+    "diff",
+    "--check",
+    "--",
+    "TESTING.md"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "start": "2026-10-01T17:29:53.313366+00:00",
+  "end": "2026-10-01T17:29:53.343021+00:00",
+  "exit": 0
+}

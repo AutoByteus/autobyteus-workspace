@@ -1,0 +1,96 @@
+[
+  {
+    "id": "rt_1790959368725_a1129318-652e-4cc0-adc4-0029a0ea227b",
+    "ts": 1790959368.725,
+    "turn_id": "f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c",
+    "seq": 2,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c-158",
+    "tool_args": {
+      "reuse_existing": false,
+      "url": "https://ceac.state.gov/genniv/"
+    }
+  },
+  {
+    "id": "rt_1790959369576_84e3ada0-3284-4502-9bb7-b7179b69c085",
+    "ts": 1790959369.576,
+    "turn_id": "f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c-158",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": {
+        "tab_id": "7b52b9",
+        "status": "opened",
+        "url": "https://ceac.state.gov/genniv/",
+        "title": "Nonimmigrant Visa - Instructions Page"
+      }
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790959378104_67e08aa3-28d0-4e09-a453-488979ac812c",
+    "ts": 1790959378.104,
+    "turn_id": "f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c",
+    "seq": 4,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "list_tabs",
+    "tool_call_id": "agy-tool-f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c-160",
+    "tool_args": {}
+  },
+  {
+    "id": "rt_1790959378105_975198c7-df27-429a-8f31-41c0737183d6",
+    "ts": 1790959378.105,
+    "turn_id": "f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c",
+    "seq": 5,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "list_tabs",
+    "tool_call_id": "agy-tool-f6bc2bce-fcc4-43d7-99df-d0fd7884fa6c-160",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": {
+        "sessions": [
+          {
+            "tab_id": "51da23",
+            "title": "Nonimmigrant Visa - Instructions Page",
+            "url": "https://ceac.state.gov/genniv/",
+            "device_emulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          },
+          {
+            "tab_id": "15ee0d",
+            "title": "Nonimmigrant Visa - Instructions Page",
+            "url": "https://ceac.state.gov/genniv/",
+            "device_emulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          },
+          {
+            "tab_id": "7b52b9",
+            "title": "Nonimmigrant Visa - Instructions Page",
+            "url": "https://ceac.state.gov/genniv/",
+            "device_emulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      }
+    },
+    "tool_error": null
+  }
+]

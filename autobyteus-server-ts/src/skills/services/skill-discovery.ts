@@ -54,18 +54,8 @@ const getSkillFolderDirectories = (skillsDir: string): string[] => {
   return skillDirectories;
 };
 
-type BundledSkillLocation = {
-  path: string;
-  origin: "agent_private" | "team_shared";
-  /** Trusted and configured root implied by the layout. */
-  root: string;
-};
-
-const getAgentSkillLocations = (
-  agentsDir: string,
-  rootForAgent: (agentDir: string) => string,
-): BundledSkillLocation[] => {
-  const locations: BundledSkillLocation[] = [];
+const getAgentSkillLocations = (agentsDir: string): string[] => {
+  const locations: string[] = [];
 
   for (const agentEntry of readSortedDirectoryEntries(agentsDir)) {
     if (!agentEntry.isDirectory()) {
@@ -73,32 +63,25 @@ const getAgentSkillLocations = (
     }
 
     const agentDir = path.join(agentsDir, agentEntry.name);
-    const root = rootForAgent(agentDir);
-    for (const skillDir of getSkillFolderDirectories(path.join(agentDir, "skills"))) {
-      locations.push({ path: skillDir, origin: "agent_private", root });
-    }
+    locations.push(...getSkillFolderDirectories(path.join(agentDir, "skills")));
   }
 
   return locations;
 };
 
-/** A team folder's shared skills, then its local agents' skills; the team folder is their root. */
-const getTeamSkillLocations = (teamDir: string): BundledSkillLocation[] => [
-  ...getSkillFolderDirectories(path.join(teamDir, "skills")).map((skillDir) => ({
-    path: skillDir,
-    origin: "team_shared" as const,
-    root: teamDir,
-  })),
-  ...getAgentSkillLocations(path.join(teamDir, "agents"), () => teamDir),
+/** A team folder's shared skills, then its local agents' skills. */
+const getTeamSkillLocations = (teamDir: string): string[] => [
+  ...getSkillFolderDirectories(path.join(teamDir, "skills")),
+  ...getAgentSkillLocations(path.join(teamDir, "agents")),
 ];
 
 /**
  * Agent Org layouts (D-19, SR-018): for each Org by name, its org-owned agents by name
- * (`<agentDir>/skills/*`, the agent folder is the root), then its org-owned teams by name (see
+ * (`<agentDir>/skills/*`), then its org-owned teams by name (see
  * `getTeamSkillLocations`). Org-owned folders come from the exact owned-source correlation; an
  * Org has no org-level `skills/` folder.
  */
-const getAgentOrgSkillLocations = (orgRoot: string): BundledSkillLocation[] => {
+const getAgentOrgSkillLocations = (orgRoot: string): string[] => {
   const sources = [
     ...listAgentOrgOwnedDefinitionSourcesSync({ subject: "agent", orgRoots: [orgRoot] }),
     ...listAgentOrgOwnedDefinitionSourcesSync({ subject: "agent_team", orgRoots: [orgRoot] }),
@@ -106,11 +89,7 @@ const getAgentOrgSkillLocations = (orgRoot: string): BundledSkillLocation[] => {
     || (left.subject === right.subject ? 0 : left.subject === "agent" ? -1 : 1)
     || left.localDefinitionId.localeCompare(right.localDefinitionId));
   return sources.flatMap((source) => source.subject === "agent"
-    ? getSkillFolderDirectories(path.join(source.definitionDir, "skills")).map((skillDir) => ({
-        path: skillDir,
-        origin: "agent_private" as const,
-        root: source.definitionDir,
-      }))
+    ? getSkillFolderDirectories(path.join(source.definitionDir, "skills"))
     : getTeamSkillLocations(source.definitionDir));
 };
 
@@ -122,11 +101,8 @@ const getAgentOrgSkillLocations = (orgRoot: string): BundledSkillLocation[] => {
 const getBundledSkillLocationsFromDefinitionRoot = (
   definitionRoot: string,
   orgRoot: string,
-): BundledSkillLocation[] => {
-  const locations = getAgentSkillLocations(
-    path.join(definitionRoot, "agents"),
-    (agentDir) => agentDir,
-  );
+): string[] => {
+  const locations = getAgentSkillLocations(path.join(definitionRoot, "agents"));
 
   const teamRoots = path.join(definitionRoot, "agent-teams");
   for (const teamEntry of readSortedDirectoryEntries(teamRoots)) {
@@ -150,18 +126,13 @@ export const scanBundledSkillsFromDefinitionRoot = (
   for (const location of getBundledSkillLocationsFromDefinitionRoot(definitionRoot, orgRoot)) {
     try {
       const skill = dependencies.loader.loadSkill(
-        location.path,
-        dependencies.isReadonlyPath(location.path),
+        location,
+        dependencies.isReadonlyPath(location),
       );
-      records.push({
-        skill,
-        origin: location.origin,
-        trustedRoot: path.resolve(location.root),
-        configuredRoot: path.resolve(location.root),
-      });
+      records.push({ skill });
     } catch (error) {
       dependencies.logger.warn(
-        `Error loading bundled skill at ${location.path}: ${String(error)}`,
+        `Error loading bundled skill at ${location}: ${String(error)}`,
       );
     }
   }
@@ -184,7 +155,6 @@ const realDirectory = (directory: string): string => {
 export const scanSkillDirectory = (
   directory: string,
   dependencies: SkillDiscoveryDependencies,
-  configuredRoot: string = directory,
   visited: Set<string> = new Set(),
 ): DiscoveredSkillRecord[] => {
   const records: DiscoveredSkillRecord[] = [];
@@ -212,12 +182,7 @@ export const scanSkillDirectory = (
         itemPath,
         dependencies.isReadonlyPath(itemPath),
       );
-      records.push({
-        skill,
-        origin: "global",
-        trustedRoot: skill.rootPath,
-        configuredRoot: path.resolve(configuredRoot),
-      });
+      records.push({ skill });
     } catch (error) {
       dependencies.logger.warn(`Error loading skill ${entry.name}: ${String(error)}`);
     }
@@ -225,7 +190,7 @@ export const scanSkillDirectory = (
 
   const nestedSkillsDir = path.join(directory, "skills");
   if (isExistingDirectory(nestedSkillsDir)) {
-    records.push(...scanSkillDirectory(nestedSkillsDir, dependencies, configuredRoot, visited));
+    records.push(...scanSkillDirectory(nestedSkillsDir, dependencies, visited));
   }
 
   return records;

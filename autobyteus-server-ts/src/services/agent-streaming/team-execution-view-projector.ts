@@ -54,6 +54,7 @@ export const projectTeamExecutionViewSnapshot = (
     execution_tree: projectExecutionTree(snapshot.tree),
     messages: snapshot.messages.messages.map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
+    agent_input_states: snapshot.inputStates,
   },
 });
 
@@ -184,12 +185,23 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     kind: "task_agent", address: execution.address, agent_run_id: execution.agentRunId,
     platform_agent_run_id: execution.platformAgentRunId,
     delegator_agent_run_id: execution.delegatorAgentRunId ?? null, started_at: execution.startedAt,
+    ...(execution.source ? { source: {
+      kind: "agent" as const, agent_definition_id: execution.source.agentDefinitionId,
+      launch_configuration: projectLaunchConfiguration(execution.source.launchConfiguration),
+    } } : {}),
   };
   return {
     kind: "task_team", address: execution.address, team_run_id: execution.teamRunId,
     members: execution.members.map(projectTaskTeamMember),
     task_executions: execution.taskExecutions.map(projectTaskExecution),
     delegator_agent_run_id: execution.delegatorAgentRunId ?? null, started_at: execution.startedAt,
+    ...(execution.source ? { source: {
+      kind: "agent_team" as const, team_definition_id: execution.source.teamDefinitionId,
+      coordinator_address: execution.source.coordinatorAddress,
+      members: execution.source.members.map((member) => ({ address: member.address, agent_definition_id: member.agentDefinitionId })),
+      handoffs: execution.source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
+      default_launch_configuration: projectLaunchConfiguration(execution.source.defaultLaunchConfiguration),
+    } } : {}),
   };
 };
 

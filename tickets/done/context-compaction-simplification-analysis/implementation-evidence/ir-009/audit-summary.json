@@ -1,0 +1,31 @@
+{
+  "incoming": 676,
+  "overlap": 69,
+  "groups": {
+    "generated-contract": 46,
+    "strict-contract": 11,
+    "test-or-fixture": 80,
+    "documentation": 14,
+    "server-shared-collaboration": 22,
+    "retired-compactor": 3,
+    "server-runtime-admission-tools": 15,
+    "server-memory-history": 29,
+    "server-team-org-recursion": 36,
+    "server-agent-root": 17,
+    "server-transport-projection": 21,
+    "core-sender-memory": 4,
+    "web-composer-navigation-presentation": 31,
+    "web-agent-root": 7,
+    "web-root-identity-history": 27,
+    "web-input-hydration-termination": 14,
+    "historical-upstream-evidence": 299
+  },
+  "changedPins": 29,
+  "ownedSourceAndGeneratedAndTests": 31,
+  "indexUnchanged": true,
+  "missingIncoming": [
+    "autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts",
+    "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts"
+  ]
+}

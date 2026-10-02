@@ -46,12 +46,13 @@ export class FlatTeamAgentExecutionHandle {
 
   isActive(): boolean { return this.handle?.isActive() ?? false; }
   hasOpenExecutionWork(): boolean { return this.handle?.hasOpenExecutionWork() ?? false; }
+  getInputStateSnapshots() { return this.handle?.getInputStateSnapshots() ?? []; }
   getLeafAgentStatusSnapshots() {
     const status = this.handle?.getStatusSnapshot();
     return [createTeamAgentStatusSnapshot({
       execution: this.identity(),
       details: status ? { ...status.details, toolName: null, errorDetails: null } : {
-        status: "offline", trigger: null, toolName: null, errorMessage: null, errorDetails: null,
+        status: "offline", trigger: null, toolName: null, errorMessage: null, errorDetails: null, recoverableBlock: null,
       },
     })];
   }
@@ -108,6 +109,11 @@ export class FlatTeamAgentExecutionHandle {
       physicalScope: this.options.teamContext.physicalScope,
       execution,
       sourceNode: this.options.config,
+      hostTeam: Object.freeze({
+        address: this.options.teamContext.teamNode.address,
+        teamDefinitionId: this.options.teamContext.teamNode.teamDefinitionId,
+        handoffs: this.options.teamContext.handoffs,
+      }),
     });
     const handle = (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,

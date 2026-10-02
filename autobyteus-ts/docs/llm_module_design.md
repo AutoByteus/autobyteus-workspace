@@ -391,9 +391,11 @@ OpenAI-compatible caller:
 - Non-local / cloud OpenAI-compatible providers keep default SDK transport
   behavior unless a separate review explicitly widens that policy.
 
-This hardening still matters to compaction when the selected visible compactor
-agent uses a local model and sends a large request before the next parent-agent
-LLM leg is allowed to continue.
+This hardening also applies when direct compaction selects an isolated local LLM
+and sends a large request before the next parent leg. Compaction calls additionally
+request `single_attempt` transport so their maximum three strategy-owned attempts
+are not multiplied by SDK retries. This compaction-specific control does not
+change ordinary parent request retry policy; there is no visible compactor agent.
 
 ## 6.2 Provider-Native Tool-Call History Rendering
 

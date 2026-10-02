@@ -26,6 +26,7 @@ const project = (projectId: string, name: string, overrides: Partial<Project> = 
   updatedAt: '2026-09-26T00:00:00.000Z',
   workspaces: [],
   openTaskCount: 0,
+  taskCount: 0,
   ...overrides,
 })
 
@@ -177,7 +178,7 @@ describe('projectStore', () => {
 
     const store = useProjectStore()
     await store.fetchProjects()
-    store.setOpenTaskCount('p1', 5)
+    store.setTaskCounts('p1', 7, 5)
 
     expect(store.getProjectById('p1')?.openTaskCount).toBe(5)
     expect(store.getProjectById('p2')?.openTaskCount).toBe(3)
@@ -198,4 +199,16 @@ describe('projectStore', () => {
     expect(store.error).toBeNull()
     expect(store.projects.map((entry) => entry.projectId)).toEqual(['p1'])
   })
+  it('preserves newer complete Task counts when an older Project list response arrives', async () => {
+    const store = useProjectStore()
+    let resolve!: (value: unknown) => void
+    apolloClientMock.query.mockReturnValueOnce(new Promise((r) => {resolve = r}))
+    const pending = store.fetchProjects(true)
+    await vi.waitFor(() => expect(apolloClientMock.query).toHaveBeenCalledOnce())
+    store.setTaskCounts('p1', 7, 2)
+    resolve({data: {projects: [{projectId: 'p1', name: 'A', description: '', createdAt: '', updatedAt: '', workspaces: [], taskCount: 1, openTaskCount: 1}]}})
+    await pending
+    expect(store.getProjectById('p1')).toMatchObject({taskCount: 7, openTaskCount: 2})
+  })
+
 })

@@ -1,0 +1,5 @@
+{
+  "event": "semantic_two_calls_verified",
+  "scenarioId": "deepseek.compaction-agent-flow",
+  "invocationCount": 2
+}

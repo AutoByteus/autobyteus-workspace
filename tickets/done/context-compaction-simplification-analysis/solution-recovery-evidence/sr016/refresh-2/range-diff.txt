@@ -1,0 +1,26 @@
+1:  af40e5de3 ! 1:  aec405901 refactor: simplify context compaction to one direct summary
+    @@ autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts (delet
+     
+      ## autobyteus-web/localization/messages/en/settings.ts ##
+     @@ autobyteus-web/localization/messages/en/settings.ts: const settingsMessages = {
+    -   'settings.components.settings.AboutSettingsManager.lastChecked.never': 'Never',
+    -   'settings.components.settings.AboutSettingsManager.lastChecked.unknown': 'Unknown',
+    +   'settings.components.settings.AboutSettingsManager.betaChannel.description': 'Get early builds before they are released to everyone. Turning this off keeps your current version until a newer stable release is available.',
+    +   'settings.components.settings.AboutSettingsManager.betaChannel.downloadedHint': 'An update is downloaded. Install it or restart AutoByteus before changing the update channel.',
+        'settings.components.settings.CompactionConfigCard.title': 'Compaction configuration',
+     -  'settings.components.settings.CompactionConfigCard.description': 'Choose the global compaction strategy and adjust when it runs. Strategy internals are managed automatically.',
+     -  'settings.components.settings.CompactionConfigCard.compactionStrategy': 'Compaction strategy',
+    @@ autobyteus-web/localization/messages/en/settings.ts: const settingsMessages = {
+     
+      ## autobyteus-web/localization/messages/zh-CN/settings.ts ##
+     @@ autobyteus-web/localization/messages/zh-CN/settings.ts: const settingsMessages = {
+    -   'settings.components.settings.AboutSettingsManager.lastChecked.never': '从未',
+    -   'settings.components.settings.AboutSettingsManager.lastChecked.unknown': '未知',
+    +   'settings.components.settings.AboutSettingsManager.betaChannel.description': '在向所有用户发布之前抢先获取新版本。关闭后，将保持当前版本，直到有更新的稳定版可用。',
+    +   'settings.components.settings.AboutSettingsManager.betaChannel.downloadedHint': '已有更新下载完成。请先安装或重启 AutoByteus，再更改更新渠道。',
+        'settings.components.settings.CompactionConfigCard.title': '压缩配置',
+     -  'settings.components.settings.CompactionConfigCard.description': '选择全局压缩策略并调整其运行时机。策略内部配置由系统自动管理。',
+     -  'settings.components.settings.CompactionConfigCard.compactionStrategy': '压缩策略',
+2:  edfcbca99 = 2:  65d23b907 docs: record reviewed compaction design and IR-001 implementation handoff
+3:  706d800c1 = 3:  c9753925b fix: finish direct compaction harness and live status cleanup
+4:  30e84de28 = 4:  edee1aabb docs: record CRR-001 corrections and IR-002 re-review handoff

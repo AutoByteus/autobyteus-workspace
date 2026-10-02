@@ -1,0 +1,222 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > AutoByteusAgentRunBackend > publishes the committed system instruction after listener binding and before the first input exactly once
+AgentEventStream for 'agent-1': Notifier not available. No events will be streamed.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription
+AgentEventStream (ID: dae7e018-4ef9-4c4d-b05e-f994ed8ce742) initialized for agent_id 'agent-1'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription
+AgentEventStream (ID: dae7e018-4ef9-4c4d-b05e-f994ed8ce742) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription
+AgentEventStream (ID: dae7e018-4ef9-4c4d-b05e-f994ed8ce742) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > uses only the remainder of one ten-second deadline for a hung listener without undoing resource success
+AgentEventStream (ID: 344df8c8-8eb9-431c-9928-0588ae7fda9c) initialized for agent_id 'agent-1'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > uses only the remainder of one ten-second deadline for a hung listener without undoing resource success
+AgentEventStream (ID: 344df8c8-8eb9-431c-9928-0588ae7fda9c) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > uses only the remainder of one ten-second deadline for a hung listener without undoing resource success
+AgentEventStream (ID: 344df8c8-8eb9-431c-9928-0588ae7fda9c) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > old pump disposal cannot close a replacement stream, and unsubscribe alone emits no stopped
+AgentEventStream (ID: 92be01d0-870d-4d8a-ab7f-f9fedb5f97af) initialized for agent_id 'agent-1'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > old pump disposal cannot close a replacement stream, and unsubscribe alone emits no stopped
+AgentEventStream (ID: 92be01d0-870d-4d8a-ab7f-f9fedb5f97af) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: eed3e060-6c72-486d-979c-e5707a715b4f) initialized for agent_id 'agent-1'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > continues draining other listeners when one observer fails
+AgentEventStream (ID: 6217f503-c29c-4e7e-a9bf-de7381e0de01) initialized for agent_id 'agent-1'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > continues draining other listeners when one observer fails
+AgentEventStream (ID: 6217f503-c29c-4e7e-a9bf-de7381e0de01) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > continues draining other listeners when one observer fails
+AgentEventStream (ID: 6217f503-c29c-4e7e-a9bf-de7381e0de01) for 'agent-1': close() called. Unsubscribing all listeners and signaling.
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts (16 tests | 4 failed) 82ms
+     ✓ publishes the committed system instruction after listener binding and before the first input exactly once 4ms
+     ✓ delegates send and approval commands to the native agent 1ms
+     ✓ declares next-turn-only mechanics and has no append path 0ms
+     ✓ interrupts the active native run through native interrupt() 1ms
+     ✓ maps stale native tool approval results without treating them as command failures 0ms
+     ✓ terminates the run by removing it from the native registry 0ms
+     ✓ treats an already-absent held native run as terminated during held terminate 0ms
+     ✓ joins concurrent held native terminate calls and rejects new work while terminating 0ms
+     ✓ preserves native stop failures as terminate failures 0ms
+     ✓ returns RUN_NOT_FOUND when the run is no longer active 0ms
+     ✓ wraps native command failures as runtime command failures 0ms
+     × keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription 16ms
+     × uses only the remainder of one ten-second deadline for a hung listener without undoing resource success 46ms
+     ✓ does not turn an unfinished removal or a still-registered run into success 1ms
+     × old pump disposal cannot close a replacement stream, and unsubscribe alone emits no stopped 1ms
+     × continues draining other listeners when one observer fails 11ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > keeps the producer while stopping, drains FIFO including awaited listeners, then forbids resubscription
+AssertionError: expected [] to deeply equal [ 'started', 'stopped' ]
+
+- Expected
++ Received
+
+- [
+-   "started",
+-   "stopped",
+- ]
++ []
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts:341:22
+    339|     listenerDone.resolve();
+    340|     await expect(termination).resolves.toEqual({ accepted: true });
+    341|     expect(received).toEqual(['started', 'stopped']);
+       |                      ^
+    342|     const late = vi.fn(); h.backend.subscribeToSourceEventBatches(late…
+    343|     await Promise.resolve(); expect(late).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > uses only the remainder of one ten-second deadline for a hung listener without undoing resource success
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts:353:61
+    351|     await vi.advanceTimersByTimeAsync(9000); remove.resolve(true); awa…
+    352|     let settled = false; void termination.then(() => { settled = true;…
+    353|     await vi.advanceTimersByTimeAsync(999); expect(settled).toBe(false…
+       |                                                             ^
+    354|     await vi.advanceTimersByTimeAsync(1); await expect(termination).re…
+    355|     expect(removeAgent).toHaveBeenCalledWith('agent-1', 10);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > old pump disposal cannot close a replacement stream, and unsubscribe alone emits no stopped
+AssertionError: expected "vi.fn()" to be called once, but got 0 times
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts:373:18
+    371|     oldDone.resolve(); await Promise.resolve(); await Promise.resolve(…
+    372|     h.emit('completed'); await Promise.resolve(); await Promise.resolv…
+    373|     expect(next).toHaveBeenCalledOnce();
+       |                  ^
+    374|     expect((next.mock.calls[0][0][0] as any).payload.phase).toBe('comp…
+    375|     stop();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts > native shutdown event drain > continues draining other listeners when one observer fails
+AssertionError: expected "vi.fn()" to be called once, but got 0 times
+ ❯ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts:382:18
+    380|     h.backend.subscribeToSourceEventBatches(seen); h.emit('stopped');
+    381|     await expect(h.backend.terminate()).resolves.toEqual({ accepted: t…
+    382|     expect(seen).toHaveBeenCalledOnce();
+       |                  ^
+    383|   });
+    384| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 12 passed (16)
+   Start at  06:13:15
+   Duration  2.63s (transform 1.15s, setup 15ms, import 2.04s, tests 82ms, environment 0ms)
+

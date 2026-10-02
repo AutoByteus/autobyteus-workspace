@@ -1,3 +1,4 @@
+import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -81,6 +82,7 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Agent Identity");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Addressing");
     expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## AgentTeam Collaboration");
+    expect(runContext.runtimeContext.carpenterSystemPrompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(2);
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Team Runtime");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
@@ -95,7 +97,7 @@ describe("ClaudeSessionBootstrapper", () => {
       rootPath: "/tmp/claude-skill",
     });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
+      { kind: "resolved", skill },
       { kind: "unresolved", name: "missing-skill" },
     ]);
 
@@ -118,7 +120,7 @@ describe("ClaudeSessionBootstrapper", () => {
   it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
     const skill = new Skill({ name: "installed-skill", description: "d", content: "# c", rootPath: "/skills/installed-skill" });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
+      { kind: "resolved", skill },
     ], "ALL_INSTALLED");
 
     await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }));

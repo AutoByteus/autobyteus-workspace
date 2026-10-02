@@ -1,0 +1,51 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/raw-trace-item.test.ts (14 tests) 5ms
+ ✓ tests/unit/memory/raw-trace-archive-manager.test.ts (4 tests) 44ms
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > retains accepted keys from the original input, never rewritten metadata
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn-1
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > ingests user message into the already-active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > records the sender of an agent-to-agent delivery on the user trace (RD-004)
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0002
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > records the sender of an agent-to-agent delivery on the user trace (RD-004)
+MemoryIngestInputProcessor stored processed user input with turnId turn_0002
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > keeps TOOL-originated input in the processor lifecycle without a memory write
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > fails when TOOL continuation input reaches memory ingest without an active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts (5 tests) 10ms
+stdout | tests/unit/memory/user-file-attachments.test.ts > user raw file attachment facts > native ingestion uses original event refs (adapted=false), preserving processed text/media and TOOL exclusion
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/memory/user-file-attachments.test.ts > user raw file attachment facts > native ingestion uses original event refs (adapted=true), preserving processed text/media and TOOL exclusion
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+ ✓ tests/unit/memory/user-file-attachments.test.ts (16 tests) 17ms
+ ✓ tests/unit/memory/memory-manager.test.ts (21 tests) 73ms
+
+ Test Files  5 passed (5)
+      Tests  60 passed (60)
+   Start at  18:40:19
+   Duration  1.17s (transform 2.42s, setup 214ms, import 2.89s, tests 150ms, environment 0ms)
+

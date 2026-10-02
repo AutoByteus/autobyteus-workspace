@@ -1,0 +1,593 @@
+{
+  "shots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-evidence/render-check-aic/T1-tool-picker-list-available-agents-1512x952.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-evidence/render-check-aic/A1-pm-brought-in-and-delegated-1512x952.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-evidence/render-check-aic/A2-catalog-copy-members-1512x952.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-evidence/render-check-aic/A3-catalog-copy-coordinator-conversation-1512x952.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-evidence/render-check-aic/A4-brought-in-collaborator-conversation-1512x952.png"
+  ],
+  "checks": {
+    "t_toolCategory": [
+      "Agent Communication"
+    ],
+    "t_selectedOnPm": 2,
+    "a_rows": [
+      {
+        "kind": "task_agent",
+        "address": "/code_reviewer",
+        "label": "Temporary task agent, code reviewer, level 1, idle, Started by project manager, /code_reviewer",
+        "text": "CR code reviewer",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, running, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, running, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      },
+      {
+        "kind": "task_agent",
+        "address": "/code_reviewer",
+        "label": "Temporary task agent, code reviewer, level 1, offline, Started by project manager, /code_reviewer",
+        "text": "CR code reviewer",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      }
+    ],
+    "a_hostFromSegments": [
+      "From Code Reviewer: The phrase “hello world” is standard and correct — commonly used as a first program to verify langua"
+    ],
+    "a_toolCalls": [],
+    "a_rowsExpanded": [
+      {
+        "kind": "task_agent",
+        "address": "/code_reviewer",
+        "label": "Temporary task agent, code reviewer, level 1, idle, Started by project manager, /code_reviewer",
+        "text": "CR code reviewer",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, running, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, running, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      },
+      {
+        "kind": "task_agent",
+        "address": "/code_reviewer",
+        "label": "Temporary task agent, code reviewer, level 1, offline, Started by project manager, /code_reviewer",
+        "text": "CR code reviewer",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team",
+        "address": "/product_team",
+        "label": "Temporary task team, product team, level 1, offline, Started by project manager, /product_team",
+        "text": "product team",
+        "expanded": "true"
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/product_prototyper",
+        "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+        "text": "PP product prototyper",
+        "expanded": null
+      },
+      {
+        "kind": "task_team_child",
+        "address": "/product_team/prototype_bootstrapper",
+        "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper",
+        "expanded": null
+      }
+    ],
+    "a_copyMemberTitle": "product prototyper",
+    "a_copyMemberFromSegments": [],
+    "a_reviewerTitle": "code reviewer",
+    "a_reviewerFromSegments": [
+      "From Project Manager: Please review the phrase “hello world” and reply to me."
+    ],
+    "a_reviewerPlaceholder": "Message code reviewer…",
+    "a_storedPackage": {
+      "agentRunCollaboration": {
+        "root_subject_kind": "agent",
+        "root_run_id": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+        "root_agent": {
+          "base_change_sequence": 194,
+          "is_active": true,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-01T17:04:59.515Z",
+            "host": {
+              "address": "/project_manager",
+              "agentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+              "agentDefinitionId": "project-manager"
+            },
+            "collaborators": [
+              {
+                "kind": "agent",
+                "address": "/code_reviewer",
+                "agentDefinitionId": "code-reviewer",
+                "agentRunId": "code_reviewer_d226000f3e18417c9bf7ee953fb01882",
+                "platformAgentRunId": "3b371faf-cc0b-40fb-bef5-effccf4ece20",
+                "launchConfiguration": {
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/.autobyteus/development/server-data/temp_workspace"
+                },
+                "addedAt": "2026-10-01T17:05:07.386Z",
+                "addedViaAgentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e"
+              }
+            ],
+            "taskExecutions": [
+              {
+                "address": "/product_team",
+                "teamRunId": "product_team_f93f08911e0e476ab84829844a0e91dc",
+                "members": [
+                  {
+                    "address": "/product_team/product_prototyper",
+                    "agentRunId": "product_prototyper_9c9fa26b76be4d67821cf80cbc7eacc3",
+                    "platformAgentRunId": "0898352d-030c-47df-9f42-092701edeae5"
+                  },
+                  {
+                    "address": "/product_team/prototype_bootstrapper",
+                    "agentRunId": "prototype_bootstrapper_321751837eb84fe2a7f4efda722b4ac4",
+                    "platformAgentRunId": "3f9e77fa-6a2d-44ea-a522-f3188214d49d"
+                  }
+                ],
+                "taskExecutions": [],
+                "delegatorAgentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+                "startedAt": "2026-10-01T17:05:11.178Z",
+                "source": {
+                  "kind": "agent_team",
+                  "teamDefinitionId": "product-team",
+                  "coordinatorAddress": "/product_team/product_prototyper",
+                  "members": [
+                    {
+                      "address": "/product_team/product_prototyper",
+                      "agentDefinitionId": "team-local-agent:product-team:product-prototyper"
+                    },
+                    {
+                      "address": "/product_team/prototype_bootstrapper",
+                      "agentDefinitionId": "team-local-agent:product-team:prototype-bootstrapper"
+                    }
+                  ],
+                  "handoffs": [
+                    {
+                      "from": "/product_team/product_prototyper",
+                      "to": "/product_team/prototype_bootstrapper",
+                      "rules": [
+                        "When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package."
+                      ]
+                    },
+                    {
+                      "from": "/product_team/prototype_bootstrapper",
+                      "to": "/product_team/product_prototyper",
+                      "rules": [
+                        "When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery."
+                      ]
+                    }
+                  ],
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/.autobyteus/development/server-data/temp_workspace"
+                  }
+                }
+              },
+              {
+                "address": "/product_team",
+                "teamRunId": "product_team_654951cb18e14cfd94fb42c59848e395",
+                "members": [
+                  {
+                    "address": "/product_team/product_prototyper",
+                    "agentRunId": "product_prototyper_7a2dc1653ea54ed4b5f53a76271aa7ed",
+                    "platformAgentRunId": "8aa4cc13-f45a-49a5-93f2-0262f2cff4ce"
+                  },
+                  {
+                    "address": "/product_team/prototype_bootstrapper",
+                    "agentRunId": "prototype_bootstrapper_b69d26a9ce534ee09cf89791e9dbf0da",
+                    "platformAgentRunId": "7c66056d-ebd9-4503-ab8b-121ed208de36"
+                  }
+                ],
+                "taskExecutions": [],
+                "delegatorAgentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+                "startedAt": "2026-10-01T17:05:12.227Z",
+                "source": {
+                  "kind": "agent_team",
+                  "teamDefinitionId": "product-team",
+                  "coordinatorAddress": "/product_team/product_prototyper",
+                  "members": [
+                    {
+                      "address": "/product_team/product_prototyper",
+                      "agentDefinitionId": "team-local-agent:product-team:product-prototyper"
+                    },
+                    {
+                      "address": "/product_team/prototype_bootstrapper",
+                      "agentDefinitionId": "team-local-agent:product-team:prototype-bootstrapper"
+                    }
+                  ],
+                  "handoffs": [
+                    {
+                      "from": "/product_team/product_prototyper",
+                      "to": "/product_team/prototype_bootstrapper",
+                      "rules": [
+                        "When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package."
+                      ]
+                    },
+                    {
+                      "from": "/product_team/prototype_bootstrapper",
+                      "to": "/product_team/product_prototyper",
+                      "rules": [
+                        "When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery."
+                      ]
+                    }
+                  ],
+                  "defaultLaunchConfiguration": {
+                    "runtimeKind": "claude_agent_sdk",
+                    "llmModelIdentifier": "haiku",
+                    "llmConfig": null,
+                    "autoExecuteTools": true,
+                    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/.autobyteus/development/server-data/temp_workspace"
+                  }
+                }
+              }
+            ]
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+            "messages": [
+              {
+                "messageId": "collabmsg_3bvlqJxyBHN_0EtAx1AAL_2XMYMvHkBJ",
+                "senderAgentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+                "receiverAgentRunId": "code_reviewer_d226000f3e18417c9bf7ee953fb01882",
+                "content": "Please review the phrase \"hello world\" and reply to me.",
+                "messageType": "agent_message",
+                "referenceFiles": [],
+                "createdAt": "2026-10-01T17:05:08.279Z"
+              },
+              {
+                "messageId": "collabmsg_Gw3T2HyRjEV5jFGZtbWxdncC6XTUldgb",
+                "senderAgentRunId": "code_reviewer_d226000f3e18417c9bf7ee953fb01882",
+                "receiverAgentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+                "content": "The phrase \"hello world\" is standard and correct — commonly used as a first program to verify language setup works.",
+                "messageType": "agent_message",
+                "referenceFiles": [],
+                "createdAt": "2026-10-01T17:05:13.476Z"
+              }
+            ]
+          },
+          "agent_statuses": [
+            {
+              "member_address": "/code_reviewer",
+              "agent_run_id": "code_reviewer_d226000f3e18417c9bf7ee953fb01882",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/product_team/product_prototyper",
+              "agent_run_id": "product_prototyper_9c9fa26b76be4d67821cf80cbc7eacc3",
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/product_team/prototype_bootstrapper",
+              "agent_run_id": "prototype_bootstrapper_321751837eb84fe2a7f4efda722b4ac4",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/product_team/product_prototyper",
+              "agent_run_id": "product_prototyper_7a2dc1653ea54ed4b5f53a76271aa7ed",
+              "status": "running",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            },
+            {
+              "member_address": "/product_team/prototype_bootstrapper",
+              "agent_run_id": "prototype_bootstrapper_b69d26a9ce534ee09cf89791e9dbf0da",
+              "status": "idle",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null
+            }
+          ]
+        }
+      }
+    }
+  },
+  "notes": [],
+  "definitions": {
+    "Daily Assistant": "daily-assistant",
+    "Memory Compactor": "autobyteus-memory-compactor",
+    "Retrospective Skill Improver": "autobyteus-retrospective-skill-improver",
+    "Code Reviewer": "code-reviewer",
+    "Project Manager": "project-manager",
+    "Prototype Bootstrapper": "prototype-bootstrapper",
+    "Agent Package Creator": "agent-package-creator",
+    "Codex": "codex",
+    "Computer Use Operator": "computer-use-operator",
+    "Product Prototyper": "product-prototyper",
+    "research engineer": "research-engineer",
+    "Resume Designer": "resume-designer",
+    "Software Tutorial Video Maker": "software-tutorial-video-maker",
+    "AudioTranscriber": "audio-transcriber",
+    "AudioGenerator": "audiogenerator",
+    "Chapter Slide Planner": "chapter-slide-planner",
+    "Chemistry Concept Visualizer": "chemistry-concept-visualizer",
+    "Chemistry homework grader": "chemistry-homework-grader",
+    "Chemistry Teacher Germany": "chemistry-teacher-germany",
+    "Cinematic Storybook Director": "cinematic-storybook-director",
+    "Clara’s Ocean Friends Story Creator": "claras-ocean-friends-story-creator",
+    "coding agent": "coding-agent",
+    "database manager": "database-manager",
+    "Dictionary Word Audio": "dictionary-word-audio",
+    "Gemini RPA PPT designer": "gemini-rpa-ppt-designer",
+    "Image Designer": "image-designer",
+    "Infographics Creator": "infographics-creator",
+    "Kid_Story_Teller": "kid-story-teller",
+    "MCP Tool Manager": "mcp-tool-manager",
+    "Media Editor": "media-editor",
+    "niuzhirui_production_db_manager": "niuzhirui-production-db-manager",
+    "PPT Creator": "ppt-creator",
+    "PPT Designer": "ppt-designer",
+    "Presentation Designer": "presentation-designer",
+    "prompt generator": "prompt-generator",
+    "prompt manager": "prompt-manager",
+    "Publisher": "publisher",
+    "ReflectionCards": "reflectioncards",
+    "Reflective Storyteller": "reflective-storyteller",
+    "requirement": "requirement",
+    "requirement engineer": "requirement-engineer",
+    "SlideImageGenerator": "slideimagegenerator",
+    "SlideNarrator": "slidenarrator",
+    "software architect": "software-architect",
+    "Software Developer": "software-developer",
+    "TutorialVideoCreator": "tutorialvideocreator",
+    "video subtitle burn in engineer": "video-subtitle-burn-in",
+    "Visual Book Storyteller": "visual-book-storyteller",
+    "Visual Dialogue Weaver": "visual-dialogue-weaver",
+    "VisualStoryteller": "visualstoryteller",
+    "WeChat Official Account Article Writer": "wechat-official-account-article-writer",
+    "article reviewer": "team-local-agent:article-writing-team:article-reviewer",
+    "article writer": "team-local-agent:article-writing-team:article-writer",
+    "Professor": "team-local-agent:classroom-simulation-team:professor",
+    "Student": "team-local-agent:classroom-simulation-team:student",
+    "implementer": "team-local-agent:evidence-driven-delivery-team:implementer",
+    "investigator": "team-local-agent:evidence-driven-delivery-team:investigator",
+    "planner": "team-local-agent:evidence-driven-delivery-team:planner",
+    "validator": "team-local-agent:evidence-driven-delivery-team:validator",
+    "child-experience-reviewer": "team-local-agent:kids-coloring-story-team:child-experience-reviewer",
+    "coloring-page-illustrator": "team-local-agent:kids-coloring-story-team:coloring-page-illustrator",
+    "printable-pack-producer": "team-local-agent:kids-coloring-story-team:printable-pack-producer",
+    "story-activity-designer": "team-local-agent:kids-coloring-story-team:story-activity-designer",
+    "book-production-editor": "team-local-agent:kids-picture-story-team:book-production-editor",
+    "picture-book-illustrator": "team-local-agent:kids-picture-story-team:picture-book-illustrator",
+    "picture-book-reviewer": "team-local-agent:kids-picture-story-team:picture-book-reviewer",
+    "story-picture-book-author": "team-local-agent:kids-picture-story-team:story-picture-book-author",
+    "manga illustrator": "team-local-agent:manga-video-studio-team:manga-illustrator",
+    "manga showrunner": "team-local-agent:manga-video-studio-team:manga-showrunner",
+    "storyboard director": "team-local-agent:manga-video-studio-team:storyboard-director",
+    "voice and video producer": "team-local-agent:manga-video-studio-team:voice-video-producer",
+    "Marketing Content Creator": "team-local-agent:marketing-team:marketing-content-creator",
+    "narration-script-reviewer": "team-local-agent:narrated-presentation-video-team:narration-script-reviewer",
+    "presentation-director": "team-local-agent:narrated-presentation-video-team:presentation-director",
+    "slide-video-producer": "team-local-agent:narrated-presentation-video-team:slide-video-producer",
+    "product prototyper": "team-local-agent:product-team:product-prototyper",
+    "prototype bootstrapper": "team-local-agent:product-team:prototype-bootstrapper",
+    "deck reviewer": "team-local-agent:research-to-deck-team:deck-reviewer",
+    "deep researcher": "team-local-agent:research-to-deck-team:deep-researcher",
+    "infographic PowerPoint designer": "team-local-agent:research-to-deck-team:infographic-powerpoint-designer",
+    "api e2e engineer": "team-local-agent:software-engineering-team:api-e2e-engineer",
+    "architecture reviewer": "team-local-agent:software-engineering-team:architecture-reviewer",
+    "code reviewer": "team-local-agent:software-engineering-team:code-reviewer",
+    "delivery engineer": "team-local-agent:software-engineering-team:delivery-engineer",
+    "implementation engineer": "team-local-agent:software-engineering-team:implementation-engineer",
+    "solution designer": "team-local-agent:software-engineering-team:solution-designer",
+    "promo-director": "team-local-agent:software-product-promo-video-team:promo-director",
+    "promo-video-producer": "team-local-agent:software-product-promo-video-team:promo-video-producer",
+    "visual-director": "team-local-agent:software-product-promo-video-team:visual-director",
+    "visual-reviewer": "team-local-agent:software-product-promo-video-team:visual-reviewer",
+    "article polisher verifier": "team-local-agent:storm-team:article-polisher-verifier",
+    "cited article writer": "team-local-agent:storm-team:cited-article-writer",
+    "expert interviewer": "team-local-agent:storm-team:expert-interviewer",
+    "outline architect": "team-local-agent:storm-team:outline-architect",
+    "perspective miner": "team-local-agent:storm-team:perspective-miner",
+    "topic research coordinator": "team-local-agent:storm-team:topic-research-coordinator",
+    "细读经文的组员": "team-local-agent:bible-study-group:careful-reader",
+    "提供上下文的组员": "team-local-agent:bible-study-group:context-guide",
+    "查经小组长": "team-local-agent:bible-study-group:study-leader",
+    "Clara Story Orchestrator": "team-local-agent:clara-ocean-friends:clara-story-orchestrator",
+    "Clara Storybook Builder": "team-local-agent:clara-ocean-friends:clara-storybook-builder",
+    "application specialist": "team-local-agent:job-search-application-team:application-specialist",
+    "career profile strategist": "team-local-agent:job-search-application-team:career-profile-strategist",
+    "job opportunity scout": "team-local-agent:job-search-application-team:job-opportunity-scout",
+    "Cinematic Frame Artist": "team-local-agent:movie-maker:cinematic-frame-artist",
+    "Cinematic Sound Designer": "team-local-agent:movie-maker:cinematic-sound-designer",
+    "Cinematic Storyboard Architect": "team-local-agent:movie-maker:cinematic-storyboard-architect",
+    "Cinematic Video Editor": "team-local-agent:movie-maker:cinematic-video-editor",
+    "AnimationDeveloper": "team-local-agent:socratic-math-team:animationdeveloper",
+    "GeniusMathResolver": "team-local-agent:socratic-math-team:geniusmathresolver",
+    "SocraticMathTeacher": "team-local-agent:socratic-math-team:socraticmathteacher",
+    "TutorialVideoAssembler": "team-local-agent:video-tutorial-creation-team:tutorial-video-assembler",
+    "TutorialVideoProducer": "team-local-agent:video-tutorial-creation-team:tutorial-video-producer",
+    "TutorialVoiceoverWriter": "team-local-agent:video-tutorial-creation-team:tutorial-voiceover-writer"
+  },
+  "teams": {
+    "Article Writing Team": "article-writing-team",
+    "Bible Study Group": "bible-study-group",
+    "Clara Ocean Friends": "clara-ocean-friends",
+    "Classroom Simulation Team": "classroom-simulation-team",
+    "Evidence-Driven Delivery Team": "evidence-driven-delivery-team",
+    "Job Search Application Team": "job-search-application-team",
+    "Kids Coloring Story Team": "kids-coloring-story-team",
+    "Kids Picture Story Team": "kids-picture-story-team",
+    "Manga Video Studio Team": "manga-video-studio-team",
+    "Marketing Team": "marketing-team",
+    "Movie Maker": "movie-maker",
+    "Narrated Presentation Video Team": "narrated-presentation-video-team",
+    "Presentation_Chemie": "presentation-chemie",
+    "Product Team": "product-team",
+    "Research To Deck Team": "research-to-deck-team",
+    "Socratic Math Team": "socratic-math-team",
+    "Software Engineering Team": "software-engineering-team",
+    "Software Product Promo Video Team": "software-product-promo-video-team",
+    "STORM Team": "storm-team",
+    "Tutorial Video Creation Team": "video-tutorial-creation-team"
+  },
+  "model": "haiku",
+  "agentRunId": "project_manager_60e46ab6fcd24470a62ef5c37a2aa91e",
+  "pageErrors": []
+}

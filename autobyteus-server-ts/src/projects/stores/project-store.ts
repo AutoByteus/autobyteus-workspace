@@ -3,6 +3,8 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonArrayFile, updateJsonArrayFile } from "../../persistence/file/store-utils.js";
 import type { Project, ProjectTask, ProjectTaskStatus, ProjectWorkspaceLink } from "../domain/models.js";
 
+import { isSafeContextFilename, type ProjectTaskContextFile } from "../domain/project-task-context.js";
+
 type AppConfigLike = {
   getAppDataDir(): string;
 };
@@ -48,11 +50,22 @@ const isValidProject = (record: unknown): record is StoredProjectRow => {
  * Projects each valid row onto the current model. A row without a `tasks` array
  * (for example one written before Tasks existed) has no Tasks.
  */
+const normalizeContextFiles = (files: unknown): ProjectTaskContextFile[] =>
+  Array.isArray(files) ? files.filter((f) => f && isSafeContextFilename(f.storedFilename)
+    && typeof f.displayName === "string" && typeof f.mimeType === "string"
+    && Number.isSafeInteger(f.sizeBytes) && f.sizeBytes >= 0).map((f) => ({
+      storedFilename: f.storedFilename, displayName: f.displayName, mimeType: f.mimeType, sizeBytes: f.sizeBytes,
+    })) : [];
 const normalizeRecords = (rows: unknown[]): Project[] =>
-  rows.filter(isValidProject).map((project) => ({
-    ...project,
-    workspaces: project.workspaces.filter(isValidLink),
-    tasks: Array.isArray(project.tasks) ? project.tasks.filter(isValidTask) : [],
+  rows.filter(isValidProject).map((p) => ({
+    projectId: p.projectId, name: p.name, description: p.description, createdAt: p.createdAt, updatedAt: p.updatedAt,
+    workspaces: p.workspaces.filter(isValidLink).map((l) => ({
+      workspaceId: l.workspaceId, workspaceRootPath: l.workspaceRootPath, description: l.description, addedAt: l.addedAt,
+    })),
+    tasks: Array.isArray(p.tasks) ? p.tasks.filter(isValidTask).map((t) => ({
+      taskId: t.taskId, description: t.description, status: t.status, createdAt: t.createdAt, updatedAt: t.updatedAt,
+      contextFiles: normalizeContextFiles(t.contextFiles),
+    })) : [],
   }));
 
 /**
@@ -78,9 +91,17 @@ export class ProjectStore {
   async updateRecords(
     updater: (records: Project[]) => Project[] | Promise<Project[]>,
   ): Promise<Project[]> {
-    return updateJsonArrayFile<Project>(this.getFilePath(), async (rows) =>
-      updater(normalizeRecords(rows)),
-    );
+    let committed: Project[] | undefined;
+    try {
+      return await updateJsonArrayFile<Project>(this.getFilePath(), async (rows) =>
+        normalizeRecords(await updater(normalizeRecords(rows))),
+        (rows) => { committed = rows; },
+      );
+    } catch (error) {
+      if (!committed) throw error;
+      console.warn("Project metadata committed; lock finalization failed.", error);
+      return committed;
+    }
   }
 }
 

@@ -1,44 +1,36 @@
-import type { CompactionLineageStore } from '../lineage/compaction-lineage-store.js';
-import type { MemoryStore } from '../store/base-store.js';
+import type { MemoryStore, PreparedCompactionArchive } from '../store/base-store.js';
 import type { WorkingContextSnapshotStore } from '../store/working-context-snapshot-store.js';
 import { WorkingContextSnapshotSerializer } from '../working-context-snapshot-serializer.js';
+import { collectMessageRawTraceIds } from '../working-context-provenance.js';
 import type { AcceptedWorkingContextCompaction } from './working-context-compaction-proposal.js';
+import type { WorkingContext } from '../working-context.js';
 
-export type AcceptedCompactionCommitHooks = {
-  installFinalizedContext(context: AcceptedWorkingContextCompaction['finalizedContext']): void;
-  clearPending(): void;
+export type CommittedCompaction = {
+  context: WorkingContext;
+  archive: PreparedCompactionArchive;
+  retainedRawTraceIds: string[];
 };
 
 export class AcceptedCompactionCommitter {
-  constructor(
-    private readonly store: MemoryStore,
-    private readonly lineageStore: CompactionLineageStore,
-    private readonly snapshotStore: WorkingContextSnapshotStore | null,
-    private readonly agentId: string,
-  ) {}
+  constructor(private readonly store: MemoryStore,
+    private readonly snapshotStore: WorkingContextSnapshotStore,
+    private readonly agentId: string) {}
 
-  commit(
-    accepted: AcceptedWorkingContextCompaction,
-    hooks: AcceptedCompactionCommitHooks,
-  ): void {
-    this.store.archiveCompactedRawTraces(accepted.selectedNewRawTraceIds);
-    this.store.add([...accepted.episodicItems, ...accepted.semanticItems]);
-    this.store.findEpisodicItemsByIds(accepted.episodicItems.map(({ id }) => id));
-    this.store.findSemanticItemsByIds(accepted.semanticItems.map(({ id }) => id));
-    this.lineageStore.appendNext(
-      accepted.expectedPreviousCompactionId,
-      accepted.lineageRecord,
-    );
-    hooks.installFinalizedContext(accepted.finalizedContext);
-    if (this.snapshotStore) {
-      this.snapshotStore.write(this.agentId, WorkingContextSnapshotSerializer.serialize(
-        accepted.finalizedContext,
-        {
-          schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
-          agent_id: this.agentId,
-        },
-      ));
-    }
-    hooks.clearPending();
+  commit(accepted: AcceptedWorkingContextCompaction, signal: AbortSignal): CommittedCompaction {
+    signal.throwIfAborted();
+    const context = accepted.finalizedContext.copy();
+    const payload = WorkingContextSnapshotSerializer.serialize(context, { agent_id: this.agentId });
+    if (!WorkingContextSnapshotSerializer.validate(payload)) throw new Error('Invalid compaction snapshot.');
+    const retainedRawTraceIds = collectMessageRawTraceIds(context.buildMessages());
+    // All allocation, validation and evidence copying precedes the snapshot commit point.
+    const archive = this.store.prepareCompactionArchive(accepted.selectedNewRawTraceIds);
+    const committed = { context, archive, retainedRawTraceIds };
+    signal.throwIfAborted();
+    this.snapshotStore.write(this.agentId, payload);
+    return committed;
+  }
+
+  prune(committed: CommittedCompaction): void {
+    this.store.prunePreparedCompactionArchive(committed.archive, committed.retainedRawTraceIds);
   }
 }

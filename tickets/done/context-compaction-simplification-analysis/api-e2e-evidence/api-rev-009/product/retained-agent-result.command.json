@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T13:04:56.435854+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "() => {const t=document.body.innerText;return {start:t.slice(0,260),end:t.slice(-650),stopped:t.includes(\"STOPPED\"),compacting:t.includes(\"COMPACTING\"),completed:t.includes(\"COMPLETED\")};}"
+  ],
+  "controlPort": 56935
+}

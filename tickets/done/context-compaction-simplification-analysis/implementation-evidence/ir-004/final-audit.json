@@ -1,0 +1,23 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "result": "Design Impact \u2014 IR004-DI001",
+  "implementation_complete": false,
+  "source_commit": null,
+  "live_provider_calls": 0,
+  "root_command_probe": {
+    "files": 1,
+    "pass": 2,
+    "fail": 2,
+    "exit": 1
+  },
+  "owned_preview_listener_remaining": false,
+  "temporary_preview_page_exists": false,
+  "canonical_files": {
+    "implementation-handoff.md": "19587c880cd9d6e12ee3b6f46550e53e9362b248b01d6e915825fee1df5af02f",
+    "implementation-revision-record.md": "0d0c43fb8871d78fef3e2f40fb427a73a730e1bf73591f78de23b496752d189d",
+    "design-impact-request.md": "acc82bcee11e14ab8d497715c0f8ca24eca1d7a583a3dc8f7229904e59ae3d5c"
+  },
+  "authority": "current code and implementation-handoff.md, not inferred prior result"
+}

@@ -56,11 +56,32 @@ export const withCollaboratorExecutions = (tree: TeamRunExecutionTreeDto): TeamR
   };
 };
 
+const firstSegment = (address: string): string | undefined => address.split('/').filter(Boolean)[0];
+
 /** Whether an address is (or is inside) a collaborator of the run. */
-export const isCollaboratorAddress = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
-  const segment = address.split('/').filter(Boolean)[0];
-  return (tree.root_team.collaborators ?? []).some((entry) => entry.address.split('/').filter(Boolean)[0] === segment);
+const isCollaboratorAddress = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
+  const segment = firstSegment(address);
+  return (tree.root_team.collaborators ?? []).some((entry) => firstSegment(entry.address) === segment);
 };
+
+/** Whether an address is (or is inside) a catalog copy of the run: a task copy with a recorded `source`. */
+const isCatalogCopyAddress = (tree: TeamRunExecutionTreeDto, address: string): boolean => {
+  const segment = firstSegment(address);
+  const visit = (tasks: readonly TaskExecutionDto[]): boolean => tasks.some((task) =>
+    (task.source !== undefined && firstSegment(task.address) === segment)
+    || (task.kind === 'task_team' && visit(task.task_executions)));
+  return visit([
+    ...tree.root_team.task_executions,
+    ...(tree.root_team.collaborators ?? []).flatMap((entry) => entry.kind === 'agent_team' ? entry.task_executions : []),
+  ]);
+};
+
+/**
+ * F-03 / CR-002: a collaborator or catalog copy (and its members and copies) is not a configured
+ * member of the root Team, so it reads as a spaced name (`product team`) in rows and contexts.
+ */
+export const readsAsDisplayName = (tree: TeamRunExecutionTreeDto, address: string): boolean =>
+  isCollaboratorAddress(tree, address) || isCatalogCopyAddress(tree, address);
 
 export const collectConfiguredAgents = (
   tree: TeamRunExecutionTreeDto,
@@ -192,8 +213,8 @@ export const projectNavigationRows = (inputTree: {
   contexts: ReadonlyMap<string, AgentContext>;
 }): readonly TeamExecutionNavigationRow[] => {
   const input = { ...inputTree, tree: withCollaboratorExecutions(inputTree.tree) };
-  // F-03: collaborator rows (and their members and copies) read as spaced names.
-  const nameOf = (address: AgentTeamAddress): string => isCollaboratorAddress(input.tree, address)
+  // F-03 / CR-002: collaborator and catalog-copy rows (and their members) read as spaced names.
+  const nameOf = (address: AgentTeamAddress): string => readsAsDisplayName(input.tree, address)
     ? memberDisplayName(address)
     : memberAddressBasename(address);
   const rows: TeamExecutionNavigationRow[] = [];
@@ -270,7 +291,8 @@ export const projectNavigationRows = (inputTree: {
     parentKey: string,
   ): void => {
     const key = teamRowKey(team.team_run_id);
-    const coordinatorAddress = configuredTeamAtAddress(input.tree, team.address)?.coordinator_address
+    const coordinatorAddress = team.source?.coordinator_address
+      ?? configuredTeamAtAddress(input.tree, team.address)?.coordinator_address
       ?? collaboratorTeamAt(input.tree, team.address)?.coordinator_address
       ?? team.address;
     const label = nameOf(team.address);

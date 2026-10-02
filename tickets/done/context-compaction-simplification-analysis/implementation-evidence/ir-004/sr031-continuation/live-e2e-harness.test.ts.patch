@@ -1,0 +1,12 @@
+--- pinned/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
++++ current/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+@@ -131,7 +131,8 @@
+     const rawBackend = {
+       runId,
+       runtimeKind: context.config.runtimeKind,
+-      inputCapabilities: { activeTurnAppend: 'unsupported' },
++      compactionRecovery: { kind: "unsupported" } as const,
++    inputCapabilities: { activeTurnAppend: 'unsupported' },
+       getContext: () => context,
+       isActive: () => true,
+       getPlatformAgentRunId: () => runId,

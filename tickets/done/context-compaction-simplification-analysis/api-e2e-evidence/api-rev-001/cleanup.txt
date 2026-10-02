@@ -1,0 +1,2 @@
+Sat Sep 26 20:30:19 UTC 2026
+46779 45867 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data

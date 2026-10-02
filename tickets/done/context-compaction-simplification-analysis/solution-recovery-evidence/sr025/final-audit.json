@@ -1,0 +1,26 @@
+{
+  "changed_source_hashes": [],
+  "changed_api_owned_hashes": [],
+  "unexpected_preexisting_ticket_changes": [],
+  "unmodified_other_ticket_files": 695,
+  "production_diff_paths": [],
+  "prompt_sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "prompt_unchanged": true,
+  "new_current_external_comparison_hits": [],
+  "current_owned_docs_sha256": {
+    "strategy-boundary-analysis.sr021.md": "5a69ba08947bc6918ff32edf6ef401907dda31916d97452bacfd29e100ab3593",
+    "solution-revision-record.md": "39f854b50caf17e552f7506d8c500e3fb7ca8274b24bc959b1e85eafe3fd648c",
+    "investigation-notes.md": "9b376448e864ffcae0425ccdc7f7db1039bdf782dfe5ac237d377c49bca03acf",
+    "solution-progress-result.md": "676c0ede50a724f8cb80f4aaaec5e85464225b46e46a19eb97c04565930ddf2e",
+    "requirements-doc.md": "f7fa8e9723d5de7e4fc4cd1c1bb04bf985ff2b8d07d7d36483aaae3dbb5a1727",
+    "design-spec.md": "0f9b46e24566c5c6a3144ab8695191f7c182c3169ad63e16967bce1e4fd8baea"
+  },
+  "new_supplements_sha256": {
+    "strategy-execution-investigation.sr025.md": "1d47e37a2b3e936b20a2fa9d3fec0050252727410a0311bd24cad8c327948ec5",
+    "solution-revision.sr025.md": "68501a499728f2ac5b95ba9bcdab6544f339c0556d581e6c86fd6e4b8b0c55de"
+  },
+  "tests_executed": 0,
+  "provider_calls": 0,
+  "scope": "Documentation authoring and source investigation; no runtime test/acceptance claim.",
+  "routing_result": "no applicable rule"
+}

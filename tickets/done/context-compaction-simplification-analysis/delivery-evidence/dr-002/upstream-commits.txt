@@ -1,0 +1,23 @@
+d057801c89f26bc69a97331b59631c00519aec98 chore(release): bump workspace release version to 1.4.92-beta.5
+e666d726f017a59c140def94cde18bf18547fdd5 chore(cross-scope-agent-mentions): archive ticket, live collaborator tests and docs sync
+bcff482007b3bc639490b68c36e26dfd8de9f321 feat(web): hosted collaborators, held mention sends, From <Sender> deliveries (SR-010)
+33b0d1eefdd44184aa1512f518f8fbfcb01235e6 feat(collaboration): host one instance per collaborator, added at send (SR-010)
+180a2d2d4595e0748c5f1cf82b7eb146564962e9 feat(memory): record the sender of an agent-to-agent delivery on its user trace (RD-004)
+fdda4a2ed5482863aeecaec72a0bf8ef9dfd984f feat(contracts): collaborator entries carry their run IDs; COLLABORATOR_ADD_FAILED rejection
+5dcc5dc8274e3b667990f2a6e0f75e7508c11888 fix(run-history): end a lingering Agent root before history delete/archive instead of refusing (CR-002)
+c8cd16a2b1d55a5162134d95dac5b93c1c205089 fix(run-history): a standalone run with a registered Agent root is live for delete and archive (CR-001)
+a7b4ae62167d908f9b7736718e2bf5d66be7ec3f fix(web): Agent-root children read as spaced names in the Team tab and starter labels
+aeb0569f50ca10b30812e2a7c8042a671f8f07a0 refactor(web): drop configuredAgentAtAddress; task sources go through agentSourceSelectors
+99e12c78c9bf40db243480fe8b31de6d9905f78c docs: collaborators, the Agent run collaboration root and the live-run @ menu
+821ae42957c9acbdf58db6864ec5be7874c4a01e feat(web): standalone Agent runs show their collaborators; add-failure notice
+9d403f40bb396e722bc43fd2303e97d6e26a7359 feat(web): @ mentions in live runs, collaborator-aware Team and Org views, task-row changes
+2778292faf44e77c9030b6495e985dcacc95c123 feat(agent-run-collaboration): serve message reference files of Agent-root children
+c2f69edde2abee1395c88c69c387df629a11f2aa feat(agent-run-collaboration): standalone Agent runs host collaborators (Agent root)
+811b09e5083dc5e5752c039c8bfd3fe255cba7f1 feat(agent-execution): always-on collaboration tools rule and standalone collaboration prompt
+2570d477556713bd06bb41b6e8306131c71869cc feat(agent-org): bring collaborators into AgentOrg runs
+ec246cdb5767ef4cb9bc6619308be43a5764f3fa feat(team-run): bring collaborators into Team roots
+c694a161792095c9063bbf214f1574dd9255bec2 feat(collaboration): add the collaborators module (policy, admission, entries, addresses, sources)
+3afdd36154dab3796e0c91ffec4d3cf75a19ea73 refactor(collaboration): move root-level Agent/Team hosting out of the Org module
+03dc40c2cad856856a901da85c4d2cdf5937402c feat(collaboration): add the 'agent' root kind with its package, index and location family
+6772e45b3aa1ce9b6520851bbdc013e30cc628b2 feat(run-history): add optional collaborators to Team and Org execution trees
+6d7565c276d8b85766446425ec23494144da79a7 feat(contracts): add collaborator mentions, collaborator entries and the Agent root view

@@ -1,0 +1,8 @@
+{
+  "item": {
+    "key": "AUTOBYTEUS_COMPACTION_MODEL_SETTINGS",
+    "value": "{\"modelIdentifier\":\"api-rev-002-unavailable-model\",\"llmConfig\":{\"temperature\":0.2}}"
+  },
+  "browser": "Saved model is unavailable; it will not be silently replaced: api-rev-002-unavailable-model",
+  "ratioInvalidDraft": "0 showed Enter a percentage from 1 to 100 with Save disabled; restored80 without Save"
+}

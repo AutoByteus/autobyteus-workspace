@@ -1,6 +1,9 @@
 import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
+  catalogAgentSourceAt,
+  catalogTeamSourceAt,
+  collaborationTaskExecutionLists,
   collaboratorAgentSourceAt,
   collaboratorExecutionNodes,
   collaboratorTeamSourceAt,
@@ -91,8 +94,10 @@ export class AgentRunCollaborationIndex {
   private addAgent(agentRunId: string, address: string, kind: AgentRootChildAgent['kind'],
     teamRunId: string | null, delegatorAgentRunId: string | null): void {
     this.register(agentRunId)
+    // A catalog copy (or its member) carries its own source (REQ-011).
     const source = collaboratorAgentSourceAt(this.tree.collaborators, address)
-    if (!source) throw new Error(`No collaborator source at '${address}'.`)
+      ?? catalogAgentSourceAt(collaborationTaskExecutionLists(this.tree), address)
+    if (!source) throw new Error(`No collaborator or catalog source at '${address}'.`)
     this.agents.set(agentRunId, Object.freeze({
       agentRunId, address: parseAgentTeamAddress(address), kind, source, teamRunId, delegatorAgentRunId,
     }))
@@ -101,6 +106,7 @@ export class AgentRunCollaborationIndex {
   private addTeam(team: AgentRootChildTeam['execution'], delegatorAgentRunId: string | null): void {
     this.register(team.teamRunId)
     const source = collaboratorTeamSourceAt(this.tree.collaborators, team.address)
+      ?? catalogTeamSourceAt(collaborationTaskExecutionLists(this.tree), team.address)
     // A nested Team inside a task Team takes its coordinator from its first member.
     const coordinatorAddress = source?.coordinatorAddress
       ?? team.members.find((member) => 'agentRunId' in member)?.address

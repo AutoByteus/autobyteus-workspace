@@ -1,0 +1,17 @@
+{
+  "case": "API-C08",
+  "scope": "Manual semantic assessment of this actual DeepSeek full-flow sample only; not overall API Pass",
+  "inputSha256": "c8e86f16dc813860b4fb7a37bb0f40c32254e8bcfdcd99a8a2afeff404dd23b0",
+  "responseSha256": "1cc397972b8bbee5b9ace9a505d72c2776d28a48fa5af3a0d2f5ce2d4e79da11",
+  "selectedInputCharacters": 9167,
+  "summaryBodyCharacters": 3559,
+  "exactEightAnchorsPreserved": true,
+  "nextParentHasExactlyOneMatchingSummary": true,
+  "finalWriteToolArgumentMatchesExactNineFieldArtifact": true,
+  "successfulReadTools": 3,
+  "successfulWriteTools": 1,
+  "completedTurns": 4,
+  "fidelityVerdict": "Pass for this sample; good and usable, mildly repetitive",
+  "persistenceLimit": "Post-failure raw/snapshot assertions were not reached; no file proof reconstructed",
+  "newGenerationsForJudgment": 0
+}

@@ -1,0 +1,901 @@
+--- a/autobyteus-agent-presentation-contracts/src/accepted-input-identity.ts
++++ b/autobyteus-agent-presentation-contracts/src/accepted-input-identity.ts
+@@ -0,0 +1,19 @@
++/** Correlates accepted-input presentations inside an already validated recipient scope. */
++export type AcceptedInputIdentity = { messageId?: string; dedupeKey?: string };
++
++export const normalizeAcceptedInputIdentity = (input: {
++  messageId?: unknown; dedupeKey?: unknown;
++}): AcceptedInputIdentity => {
++  const messageId = typeof input.messageId === 'string' ? input.messageId.trim() : '';
++  const dedupeKey = typeof input.dedupeKey === 'string' ? input.dedupeKey.trim() : '';
++  return { ...(messageId ? { messageId } : {}), ...(dedupeKey ? { dedupeKey } : {}) };
++};
++
++/** Secondary tokens must never bridge conflicting or partially known primary identities. */
++export const acceptedInputIdentityKey = (input: {
++  messageId?: unknown; dedupeKey?: unknown;
++}): string | null => {
++  const { messageId, dedupeKey } = normalizeAcceptedInputIdentity(input);
++  return messageId ? JSON.stringify(['messageId', messageId])
++    : dedupeKey ? JSON.stringify(['dedupeKey', dedupeKey]) : null;
++};
+--- a/autobyteus-agent-presentation-contracts/src/index.ts
++++ b/autobyteus-agent-presentation-contracts/src/index.ts
+@@ -3,3 +3,5 @@
+ export * from "./agent-presentation-message-dtos.js";
+ export * from "./agent-input-state-dto.js";
+ export * from "./collaborator-mention-note.js";
++
++export * from './accepted-input-identity.js';
+--- a/autobyteus-agent-presentation-contracts/tests/accepted-input-identity.test.mjs
++++ b/autobyteus-agent-presentation-contracts/tests/accepted-input-identity.test.mjs
+@@ -0,0 +1,13 @@
++import { test } from 'node:test';
++import assert from 'node:assert/strict';
++import { acceptedInputIdentityKey as key, normalizeAcceptedInputIdentity as normalize } from '../dist/index.js';
++test('normalized tagged primary identity never bridges secondary tokens', () => {
++  assert.equal(key({ messageId: ' A ', dedupeKey: 'x' }), key({ messageId: 'A', dedupeKey: 'y' }));
++  assert.notEqual(key({ messageId: 'A', dedupeKey: 'x' }), key({ messageId: 'B', dedupeKey: 'x' }));
++  assert.notEqual(key({ messageId: 'x' }), key({ dedupeKey: 'x' }));
++  assert.notEqual(key({ messageId: 'A', dedupeKey: 'x' }), key({ dedupeKey: 'x' }));
++  assert.equal(key({ dedupeKey: ' x ' }), key({ dedupeKey: 'x' }));
++  assert.notEqual(key({ messageId: 'a' }), key({ messageId: 'A' }));
++  assert.deepEqual(normalize({ messageId: 1, dedupeKey: ' ' }), {});
++  assert.equal(key({ messageId: null, dedupeKey: {} }), null);
++});
+--- a/autobyteus-server-ts/src/agent-memory/domain/models.ts
++++ b/autobyteus-server-ts/src/agent-memory/domain/models.ts
+@@ -20,6 +20,8 @@
+   toolResult?: unknown | null;
+   toolError?: string | null;
+   media?: RawTraceMedia | null;
++  messageId?: string;
++  dedupeKey?: string;
+   senderId?: string | null;
+   ts: number;
+ };
+--- a/autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts
++++ b/autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts
+@@ -1,3 +1,4 @@
++import { normalizeAcceptedInputIdentity } from '@autobyteus/agent-presentation-contracts';
+ import {
+   parseSystemInstructionTraceRecord,
+   SYSTEM_INSTRUCTION_TRACE_TYPE,
+@@ -72,6 +73,9 @@
+   if (Object.prototype.hasOwnProperty.call(trace, "tool_error")) {
+     event.toolError = asString(trace["tool_error"]);
+   }
++  if (event.traceType === 'user') Object.assign(event, normalizeAcceptedInputIdentity({
++    messageId: trace.message_id, dedupeKey: trace.dedupe_key,
++  }));
+   const senderId = asString(trace["sender_id"]);
+   if (senderId) event.senderId = senderId;
+   return event;
+--- a/autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts
++++ b/autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts
+@@ -20,11 +20,13 @@
+ export type HistoricalReplayMessageEvent = HistoricalReplayMessageEventBase & (
+   | {
+       role: "user";
++      messageId?: string;
++      dedupeKey?: string;
+       fileAttachments?: readonly ContextFileReference[];
+       /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
+       senderId?: string | null;
+     }
+-  | { role: string | null; fileAttachments?: never; senderId?: never }
++  | { role: string | null; fileAttachments?: never; senderId?: never; messageId?: never; dedupeKey?: never }
+ );
+ 
+ export interface HistoricalReplayReasoningEvent {
+--- a/autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts
++++ b/autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts
+@@ -1,3 +1,4 @@
++import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity } from '@autobyteus/agent-presentation-contracts';
+ import type {
+   RunProjectionActivityEntry,
+   RunProjectionConversationEntry,
+@@ -39,7 +40,47 @@
+   return true;
+ };
+ 
++// Calls are scoped to one already-resolved recipient conversation, never a global index.
++const isInputEntry = (entry: RunProjectionConversationEntry): boolean =>
++  entry.role === 'user' || entry.kind === 'inter_agent_message';
++const inputScope = (entry: RunProjectionConversationEntry): string => JSON.stringify([
++  entry.kind, entry.role ?? null, entry.senderId ?? null,
++  entry.senderAgentRunId ?? null, entry.senderAddress ?? null,
++]);
++
++const mergeInputEntry = (
++  current: RunProjectionConversationEntry, incoming: RunProjectionConversationEntry,
++): RunProjectionConversationEntry => {
++  const media = { ...incoming.media, ...current.media };
++  for (const key of ['images', 'audio', 'video'] as const) {
++    media[key] = [...new Set([...(current.media?.[key] ?? []), ...(incoming.media?.[key] ?? [])])];
++  }
++  const files: NonNullable<RunProjectionConversationEntry['fileAttachments']>[number][] = [];
++  for (const file of [...(current.fileAttachments ?? []), ...(incoming.fileAttachments ?? [])]) {
++    const index = files.findIndex(saved => saved.uri.trim() === file.uri.trim() && saved.fileType.trim().toLowerCase() === file.fileType.trim().toLowerCase());
++    if (index < 0) files.push(file);
++    else if (!files[index].fileName?.trim() || files[index].fileName === files[index].uri.split('/').pop()) {
++      files[index] = { ...files[index], fileName: file.fileName?.trim() ? file.fileName : files[index].fileName };
++    }
++  }
++  return {
++    ...incoming, ...current,
++    ...normalizeAcceptedInputIdentity({
++      messageId: normalizeAcceptedInputIdentity(current).messageId ?? incoming.messageId,
++      dedupeKey: normalizeAcceptedInputIdentity(current).dedupeKey ?? incoming.dedupeKey,
++    }),
++    content: current.content || incoming.content,
++    ts: normalizeTs(current.ts) ?? normalizeTs(incoming.ts),
++    ...(current.media || incoming.media ? { media } : {}),
++    ...(files.length ? { fileAttachments: files } : {}),
++  };
++};
++
+ const explicitConversationKey = (entry: RunProjectionConversationEntry): string | null => {
++  if (isInputEntry(entry)) {
++    const key = acceptedInputIdentityKey(entry);
++    return key ? JSON.stringify([inputScope(entry), key]) : null;
++  }
+   const metadataRecord = (entry as unknown as { metadata?: unknown }).metadata;
+   const metadata =
+     metadataRecord && typeof metadataRecord === "object" && !Array.isArray(metadataRecord)
+@@ -71,6 +112,7 @@
+   left: RunProjectionConversationEntry,
+   right: RunProjectionConversationEntry,
+ ): boolean => {
++  if ((isInputEntry(left) || isInputEntry(right)) && inputScope(left) !== inputScope(right)) return false;
+   if (conversationSemanticKey(left) !== conversationSemanticKey(right)) {
+     return false;
+   }
+@@ -99,6 +141,7 @@
+   current: RunProjectionConversationEntry,
+   incoming: RunProjectionConversationEntry,
+ ): RunProjectionConversationEntry => {
++  if (isInputEntry(current)) return mergeInputEntry(current, incoming);
+   const winner =
+     conversationRichnessScore(incoming) > conversationRichnessScore(current)
+       ? incoming
+--- a/autobyteus-server-ts/src/run-history/projection/run-projection-types.ts
++++ b/autobyteus-server-ts/src/run-history/projection/run-projection-types.ts
+@@ -38,6 +38,8 @@
+   toolError?: string | null;
+   media?: Record<string, string[]> | null;
+   fileAttachments?: readonly ContextFileReference[];
++  messageId?: string;
++  dedupeKey?: string;
+   senderId?: string | null;
+   /** `inter_agent_message` only: the sender AgentRun and, when its root can resolve it, its address. */
+   senderAgentRunId?: string | null;
+--- a/autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts
++++ b/autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts
+@@ -12,6 +12,8 @@
+         role: "user",
+         senderAgentRunId: event.senderId,
+         senderAddress: null,
++        ...(event.messageId ? { messageId: event.messageId } : {}),
++        ...(event.dedupeKey ? { dedupeKey: event.dedupeKey } : {}),
+         ...(event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
+         content: event.content,
+         media: event.media,
+@@ -23,6 +25,8 @@
+       return [{
+         kind: "message",
+         role: event.role,
++        ...(event.role === "user" && event.messageId ? { messageId: event.messageId } : {}),
++        ...(event.role === "user" && event.dedupeKey ? { dedupeKey: event.dedupeKey } : {}),
+         ...(event.role === "user" && event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
+         content: event.content,
+         media: event.media,
+--- a/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts
++++ b/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts
+@@ -182,6 +182,8 @@
+         ...(trace.traceType === "user" ? { role: "user" as const,
+           ...(trace.fileAttachments?.length ? { fileAttachments: trace.fileAttachments } : {}),
+           ...(trace.senderId ? { senderId: trace.senderId } : {}),
++          ...(trace.messageId ? { messageId: trace.messageId } : {}),
++          ...(trace.dedupeKey ? { dedupeKey: trace.dedupeKey } : {}),
+         } : { role: "assistant" as const }),
+         content: trace.content ?? null,
+         media: trace.media ?? null,
+--- a/autobyteus-server-ts/tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
++++ b/autobyteus-server-ts/tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
+@@ -75,3 +75,18 @@
+     expect(event).toHaveProperty("toolError", null);
+   });
+ });
++
++
++it('retains normalized optional accepted keys only for user traces', () => {
++  expect(toMemoryTraceEvent({ ...base, trace_type: 'user', message_id: ' A ', dedupe_key: ' token ', sender_id: 'exact sender' })).toMatchObject({
++    messageId: 'A', dedupeKey: 'token', senderId: 'exact sender', id: 'rt-1', turnId: 'turn-1',
++  });
++  for (const trace_type of ['assistant', 'tool_call', 'reasoning']) {
++    const event = toMemoryTraceEvent({ ...base, trace_type, message_id: 'A', dedupe_key: 'token' });
++    expect(event).not.toHaveProperty('messageId'); expect(event).not.toHaveProperty('dedupeKey');
++  }
++  for (const value of [undefined, null, '', '  ', 1, {}]) {
++    const event = toMemoryTraceEvent({ ...base, trace_type: 'user', message_id: value, dedupe_key: value });
++    expect(event).not.toHaveProperty('messageId'); expect(event).not.toHaveProperty('dedupeKey');
++  }
++});
+--- a/autobyteus-server-ts/tests/unit/run-history/projection/user-file-attachment-projection.test.ts
++++ b/autobyteus-server-ts/tests/unit/run-history/projection/user-file-attachment-projection.test.ts
+@@ -73,3 +73,17 @@
+       expect(() => toMemoryTraceEvent({ ...row, file_attachments })).toThrow();
+     });
+ });
++
++
++it('carries accepted keys through agent-origin replay without relabeling or aliasing raw identity', () => {
++  const raw = { ...row, message_id: ' A ', dedupe_key: ' token ', sender_id: 'exact-sender' };
++  const trace = toMemoryTraceEvent(raw);
++  const events = buildHistoricalReplayEvents([trace]);
++  expect(events[0]).toMatchObject({ messageId: 'A', dedupeKey: 'token', senderId: 'exact-sender' });
++  expect(resolveTraceReplayIdentity(trace, () => 0)).toEqual(resolveTraceReplayIdentity(toMemoryTraceEvent(row), () => 0));
++  expect(project(raw).conversation[0]).toMatchObject({ kind: 'inter_agent_message', role: 'user',
++    messageId: 'A', dedupeKey: 'token', senderAgentRunId: 'exact-sender', fileAttachments: trace.fileAttachments });
++  const left = project(raw).conversation[0];
++  expect(dedupeRunProjectionConversationEntries([left, { ...left, senderAgentRunId: 'other' }])).toHaveLength(2);
++  expect(dedupeRunProjectionConversationEntries([left, { ...left, messageId: 'B' }])).toHaveLength(2);
++});
+--- a/autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts
++++ b/autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts
+@@ -45,6 +45,10 @@
+     memoryManager.ingestUserMessage(
+       llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments,
+       resolveInterAgentSenderId(original.metadata),
++      {
++        messageId: typeof original.metadata?.message_id === 'string' ? original.metadata.message_id : undefined,
++        dedupeKey: typeof original.metadata?.dedupe_key === 'string' ? original.metadata.dedupe_key : undefined,
++      },
+     );
+     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
+     return message;
+--- a/autobyteus-ts/src/memory/memory-manager.ts
++++ b/autobyteus-ts/src/memory/memory-manager.ts
+@@ -197,9 +197,9 @@
+   }
+ 
+   /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
+-  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null): void {
++  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null, identity: Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'> = {}): void {
+     const trace = buildNativeUserMessageTrace(llmUserMessage, {
+-      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId,
++      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId, ...identity,
+     });
+     this.store.add([trace]);
+   }
+--- a/autobyteus-ts/src/memory/models/raw-trace-item.ts
++++ b/autobyteus-ts/src/memory/models/raw-trace-item.ts
+@@ -25,6 +25,8 @@
+   toolError?: string | null;
+   correlationId?: string | null;
+   senderId?: string | null;
++  messageId?: string;
++  dedupeKey?: string;
+ };
+ 
+ export class RawTraceItem implements MemoryItem {
+@@ -44,6 +46,8 @@
+   toolError: string | null | undefined;
+   correlationId: string | null;
+   senderId: string | null;
++  readonly messageId?: string;
++  readonly dedupeKey?: string;
+ 
+   constructor(options: RawTraceItemOptions) {
+     this.id = options.id;
+@@ -65,6 +69,10 @@
+     this.toolError = options.toolError;
+     this.correlationId = options.correlationId ?? null;
+     this.senderId = options.senderId ?? null;
++    if (this.traceType === 'user') {
++      this.messageId = normalizeInputKey(options.messageId);
++      this.dedupeKey = normalizeInputKey(options.dedupeKey);
++    }
+   }
+ 
+   get memoryType(): MemoryType {
+@@ -91,6 +99,10 @@
+     if (this.toolError !== undefined) data.tool_error = this.toolError;
+     if (this.correlationId) data.correlation_id = this.correlationId;
+     if (this.senderId) data.sender_id = this.senderId;
++    if (this.traceType === 'user') {
++      if (this.messageId) data.message_id = this.messageId;
++      if (this.dedupeKey) data.dedupe_key = this.dedupeKey;
++    }
+ 
+     return data;
+   }
+@@ -114,7 +126,12 @@
+         ? typeof data.tool_error === 'string' ? data.tool_error : null
+         : undefined,
+       correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null,
+-      senderId: typeof data.sender_id === 'string' ? data.sender_id : null
++      senderId: typeof data.sender_id === 'string' ? data.sender_id : null,
++      messageId: normalizeInputKey(data.message_id),
++      dedupeKey: normalizeInputKey(data.dedupe_key)
+     });
+   }
+ }
++
++const normalizeInputKey = (value: unknown): string | undefined =>
++  typeof value === 'string' ? value.trim() || undefined : undefined;
+--- a/autobyteus-ts/src/memory/raw-trace-ingestion.ts
++++ b/autobyteus-ts/src/memory/raw-trace-ingestion.ts
+@@ -5,7 +5,7 @@
+ import type { ToolInvocation } from '../agent/tool-invocation.js';
+ import type { ToolCallSpec } from '../llm/utils/messages.js';
+ import type { CompleteResponse } from '../llm/utils/response-types.js';
+-import { RawTraceItem } from './models/raw-trace-item.js';
++import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
+ import { createToolCallIdentity, type ToolCallIdentity } from './models/tool-call-identity.js';
+ 
+ type NextSeq = (turnId: string) => number;
+@@ -141,7 +141,7 @@
+ /** Native media and processed text remain LLM-owned; non-media references are captured from original input. */
+ export function buildNativeUserMessageTrace(
+   llmUserMessage: LLMUserMessage,
+-  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[]; senderId?: string | null },
++  input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[]; senderId?: string | null } & Pick<RawTraceItemOptions, 'messageId' | 'dedupeKey'>,
+ ): RawTraceItem {
+   return new RawTraceItem({
+     id: `rt_${Date.now()}`, ts: Date.now() / 1000,
+@@ -149,6 +149,8 @@
+     traceType: 'user', content: llmUserMessage.content,
+     fileAttachments: input.fileAttachments,
+     senderId: input.senderId ?? null,
++    messageId: input.messageId,
++    dedupeKey: input.dedupeKey,
+     media: {
+       images: llmUserMessage.image_urls ?? [],
+       audio: llmUserMessage.audio_urls ?? [],
+--- a/autobyteus-ts/tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts
++++ b/autobyteus-ts/tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts
+@@ -38,6 +38,19 @@
+ };
+ 
+ describe('MemoryIngestInputProcessor', () => {
++  it('retains accepted keys from the original input, never rewritten metadata', async () => {
++    const context = makeContext();
++    context.state.memoryManager = { ingestUserMessage: vi.fn() } as any;
++    context.state.activeTurn = { turnId: 'turn-1' } as any;
++    const original = new AgentInputUserMessage('original', SenderType.USER, null, { message_id: 'A', dedupe_key: 'token' });
++    const processed = new AgentInputUserMessage('processed', SenderType.USER, null, { message_id: 'wrong' });
++    await new MemoryIngestInputProcessor().process(processed, context, { agentInputUserMessage: original } as any);
++    expect(context.state.memoryManager!.ingestUserMessage).toHaveBeenCalledWith(
++      expect.objectContaining({ content: 'processed' }), 'turn-1', 'LLMUserMessageReadyEvent', [], null,
++      { messageId: 'A', dedupeKey: 'token' },
++    );
++  });
++
+   it('ingests user message into the already-active turn', async () => {
+     const context = makeContext();
+     const processor = new MemoryIngestInputProcessor();
+@@ -56,7 +69,8 @@
+       'turn_0001',
+       'LLMUserMessageReadyEvent',
+       [],
+-      null
++      null,
++      { messageId: undefined, dedupeKey: undefined }
+     );
+   });
+ 
+--- a/autobyteus-ts/tests/unit/memory/raw-trace-item.test.ts
++++ b/autobyteus-ts/tests/unit/memory/raw-trace-item.test.ts
+@@ -57,3 +57,21 @@
+     expect(trace.toDict()).not.toHaveProperty('tool_error');
+   });
+ });
++
++
++describe('optional native accepted-input identity codec', () => {
++  it('round trips only recognized user identity without overloading trace or sender identity', () => {
++    const item = new RawTraceItem({ ...base, traceType: 'user', messageId: ' A ', dedupeKey: ' token ', senderId: 'sender', correlationId: 'correlation' });
++    const row = item.toDict();
++    expect(row).toMatchObject({ message_id: 'A', dedupe_key: 'token', id: 'rt_1', turn_id: 'turn_1', sender_id: 'sender', correlation_id: 'correlation' });
++    expect(RawTraceItem.fromDict(JSON.parse(JSON.stringify(row))).toDict()).toEqual(row);
++  });
++  it.each([undefined, null, '', '  ', 42, {}, []])('treats malformed/absent optional keys %j as unknown', key => {
++    const row = { ...new RawTraceItem({ ...base, traceType: 'user' }).toDict(), message_id: key, dedupe_key: key };
++    const parsed = RawTraceItem.fromDict(row).toDict();
++    expect(parsed).not.toHaveProperty('message_id'); expect(parsed).not.toHaveProperty('dedupe_key');
++  });
++  it.each(['assistant', 'tool_call', 'reasoning'])('does not introduce input keys to %s', traceType => {
++    expect(new RawTraceItem({ ...base, traceType, messageId: 'A', dedupeKey: 'token' }).toDict()).not.toHaveProperty('message_id');
++  });
++});
+--- a/autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts
++++ b/autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts
+@@ -0,0 +1,115 @@
++import 'reflect-metadata';
++import { describe, it, expect, vi } from 'vitest';
++import { createPinia, setActivePinia } from 'pinia';
++import { readFileSync, writeFileSync } from 'node:fs';
++import { AgentInputUserMessage } from '../../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';
++import { ContextFile } from '../../../../autobyteus-ts/dist/agent/message/context-file.js';
++import { ContextFileType } from '../../../../autobyteus-ts/dist/agent/message/context-file-type.js';
++import { SenderType } from '../../../../autobyteus-ts/dist/agent/sender-type.js';
++import path from 'node:path';
++import { createNativeRootFixture, HOST } from '../../../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture';
++import { eventually, summary } from '../../../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture';
++import { projectAgentCollaborationView } from '../../../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector';
++import { toMemoryTraceEvent } from '../../../../autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer';
++import { buildHistoricalReplayEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events';
++import { buildRunProjectionBundleFromEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-utils';
++import { dedupeRunProjectionConversationEntries } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
++import { AgentRootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts';
++import { stageAgentRunCollaborationContext } from '../agentRunCollaborationHydration';
++import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
++
++const query = vi.hoisted(() => vi.fn());
++vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query }) }));
++vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({}) }));
++vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }));
++
++// Narrow in-process integration. Real native producer/FIFO and real saved/live hydration;
++// provisioning + model are controlled. No HTTP, packaged reload or provider-quality claim.
++describe('native-produced saved history joins actual hosted pending input', () => {
++  it.each(['agent', 'agent_team'] as const)('%s: held A / queued B remains one each across fresh hydration and recovery', async kind => {
++    setActivePinia(createPinia());
++    const f = await createNativeRootFixture(kind, false);
++    let release: ((value: string) => void) | undefined;
++    try {
++      const connection = await f.connect();
++      f.request();
++      f.compress.mockRejectedValueOnce(new Error('controlled compaction failure'));
++      const files = [
++        new ContextFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64"%3E%3Crect width="64" height="64" fill="skyblue"/%3E%3C/svg%3E', ContextFileType.IMAGE, 'Preview image.svg'),
++        new ContextFile('/evidence/report.txt', ContextFileType.TEXT, 'Original acceptance report.txt'),
++      ];
++      expect((await f.root.executeAgentCommand(f.run.runId, { kind: 'post_message', message: new AgentInputUserMessage(
++        'A', SenderType.USER, files, { message_id: 'A', dedupe_key: 'input:A' },
++      ) })).accepted).toBe(true);
++      await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
++      const held = f.run.getInputStateSnapshot();
++      expect(held.entries.map(e => [e.message_id, e.state])).toEqual([['A', 'held']]);
++      const rawPath = path.join(f.native.context.config.memoryDir!, 'raw_traces_active.jsonl');
++      const serialized = readFileSync(rawPath, 'utf8');
++      const rows = serialized.trim().split('\n').map(row => JSON.parse(row));
++      const a = rows.filter(row => row.trace_type === 'user' && row.message_id === 'A');
++      expect(a).toHaveLength(1);
++      expect(a[0]).toMatchObject({ message_id: 'A', dedupe_key: 'input:A' });
++      expect(a[0].id).not.toBe('A');
++      expect(a[0].file_attachments).toEqual([{ uri: files[1].uri, file_type: 'text', file_name: files[1].fileName }]);
++      expect(a[0].media.images).toEqual([files[0].uri]);
++      const conversation = dedupeRunProjectionConversationEntries(buildRunProjectionBundleFromEvents(
++        f.run.runId, buildHistoricalReplayEvents(rows.map(toMemoryTraceEvent)),
++      ).conversation);
++      const savedA = conversation.find(e => e.messageId === 'A')!;
++      expect(savedA).toMatchObject({ kind: 'message', role: 'user', dedupeKey: 'input:A' });
++      query.mockImplementation(async ({ variables }) => ({ data: { agentRunCollaborationMemberProjection: {
++        agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
++        conversation: variables.agentRunId === f.run.runId ? conversation : [], activities: [], hasEarlierActiveTraceEvents: false,
++      } } }));
++      const hydrate = async () => {
++        const view = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView((await f.manager.getInspection(HOST))!)).root_agent;
++        const staged = await stageAgentRunCollaborationContext({ hostRunId: HOST, view });
++        staged.commitActivities();
++        return staged.context.getAgentContext(f.run.runId)!;
++      };
++      for (let i = 0; i < 2; i++) {
++        const ctx = await hydrate();
++        expect(ctx.conversation.messages.filter(m => m.type === 'user' && m.text === 'A')).toMatchObject([
++          { messageId: 'A', pendingInput: { state: 'held' }, timestamp: new Date(savedA.ts! * 1000) },
++        ]);
++      }
++      expect(readFileSync(rawPath, 'utf8')).toBe(serialized);
++      expect(f.run.getInputStateSnapshot()).toEqual(held);
++      expect(f.parent.requests).toHaveLength(3);
++      expect(f.compress).toHaveBeenCalledOnce();
++      f.compress.mockRejectedValueOnce(new Error('second controlled compaction failure'));
++      await f.send(connection.session, 'B');
++      await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user' && f.compress.mock.calls.length === 2);
++      const pending = f.run.getInputStateSnapshot();
++      expect(pending.entries.map(e => [e.message_id, e.state])).toEqual([['A', 'held'], ['B', 'queued']]);
++      const ctx = await hydrate();
++      expect(ctx.conversation.messages.filter(m => m.type === 'user' && ['A', 'B'].includes(m.text))).toMatchObject([
++        { messageId: 'A', pendingInput: { state: 'held' } }, { messageId: 'B', pendingInput: { state: 'queued' } },
++      ]);
++      expect((ctx.conversation.messages.find(m => m.type === 'user' && m.messageId === 'A') as any).contextFilePaths).toEqual(expect.arrayContaining([
++        expect.objectContaining({ locator: files[0].uri, type: 'Image', displayName: 'Preview image.svg' }),
++        expect.objectContaining({ locator: files[1].uri, displayName: files[1].fileName }),
++      ]));
++      // Optional local-check artifacts are newly produced by this test, never inputs/oracles.
++      if (process.env.NATIVE_INPUT_CAPTURE_DIR) writeFileSync(path.join(process.env.NATIVE_INPUT_CAPTURE_DIR, `${kind}.json`), JSON.stringify({
++        raw: rows, conversation, pending, messages: ctx.conversation.messages.filter(m => m.type === 'user' && ['A', 'B'].includes(m.text)),
++      }, null, 2));
++      expect(handleAgentInputState(pending, ctx)).toBe(false);
++      expect(f.parent.requests).toHaveLength(3);
++      // A genuinely new user C authorizes the next retry; no hydration command does.
++      f.compress.mockImplementationOnce(() => new Promise(resolve => { release = resolve; }));
++      await f.send(connection.session, 'C');
++      await eventually(() => !!release);
++      release!(summary);
++      await eventually(() => f.parent.requests.length === 6 && f.run.getInputStateSnapshot().entries.length === 0);
++      handleAgentInputState(f.run.getInputStateSnapshot(), ctx);
++      expect(ctx.conversation.messages.filter(m => m.type === 'user' && ['A', 'B'].includes(m.text))).toHaveLength(2);
++      expect(ctx.conversation.messages.every(m => m.type !== 'user' || !m.pendingInput)).toBe(true);
++      expect(f.parent.requests.slice(3).map(messages => messages.at(-1)?.content)).toEqual([a[0].content, 'B', 'C']);
++      expect(f.forwarded.mock.calls.filter(([event]) => event.message.content === 'A')).toHaveLength(1);
++      expect(f.forwarded.mock.calls.filter(([event]) => event.message.content === 'B')).toHaveLength(1);
++      expect(f.compress).toHaveBeenCalledTimes(3);
++    } finally { release?.(summary); await f.close(); }
++  }, 20000);
++});
+--- a/autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts
++++ b/autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts
+@@ -1,7 +1,7 @@
+ import type { AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
+ import type { AgentContext } from '~/types/agent/AgentContext';
+ import { AgentStatus } from '~/types/agent/AgentStatus';
+-import { buildUserMessageFromProjectionPayload, upsertUserMessageByIdentity } from './userMessageProjection';
++import { upsertPendingUserMessage } from './userMessageProjection';
+ 
+ /** Same-live-run projection only. Never sends input or replays a historical queue. */
+ export function handleAgentInputState(payload: AgentInputStateDto, context: AgentContext): boolean {
+@@ -13,17 +13,7 @@
+     ? AgentStatus.Running : AgentStatus.Error;
+   for (const message of context.conversation.messages) if (message.type === 'user') delete message.pendingInput;
+   for (const entry of payload.entries) {
+-    // Agent/system deliveries have their existing presentation owner; do not invent user bubbles.
+-    if (entry.sender_type !== 'user' || (!entry.message_id && !entry.dedupe_key)) continue;
+-    const message = buildUserMessageFromProjectionPayload({ content: entry.content,
+-      message_id: entry.message_id, dedupe_key: entry.dedupe_key,
+-      context_file_paths: entry.file_attachments.map(file => ({ path: file.uri, type: file.file_type })),
+-    });
+-    const existing = context.conversation.messages.find(item => item.type === 'user' && (
+-      !!entry.message_id && item.messageId === entry.message_id || !!entry.dedupe_key && item.dedupeKey === entry.dedupe_key));
+-    if (existing) message.timestamp = existing.timestamp;
+-    message.pendingInput = { runInstanceId: payload.run_instance_id, state: entry.state };
+-    upsertUserMessageByIdentity({ context, userMessage: message, retainExistingNonExecutableContextFiles: true });
++    upsertPendingUserMessage(context, entry, payload.run_instance_id);
+   }
+   return true;
+ }
+--- a/autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
++++ b/autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
+@@ -1,3 +1,4 @@
++import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity, type AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
+ import type { AgentContext } from '~/types/agent/AgentContext';
+ import type { UserMessage } from '~/types/conversation';
+ import type { UserMessageProjectionPayload } from '../protocol/messageTypes';
+@@ -16,33 +17,18 @@
+   return parsed;
+ };
+ 
+-const normalizeIdentity = (value?: string | null): string => value?.trim() || '';
+-
+ const findExistingMessageIndex = (
+-  messages: AgentContext['conversation']['messages'],
+-  messageId: string,
+-  dedupeKey: string,
++  messages: AgentContext['conversation']['messages'], identity: UserMessage,
+ ): number => {
+-  if (!messageId && !dedupeKey) {
+-    return -1;
+-  }
+-  return messages.findIndex((message) => {
+-    if (message.type !== 'user') {
+-      return false;
+-    }
+-    const candidate = message as UserMessage;
+-    return Boolean(
+-      (messageId && candidate.messageId === messageId) ||
+-      (dedupeKey && candidate.dedupeKey === dedupeKey),
+-    );
+-  });
++  const key = acceptedInputIdentityKey(identity);
++  return key === null ? -1 : messages.findIndex(message =>
++    message.type === 'user' && acceptedInputIdentityKey(message) === key);
+ };
+ 
+ export const buildUserMessageFromProjectionPayload = (
+   payload: UserMessageProjectionPayload,
+ ): UserMessage => {
+-  const messageId = normalizeIdentity(payload.message_id);
+-  const dedupeKey = normalizeIdentity(payload.dedupe_key);
++  const identity = normalizeAcceptedInputIdentity({ messageId: payload.message_id, dedupeKey: payload.dedupe_key });
+   const contextFilePaths = (payload.context_file_paths ?? [])
+     .filter((item) => typeof item?.path === 'string' && item.path.trim().length > 0)
+     .map((item) =>
+@@ -57,8 +43,7 @@
+     text: payload.content ?? '',
+     timestamp: toTimestamp(payload.received_at),
+     contextFilePaths,
+-    ...(messageId ? { messageId } : {}),
+-    ...(dedupeKey ? { dedupeKey } : {}),
++    ...identity,
+   };
+ };
+ 
+@@ -70,8 +55,7 @@
+   const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
+   const existingIndex = findExistingMessageIndex(
+     context.conversation.messages,
+-    userMessage.messageId ?? '',
+-    userMessage.dedupeKey ?? '',
++    userMessage,
+   );
+   if (existingIndex >= 0) {
+     const existing = context.conversation.messages[existingIndex];
+@@ -84,6 +68,10 @@
+     const nextMessage = {
+       ...existing,
+       ...userMessage,
++      ...normalizeAcceptedInputIdentity({
++        messageId: normalizeAcceptedInputIdentity(userMessage).messageId ?? (existing.type === 'user' ? existing.messageId : undefined),
++        dedupeKey: normalizeAcceptedInputIdentity(userMessage).dedupeKey ?? (existing.type === 'user' ? existing.dedupeKey : undefined),
++      }),
+       contextFilePaths,
+     };
+     if (JSON.stringify(existing) === JSON.stringify(nextMessage)) return false;
+@@ -116,3 +104,51 @@
+     return true;
+   });
+ };
++
++/** Live pending state overlays saved presentation, not an accepted-echo attachment replacement. */
++export const upsertPendingUserMessage = (
++  context: AgentContext, entry: AgentInputStateDto['entries'][number], runInstanceId: string,
++): void => {
++  const identity = normalizeAcceptedInputIdentity({ messageId: entry.message_id, dedupeKey: entry.dedupe_key });
++  if (entry.sender_type !== 'user' || acceptedInputIdentityKey(identity) === null) return;
++  const message = buildUserMessageFromProjectionPayload({
++    content: entry.content, message_id: identity.messageId, dedupe_key: identity.dedupeKey,
++  });
++  message.contextFilePaths = entry.file_attachments.map(file => hydrateContextAttachment({
++    locator: file.uri, type: file.file_type, displayName: file.file_name,
++  }));
++  message.pendingInput = { runInstanceId, state: entry.state };
++  const index = findExistingMessageIndex(context.conversation.messages, message);
++  const existing = context.conversation.messages[index];
++  if (existing?.type !== 'user') {
++    context.conversation.messages.push(message);
++    return;
++  }
++  context.conversation.messages[index] = {
++    ...existing, ...message,
++    ...normalizeAcceptedInputIdentity({
++      messageId: identity.messageId ?? existing.messageId,
++      dedupeKey: identity.dedupeKey ?? existing.dedupeKey,
++    }),
++    timestamp: existing.timestamp,
++    contextFilePaths: mergePendingContextFiles(existing.contextFilePaths ?? [], message.contextFilePaths ?? []),
++  };
++};
++
++const mergePendingContextFiles = (
++  existing: NonNullable<UserMessage['contextFilePaths']>, incoming: NonNullable<UserMessage['contextFilePaths']>,
++): NonNullable<UserMessage['contextFilePaths']> => {
++  const merged: NonNullable<UserMessage['contextFilePaths']> = [];
++  for (const attachment of [...existing, ...incoming]) {
++    const index = merged.findIndex(saved => saved.locator.trim() === attachment.locator.trim() && saved.type === attachment.type);
++    if (index < 0) merged.push(attachment);
++    else {
++      const saved = merged[index];
++      const generatedName = hydrateContextAttachment({ locator: saved.locator, type: saved.type }).displayName;
++      if (!saved.displayName || saved.displayName === generatedName) {
++        merged[index] = { ...saved, displayName: attachment.displayName || saved.displayName };
++      }
++    }
++  }
++  return merged;
++};
+--- a/autobyteus-web/services/runHydration/__tests__/acceptedInputIdentity.spec.ts
++++ b/autobyteus-web/services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+@@ -0,0 +1,109 @@
++import { describe, expect, it } from 'vitest';
++import { buildConversationFromProjection, type RunProjectionConversationEntry as Entry } from '../runProjectionConversation';
++import { dedupeRunProjectionConversationEntries as serverDedupe } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
++import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
++import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
++import type { UserMessage } from '~/types/conversation';
++const base: Entry = { kind: 'message', role: 'user', content: 'identical', ts: 123 };
++const build = (entries: Entry[]) => buildConversationFromProjection('recipient', entries, {
++  agentDefinitionId: 'definition', agentName: 'recipient', llmModelIdentifier: 'parent',
++});
++const count = (entries: Entry[]) => build(entries).messages.length;
++const server = (entries: Entry[]): Entry[] => serverDedupe(entries as Parameters<typeof serverDedupe>[0]);
++
++describe('saved input identity in both independently applied dedupe layers', () => {
++  it.each([
++    [{ messageId: 'A', dedupeKey: 'x' }, { messageId: 'B', dedupeKey: 'x' }, 2],
++    [{ messageId: 'A', dedupeKey: 'x' }, { dedupeKey: 'x' }, 2],
++    [{ messageId: 'x' }, { dedupeKey: 'x' }, 2],
++    [{ messageId: ' A ', dedupeKey: 'old' }, { messageId: 'A', dedupeKey: 'new' }, 1],
++    [{ dedupeKey: ' x ' }, { dedupeKey: 'x' }, 1],
++    [{ messageId: 'A' }, {}, 2],
++    [{ messageId: 'a' }, { messageId: 'A' }, 2],
++    [{ messageId: ' ' }, { messageId: undefined }, 1],
++  ] as const)('primary policy %j / %j -> %s', (left, right, expected) => {
++    const entries = [{ ...base, ...left }, { ...base, ...right }];
++    expect(server(entries)).toHaveLength(expected);
++    expect(count(entries)).toBe(expected);
++    expect(count(server(entries))).toBe(expected);
++  });
++  it('never collapses exact sender provenance, even keyless same-body/time rows', () => {
++    for (const identity of [{}, { messageId: 'A' }]) {
++      for (const field of ['senderId', 'senderAgentRunId', 'senderAddress']) {
++        const entries = [undefined, 'sender', ' sender', 'other'].map(sender => ({ ...base, kind: 'inter_agent_message', ...identity, [field]: sender }));
++        expect(server(entries)).toHaveLength(4); expect(count(entries)).toBe(4);
++      }
++      const entries = [{ ...base, ...identity }, { ...base, ...identity, kind: 'inter_agent_message', senderAgentRunId: 'peer' }];
++      expect(server(entries)).toHaveLength(2); expect(count(entries)).toBe(2);
++    }
++  });
++  it('does not read untyped input identity aliases or transitively join dedupe-only entries', () => {
++    const entries = [
++      { ...base, messageId: 'A', dedupeKey: 'shared' }, { ...base, dedupeKey: 'shared' },
++      { ...base, messageId: 'B', dedupeKey: 'shared' },
++    ];
++    expect(server(entries)).toHaveLength(3); expect(count(entries)).toBe(3);
++    const alias = { ...base, ts: 124, metadata: { message_id: 'A' }, message_id: 'A' };
++    expect(server([entries[0], alias])).toHaveLength(2); expect(count([entries[0], alias])).toBe(2);
++  });
++  it('unions saved media and exact locator+type files, preserves first timestamp/known keys/names', () => {
++    const entries: Entry[] = [
++      { ...base, messageId: 'A', dedupeKey: 'first', media: { images: ['/image.png'] }, fileAttachments: [
++        { uri: '/a/report.txt', fileType: 'text', fileName: 'Rich report' },
++      ] },
++      { ...base, ts: 456, messageId: 'A', dedupeKey: 'second', content: '', media: { audio: ['/audio.wav'] }, fileAttachments: [
++        { uri: '/a/report.txt', fileType: 'text', fileName: null },
++        { uri: '/b/report.txt', fileType: 'text', fileName: 'Rich report' },
++        { uri: '/a/report.txt', fileType: 'pdf', fileName: 'PDF view' },
++      ] },
++      { ...base, ts: 789, messageId: 'A', media: {}, fileAttachments: [] },
++    ];
++    for (const projected of [entries, server(entries)]) {
++      const messages = build(projected).messages as UserMessage[];
++      expect(messages).toHaveLength(1);
++      expect(messages[0]).toMatchObject({ messageId: 'A', dedupeKey: 'first', timestamp: new Date(123000), text: 'identical' });
++      expect(messages[0].contextFilePaths).toHaveLength(5);
++      expect(messages[0].contextFilePaths).toContainEqual(expect.objectContaining({ locator: '/a/report.txt', type: 'Text', displayName: 'Rich report' }));
++    }
++  });
++});
++
++describe('named pending overlay, not accepted-echo attachment replacement', () => {
++  it('preserves history media, timestamp, provenance and richer names, and remains local to the recipient', () => {
++    const conversation = build([{ ...base, messageId: 'A', dedupeKey: 'old', media: { images: ['/image.png'] }, fileAttachments: [
++      { uri: '/a/report.txt', fileType: 'text', fileName: 'Rich original name' },
++      { uri: '/fill.txt', fileType: 'text', fileName: null },
++    ] }]);
++    const message = conversation.messages[0] as UserMessage;
++    message.mentionNames = ['peer'];
++    const context = { state: {}, conversation } as any;
++    const other = { state: {}, conversation: build([{ ...base, messageId: 'A' }]) } as any;
++    const payload = { run_instance_id: 'native', revision: 1, recoverableBlock: null, entries: [{
++      sequence: 1, message_id: ' A ', dedupe_key: 'new', turn_id: 'turn', state: 'held' as const,
++      content: 'original pending text', sender_type: 'user' as const, file_attachments: [
++        { uri: '/a/report.txt', file_type: 'text', file_name: null },
++        { uri: '/b/report.txt', file_type: 'text', file_name: 'Rich original name' },
++        { uri: '/fill.txt', file_type: 'text', file_name: 'Explicit filled name' },
++        { uri: '/a/report.txt', file_type: 'pdf', file_name: 'PDF view' },
++      ],
++    }] };
++    handleAgentInputState(payload, context);
++    expect(context.conversation.messages).toHaveLength(1);
++    expect(context.conversation.messages[0]).toMatchObject({ messageId: 'A', dedupeKey: 'new', mentionNames: ['peer'],
++      text: 'original pending text', timestamp: new Date(123000), pendingInput: { state: 'held' } });
++    expect(context.conversation.messages[0].contextFilePaths).toHaveLength(5);
++    expect(context.conversation.messages[0].contextFilePaths).toContainEqual(hydrateContextAttachment({ locator: '/a/report.txt', type: 'text', displayName: 'Rich original name' }));
++    expect(context.conversation.messages[0].contextFilePaths).toContainEqual(hydrateContextAttachment({ locator: '/fill.txt', type: 'text', displayName: 'Explicit filled name' }));
++    handleAgentInputState({ ...payload, revision: 2, entries: [{ ...payload.entries[0], dedupe_key: null, file_attachments: [] }] }, context);
++    expect(context.conversation.messages[0].dedupeKey).toBe('new');
++    expect(context.conversation.messages[0].contextFilePaths).toHaveLength(5);
++    expect(other.conversation.messages[0]).not.toHaveProperty('pendingInput');
++    handleAgentInputState({ ...payload, revision: 3, entries: [{ ...payload.entries[0], message_id: 'B' }] }, context);
++    expect(context.conversation.messages).toHaveLength(2);
++    for (const sender_type of ['agent', 'system'] as const) {
++      handleAgentInputState({ ...payload, revision: sender_type === 'agent' ? 4 : 5, entries: [{ ...payload.entries[0], sender_type }] }, context);
++      expect(context.conversation.messages).toHaveLength(2);
++      expect(context.conversation.messages.every((m: UserMessage) => !m.pendingInput)).toBe(true);
++    }
++  });
++});
+--- a/autobyteus-web/services/runHydration/runProjectionConversation.ts
++++ b/autobyteus-web/services/runHydration/runProjectionConversation.ts
+@@ -1,3 +1,4 @@
++import { acceptedInputIdentityKey, normalizeAcceptedInputIdentity } from '@autobyteus/agent-presentation-contracts';
+ import type { ContextAttachment, Conversation, AIMessage, UserMessage } from '~/types/conversation';
+ import type { AIResponseSegment, ToolInvocationStatus } from '~/types/segments';
+ import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+@@ -15,6 +16,8 @@
+   toolError?: string | null;
+   media?: Record<string, string[]> | null;
+   fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }>;
++  messageId?: string;
++  dedupeKey?: string;
+   senderId?: string | null;
+   /** `inter_agent_message`: an agent-to-agent delivery (RD-004). */
+   senderAgentRunId?: string | null;
+@@ -68,10 +71,52 @@
+   ...(entry.fileAttachments?.length ? [stableJson(entry.fileAttachments)] : []),
+ ].join('\0');
+ 
++// Calls are scoped to one already-resolved recipient conversation, never a global index.
++const isInputEntry = (entry: RunProjectionConversationEntry): boolean =>
++  entry.role === 'user' || entry.kind === 'inter_agent_message';
++const inputScope = (entry: RunProjectionConversationEntry): string => JSON.stringify([
++  entry.kind, entry.role ?? null, entry.senderId ?? null,
++  entry.senderAgentRunId ?? null, entry.senderAddress ?? null,
++]);
++
++const mergeInputEntry = (
++  current: RunProjectionConversationEntry, incoming: RunProjectionConversationEntry,
++): RunProjectionConversationEntry => {
++  const media = { ...incoming.media, ...current.media };
++  for (const key of Object.keys(media)) {
++    media[key] = [...new Set([...(current.media?.[key] ?? []), ...(incoming.media?.[key] ?? [])])];
++  }
++  const files: NonNullable<RunProjectionConversationEntry['fileAttachments']>[number][] = [];
++  for (const file of [...(current.fileAttachments ?? []), ...(incoming.fileAttachments ?? [])]) {
++    const index = files.findIndex(saved => saved.uri.trim() === file.uri.trim() && saved.fileType.trim().toLowerCase() === file.fileType.trim().toLowerCase());
++    if (index < 0) files.push(file);
++    else if (!files[index].fileName?.trim() || files[index].fileName === files[index].uri.split('/').pop()) {
++      files[index] = { ...files[index], fileName: file.fileName?.trim() ? file.fileName : files[index].fileName };
++    }
++  }
++  return {
++    ...incoming, ...current,
++    ...normalizeAcceptedInputIdentity({
++      messageId: normalizeAcceptedInputIdentity(current).messageId ?? incoming.messageId,
++      dedupeKey: normalizeAcceptedInputIdentity(current).dedupeKey ?? incoming.dedupeKey,
++    }),
++    content: current.content || incoming.content,
++    ts: normalizeTs(current.ts) ?? normalizeTs(incoming.ts),
++    ...(current.media || incoming.media ? { media } : {}),
++    ...(files.length ? { fileAttachments: files } : {}),
++  };
++};
++
+ const projectionEntriesCanMerge = (
+   left: RunProjectionConversationEntry,
+   right: RunProjectionConversationEntry,
+ ): boolean => {
++  if (isInputEntry(left) || isInputEntry(right)) {
++    if (inputScope(left) !== inputScope(right)) return false;
++    const leftKey = acceptedInputIdentityKey(left);
++    const rightKey = acceptedInputIdentityKey(right);
++    if (leftKey || rightKey) return leftKey !== null && leftKey === rightKey;
++  }
+   if (projectionEntryKey(left) !== projectionEntryKey(right)) {
+     return false;
+   }
+@@ -86,7 +131,7 @@
+ const mergeProjectionEntry = (
+   current: RunProjectionConversationEntry,
+   incoming: RunProjectionConversationEntry,
+-): RunProjectionConversationEntry => ({
++): RunProjectionConversationEntry => isInputEntry(current) ? mergeInputEntry(current, incoming) : ({
+   ...current,
+   ...incoming,
+   ts: normalizeTs(incoming.ts) ?? normalizeTs(current.ts),
+@@ -341,6 +386,7 @@
+       flushPendingAIMessage();
+       messages.push({
+         type: 'user',
++        ...normalizeAcceptedInputIdentity(entry),
+         text: entry.content || '',
+         timestamp,
+         contextFilePaths: buildUserContextFilePaths(entry),
+--- a/autobyteus-web/utils/contextFiles/contextAttachmentModel.ts
++++ b/autobyteus-web/utils/contextFiles/contextAttachmentModel.ts
+@@ -283,7 +283,9 @@
+     });
+   }
+ 
+-  return createWorkspaceContextAttachment(locator, type);
++  return { ...createWorkspaceContextAttachment(locator, type),
++    ...(input.displayName ? { displayName: input.displayName } : {}),
++  };
+ };
+ 
+ export const parseDraftUploadedContextAttachmentLocator = (

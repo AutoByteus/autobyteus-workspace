@@ -195,6 +195,31 @@ describe('MemberOverrideItem', () => {
     expect(wrapper.text()).not.toContain('Auto-execute')
   })
 
+  it('shows an Antigravity member auto-approve on and locked, editable or saved, and leaves other members editable', async () => {
+    runtimeAvailabilityStore.availabilities.push({ runtimeKind: 'antigravity_cli', enabled: true, reason: null })
+    for (const node of [
+      editableNode({ baseline: { runtimeKind: 'antigravity_cli' }, effective: { runtimeKind: 'antigravity_cli', autoExecuteTools: false } }),
+      storedNode({ runtimeKind: 'antigravity_cli', autoExecuteTools: false }),
+    ]) {
+      const wrapper = mountItem(node)
+      await ready()
+      const checkbox = wrapper.get('input[type="checkbox"]').element as HTMLInputElement
+      expect(checkbox.checked).toBe(true)
+      expect(checkbox.indeterminate).toBe(false)
+      expect(checkbox.disabled).toBe(true)
+      expect(wrapper.find('[data-test="member-auto-approve-locked"]').exists()).toBe(true)
+      await wrapper.get('input[type="checkbox"]').trigger('change')
+      expect(wrapper.emitted('update:override')).toBeUndefined()
+    }
+
+    const codex = mountItem(editableNode({ baseline: { runtimeKind: 'codex_app_server' }, effective: { runtimeKind: 'codex_app_server' } }))
+    await ready()
+    expect((codex.get('input[type="checkbox"]').element as HTMLInputElement).disabled).toBe(false)
+    expect(codex.find('[data-test="member-auto-approve-locked"]').exists()).toBe(false)
+    await codex.get('input[type="checkbox"]').trigger('change')
+    expect(codex.emitted('update:override')).toHaveLength(1)
+  })
+
   it('warns when a runtime override breaks inherited model availability and resolves through an explicit model', async () => {
     const override = { runtimeKind: 'claude_agent_sdk' }
     const wrapper = mountItem(editableNode({

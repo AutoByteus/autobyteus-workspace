@@ -1,3 +1,4 @@
+import { compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
 import { jsonValueSchema, nonEmptyStringSchema, nullableNonEmptyStringSchema } from "./schema-helpers.js";
 const isCanonicalRootedAddress = (value) => {
@@ -30,10 +31,18 @@ const configuredAgentSchema = z.object({
     agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
     launch_configuration: launchConfigurationSchema,
 }).strict();
+const taskAgentSourceSchema = z.object({
+    kind: z.literal("agent"), agent_definition_id: nonEmptyStringSchema, launch_configuration: launchConfigurationSchema,
+}).strict();
+const taskTeamSourceSchema = z.object({
+    kind: z.literal("agent_team"), team_definition_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
+    members: z.array(z.object({ address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema }).strict()).min(1),
+    handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
+}).strict();
 export const taskAgentExecutionDtoSchema = z.object({
     kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
     platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-    started_at: nonEmptyStringSchema,
+    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema.optional(),
 }).strict();
 const taskTeamAgentSchema = z.object({
     kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
@@ -49,6 +58,7 @@ export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     members: z.array(z.union([taskTeamAgentSchema, taskTeamNestedSchema])),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
+    source: taskTeamSourceSchema.optional(),
 }).strict());
 export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
     z.object({
@@ -96,5 +106,6 @@ export const teamAgentStatusDtoSchema = z.object({
     status: z.enum(["offline", "initializing", "idle", "running", "error"]),
     trigger: nullableNonEmptyStringSchema, tool_name: nullableNonEmptyStringSchema,
     error_message: nullableNonEmptyStringSchema, error_details: nullableNonEmptyStringSchema,
+    recoverableBlock: compactionRecoveryBlockSchema.nullable(),
 }).strict();
 //# sourceMappingURL=team-execution-view-dtos.js.map

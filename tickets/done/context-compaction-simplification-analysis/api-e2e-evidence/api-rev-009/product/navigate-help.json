@@ -1,0 +1,18 @@
+usage: browser navigate [-h] --tab-id TAB_ID --url URL
+                        [--wait-until {domcontentloaded,load,networkidle}]
+                        [--timeout-ms TIMEOUT_MS] [--dialog {accept,dismiss}]
+                        [--prompt-text PROMPT_TEXT]
+
+options:
+  -h, --help            show this help message and exit
+  --tab-id TAB_ID       Opaque tab ID returned by list/open/attach.
+  --url URL
+  --wait-until {domcontentloaded,load,networkidle}
+  --timeout-ms TIMEOUT_MS
+  --dialog {accept,dismiss}
+                        Answer for a confirm/prompt/leave-page dialog the page
+                        opens; without it the dialog is dismissed and the
+                        command fails with DIALOG_DECISION_REQUIRED.
+  --prompt-text PROMPT_TEXT
+                        Text for an accepted prompt (default: the prompt's
+                        default value).

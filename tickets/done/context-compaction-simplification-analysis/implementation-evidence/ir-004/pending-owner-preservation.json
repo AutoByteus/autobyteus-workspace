@@ -1,0 +1,21 @@
+{
+  "entry_count": 747,
+  "unchanged": 744,
+  "changed": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "entry_sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "current_sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "entry_sha256": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "current_sha256": "fac1aec30d5ac2e988b96ce99d7103e4edbe26da7c68e323ab8b4b9909863e34"
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "entry_sha256": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "current_sha256": "d0527b871e4132f3423204f05c033f6259d31b62e2b60485c5343df9597e321c"
+    }
+  ]
+}

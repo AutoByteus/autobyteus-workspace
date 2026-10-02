@@ -1,0 +1,9 @@
+{
+  "autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts": "fa840593c06b0093c95b032f70e5ac2d9984b47c80ede10d95b9f8e34126099e",
+  "tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12",
+  "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md": "3da8a3b11359c089a5cced19fcfb3419c4211fbe83a74a7dce9c0c03ccbff95b",
+  "tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md": "2df83ee4f45e7ffbbe244afd692fecff4e1813c3935c6b64d01c43a20c01b81c",
+  "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md": "2597612099d557135ce6bce7ffbe159a6e37eb3117abf215531b56fc0cd5d9ea",
+  "tickets/in-progress/context-compaction-simplification-analysis/production-scenario-clarification.sr031.md": "82c363170e6723b8e7fd0a6465fe7b6068bf9213745f1b027ede7785e1d7f0ae"
+}

@@ -1,0 +1,12 @@
+{
+  "initialExit": 1,
+  "reason": "Five deliberately preserved historical SDK source-before files matched node_modules ignore; normal explicit add staged the other paths. Shell then reported hygiene exit0; first commit proceeded.",
+  "correction": "Explicit force-add of these five named historical evidence files only; no ignore rule or production dependency boundary changed. Evidence-only follow-up commit before target merge.",
+  "paths": [
+    "tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@anthropic-ai/sdk/src/client.ts",
+    "tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@mistralai/mistralai/src/funcs/chatComplete.ts",
+    "tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/retries.ts",
+    "tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/sdks.ts",
+    "tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/openai/src/client.ts"
+  ]
+}

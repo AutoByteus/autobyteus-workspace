@@ -1,3 +1,4 @@
+import { getCompactionPhasePresentation } from '~/utils/compactionActivityPresentation';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
@@ -47,4 +48,14 @@ describe('CompactionStatusRow', () => {
 
     wrapper.unmount();
   });
+});
+
+it('renders stopped with exact primary/status text, neutral static icon and no inherited error', () => {
+  const wrapper = mountRow('stopped');
+  expect(wrapper.findAll('span').map(span => span.text())).toEqual(['Stopped', 'Stopped']);
+  const icon = wrapper.get('[data-testid="compaction-status-icon"]');
+  expect(getCompactionPhasePresentation('stopped').icon).toBe('heroicons:stop-circle-solid');
+  expect(icon.classes()).toContain('text-gray-600');
+  expect(icon.classes()).not.toContain('motion-safe:animate-spin');
+  wrapper.unmount();
 });

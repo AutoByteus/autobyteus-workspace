@@ -1,0 +1,32 @@
+{
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "expected": [
+    "/probe_twin_11873e_c063e3",
+    "/probe_twin_11873e_245104"
+  ],
+  "reply": "/probe_twin_11873e_c063e3,/probe_twin_11873e_245104",
+  "modelSawExactAddresses": true,
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "list_available_agents",
+      "result": "{\"provider_state\":\"DONE\",\"output\":null}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "view_file",
+      "result": "{\"provider_state\":\"DONE\",\"output\":\"1 lines, 5350 bytes\"}"
+    }
+  ],
+  "conversationToolCalls": [
+    {
+      "tool": "list_available_agents",
+      "result": "{\"provider_state\":\"DONE\",\"output\":null}"
+    },
+    {
+      "tool": "view_file",
+      "result": "{\"provider_state\":\"DONE\",\"output\":\"1 lines, 5350 bytes\"}"
+    }
+  ]
+}

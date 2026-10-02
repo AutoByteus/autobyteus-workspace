@@ -1,3 +1,4 @@
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { TeamWorkspacePatch } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
@@ -192,8 +193,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const messageId = crypto.randomUUID()
     const dedupeKey = `member_input:${id}:${agentRunId}:${messageId}`
     const mentions = mentionsPresentInText(content, context.requestedMentions)
-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions })
-    Object.assign(submission.message, { messageId, dedupeKey })
+    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     const key = keyFor(id, agentRunId)
     submissions.set(key, submission)
     let draftEdited = false
@@ -263,6 +263,14 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (operations.value[id]) throw new Error('AgentOrg operation is already pending.')
     errors.value = { ...errors.value, [id]: null }
     operations.value = { ...operations.value, [id]: 'stop' }
+    const context = contexts.value[id]
+    const view = context?.view
+    const binding = useWindowNodeContextStore().bindingRevision
+    const activities = useAgentActivityStore()
+    const members = context?.listAgentContextEntries().map((entry) => ({
+      ...entry, state: entry.context.state, instance: entry.context.state.inputProjection?.runInstanceId,
+      ids: activities.getNativeCompactionActivityIds(entry.agentRunId),
+    })) ?? []
     generations.delete(id)
     retireStream(id)
     // The old transport cannot publish during Stop, including a rejected Stop.
@@ -270,6 +278,18 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (contexts.value[id]?.isActive) contexts.value[id]?.requireReopen('AgentOrg stop is pending.')
     try {
       await useAgentOrgRunStore().terminate(id)
+      // This owner intentionally retired its transport before the mutation.
+      if (contexts.value[id] !== context || context?.view !== view || services.has(id)
+        || operations.value[id] !== 'stop' || useWindowNodeContextStore().bindingRevision !== binding
+        || members.some((entry) => context?.getAgentContext(entry.agentRunId) !== entry.context
+          || context.index.requireAgent(entry.agentRunId).address !== entry.memberAddress
+          || entry.context.state !== entry.state || entry.state.runId !== entry.agentRunId
+          || (entry.state.inputProjection?.runInstanceId && entry.state.inputProjection.runInstanceId !== entry.instance))) return
+      for (const { agentRunId, context: member, ids } of members) {
+        if (member.config.runtimeKind !== 'autobyteus') continue
+        member.state.compactionStatus = activities.applyConfirmedNativeTermination(agentRunId,
+          [...ids, ...activities.getNativeCompactionActivityIds(agentRunId)], member.state.compactionStatus)
+      }
       markHistorical(id)
       await readInspection(id)
     } catch (cause) { report(id, cause); throw cause }

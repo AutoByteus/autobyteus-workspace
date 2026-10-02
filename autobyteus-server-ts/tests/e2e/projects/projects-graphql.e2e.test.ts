@@ -490,7 +490,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       ["createProjectTask", "deleteProjectTask", "updateProjectTask"],
     );
     const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
-    expect(updateInputFields.sort()).toEqual(["description", "projectId", "taskId"]);
+    expect(updateInputFields.sort()).toEqual(["contextChanges", "description", "projectId", "taskId"]);
     expect(schema.getType("Task")).toBeUndefined();
     expect(schema.getType("TaskStatus")).toBeUndefined();
   });

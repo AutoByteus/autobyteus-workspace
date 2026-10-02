@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-01T12:57:26.835189+00:00",
+  "endpoint": "http://127.0.0.1:56936/graphql",
+  "request": {
+    "query": "mutation { updateServerSetting(key:\"LMSTUDIO_HOSTS\",value:\"http://127.0.0.1:57269\") }",
+    "variables": {}
+  },
+  "response": {
+    "data": {
+      "updateServerSetting": "Server setting 'LMSTUDIO_HOSTS' has been updated successfully."
+    }
+  }
+}

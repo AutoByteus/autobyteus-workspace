@@ -1,0 +1,13 @@
+branch 'codex/context-compaction-simplification-analysis' set up to track 'origin/codex/context-compaction-simplification-analysis'.
+remote: warning: See https://gh.io/lfs for more information.        
+remote: warning: File tickets/done/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/cumulative-package.tar.gz is 99.63 MB; this is larger than GitHub's recommended maximum file size of 50.00 MB        
+remote: warning: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.        
+remote: 
+remote: Create a pull request for 'codex/context-compaction-simplification-analysis' on GitHub by visiting:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/pull/new/codex/context-compaction-simplification-analysis        
+remote: 
+remote: GitHub found 938 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 427 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new branch]          codex/context-compaction-simplification-analysis -> codex/context-compaction-simplification-analysis

@@ -1,12 +1,10 @@
 import fs from "node:fs/promises";
-import { fingerprintConfiguredSkillSource } from "../../../../../src/skills/services/configured-skill-source-fingerprint.js";
 import os from "node:os";
 import path from "node:path";
-import { realpathSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
-import type { DetailedConfiguredSkillResolution } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
+import type { ConfiguredAgentSkillBinding } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
 
 const roots = async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-capsule-test-"));
@@ -15,10 +13,8 @@ const roots = async () => {
   await fs.mkdir(workspacePath);
   return { base, workspacePath, memoryDir };
 };
-const globalBinding = (source: string, name = "example-skill"): DetailedConfiguredSkillResolution => ({
+const globalBinding = (source: string, name = "example-skill"): ConfiguredAgentSkillBinding => ({
   kind: "resolved", skill: new Skill({ name, description: "test", content: "", rootPath: source }),
-  source: { origin: "global", sourceRoot: realpathSync(source), trustedRoot: realpathSync(source) },
-  sourceTreeSha256: fingerprintConfiguredSkillSource(source, source),
 });
 
 const mcpDescriptor = { name: "autobyteus_agent_tools", transport: "streamable_http" as const,
@@ -127,7 +123,7 @@ describe("AGY run capsule", () => {
     }
   });
 
-  it("materializes the configured package and exposes nothing for a definition without skills", async () => {
+  it("links the configured package and exposes nothing for a definition without skills", async () => {
     const root = await roots();
     const source = path.join(root.base, "skill-source");
     await fs.mkdir(source);
@@ -135,7 +131,8 @@ describe("AGY run capsule", () => {
     const binding = globalBinding(source);
     const preloaded = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "preload", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
-      mcpDescriptor: null });
+      workspaceCollisionPolicy: "fail", mcpDescriptor: null });
+    expect((await fs.lstat(path.join(preloaded.path, ".agents", "skills", "example-skill"))).isSymbolicLink()).toBe(true);
     expect(await fs.readFile(path.join(preloaded.path, ".agents", "skills", "example-skill", "SKILL.md"), "utf8")).toBe("# Example skill");
     const none = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "none", memoryDir: path.join(root.base, "none-memory"),
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [],
@@ -144,7 +141,7 @@ describe("AGY run capsule", () => {
     await expect(fs.stat(path.join(none.path, ".agents", "skills", "example-skill"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
-  it("warns and omits only certified absence while retaining resolved snapshots", async () => {
+  it("warns and omits an unresolved named skill while linking resolved skills", async () => {
     const root = await roots();
     const source = path.join(root.base, "skill-source");
     await fs.mkdir(source);
@@ -152,35 +149,10 @@ describe("AGY run capsule", () => {
     const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const capsule = await createAgyRunCapsule({ agentDefinitionId: "codex",
       runId: "missing-mixed", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
-      identity: "Identity", configuredSkillBindings: [{ kind: "certified_absent", name: "missing" }, globalBinding(source)],
-      mcpDescriptor: null });
+      identity: "Identity", configuredSkillBindings: [{ kind: "unresolved", name: "missing" }, globalBinding(source)],
+      workspaceCollisionPolicy: "fail", mcpDescriptor: null });
     expect(capsule.manifest.skills).toEqual([{ name: "example-skill", relativePath: path.join(".agents", "skills", "example-skill") }]);
     expect(warning).toHaveBeenCalledWith(expect.stringContaining("run=missing-mixed, agent=codex, skill=missing, disposition=skipped-missing"));
-  });
-
-  it("warns/omits semantic invalidity but rejects source removed after resolution", async () => {
-    const root = await roots();
-    const source = path.join(root.base, "skill-source");
-    await fs.mkdir(source);
-    await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
-    const common = { agentDefinitionId: "codex",
-      memoryDir: root.memoryDir, workspacePath: root.workspacePath, identity: "Identity",
-      mcpDescriptor: null };
-    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const invalid = await createAgyRunCapsule({ ...common, runId: "invalid", configuredSkillBindings: [
-      { kind: "invalid_candidate", name: "example-skill", reason: "malformed_manifest" }],
-    });
-    expect(invalid.manifest.skills).toEqual([]);
-    expect(warning).toHaveBeenCalledWith(expect.stringContaining("disposition=skipped-invalid, reason=malformed_manifest"));
-    const resolved = globalBinding(source);
-    const mixed = await createAgyRunCapsule({ ...common, runId: "invalid-mixed", memoryDir: path.join(root.base, "mixed-memory"), configuredSkillBindings: [
-      { kind: "invalid_candidate", name: "bad-skill", reason: "name_mismatch" }, resolved,
-    ] });
-    expect(mixed.manifest.skills.map((entry) => entry.name)).toEqual(["example-skill"]);
-    expect(warning).toHaveBeenCalledWith(expect.stringContaining("skill=bad-skill, disposition=skipped-invalid, reason=name_mismatch"));
-    await fs.rm(source, { recursive: true });
-    await expect(createAgyRunCapsule({ ...common, runId: "changed", memoryDir: path.join(root.base, "changed-memory"), configuredSkillBindings: [resolved] }))
-      .rejects.toThrow("AGY_SKILL_SOURCE_CHANGED");
   });
 
   it("never prints an unsafe configured name or unsafe run identity in skip warnings", async () => {
@@ -188,25 +160,11 @@ describe("AGY run capsule", () => {
     const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const capsule = await createAgyRunCapsule({ agentDefinitionId: "codex\nTOKEN=secret",
       runId: "unsafe-log-run", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
-      identity: "Identity", configuredSkillBindings: [{ kind: "invalid_candidate", name: "../../TOKEN=secret", reason: "unsafe_name" }],
-      mcpDescriptor: null });
+      identity: "Identity", configuredSkillBindings: [{ kind: "unresolved", name: "../../TOKEN=secret" }],
+      workspaceCollisionPolicy: "fail", mcpDescriptor: null });
     expect(capsule.manifest.skills).toEqual([]);
-    expect(warning).toHaveBeenCalledWith(expect.stringContaining("skill=[invalid-name], disposition=skipped-invalid, reason=unsafe_name"));
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining("agent=[redacted], skill=[redacted], disposition=skipped-missing"));
     expect(warning.mock.calls.flat().join(" ")).not.toContain("TOKEN=secret");
-  });
-
-  it("rejects non-manifest source content changed after detailed resolution", async () => {
-    const root = await roots();
-    const source = path.join(root.base, "skill-source");
-    await fs.mkdir(source);
-    await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
-    await fs.writeFile(path.join(source, "reference.md"), "before");
-    const resolved = globalBinding(source);
-    await fs.writeFile(path.join(source, "reference.md"), "after");
-    await expect(createAgyRunCapsule({ agentDefinitionId: "codex",
-      runId: "changed-content", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
-      identity: "Identity", configuredSkillBindings: [resolved], mcpDescriptor: null }))
-      .rejects.toThrow("AGY_SKILL_SOURCE_CHANGED");
   });
 
   it("rejects configured skill collisions without overwriting the selected workspace", async () => {
@@ -219,7 +177,8 @@ describe("AGY run capsule", () => {
     const binding = globalBinding(source);
     await expect(createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "collision", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
-      workspaceCollisionPolicy: "fail", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
+      workspaceCollisionPolicy: "fail", mcpDescriptor: null }))
+      .rejects.toThrow("Antigravity could not use skill 'example-skill': the selected workspace already has a skill with this name.");
     expect(await fs.readFile(path.join(userSkill, "SKILL.md"), "utf8")).toBe("# User owned");
     await expect(fs.stat(path.join(root.memoryDir, "agy-project"))).rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -244,6 +203,52 @@ describe("AGY run capsule", () => {
     await expect(fs.stat(path.join(capsule.path, ".agents", "skills", "example-skill"))).rejects.toMatchObject({ code: "ENOENT" });
     expect(await fs.readFile(path.join(userSkill, "SKILL.md"), "utf8")).toBe("# User owned");
     expect(warning).toHaveBeenCalledWith(expect.stringContaining("run=chat-run, agent=autobyteus-daily-assistant, skill=example-skill, disposition=skipped-workspace-owned"));
+  });
+
+  it("resumes a linked run whose skill source was removed, without that skill", async () => {
+    const root = await roots();
+    const kept = path.join(root.base, "kept-skill");
+    const removed = path.join(root.base, "removed-skill");
+    await fs.mkdir(kept); await fs.mkdir(removed);
+    await fs.writeFile(path.join(kept, "SKILL.md"), "# Kept");
+    await fs.writeFile(path.join(removed, "SKILL.md"), "# Removed");
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "linked-resume", memoryDir: root.memoryDir,
+      workspacePath: root.workspacePath, identity: "Identity",
+      configuredSkillBindings: [globalBinding(kept, "kept-skill"), globalBinding(removed, "removed-skill")],
+      workspaceCollisionPolicy: "fail", mcpDescriptor: null });
+    await fs.rm(removed, { recursive: true });
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    const restored = await restoreAgyRunCapsule({ runId: "linked-resume", memoryDir: root.memoryDir,
+      selectedWorkspacePath: root.workspacePath, mcpDescriptor: null });
+
+    expect(restored.manifest.skills.map((entry) => entry.name)).toEqual(["kept-skill", "removed-skill"]);
+    expect(await fs.readFile(path.join(capsule.path, ".agents", "skills", "kept-skill", "SKILL.md"), "utf8")).toBe("# Kept");
+    await expect(fs.lstat(path.join(capsule.path, ".agents", "skills", "removed-skill"))).rejects.toMatchObject({ code: "ENOENT" });
+    expect(warning).toHaveBeenCalledWith("AGY configured skill skipped on restore: run=linked-resume, skill=removed-skill, disposition=skipped-missing-source");
+  });
+
+  it("resumes a run created with copied skill folders", async () => {
+    const root = await roots();
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "copied-run", memoryDir: root.memoryDir,
+      workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [], mcpDescriptor: null });
+    // Shape written before skills were linked: a real folder holding copied files.
+    const copied = path.join(capsule.path, ".agents", "skills", "copied-skill");
+    await fs.mkdir(copied, { recursive: true });
+    await fs.writeFile(path.join(copied, "SKILL.md"), "# Copied");
+    const manifestPath = path.join(capsule.path, "manifest.json");
+    const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
+    await fs.chmod(manifestPath, 0o600);
+    await fs.writeFile(manifestPath, JSON.stringify({ ...manifest,
+      skills: [{ name: "copied-skill", relativePath: path.join(".agents", "skills", "copied-skill") }] }));
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    const restored = await restoreAgyRunCapsule({ runId: "copied-run", memoryDir: root.memoryDir,
+      selectedWorkspacePath: root.workspacePath, mcpDescriptor: null });
+
+    expect(restored.manifest.skills.map((entry) => entry.name)).toEqual(["copied-skill"]);
+    expect(await fs.readFile(path.join(copied, "SKILL.md"), "utf8")).toBe("# Copied");
+    expect(warning).not.toHaveBeenCalled();
   });
 
   it("rejects user-owned AutoByteus MCP key collisions before generating run config", async () => {

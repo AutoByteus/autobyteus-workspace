@@ -1,0 +1,18 @@
+{
+  "time": "2026-10-01T13:05:43.752448+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "navigate",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--url",
+    "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=daily_assistant_c885a1076e524ac493bf01d1ac03a4c5",
+    "--wait-until",
+    "load",
+    "--dialog",
+    "accept"
+  ],
+  "controlPort": 56935
+}

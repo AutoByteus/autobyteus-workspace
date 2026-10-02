@@ -1,0 +1,1858 @@
+[
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/collaborator-mention-note.ts",
+    "effectiveNonempty": 104,
+    "deltaVsHEAD": 117,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+    "effectiveNonempty": 5,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+    "effectiveNonempty": 151,
+    "deltaVsHEAD": 30,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "effectiveNonempty": 56,
+    "deltaVsHEAD": 62,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/index.ts",
+    "effectiveNonempty": 3,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+    "effectiveNonempty": 217,
+    "deltaVsHEAD": 92,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-address-allocator.ts",
+    "effectiveNonempty": 36,
+    "deltaVsHEAD": 39,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-candidate-policy.ts",
+    "effectiveNonempty": 126,
+    "deltaVsHEAD": 142,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+    "effectiveNonempty": 35,
+    "deltaVsHEAD": 38,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-entry-builder.ts",
+    "effectiveNonempty": 96,
+    "deltaVsHEAD": 101,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-errors.ts",
+    "effectiveNonempty": 26,
+    "deltaVsHEAD": 29,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-identity-allocator.ts",
+    "effectiveNonempty": 58,
+    "deltaVsHEAD": 62,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-mention-admission.ts",
+    "effectiveNonempty": 137,
+    "deltaVsHEAD": 147,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-root-port.ts",
+    "effectiveNonempty": 25,
+    "deltaVsHEAD": 27,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-runnability-validator.ts",
+    "effectiveNonempty": 43,
+    "deltaVsHEAD": 47,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-source-projector.ts",
+    "effectiveNonempty": 127,
+    "deltaVsHEAD": 135,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/collaborator-handle-preparation.ts",
+    "effectiveNonempty": 58,
+    "deltaVsHEAD": 60,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+    "effectiveNonempty": 52,
+    "deltaVsHEAD": 54,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+    "effectiveNonempty": 261,
+    "deltaVsHEAD": 270,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "effectiveNonempty": 246,
+    "deltaVsHEAD": 256,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/located-execution-structure.ts",
+    "effectiveNonempty": 17,
+    "deltaVsHEAD": 9,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/member-execution-context.ts",
+    "effectiveNonempty": 88,
+    "deltaVsHEAD": 9,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/root-execution-identity.ts",
+    "effectiveNonempty": 145,
+    "deltaVsHEAD": 21,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+    "effectiveNonempty": 368,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+    "effectiveNonempty": 96,
+    "deltaVsHEAD": 86,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/root-operation-gate.ts",
+    "effectiveNonempty": 32,
+    "deltaVsHEAD": 36,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+    "effectiveNonempty": 41,
+    "deltaVsHEAD": 4,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-target.ts",
+    "effectiveNonempty": 22,
+    "deltaVsHEAD": 23,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-context-enricher.ts",
+    "effectiveNonempty": 43,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts",
+    "effectiveNonempty": 66,
+    "deltaVsHEAD": 11,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "effectiveNonempty": 412,
+    "deltaVsHEAD": 41,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+    "effectiveNonempty": 309,
+    "deltaVsHEAD": 38,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+    "effectiveNonempty": 189,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+    "effectiveNonempty": 74,
+    "deltaVsHEAD": 10,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+    "effectiveNonempty": 253,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+    "effectiveNonempty": 280,
+    "deltaVsHEAD": 11,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-collaboration-binding.ts",
+    "effectiveNonempty": 19,
+    "deltaVsHEAD": 21,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "effectiveNonempty": 412,
+    "deltaVsHEAD": 22,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts",
+    "effectiveNonempty": 68,
+    "deltaVsHEAD": 19,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/domain/memory-recording-models.ts",
+    "effectiveNonempty": 106,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/collaboration-member-memory-targets.ts",
+    "effectiveNonempty": 150,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts",
+    "effectiveNonempty": 259,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts",
+    "effectiveNonempty": 232,
+    "deltaVsHEAD": 42,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/store/agent-memory-layout.ts",
+    "effectiveNonempty": 111,
+    "deltaVsHEAD": 21,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/store/external-runtime-memory-writer.ts",
+    "effectiveNonempty": 118,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-event.ts",
+    "effectiveNonempty": 14,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-execution-tree.ts",
+    "effectiveNonempty": 30,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "effectiveNonempty": 484,
+    "deltaVsHEAD": 160,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-agent-status-snapshot-projector.ts",
+    "effectiveNonempty": 41,
+    "deltaVsHEAD": 8,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+    "effectiveNonempty": 267,
+    "deltaVsHEAD": 75,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+    "effectiveNonempty": 209,
+    "deltaVsHEAD": 62,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+    "effectiveNonempty": 46,
+    "deltaVsHEAD": 49,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-reference-content-service.ts",
+    "effectiveNonempty": 88,
+    "deltaVsHEAD": 11,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-collaborators.ts",
+    "effectiveNonempty": 91,
+    "deltaVsHEAD": 96,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-execution-tree-mutator.ts",
+    "effectiveNonempty": 181,
+    "deltaVsHEAD": 34,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-planner.ts",
+    "effectiveNonempty": 82,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-event-retirement.ts",
+    "effectiveNonempty": 51,
+    "deltaVsHEAD": 55,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+    "effectiveNonempty": 292,
+    "deltaVsHEAD": 47,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-source-resolver.ts",
+    "effectiveNonempty": 38,
+    "deltaVsHEAD": 42,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root-event.ts",
+    "effectiveNonempty": 15,
+    "deltaVsHEAD": 16,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "effectiveNonempty": 469,
+    "deltaVsHEAD": 493,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-tree.ts",
+    "effectiveNonempty": 45,
+    "deltaVsHEAD": 51,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts",
+    "effectiveNonempty": 20,
+    "deltaVsHEAD": 21,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-collaborators.ts",
+    "effectiveNonempty": 87,
+    "deltaVsHEAD": 92,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+    "effectiveNonempty": 73,
+    "deltaVsHEAD": 77,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+    "effectiveNonempty": 225,
+    "deltaVsHEAD": 245,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-host-context-builder.ts",
+    "effectiveNonempty": 64,
+    "deltaVsHEAD": 68,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+    "effectiveNonempty": 15,
+    "deltaVsHEAD": 16,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+    "effectiveNonempty": 183,
+    "deltaVsHEAD": 201,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-member-view-projection-service.ts",
+    "effectiveNonempty": 95,
+    "deltaVsHEAD": 104,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts",
+    "effectiveNonempty": 140,
+    "deltaVsHEAD": 150,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+    "effectiveNonempty": 44,
+    "deltaVsHEAD": 47,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+    "effectiveNonempty": 173,
+    "deltaVsHEAD": 178,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "effectiveNonempty": 239,
+    "deltaVsHEAD": 259,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+    "effectiveNonempty": 269,
+    "deltaVsHEAD": 284,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-source-resolver.ts",
+    "effectiveNonempty": 25,
+    "deltaVsHEAD": 28,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-tree-mutator.ts",
+    "effectiveNonempty": 127,
+    "deltaVsHEAD": 135,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+    "effectiveNonempty": 497,
+    "deltaVsHEAD": 112,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts",
+    "effectiveNonempty": 56,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts",
+    "effectiveNonempty": 47,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+    "effectiveNonempty": 121,
+    "deltaVsHEAD": 8,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "effectiveNonempty": 494,
+    "deltaVsHEAD": 64,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+    "effectiveNonempty": 72,
+    "deltaVsHEAD": 78,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/configured-agent-execution-registry.ts",
+    "effectiveNonempty": 64,
+    "deltaVsHEAD": 4,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/flat-team-member-config-resolver.ts",
+    "effectiveNonempty": 33,
+    "deltaVsHEAD": 29,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+    "effectiveNonempty": 92,
+    "deltaVsHEAD": 28,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/resolved-team-recipient.ts",
+    "effectiveNonempty": 5,
+    "deltaVsHEAD": 13,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+    "effectiveNonempty": 318,
+    "deltaVsHEAD": 87,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+    "effectiveNonempty": 89,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-recipient-resolver.ts",
+    "effectiveNonempty": 60,
+    "deltaVsHEAD": 57,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-collaborator-hosting.ts",
+    "effectiveNonempty": 53,
+    "deltaVsHEAD": 54,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+    "effectiveNonempty": 128,
+    "deltaVsHEAD": 12,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-collaborators.ts",
+    "effectiveNonempty": 111,
+    "deltaVsHEAD": 119,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-builder.ts",
+    "effectiveNonempty": 80,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts",
+    "effectiveNonempty": 219,
+    "deltaVsHEAD": 46,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-execution-resolution.ts",
+    "effectiveNonempty": 25,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+    "effectiveNonempty": 257,
+    "deltaVsHEAD": 44,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+    "effectiveNonempty": 34,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-source-resolver.ts",
+    "effectiveNonempty": 40,
+    "deltaVsHEAD": 45,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts",
+    "effectiveNonempty": 75,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/schema.ts",
+    "effectiveNonempty": 85,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/services/collaborator-root-port-resolver.ts",
+    "effectiveNonempty": 73,
+    "deltaVsHEAD": 75,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts",
+    "effectiveNonempty": 80,
+    "deltaVsHEAD": 87,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/run-history.ts",
+    "effectiveNonempty": 253,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/agent-collaboration-references.ts",
+    "effectiveNonempty": 41,
+    "deltaVsHEAD": 42,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+    "effectiveNonempty": 285,
+    "deltaVsHEAD": 39,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/index.ts",
+    "effectiveNonempty": 52,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/websocket/agent.ts",
+    "effectiveNonempty": 181,
+    "deltaVsHEAD": 24,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/websocket/index.ts",
+    "effectiveNonempty": 45,
+    "deltaVsHEAD": 13,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/application-agent-tools/services/application-agent-tool-capability.ts",
+    "effectiveNonempty": 133,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts",
+    "effectiveNonempty": 139,
+    "deltaVsHEAD": 70,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts",
+    "effectiveNonempty": 126,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+    "effectiveNonempty": 192,
+    "deltaVsHEAD": 24,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+    "effectiveNonempty": 119,
+    "deltaVsHEAD": 44,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+    "effectiveNonempty": 75,
+    "deltaVsHEAD": 4,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/agent-run-history-index-types.ts",
+    "effectiveNonempty": 31,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/collaborator-entry-tree-mapping.ts",
+    "effectiveNonempty": 36,
+    "deltaVsHEAD": 39,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+    "effectiveNonempty": 126,
+    "deltaVsHEAD": 55,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts",
+    "effectiveNonempty": 105,
+    "deltaVsHEAD": 9,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/run-projection-types.ts",
+    "effectiveNonempty": 131,
+    "deltaVsHEAD": 15,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+    "effectiveNonempty": 66,
+    "deltaVsHEAD": 14,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+    "effectiveNonempty": 246,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-org-member-run-view-projection-service.ts",
+    "effectiveNonempty": 131,
+    "deltaVsHEAD": 27,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+    "effectiveNonempty": 490,
+    "deltaVsHEAD": 42,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts",
+    "effectiveNonempty": 144,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts",
+    "effectiveNonempty": 120,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/standalone-run-liveness.ts",
+    "effectiveNonempty": 54,
+    "deltaVsHEAD": 60,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts",
+    "effectiveNonempty": 99,
+    "deltaVsHEAD": 31,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-schema.ts",
+    "effectiveNonempty": 138,
+    "deltaVsHEAD": 26,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-path.ts",
+    "effectiveNonempty": 11,
+    "deltaVsHEAD": 15,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-schema.ts",
+    "effectiveNonempty": 93,
+    "deltaVsHEAD": 96,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-store.ts",
+    "effectiveNonempty": 68,
+    "deltaVsHEAD": 75,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-history-index-record-types.ts",
+    "effectiveNonempty": 13,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-history-index-store.ts",
+    "effectiveNonempty": 168,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts",
+    "effectiveNonempty": 112,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts",
+    "effectiveNonempty": 24,
+    "deltaVsHEAD": 8,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+    "effectiveNonempty": 435,
+    "deltaVsHEAD": 167,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/team-run-execution-tree-schema.ts",
+    "effectiveNonempty": 117,
+    "deltaVsHEAD": 17,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts",
+    "effectiveNonempty": 155,
+    "deltaVsHEAD": 161,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "effectiveNonempty": 79,
+    "deltaVsHEAD": 82,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "effectiveNonempty": 90,
+    "deltaVsHEAD": 42,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+    "effectiveNonempty": 202,
+    "deltaVsHEAD": 29,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts",
+    "effectiveNonempty": 469,
+    "deltaVsHEAD": 12,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts",
+    "effectiveNonempty": 257,
+    "deltaVsHEAD": 26,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts",
+    "effectiveNonempty": 229,
+    "deltaVsHEAD": 41,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts",
+    "effectiveNonempty": 270,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/token-usage/providers/token-usage-display-field-capturer.ts",
+    "effectiveNonempty": 138,
+    "deltaVsHEAD": 20,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts",
+    "effectiveNonempty": 65,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-control-message-dtos.ts",
+    "effectiveNonempty": 29,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts",
+    "effectiveNonempty": 216,
+    "deltaVsHEAD": 60,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-stream-server-message.ts",
+    "effectiveNonempty": 93,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-task-execution-message-dtos.ts",
+    "effectiveNonempty": 20,
+    "deltaVsHEAD": 9,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts",
+    "effectiveNonempty": 47,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/message/inter-agent-sender.ts",
+    "effectiveNonempty": 10,
+    "deltaVsHEAD": 10,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager.ts",
+    "effectiveNonempty": 497,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/raw-trace-ingestion.ts",
+    "effectiveNonempty": 149,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputForm.vue",
+    "effectiveNonempty": 51,
+    "deltaVsHEAD": 22,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+    "effectiveNonempty": 332,
+    "deltaVsHEAD": 69,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/CollaboratorAddFailureNotice.vue",
+    "effectiveNonempty": 38,
+    "deltaVsHEAD": 42,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/MentionChipRow.vue",
+    "effectiveNonempty": 32,
+    "deltaVsHEAD": 34,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/chat/ChatTargetMenu.vue",
+    "effectiveNonempty": 77,
+    "deltaVsHEAD": 40,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/conversation/UserMessage.vue",
+    "effectiveNonempty": 148,
+    "deltaVsHEAD": 15,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/conversation/segments/InterAgentMessageSegment.vue",
+    "effectiveNonempty": 152,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentEventMonitor.vue",
+    "effectiveNonempty": 88,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceSurface.vue",
+    "effectiveNonempty": 109,
+    "deltaVsHEAD": 11,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue",
+    "effectiveNonempty": 78,
+    "deltaVsHEAD": 24,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/AgentRunTaskRows.vue",
+    "effectiveNonempty": 64,
+    "deltaVsHEAD": 70,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+    "effectiveNonempty": 231,
+    "deltaVsHEAD": 18,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue",
+    "effectiveNonempty": 419,
+    "deltaVsHEAD": 31,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue",
+    "effectiveNonempty": 216,
+    "deltaVsHEAD": 39,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    "effectiveNonempty": 98,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "effectiveNonempty": 29,
+    "deltaVsHEAD": 33,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/runMentionScope.ts",
+    "effectiveNonempty": 53,
+    "deltaVsHEAD": 57,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/useComposerTarget.ts",
+    "effectiveNonempty": 66,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/useRunMentionMenu.ts",
+    "effectiveNonempty": 145,
+    "deltaVsHEAD": 159,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/composables/useContextAttachmentComposer.ts",
+    "effectiveNonempty": 357,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/composables/useWorkspaceHistoryTreeState.ts",
+    "effectiveNonempty": 449,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/collaboratorQueries.ts",
+    "effectiveNonempty": 36,
+    "deltaVsHEAD": 39,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/runHistoryQueries.ts",
+    "effectiveNonempty": 305,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationChildContextFactory.ts",
+    "effectiveNonempty": 30,
+    "deltaVsHEAD": 31,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "effectiveNonempty": 298,
+    "deltaVsHEAD": 319,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "effectiveNonempty": 110,
+    "deltaVsHEAD": 117,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationIndex.ts",
+    "effectiveNonempty": 110,
+    "deltaVsHEAD": 123,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "effectiveNonempty": 247,
+    "deltaVsHEAD": 267,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgCommunicationPerspective.ts",
+    "effectiveNonempty": 59,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts",
+    "effectiveNonempty": 166,
+    "deltaVsHEAD": 40,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+    "effectiveNonempty": 323,
+    "deltaVsHEAD": 54,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionViewIndex.ts",
+    "effectiveNonempty": 155,
+    "deltaVsHEAD": 32,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgMemberContextFactory.ts",
+    "effectiveNonempty": 45,
+    "deltaVsHEAD": 48,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+    "effectiveNonempty": 474,
+    "deltaVsHEAD": 9,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/AgentStreamingService.ts",
+    "effectiveNonempty": 314,
+    "deltaVsHEAD": 43,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/TeamStreamingService.ts",
+    "effectiveNonempty": 425,
+    "deltaVsHEAD": 15,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts",
+    "effectiveNonempty": 247,
+    "deltaVsHEAD": 14,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/handlers/memberInputMessageHandler.ts",
+    "effectiveNonempty": 42,
+    "deltaVsHEAD": 27,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts",
+    "effectiveNonempty": 73,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/messageTypes.ts",
+    "effectiveNonempty": 313,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/teamClientMessageFactory.ts",
+    "effectiveNonempty": 47,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/agentSourceSelectors.ts",
+    "effectiveNonempty": 117,
+    "deltaVsHEAD": 133,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/collaboratorAddFailures.ts",
+    "effectiveNonempty": 26,
+    "deltaVsHEAD": 30,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/collaboratorCandidatesService.ts",
+    "effectiveNonempty": 93,
+    "deltaVsHEAD": 104,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/runProjectionConversation.ts",
+    "effectiveNonempty": 340,
+    "deltaVsHEAD": 21,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts",
+    "effectiveNonempty": 155,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamRunContextHydrationService.ts",
+    "effectiveNonempty": 320,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+    "effectiveNonempty": 167,
+    "deltaVsHEAD": 66,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts",
+    "effectiveNonempty": 153,
+    "deltaVsHEAD": 22,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts",
+    "effectiveNonempty": 93,
+    "deltaVsHEAD": 29,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts",
+    "effectiveNonempty": 326,
+    "deltaVsHEAD": 74,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewModels.ts",
+    "effectiveNonempty": 68,
+    "deltaVsHEAD": 6,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+    "effectiveNonempty": 406,
+    "deltaVsHEAD": 22,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/stores/activeContextStore.ts",
+    "effectiveNonempty": 278,
+    "deltaVsHEAD": 7,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "effectiveNonempty": 352,
+    "deltaVsHEAD": 15,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "effectiveNonempty": 285,
+    "deltaVsHEAD": 304,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": true
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "effectiveNonempty": 456,
+    "deltaVsHEAD": 40,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+    "effectiveNonempty": 482,
+    "deltaVsHEAD": 14,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTeamExecutionRows.ts",
+    "effectiveNonempty": 106,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTypes.ts",
+    "effectiveNonempty": 259,
+    "deltaVsHEAD": 4,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/types/agent/AgentContext.ts",
+    "effectiveNonempty": 44,
+    "deltaVsHEAD": 8,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/types/conversation.ts",
+    "effectiveNonempty": 92,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/types/node.ts",
+    "effectiveNonempty": 60,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/types/segments.ts",
+    "effectiveNonempty": 111,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+    "effectiveNonempty": 93,
+    "deltaVsHEAD": 19,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/types/workspace/collaborationMessagesContextView.ts",
+    "effectiveNonempty": 35,
+    "deltaVsHEAD": 2,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/agentOrgHistoryRows.ts",
+    "effectiveNonempty": 229,
+    "deltaVsHEAD": 21,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/collaboration/interAgentDelivery.ts",
+    "effectiveNonempty": 13,
+    "deltaVsHEAD": 15,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/collaboration/memberDisplayName.ts",
+    "effectiveNonempty": 13,
+    "deltaVsHEAD": 14,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/collaborators/collaboratorMentionText.ts",
+    "effectiveNonempty": 72,
+    "deltaVsHEAD": 84,
+    "newVsHEAD": true,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+    "effectiveNonempty": 302,
+    "deltaVsHEAD": 10,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextFileOwner.ts",
+    "effectiveNonempty": 90,
+    "deltaVsHEAD": 28,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/nodeEndpoints.ts",
+    "effectiveNonempty": 68,
+    "deltaVsHEAD": 1,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/runTreeProjection.ts",
+    "effectiveNonempty": 371,
+    "deltaVsHEAD": 3,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/runTreeSummary.ts",
+    "effectiveNonempty": 24,
+    "deltaVsHEAD": 11,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/teamCommunication/teamCommunicationPerspective.ts",
+    "effectiveNonempty": 59,
+    "deltaVsHEAD": 5,
+    "newVsHEAD": false,
+    "over500": false,
+    "over220": false
+  }
+]

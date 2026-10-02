@@ -1,0 +1,23 @@
+{
+  "verifiedAt": "2026-09-26T21:24:07.084417+00:00",
+  "ports": {
+    "55688": "closed",
+    "55719": "closed"
+  },
+  "ownedResourcesAbsent": {
+    "autobyteus-server-ts/tests/.tmp/api-rev-002-owned": true,
+    "autobyteus-server-ts/db/api-rev-002-owned.db": true,
+    "autobyteus-server-ts/db/api-rev-002-owned.db.secret.key": true,
+    "autobyteus-server-ts/db/api-rev-002-owned.db-wal": true,
+    "autobyteus-server-ts/db/api-rev-002-owned.db-shm": true
+  },
+  "ownedProcesses": {
+    "93091": "",
+    "96244": ""
+  },
+  "userDesktopPid": 46779,
+  "userDesktopStillRunning": true,
+  "sharedProviderUntouched": true,
+  "diffCheck": "Pass",
+  "registeredRunnerSyntax": "Pass"
+}

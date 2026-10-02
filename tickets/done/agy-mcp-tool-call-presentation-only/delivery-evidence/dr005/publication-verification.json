@@ -1,0 +1,41 @@
+{
+  "prerelease": true,
+  "draft": false,
+  "assets_nonempty": true,
+  "asset_count": 17,
+  "updater_metadata": {
+    "latest-linux-arm64.yml": {
+      "version": "1.4.92-beta.6",
+      "referenced_assets": [
+        "AutoByteus_personal_linux-arm64-1.4.92-beta.6.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.92-beta.6.AppImage"
+      ]
+    },
+    "latest-linux.yml": {
+      "version": "1.4.92-beta.6",
+      "referenced_assets": [
+        "AutoByteus_personal_linux-x64-1.4.92-beta.6.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.92-beta.6.AppImage"
+      ]
+    },
+    "latest-mac.yml": {
+      "version": "1.4.92-beta.6",
+      "referenced_assets": [
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.6.zip",
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.6.dmg",
+        "AutoByteus_personal_macos-x64-1.4.92-beta.6.zip",
+        "AutoByteus_personal_macos-x64-1.4.92-beta.6.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.6.zip"
+      ]
+    },
+    "latest.yml": {
+      "version": "1.4.92-beta.6",
+      "referenced_assets": [
+        "AutoByteus_personal_windows-1.4.92-beta.6.exe",
+        "AutoByteus_personal_windows-1.4.92-beta.6.exe"
+      ]
+    }
+  },
+  "downloaded_installers_executed": false,
+  "note": "CI signed/notarized builds and publication succeeded; current-candidate packaged smoke evidence API-REV-003. No production installation."
+}

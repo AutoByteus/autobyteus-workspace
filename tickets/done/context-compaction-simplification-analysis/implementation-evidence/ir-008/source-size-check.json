@@ -1,0 +1,37 @@
+[
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+    "effectiveNonEmptyLines": 5,
+    "deltaVsCheckpoint": 1,
+    "over500": false,
+    "deltaOver220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts",
+    "effectiveNonEmptyLines": 0,
+    "deltaVsCheckpoint": 0,
+    "over500": false,
+    "deltaOver220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts",
+    "effectiveNonEmptyLines": 0,
+    "deltaVsCheckpoint": 0,
+    "over500": false,
+    "deltaOver220": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "effectiveNonEmptyLines": 352,
+    "deltaVsCheckpoint": 15,
+    "over500": false,
+    "deltaOver220": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "effectiveNonEmptyLines": 450,
+    "deltaVsCheckpoint": 34,
+    "over500": false,
+    "deltaOver220": false
+  }
+]

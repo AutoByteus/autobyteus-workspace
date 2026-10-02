@@ -1,0 +1,17 @@
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+
+> @autobyteus/collaboration-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-collaboration-stream-contracts
+> tsc -p tsconfig.build.json
+
+src/agent-org-execution/services/agent-org-run-manager.ts(157,5): error TS2322: Type 'Promise<Readonly<{ orgRunId: string; isActive: true; snapshot: Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; messag...' is not assignable to type 'Promise<Readonly<{ orgRunId: string; isActive: boolean; snapshot: Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; mes...'.
+  Type 'Readonly<{ orgRunId: string; isActive: true; snapshot: Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; messages: Read...' is not assignable to type 'Readonly<{ orgRunId: string; isActive: boolean; snapshot: Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; messages: R...'.
+    Type 'Readonly<{ orgRunId: string; isActive: false; baseChangeSequence: 0; snapshot: Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...' is not assignable to type 'Readonly<{ orgRunId: string; isActive: boolean; snapshot: Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; messages: R...'.
+      Types of property 'snapshot' are incompatible.
+        Property 'inputStates' is missing in type 'Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; messages: Readonly<...>; statuses: readonly never[]; }>' but required in type 'Readonly<{ tree: Readonly<{ subjectKind: "agent_org"; createdAt: string; archivedAt: string | null; applicationBinding: Readonly<{ applicationId: string; bindingId: string; }> | null; handoffs: readonly Readonly<...>[]; rootOrg: Readonly<...>; }>; messages: Readonly<...>; statuses: readonly Readonly<...>[]; inputSta...'.

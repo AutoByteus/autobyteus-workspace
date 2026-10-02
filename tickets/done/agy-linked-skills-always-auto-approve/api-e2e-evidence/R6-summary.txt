@@ -1,0 +1,11 @@
+=== unit-live start 2026-10-01T20:53:33Z
+=== unit-live exit=1 2026-10-01T20:54:40Z       Tests  2 failed | 3 passed (5)
+=== capability start 2026-10-01T20:54:40Z
+=== capability exit=0 2026-10-01T20:55:23Z       Tests  3 passed | 2 skipped (5)
+=== team-org start 2026-10-01T20:55:23Z
+=== team-org exit=0 2026-10-01T20:56:15Z       Tests  2 passed (2)
+=== background start 2026-10-01T20:56:15Z
+=== background exit=0 2026-10-01T21:07:53Z       Tests  8 passed (8)
+=== recovery start 2026-10-01T21:07:53Z
+=== recovery exit=0 2026-10-01T21:10:22Z       Tests  5 passed (5)
+=== ALL DONE 2026-10-01T21:10:22Z

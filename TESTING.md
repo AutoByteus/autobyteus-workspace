@@ -14,6 +14,7 @@ package's script from its own directory.
 | Layer | What it proves | Command |
 | --- | --- | --- |
 | Web unit and component tests | Nuxt renderer components, stores, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
+| Workspace native-to-web integration | Native producer/FIFO and saved/live web hydration at a workspace-owned test boundary (`test-support/native-input-history/`) | `pnpm test:native-input-history` |
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | All web tests | Both of the above | `pnpm -C autobyteus-web test` |
 | Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
@@ -22,12 +23,27 @@ package's script from its own directory.
 | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
 | Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
 | Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run` |
+| Antigravity (AGY) runtime E2E, fake CLI | AGY stream conversion through the real server (WebSocket, history, Files) with a scripted CLI; no model call | `RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute path>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/<file> --no-watch` |
+| Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1` or `RUN_AGY_RECOVERY_E2E=1`, then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
 | Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
 
 Notes:
 
+- **Workspace native-to-web integration** is owned by `test-support/`, outside
+  the web package. The web must not depend on the core, including its local
+  test setup. Do not move a core import into a web test-only folder or hide it
+  behind an alias, dynamic import, server re-export or helper.
+  `pnpm test:native-input-history` first runs the unchanged web boundary guard,
+  then an explicit workspace harness using the existing Nuxt test environment.
+  It uses current core `dist` outputs (build changed core source first with
+  `pnpm -C autobyteus-ts build`) and controlled model/provisioning/Apollo doubles.
+  Both native Agent and hosted-Team cases retain fresh raw-history, FIFO and
+  hydration assertions. They do not prove HTTP or packaged renderer reload.
+  Web guard contract checks run with `pnpm -C autobyteus-web test:nuxt
+  tests/integration/web-boundary-guard.integration.test.ts --run`.
+  A guard pass is only a build prerequisite, not a full build or product pass.
 - **Real-provider credentials** live in the encrypted vault of the target
   database. Provision them with the importer, never by editing `.env` files:
   `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`

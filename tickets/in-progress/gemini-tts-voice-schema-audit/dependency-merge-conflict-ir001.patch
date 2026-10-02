@@ -1,0 +1,52 @@
+diff --cc test-support/live-e2e/live-e2e-harness.ts
+index bfa76f036,e9b9ea0ce..000000000
+--- a/test-support/live-e2e/live-e2e-harness.ts
++++ b/test-support/live-e2e/live-e2e-harness.ts
+@@@ -54,12 -49,7 +54,15 @@@ import { AutoByteusAgentRunBackendFacto
+  import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
+  import { AgentRun } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run.js';
+  import { AgentRunProviderInputNormalizer } from '../../autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.js';
+++<<<<<<< HEAD
+ +import { ContextFileLayout } from '../../autobyteus-server-ts/src/context-files/store/context-file-layout.js';
+ +import { ContextFileOwnerResolver } from '../../autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.js';
+ +import { ContextFileLocalPathResolver } from '../../autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.js';
+ +import { createStoredTeamRunExecutionTreeLocationService } from '../../autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.js';
+ +import { AgentOrgExecutionTreeLocationService } from '../../autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
+ +import { CollaborationExecutionLocationService } from '../../autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.js';
+++=======
+++>>>>>>> c6586a07f3c2585aa13673875c1bc34c971b6e5e
+  import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
+  import {
+    AgentRunEventType,
+@@@ -99,22 -89,12 +102,31 @@@ type LiveE2eAgentBackendFactory = 
+  
+  export const wrapProductAgentBackendForLiveE2e = (
+    backend: AgentRunBackend,
+++<<<<<<< HEAD
+ +  environment: { appDataDir: string; memoryDir: string; baseUrl: string },
+ +): LiveE2eAgentBackend => {
+ +  // Match production composition, but resolve only within the scenario's owned storage.
+ +  const locations = new CollaborationExecutionLocationService({
+ +    teams: createStoredTeamRunExecutionTreeLocationService(environment.memoryDir),
+ +    orgs: new AgentOrgExecutionTreeLocationService({ memoryDir: environment.memoryDir }),
+ +  });
+ +  const providerInputNormalizer = new AgentRunProviderInputNormalizer(
+ +    new ContextFileLocalPathResolver({
+ +      layout: new ContextFileLayout(environment),
+ +      ownerResolver: new ContextFileOwnerResolver({ locations, memoryDir: environment.memoryDir }),
+ +      baseUrl: environment.baseUrl,
+ +    }),
+ +  );
+ +  return new AgentRun({ context: backend.getContext(), backend, providerInputNormalizer });
+ +};
+++=======
++ ): LiveE2eAgentBackend => new AgentRun({
++   context: backend.getContext(),
++   backend,
++   // The scoped live agent flows carry no context files; preserve any URI unchanged.
++   providerInputNormalizer: new AgentRunProviderInputNormalizer({ resolve: () => null }),
++ });
+++>>>>>>> c6586a07f3c2585aa13673875c1bc34c971b6e5e
+  
+  export type LiveE2eAgentFlowResult = {
+    scenarioId: string;

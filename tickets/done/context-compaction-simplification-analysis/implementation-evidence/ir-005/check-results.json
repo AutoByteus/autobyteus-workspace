@@ -1,0 +1,62 @@
+{
+  "core-final": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/core-final.log"
+  },
+  "core-factory": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/core-factory.log"
+  },
+  "core-build-final": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/core-build-final.log"
+  },
+  "server-build-final": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/server-build-final.log"
+  },
+  "server-supported-final": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/server-supported-final.log"
+  },
+  "server-stream-and-api-fixtures": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/server-stream-and-api-fixtures.log"
+  },
+  "server-preserved-boundaries": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/server-preserved-boundaries.log"
+  },
+  "server-command-projection": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/server-command-projection.log"
+  },
+  "web-focused-final": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/web-focused-final.log"
+  },
+  "web-build": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/web-build.log"
+  },
+  "presentation-contract-tests": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/presentation-contract-tests.log"
+  },
+  "team-contract-tests": {
+    "exit": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/team-contract-tests.log"
+  },
+  "current-contract-tests": {
+    "exit": 1,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/current-contract-tests.log"
+  },
+  "baseline-contract-tests": {
+    "exit": 1,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/baseline-contract-tests.log"
+  },
+  "web-typecheck-local-ts-8gb": {
+    "exit": 2,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/web-typecheck-local-ts-8gb.log"
+  }
+}

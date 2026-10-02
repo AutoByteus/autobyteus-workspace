@@ -1,0 +1,18 @@
+{
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "entry_pins": 1482,
+  "changed": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+      "authorized": true
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md",
+      "authorized": true
+    }
+  ],
+  "unexpected": [],
+  "api_source_inventory_check": "source-audit.json",
+  "no_source_or_durable_test_edits": true
+}

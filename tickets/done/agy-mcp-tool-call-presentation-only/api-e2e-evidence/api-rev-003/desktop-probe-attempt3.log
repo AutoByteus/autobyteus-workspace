@@ -1,0 +1,6 @@
+Fail locator.click: Timeout 45000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-tab-name="progress"]:visible').first()[22m
+
+    at readActivity (/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:44:161)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:103:181

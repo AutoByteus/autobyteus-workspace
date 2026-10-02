@@ -1,0 +1,75 @@
+{
+  "startedAt": "2026-10-02T03:01:25.827Z",
+  "controlPort": "60772",
+  "backend": "http://127.0.0.1:60773",
+  "model": "haiku",
+  "phases": {
+    "D0": {
+      "startedAt": "2026-10-02T03:01:25.873Z",
+      "shots": [
+        "D0-public-package-imported.png",
+        "D0-tool-picker.png"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "public package imported; Project Manager defined with list_available_agents",
+          "details": {
+            "defs": {
+              "productPrototyper": "product-prototyper",
+              "seTeam": "software-engineering-team",
+              "productTeam": "product-team",
+              "marketingTeam": "marketing-team",
+              "researchEngineer": "research-engineer",
+              "pm": "project-manager"
+            },
+            "orgs": [
+              {
+                "id": "autobyteus-org",
+                "name": "AutoByteus Org"
+              },
+              {
+                "id": "northstar-operating-company",
+                "name": "Northstar Operating Company"
+              },
+              {
+                "id": "software-development-department",
+                "name": "Software Development Department"
+              }
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "the tool picker shows list_available_agents on the Project Manager",
+          "details": null
+        }
+      ],
+      "result": "Pass"
+    }
+  },
+  "observations": [],
+  "definitions": {
+    "productPrototyper": "product-prototyper",
+    "seTeam": "software-engineering-team",
+    "productTeam": "product-team",
+    "marketingTeam": "marketing-team",
+    "researchEngineer": "research-engineer",
+    "pm": "project-manager"
+  },
+  "orgs": [
+    {
+      "id": "autobyteus-org",
+      "name": "AutoByteus Org"
+    },
+    {
+      "id": "northstar-operating-company",
+      "name": "Northstar Operating Company"
+    },
+    {
+      "id": "software-development-department",
+      "name": "Software Development Department"
+    }
+  ],
+  "pageErrors": []
+}

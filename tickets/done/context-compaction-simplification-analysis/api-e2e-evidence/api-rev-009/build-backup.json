@@ -1,0 +1,19 @@
+{
+  "archive": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api009-build-backup-rafb7hv7/prebuild-outputs.tar",
+  "paths": [
+    "autobyteus-agent-presentation-contracts/dist",
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-collaboration-stream-contracts/dist",
+    "autobyteus-server-ts/dist",
+    "autobyteus-team-stream-contracts/dist",
+    "autobyteus-ts/dist",
+    "autobyteus-web/dist",
+    "autobyteus-web/resources/server",
+    "autobyteus-web/electron-dist",
+    "autobyteus-web/electron",
+    "autobyteus-web/build/dist"
+  ],
+  "sha256": "1e21806e7279451d5f9dedca311e9519ff6aa84ee83c9750b7bc1a530cd72ff0",
+  "size": 3324772352
+}

@@ -1,5 +1,25 @@
 import { describe, expect, it } from 'vitest'
-import { autoExecuteForNewRuntimeSelection, withNewRuntimeOverridePolicy } from '../agentRunRuntimeDraftPolicy'
+import {
+  autoExecuteForNewRuntimeSelection,
+  effectiveAutoExecuteTools,
+  isAutoApproveLockedForRuntime,
+  withNewRuntimeOverridePolicy,
+} from '../agentRunRuntimeDraftPolicy'
+
+describe('AGY auto-approve lock', () => {
+  it('locks auto-approve only for Antigravity', () => {
+    expect(isAutoApproveLockedForRuntime('antigravity_cli')).toBe(true)
+    for (const runtimeKind of ['autobyteus', 'codex_app_server', 'claude_agent_sdk', '', null, undefined])
+      expect(isAutoApproveLockedForRuntime(runtimeKind)).toBe(false)
+  })
+
+  it('shows and submits AGY auto-approve on regardless of the stored value, and other runtimes as stored', () => {
+    expect(effectiveAutoExecuteTools('antigravity_cli', false)).toBe(true)
+    expect(effectiveAutoExecuteTools('antigravity_cli', true)).toBe(true)
+    expect(effectiveAutoExecuteTools('codex_app_server', false)).toBe(false)
+    expect(effectiveAutoExecuteTools('codex_app_server', true)).toBe(true)
+  })
+})
 
 describe('AGY editable launch defaults', () => {
   it('defaults a newly selected AGY runtime on without changing other runtimes', () => {

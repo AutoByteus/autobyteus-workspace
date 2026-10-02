@@ -1,0 +1,166 @@
+{
+  "at": "2026-10-01T14:45:00.214125+00:00",
+  "endpoint": "http://127.0.0.1:63335/graphql",
+  "request": {
+    "query": "query{agentRunCollaboration(runId:\"daily_assistant_e663420272024bbcb4d566ddddd49fb4\")}",
+    "variables": {}
+  },
+  "response": {
+    "data": {
+      "agentRunCollaboration": {
+        "root_subject_kind": "agent",
+        "root_run_id": "daily_assistant_e663420272024bbcb4d566ddddd49fb4",
+        "root_agent": {
+          "base_change_sequence": 130,
+          "is_active": true,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-01T14:43:31.933Z",
+            "host": {
+              "address": "/daily_assistant",
+              "agentRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4",
+              "agentDefinitionId": "autobyteus-daily-assistant"
+            },
+            "collaborators": [
+              {
+                "kind": "agent",
+                "address": "/sr036_reviewer",
+                "agentDefinitionId": "sr036-reviewer",
+                "agentRunId": "sr036_reviewer_c7e7eb6337504f05ab752ee60d864111",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/temp_workspace"
+                },
+                "addedAt": "2026-10-01T14:43:39.216Z",
+                "addedViaAgentRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4"
+              },
+              {
+                "kind": "agent_team",
+                "address": "/sr036_team",
+                "teamDefinitionId": "sr036-team",
+                "teamRunId": "sr036_team_e5ed81d3e1cc4a60ab7576fe6ee865a0",
+                "coordinatorAddress": "/sr036_team/lead",
+                "members": [
+                  {
+                    "address": "/sr036_team/lead",
+                    "agentDefinitionId": "sr036-lead",
+                    "agentRunId": "sr036_lead_6da9c91041b54d8e82937a24c2821592",
+                    "platformAgentRunId": null
+                  },
+                  {
+                    "address": "/sr036_team/peer",
+                    "agentDefinitionId": "sr036-peer",
+                    "agentRunId": "sr036_peer_011dab4dd637464182c611a497e0e29c",
+                    "platformAgentRunId": null
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/temp_workspace"
+                },
+                "taskExecutions": [],
+                "addedAt": "2026-10-01T14:43:39.216Z",
+                "addedViaAgentRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4"
+              }
+            ],
+            "taskExecutions": []
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4",
+            "messages": []
+          },
+          "agent_statuses": [
+            {
+              "member_address": "/sr036_reviewer",
+              "agent_run_id": "sr036_reviewer_c7e7eb6337504f05ab752ee60d864111",
+              "status": "error",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null,
+              "recoverableBlock": {
+                "operationId": "compaction_operation_mupnaauj_1",
+                "failureEpoch": 2,
+                "position": {
+                  "kind": "held_turn",
+                  "turnId": "turn_0003"
+                },
+                "state": "awaiting_user",
+                "code": "SR036_SYNTHETIC_503",
+                "message": "Compaction failed \u2014 send a message to retry"
+              }
+            },
+            {
+              "member_address": "/sr036_team/lead",
+              "agent_run_id": "sr036_lead_6da9c91041b54d8e82937a24c2821592",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null,
+              "recoverableBlock": null
+            },
+            {
+              "member_address": "/sr036_team/peer",
+              "agent_run_id": "sr036_peer_011dab4dd637464182c611a497e0e29c",
+              "status": "offline",
+              "trigger": null,
+              "tool_name": null,
+              "error_message": null,
+              "error_details": null,
+              "recoverableBlock": null
+            }
+          ],
+          "agent_input_states": [
+            {
+              "agent_run_id": "sr036_reviewer_c7e7eb6337504f05ab752ee60d864111",
+              "state": {
+                "run_instance_id": "c0d31567-72e6-43e5-a3c4-515a8da0036d",
+                "revision": 16,
+                "entries": [
+                  {
+                    "sequence": 3,
+                    "message_id": "4c013136-deb0-452d-aff4-5ba470bf84c4",
+                    "dedupe_key": "member_input:daily_assistant_e663420272024bbcb4d566ddddd49fb4:sr036_reviewer_c7e7eb6337504f05ab752ee60d864111:4c013136-deb0-452d-aff4-5ba470bf84c4",
+                    "turn_id": "turn_0003",
+                    "state": "held",
+                    "content": "SR036-R2A-HELD",
+                    "sender_type": "user",
+                    "file_attachments": [
+                      {
+                        "uri": "/rest/agent-collaborations/daily_assistant_e663420272024bbcb4d566ddddd49fb4/agent-runs/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/context-files/ctx_29e0524390ff__attachment.txt",
+                        "file_type": "text",
+                        "file_name": "ctx_29e0524390ff__attachment.txt"
+                      }
+                    ]
+                  }
+                ],
+                "recoverableBlock": {
+                  "operationId": "compaction_operation_mupnaauj_1",
+                  "failureEpoch": 2,
+                  "position": {
+                    "kind": "held_turn",
+                    "turnId": "turn_0003"
+                  },
+                  "state": "awaiting_user",
+                  "code": "SR036_SYNTHETIC_503",
+                  "message": "Compaction failed \u2014 send a message to retry"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

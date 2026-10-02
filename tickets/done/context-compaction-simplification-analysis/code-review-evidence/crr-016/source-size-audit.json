@@ -1,0 +1,121 @@
+[
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/accepted-input-identity.ts",
+    "nonempty": 17,
+    "delta": 19,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+    "nonempty": 6,
+    "delta": 2,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/domain/models.ts",
+    "nonempty": 162,
+    "delta": 2,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts",
+    "nonempty": 118,
+    "delta": 4,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts",
+    "nonempty": 107,
+    "delta": 4,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts",
+    "nonempty": 293,
+    "delta": 43,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/run-projection-types.ts",
+    "nonempty": 133,
+    "delta": 2,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+    "nonempty": 70,
+    "delta": 4,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+    "nonempty": 248,
+    "delta": 2,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts",
+    "nonempty": 51,
+    "delta": 4,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager.ts",
+    "nonempty": 497,
+    "delta": 4,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/models/raw-trace-item.ts",
+    "nonempty": 127,
+    "delta": 19,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-ts/src/memory/raw-trace-ingestion.ts",
+    "nonempty": 151,
+    "delta": 6,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts",
+    "nonempty": 18,
+    "delta": 14,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts",
+    "nonempty": 143,
+    "delta": 84,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/runProjectionConversation.ts",
+    "nonempty": 384,
+    "delta": 48,
+    "over500": false,
+    "over220": false
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+    "nonempty": 304,
+    "delta": 4,
+    "over500": false,
+    "over220": false
+  }
+]

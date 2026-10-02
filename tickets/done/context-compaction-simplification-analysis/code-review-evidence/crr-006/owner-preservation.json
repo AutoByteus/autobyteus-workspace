@@ -1,0 +1,12 @@
+{
+  "checkedCount": 354,
+  "changed": [],
+  "reviewerOwnedExcluded": [
+    "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md"
+  ],
+  "generatedDistExcluded": true,
+  "referenceCount": 173,
+  "missingReferences": []
+}

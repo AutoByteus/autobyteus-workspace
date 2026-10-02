@@ -33,7 +33,7 @@ export class LifecycleStatusEventTransformer implements AgentRunEventTransformer
     for (const event of input.events) {
       if (event.eventType === AgentRunEventType.AGENT_STATUS) {
         state.observeExplicitStatus(normalizeAgentApiStatus(event.payload.status));
-        output.push(this.buildStatusEvent(input.runContext.runId, state.status));
+        output.push(this.buildStatusEvent(input.runContext.runId, state.status, state.recoverableBlock));
         continue;
       }
 
@@ -44,23 +44,24 @@ export class LifecycleStatusEventTransformer implements AgentRunEventTransformer
         } else {
           state.observeEvent(event);
         }
-        output.push(this.buildStatusEvent(input.runContext.runId, state.status));
+        output.push(this.buildStatusEvent(input.runContext.runId, state.status, state.recoverableBlock));
         continue;
       }
 
       state.observeEvent(event);
-      output.push(this.buildStatusEvent(input.runContext.runId, state.status), event);
+      output.push(this.buildStatusEvent(input.runContext.runId, state.status, state.recoverableBlock), event);
     }
     return output;
   }
 
-  buildStatusEvent(runId: string, status: AgentApiStatus): AgentRunEvent {
+  buildStatusEvent(runId: string, status: AgentApiStatus, recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null = null): AgentRunEvent {
     return {
       eventType: AgentRunEventType.AGENT_STATUS,
       runId,
       payload: buildAgentStatusPayload({
         status,
         agentId: runId,
+        recoverableBlock,
       }),
       statusHint:
         status === "running"

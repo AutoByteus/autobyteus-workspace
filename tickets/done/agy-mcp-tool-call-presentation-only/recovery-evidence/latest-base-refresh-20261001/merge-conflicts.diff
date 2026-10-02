@@ -1,0 +1,176 @@
+diff --cc autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+index 4dbb3ba31,3ee90e8cb..000000000
+--- a/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+@@@ -235,25 -245,30 +232,37 @@@ describe("TeamRun configuration GraphQ
+        llmModelIdentifier: model,
+        llmConfig: null,
+        autoExecuteTools: false,
+-       skillAccessMode: "PRELOADED_ONLY",
+        workspaceRootPath: rootWorkspace,
+      };
+++<<<<<<< HEAD:autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+++=======
++     const researchTeamConfiguration: CompleteLaunchConfiguration = {
++       runtimeKind: "autobyteus",
++       llmModelIdentifier: model,
++       llmConfig: { temperature: 0.2 },
++       autoExecuteTools: true,
++       workspaceRootPath: researchWorkspace,
++     };
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+      const coordinatorConfiguration = { ...rootTeamConfiguration };
+      const observerConfiguration: CompleteLaunchConfiguration = {
+        runtimeKind: "autobyteus",
+        llmModelIdentifier: model,
+        llmConfig: { temperature: 0.1 },
+        autoExecuteTools: true,
+-       skillAccessMode: "PRELOADED_ONLY",
+        workspaceRootPath: rootWorkspace,
+      };
+ -    const leadConfiguration = { ...researchTeamConfiguration };
+      const reviewerConfiguration: CompleteLaunchConfiguration = {
+        runtimeKind: "autobyteus",
+        llmModelIdentifier: model,
+        llmConfig: { temperature: 0.35 },
+        autoExecuteTools: false,
+++<<<<<<< HEAD:autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+ +      skillAccessMode: "PRELOADED_ONLY",
+ +      workspaceRootPath: reviewWorkspace,
+++=======
++       workspaceRootPath: researchWorkspace,
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+      };
+      const expectedConfigurationTree: ExactConfigurationNode = {
+        address: "/",
+@@@ -397,6 -431,13 +405,16 @@@
+              : { runtimeKind: "autobyteus" }),
+            workspaceRootPath: rejectedWorkspace,
+          },
+++<<<<<<< HEAD:autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+++=======
++         {
++           teamAddress: "/Research",
++           llmModelIdentifier: model,
++           autoExecuteTools: false,
++           runtimeKind: "autobyteus",
++           workspaceRootPath: rejectedWorkspace,
++         },
+++>>>>>>> origin/personal:autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+        ],
+        memberConfigs: [
+          ["/coordinator", fixture.coordinatorId],
+diff --cc autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+index c01af2063,a11063029..000000000
+--- a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+@@@ -897,58 -887,61 +896,100 @@@ const exerciseHistoryAndNewWork = asyn
+    runtimeRoot: string,
+    historicalTeamRunId: string,
+  ): Promise<void> => {
+ -  const resume = await executeGraphql<{
+ -    getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
+ +  await exerciseConvertedHistory(serverUrl, historicalTeamRunId);
+ +  const newTeamRunId = await exerciseNewWork(serverUrl, runtimeRoot);
+ +  expect(await collaborationRoots(serverUrl)).toEqual(expect.arrayContaining([
+ +    { root_subject_kind: "agent_org", root_run_id: historicalTeamRunId },
+ +    { root_subject_kind: "agent_team", root_run_id: newTeamRunId },
+ +  ]));
+ +};
+ +
+ +const collaborationRoots = async (serverUrl: string) => (await executeGraphql<{
+ +  listCollaborationRootHistory: Array<{ root_subject_kind: string; root_run_id: string }>;
+ +}>(serverUrl, `
+ +  query PostMigrationCollaborationRoots {
+ +    listCollaborationRootHistory {
+ +      ... on AgentOrgRootHistoryObject { root_subject_kind root_run_id }
+ +      ... on AgentTeamRootHistoryObject { root_subject_kind root_run_id }
+ +    }
+ +  }
+ +`)).listCollaborationRootHistory;
+ +
+ +const exerciseConvertedHistory = async (serverUrl: string, historicalTeamRunId: string): Promise<void> => {
+ +  const config = await executeGraphql<{
+ +    getAgentOrgRunConfig: { orgRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
+    }>(serverUrl, `
+ -    query TeamRunV1Resume($teamRunId: String!) {
+ -      getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
+ +    query ConvertedOrgRunConfig($orgRunId: String!) {
+ +      getAgentOrgRunConfig(orgRunId: $orgRunId) { orgRunId isActive executionTree }
+      }
+ -  `, { teamRunId: historicalTeamRunId });
+ -  expect(resume.getTeamRunResumeConfig).toMatchObject({
+ -    teamRunId: historicalTeamRunId,
+ +  `, { orgRunId: historicalTeamRunId });
+ +  expect(config.getAgentOrgRunConfig).toMatchObject({
+ +    orgRunId: historicalTeamRunId,
+      isActive: false,
+      executionTree: {
+ -      root_team: {
+ +      rootOrg: {
+          address: "/",
+++<<<<<<< HEAD
+ +        orgRunId: historicalTeamRunId,
+ +        defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+ +        members: [
+ +          expect.objectContaining({
+ +            address: "/lead",
+ +            agentDefinitionId: "autobyteus-memory-compactor",
+ +            launchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+ +          }),
+ +          expect.objectContaining({
+ +            address: "/research",
+ +            coordinatorAddress: "/research/reviewer",
+ +            defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+ +            members: [expect.objectContaining({
+ +              address: "/research/reviewer",
+ +              agentDefinitionId: "autobyteus-memory-compactor",
+ +              launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+++=======
++         default_launch_configuration: {
++           runtime_kind: "autobyteus",
++           llm_model_identifier: "gpt-5.6-luna",
++           llm_config: { temperature: 0.15 },
++           auto_execute_tools: false,
++           workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
++         },
++         members: expect.arrayContaining([
++           expect.objectContaining({
++             address: "/lead",
++             agent_definition_id: "autobyteus-memory-compactor",
++             launch_configuration: {
++               runtime_kind: "autobyteus",
++               llm_model_identifier: "gpt-5.6-luna",
++               llm_config: { temperature: 0.15 },
++               auto_execute_tools: false,
++               workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
++             },
++           }),
++           expect.objectContaining({
++             address: "/research",
++             coordinator_address: "/research/reviewer",
++             default_launch_configuration: {
++               runtime_kind: "autobyteus",
++               llm_model_identifier: "gpt-5.6-luna",
++               llm_config: null,
++               auto_execute_tools: true,
++               workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
++             },
++             members: [expect.objectContaining({
++               address: "/research/reviewer",
++               agent_definition_id: "autobyteus-memory-compactor",
++               launch_configuration: {
++                 runtime_kind: "autobyteus",
++                 llm_model_identifier: "gpt-5.6-luna",
++                 llm_config: null,
++                 auto_execute_tools: true,
++                 workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
++               },
+++>>>>>>> origin/personal
+              })],
+            }),
+ -        ]),
+ +        ],
+        },
+      },
+    });

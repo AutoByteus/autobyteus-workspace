@@ -1,0 +1,4 @@
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+

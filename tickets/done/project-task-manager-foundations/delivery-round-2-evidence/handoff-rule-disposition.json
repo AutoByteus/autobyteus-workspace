@@ -1,0 +1,21 @@
+{
+  "returnedRules": [
+    {
+      "when": "When delivery discovers a code or packaging Local Fix that must be corrected by implementation before finalization can continue.",
+      "recipient_address": "/software_engineering_team/implementation_engineer"
+    },
+    {
+      "when": "When delivery discovers a Design Impact, Requirement Gap, or Unclear issue, or final handoff is blocked by a non-deployment issue that requires upstream classification.",
+      "recipient_address": "/software_engineering_team/solution_designer"
+    },
+    {
+      "when": "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt.",
+      "recipient_address": "/software_engineering_team/solution_designer"
+    }
+  ],
+  "result": "Blocked \u2014 Awaiting explicit integrated user verification",
+  "selectedRule": null,
+  "rationale": "No remaining supported code/packaging Local Fix; no design/requirement/unclear issue requiring upstream classification. Ordinary user verification hold continues in Delivery. Terminal completion conditions unmet.",
+  "messageSent": false,
+  "terminalReturnEligible": false
+}

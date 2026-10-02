@@ -1,0 +1,21 @@
+{
+  "failureId": "API-F005",
+  "caseId": "API-C08",
+  "acceptanceCriteria": [
+    "AC-002",
+    "AC-007"
+  ],
+  "semanticResult": "Fail",
+  "replayResult": "Detector reproduced expected rejection",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "invocationId": "compaction_8d4ac49c-a133-4c03-ab04-1acff30626fe",
+  "completionStatus": "complete",
+  "sourceCorrection": "Correction: retention is now 30 days, replacing 7 days. Cancel the proposed cloud export entirely. Inventory remains completed. Keep risk assessment active. Add the owner-review checkpoint APPROVAL-73 to the plan; approval for implementation is still pending. The latest unresolved request is to compare rollback options, not to implement them. pnpm verify:helios is still unrun.",
+  "observedError": "LIVE_E2E_QUALITY_PLANNED_WORK_REPORTED_COMPLETE",
+  "completedSection": "- Finished the inventory phase and cataloged 12 tables from `/workspace/helios/inventory.json`.\n- Maintained all stated constraints and preserved the target plan file.\n- Explicitly deferred execution of the verification command per user instruction.\n- Updated plan with retention policy (30 days) and checkpoint `APPROVAL-73`.\n",
+  "origin": "Unclear: real model/prompt semantic output; approved production prompt/factory used, no proof of request construction defect",
+  "replayedAt": "2026-09-26T21:24:34.868Z",
+  "helperSha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+  "replayMode": "Deterministic retained actual output; no new provider call",
+  "command": "node --experimental-strip-types tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/replay-semantic.mjs"
+}

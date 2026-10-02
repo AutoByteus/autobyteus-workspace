@@ -1,0 +1,190 @@
+[
+  {
+    "evidence": "IR004-DI001",
+    "ingress": "agent_team",
+    "before": {
+      "calls": 2,
+      "state": {
+        "run_instance_id": "76f0a9d5-2d34-4284-bb30-e87c8729a2c0",
+        "revision": 18,
+        "entries": [
+          {
+            "sequence": 4,
+            "message_id": "A",
+            "dedupe_key": "input:A",
+            "turn_id": "turn_0004",
+            "state": "held",
+            "content": "A",
+            "sender_type": "user",
+            "file_attachments": []
+          },
+          {
+            "sequence": 5,
+            "message_id": "B",
+            "dedupe_key": "input:B",
+            "turn_id": null,
+            "state": "queued",
+            "content": "B",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_muoih2xc_1",
+          "failureEpoch": 2,
+          "state": "awaiting_user",
+          "code": "execution_failure",
+          "message": "Compaction failed \u2014 send a message to retry",
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0004"
+          }
+        }
+      }
+    },
+    "after": {
+      "calls": 3,
+      "state": {
+        "run_instance_id": "76f0a9d5-2d34-4284-bb30-e87c8729a2c0",
+        "revision": 21,
+        "entries": [
+          {
+            "sequence": 4,
+            "message_id": "A",
+            "dedupe_key": "input:A",
+            "turn_id": "turn_0004",
+            "state": "held",
+            "content": "A",
+            "sender_type": "user",
+            "file_attachments": []
+          },
+          {
+            "sequence": 5,
+            "message_id": "B",
+            "dedupe_key": "input:B",
+            "turn_id": null,
+            "state": "queued",
+            "content": "B",
+            "sender_type": "user",
+            "file_attachments": []
+          },
+          {
+            "sequence": 6,
+            "message_id": "B",
+            "dedupe_key": "input:B",
+            "turn_id": null,
+            "state": "queued",
+            "content": "B",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_muoih2xc_1",
+          "failureEpoch": 3,
+          "state": "awaiting_user",
+          "code": "execution_failure",
+          "message": "Compaction failed \u2014 send a message to retry",
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0004"
+          }
+        }
+      }
+    }
+  },
+  {
+    "evidence": "IR004-DI001",
+    "ingress": "agent_org",
+    "before": {
+      "calls": 2,
+      "state": {
+        "run_instance_id": "0e7da3a7-95ae-4364-b07d-de0edceae222",
+        "revision": 18,
+        "entries": [
+          {
+            "sequence": 4,
+            "message_id": "A",
+            "dedupe_key": "input:A",
+            "turn_id": "turn_0004",
+            "state": "held",
+            "content": "A",
+            "sender_type": "user",
+            "file_attachments": []
+          },
+          {
+            "sequence": 5,
+            "message_id": "B",
+            "dedupe_key": "input:B",
+            "turn_id": null,
+            "state": "queued",
+            "content": "B",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_muoih31x_1",
+          "failureEpoch": 2,
+          "state": "awaiting_user",
+          "code": "execution_failure",
+          "message": "Compaction failed \u2014 send a message to retry",
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0004"
+          }
+        }
+      }
+    },
+    "after": {
+      "calls": 3,
+      "state": {
+        "run_instance_id": "0e7da3a7-95ae-4364-b07d-de0edceae222",
+        "revision": 21,
+        "entries": [
+          {
+            "sequence": 4,
+            "message_id": "A",
+            "dedupe_key": "input:A",
+            "turn_id": "turn_0004",
+            "state": "held",
+            "content": "A",
+            "sender_type": "user",
+            "file_attachments": []
+          },
+          {
+            "sequence": 5,
+            "message_id": "B",
+            "dedupe_key": "input:B",
+            "turn_id": null,
+            "state": "queued",
+            "content": "B",
+            "sender_type": "user",
+            "file_attachments": []
+          },
+          {
+            "sequence": 6,
+            "message_id": "B",
+            "dedupe_key": "input:B",
+            "turn_id": null,
+            "state": "queued",
+            "content": "B",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_muoih31x_1",
+          "failureEpoch": 3,
+          "state": "awaiting_user",
+          "code": "execution_failure",
+          "message": "Compaction failed \u2014 send a message to retry",
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0004"
+          }
+        }
+      }
+    }
+  }
+]

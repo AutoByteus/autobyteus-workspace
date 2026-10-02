@@ -1,0 +1,428 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentRuntimeState initialized for agent_id 'recovery_tester_5141'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_5141': No tools provided in config.
+Agent 'recovery_tester_5141': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_5141'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_5141' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_5141'.
+Registered AgentContext for agent_id 'recovery_tester_5141'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_5141'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_5141'.
+Agent 'recovery_tester_5141' created and stored successfully.
+Agent 'recovery_tester_5141' requesting runtime to start.
+AgentRuntime for 'recovery_tester_5141': Starting worker.
+AgentWorker 'recovery_tester_5141': Starting...
+AgentWorker 'recovery_tester_5141' asyncRun(): Starting.
+Agent 'recovery_tester_5141': Runtime init completed (event store initialized).
+Agent 'recovery_tester_5141': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_5141': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_5141': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Agent 'recovery_tester_5141': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Agent 'recovery_tester_5141': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_5141': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_5141': Executing McpServerPrewarmingStep.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Agent 'recovery_tester_5141': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_5141': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_5141': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_5141': Final processed system prompt configured and captured. Trace ID: rt_1790828743330_989b8e0a-84da-4f69-8521-839989456fa0. Final length: 28.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Agent 'recovery_tester_5141': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentWorker 'recovery_tester_5141' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentEventStream (ID: 98207fd8-93dc-4720-a01c-0ee343e40026) initialized for agent_id 'recovery_tester_5141'. Subscribed to notifier.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_5141',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_5141',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_5141',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_5141',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup1721v_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+compaction_failed {
+  agent_id: 'recovery_tester_5141',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup1721v_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: hold first'
+}
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_5141',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup1721v_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Agent 'recovery_tester_5141' requesting runtime interrupt.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+compaction_stopped {
+  agent_id: 'recovery_tester_5141',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup1721v_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'stopped'
+}
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Agent 'recovery_tester_5141' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentWorker 'recovery_tester_5141': Stop requested.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 34c5bd67-317b-4897-994c-c05fdcd4ebea, AgentID: recovery_tester_5141) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_5141' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_5141': Running shutdown sequence on worker loop.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentWorker 'recovery_tester_5141': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_5141': Shutdown sequence completed.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+Unregistered AgentContext for agent_id 'recovery_tester_5141'.
+AgentRuntime for 'recovery_tester_5141': Context unregistered.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentRuntime for 'recovery_tester_5141' stop() method completed.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentEventStream (ID: 98207fd8-93dc-4720-a01c-0ee343e40026) for 'recovery_tester_5141': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/unit/agent-execution/native-compaction-terminal-drain.test.ts > actual AgentRun/native shutdown queue ordering > drains stopped through the real dispatch queue before returning, without late commit or cancelled dispatch
+AgentEventStream (ID: 98207fd8-93dc-4720-a01c-0ee343e40026) for 'recovery_tester_5141': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test) 180ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  06:25:38
+   Duration  4.87s (transform 2.98s, setup 15ms, import 4.19s, tests 180ms, environment 0ms)
+

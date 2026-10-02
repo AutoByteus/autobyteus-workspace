@@ -50,7 +50,7 @@ export class CompactionConversationHistoryRenderer {
       }
       if (!message.content?.trim()) continue;
       const content = escapeReservedBoundary(this.valueRenderer.render(message.content, {
-        maxChars: maxValueChars,
+        maxChars: null,
       }));
       entries.push(`${message.role === MessageRole.USER ? 'User' : 'Assistant'}:\n${content}`);
     }
@@ -88,7 +88,7 @@ export class CompactionConversationHistoryRenderer {
     const entries: string[] = [];
     if (assistant.content?.trim()) {
       entries.push(`Assistant:\n${escapeReservedBoundary(
-        this.valueRenderer.render(assistant.content, { maxChars: maxValueChars }),
+        this.valueRenderer.render(assistant.content, { maxChars: null }),
       )}`);
     }
     for (const call of payload.toolCalls) {
@@ -101,7 +101,7 @@ export class CompactionConversationHistoryRenderer {
           ? { kind: 'error', value: result.toolError }
           : { kind: 'result', value: result.toolResult },
       }, { maxValueChars });
-      entries.push(`Tool:\n${escapeReservedBoundary(body)}`);
+      entries.push(`Tool (${call.id}; argument/result values may be excerpted):\n${escapeReservedBoundary(body)}`);
     }
     return { entries, endIndex };
   }

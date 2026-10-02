@@ -1,0 +1,214 @@
+{
+  "data": {
+    "getRunProjection": {
+      "conversation": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Independent validation in this disposable instance: use AutoByteus MCP open_tab once to open http://127.0.0.1:60426/first with reuse_existing false. You may read its schema. Do not use OS commands, other browser tools or edit files. Report the exact result, then stop; visibility is independently checked.",
+          "media": null,
+          "ts": 1790963192.545
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-2",
+          "role": null,
+          "content": "",
+          "toolName": "view_file",
+          "toolArgs": {
+            "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/open_tab.json"
+          },
+          "toolResult": {
+            "provider_state": "DONE",
+            "output": "1 lines, 686 bytes"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1790963195.54
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-4",
+          "role": null,
+          "content": "",
+          "toolName": "open_tab",
+          "toolArgs": {
+            "reuse_existing": false,
+            "url": "http://127.0.0.1:60426/first"
+          },
+          "toolResult": {
+            "tab_id": "c4cffe",
+            "status": "opened",
+            "url": "http://127.0.0.1:60426/first",
+            "title": "API-E2E Browser Proof"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1790963199.157
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "The exact result returned by `open_tab`:\n\n```json\n{\n  \"tab_id\": \"c4cffe\",\n  \"status\": \"opened\",\n  \"url\": \"http://127.0.0.1:60426/first\",\n  \"title\": \"API-E2E Browser Proof\"\n}\n```",
+          "media": null,
+          "ts": 1790963201.013
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Open http://127.0.0.1:60426/second with AutoByteus MCP open_tab exactly once, reuse_existing false. No other browser tools, commands or file changes. Report exact result and stop.",
+          "media": null,
+          "ts": 1790963295.55
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-1062f709-8f27-4e50-aab6-a4655c72dd84-8",
+          "role": null,
+          "content": "",
+          "toolName": "open_tab",
+          "toolArgs": {
+            "reuse_existing": false,
+            "url": "http://127.0.0.1:60426/second"
+          },
+          "toolResult": {
+            "tab_id": "874f12",
+            "status": "opened",
+            "url": "http://127.0.0.1:60426/second",
+            "title": "API-E2E Browser Proof"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1790963297.465
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "The exact result returned by `open_tab`:\n\n```json\n{\n  \"tab_id\": \"874f12\",\n  \"status\": \"opened\",\n  \"url\": \"http://127.0.0.1:60426/second\",\n  \"title\": \"API-E2E Browser Proof\"\n}\n```",
+          "media": null,
+          "ts": 1790963300.641
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Open http://127.0.0.1:60426/third with AutoByteus MCP open_tab exactly once, reuse_existing false. No other browser tools, commands or file changes. Report exact result and stop.",
+          "media": null,
+          "ts": 1790963339.226
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "agy-tool-5a68162f-8ca7-4f49-8aa8-ce215eb0a6dc-12",
+          "role": null,
+          "content": "",
+          "toolName": "open_tab",
+          "toolArgs": {
+            "reuse_existing": false,
+            "url": "http://127.0.0.1:60426/third"
+          },
+          "toolResult": {
+            "tab_id": "2a801b",
+            "status": "opened",
+            "url": "http://127.0.0.1:60426/third",
+            "title": "API-E2E Browser Proof"
+          },
+          "toolError": null,
+          "media": null,
+          "ts": 1790963341.684
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "The exact result returned by `open_tab`:\n\n```json\n{\n  \"tab_id\": \"2a801b\",\n  \"status\": \"opened\",\n  \"url\": \"http://127.0.0.1:60426/third\",\n  \"title\": \"API-E2E Browser Proof\"\n}\n```\n",
+          "media": null,
+          "ts": 1790963348.858
+        }
+      ],
+      "activities": [
+        {
+          "kind": "tool",
+          "invocationId": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-2",
+          "toolName": "view_file",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "view_file",
+          "arguments": {
+            "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/open_tab.json"
+          },
+          "logs": [],
+          "result": {
+            "provider_state": "DONE",
+            "output": "1 lines, 686 bytes"
+          },
+          "error": null,
+          "ts": 1790963195.54,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-4",
+          "toolName": "open_tab",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "open_tab",
+          "arguments": {
+            "reuse_existing": false,
+            "url": "http://127.0.0.1:60426/first"
+          },
+          "logs": [],
+          "result": {
+            "tab_id": "c4cffe",
+            "status": "opened",
+            "url": "http://127.0.0.1:60426/first",
+            "title": "API-E2E Browser Proof"
+          },
+          "error": null,
+          "ts": 1790963199.157,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "agy-tool-1062f709-8f27-4e50-aab6-a4655c72dd84-8",
+          "toolName": "open_tab",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "open_tab",
+          "arguments": {
+            "reuse_existing": false,
+            "url": "http://127.0.0.1:60426/second"
+          },
+          "logs": [],
+          "result": {
+            "tab_id": "874f12",
+            "status": "opened",
+            "url": "http://127.0.0.1:60426/second",
+            "title": "API-E2E Browser Proof"
+          },
+          "error": null,
+          "ts": 1790963297.465,
+          "detailLevel": "source_limited"
+        },
+        {
+          "kind": "tool",
+          "invocationId": "agy-tool-5a68162f-8ca7-4f49-8aa8-ce215eb0a6dc-12",
+          "toolName": "open_tab",
+          "type": "tool_call",
+          "status": "success",
+          "contextText": "open_tab",
+          "arguments": {
+            "reuse_existing": false,
+            "url": "http://127.0.0.1:60426/third"
+          },
+          "logs": [],
+          "result": {
+            "tab_id": "2a801b",
+            "status": "opened",
+            "url": "http://127.0.0.1:60426/third",
+            "title": "API-E2E Browser Proof"
+          },
+          "error": null,
+          "ts": 1790963341.684,
+          "detailLevel": "source_limited"
+        }
+      ]
+    }
+  }
+}

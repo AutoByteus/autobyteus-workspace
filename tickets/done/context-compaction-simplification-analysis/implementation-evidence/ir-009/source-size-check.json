@@ -1,0 +1,152 @@
+[
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "effective": 56,
+    "changedLines": 2,
+    "production": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs",
+    "effective": 115,
+    "changedLines": 20,
+    "production": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+    "effective": 33,
+    "changedLines": 2,
+    "production": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "effective": 469,
+    "changedLines": 6,
+    "production": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "effective": 239,
+    "changedLines": 2,
+    "production": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "effective": 494,
+    "changedLines": 3,
+    "production": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "effective": 79,
+    "changedLines": 2,
+    "production": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+    "effective": 73,
+    "changedLines": 3,
+    "production": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts",
+    "effective": 77,
+    "changedLines": 1,
+    "production": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts",
+    "effective": 347,
+    "changedLines": 41,
+    "production": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts",
+    "effective": 223,
+    "changedLines": 11,
+    "production": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts",
+    "effective": 64,
+    "changedLines": 2,
+    "production": false
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "effective": 29,
+    "changedLines": 8,
+    "production": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts",
+    "effective": 34,
+    "changedLines": 13,
+    "production": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+    "effective": 143,
+    "changedLines": 60,
+    "production": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "effective": 298,
+    "changedLines": 63,
+    "production": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "effective": 110,
+    "changedLines": 12,
+    "production": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "effective": 247,
+    "changedLines": 17,
+    "production": true
+  },
+  {
+    "path": "autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts",
+    "effective": 446,
+    "changedLines": 23,
+    "production": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "effective": 285,
+    "changedLines": 124,
+    "production": true
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "effective": 456,
+    "changedLines": 6,
+    "production": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+    "effective": 15,
+    "changedLines": 16,
+    "production": true
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts",
+    "effective": 26,
+    "changedLines": 26,
+    "production": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+    "effective": 58,
+    "changedLines": 2,
+    "production": false
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts",
+    "effective": 209,
+    "changedLines": 22,
+    "production": false
+  }
+]

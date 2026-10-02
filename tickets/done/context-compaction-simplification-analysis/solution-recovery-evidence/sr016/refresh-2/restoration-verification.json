@@ -1,0 +1,10 @@
+{
+  "head": "edee1aabbd4c3ac0402214628d0c49ea0e11119b",
+  "base": "8900e786bed796d2aa5fc56b0657fae4243e3154",
+  "ancestor": true,
+  "retainedPendingFiles": 260,
+  "mismatches": [],
+  "stash": "7d5d58049503a74b8f836842231ea3d20bc20c12",
+  "backupBranch": "codex/backup-compaction-before-base-refresh-20260928t045609z",
+  "backupDirectory": "/tmp/autobyteus-compaction-base-refresh-20260928T045609Z"
+}

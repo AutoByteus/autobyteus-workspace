@@ -1,0 +1,385 @@
+diff --git a/autobyteus-agent-presentation-contracts/src/index.ts b/autobyteus-agent-presentation-contracts/src/index.ts
+index 85bb3c1d9..3100cb0fc 100644
+--- a/autobyteus-agent-presentation-contracts/src/index.ts
++++ b/autobyteus-agent-presentation-contracts/src/index.ts
+@@ -2,3 +2,4 @@ export * from "./schema-helpers.js";
+ export * from "./token-usage-presentation-dto.js";
+ export * from "./agent-presentation-message-dtos.js";
+ export * from "./agent-input-state-dto.js";
++export * from "./collaborator-mention-note.js";
+diff --git a/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts b/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts
+index 9be021160..309b5bbc8 100644
+--- a/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts
++++ b/autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts
+@@ -68,6 +68,8 @@ const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
+   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
+ }).strict());
+ const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
++/** Shared by every collaboration root view (Org and Agent roots). */
++export const taskExecutionDtoSchema = taskExecution;
+ 
+ const configuredTeam = z.object({
+   address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
+@@ -86,6 +88,30 @@ const configuredTeam = z.object({
+ 
+ const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
+ 
++/**
++ * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
++ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
++ */
++export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
++  z.object({
++    kind: z.literal("agent"), address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
++    agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
++    launchConfiguration: agentOrgLaunchConfigurationDtoSchema, addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
++  }).strict(),
++  z.object({
++    kind: z.literal("agent_team"), address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
++    teamRunId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
++    members: z.array(z.object({
++      address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
++      agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
++    }).strict()).min(1),
++    handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
++    taskExecutions: z.array(taskExecution),
++    addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
++  }).strict(),
++]);
++export type CollaboratorEntryDto = Readonly<z.infer<typeof collaboratorEntryDtoSchema>>;
++
+ export const agentOrgExecutionTreeDtoSchema = z.object({
+   subjectKind: z.literal("agent_org"), createdAt: timestamp,
+   archivedAt: timestamp.nullable(),
+@@ -94,7 +120,8 @@ export const agentOrgExecutionTreeDtoSchema = z.object({
+   rootOrg: z.object({
+     address: z.literal("/"), orgDefinitionId: nonEmptyStringSchema, orgDefinitionName: nonEmptyStringSchema,
+     orgRunId: nonEmptyStringSchema, defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+-    members: z.array(z.union([configuredAgent, configuredTeam])), taskExecutions: z.array(taskExecution),
++    members: z.array(z.union([configuredAgent, configuredTeam])),
++    collaborators: z.array(collaboratorEntryDtoSchema), taskExecutions: z.array(taskExecution),
+   }).strict(),
+ }).strict();
+ 
+@@ -129,6 +156,7 @@ export const agentOrgExecutionEventDtoSchema = z.discriminatedUnion("kind", [
+     host_kind: z.enum(["root", "team"]), host_run_id: nonEmptyStringSchema, execution: taskExecution,
+   }).strict(),
+   z.object({ kind: z.literal("communication"), message: agentOrgCommunicationMessageDtoSchema }).strict(),
++  z.object({ kind: z.literal("collaborator_added"), collaborator: collaboratorEntryDtoSchema }).strict(),
+ ]);
+ 
+ export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;
+diff --git a/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts b/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts
+index 8912a5118..bfd9f4656 100644
+--- a/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts
++++ b/autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts
+@@ -1,6 +1,10 @@
+ import { z } from "zod";
+-import { nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
++import { collaboratorMentionsDtoSchema, nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
+ import { agentOrgExecutionEventDtoSchema, agentOrgExecutionViewDtoSchema } from "./agent-org-execution-dtos.js";
++import {
++  agentRunCollaborationEventDtoSchema,
++  agentRunCollaborationViewDtoSchema,
++} from "./agent-run-collaboration-dtos.js";
+ 
+ type AgentIdentityNode = Readonly<{ address: string; agentRunId: string }>;
+ type TeamIdentityNode = Readonly<{
+@@ -26,9 +30,62 @@ export const AgentOrgRootExecutionViewDtoSchema = z.object({
+   root_org: agentOrgExecutionViewDtoSchema,
+ }).strict();
+ 
++export const AgentRootExecutionViewDtoSchema = z.object({
++  root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema,
++  root_agent: agentRunCollaborationViewDtoSchema,
++}).strict();
++
++const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context: z.RefinementCtx): void => {
++  const view = value.root_agent;
++  if (view.execution_tree.host.agentRunId !== value.root_run_id || view.communication_messages.hostRunId !== value.root_run_id) {
++    addCorrelationIssue(context, "Agent root snapshot host correlation mismatch.");
++  }
++  const addresses = new Map<string, string>([[view.execution_tree.host.agentRunId, view.execution_tree.host.address]]);
++  const childRunIds = new Set<string>();
++  const visit = (nodes: readonly IdentityNode[]): void => {
++    for (const node of nodes) {
++      if ("agentRunId" in node) {
++        if (addresses.has(node.agentRunId)) addCorrelationIssue(context, `Agent root AgentRun identity '${node.agentRunId}' is duplicated.`);
++        addresses.set(node.agentRunId, node.address);
++        childRunIds.add(node.agentRunId);
++      } else {
++        visit(node.members);
++        visit(node.taskExecutions);
++      }
++    }
++  };
++  visit(view.execution_tree.taskExecutions as readonly IdentityNode[]);
++  // Collaborators are children of the root: one instance each, with their run IDs in the entry.
++  for (const entry of view.execution_tree.collaborators) {
++    if (entry.kind === "agent") visit([entry]);
++    else {
++      visit(entry.members);
++      visit(entry.taskExecutions as readonly IdentityNode[]);
++    }
++  }
++  const collaboratorAddresses = new Set(view.execution_tree.collaborators.map((entry) => entry.address));
++  if (collaboratorAddresses.size !== view.execution_tree.collaborators.length || collaboratorAddresses.has(view.execution_tree.host.address)) {
++    addCorrelationIssue(context, "Agent root collaborator addresses must be unique and differ from the host address.");
++  }
++  for (const message of view.communication_messages.messages) {
++    if (!addresses.has(message.senderAgentRunId) || !addresses.has(message.receiverAgentRunId)) {
++      addCorrelationIssue(context, `Agent root communication message '${message.messageId}' identity mismatch.`);
++    }
++  }
++  for (const status of view.agent_statuses) {
++    if (!childRunIds.has(status.agent_run_id) || addresses.get(status.agent_run_id) !== status.member_address) {
++      addCorrelationIssue(context, "Agent root status identity mismatch.");
++    }
++  }
++};
++
+ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kind", [
+-  AgentTeamRootExecutionViewDtoSchema, AgentOrgRootExecutionViewDtoSchema,
++  AgentTeamRootExecutionViewDtoSchema, AgentOrgRootExecutionViewDtoSchema, AgentRootExecutionViewDtoSchema,
+ ]).superRefine((value, context) => {
++  if (value.root_subject_kind === "agent") {
++    validateAgentRootCorrelation(value, context);
++    return;
++  }
+   if (value.root_subject_kind !== "agent_org") return;
+   const correlated = [value.root_org.execution_tree.rootOrg.orgRunId, value.root_org.communication_messages.orgRunId];
+   if (correlated.some((id) => id !== value.root_run_id)) addCorrelationIssue(context, "AgentOrg snapshot root correlation mismatch.");
+@@ -91,6 +148,19 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
+     }
+   }
+   taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions as readonly IdentityNode[], rootLive);
++  // Collaborators: hosted instances whose run IDs are in the entry; their addresses are unique.
++  for (const entry of value.root_org.execution_tree.rootOrg.collaborators) {
++    if (configuredAgentAddresses.has(entry.address) || configuredTeamAddresses.has(entry.address)) {
++      addCorrelationIssue(context, `AgentOrg collaborator address '${entry.address}' collides with a configured address.`);
++    }
++    if (entry.kind === "agent") {
++      addAgent(entry, rootLive, "task_member");
++      continue;
++    }
++    addTeam({ address: entry.address, teamRunId: entry.teamRunId, members: entry.members, taskExecutions: entry.taskExecutions as readonly IdentityNode[] }, "task_member");
++    memberIdentities(entry.members, rootLive, "task_member");
++    taskIdentities(entry.taskExecutions as readonly IdentityNode[], rootLive);
++  }
+ 
+   for (const message of value.root_org.communication_messages.messages) {
+     if (!addressesByRunId.has(message.senderAgentRunId) || !addressesByRunId.has(message.receiverAgentRunId)) {
+@@ -121,26 +191,33 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
+ export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [
+   z.object({ root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: z.unknown() }).strict(),
+   z.object({ root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentOrgExecutionEventDtoSchema }).strict(),
++  z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentRunCollaborationEventDtoSchema }).strict(),
+ ]);
+ 
++const rootSubjectKind = z.enum(["agent_team", "agent_org", "agent"]);
++/** Roots that accept per-agent commands on the collaboration stream. */
++const commandRootSubjectKind = z.enum(["agent_org", "agent"]);
++
+ const commandType = z.enum(["SEND_MESSAGE", "INTERRUPT_GENERATION", "APPROVE_TOOL", "DENY_TOOL"]);
+ const commandAck = z.object({
+-  root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema,
++  root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
+   command_id: nonEmptyStringSchema, command_type: commandType, target_agent_run_id: nonEmptyStringSchema,
+   state: z.enum(["accepted", "rejected", "failed"]), code: nonEmptyStringSchema.nullable(), message: z.string().nullable(),
++  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
++  collaborator_name: nonEmptyStringSchema.optional(),
+ }).strict();
+ export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type", [
+-  z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: z.enum(["agent_team", "agent_org"]), root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
++  z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
+   z.object({ type: z.literal("ROOT_EXECUTION_VIEW_SNAPSHOT"), payload: RootExecutionViewDtoSchema }).strict(),
+   z.object({ type: z.literal("ROOT_EXECUTION_EVENT"), payload: RootExecutionEventDtoSchema }).strict(),
+-  z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: z.enum(["agent_team", "agent_org"]), root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
++  z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
+   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: commandAck }).strict(),
+   z.object({ type: z.literal("ERROR"), payload: z.object({ code: nonEmptyStringSchema, message: nonEmptyStringSchema }).strict() }).strict(),
+ ]);
+ 
+-const commandRoot = { root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, target_agent_run_id: nonEmptyStringSchema, command_id: nonEmptyStringSchema };
++const commandRoot = { root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema, target_agent_run_id: nonEmptyStringSchema, command_id: nonEmptyStringSchema };
+ export const CollaborationStreamClientMessageSchema = z.discriminatedUnion("type", [
+-  z.object({ type: z.literal("SEND_MESSAGE"), payload: z.object({ ...commandRoot, content: z.string(), context_file_paths: z.array(z.string()), image_urls: z.array(z.string()), message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema }).strict() }).strict(),
++  z.object({ type: z.literal("SEND_MESSAGE"), payload: z.object({ ...commandRoot, content: z.string(), context_file_paths: z.array(z.string()), image_urls: z.array(z.string()), message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema, mentions: collaboratorMentionsDtoSchema.optional() }).strict() }).strict(),
+   z.object({ type: z.literal("INTERRUPT_GENERATION"), payload: z.object(commandRoot).strict() }).strict(),
+   z.object({ type: z.literal("APPROVE_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
+   z.object({ type: z.literal("DENY_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
+@@ -148,6 +225,7 @@ export const CollaborationStreamClientMessageSchema = z.discriminatedUnion("type
+ 
+ export type AgentTeamRootExecutionViewDto = z.infer<typeof AgentTeamRootExecutionViewDtoSchema>;
+ export type AgentOrgRootExecutionViewDto = z.infer<typeof AgentOrgRootExecutionViewDtoSchema>;
++export type AgentRootExecutionViewDto = z.infer<typeof AgentRootExecutionViewDtoSchema>;
+ export type RootExecutionViewDto = z.infer<typeof RootExecutionViewDtoSchema>;
+ export type RootExecutionEventDto = z.infer<typeof RootExecutionEventDtoSchema>;
+ export type CollaborationStreamServerMessage = z.infer<typeof CollaborationStreamServerMessageSchema>;
+diff --git a/autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts b/autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts
+index a17f8ae9f..207cd24eb 100644
+--- a/autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts
++++ b/autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts
+@@ -51,6 +51,8 @@ export const teamAgentPayloadSchemas = {
+ const errorExecution = {
+   change_sequence: z.number().int().positive().nullable(),
+   agent_run_id: nonEmptyStringSchema.nullable(),
++  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
++  collaborator_name: nonEmptyStringSchema.optional(),
+ };
+ export const teamAgentErrorPayloadSchema = z.union(
+   [
+diff --git a/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts b/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
+index 1a15d0c2d..0055b1812 100644
+--- a/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
++++ b/autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
+@@ -94,6 +94,40 @@ export type ConfiguredTeamExecutionDto = Readonly<{
+ 
+ export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
+ 
++/**
++ * One collaborator of the run: one instance of a shared Agent or Agent Team definition added
++ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
++ */
++export type CollaboratorEntryDto =
++  | Readonly<{
++      kind: "agent";
++      address: string;
++      agent_definition_id: string;
++      agent_run_id: string;
++      platform_agent_run_id: string | null;
++      launch_configuration: AgentLaunchConfigurationDto;
++      added_at: string;
++      added_via_agent_run_id: string;
++    }>
++  | Readonly<{
++      kind: "agent_team";
++      address: string;
++      team_definition_id: string;
++      team_run_id: string;
++      coordinator_address: string;
++      members: readonly Readonly<{
++        address: string;
++        agent_definition_id: string;
++        agent_run_id: string;
++        platform_agent_run_id: string | null;
++      }>[];
++      handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
++      default_launch_configuration: AgentLaunchConfigurationDto;
++      task_executions: readonly TaskExecutionDto[];
++      added_at: string;
++      added_via_agent_run_id: string;
++    }>;
++
+ const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.object({
+   runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]),
+   llm_model_identifier: nonEmptyStringSchema,
+@@ -102,6 +136,8 @@ const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.obje
+   workspace_root_path: nullableNonEmptyStringSchema,
+ }).strict();
+ 
++const handoffDtoSchema = z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
++
+ const configuredAgentSchema: z.ZodType<ConfiguredAgentExecutionDto> = z.object({
+   kind: z.literal("configured_agent"), address: agentTeamAddressDtoSchema,
+   agent_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
+@@ -133,6 +169,26 @@ export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.laz
+   delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
+ }).strict());
+ 
++export const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto> = z.discriminatedUnion("kind", [
++  z.object({
++    kind: z.literal("agent"), address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
++    agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
++    launch_configuration: launchConfigurationSchema, added_at: nonEmptyStringSchema,
++    added_via_agent_run_id: nonEmptyStringSchema,
++  }).strict(),
++  z.object({
++    kind: z.literal("agent_team"), address: agentTeamAddressDtoSchema, team_definition_id: nonEmptyStringSchema,
++    team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
++    members: z.array(z.object({
++      address: agentTeamAddressDtoSchema, agent_definition_id: nonEmptyStringSchema,
++      agent_run_id: nonEmptyStringSchema, platform_agent_run_id: nullableNonEmptyStringSchema,
++    }).strict()).min(1),
++    handoffs: z.array(handoffDtoSchema), default_launch_configuration: launchConfigurationSchema,
++    task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
++    added_at: nonEmptyStringSchema, added_via_agent_run_id: nonEmptyStringSchema,
++  }).strict(),
++]);
++
+ const configuredTeamSchema: z.ZodType<ConfiguredTeamExecutionDto> = z.lazy(() => z.object({
+   kind: z.literal("configured_team"), address: agentTeamAddressDtoSchema,
+   team_definition_id: nonEmptyStringSchema, role: z.string().nullable(), description: z.string().nullable(),
+@@ -155,6 +211,7 @@ export type TeamRunExecutionTreeDto = Readonly<{
+     coordinator_address: string;
+     default_launch_configuration: AgentLaunchConfigurationDto;
+     members: readonly ConfiguredMemberExecutionDto[];
++    collaborators: readonly CollaboratorEntryDto[];
+     task_executions: readonly TaskExecutionDto[];
+   }>;
+ }>;
+@@ -162,13 +219,14 @@ export type TeamRunExecutionTreeDto = Readonly<{
+ export const teamRunExecutionTreeDtoSchema: z.ZodType<TeamRunExecutionTreeDto> = z.object({
+   created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
+   application_binding: z.object({ application_id: nonEmptyStringSchema, binding_id: nonEmptyStringSchema }).strict().nullable(),
+-  handoffs: z.array(z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict()),
++  handoffs: z.array(handoffDtoSchema),
+   root_team: z.object({
+     address: z.literal("/"),
+     team_definition_id: nonEmptyStringSchema, team_definition_name: nonEmptyStringSchema,
+     team_run_id: nonEmptyStringSchema, coordinator_address: agentTeamAddressDtoSchema,
+     default_launch_configuration: launchConfigurationSchema,
+     members: z.array(z.union([configuredAgentSchema, configuredTeamSchema])),
++    collaborators: z.array(collaboratorEntryDtoSchema),
+     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
+   }).strict(),
+ }).strict();
+diff --git a/autobyteus-team-stream-contracts/src/team-stream-server-message.ts b/autobyteus-team-stream-contracts/src/team-stream-server-message.ts
+index d5f4cc63b..ba64d72d4 100644
+--- a/autobyteus-team-stream-contracts/src/team-stream-server-message.ts
++++ b/autobyteus-team-stream-contracts/src/team-stream-server-message.ts
+@@ -11,7 +11,10 @@ import {
+   teamMemberInputMessagePayloadSchema,
+ } from "./team-collaboration-message-dtos.js";
+ import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
+-import { teamTaskExecutionStartedPayloadSchema } from "./team-task-execution-message-dtos.js";
++import {
++  teamCollaboratorAddedPayloadSchema,
++  teamTaskExecutionStartedPayloadSchema,
++} from "./team-task-execution-message-dtos.js";
+ import { readonlyParsed } from "./schema-helpers.js";
+ import {
+   teamAgentStatusDtoSchema,
+@@ -63,6 +66,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
+   z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
+   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
+   z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
++  z.object({ type: z.literal("COLLABORATOR_ADDED"), payload: teamCollaboratorAddedPayloadSchema }).strict(),
+   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
+   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
+   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
+@@ -82,6 +86,7 @@ export type TeamStreamServerMessage =
+   | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>
+   | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamInterruptCommandAckPayloadSchema> }>
+   | Readonly<{ type: "TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema> }>
++  | Readonly<{ type: "COLLABORATOR_ADDED"; payload: z.infer<typeof teamCollaboratorAddedPayloadSchema> }>
+   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
+   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
+   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;
+diff --git a/autobyteus-ts/src/memory/memory-manager.ts b/autobyteus-ts/src/memory/memory-manager.ts
+index e311e99f9..e558e7561 100644
+--- a/autobyteus-ts/src/memory/memory-manager.ts
++++ b/autobyteus-ts/src/memory/memory-manager.ts
+@@ -196,9 +196,10 @@ export class MemoryManager {
+     return current;
+   }
+ 
+-  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[]): void {
++  /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
++  ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null): void {
+     const trace = buildNativeUserMessageTrace(llmUserMessage, {
+-      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments,
++      turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId,
+     });
+     this.store.add([trace]);
+   }

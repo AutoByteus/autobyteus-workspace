@@ -1,255 +1,208 @@
-# Projects Module - Frontend
+# Projects Module — Frontend
 
-## Scope
+## Scope And Gating
 
-Shows Projects as a node-scoped, top-level module behind the default-off
-per-node `ENABLE_PROJECTS` capability. A Project is a durable work container
-with a unique name, an optional description, a list of described links to
-registered filesystem workspaces, and a list of description-only **Project
-Tasks**.
+Projects are node-local durable containers with names, optional descriptions,
+described workspace links and embedded Tasks. Tasks have full text, read-only
+business status and optional saved context files. Users create/edit/delete;
+selected agent tools can create or change text/status. Status does not launch,
+assign, stop or assess an execution. Project Tasks are not delegated children.
 
-Project Tasks are user-authored work items. They are unrelated to the
-execution-internal delegated children of agent teams (`delegate_task`), and
-no Project code imports that subsystem. There is no Project-scoped run launching
-and no user-facing Task status change: every Task is created as `TODO`, and
-status changes are reserved for a later agent-facing Task-admission flow.
+The per-node ENABLE_PROJECTS visibility capability remains **default-off**.
+Settings › Server Settings › Basics or Advanced can change it on that node;
+Advanced edits refresh the capability without a reload. The shell navigation
+and `/projects*` middleware use it; unresolved/disabled routes redirect to `/`.
+Disabling never deletes metadata or files. Backend CRUD and opt-in tools are
+independent of this UI flag. No installation/default change is implied.
 
-## Main Files
+Projects are unsupported in the separate mobile runtime. A 390px browser
+viewport is narrow-layout evidence, not shipped phone functionality. Different
+node-bound desktop windows can have different lists/flags. Node Manager opens
+or focuses separate windows; no supported interactive same-window Projects
+rebinding/switch recovery/subscription journey is introduced. Existing binding
+watchers and captured request guards preserve current-node invariants only.
 
-- `pages/projects/index.vue`, `pages/projects/[id].vue` (flat routes; there is no parent layout route)
-- `components/projects/ProjectsList.vue`, `components/projects/ProjectCard.vue`
-- `components/projects/ProjectDetail.vue`
-- `components/projects/ProjectTaskBoard.vue`, `ProjectTaskCard.vue`, `ProjectTaskDialog.vue`
-- `components/projects/ProjectWorkspacesPanel.vue`
-- `components/projects/ProjectWorkspaceRow.vue`
-- `components/projects/ProjectFormDialog.vue`
-- `components/projects/ProjectWorkspaceLinkDialog.vue`
-- `components/projects/ProjectDialogFrame.vue`
-- `stores/projectStore.ts`, `stores/projectTaskStore.ts`
-- `stores/projectsCapabilityStore.ts`
-- `stores/capabilities/createBoundNodeCapabilityStore.ts`
-- `components/settings/ProjectsFeatureToggleCard.vue`
-- `utils/projects/linkableWorkspaces.ts`
-- `utils/projects/projectErrorMessageKey.ts`
-- `utils/projects/pathBreakSegments.ts`
-- `utils/projects/taskSummary.ts`, `utils/projects/taskStatusLabelKey.ts`, `utils/projects/projectRequestError.ts`
-- `graphql/queries/projectQueries.ts`, `graphql/mutations/projectMutations.ts`
-- `graphql/queries/projectTaskQueries.ts`, `graphql/mutations/projectTaskMutations.ts`
-- `graphql/queries/projectsCapabilityQueries.ts`, `graphql/mutations/projectsCapabilityMutations.ts`
-- `types/project.ts`
-- `localization/messages/{en,zh-CN}/projects.ts`
+## Ordinary Routes / Main Owners
 
-## Runtime Availability And Gating
+| Route | Surface |
+| --- | --- |
+| `/projects` | ProjectsList/ProjectCard: grid, New Project, name/description search |
+| `/projects/new` | ProjectEditor with optional aggregate workspace rows |
+| `/projects/:id` | ProjectDetail, Tasks default; `?tab=workspaces` selects links |
+| `/projects/:id/edit` | ProjectEditor; return to originating Project tab |
+| `/projects/:id/tasks/new` | ProjectTaskEditor/ProjectTaskDraftEditor |
+| `/projects/:id/tasks/:taskId` | Concise ProjectTaskDetail |
+| `/projects/:id/tasks/:taskId/edit` | Ordinary Task edit page |
 
-Projects availability is a backend-owned per-node capability, resolved exactly
-like Applications (see `settings.md` › Feature Capability Toggles):
+Source pages use `pages/projects/[id]/index.vue`, edit.vue and nested tasks
+routes; the obsolete flat `[id].vue` is removed. Primary Project/Task authoring
+is not an overlay; floating Task cards and ProjectFormDialog/ProjectTaskDialog/
+ProjectWorkspaceLinkDialog are replaced by these pages, continuous rows and
+aggregate editor. ProjectDialogFrame remains for destructive Project confirmation.
 
-- `projectsCapabilityStore` is a thin `createBoundNodeCapabilityStore` instance
-  (store id `projectsCapability`) over `projectsCapability` /
-  `setProjectsEnabled`. An unset setting resolves to disabled
-  (`source = INITIALIZED_DISABLED`).
-- `useShellPrimaryNavigation` shows the **Projects** item (`heroicons:folder`,
-  after **Nodes**) only when `projectsCapabilityStore.isEnabled` and
-  `isFeatureAvailableInRuntime('projects')`.
-- `middleware/feature-flags.global.ts` redirects `/projects*` to `/` when the
-  capability is disabled or cannot be resolved.
-- `utils/mobileFeatureGates.ts` marks `projects` as unsupported, so the module
-  is hidden in the mobile runtime.
-- The flag is a visibility switch only. The Projects GraphQL operations are not
-  gated server-side, and turning the flag off never deletes Project data.
-- The flag can be changed from Settings › Server Settings › Basics
-  (`ProjectsFeatureToggleCard`) or from the Advanced settings table; an
-  Advanced-table edit of `ENABLE_PROJECTS` refreshes the capability store so
-  navigation updates without a reload.
+State owners are `stores/{projectStore,projectTaskStore,projectsCapabilityStore}.ts`,
+`composables/projects/{useProjectTaskDraft,useProjectTaskPage,useProjectNotice}.ts`,
+`services/projects/projectTaskContextClient.ts` and shared voiceInputStore.
+GraphQL documents, types/project.ts and localized en/zh-CN Projects catalogs
+remain transport/presentation definitions. Components do not import Apollo.
 
-Two windows bound to different nodes can legitimately show different Projects
-visibility and different Project lists.
+## Project Authoring / Workspace Links
 
-## Project Store
+The Project form has required unique trimmed name, optional description and
+zero or more optional Existing workspace / New folder rows with descriptions.
+Save submits one aggregate membership list; Cancel does not save the Project.
+A new Project with no links lands on Tasks; one with links lands on Workspaces.
+Editing preserves its originating tab. Short created/saved notices clear rather
+than remaining sticky.
 
-`projectStore` owns the client Project cache for the currently bound node:
+Existing candidates are registered non-temp filesystem workspaces, excluding
+duplicates selected by other rows; a retained unavailable link remains editable
+through its snapshot. The server revalidates new membership/duplicates under
+the Project lock and preserves retained roots/addedAt and current Tasks.
 
-- `fetchProjects`, `fetchProject`, `createProject`, `updateProject`,
-  `deleteProject`, `addWorkspace`, `updateWorkspace`, `removeWorkspace`.
-- Every request waits for `windowNodeContextStore.waitForBoundBackendReady()`
-  and captures `bindingRevision`; responses that arrive after a rebinding are
-  discarded, and the cache is invalidated when the binding changes.
-- The list is kept sorted by name (case-insensitive), matching the server order.
-- Each `Project` carries the server-computed `openTaskCount`. `projectStore`
-  exposes `setOpenTaskCount(projectId, count)`, and that action is the only way
-  `projectTaskStore` updates the Project cache after a Task write.
-- Failures are normalized to `{ code, message }` from GraphQL
-  `extensions.code` (`utils/projects/projectRequestError.ts`). Components
-  translate codes through `projectErrorMessageKey` into localized field or
-  banner messages rather than matching message text.
+**New folder is registration-only, not physical folder creation.** The form
+registers the normalized root with existing workspaceStore.createWorkspace,
+then saves the Project. Registration failure prevents Project Save; registration
+can remain if the subsequent Project save fails. There is no rollback saga.
+Workspace availability is read-time AVAILABLE/UNREGISTERED; removing registry
+entries never deletes/blocks Project links, and re-registering the same root
+restores availability. Unlinking/deleting does not remove physical workspaces.
 
-`projectTaskStore` owns Task requests:
+The Workspaces tab shows described root rows/unavailable badges. Add or Edit
+navigates to the aggregate Project edit page (with originating tab/row intent);
+Unlink still uses the direct remove-link API. No workspace add/edit overlay.
 
-- It keeps per-Project Task lists keyed by `projectId`, loaded on demand.
-- Request sequencing and `bindingRevision` invalidation are the same as in
-  `projectStore`.
-- `forget(projectId)` drops a deleted Project's list.
-- After each successful write it pushes the recomputed open count to
-  `projectStore`.
+Project cards show **open** Task/workspace counts. Project delete confirmation
+performs a fresh read of **all** Task count, including DONE, and blocks Confirm
+while loading/error. This is a truthful snapshot, not an expected-revision
+freeze. Confirm deletes current embedded metadata and best-effort owned Task
+context; workspace registrations/roots and unrelated run data remain untouched.
 
-Components never import the Apollo client directly.
+## Continuous Task Board / Physical Refresh
 
-## Pages And Components
+The Tasks tab has search, **Refresh** and New task, then fixed To Do / In Progress /
+Done containers. Each has a continuous semantic list of anchor rows, a description
+summary and matching count; there are no floating cards. Ordering is server
+updatedAt descending then taskId. Empty lanes and whole-board no-match states
+have explicit text/Clear search; status labels are not mutation controls.
 
-- **Index (`/projects`, `ProjectsList`)**:
-  - a header with **New Project** and client-side search by name/description;
-  - a card grid, with explicit loading, error, empty, and no-match ("Clear
-    search") states.
-  - Each `ProjectCard` links to the Project page and shows the name, the
-    description, and one bottom line of counts, "N open tasks · N workspaces",
-    built from `openTaskCount` and `workspaces.length`.
-  - The count line is localized with singular and zero forms, for example
-    "1 open task · No workspaces".
-- **Project page (`/projects/:id`, `ProjectDetail`)** is full-width: padding
-  only, with no max-width wrapper. It has:
-  - a **← Projects** link at the top-left that returns to the grid;
-  - a header with the name, the description (clamped to 2 lines), Edit, and a
-    confirmed Delete;
-  - plain tabs: **Tasks** (default) and **Workspaces**.
-  - The active tab is in the URL: `?tab=workspaces` selects Workspaces, and no
-    `tab` query means Tasks.
-  - Delete removes the Project record together with its links and embedded
-    Tasks, then returns to `/projects`. It never touches workspaces or files.
-  - The delete confirmation reports `openTaskCount`. While no Task can become
-    `DONE`, that equals the total Task count; the Task-admission work must
-    revisit it.
-  - The not-found and error states also offer **← Projects**.
-- **Workspaces tab (`ProjectWorkspacesPanel`, `ProjectWorkspaceRow`)**: the
-  released workspace section, unchanged. Each row shows the display name, root
-  path, link description, and an availability badge, with edit/unlink actions.
-  `UNREGISTERED` links stay visible with an **Unavailable** badge and can still
-  be unlinked.
-- **Form dialog**: create/edit with field-level errors for
-  `PROJECT_NAME_REQUIRED` and `PROJECT_NAME_TAKEN`.
+Search is a case-insensitive description substring across all statuses, transient
+per Project. Cancel/back/detail preserves it; successful creation clears it before
+returning to the full board. Refresh never clears search or navigates. Lane counts
+are filtered; Project all/open totals derive from the complete unfiltered snapshot.
 
-## Project Task Board
+Refresh always starts a new physical `projectTasks` query on the captured node
+client (`network-only`, queryDeduplication:false), not a cache read or reuse of an
+earlier fetch. The control disables during initial/refresh pending and shows busy
+feedback. Failure retains the last successful rows/counts, including a successful
+empty list, alongside a persistent actionable error/Retry. A successful retry
+replaces the full snapshot. No polling, status push or live subscription.
 
-- **`ProjectTaskBoard`** (the Tasks tab):
-  - a toolbar with search and **+ New task**;
-  - three columns in fixed order: **To Do**, **In Progress**, **Done**, grouped
-    from `ProjectTask.status`;
-  - each column heading shows its label and its count of Tasks that match the
-    search;
-  - cards within a column are ordered by `updatedAt`, newest first (the server
-    order).
-  - An empty column shows a muted "No tasks". If the search matches nothing in
-    any column, a single message with **Clear search** replaces the columns.
-  - It has loading and error states with retry, and it owns the Task dialog's
-    open state.
-- **Search, with no status filter**: a case-insensitive substring match on the
-  description, applied to all Tasks before they are grouped. There is no status
-  filter; the columns already group by status.
-- **Layout: the board decides by its own width, not the viewport.**
-  - The board wrapper is a CSS container
-    (`container-type: inline-size; container-name: project-task-board`).
-  - The columns default to one stacked column. A scoped
-    `@container project-task-board (min-width: 752px)` rule switches them to
-    `repeat(3, minmax(0, 1fr))`: 752 px is three 240 px minimum columns plus
-    two 16 px gaps.
-  - There is no viewport breakpoint. The board stacks rather than squeezing,
-    for example when the app's side panel is open. With the default side panel
-    it stacks below a window width of about 1140 px, and with a 520 px panel
-    below about 1340 px.
-  - This is plain CSS, following
-    `components/settings/providerApiKey/GeminiConfigurationOptionCard.vue`. The
-    Tailwind container-query plugin is not used.
-- **`ProjectTaskCard`**: a `<button>` that shows only the Task description,
-  clamped to 3 lines and preserving line breaks. There is no status badge, date,
-  or title. Its accessible name is the summary (the first non-empty trimmed line
-  of the description, from `utils/projects/taskSummary.ts`; computed, never
-  stored). Clicking it opens the dialog.
-- **`ProjectTaskDialog`** has three modes:
-  - **create**: a description field, required and trimmed;
-  - **view**: the full description, the status label, and the last-updated
-    time, with Edit and Delete;
-  - **edit**: the description only.
-  Delete is confirmed inside the dialog. `TASK_DESCRIPTION_REQUIRED` and
-  `TASK_NOT_FOUND` map to localized messages. The time is formatted in the
-  browser locale (the repo convention), not the app language.
-- Status labels come from `utils/projects/taskStatusLabelKey.ts`. No control
-  changes a Task's status.
+Read/write/deletion generations and page lifetime eligibility reject older
+responses after ordinary Project navigation, local mutation or deletion, so
+stale data cannot overwrite writes or resurrect deleted state. Project count
+publication is guarded too. These are local async publication guards, not
+durable revisions/CAS or a node-switch coordinator. Manual data can be stale
+between clicks; external tools' writes require the user to Refresh.
 
-## Linking Workspaces
+Board layout responds to its CSS container, not viewport: one stacked lane
+below 752px and three minimum-240px lanes at/above it (16px gaps). Below 480px
+search takes its own toolbar row; Refresh remains beside New task. Narrow
+layouts preserve wrapping/actions rather than certifying phone deployment.
 
-`ProjectWorkspaceLinkDialog` reuses `components/workspace/config/WorkspaceSelector.vue`
-for its Existing / New / browse UI but supplies a Projects-owned candidate list:
+## Task Authoring / Detail / Context
 
-- `selectLinkableWorkspaceIds(workspaceStore.allWorkspaces, project.workspaces)`
-  keeps only registered filesystem workspaces (`kind === 'filesystem'`,
-  `isTemp !== true`, id prefix `agent_ws_`) that are not already linked to this
-  Project. Temp, skill, and transient workspaces are never candidates.
-- The dialog passes that list through the selector's opt-in
-  `candidateWorkspaceIds` prop together with `autoSelectDefault=false`, so no
-  temp entry is listed or pre-selected and Save stays disabled until a
-  workspace is chosen or a New path is entered.
-- **New** registers the root through the existing
-  `workspaceStore.createWorkspace` action and, only on success, links the
-  returned `workspaceId` with `addProjectWorkspace`. Registration failure leaves
-  the dialog open with the entered path and shows the reason.
-- If the server rejects an Existing choice with `WORKSPACE_NOT_REGISTERED`
-  (the candidate list was stale), the dialog clears the selection and reloads
-  the workspace list.
-- Edit mode shows the linked workspace read-only; only its description is
-  editable.
+New/edit pages use one description composer with text, attachment controls and
+optional local voice. Text is required/trimmed; validation focuses the field.
+Creation is TODO; edit preserves identity/status and omitted files. Explicit
+Save publishes; no autosave or fabricated transcript. Task detail shows one
+full description, read-only status and saved context; no repeated description,
+IDs or timestamps. Back to tasks returns to the same board. Edit returns to
+detail; successful creation/deletion returns to board with a transient notice.
 
-The candidate policy is a presentation aid. The server re-validates
-registration and duplicate links inside its locked update.
+Task deletion is inline on detail, with Cancel-first focus, Escape cancellation
+and focus return. Missing Task/Project/file states remain explicit/actionable;
+only a saved file reference is opened/downloaded through the captured client.
 
-## Workspace Removal Interaction
+`useProjectTaskDraft` owns text, saved references, uploaded additions and explicit
+removal masks. `projectTaskContextClient` captures endpoint/credential and
+compound Project/Task identity. REST starts a server-owned draft on first upload;
+Save passes a draft reference for creation or add/remove delta for edit. Removing
+an existing file is only a draft mask until Save; Cancel leaves saved context
+unchanged, cancels matching voice and discards draft bytes best-effort. Failed
+save retains entered content/context for action; late responses cannot navigate
+or publish to another active page. A captured server save may already commit
+after the page closes; local guards are not server rollback.
 
-Workspace removal never checks Projects and is never blocked by them. A link to
-a removed workspace is resolved as `UNREGISTERED` on the next read and becomes
-`AVAILABLE` again if the same root is registered again (workspace ids are
-path-derived). Availability is never persisted on the client.
+The server prepares immutable copies before metadata commit and preserves
+omitted context on text/status writes, including DONE. Drafts expire after 24h;
+saved references do not. Cleanup failure can leave inaccessible orphan bytes,
+not fake rollback. Project/Task deletion cleans only scoped owned context;
+original uploads, physical workspaces and unrelated run files remain untouched.
+See [server Projects](../../autobyteus-server-ts/docs/modules/projects.md) for
+25 MiB/MIME limits, exact GraphQL/REST routes, containment and commit proof.
 
-## Localization
+## Optional Local Voice Destination
 
-All Projects strings live in `localization/messages/{en,zh-CN}/projects.ts`,
-plus `shell.navigation.projects` and the `ProjectsFeatureToggleCard` keys in
-`settings.ts`. The zh-CN link dialog still shows the pre-existing English
-literals owned by `WorkspaceSelector`.
+`components/voiceInput/VoiceInputButton.vue` is generic: the initiating surface
+supplies a VoiceTranscriptTarget `{key, isCurrent, appendTranscript}`. A Task
+draft receives editable text; `useComposerVoiceTarget` adapts the actual composer
+context without looking up/inventing an active AgentContext. Voice never saves
+a Task, starts a run or stores recorded audio as Task context automatically.
+
+The existing installed/enabled local Electron Voice Input extension and device/
+permission availability are prerequisites. Browser or unavailable capability
+keeps typed/file authoring usable; no sample/fake transcript fallback. One
+shared starting/recording/transcribing lifecycle blocks competing capture.
+Matching-target Cancel/unmount invalidates late delivery and disposes capture;
+uncancellable IPC remains busy until settlement. Late text/errors are ignored
+for an invalid destination. Settings tests use their own source without a
+Task/composer text sink. See [capture ownership](electron_packaging.md#capture-startup-and-ownership).
+
+Repository capture/worker/IPC doubles prove contracts, **not** installed official
+extension, microphone/permission/device or live transcription capability.
+
+## Agent Tools / Scope Exclusions
+
+Exactly `list_projects`, `list_project_tasks`, `create_or_update_task` are selected
+independently per agent/node. List requires explicit Project ID after discovery;
+omitted Task ID creates TODO with text and no status, known Task ID patches text
+and/or exact status, unknown ID fails. Full text and saved context references
+are available; omitted fields/files persist. No batch or Task attachment mutation
+tool. See [server tool contract](../../autobyteus-server-ts/docs/modules/projects.md#exactly-three-agent-tools).
+
+Manager/team definition remains user-owned externally. No scheduler, assignment/
+run linkage, automatic completion assessment, sidebar/run-history changes,
+resource stopping, new client/scripts/skills, mobile delivery or feature-default
+change is part of this module's current slice.
 
 ## Testing
 
-- Unit/component specs: `components/projects/__tests__/`,
-  `stores/__tests__/projectStore.spec.ts`,
-  `stores/__tests__/projectTaskStore.spec.ts`,
-  `stores/capabilities/__tests__/`, `utils/projects/__tests__/`,
-  `middleware/__tests__/feature-flags.global.spec.ts`,
-  `composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts`,
-  `localization/messages/__tests__/projectsCatalog.spec.ts`.
-- Browser probe: `pnpm test:e2e:projects` (`tests/e2e/projects-feature-probe.mjs`)
-  builds the server, starts live nodes and `pnpm dev`, and runs E2E-001 to
-  E2E-029. Coverage:
-  - the released grid and page journeys (E2E-001 to E2E-013): flag gating,
-    CRUD, linking, unregistered links, keyboard operation, zh-CN, restart
-    persistence, node rebinding, and Applications/Skill Improvement
-    non-regression;
-  - Task create/edit/delete, search across columns, card counts, and the
-    cascade delete;
-  - grid → Project page → **← Projects**, a keyboard-only Task journey, and
-    zh-CN Task surfaces;
-  - board widths: a narrow window, the real shell at 1200×800 with the default
-    and 520 px side panels, and a width sweep from 760 to 1600 px (columns are
-    at least 240 px when side by side, otherwise stacked);
-  - reading a released v1.4.86 `projects.json`, a mixed-status file, and
-    restart persistence.
+Follow [workspace TESTING.md](../../TESTING.md). Colocated coverage includes
+Project stores/components, composables/projects, Task draft/file masks, count/read
+ordering and shared voice/composer lifetimes. Capability/middleware/localization
+and existing workspace-boundary tests remain distinct preservation coverage.
 
-  Use `--skip-server-build`, `--only=E2E-0xx,...`, and `--output-dir=<path>`
-  for focused runs. When running from a shell that inherited `ENABLE_*`
-  variables from an AutoByteus process, clear them (for example
-  `env -u ENABLE_PROJECTS ...`), because the server reads `process.env` before
-  its `.env`.
+`pnpm -C autobyteus-web test:e2e:projects` starts disposable real backend nodes
+and Nuxt, drives **PT-E2E-001–016**, records each result and cleans owned processes/
+data. Coverage includes current ordinary forms/detail/rows, native external write
+→ physical Refresh/error/retry, ordinary navigation with late response, real
+context bytes/process restart/deletion, all counts, mixed statuses and modest
+120-row correctness. The TODO-only 120-row fixture is not mixed-status or capacity/
+performance certification. No obsolete overlay/focus-trap or injected same-window
+switching journey. `--skip-server-build` requires a current built server;
+`--output-dir=<path>` retains evidence. Clear inherited ENABLE_* flags when
+running development servers; the probe owns isolated flags/profiles.
 
-## Related Docs
+Composer mention probes are separate renderer fixtures with doubled candidate/
+upload/admission/scope boundaries, not live Team/Manager/full-product journeys.
+Injected fault/binding tests prove explicit guards, not runtime failure incidence.
+Browser width/screenshot checks are not a full VIS/pixel/phone certificate; actual
+Electron shell/hardware validation uses isolated worktree builds, never user data.
 
-- `settings.md`
-- `applications.md`
-- `agent_execution_architecture.md` (Editable Run Workspace Selection)
-- `../../autobyteus-server-ts/docs/modules/projects.md`
-- `../../autobyteus-server-ts/docs/modules/workspaces.md`
+## Related Documentation
+
+- [Server Projects](../../autobyteus-server-ts/docs/modules/projects.md)
+- [Server Workspaces](../../autobyteus-server-ts/docs/modules/workspaces.md)
+- [Settings](settings.md)
+- [Electron / Voice Input](electron_packaging.md)

@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: normalized tagged primary identity never bridges secondary tokens
+ok 1 - normalized tagged primary identity never bridges secondary tokens
+  ---
+  duration_ms: 0.663209
+  type: 'test'
+  ...
+# Subtest: accepts a strict root-neutral message and rejects root identity
+ok 2 - accepts a strict root-neutral message and rejects root identity
+  ---
+  duration_ms: 9.807417
+  type: 'test'
+  ...
+# Subtest: accepts a background-task snapshot and rejects the removed to-do message
+ok 3 - accepts a background-task snapshot and rejects the removed to-do message
+  ---
+  duration_ms: 3.061917
+  type: 'test'
+  ...
+# Subtest: compaction carries direct diagnostics separately from provider-native identity
+ok 4 - compaction carries direct diagnostics separately from provider-native identity
+  ---
+  duration_ms: 3.026333
+  type: 'test'
+  ...
+# Subtest: composes the note after the user's text and parses it back
+ok 5 - composes the note after the user's text and parses it back
+  ---
+  duration_ms: 1.046333
+  type: 'test'
+  ...
+# Subtest: a mention-only message is the note alone
+ok 6 - a mention-only message is the note alone
+  ---
+  duration_ms: 0.198416
+  type: 'test'
+  ...
+# Subtest: no collaborators leaves the text unchanged; foreign text is not parsed
+ok 7 - no collaborators leaves the text unchanged; foreign text is not parsed
+  ---
+  duration_ms: 0.13425
+  type: 'test'
+  ...
+# Subtest: mentions are at most 8 and unique by kind and definition
+ok 8 - mentions are at most 8 and unique by kind and definition
+  ---
+  duration_ms: 1.135333
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 119.416667

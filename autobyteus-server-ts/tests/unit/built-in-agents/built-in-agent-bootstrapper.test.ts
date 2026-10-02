@@ -8,7 +8,6 @@ import { serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-p
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import {
   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
-  MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -20,6 +19,7 @@ import {
 } from "../../../src/services/server-settings-service.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 
+const MEMORY_COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
 const TEMPLATES_DIR = fileURLToPath(new URL("../../../src/built-in-agents/templates/", import.meta.url));
 
 const createTempDataDir = async (): Promise<string> =>
@@ -109,17 +109,8 @@ describe("BuiltInAgentBootstrapper", () => {
       agentsDir: path.join(tempDataDir, "agents"),
       refreshedCache: true,
     });
-    expect(result.builtInAgents).toHaveLength(3);
-    expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
-      agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-      displayName: "Memory Compactor",
-      agentDir: compactorAgentDir(),
-      syncedAgentMd: true,
-      syncedAgentConfig: true,
-      syncedSkills: true,
-      resolved: true,
-      initializedSetting: false,
-    });
+    expect(result.builtInAgents).toHaveLength(2);
+    expect(result.builtInAgents.some(item => item.agentDefinitionId === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toBe(false);
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       agentDefinitionId: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
       displayName: "Retrospective Skill Improver",
@@ -131,9 +122,6 @@ describe("BuiltInAgentBootstrapper", () => {
       initializedSetting: true,
     });
 
-    await expect(
-      fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8"),
-    ).resolves.toContain("name: Memory Compactor");
     await expect(
       fs.readFile(path.join(skillImproverAgentDir(), "agent.md"), "utf-8"),
     ).resolves.toContain("name: Retrospective Skill Improver");
@@ -149,14 +137,6 @@ describe("BuiltInAgentBootstrapper", () => {
       RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
 
-    await expect(services.agentDefinitionService.getFreshAgentDefinitionById(
-      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-    )).resolves.toMatchObject({
-      id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-      name: "Memory Compactor",
-      ownershipScope: "shared",
-      defaultLaunchConfig: null,
-    });
     const skillImproverDefinition = await services.agentDefinitionService.getFreshAgentDefinitionById(
       RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
     );
@@ -189,10 +169,7 @@ describe("BuiltInAgentBootstrapper", () => {
 
     const result = await bootstrapBuiltInAgents(services);
 
-    expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
-      resolved: true,
-      initializedSetting: false,
-    });
+    expect(result.builtInAgents.some(item => item.agentDefinitionId === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toBe(false);
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       resolved: true,
       initializedSetting: false,
@@ -204,7 +181,7 @@ describe("BuiltInAgentBootstrapper", () => {
     await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
   });
 
-  it("overwrites stale built-in files for both registry ids and preserves standalone local agents", async () => {
+  it("overwrites active builtin files but leaves the old compactor source intact and preserves standalone local agents", async () => {
     await fs.mkdir(compactorAgentDir(), { recursive: true });
     await fs.mkdir(skillImproverAgentDir(), { recursive: true });
     const staleCompactorMd = serializeAgentMd(
@@ -242,13 +219,7 @@ describe("BuiltInAgentBootstrapper", () => {
 
     const result = await bootstrapBuiltInAgents(services);
 
-    expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
-      syncedAgentMd: true,
-      syncedAgentConfig: true,
-      syncedSkills: true,
-      resolved: true,
-      initializedSetting: false,
-    });
+    expect(result.builtInAgents.some(item => item.agentDefinitionId === MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toBe(false);
     expect(resultFor(result, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID)).toMatchObject({
       syncedAgentMd: true,
       syncedAgentConfig: true,
@@ -257,10 +228,10 @@ describe("BuiltInAgentBootstrapper", () => {
       initializedSetting: true,
     });
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
-      await readTemplate("memory-compactor", "agent.md"),
+      staleCompactorMd,
     );
     await expect(fs.readFile(path.join(compactorAgentDir(), "agent-config.json"), "utf-8")).resolves.toBe(
-      await readTemplate("memory-compactor", "agent-config.json"),
+      JSON.stringify({ toolNames: ["stale_tool"] }),
     );
     await expect(fs.readFile(path.join(skillImproverAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
       await readTemplate("retrospective-skill-improver", "agent.md"),
@@ -268,7 +239,7 @@ describe("BuiltInAgentBootstrapper", () => {
     await expect(fs.readFile(path.join(skillImproverAgentDir(), "agent-config.json"), "utf-8")).resolves.toBe(
       await readTemplate("retrospective-skill-improver", "agent-config.json"),
     );
-    await expect(fs.stat(path.join(compactorAgentDir(), "skills"))).rejects.toMatchObject({ code: "ENOENT" });
+    expect((await fs.stat(path.join(compactorAgentDir(), "skills"))).isDirectory()).toBe(true);
     await expect(fs.stat(path.join(skillImproverPrivateSkillDir(), "stale.md"))).rejects.toMatchObject({ code: "ENOENT" });
     await expect(fs.readFile(path.join(skillImproverPrivateSkillDir(), "SKILL.md"), "utf-8")).resolves.toBe(
       await readTemplate("retrospective-skill-improver", "skills/retrospective-skill-improver/SKILL.md"),
@@ -310,9 +281,7 @@ describe("BuiltInAgentBootstrapper", () => {
 
     await bootstrapBuiltInAgents(services);
 
-    await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
-      await readTemplate("memory-compactor", "agent.md"),
-    );
+    await expect(fs.stat(compactorAgentDir())).rejects.toMatchObject({code:"ENOENT"});
     await expect(fs.readFile(path.join(packageCompactorDir, "agent.md"), "utf-8")).resolves.toBe(
       packageCompactorMd,
     );
@@ -324,73 +293,11 @@ describe("BuiltInAgentBootstrapper", () => {
     ).resolves.toContain("Package-owned skill");
   });
 
-  it("overwrites invalid stale Memory Compactor instructions before resolving defaults", async () => {
-    const warn = vi.fn();
-    await fs.mkdir(compactorAgentDir(), { recursive: true });
-    await fs.writeFile(path.join(compactorAgentDir(), "agent.md"), "not frontmatter", "utf-8");
-    await fs.writeFile(path.join(compactorAgentDir(), "agent-config.json"), "{}\n", "utf-8");
-    const services = createServices();
-
-    const result = await bootstrapBuiltInAgents({
-      ...services,
-      logger: { info: vi.fn(), warn },
-    });
-
-    expect(result.builtInAgents).toHaveLength(3);
-    expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
-      syncedAgentMd: true,
-      syncedAgentConfig: true,
-      syncedSkills: true,
-      resolved: true,
-      initializedSetting: false,
-    });
-    await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
-      await readTemplate("memory-compactor", "agent.md"),
-    );
-    expect(warn).not.toHaveBeenCalledWith(expect.stringContaining("is invalid"));
-  });
-
-  it("lists synced built-ins through normal paths and restores product-managed files on the next startup", async () => {
-    const services = createServices();
-    await bootstrapBuiltInAgents(services);
-
-    const visibleDefinitions = await services.agentDefinitionService.getVisibleAgentDefinitions();
-    expect(
-      visibleDefinitions.some((definition) => definition.id === MEMORY_COMPACTOR_AGENT_DEFINITION_ID),
-    ).toBe(true);
-    expect(
-      visibleDefinitions.some((definition) => definition.id === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID),
-    ).toBe(true);
-    expect(visibleDefinitions.some((definition) => definition.id === "daily-assistant")).toBe(false);
-
-    await services.agentDefinitionService.updateAgentDefinition(
-      MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-      {
-        instructions: "USER EDITED COMPACTOR INSTRUCTIONS",
-        defaultLaunchConfig: {
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          llmModelIdentifier: "codex:gpt-5.4",
-          llmConfig: { reasoning_effort: "medium" },
-        },
-      },
-    );
-
-    const result = await bootstrapBuiltInAgents(services);
-
-    expect(resultFor(result, MEMORY_COMPACTOR_AGENT_DEFINITION_ID)).toMatchObject({
-      syncedAgentMd: true,
-      syncedAgentConfig: true,
-      syncedSkills: true,
-      resolved: true,
-      initializedSetting: false,
-    });
-    await expect(fs.readFile(path.join(compactorAgentDir(), "agent.md"), "utf-8")).resolves.toBe(
-      await readTemplate("memory-compactor", "agent.md"),
-    );
-    expect(await readJson(path.join(compactorAgentDir(), "agent-config.json"))).toMatchObject({
-      defaultLaunchConfig: null,
-    });
-    await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
+  it("does not overwrite even invalid historical compactor instructions", async () => {
+    await fs.mkdir(compactorAgentDir(), {recursive:true});
+    await fs.writeFile(path.join(compactorAgentDir(), 'agent.md'), 'historical source');
+    await bootstrapBuiltInAgents(createServices());
+    expect(await fs.readFile(path.join(compactorAgentDir(), 'agent.md'),'utf8')).toBe('historical source');
   });
 
   describe("Daily Assistant (platform-owned)", () => {

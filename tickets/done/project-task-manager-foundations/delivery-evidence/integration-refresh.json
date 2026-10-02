@@ -1,0 +1,32 @@
+{
+  "kind": "Recorded tool observations and Git-verifiable state, not raw transcript",
+  "bootstrapBase": "e04cfef23550c3b78286a53befc6bd5d71fb1061",
+  "incomingHead": "5e902fc1965f86fce2bfa15ed0a23e8ff8beb7bb",
+  "trackingRemote": "origin",
+  "trackingBranch": "personal",
+  "preFetchRemoteBase": "5e3cb2f720e6fc80173099075daf55594ed58de9",
+  "fetchCommand": "git fetch origin personal",
+  "fetchExit": 0,
+  "checkedRemoteBase": "5e3cb2f720e6fc80173099075daf55594ed58de9",
+  "newCommitsIntegrated": 15,
+  "preMergeLeftRightCounts": [
+    30,
+    15
+  ],
+  "preIntegrationWorktree": "Clean",
+  "localCheckpoint": "Not needed \u2014 incoming candidate committed",
+  "integrationCommand": "git merge --no-edit origin/personal",
+  "integrationMethod": "Merge (ort)",
+  "integrationExit": 0,
+  "conflicts": false,
+  "integrationHead": "a5123e7d08f66bbb08440340db167fa4ccb5eba0",
+  "mergeParents": [
+    "5e902fc1965f86fce2bfa15ed0a23e8ff8beb7bb",
+    "5e3cb2f720e6fc80173099075daf55594ed58de9"
+  ],
+  "overlappingPath": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+  "postIntegrationResult": "Blocked \u2014 renderer check failed",
+  "docsSyncStarted": false,
+  "userVerified": false,
+  "pushed": false
+}

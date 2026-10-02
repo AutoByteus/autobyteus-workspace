@@ -27,3 +27,13 @@ test("accepts a background-task snapshot and rejects the removed to-do message",
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "BACKGROUND_TASK_UPDATED", payload: { ...payload, kind: "local_bash" } }));
   assert.throws(() => agentPresentationMessageSchema.parse({ type: "TODO_LIST_UPDATE", payload: { todos: [] } }));
 });
+
+test("compaction carries direct diagnostics separately from provider-native identity", () => {
+ const keys = 'phase kind status turn_id compaction_operation_id requested_turn_id execution_turn_id selected_block_count compacted_block_count raw_trace_count summary_char_count compaction_invocation_id summarizer_provider completion_status compaction_model_identifier completion_reason summary_token_count error_message provider source_surface boundary_key provider_event_id provider_session_id provider_thread_id provider_timestamp trigger pre_tokens rotation_eligible'.split(' ');
+ const payload = Object.fromEntries(keys.map(key=>[key,null]));
+ Object.assign(payload,{phase:'completed',compaction_operation_id:'operation',summarizer_provider:'openai',completion_status:'complete',compaction_invocation_id:'invocation',summary_char_count:512,summary_token_count:128});
+ const message = agentPresentationMessageSchema.parse({type:'COMPACTION_STATUS',payload});
+ assert.equal(message.payload.provider,null); assert.equal(message.payload.summarizer_provider,'openai');
+ assert.throws(()=>agentPresentationMessageSchema.parse({type:'COMPACTION_STATUS',payload:{...payload,semantic_fact_count:3}}));
+ assert.throws(()=>agentPresentationMessageSchema.parse({type:'COMPACTION_STATUS',payload:{...payload,summary_token_count:'old-task-id'}}));
+});

@@ -1,4 +1,4 @@
-import type { CompactionStatusPhase } from '~/types/agent/AgentRunState';
+import type { CompactionStatusPhase } from '~/types/activity/compactionPhase';
 import type { ToolApprovalTarget, ToolInvocationStatus } from '~/types/segments';
 
 export type RunActivityKind = 'tool' | 'compaction' | 'system_instruction';
@@ -34,6 +34,13 @@ export interface CompactionActivity extends RunActivityBase<'compaction'> {
   selectedBlockCount?: number | null;
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;
+  summaryCharCount?: number | null;
+  summaryTokenCount?: number | null;
+  summarizerProvider?: string | null;
+  compactionInvocationId?: string | null;
+  completionStatus?: string | null;
+  completionReason?: string | null;
+  // Historical read-only metadata; never produced by current direct compaction.
   semanticFactCount?: number | null;
   compactionAgentDefinitionId?: string | null;
   compactionAgentName?: string | null;

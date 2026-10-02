@@ -92,7 +92,7 @@ describe('Working context snapshot restore flow (agent)', () => {
     }
   });
 
-  it('restores an exact strict-v5 snapshot and persists an ordinary continuation', async () => {
+  it('restores a current versionless snapshot and persists an ordinary continuation', async () => {
     const agentId = 'agent_restore';
 
     const snapshot = new WorkingContextFinalizer().finalize({
@@ -140,7 +140,7 @@ describe('Working context snapshot restore flow (agent)', () => {
       agentId,
       'Continue after restore.',
     );
-    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages', 'schema_version']);
+    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages']);
     expect(WorkingContextSnapshotSerializer.validate(continuedPayload)).toBe(true);
     const { workingContext: continuedContext } = WorkingContextSnapshotSerializer.deserialize(
       continuedPayload,

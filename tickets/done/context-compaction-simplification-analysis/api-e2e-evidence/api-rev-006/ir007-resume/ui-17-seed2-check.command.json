@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:17:32.125Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "874AE1E81D71BE579A534ACAFD17046D",
+    "--script",
+    "()=>({text:document.body.innerText.slice(-2200),prefix:document.body.innerText.slice(0,350),controls:[...document.querySelectorAll('button')].map(x=>({text:x.innerText.slice(0,60),aria:x.getAttribute('aria-label'),title:x.title})).filter(x=>x.aria||x.title)})"
+  ]
+}

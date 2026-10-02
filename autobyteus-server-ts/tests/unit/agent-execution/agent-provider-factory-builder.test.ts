@@ -19,7 +19,7 @@ const createProcessInput = (): AgentProviderFactoryBuilderProcessInput => ({
       lifecycle: { marker: "lifecycle" } as never,
     },
     waitForIdle: vi.fn() as never,
-    compactionAgentRunnerFactory: vi.fn() as never,
+    compactionLlmFactory: vi.fn() as never,
   },
   codex: {
     workspaceSkillMaterializer: { marker: "codex-materializer" } as never,
@@ -46,7 +46,7 @@ const PROCESS_LEAVES = [
   "autoByteus.processorRegistries.toolInvocationPreprocessor",
   "autoByteus.processorRegistries.lifecycle",
   "autoByteus.waitForIdle",
-  "autoByteus.compactionAgentRunnerFactory",
+  "autoByteus.compactionLlmFactory",
   "codex.workspaceSkillMaterializer",
   "codex.workspaceResolver",
   "codex.clientManager",
@@ -172,8 +172,8 @@ describe("AgentProviderFactoryBuilder", () => {
     expect(auto.skillService).toBe(process.skillService);
     expect(auto.registries).toEqual(process.autoByteus.processorRegistries);
     expect(auto.waitForIdle).toBe(process.autoByteus.waitForIdle);
-    expect(auto.compactionAgentRunnerFactory)
-      .toBe(process.autoByteus.compactionAgentRunnerFactory);
+    expect(auto.compactionLlmFactory)
+      .toBe(process.autoByteus.compactionLlmFactory);
     expect(auto.applicationAgentTools).toBe(capabilityA);
 
     const codex = first.codex as unknown as Record<string, unknown>;
