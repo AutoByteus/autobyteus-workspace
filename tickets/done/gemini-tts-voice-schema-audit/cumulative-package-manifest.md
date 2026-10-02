@@ -1,91 +1,52 @@
-# Cumulative Delivery Package — Gemini Voice/Turn Styles
+# Cumulative Package — gemini-tts-voice-schema-audit
 
-Package `gemini-tts-voice-schema-audit`; Medium / High / reviewed route; DR-001 user-verification/dependency hold, not Delivery Completed. Integrated HEAD b76e65f291a48fbcc69490ae61f23569d36477e7; latest checked base 5e3cb2f720e6fc80173099075daf55594ed58de9. Product/behavior-defining supplement: N/A. Historical proposal/experiment notes are evidence, not competing approved behavior.
+Current **DR-005 Delivery Completed**, Medium/High reviewed. Canonical durable root **/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit**; all ticket-local authorities and supplements archived together. Complete file paths/hashes in shared **/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/cumulative-package-inventory.json**. Original independently owned requirements/design/review/API artifacts remain distinct; final Delivery reports index current integration, user acceptance, repository, beta publication and cleanup.
 
-## New-package canonical and supporting artifacts
+## Required authorities
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-coverage-investigation.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-live-evidence.log`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-live-probe-source.txt`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-test-case-ledger.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/api-e2e-test-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev001.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev002.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/architecture-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/code-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/code-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/delivery-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/dependency-merge-conflict-ir001.patch`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/generate-speech-schema.json`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/handoff-summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/implementation-base-blocker-ir001.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/implementation-base-validation-ir002.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/implementation-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/release-deployment-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/release-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/solution-base-clarification-sr014.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/solution-base-recovery-sr015.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/solution-handoff-sr013.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/solution-proposal-sr004.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/speech-value-recommendation-sr011.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/test-vault-runtime-explanation-sr007.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/test-vault-usability-assessment-sr006.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/voice-capability-clarification-sr009.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/voice-feature-probe-sr010.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/voice-provider-probe-sr005.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/voice-schema-audit-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/voice-scope-update-sr008.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/delivery-evidence/checks.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/delivery-evidence/post-integration.log`
+- `requirements-doc.md`
+- `investigation-notes.md`
+- `solution-revision-record.md`
+- `design-spec.md`
+- `design-review-report.md`
+- `architecture-review-revision-record.md`
+- `implementation-handoff.md`
+- `implementation-revision-record.md`
+- `code-review-report.md`
+- `code-review-revision-record.md`
+- `api-e2e-coverage-investigation.md`
+- `api-e2e-execution-coverage-report.md`
+- `api-e2e-test-case-ledger.md`
+- `api-e2e-revision-record.md`
+- `api-e2e-test-review-report.md`
+- `docs-sync-report.md`
+- `handoff-summary.md`
+- `release-notes.md`
+- `release-deployment-report.md`
+- `delivery-revision-record.md`
 
-## Sole added durable API/E2E test
+## Shared evidence / predecessor
 
-Additional Delivery docs-check evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/tickets/in-progress/gemini-tts-voice-schema-audit/delivery-evidence/doc-consistency.log`.
+Actual accepted predecessor authorities **/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade**, current new authorities **/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit**; no stale external hold/copy inferred. Fresh current checks in old delivery-evidence; publication/refs/assets/metadata/cleanup/user chronology in new delivery-evidence. Reviewer/solution supplemental files listed in inventory.
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts` (13 cases; CRR-002 Pass).
+## Durable implementation/test/doc surfaces
 
-## Long-lived docs synchronized
-
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-ts/docs/provider_model_catalogs.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/docs/modules/multimedia_management.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/docs/modules/secret_management.md`
-
-## External pinned predecessor — separately held authority
-
-Pinned source c6586a07f3c2585aa13673875c1bc34c971b6e5e was incorporated through 332cbb2ad. The paths below point to the existing owner’s actual worktree, not inherited stale copies. Its DR-004 acceptance/finalization and user-test cleanup remain unresolved. This new package cannot authorize transitive target finalization. No old artifact was edited.
-
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/architecture-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/implementation-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/code-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/code-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-test-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/handoff-summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/release-deployment-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-current-key-probe-sr014.md`
-
-## DR-002 update
-
-- Current user delivery acceptance/stable selection and unchanged-base preflight: `delivery-evidence/release-preflight.md`. Current canonical delivery reports/history updated; old DR-004 remains separately unresolved at this result.
-
-## DR-003 Combined Finalization
-
-User chronology `delivery-evidence/user-verification.md`; predecessor archived actual authoritative package and current271-test evidence under `../gemini-38-tts-upgrade/`. Delivery reports reflect combined acceptance/beta, not unresolved historical DR-004. After target merge, durable canonical files reside in root `tickets/done/` for each package; transient worktree paths are provenance only.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/TESTING.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/AGENTS.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/multimedia/audio/audio-client-factory.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/multimedia/audio/gemini-tts-voices.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/src/multimedia/audio/api/gemini-audio-client.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/agent-tools/media/media-tool-parameter-schemas.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-harness.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-scenarios.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/test-support/live-e2e/live-e2e-audio-assertions.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/secret-management/live-e2e-audio-assertions.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/multimedia/audio/audio-client-factory.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/tests/unit/multimedia/audio/api/gemini-audio-client.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-tools/media/media-tool-parameter-schemas.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/agent-tools/media/media-generation-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/provider_model_catalogs.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/multimedia_management.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/secret_management.md`

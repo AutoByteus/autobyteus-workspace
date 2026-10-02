@@ -1,0 +1,615 @@
+{
+  "created_at_utc": "2026-10-02T20:29:09.341330+00:00",
+  "packages": [
+    "gemini-38-tts-upgrade",
+    "gemini-tts-voice-schema-audit"
+  ],
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-coverage-investigation.md",
+      "bytes": 42857,
+      "sha256": "defe50c8a1d3ce0efc8627103aa53fe892f22a1513cfef9ea68f4c147e0f65db"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-execution-coverage-report.md",
+      "bytes": 10668,
+      "sha256": "ed2efddfa3d7cbdac00af87cfa3ce6b3c9ed9a4dcfa474111c7f2a06ff221aad"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-revision-record.md",
+      "bytes": 13810,
+      "sha256": "93c5ab7114c6d8587dbdb5cefe472132f5c1d99123b3ddd4ebf6fadb4d6539ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-test-case-ledger.md",
+      "bytes": 30230,
+      "sha256": "677c17bc4e2c213ad66ec3e04a998bd2c2af5251a94e6cb2c5f94abe5095fb4b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-test-review-report.md",
+      "bytes": 6071,
+      "sha256": "e09b173ff5bc521a9c2ff95e2b15c3bc951c70317f65962431c0e23eb271fac5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/architecture-review-revision-record.md",
+      "bytes": 4936,
+      "sha256": "1e408c2438bd82743f640d1eec899d23fcb9dc1d9cb2cd5782ec98f35ee6f810"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/code-review-report.md",
+      "bytes": 22753,
+      "sha256": "d3b66d46d001b20c4abb63e649c81d93cfcd8b181825cb4b07b0b66b376f0e3c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/code-review-revision-record.md",
+      "bytes": 24369,
+      "sha256": "e983182e6fe4e2443bc9564e2db2be3adf54a1e2b2341e653242d36144f4308a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/cumulative-package-manifest.md",
+      "bytes": 4254,
+      "sha256": "6dc8b3932ff869b2ab288e201f1e5701382fbb64437840d0c3f7cb1fd293c50b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-evidence/checks.md",
+      "bytes": 2614,
+      "sha256": "3bb65e6b7ad22eef0b4edb4ef2e6fdffcf3e8d0cbed7448da5ee8fd2bacb4818"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-evidence/final-integration.log",
+      "bytes": 108602,
+      "sha256": "e11939ff564ac0cdc891a69b6e2f4f1d5b2362d8a3e7ee417775fc9411c5b81c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-evidence/isolated-cleanup.json",
+      "bytes": 473,
+      "sha256": "0d23d04d6da2ba5ab8826bbf20a9e6fc35afe3b6f1f74eb2efd5451a52b5f78b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-evidence/user-verification.md",
+      "bytes": 1452,
+      "sha256": "68d7c27960d5476be5b0d25fad7e39ff329088184c0d696167a88526a03e21dd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-revision-record.md",
+      "bytes": 17987,
+      "sha256": "4acfeb1fab598137e53b356bd96118e14197b44bb3a53e183443de0a50323c1f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/design-review-report.md",
+      "bytes": 19162,
+      "sha256": "33bb16101bcd5cd45838b0a5425b76a74a451118dd2f862eb26b4da7110f1ff8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/design-spec.md",
+      "bytes": 35421,
+      "sha256": "bac76c163162516a33b1e51c3db4ba7a1da056b59019399bf534f1e487b0ffd3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/docs-sync-report.md",
+      "bytes": 7525,
+      "sha256": "f08d4ee1f3dbaa42dbdb88c04f7b5e5b5cdc24a1243fe7139529bcbe8362c291"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/handoff-summary.md",
+      "bytes": 2122,
+      "sha256": "041ad84efc7d439063eb5abc3260d8094e0adc3a05a96118092fd07b4ef808db"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/implementation-handoff.md",
+      "bytes": 18606,
+      "sha256": "3b05ed18b530b7ae20d4a8df9ade8d151351a35ecd1011a3fd37a2f9d7a875f4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/implementation-revision-record.md",
+      "bytes": 10018,
+      "sha256": "e4d0effcccaf2d8f948b73ba09eecf2048b4e06534892438af39dec8f4cd32c4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/investigation-notes.md",
+      "bytes": 47823,
+      "sha256": "f0cf7af0875111da1fac707e8492b10ff5bd27963a4e115ae720f54634ba9d38"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/release-deployment-report.md",
+      "bytes": 11059,
+      "sha256": "1dc54bfee70c25c8ea8a484cf81866e2ca2407f1f8f9147f849f1b25812e6930"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/release-notes.md",
+      "bytes": 1136,
+      "sha256": "7cf2221ff3124a5e772e554a4f315863924f4171f9d8c193d20ccea61dde41c2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/requirements-doc.md",
+      "bytes": 16909,
+      "sha256": "efa81648a2d5b94ea17a9721c5698028581036268d18a488eac7fa8ffce982e4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-access-update-sr008.md",
+      "bytes": 6520,
+      "sha256": "12a8452385a90544433761147098e3670b0f96adffb70c1bef94c558a7aa0fff"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-blocker-sr007.md",
+      "bytes": 8710,
+      "sha256": "9f9f0ef6f765336694f3ed561cad8359a4955138e3bca40778dbc4e0705f24d2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-current-key-probe-sr014.md",
+      "bytes": 4774,
+      "sha256": "c8284626441d8bbf135adfade5359f8a42dd32555179455ce63081b4f94f6584"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-current-key-recheck-sr013.md",
+      "bytes": 5758,
+      "sha256": "0f79676dcc0f9d7405115b88b473d6db4d17d0845f9867d3ce9dd8a6cbfeb407"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-handoff-sr006.md",
+      "bytes": 8288,
+      "sha256": "5af95399a466e2ec953623749d121f4434fce4d3654d61ba0651489a8f3e7ee1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-handoff.md",
+      "bytes": 7310,
+      "sha256": "ac632d04138ff0223da3b81fe11e2cb71390f30e300bb1bceeea253b272309ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-hold-sr010.md",
+      "bytes": 7022,
+      "sha256": "ba9a5912e0a73a603940ee37e8eb645fc6c1aeea433e07970b2ed3a38bca0736"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-revision-record.md",
+      "bytes": 35624,
+      "sha256": "ee0b8537714216792befef45adf42742ac0a1e83254dd1705baa313ef7e7a8ed"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-validation-update-sr012.md",
+      "bytes": 5913,
+      "sha256": "6e268837f861e8d1c7aa2992ddd29c29c3672a983c5594750267233d84bb5d84"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-vertex-recheck-sr009.md",
+      "bytes": 7250,
+      "sha256": "0538e5eee7130f9bb4f804642a8a5322b6e1260d320e52d394f87c1e87891153"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-vertex-recheck-sr011.md",
+      "bytes": 8043,
+      "sha256": "78422a6b6aae88819961c20f510e6af7bf3e477668f157400882020fb42877ba"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-coverage-investigation.md",
+      "bytes": 25291,
+      "sha256": "729b3dd25ca1b9e7b144268341b52dff14f7465ef2a6b65c9d9bcfc7d6a549de"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-execution-coverage-report.md",
+      "bytes": 19950,
+      "sha256": "fb387d62bba8a0fa99082f98f4bf883f478b8533d012d8e6a539718b07c006fd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-live-evidence.log",
+      "bytes": 3124,
+      "sha256": "8f8e7660673393e968b9a7fe1f4cbc7b0c03ffa8205873fa9e806faa41c4b094"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-live-probe-source.txt",
+      "bytes": 9545,
+      "sha256": "af69c1a74251f75a9fce52b41b3c3f80fb62c807e7297e75b6c3732c2bde7206"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-revision-record.md",
+      "bytes": 8691,
+      "sha256": "ee624c694d36bda13bf8ab8e4ce22a6764f3a5f2a1354cde8dcf021ec54e04ea"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-test-case-ledger.md",
+      "bytes": 12309,
+      "sha256": "f354df691664a2e5a8d5d13a5e220ccdcff85835f707c6f71bd973f981c9e62a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/api-e2e-test-review-report.md",
+      "bytes": 11442,
+      "sha256": "e8f1610653c576307a5780876323ae24ebf610d77e9093f2cb8400ba0b715889"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev001.md",
+      "bytes": 3194,
+      "sha256": "d2cf9ffb9af81718e94b3573244e38316a5ac411e9e11aee10a171b5daaae59d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev002.md",
+      "bytes": 4377,
+      "sha256": "b6621afe93e7e5c95a185fffafbf809ae6926e2a8dc515578ca573bed8f0b023"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/architecture-review-revision-record.md",
+      "bytes": 7433,
+      "sha256": "31f7d1a5c07190150f3e68284a3854e1c848af80abd003a7942797966d8e455b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/code-review-report.md",
+      "bytes": 33037,
+      "sha256": "8e6deee53be3da44dfda18fad252e1763ab57608f139bd8b7689154599601cac"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/code-review-revision-record.md",
+      "bytes": 9875,
+      "sha256": "17d44a5bd251449849164693e35582b44095c834a200c02046ea94fdcdb2c4b0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/cumulative-package-manifest.md",
+      "bytes": 4271,
+      "sha256": "8d005276e47352a8480e20e8fd9f4b2d85122b46771957f51ab5825696cd8cd8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/android-checksum.json",
+      "bytes": 392,
+      "sha256": "273d03f2b6f1c5e33176175c05a1543b8a52777380ce238078c46db12ed45ea4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/archive-hygiene.md",
+      "bytes": 460,
+      "sha256": "686701ad5d4e9e0aa080d2b0afe3d4de9d259bc865dc12cfe9b62c30b5a9f74a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/asset-verification.json",
+      "bytes": 8635,
+      "sha256": "a916b116929a3f692686129629065e3f3d789b377a975f552b33d66759f899bc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/asset-verification.md",
+      "bytes": 1112,
+      "sha256": "a83273f7d50a76a4d931918c96c8bec5ff353fbe2854a1499a55d9101e13b417"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/checks.md",
+      "bytes": 3243,
+      "sha256": "706aea84d0c0e6c5967316d2812568d56d64d73b3d75a2e7189de7d33ba297a9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/cleanup-receipt.json",
+      "bytes": 1001,
+      "sha256": "6468710e3020bb795c3680414a47c3ae490ffe20eeaf1331704e21ead243c1aa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/doc-consistency.log",
+      "bytes": 258,
+      "sha256": "c480d78d93ea2b58b8e05c7e008c47f5f6e5aa8803616eb98a0406957bd576a8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/docker-beta-inspect.log",
+      "bytes": 622,
+      "sha256": "ce1e55b2cabc39783db4ce27b0fee8203ac267563e10ff9fe3b8aa92fc8b6a95"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/docker-beta-manifest.json",
+      "bytes": 649,
+      "sha256": "9bc5b9a1521ce8b814bc122d0e9194956e5b96bb1a7bf69f36cd28f67aef05fa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/docker-verification.json",
+      "bytes": 843,
+      "sha256": "ff8554a537eb08c4b148aa8b41167d296011cce29a038f5de368bb266a39aea9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/docker-version-inspect.log",
+      "bytes": 652,
+      "sha256": "53613f4e0c75eb2318d2465ee06a27a1e8541fc231cd04319a1b0adb122b3471"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/docker-version-manifest.json",
+      "bytes": 649,
+      "sha256": "9bc5b9a1521ce8b814bc122d0e9194956e5b96bb1a7bf69f36cd28f67aef05fa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/finalization-receipt.json",
+      "bytes": 1928,
+      "sha256": "c15bdf56e139a9fc86dc3836f06dff94203b8effb47b7c6eebf4b69cde231820"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/github-release.json",
+      "bytes": 31627,
+      "sha256": "de0f913df962e35a769f71a5fab35e2732d66be6e6bdd496e84a4dac96db7675"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/interruption-recovery.md",
+      "bytes": 522,
+      "sha256": "e234b592086f0c1d0059d1d9fc3a1bde2c9a0129970d91a5e3cb6c203da56263"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/ios-upload-confirmation.log",
+      "bytes": 144,
+      "sha256": "3ab2fb47603e3b1c5853dcc0cd19bc0726be03eb0841820d6d2795c9e5c8d7d4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/ios-upload-verification.json",
+      "bytes": 1597,
+      "sha256": "8304aa16f020daf9850ea0d5834207c1f454b5b14533cd10192eaf2229cefdf8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/log-hygiene.md",
+      "bytes": 531,
+      "sha256": "5a4746e25755f11d5bff9816328b9dfeba2d05706a5b0f78ed9905182d60ad58"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/post-integration.log",
+      "bytes": 103697,
+      "sha256": "f4265f64ee91128046e9aeee18f5f6f495779c8a25c1bfa8148efa4e54ac0b7a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/post-release-concurrency.md",
+      "bytes": 573,
+      "sha256": "90b2bfead0da320fb455115c83029d7a4256552526eb7bf8d919de8f91444655"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/publication-current.json",
+      "bytes": 55900,
+      "sha256": "8defe6a8e92999c0ae73109bd88b0e0c0d984667a4e92e186e9fb822aed2a531"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/publication-final.json",
+      "bytes": 55900,
+      "sha256": "8defe6a8e92999c0ae73109bd88b0e0c0d984667a4e92e186e9fb822aed2a531"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/publication-initial.json",
+      "bytes": 1387,
+      "sha256": "61b983259c1a429d8d604117c16c8f752ae9b95b7c81aa7166cabf7fafde8d2d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/publication-monitor.log",
+      "bytes": 1140,
+      "sha256": "3f710cb61d3acfcc5adca29ba1c86187ec2d485acd755e65273cdd34a64a59c3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/publication-receipt-push.log",
+      "bytes": 536,
+      "sha256": "c43d8d88de29634cd8969eef283ec4d50dd91930f49ebf544777e20a99c72d50"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/receipt-concurrent-merge.log",
+      "bytes": 8784,
+      "sha256": "6a54fc8621c950d77b6d006478dc5e31df749464e26ddddf11f4565e05dd172b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/receipt-concurrent-push.log",
+      "bytes": 362,
+      "sha256": "0a898c87f4f1e3bdfb9227b2dd5c9becd23d8d260e62ef4de141787a714b7237"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-branch-push.log",
+      "bytes": 362,
+      "sha256": "f136b3a0418c9be6f51375afe8f9cc950d4fe0eb755f503999a30a318fe838d7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-helper.log",
+      "bytes": 872,
+      "sha256": "6e2738b0cd1baa8f2d078d1994ad5e54f7dc3209c3989ee886292d714cdb31cb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-log-hygiene.json",
+      "bytes": 2773,
+      "sha256": "fddb3479c8d223d2062446907acb189dc1d009e1feea6b2f558f3825c6806010"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-preflight.md",
+      "bytes": 3405,
+      "sha256": "705d797cae60b81eca8cdf8fc90fbcb60430583b02ca22dfa3ae61de6cfa0b79"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-tag-push.log",
+      "bytes": 115,
+      "sha256": "66cad81b66bb6c386447d302d8b73530a95657ce3de404267b8df167ca3522a0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-verification.md",
+      "bytes": 1676,
+      "sha256": "309cd94709470cac2c1df0a1c510cd17aae2a816f906f26b7a749ad3df1ad356"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/root-ff-update.log",
+      "bytes": 102875,
+      "sha256": "6d247c1e28ddb9cb4f274ee3cd543a8db68454ba66bfd425aedd81fe26ae3c3b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/root-preservation.md",
+      "bytes": 791,
+      "sha256": "899164d2311993f0a03e01623ae3758675f8ddf7a1f4dc83013ea26fce34e830"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/root-preserved-dirty-files.json",
+      "bytes": 449,
+      "sha256": "356e9eb32751df60ef4bc0cd60f0bfd1f92776e5426c562c95d87b85b16cf244"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-new-merge.log",
+      "bytes": 8293,
+      "sha256": "7e4bf66fe8fce036349fa08fab41145ee25fbd164d332cde7d894af5634a3780"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-new-push.log",
+      "bytes": 362,
+      "sha256": "afe68a8403d9af5a1956633ec6a72dae203db8931aba4a4e41a42a956810e4cb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-old-merge.log",
+      "bytes": 15320,
+      "sha256": "076fe908f4d43f100030c46e6e664c489962d7b3ceac6c0afbe00cb3aca6617b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-old-push.log",
+      "bytes": 362,
+      "sha256": "d8b09c2f66e483b08070a936d5841144b33b8e0d48151062fa439f19b3b19b9f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/updater-metadata/latest-linux-arm64.yml",
+      "bytes": 441,
+      "sha256": "2062c03fb941e8bd3f6e6d11bca31355aa8f446028c3a352fa17f00c4e5f608e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/updater-metadata/latest-linux.yml",
+      "bytes": 437,
+      "sha256": "55db3bf4ab0db6ebb82a3b95a5cecd3a154a4f6f07c0b8f4dede920593aab304"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/updater-metadata/latest-mac.yml",
+      "bytes": 945,
+      "sha256": "7ad282f6ffa855c36052d8f49be0442b86dbad41d8d198206348b8c65b173433"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/updater-metadata/latest.yml",
+      "bytes": 378,
+      "sha256": "9660f6eb3357ad6c2e5bca590e08294af373b03fe2f390e2c2e56e22f778ed1b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/user-verification.md",
+      "bytes": 1452,
+      "sha256": "68d7c27960d5476be5b0d25fad7e39ff329088184c0d696167a88526a03e21dd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/delivery-revision-record.md",
+      "bytes": 13348,
+      "sha256": "465e1c2bd7a5099b8c3ee042c8f2e3c7dae4c5cf50495b13540c3bb31407bd53"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/dependency-merge-conflict-ir001.patch",
+      "bytes": 3160,
+      "sha256": "5d7b098de4962e87d53a1f8c3c5ed1b1616ed8e888a943cb625016cf0be05c8c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/design-review-report.md",
+      "bytes": 40540,
+      "sha256": "e605cfafe0075f54c0df4c3d0193bf0ee4113910b641e45c539286855a51be55"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/design-spec.md",
+      "bytes": 45075,
+      "sha256": "669aa508ba1f02829ab4d954a126e9bb332993974f6a0240eafd01b707ceb673"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/docs-sync-report.md",
+      "bytes": 6900,
+      "sha256": "f3cbdae09483692e12ba2dfa5701e3c23621163446cc86140fa189853198623c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/generate-speech-schema.json",
+      "bytes": 4288,
+      "sha256": "1539325a31b2c35cd2d44a9f3744fa6eaf9446556d260d4fbae924101d777a66"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/handoff-summary.md",
+      "bytes": 2098,
+      "sha256": "ac68364e9ab5d13e32ca6e0bd3cab41e584a05ba5a4e94f7ae2d0d1bee5ec4fb"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/implementation-base-blocker-ir001.md",
+      "bytes": 3833,
+      "sha256": "1a6500c05b789e44db4b233ed556f4737bfd77f588844e8e44bda77b6bc53f54"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/implementation-base-validation-ir002.md",
+      "bytes": 3835,
+      "sha256": "f10470c7afbfb9f47e468b168778caf09fc8303e61e1fa4e9acadc591f0b23c2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/implementation-handoff.md",
+      "bytes": 16574,
+      "sha256": "b74d44001ccd327f2d6103a6eb39f10edcc9eadaff3220537d6368d6f314f983"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/implementation-revision-record.md",
+      "bytes": 8703,
+      "sha256": "4f6e781127cb51cf200365480a1c9cb9fd264c567d5e0dfdfb77777271d91fab"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/investigation-notes.md",
+      "bytes": 52040,
+      "sha256": "d80b73de8503826e3243eb4b4c2d8ffc37f4e5453c23c7f7a64f1e48e796201a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/release-deployment-report.md",
+      "bytes": 11051,
+      "sha256": "9294a3e48fd940d1c808c17d57c2b344f157fd4eb595ccbe70dd5bbe2354bd9d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/release-notes.md",
+      "bytes": 1026,
+      "sha256": "d1b3486c8418f69e41319ea9ad0d6c40da61a44e902509688b976815c2132a2c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/requirements-doc.md",
+      "bytes": 10994,
+      "sha256": "49c312ad3d343a872702f04caa7c5b84493a7cc03116e1be4e5997a672730279"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/solution-base-clarification-sr014.md",
+      "bytes": 7599,
+      "sha256": "1f85ea950abd273f98144b3156cdc479a42e5458e8369ec34b7c29486dfaf61b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/solution-base-recovery-sr015.md",
+      "bytes": 19889,
+      "sha256": "0d086d9fbb36461daeac47067c79005f7adb4895c3cec01cc5f55cfeabdc67c6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/solution-handoff-sr013.md",
+      "bytes": 9436,
+      "sha256": "6feef3c8a4a7578541b826ea237eddee331d083189ae557be3596331eef7f67c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/solution-proposal-sr004.md",
+      "bytes": 5790,
+      "sha256": "b330f468c888449d6e023b9a47333c5ac3d51fbef2d331b3b9aed3e30a0f62f6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/solution-revision-record.md",
+      "bytes": 32947,
+      "sha256": "bfa2986120ef65fd4ec5734b661586dd76b1838985b4744cf79dac002d00d1d2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/speech-value-recommendation-sr011.md",
+      "bytes": 6134,
+      "sha256": "8077ca001e29c405043aa70d2e2811ae1c7dbbe855c627a371558f8098a4f25a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/test-vault-runtime-explanation-sr007.md",
+      "bytes": 4050,
+      "sha256": "11dddb55fc144fda92efaaec1dc709f220bc2c7cb1276f3fb70ddc3a7df02b63"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/test-vault-usability-assessment-sr006.md",
+      "bytes": 4599,
+      "sha256": "8a8a01d5e2898846a8b5a43a9454d10da9275cd63acf277d486cb1dc44e7a776"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/voice-capability-clarification-sr009.md",
+      "bytes": 5064,
+      "sha256": "20860c5d85bd4133637e8542b96ef0f206d1b8a3eab03fd421431d048375cca4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/voice-feature-probe-sr010.md",
+      "bytes": 10755,
+      "sha256": "e4f4bd87249b359b85d9cc9594fc9fdeb310aef2cae50001cc6b2305aeb46f79"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/voice-provider-probe-sr005.md",
+      "bytes": 4847,
+      "sha256": "a9a496fd9491354dab8a3c4c6c2ddecc617366775676eb932a7d94335c55226e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/voice-schema-audit-report.md",
+      "bytes": 12159,
+      "sha256": "ca7f605e5ea80d6711167e8aea6033673362dd21bf1d4997e9a8a04e2ac7302d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-tts-voice-schema-audit/voice-scope-update-sr008.md",
+      "bytes": 4510,
+      "sha256": "f8857f1c9453062d987774a96ba754031328fa29f6b14da5655f08c78e00ed97"
+    }
+  ],
+  "self_hash": "Excluded to avoid self-reference"
+}

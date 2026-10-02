@@ -18,7 +18,13 @@
   "notes": "Generated beta notes; archived curated notes NOT used for stable publication",
   "source_identity": "final target equals tested eda59e585 non-ticket tree before version-only release commit",
   "publication": "Completed; all 4 workflows success/attempt1; 17 assets verified",
-  "cleanup": "Pending safe worktree/local branch removal; old instance cleanup complete/data kept",
+  "cleanup": "Completed; 3 owned worktrees/local branches removed safely; test data/unrelated work preserved",
   "docker_manifest_digest": "sha256:9bc5b9a1521ce8b814bc122d0e9194956e5b96bb1a7bf69f36cd28f67aef05fa",
-  "release_url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.12"
+  "release_url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.12",
+  "delivery_result": "Delivery Completed",
+  "current_revisions": {
+    "gemini-38-tts-upgrade": "DR-007",
+    "gemini-tts-voice-schema-audit": "DR-005"
+  },
+  "post_release_receipt_merge": "37e92b7c00efe5b0209d5ec6f290a611a8b0055b"
 }

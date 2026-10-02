@@ -1,0 +1,18 @@
+{
+  "completed_at_utc": "2026-10-02T20:26:09.485252+00:00",
+  "worktree_paths_removed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-beta-finalize"
+  ],
+  "local_branches_deleted": [
+    "codex/gemini-38-tts-upgrade",
+    "codex/gemini-tts-voice-schema-audit",
+    "delivery/gemini-tts-beta-finalize-20261002"
+  ],
+  "safety": "clean status and ancestry to pushed origin/personal checked before normal remove/-d; no force",
+  "worktree_prune": "Not required: owned registrations removed normally, no global unrelated prune",
+  "remote_ticket_branches": "Retained for audit, deletion Not required",
+  "old_instance": "Already stopped; lifecycle reaped; private data preserved with --keep, ports released",
+  "unrelated_root_work": "Tracked dirty file hashes still unchanged; untracked paths not staged or removed"
+}

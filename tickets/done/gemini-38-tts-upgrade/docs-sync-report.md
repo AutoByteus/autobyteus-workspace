@@ -1,3 +1,7 @@
+# Current DR-007 Docs Authority
+
+**Docs synchronization Pass** on checked combined source; canonical3docs remain current at the published beta. Integrated source/checks and finalization/publication/cleanup now complete; current exact receipt in release-deployment-report.md. Earlier waiting/preparation statements below describe historical rounds, not current gates.
+
 # Docs Sync Report — Gemini 3.8 TTS
 
 ## Scope
