@@ -97,4 +97,3 @@ migrations/
       Tests  78 passed (78)
    Start at  19:42:20
    Duration  1.00s (transform 190ms, setup 24ms, import 271ms, tests 28ms, environment 0ms)
-
