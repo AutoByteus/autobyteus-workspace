@@ -8,6 +8,7 @@
 | SR-003 | Requirements | Product Prototype Completed / UF-017 | PFI-001–007; UF-003/005–017; DATA-001 | Draft / no design | Draft; manual UI subset Approved / no design | BEH-002,005,007,008; REQ-002,007,009,011–014; AC-008,012–019; SCN-002,005,006,008,009; DEC-006,007,010–014 | User Decision/Approval Hold |
 | SR-004 | Requirements | User SD-CF-001–004 and continuity source inspection | SD-CF-001–004; E-023–026 | Draft; UI subset approved / no design | Ready for Approval; bounded tools/manual UI / no design | Active tool/UI IDs; Manager/dispatch/dependency/sidebar/stop dispositions | Requirements Approval Hold |
 | SR-005 | Requirements | User practical list/update direction | SD-CF-005; DEC-015 | Ready for Approval / no design | Draft two-tool creation clarification / no design | REQ-002/003/010/015; AC-002/003/020/021; SCN-002/005/010 | Requirements Clarification Hold |
+| SR-006 | Requirements | User identifies Project discovery and confirms catalog metadata/count | SD-CF-006/007; E-028 | Draft two Task tools / no design | Draft one Project + two Task tools / no design | REQ-002/010/015/016; AC-021/022; SCN-002/011 | Creation Clarification Hold |
 
 ## SR-001 — Experimental manager/tool foundation analysis and UI brainstorming request
 - Phase/classification: Requirements / Initial Baseline.
@@ -94,3 +95,14 @@
 - Canonical evidence E-027/user chronology/current inventory and requirements-refinement-sr-005.md persisted; only owned docs changed. No source/runtime/installed setting/test execution or Product artifact changes.
 - Design/review/task-size/risk: N/A — architecture not started. get_handoff_rules found no matching route; evaluation in current result. Return to user for DEC-015; no Product request/send_message_to or downstream engineering readiness.
 - Next action: clarify whether update creates when ID is omitted, finalize list/update contracts, then obtain full refined requirements approval before architecture.
+
+## SR-006 — Project discovery: one Project list plus two Task tools
+- Trigger: SD-CF-006 asks how agent knows Projects; SD-CF-007 explicitly agrees Project list with ID/name/description and two Task tools (2026-10-02).
+- Prior/current: SR-005 Draft → SR-006 Draft; overall three-capability direction approved, exact create-without-ID behavior/full baseline still unapproved. Prior docs checkpoint d7571a021b805011bbae1ad59bf210391aeea72b; earlier SR-001–005/handoffs/results unchanged.
+- Active intended delta: read-only Project metadata listing on current node precedes scoped Task list/update, or caller may supply a known ID. No separate Task find/get/search/new Project create tool or automatic default Project selection. Two applies to Task tools; three Project/Task tools overall.
+- Affected IDs REQ-002/010/015, AC-021, SCN-002, UC-002/BEH-006 and current readiness/traceability; add stable REQ-016, AC-022, SCN-011; evidence E-028.
+- Current source ProjectService/GraphQL catalog exists; inspected selected agent-tools lacks new tool names and E-007 session lacks Project context. Source facts are not tool implementation or architecture.
+- Approval limit: SD-CF-007 explicitly confirms Project metadata/tool count, not exact optional-ID create branch. DEC-015 remains; unknown provided Task ID must not silently create under the proposal. No full baseline approval inferred.
+- Existing approved manual UI/continuity proposals and experimental default-off preserved; Manager/user ownership, sidebar/stop/scheduler/linkage deferrals unchanged. No Product artifact or production code/runtime/test changes.
+- Result/routing: requirements-refinement-sr-006.md carries full context; get_handoff_rules found no matching rule after persistence (routine creation-contract clarification; no new Product, marketing, completed architecture or delivery receipt gap). No send_message_to required. Documentation integrity checks pass; no completed design/review/classification/engineering handoff.
+- Next: confirm update creates when Task ID omitted, finalize complete three-tool/manual-UI basis and obtain explicit approval before architecture.
