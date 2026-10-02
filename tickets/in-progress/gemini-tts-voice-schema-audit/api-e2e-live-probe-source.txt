@@ -1,0 +1,152 @@
+# Temporary authorized probe source evidence; NOT an automatic durable paid test
+
+Original runner path: test-support/live-e2e/.voice-acceptance-runner.mjs
+
+// Temporary authorized validation, not an automatic durable provider test.
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { startBuiltTestServer, persistentTestRuntimeRoot, serverRoot, createSanitizedTestEnvironment } from './test-runtime-bootstrap.mjs';
+import { runCapturedLiveE2eProcess, LiveE2eEvidenceScanner, LIVE_E2E_RUNNER_CANARIES } from './live-e2e-evidence-scanner.mjs';
+const caseId = process.argv[2];
+const reviewDirectory = process.argv[3];
+if (!['VS-05', 'VS-06', 'VS-07'].includes(caseId) || !reviewDirectory?.startsWith('/tmp/autobyteus-voice-acceptance-')) throw new Error('LIVE_E2E_PROBE_SCOPE_INVALID');
+const recordPath = path.join(reviewDirectory, `${caseId}.attempt.json`);
+await fs.writeFile(recordPath, JSON.stringify({caseId, started: true}), {flag: 'wx', mode: 0o600});
+let server;
+try {
+  server = await startBuiltTestServer({runtimeRoot: persistentTestRuntimeRoot});
+  const result = await runCapturedLiveE2eProcess({
+    command: 'pnpm', args: ['exec', 'vitest', 'run', 'tests/e2e/media/.voice-acceptance-probe.e2e.test.ts', '--no-watch'],
+    cwd: serverRoot,
+    env: createSanitizedTestEnvironment({
+      RUN_REAL_E2E: '1', AUTOBYTEUS_VOICE_PROBE_CASE: caseId, AUTOBYTEUS_VOICE_REVIEW_DIR: reviewDirectory,
+      AUTOBYTEUS_TEST_RUNTIME_ROOT: server.runtimeRoot, AUTOBYTEUS_TEST_SERVER_URL: server.serverUrl,
+      AUTOBYTEUS_TEST_DATABASE_URL: server.database.databaseUrl,
+    }),
+  });
+  for (const line of (result.stdout + '\n' + result.stderr).split(/\r?\n/)) {
+    if (line.startsWith('LIVE_VOICE_') || /^\s*(Test Files|Tests)\s/.test(line)) process.stdout.write(`${line}\n`);
+  }
+  process.exitCode = result.status;
+} catch {
+  process.stderr.write('LIVE_E2E_VOICE_PROBE_RUN_FAILED\n'); process.exitCode = 1;
+} finally {
+  if (server) {
+    await server.stop();
+    new LiveE2eEvidenceScanner(LIVE_E2E_RUNNER_CANARIES).assertEvidenceClean(server.output());
+  }
+}
+
+
+Original Vitest path: autobyteus-server-ts/tests/e2e/media/.voice-acceptance-probe.e2e.test.ts
+
+// Temporary explicit single-case probe. User authorized maximum3 operations.
+import 'reflect-metadata';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { LiveE2eHarness } from '../../../../test-support/live-e2e/live-e2e-harness.js';
+import { GeminiAudioClient } from 'autobyteus-ts/multimedia/audio/api/gemini-audio-client.js';
+import { LLMUserMessage } from 'autobyteus-ts/llm/user-message.js';
+import { defaultToolRegistry } from 'autobyteus-ts/tools/registry/tool-registry.js';
+import { GeminiJsonSchemaFormatter } from 'autobyteus-ts/tools/usage/formatters/gemini-json-schema-formatter.js';
+import { registerMediaTools, unregisterMediaTools } from '../../../src/agent-tools/media/register-media-tools.js';
+import { assertLiveAudioFileBytes } from '../../../../test-support/live-e2e/live-e2e-audio-assertions.js';
+
+const caseId = process.env.AUTOBYTEUS_VOICE_PROBE_CASE;
+const reviewDirectory = process.env.AUTOBYTEUS_VOICE_REVIEW_DIR!;
+const enabled = process.env.RUN_REAL_E2E === '1' && ['VS-05','VS-06','VS-07'].includes(caseId ?? '');
+const run = enabled ? describe : describe.skip;
+const safe = async <T>(operation: () => Promise<T>): Promise<T> => {
+  try { return await operation(); }
+  catch (error) {
+    const status = Number((error as {status?: unknown})?.status);
+    const message = error instanceof Error ? error.message : '';
+    const matched = message.match(/HTTP\s+(400|401|403|404|408|409|422|429|500|502|503|504)/)?.[1];
+    const http = Number.isInteger(status) && status >=400 && status <=599 ? status : matched ? Number(matched) : null;
+    process.stdout.write(`LIVE_VOICE_RESULT:${JSON.stringify({caseId, status:'FAILED', http,
+      category: http===401 ? 'authentication' : http===403 ? 'authorization' : http===404 ? 'not-found' : http===429 ? 'quota-or-rate-limit' : http && http>=500 ? 'provider-server' : 'unknown'})}\n`);
+    throw new Error(`LIVE_E2E_VOICE_OPERATION_FAILED:${caseId}:HTTP_${http ?? 'UNKNOWN'}`);
+  }
+};
+
+run('authorized current actual-tool voice validation', () => {
+  let harness: LiveE2eHarness;
+  let providerRequests = 0;
+  let originals: string[] = [];
+  let published: string | undefined;
+  let successful = false;
+  let snapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
+  const realFetch = globalThis.fetch;
+  beforeAll(async () => {
+    vi.stubGlobal('fetch', async (input: unknown, init?: RequestInit) => {
+      const url = new URL(typeof input==='string' ? input : input instanceof URL ? input.href : (input as Request).url);
+      if (!['127.0.0.1','localhost','[::1]'].includes(url.hostname)) {
+        const model = caseId==='VS-07' ? 'gemini-3.8-flash' : 'gemini-3.8-flash-tts';
+        if (url.hostname!=='aiplatform.googleapis.com' || !url.pathname.endsWith(`/publishers/google/models/${model}:generateContent`) || providerRequests!==0) {
+          throw new Error('LIVE_E2E_VOICE_UNAUTHORIZED_REQUEST_BLOCKED');
+        }
+        providerRequests++;
+        process.stdout.write(`LIVE_VOICE_REQUEST:${JSON.stringify({caseId, model, attempt:providerRequests})}\n`);
+      }
+      return realFetch(input as Parameters<typeof fetch>[0],init);
+    });
+    harness = await LiveE2eHarness.open();
+    const preflight = await harness.preflight(caseId==='VS-07' ? 'gemini.vertex-express.llm' : 'gemini.vertex-express.audio');
+    process.stdout.write(`LIVE_VOICE_PREFLIGHT:${JSON.stringify({caseId, ...preflight})}\n`);
+    if (preflight.health!=='READY' || preflight.missing.length || !preflight.configured.length) throw new Error('LIVE_E2E_VOICE_PREFLIGHT_NOT_READY');
+    const execution = await harness.requireScenario(caseId==='VS-07' ? 'gemini.vertex-express.llm' : 'gemini.vertex-express.audio');
+    await execution.activateGeminiMode();
+    snapshot = defaultToolRegistry.snapshot();
+    registerMediaTools();
+    const generate = GeminiAudioClient.prototype.generateSpeech;
+    vi.spyOn(GeminiAudioClient.prototype,'generateSpeech').mockImplementation(async function(this:GeminiAudioClient,...args) {
+      const result = await generate.apply(this,args); originals.push(...result.audio_urls); return result;
+    });
+  });
+  afterAll(async () => {
+    try {
+      for (const original of originals) await fs.rm(original,{force:true});
+      if (published && (!successful || caseId!=='VS-06')) await fs.rm(published,{force:true});
+      if (snapshot) { unregisterMediaTools(); defaultToolRegistry.restore(snapshot); }
+      await harness?.close();
+      process.stdout.write(`LIVE_VOICE_COUNT:${JSON.stringify({caseId, providerRequests})}\n`);
+    } finally { vi.restoreAllMocks(); vi.unstubAllGlobals(); }
+  });
+  it('performs only the explicitly selected operation', {timeout:180000}, async () => {
+    if (caseId==='VS-07') {
+      const definition = defaultToolRegistry.getToolDefinition('generate_speech')!;
+      const formatted = new GeminiJsonSchemaFormatter().provide(definition);
+      const execution = await harness.requireScenario('gemini.vertex-express.llm');
+      const llm = await safe(()=>execution.createLlm('gemini-3.8-flash'));
+      try {
+        const response = await safe(()=>llm.sendUserMessage(new LLMUserMessage({
+          content:'This is a schema acceptance check only. Do not call any tool. Reply with the single word pong.',
+        }), {tools:[formatted]}, {retryMode:'single_attempt', signal:AbortSignal.timeout(120000)}));
+        expect(response.content.trim().length).toBeGreaterThan(0);
+        expect(providerRequests).toBe(1); successful=true;
+        process.stdout.write(`LIVE_VOICE_RESULT:${JSON.stringify({caseId,status:'PASSED',providerRequests,schemaAccepted:true,noToolExecution:true})}\n`);
+      } finally { await llm.cleanup(); }
+      return;
+    }
+    const dialogue = caseId==='VS-06';
+    const prompt = dialogue
+      ? 'Narrator: First, the room is quiet and everyone is safe.\nGuest: Second, the celebration can begin!\nNarrator: Third, thank you for joining our story.'
+      : 'Hello. This is a short check of the additional voice through the speech tool.';
+    const generation_config = dialogue ? {
+      mode:'multi-speaker', style_instructions:'Natural, clear conversational delivery.',
+      speaker_mapping:[{speaker:'Narrator',voice:'Kore'},{speaker:'Guest',voice:'Puck'}],
+      turn_styles:['Speak slowly in a soft calm reassuring tone.','Speak with bright energetic cheerful excitement.',null],
+    } : {voice_name:'ar-001-advisor-1'};
+    published=path.join(reviewDirectory,dialogue ? 'dialogue.wav' : 'extra.wav');
+    const result = await safe(()=>defaultToolRegistry.createTool('generate_speech').execute({
+      agentId:'authorized-voice-check',runId:'authorized-voice-check',workspaceRootPath:reviewDirectory,
+    }, {prompt,output_file_path:published,generation_config})) as {file_path:string};
+    expect(result.file_path).toBe(published);
+    const bytes=await fs.readFile(result.file_path); assertLiveAudioFileBytes(bytes,'GEMINI');
+    expect(providerRequests).toBe(1); successful=true;
+    process.stdout.write(`LIVE_VOICE_RESULT:${JSON.stringify({caseId,status:'PASSED',providerRequests,bytes:bytes.length,
+      riff:bytes.toString('ascii',0,4)==='RIFF',wave:bytes.toString('ascii',8,12)==='WAVE',actualTool:true,
+      retainedForListening:dialogue,audibleAcceptance:'NOT_REVIEWED'})}\n`);
+  });
+});
