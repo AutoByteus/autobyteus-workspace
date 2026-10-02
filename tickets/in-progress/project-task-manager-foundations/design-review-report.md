@@ -6,17 +6,17 @@
 - Upstream Requirements Doc: [requirements-doc.md](requirements-doc.md).
 - Upstream Investigation Notes: [investigation-notes.md](investigation-notes.md).
 - Upstream Solution Revision Record: [solution-revision-record.md](solution-revision-record.md).
-- Reviewed Design Spec: [design-spec.md](design-spec.md), exact cumulative **SR-014**.
-- Supplemental Task Artifacts Reviewed: [design-handoff-sr-014.md](design-handoff-sr-014.md); the complete inventory in investigation-notes.md; approval SR-010/013; historical Product handoffs, refinement SR-003–009/011/012 and deferred skill-cli-feasibility; external Product spec, approval/receipt/handoff, validation and historical review context. See supplemental verdict below.
-- Relevant Solution Revision IDs: SR-014 design; SR-009/010 core approval; SR-012/013 Refresh approval; SR-001–008/011 historical scope/UX context.
+- Reviewed Design Spec: [design-spec.md](design-spec.md), exact cumulative **SR-015**.
+- Supplemental Task Artifacts Reviewed: [architecture-clarification-sr-015.md](architecture-clarification-sr-015.md), prior ARCH-REV-001 report/history and [design-handoff-sr-014.md](design-handoff-sr-014.md); the complete inventory in investigation-notes.md; approval SR-010/013; historical Product handoffs, refinement SR-003–009/011/012 and deferred skill-cli-feasibility; external Product spec, approval/receipt/handoff, validation and historical review context. See supplemental verdict below.
+- Relevant Solution Revision IDs: SR-015 design rework; SR-014 initial design; SR-009/010 core approval; SR-012/013 Refresh approval; SR-001–008/011 historical scope/UX context.
 - Architecture Review Revision Record: [architecture-review-revision-record.md](architecture-review-revision-record.md).
-- Current Architecture Review Revision ID: **ARCH-REV-001**.
-- Current Review Round: **1**. Trigger: Solution Designer's Architecture Design Complete / Large / High handoff.
-- Prior Review Round Reviewed: None; no prior canonical review report or revision record exists. No prior Pass inferred.
-- Latest Authoritative Round: **1 — Fail / Design Impact**.
+- Current Architecture Review Revision ID: **ARCH-REV-002**.
+- Current Review Round: **2**. Trigger: Solution Designer's SR-015 response to ARCH-REV-001 / ARCH-F-001; Large / High re-review.
+- Prior Review Round Reviewed: **ARCH-REV-001 / Round 1 / SR-014 — Fail / Design Impact**, committed at `1d7d70d0280269d13ee5242c603ab65299e468c3`. The prior finding was rechecked first, not resolved by the designer's assertion. Its baseline/history remains preserved in the revision record.
+- Latest Authoritative Round: **2 — Pass**.
 - Assigned workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations`.
-- Current-State Evidence Basis: source base `e04cfef23550c3b78286a53befc6bd5d71fb1061`; supplied checkpoint `2b01707ea2c06cf974bc7315e5f547f6e94094f5`; inspected HEAD `a3e516a9fff06a1c858e2a565cf8b132d37587a9`. The intervening diff only records the confirmed handoff receipt in design-handoff-sr-014.md; design/requirements/source are unchanged. Base-to-HEAD changes are ticket documentation only.
-- Method: independent read-only source, contract, fixture/test-source and artifact inspection against architecture-reviewer design-principles and report template, including reachability Example 9. No production tests, runtime, uploads, microphone, installed profile, feature enablement, integration or push performed. Four representative final screenshots inspected; all 20 exact visual file locators verified present. This is design review, not implementation or acceptance validation.
+- Current-State Evidence Basis: unchanged source base `e04cfef23550c3b78286a53befc6bd5d71fb1061`; supplied SR-015 checkpoint `5b225685ea6104d662d4981633f58abfb46f4c32`; inspected HEAD `c65f0ca9d280aa81d272cadbc324b01c69929bcd`. The latter differs only by two handoff-receipt lines. Rework changes five upstream ticket documents; no production source change. Original SR-014 checkpoint `2b01707ea2c06cf974bc7315e5f547f6e94094f5` remains the prior review basis.
+- Method: prior complete macro-to-detail review retained for unchanged content; independent recheck of the affected behavior basis, exact cumulative diff, consumer dispositions and Node Manager/Electron/bootstrap/mobile/store source paths against architecture-reviewer design-principles, full report template and reachability Example 9. Independently compared 91 normative primary rows and exact approvals/refinements; all unchanged. No production tests, runtime, uploads, microphone, installed profile, feature enablement, integration or push performed. Four representative final screenshots inspected; all 20 exact visual file locators verified present. This is design review, not implementation or acceptance validation.
 
 ## Routing Classification Review
 
@@ -24,17 +24,17 @@
 - Architectural risk: **High**.
 - Classification rationale reviewed: multi-subsystem service/persistence/API/native-MCP/renderer/voice changes; new Task byte/reference transaction and async publication boundaries. Evidence supports both classifications independently of document/screenshot volume.
 - Independent Architecture Review required by the classification: **Yes**.
-- Classification evidence or correction required: None. Preserve Large / High through rework.
+- Classification evidence or correction required: None. Preserve Large / High through implementation; no same-window switching premise is needed for either classification.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: **Contradicted in one material lifecycle premise**, not in the approved business intent. The remaining basis is confirmed.
+- Overall Basis Status: **Confirmed**. SR-015 corrects the previously contradicted lifecycle premise and separates supported route/Project/local-write/Cancel paths from invariant preservation and unsupported same-window switching.
 - Approved requirements / intended behavior understood: SD-AP-001 approves the exact SR-009 core; SD-AP-002 approves the bounded SR-012 manual Refresh delta; UF-017 approves the unchanged manual UI supplement. Approval records distinguish intended behavior from prototype/production validation.
 - Relevant existing behavior and evidence confirmed: embedded Projects/Tasks and locked atomic updates; description-only manual editing; visibility-only default-off flag; selected tool composition; separate collaboration/execution; run-owned uploads; optional local desktop voice; cached board reads; open-only count defect.
 - Scope guardrail confirmed: active UC-001/002/003/007; exactly three native/MCP tools plus approved manual authoring/board/detail and Refresh. Manager/team creation, scheduler, assignment/run linkage, sidebar, Done resource stopping, CLI/client/skills, phone delivery and global modal removal stay excluded/deferred.
 - Approved change / preserved outcome: explicit TODO creation and known-ID field patch; complete Project/Task reads; durable Task context; ordinary pages; workspace metadata registration; accurate deletion total; manual read-only Refresh. Identity/status/omitted context/workspace originals/history and existing collaboration remain protected.
-- Every prospective blocking Design Impact finding traceable to approved authority: **Yes**, ARCH-F-001 protects REQ-009/018 and AC-025 without redefining their behavior.
-- Remaining material ambiguity: no product decision is reopened. A design source claim incorrectly presents desktop in-window rebinding as supported; see MP-004 and ARCH-F-001. An ordinary clarification was delivered to the originating Solution Designer before verdict; that request does not itself resolve the canonical artifact.
+- Every blocking Design Impact finding traceable to approved authority: **Yes** for the prior ARCH-F-001 (REQ-009/018 and AC-025); now independently **Resolved** without redefining behavior. No current blocking finding.
+- Remaining material ambiguity: **None**. The explicit node-binding boundary and five-consumer disposition in design-spec.md, E-055–057, DS-010, renderer/form/REST/voice sections and verification plan consistently exclude switching-only machinery/tests. MP-004 remains Not Reachable. The compact DS-008 narrative's node-change wording is read as sink ineligibility under these explicit constraints, not a new event subscription or production journey. Upstream pending-review labels are as-of the delivered SR-015 response; this report supplies the independent result.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -45,9 +45,9 @@
 | BEH-005 | User | Pass | Pass — actual Projects components and UF-017 journeys | Pass — DS-004/005/006 replace pages/rows, retain shell/search/confirmations | Confirmed | None |
 | BEH-006 | System | Pass | Pass — registry/catalog/session/native filter/Claude source plus SD-AP-001 selection authority | Pass — shared three-operation manifest and explicit projections | Confirmed | None |
 | BEH-007 | User | Pass | Pass — direct workspace authoring approved; existing registration is metadata-only | Pass — aggregate Project command preserves current Tasks and retained link snapshots | Confirmed | None |
-| BEH-008 | User | Pass | Pass — explicit voice/attachment/Cancel actions, AC-018/019, actual local IPC/upload policies | Pass — DS-005/008/009 separate Task bytes and voice sink; route/Cancel lifetime has independent support | Confirmed | Do not infer an additional node-switch lifecycle; ARCH-F-001 |
+| BEH-008 | User | Pass | Pass — explicit voice/attachment/Cancel actions, AC-018/019, actual local IPC/upload policies | Pass — DS-005/008/009 separate Task bytes and voice sink; route/Cancel lifetime has independent support | Confirmed | None — node eligibility is a bounded sink guard, not a switching lifecycle |
 | BEH-009 | Deferred | Pass | Pass — SD-CF-012 explicitly defers CLI/client/skills | Pass — no active spine/deliverable/test obligation | Confirmed | None |
-| BEH-010 | User | Pass — manual Refresh and binding safeguards remain approved | Fail only for the additional 'existing node-switch UI' witness; other triggers confirmed | Fail in premise explanation — DS-006/010 ordering model is otherwise coherent | Needs Correction | ARCH-F-001: separate real route/write lifecycle from unsupported desktop rebinding |
+| BEH-010 | User | Pass — manual Refresh and binding safeguards unchanged | Pass — external-write→Refresh and ordinary route/Project/local-write paths; same-window switching separately rejected | Pass — DS-006/010 physical read, retained error state and guarded Task/count publication | Confirmed | None — ARCH-F-001 resolved; preserve the explicit reachability boundary |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -63,14 +63,15 @@ Canonical external Product root: `/Users/normy/autobyteus_org/autobyteus-web-pro
 | External behavior matrix, final-browser-validation.json, integration-validation.json, final-build-output.txt | Pass | Pass | Pass | Pass | Pass | None — synthetic evidence only; recovered PI-005 not hidden |
 | External runbook/change-log, requirement-impact, review-round-1/3/4/5/6, review-evidence including DATA-001 | Pass | Pass | Pass | Pass | Pass | None — rejected alternatives/historical screenshots do not become allowed variants; no mock-store dependency |
 | External root prototype-bootstrap-report.md | Pass | Pass | Pass | Pass | Pass | None — distinct accepted source authority |
-| design-handoff-sr-014.md | Pass | Pass | Pass | Pass | Pass | Carry this review/result in cumulative reroute; no prior Pass claimed |
+| design-handoff-sr-014.md | Pass | Pass | Pass | Pass | Pass | None — initial delivered context retained as-of history |
+| architecture-clarification-sr-015.md; investigation E-055–057; prior review/history | Pass | Pass | Pass | Pass | Pass | None — correction independently confirmed; ARCH-REV-001 Fail remains historical, this report/ARCH-REV-002 is current |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Assessment present for current posture | Pass | Feature / Behavior Change with bounded prerequisite refactors | None |
-| Root-cause classification explicit/evidence-backed | Pass | Missing status/file invariant; run-only owner and AgentContext voice boundary; count/read ordering; unknown-field spreading | Correct only the additional node-switch premise, ARCH-F-001 |
+| Root-cause classification explicit/evidence-backed | Pass | Missing status/file invariant; run-only owner and AgentContext voice boundary; count/read ordering; unknown-field spreading | None — corrected source premise and bounded consumer rationale independently verified |
 | Refactor/defer/no-refactor decision explicit | Pass | Patch owner, neutral byte policy, voice sink, request publication and obsolete UI removals; collaboration/workspace authority reused | None |
 | Decision reflected in concrete design | Pass | Named owners/files, clean-cut removal and staged validation; deferred runtime/orchestration untouched | None |
 
@@ -89,7 +90,7 @@ Canonical external Product root: `/Users/normy/autobyteus_org/autobyteus-web-pro
 | DS-009 | Bounded byte preparation/metadata commit/scoped cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-010 | Return/bounded request/write/count settlement | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-Spines span meaningful outcomes, not just edited helpers. Structural readability passes do not override ARCH-F-001's premise failure.
+Spines span meaningful outcomes, not just edited helpers. The affected lifecycle basis is now confirmed before accepting these structural verdicts. DS-010 uses real local-write/route ordering; binding checks preserve the approved invariant/existing watcher, not a new switching spine.
 
 ## Boundary Encapsulation Verdict
 
@@ -121,7 +122,7 @@ Spines span meaningful outcomes, not just edited helpers. Structural readability
 | Project aggregate form and counts | Pass | Pass | Pass | Low | Pass — omitted links preserve; explicit rows aggregate with current Tasks |
 | Task draft REST / saved GET | Pass | Pass | Pass | Low | Pass — compound owner; no detached finalize or final byte DELETE |
 | VoiceTranscriptTarget / settings-test specialization | Pass | Pass | Pass | Low | Pass |
-| refreshTasks / centralized count publication | Pass | Pass | Pass | Low | Pass — physical read and unfiltered totals, subject to premise correction |
+| refreshTasks / centralized count publication | Pass | Pass | Pass | Low | Pass — physical read and unfiltered totals; corrected premise/guard basis confirmed |
 | Commit observation | Pass | Pass | Pass | Low | Pass — non-throwing synchronous observer immediately after rename; other callers unchanged |
 
 ## Existing Capability / Subsystem Reuse Verdict
@@ -234,7 +235,7 @@ Canonical data_migration_guideline inspected. Its tolerant projection/current-on
 | Status patch/unknown supplied ID | Yes | Pass | Pass | Pass | Exact branch and current-record merge |
 | File delta/compound owner/metadata commit | Yes | Pass | Pass | Pass | No detached finalize, fake run or arbitrary client path |
 | Refresh/voice/ordinary routes | Yes | Pass | Pass | Pass | Physical read vs joined request, lifetime sink vs AgentContext, index vs non-outlet parent |
-| Node-switch production witness | Yes, because asserted material premise | Fail | Fail | Fail | ARCH-F-001; generic binding API/tests cannot supply the witness |
+| Node-binding reachability and consumer disposition | Yes, prior material premise was contradicted | Pass | Pass | Pass | Source-backed Not Reachable disposition; five consumers separate guard preservation from real lifecycle, no switching-only machinery or product test journey |
 
 ## Material Premise Validation
 
@@ -270,7 +271,7 @@ Canonical data_migration_guideline inspected. Its tolerant projection/current-on
 - Other caller checked: `stores/mobileNodeSessionStore.ts:bindSession` calls bindNodeContext for pairing/storage initialization on `/mobile` with its separate shell. Phone delivery is excluded here; that caller or a test fixture manually invoking the store is not an in-scope concurrent Projects switching witness.
 - Lifecycle/consequence: opening/focusing another node does not change the original window's pending Project request/draft destination. The claimed same-window cross-node state is therefore absent from this supported path.
 - Scenario validity: **Technically Possible but Unsupported/Contrived** for the asserted desktop scenario.
-- Reachability: **Not Reachable**. Review consequence: do not use this scenario to justify new lifecycle/recovery machinery or a switching test matrix. Preserve the approved binding invariant/existing watchers; independently supported route/local-write/Cancel guards remain valid. Correct the canonical premise and distinguish consumers whose checks are invariant preservation from those requiring an actual new lifecycle witness. ARCH-F-001.
+- Reachability: **Not Reachable**. Review consequence: SR-015 now rejects this scenario as a machinery/test premise while preserving the approved binding invariant/existing watchers. Independently supported route/local-write/Cancel guards remain valid. Consumer dispositions, DS-010, form/REST/voice instructions, file allocation, risks and verification narrow new state to those real lifecycles. Injected binding changes exercise guard contracts only. ARCH-F-001 is **Resolved**; do not recreate the rejected premise downstream merely because bindingRevision or bindNodeContext still exists.
 
 ### MP-005 — Metadata commit is observed before post-rename finalization
 - Related authority / behavior: REQ-009/014, AC-012/019; BEH-002/008; current atomic writer boundary.
@@ -284,35 +285,23 @@ No additional premise search was used. Invalid compound file inputs and abandone
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-| Item | Why It Matters | Required Action | Status |
-| --- | --- | --- | --- |
-| Unsupported desktop node-rebinding witness in design-spec.md material-premise table | Material gate requires supported origin and full lifecycle; otherwise implementation may add speculative machinery/tests | ARCH-F-001; no new requirements decision needed | Design Impact — unresolved |
+**None.** No unresolved approved-intent, current-state, supplemental or material-premise gap blocks this reviewed design.
 
 ## Review Decision
 
-**Fail — Design Impact.** The business basis and most technical structure are coherent. One material premise contradicts the actual desktop lifecycle and must be corrected before implementation handoff. This is not a request to expand scope or remove the approved node-scoping/Refresh invariants.
+**Pass.** ARCH-F-001 is independently resolved in cumulative SR-015. The supported behavior basis, ten-spine inventory, ownership, interfaces, removal and persisted-data transition reasoning are coherent and actionable. Current-node safeguards remain approved; unsupported same-window switching does not justify new lifecycle/recovery machinery or product switching tests. Large / High and the selected downstream review gates remain intact.
 
 ## Findings
 
-### ARCH-F-001 — Separate the supported async lifecycle from unsupported in-window node switching
-- Type: **Design Impact**; severity: **Medium, blocking this architecture gate**.
-- Approved authority protected: **REQ-009 / REQ-018 / AC-025**; related BEH-005/008/010. Also preserve AC-015/018 Cancel/voice outcomes.
-- Scope status: **Within Approved Scope**.
-- Required update changes approved behavior: **No**. No renewed user or Product approval requested.
-- Affected behavior/contract: same-node authoring/read publication and approved Refresh stale-response safeguard; explicit supported route/write/Cancel lifecycle must remain distinct from a nonexistent switching journey.
-- Evidence: design-spec.md line 64 classifies 'existing node-switch UI' / 'supported window node switch' as a witness for late reads, then uses binding/endpoints/currentness in DS-010 and renderer/workspace/Task draft continuation rules (lines 207, 288, 298, 301). Actual NodeManager/openNodeWindow/bootstrap/mobile callers are detailed in **MP-004**. The generic method/revision or synthetic node-switch test does not establish desktop reachability.
-- Material-premise validation: **MP-004 — Not Reachable** for the asserted desktop scenario. MP-002/003 independently validate route/local-write/Cancel mechanisms and must not be weakened.
-- Required update: split the combined premise into supported local-write/Project-navigation/Cancel conditions and the separately classified desktop node-binding condition. Remove the false source-supported switch claim. State which binding checks merely retain the approved invariant/existing binding watcher. Remove or narrow any new lifecycle machinery/tests whose sole justification is same-window rebinding; if any remaining mechanism truly depends on it, supply an independent supported initiating surface/event and forward lifecycle witness before retaining it. Update the related rationale/verification text consistently. Do not add a node switch, phone workflow, global client refactor or new recovery protocol to manufacture the witness.
-- Proportionality: a focused premise/consumer-rationale correction is sufficient; no change to three tools, Task persistence/context, voice provider, visual supplement or approved Refresh behavior is required. Common request/lifetime guards for real supported paths remain sound.
-- Recommended recipient: **Solution Designer**, exact accountable address resolved by handoff rules below.
+**No open findings.** Prior **ARCH-F-001 — Resolved** (Design Impact, Medium/blocking in ARCH-REV-001). Resolution protects REQ-009/018 and AC-025, with BEH-005/008/010 and AC-015/018 unchanged. Verified against the canonical SR-015 sections and independent source paths in MP-004, not the response's resolution claim. The original finding and its Fail baseline remain in ARCH-REV-001 history and its committed report; the resolution delta is recorded in ARCH-REV-002.
 
 ## Classification
 
-**Design Impact**. No Requirement Gap is identified. Existing source makes the asserted desktop witness contradicted rather than an unknown production fact; Blocked is not necessary. Runtime/volume/device validation remains downstream work, not missing design approval.
+**N/A — Pass; no active failure classification.** Prior Design Impact is resolved. No Requirement Gap, new product decision, renewed approval or Product reopening is required. Runtime/volume/device validation remains downstream work, not a design acceptance claim.
 
 ## Recommended Recipient
 
-`/software_engineering_team/solution_designer` — exact accountable recipient returned by get_handoff_rules after this result was persisted. **Do not hand off to Implementation Engineer on this result.**
+`/software_engineering_team/implementation_engineer` — exact primary Pass recipient returned by get_handoff_rules after persistence. Required informational notification to `/software_engineering_team/solution_designer` follows only after the primary handoff succeeds.
 
 ## Residual Risks
 
@@ -326,12 +315,12 @@ No additional premise search was used. Invalid compound file inputs and abandone
 
 ## Latest Authoritative Result
 
-- Review Decision: **Fail**.
-- Material-Premise Gate: **Fail — ARCH-F-001 / MP-004**.
-- Notes: **ARCH-REV-001**, cumulative **SR-014**, **Large / High** preserved. Rework is narrow and evidence-related; no implementation/acceptance verdict or prior Pass. Re-review the corrected canonical package and this finding before forward implementation handoff.
+- Review Decision: **Pass**.
+- Material-Premise Gate: **Pass** — supported premises retained; **MP-004 Not Reachable** and excluded as a machinery/journey premise.
+- Notes: **ARCH-REV-002**, cumulative **SR-015**; prior ARCH-F-001 resolved; **Large / High** preserved. Ready for implementation under the approved scope. No implementation, runtime, production acceptance, installed-data, feature/default, integration or push validation is claimed.
 
 ## Routing Record
 
-After report and ARCH-REV-001 persistence, get_handoff_rules returned the Fail/Blocked-with-finding rule to `/software_engineering_team/solution_designer`. This is the single most-specific applicable rule. No pass rule applies and no Implementation Engineer message is authorized. send_message_to confirmed accepted=true / DELIVERED to `/software_engineering_team/solution_designer`, target AgentRun `solution_designer_63a39e72fb2442918628d96c3ae49963`, with 127 absolute-file references covering the cumulative package and retained external context; an earlier delivered clarification was investigative communication, not this result handoff.
+Report and ARCH-REV-002 persisted before get_handoff_rules. Selected the primary Pass-ready-for-implementation rule to `/software_engineering_team/implementation_engineer`. The returned informational Pass rule to `/software_engineering_team/solution_designer` applies only after that primary delivery succeeds. Fail/Blocked does not apply. Both messages remain pending; confirmed receipts will be recorded after tool success. No recipient is polled.
 
-Documentation checks: all mandatory report sections present; review/revision IDs and Markdown tables checked; exact visual locators present; owned-output diff/whitespace checked. These are documentation checks only. No other recipient was notified for this result.
+Documentation checks: mandatory report shape retained; unaffected structural evidence reused from ARCH-REV-001; exact rework/source/approval comparison and all 91 primary normative rows checked. Current report/history, Markdown table widths, preserved ARCH-REV-001 body, 128 existing absolute cumulative reference files and all20 exact visual locators checked before handoff. These are documentation/source-inspection checks only, not product tests or AC Pass.
