@@ -2,7 +2,7 @@
 
 ## Investigation Meta
 - Package: `PROJ-TASK-MANAGER-20261002-001`; ticket `project-task-manager-foundations`.
-- Current solution revision: `SR-003`; approved Product UI integrated, requirements policy decisions/complete approval still pending; not implementation-ready.
+- Current solution revision: `SR-004`; bounded tools + approved manual UI requirements Ready for Approval; user explicitly excludes Manager/team and defers sidebar/resource stopping. No complete baseline approval/design/implementation yet.
 - Repository mode: Git. Workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations`; branch `codex/project-task-manager-foundations`.
 - Resolved base: refreshed `origin/personal@e04cfef23550c3b78286a53befc6bd5d71fb1061`.
 - Finalization target: `origin/personal`; no merge/release/finalization performed or authorized by this analysis.
@@ -15,6 +15,13 @@ Original user request (2026-10-02, this conversation): continue developing exper
 
 Clarifications: UF-001 originally constrained primary New/Edit Project overlays. Product subsequently completed direct review through UF-017 (2026-10-02): “the ui is good now. now i confirm the ui is good. continue”. This approves the represented manual Projects/Tasks UI only and releases UF-004's Product-first handoff gate; full requirements/Manager/production approval remains absent. Current exact feedback authority is `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-brainstorm-record.md`. Historical in-progress paths identify capture provenance; final done paths are the active locators. Future phone motivation remains distinct from browser-width inspection and is not shipped phone scope. User's wording “list available collaborator/agents” maps to the implemented `list_available_agents` tool (agents **and** teams). This is interpretation supported by code, not a new tool-name decision.
 
+Latest user clarification sequence (all 2026-10-02, in this conversation; Solution-owned SD-CF IDs do not reuse Product UF IDs):
+- **SD-CF-001:** user will create the Project Task Manager/team in the agents project himself; it is not this ticket. This ticket creates Task tools (create, In Progress, Done); delegate_task already exists.
+- **SD-CF-002:** user then asked Product to brainstorm left-side workspace/run-history presentation for task-working Agents/Teams, and suggested releasing their resources after the Manager marks Done. This was an exploration request, not a selected cleanup implementation.
+- **SD-CF-003:** user subsequently said no need to work on that left-side UI first; prioritize necessary tools, improve workspace/run-history experience later.
+- **SD-CF-004 (latest):** “we also don't like safely stopping resources for now because we still don't know how to just safely stop in resources”; “provide the tools”; “Of course, include the previous small UI updates on the project and tasks area.” This definitively defers new runtime stopping, keeps approved manual UI, and supersedes the earlier new-sidebar handoff request. No sidebar Product message was sent before the deferral.
+User's scope decisions are explicit. Proposed tool/real-authoring continuity contracts in SR-004 still need complete-baseline approval; latest scope agreement is not fabricated approval of all new details.
+
 ## Product And Domain Understanding
 - Projects: durable, node-scoped work containers with registered filesystem workspace links.
 - Project Tasks: durable work descriptions embedded in a Project; currently user-authored.
@@ -23,7 +30,7 @@ Clarifications: UF-001 originally constrained primary New/Edit Project overlays.
 - “Public” repository package and installed shared catalog entry are separate: discovery lists eligible definitions installed on that node, not arbitrary GitHub packages.
 
 ## Source Log
-All workspace-relative sources below resolve under the isolated workspace root at the recorded base. Public-repository sources are separately pinned and read-only. E-001–017 preserve as-of-SR-001/002 observations; their Product in-progress paths are historical capture provenance. E-018–022 and the inventory identify current done-package authorities; earlier lack-of-approval/runtime observations are superseded, not current status.
+All workspace-relative sources below resolve under the isolated workspace root at the recorded base. Public-repository sources are separately pinned and read-only. E-001–017 preserve as-of-SR-001/002 observations; their Product in-progress paths are historical capture provenance. E-018–022 identify returned Product authority; E-023–026 record latest user scope and focused continuity investigation; the inventory identifies current done-package authorities; earlier lack-of-approval/runtime observations are superseded, not current status.
 
 | Evidence ID | Exact source / command | Observation / relevance |
 | --- | --- | --- |
@@ -49,6 +56,10 @@ All workspace-relative sources below resolve under the isolated workspace root a
 | E-020 | Read `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-behavior-test-matrix.md`, final-browser-validation.json, integration-validation.json and final-build-output.txt | Product FV-001–013 pass manual affected journeys; 24 tests/5 files, configured limited lint, scoped TS and full Nuxt build pass; post-integration tests/lint/scoped TS pass. PI-001–004/006 pass; PI-005 honestly recovered cold-Vite dependency-optimization import errors, fresh warm entry no new errors. 20 actual final screenshots; desktop and 390×844 browser-width evidence. Synthetic only: no API/MCP/durability/agent-write/parallel execution/real mic/files/security/phone certification. Solution Designer did not rerun specialist validation. |
 | E-021 | `view_image` read-only final VIS-002-continuous-board-desktop-1512x806.jpg, VIS-004-edit-project-existing-desktop-1512x806.jpg, VIS-008-task-detail-desktop-1512x806.jpg, VIS-007-new-task-desktop-1512x862.jpg and VIS-010-continuous-board-narrow-390x844.jpg under `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/`; all 20 paths enumerated by ui-ux-spec.md. Read `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/DATA-001-assessment.md` and root `/Users/normy/autobyteus_org/autobyteus-web-prototype/prototype-bootstrap-report.md` | Representative final images agree with simple board/pages/Existing-New/context/action hierarchy. All 20 references remain normative per spec except explicit fixture/variation exclusions; representative inspection is not full recapture. DATA-001 controlled handwritten synthetic UI/Pinia provenance, not proven production/API archive; source-store coupling concern held. Source e9aa4a74ca36f62303bb7f5f0efd74bf89a9ea71 remains accepted parity authority, not newer investigation e04cfef. Handwritten new mock stores total 6,038 bytes. |
 | E-022 | Resume `git status --short`, `git rev-parse HEAD`, branch context in isolated solution worktree; prior local SR-002 checkpoint f1dcea849e4966f348298b9929ad3fb79da7f584 | Clean prior SR-002 docs preserved before SR-003; same branch/worktree/source base/finalization target. Only owned documentation updated; no source/settings/public-agent/Product artifact writes or runtime launches. |
+| E-023 | Current conversation SD-CF-001–004; current worktree `git status --short`, `git rev-parse HEAD` at 72c14fa842ab13a82889060732b89bcd416b4e43 before editing | Exact user-owned Manager exclusion and latest tools + prior manual UI scope; sidebar and new runtime stopping deferred. Interrupted turns before scope edits left no source/partial Product handoff. SR-003 checkpoint/history preserved. |
+| E-024 | Re-read `autobyteus-server-ts/src/projects/domain/models.ts`, `src/projects/services/project-task-service.ts`, `src/api/graphql/types/project-tasks.ts`, `src/projects/services/project-service.ts`, `src/projects/services/projects-capability-service.ts`, `src/agent-tools/mcp/providers/list-available-agents-mcp-adapter-provider.ts` | Existing three-state Task model; create TODO/read/description edit/delete, no status write; Project/Task ID scoping, stable task identity and task-only updates; case-insensitive Project name uniqueness; flag visibility-only false; native/MCP opt-in discovery adapter foundation. Proposed generic status semantics are new intended behavior, not already implemented. |
+| E-025 | `autobyteus-server-ts/docs/modules/agent_run_collaboration.md` Root lifetime/Whole-host Stop; `src/agent-collaboration/execution/task/{task-delegation-command.ts,root-task-execution-lifecycle.ts,task-execution-idle-shutdown-schedule.ts}`; `src/config/task-execution-idle-shutdown-setting.ts`; `autobyteus-web/{stores/agentRunCollaborationStore.ts,components/workspace/history/WorkspaceHistoryWorkspaceSection.vue,components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue}` (source searches/selected sections) | General execution resource idle shutdown has configurable grace (default 600,000ms), leases/quiet recheck; explicit host Stop ends root/children, distinct from archive/delete. No Project Task Done hook or task identity in delegate_task. Existing stored collaboration read need not restore host; messaging may restore. These facts justified not equating status, resource release, history deletion or whole-host Stop. New runtime stopping/sidebar now explicitly deferred; no runtime action/test performed. |
+| E-026 | Selected sections of `autobyteus-web/{stores/voiceInputStore.ts,stores/contextFileUploadStore.ts,utils/contextFiles/contextFileOwner.ts,components/projects/ProjectWorkspaceLinkDialog.vue}`; `autobyteus-web/tickets/done/voice-input-extension/requirements.md` (historical context); `autobyteus-server-ts/src/{workspaces/workspace-manager.ts,workspaces/filesystem-workspace.ts,workspaces/workspace-path-utils.ts,context-files/domain/context-file-owner-types.ts,context-files/services/context-file-upload-service.ts,context-files/services/context-file-draft-cleanup-service.ts,api/rest/context-files.ts,compositions/build-studio-server.ts}` | Existing optional installed/enabled desktop voice extension/local Electron transcription/permission/error states; composer target currently AgentContext. Existing uploads enforce MIME allowlist, 25 MiB multipart limit and truncation rejection, draft/final owner locators, draft TTL 24h; owner types currently run/member-based, not durable Project Task. Project New-folder source currently registers a normalized metadata-only workspace, does not create root directory. These support proposed continuity defaults instead of inventing a speech provider/filesystem operation/security model. Task voice target and durable attachment ownership are real integration/design gaps, not solved by prototype or copying a run ID. No live mic/upload/creation test performed. |
 
 ## Relevant Existing Behavior And Supported Product Paths
 | Behavior | Current supported trigger/path | Outcome/invariant | Evidence |
@@ -73,10 +84,10 @@ Synthetic API calls while flag off establish technical reachability, not an appr
 8. Existing TASK_MANAGEMENT exposure filtering, API tests and boundary tests need a deliberate scope update if new behavior is approved; bypassing them is not a solution.
 
 ## Structural And Payload Surface Inventory
-- Payloads: node-local projects.json, public agent.md/agent-config.json/bundled skill, optional team package; existing run-tree records, tool manifests and GraphQL task DTOs.
-- Readers/writers: Project/Task services and GraphQL, web stores, collaboration roots/session MCP adapters, run-history projections, agent package importer (not investigated deeply yet).
-- Potential impact: additive tool/API contracts; task data/link/dependency fields if chosen; task-to-run lifecycle coordination; UI freshness; definition-versus-run identity; task/run restoration; optional cross-repository public package.
-- No target owner/module/schema/migration chosen. Architecture must investigate governing migration conventions before any persisted-data transition design.
+- Active payloads: node-local Project Tasks, explicit status tool inputs/results, native/MCP tool exposure, approved manual Project/workspace/Task forms and saved Task context/voice-to-text interaction.
+- Existing readers/writers: Project/Task services and GraphQL, web stores, Agent Tools MCP/native adapters, optional desktop voice extension, workspace registry and context-file services.
+- Deferred/excluded: public Manager/team package, task-execution association/dependency schema, automatic stop/cleanup, new run-history/sidebar presentation and scheduler.
+- Technical feasibility gaps to design after approval: new status write/API/tool projection, Task-owned durable context (current owner union is run-oriented), non-AgentContext voice destination, optional workspace creation authoring and correct all-Task Project deletion warning. No owner/schema/migration mechanism selected.
 
 ## Runtime, Probe, Or Reproduction Findings
 SR-001 used source/test inspection; SR-002 inspected interim Product evidence/user overlays. SR-003 read the finalized external Product receipt/spec/validation and representative final screenshots, and independently checked its canonical Git revision/cleanliness/post-approval file diff (E-018–022).
@@ -103,13 +114,13 @@ Existing delegate_task/send_message_to/catalog identities and session-scoped too
 - No migration or new startup gate inferred from potential new fields.
 
 ## Product Design Request Context
-- Original New Request SR-001 and continuation SR-002 remain historical handoffs. The user explicitly asked Product to brainstorm UI directly after analysis; Product completed the represented manual slice with UF-017, not the whole Manager journey.
-- Original critical journey: Project/context → manager goal → durable fine-grained Tasks → discover team → independent parallel launch → waiting prerequisites/active execution/results → accepted Done. The manual authoring preparation/board/detail is approved; Manager/context/launch/run/result/waiting parts remain open.
-- Current Product authority: `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-ux-spec.md`, handoff-notes.md and ticket-scoped final visual-references; canonical prototype root `/Users/normy/autobyteus_org/autobyteus-web-prototype`.
-- Product owns artifacts/repository/lifecycle; no mode prescribed and no result correction or renewed Product request is being made in SR-003. Any new Manager UI direction will require user decision and, when requested/needed under that direction, Product's own workflow.
-- Current canonical intent IDs: BEH-001–008, SCN-001–009, REQ-001–014, AC-001–019, DEC-001–014. No complete requirements approval/technical handoff.
+Original Product request/approved result retained in SR-001–003. The user briefly requested additional left-side workspace/run-history brainstorming in SD-CF-002, then explicitly deferred it in SD-CF-003/004 before any handoff was sent. Current outcome is **not Product Design Requested**.
+
+Existing externally owned manual Projects/Tasks spec and VIS-001–020 remain approved/applicable; latest user explicitly includes those previous small UI updates. Do not reopen approved manual layout, send the superseded sidebar request, prescribe Product mode, or create Manager/team packages. Future sidebar/cleanup work needs a renewed user-directed scope and relevant Product workflow.
 
 ## Product Design Findings
+**SR-004 sequencing note:** manual UI approval below is retained. The later requested new sidebar/resource-cleanup exploration was explicitly deferred by SD-CF-003/004; broader Manager/orchestration questions below are not active first-slice gates. Real authoring continuity proposals are now specified in SR-004 for user approval, not silently inferred from Product mocks.
+
 ### Historical context and current authority
 SR-002 recorded UF-001 avoidance of primary New/Edit Project overlays, alternatives then unapproved, evidence c289b74b833cba02744dd926e992892bc6fd6407 and live runtime at that time. Those as-of observations stay in E-015–017 and SR-002/historical handoffs. Final done-package paths supersede active in-progress/worktree locators; earlier review screenshots remain evidence, not normative alternatives.
 
@@ -136,10 +147,11 @@ These are product-level findings, not a second visual spec. `/Users/normy/autoby
 Canonical solution directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations`. Local filenames below resolve there; external paths are absolute. Product package is read-only/external.
 | Artifact | Owner | Purpose/scope | Related IDs | Status / approval |
 | --- | --- | --- | --- | --- |
-| requirements-doc.md | Solution Designer | Canonical intent, scenarios/ACs/decisions | All | SR-003 Draft; UI subset approved, complete approval pending |
-| solution-revision-record.md | Solution Designer | Cumulative rounds | All | SR-001/002 unchanged; SR-003 appended |
+| requirements-doc.md | Solution Designer | Canonical intent, scenarios/ACs/decisions | All | SR-004 Ready for Approval (bounded tools/manual UI); complete approval pending |
+| solution-revision-record.md | Solution Designer | Cumulative rounds | All | SR-001–003 unchanged; SR-004 appended |
 | product-design-handoff.md / product-design-handoff-sr-002.md | Solution Designer | Historical original/continuing Product request and route receipts | Original IDs / REQ-007,009 | Preserve as-of context; historical capture paths, not current Product locator |
-| requirements-refinement-sr-003.md | Solution Designer | Complete current result/approval limits/next action/rule evaluation | All | User decision/approval hold; not forward-ready engineering |
+| requirements-refinement-sr-003.md | Solution Designer | Historical pre-correction result/receipt checks | All | Preserve as-of context; superseded scope |
+| requirements-refinement-sr-004.md | Solution Designer | Current tools/manual UI baseline, user scope, continuity proposals and route evaluation | Active IDs | Ready for Approval, no forward-ready engineering |
 | design-spec.md / independent engineering reviews | Future owners | Technical realization/review | All | N/A — phase not reached; no files invented |
 | `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-ux-spec.md` | Product Prototyper | Exact manual UI contract and explicit variation/fixture exceptions | REQ-007,009,011–014; AC-013–019 | UF-017 approved represented UI, 84ed47b; published artifact receipt f66efa9 |
 | `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/` — exact VIS-001–020 files enumerated by ui-ux-spec.md | Product Prototyper | All final actual normative desktop/narrow references | Manual UI IDs | UF-017 normative except explicit spec exclusions; no phone certification |
@@ -156,24 +168,24 @@ Canonical solution directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/
 Historical active-worktree/in-progress paths in E-015/016 and historical handoffs map to the same relative file under the final `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/` directory. Do not create duplicate copies or rewrite external artifacts to fix history.
 
 ## Assumptions, Unknowns, And Risks
-| ID | Type | Issue | Resolution owner/status |
+| ID | Type | Issue | Resolution/status |
 | --- | --- | --- | --- |
-| R-001 | Risk | UI-only flag could let opted-in agents mutate hidden Projects; do not equate visibility with backend disablement | User/Product DEC-001 |
-| R-002 | Risk | Pure spawn retry can duplicate work; file lock does not make dispatch/link atomic | User DEC-004; then architecture |
-| R-003 | Unknown | Durable dependency fields/enforcement versus manager-owned plan; failure/reopen/block policies | User/Product DEC-003,005,006 |
-| R-004 | Unknown | Who is allowed to update status, and what exact Done evidence is required | User DEC-002,005 |
-| R-005 | Risk | Parallel agents can conflict on shared repository/files; independent business tasks may not be independent writes | User/architecture DEC-008; no unlimited “maximum” claim |
-| R-006 | Unknown | Manager launch Project/run/workspace binding, restart/resume and active deletion | User/Product DEC-007,009 |
-| R-007 | Risk | Board remains stale after external writes; completion breaks total-delete-count assumption | Product/architecture REQ-007,009 |
-| R-008 | Unknown | Public-agent delivery scope versus tentative management team | User DEC-010 |
-| R-009 | Risk | UI-only approval/browser-width validation could be overread as full requirements, phone certification or newer source parity | User/Solution Designer; preserve UF-017 scope and e9aa4a7 source authority |
-| R-010 | Unknown | Real voice consent/privacy/permissions and editable-text availability/errors, durable file limits/access/security/retention and New-folder meaning absent from synthetic evidence | User DEC-011–013, then architecture |
-| R-011 | Unknown | Observable agent-write freshness and rebinding/recovery expectations lack a bound | User DEC-014; transport is later design |
+| R-001 | Policy proposal | Preserve visibility-only flag while explicitly selected new tools can access data; not auto-enable | SR-004 approval proposal; no change to installed setting |
+| R-002 | Deferred | Dispatch/association/retry risks from broader Manager vision | No new machinery in this slice; preserve existing contracts |
+| R-003 | Deferred | Dependency/scheduler/failure-review orchestration | External Manager/future work, not active blocker |
+| R-004 | Policy proposal | Generic status setter, explicit reset/reopen, Done supplied by caller not quality/liveness inference | SR-004 approval proposal |
+| R-005 | Deferred | Parallel repository conflicts/isolation/capacity | No new scheduler/concurrency guarantee |
+| R-006 | Resolved scope | Manager creation/launch/recovery and new resource stopping | Manager user-owned; resource stopping deferred SD-CF-004 |
+| R-007 | Active | Tool writes must read truthfully; mixed statuses expose open-only delete-count bug | Read/service/UI preservation checks; no new sidebar timing promise |
+| R-008 | Resolved scope | Public Manager/team deliverable | Explicitly excluded by user |
+| R-009 | Preserved limitation | Synthetic UI approval could be mistaken for production validation/phone/newer parity | Preserve UF-017 and e9aa4a7 source boundaries |
+| R-010 | Integration/design gap | Task is not existing run-based file owner or AgentContext voice target | Intended durable Task context/local voice continuity proposed; design ownership after approval, no fabricated run |
+| R-011 | Deferred | New automatic sidebar refresh latency/lifecycle UX | Current fetched data correctness retained; redesign deferred |
 
 ## Requirement Implications
-Preserve the user's original dependency-aware parallel task-management goal; do not silently reduce it to UI-only CRUD or inflate the optional Team vision into required specialists. Recommend one standalone public Project Task Manager first, with explicit discovery and selected read/create/status tools, while recording that recommendation as unapproved DEC-010.
+Latest user instruction supersedes earlier proposed Manager delivery: implement task tools/read/create/status plus approved manual Projects/Tasks UI only. User creates Manager/team externally; existing delegation does collaboration. Do not make durable dependency/attempt integration or runtime stopping prerequisites for this slice.
 
-The manual UI subset is now approved and linked, not an open layout exploration. Manager launch/context, durable dependency/attempt/completion/active-work policies and live update behavior remain decisions before full approval. Real voice/files/folder contracts must be explicitly scoped: prototype mechanisms cannot fill those gaps. SR-003 adds stable IDs for the accepted authoring interactions and unresolved real contracts, preserving all earlier IDs/history. Full requirements approval is a later explicit gate; no architecture or implementation work is authorized by UF-017.
+Source-backed continuity proposals make the narrowed contract concrete: unchanged visibility-only default-off flag, explicit generic three-state setter, selected native/MCP parity, current optional local desktop voice and workspace registration, durable Task context under current MIME/25 MiB upload constraints. These proposed details require complete SR-004 approval; they are not architecture, existing functionality claims or automatic extrapolation of synthetic UI. New sidebar Product request is explicitly deferred, not sent.
 
 ## Architecture Investigation Findings / Notes For Architecture Design
-Not started. Source feasibility and Product mock code are not authoritative target architecture. After complete approval, verify native/MCP parity, scoped Project context and capability policy, task/run linkage and dispatch recovery, continuity/migration conventions, concurrent writes, refresh, run restore/navigation, linked-workspace isolation, real file/capture/retention contracts and public package import/tool availability. Preserve exact approved Product presentation while selecting production owners/transport/persistence. Completed-design task size/risk: N/A — not yet classifiable.
+Not started. After explicit SR-004 approval, investigate tool/API registration/exposure, scoped status writes/persistence/concurrency, Task file ownership/voice target integration, Project form workspace authoring, data-continuity/migration conventions and exact approved UI fidelity. Do not design Manager/package/scheduler/run-link/automatic stop/sidebar surfaces. E-026 exposes integration gaps requiring real implementation/validation; no fake sample/object-URL-only production solution. Task-size/risk classification follows completed design.
