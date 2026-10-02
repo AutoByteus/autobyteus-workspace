@@ -1,0 +1,102 @@
+Merge made by the 'ort' strategy.
+ .../api-e2e-coverage-investigation.md              |   0
+ .../api-e2e-execution-coverage-report.md           |   0
+ .../api-e2e-live-evidence.log                      |   0
+ .../api-e2e-live-probe-source.txt                  |   0
+ .../api-e2e-revision-record.md                     |   0
+ .../api-e2e-test-case-ledger.md                    |   0
+ .../api-e2e-test-review-report.md                  |   0
+ .../architecture-pass-notification-archrev001.md   |   0
+ .../architecture-pass-notification-archrev002.md   |   0
+ .../architecture-review-revision-record.md         |   0
+ .../code-review-report.md                          |   0
+ .../code-review-revision-record.md                 |   0
+ .../cumulative-package-manifest.md                 |  40 ++++---
+ .../delivery-evidence/archive-hygiene.md           |   3 +
+ .../delivery-evidence/checks.md                    |   0
+ .../delivery-evidence/doc-consistency.log          |   0
+ .../delivery-evidence/log-hygiene.md               |   0
+ .../delivery-evidence/post-integration.log         |   0
+ .../delivery-evidence/release-preflight.md         |   0
+ .../delivery-evidence/user-verification.md         |   0
+ .../delivery-revision-record.md                    |  15 +++
+ .../dependency-merge-conflict-ir001.patch          |   0
+ .../design-review-report.md                        |   0
+ .../gemini-tts-voice-schema-audit/design-spec.md   |   0
+ .../docs-sync-report.md                            |   4 +
+ .../generate-speech-schema.json                    |   0
+ .../handoff-summary.md                             |  13 +++
+ .../implementation-base-blocker-ir001.md           |   0
+ .../implementation-base-validation-ir002.md        |   0
+ .../implementation-handoff.md                      |   0
+ .../implementation-revision-record.md              |   0
+ .../investigation-notes.md                         |   0
+ .../release-deployment-report.md                   |  35 ++++++
+ .../gemini-tts-voice-schema-audit/release-notes.md |   0
+ .../requirements-doc.md                            |   0
+ .../solution-base-clarification-sr014.md           |   0
+ .../solution-base-recovery-sr015.md                |   0
+ .../solution-handoff-sr013.md                      |   0
+ .../solution-proposal-sr004.md                     |   0
+ .../solution-revision-record.md                    |   0
+ .../speech-value-recommendation-sr011.md           |   0
+ .../test-vault-runtime-explanation-sr007.md        |   0
+ .../test-vault-usability-assessment-sr006.md       |   0
+ .../voice-capability-clarification-sr009.md        |   0
+ .../voice-feature-probe-sr010.md                   |   0
+ .../voice-provider-probe-sr005.md                  |   0
+ .../voice-schema-audit-report.md                   |   0
+ .../voice-scope-update-sr008.md                    |   0
+ .../handoff-summary.md                             |  36 ------
+ .../release-deployment-report.md                   | 128 ---------------------
+ 50 files changed, 92 insertions(+), 182 deletions(-)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-coverage-investigation.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-execution-coverage-report.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-live-evidence.log (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-live-probe-source.txt (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-revision-record.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-test-case-ledger.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/api-e2e-test-review-report.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev001.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev002.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/architecture-review-revision-record.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/code-review-report.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/code-review-revision-record.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/cumulative-package-manifest.md (76%)
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/archive-hygiene.md
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-evidence/checks.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-evidence/doc-consistency.log (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-evidence/log-hygiene.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-evidence/post-integration.log (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-evidence/release-preflight.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-evidence/user-verification.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/delivery-revision-record.md (68%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/dependency-merge-conflict-ir001.patch (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/design-review-report.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/design-spec.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/docs-sync-report.md (90%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/generate-speech-schema.json (100%)
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/handoff-summary.md
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/implementation-base-blocker-ir001.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/implementation-base-validation-ir002.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/implementation-handoff.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/implementation-revision-record.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/investigation-notes.md (100%)
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/release-deployment-report.md
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/release-notes.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/requirements-doc.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/solution-base-clarification-sr014.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/solution-base-recovery-sr015.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/solution-handoff-sr013.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/solution-proposal-sr004.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/solution-revision-record.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/speech-value-recommendation-sr011.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/test-vault-runtime-explanation-sr007.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/test-vault-usability-assessment-sr006.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/voice-capability-clarification-sr009.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/voice-feature-probe-sr010.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/voice-provider-probe-sr005.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/voice-schema-audit-report.md (100%)
+ rename tickets/{in-progress => done}/gemini-tts-voice-schema-audit/voice-scope-update-sr008.md (100%)
+ delete mode 100644 tickets/in-progress/gemini-tts-voice-schema-audit/handoff-summary.md
+ delete mode 100644 tickets/in-progress/gemini-tts-voice-schema-audit/release-deployment-report.md

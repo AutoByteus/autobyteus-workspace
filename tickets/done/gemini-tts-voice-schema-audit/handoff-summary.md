@@ -1,3 +1,7 @@
+# Current DR-004 Finalization Receipt
+
+Repository finalization **Completed**, ordered ticketcommit/push/targetmerge/push verified. Beta **v1.4.92-beta.12**, releasecommitd4d14fe99/tag pushed, publication **in progress**; not yet Delivery Completed. Current exact canonical status `release-deployment-report.md`, shared `../gemini-tts-voice-schema-audit/delivery-evidence/finalization-receipt.json`. Earlier preparation text below is historical, not current pending repository work.
+
 # Delivery Handoff — Gemini Voice/Turn Styles
 
 Current **DR-003**, Medium/High reviewed. User accepted combined finalization and **beta publication**, after disclosure that earlier3.8 upgrade acceptance was also needed. `delivery-evidence/user-verification.md` preserves exact chronology. Predecessor DR-004 hold now reconciled through existing owner/user, not review Pass.

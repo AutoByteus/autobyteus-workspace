@@ -9,6 +9,8 @@
 
 | DR-003 | Renewed combined finalization and beta instruction | DR-002 stable held on predecessor | Both accepted; latest integration/271 checks Pass; predecessor ticket archived/committed/pushed; current finalization proceeding | handoff-summary.md, release-deployment-report.md, delivery-evidence/user-verification.md, predecessor archived checks |
 
+| DR-004 | Ordered repository finalization and beta helper/tag push | Accepted checked preparation | Repository finalized; beta tagged/pushed; publication in progress | release-deployment-report.md, handoff-summary.md, shared finalization-receipt.json |
+
 ## Revision Entries
 
 ### DR-001 — Integrated delivery baseline and two-package verification hold
@@ -54,3 +56,10 @@
 - Release: beta helper computes next unused1.4.92 beta, uses generated notes; original stable plan superseded, curated archived notes not used for beta. Helper creates tag; no manual tag or duplicate immediate dispatch. Monitor Desktop/Android/iOS/Docker jobs and assets before terminal success.
 - Cleanup: old instance already stopped; lifecycle reap with--keep released ports/preserved data, no other instance touched. Worktree/local branches safe cleanup follows publication; pre-existing old dist preserved.
 - Terminal: not yet eligible. Subsequent result will record actual finalization, helper/tag/push, workflow/assets/rollout/cleanup outcomes.
+
+### DR-004 — Repository finalization and beta launch
+
+- Current result: **Repository finalization Completed; beta version/tag push Completed; publication/cleanup pending. Not Delivery Completed.**
+- Exact finalization/source/push/tag/helper receipts in current release-deployment-report.md and shared `../gemini-tts-voice-schema-audit/delivery-evidence/finalization-receipt.json`; old/new finalcommits39b9f473e/176aad5ac, ordered targetmerges53a77b98e/77e716df6, releasecommitd4d14fe99 and helper-created v1.4.92-beta.12 pushed.
+- User acceptance reference unchanged, now both resolved; no new validation/live call, source effective unchanged except release packageversion. Docs-sync Pass retained; archive performed before finalcommit. Clean targetproxy preserved unrelated dirty root.
+- One tagpush perworkflow IDs37056157303/37056157207/37056157123/37056157160, publication not yet verified. Next owner action monitor outcomes/assets and safecleanup; do not replay finalization or immediately duplicate dispatch.

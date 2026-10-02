@@ -1,0 +1,44 @@
+{
+  "target-old-merge.log": {
+    "raw_sha256": "076fe908f4d43f100030c46e6e664c489962d7b3ceac6c0afbe00cb3aca6617b",
+    "normalized_sha256": "076fe908f4d43f100030c46e6e664c489962d7b3ceac6c0afbe00cb3aca6617b",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/target-old-merge.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  },
+  "target-old-push.log": {
+    "raw_sha256": "73a7ded9c76c1832ba45b2f55cc2e5ccee3e9b7e2a79756e05564bb8241fee00",
+    "normalized_sha256": "d8b09c2f66e483b08070a936d5841144b33b8e0d48151062fa439f19b3b19b9f",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/target-old-push.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  },
+  "target-new-merge.log": {
+    "raw_sha256": "7e4bf66fe8fce036349fa08fab41145ee25fbd164d332cde7d894af5634a3780",
+    "normalized_sha256": "7e4bf66fe8fce036349fa08fab41145ee25fbd164d332cde7d894af5634a3780",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/target-new-merge.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  },
+  "target-new-push.log": {
+    "raw_sha256": "6b2647ca6716616e413ff0fd7f90e0b7c54fe8185daf83a6b31e9cb35c05caa1",
+    "normalized_sha256": "afe68a8403d9af5a1956633ec6a72dae203db8931aba4a4e41a42a956810e4cb",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/target-new-push.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  },
+  "release-helper.log": {
+    "raw_sha256": "6e2738b0cd1baa8f2d078d1994ad5e54f7dc3209c3989ee886292d714cdb31cb",
+    "normalized_sha256": "6e2738b0cd1baa8f2d078d1994ad5e54f7dc3209c3989ee886292d714cdb31cb",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/release-helper.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  },
+  "release-branch-push.log": {
+    "raw_sha256": "9224fab07d992040062380c2b1a185f4c6774de08455c3a7a6325a0dd9ad7cf2",
+    "normalized_sha256": "f136b3a0418c9be6f51375afe8f9cc950d4fe0eb755f503999a30a318fe838d7",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/release-branch-push.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  },
+  "release-tag-push.log": {
+    "raw_sha256": "66cad81b66bb6c386447d302d8b73530a95657ce3de404267b8df167ca3522a0",
+    "normalized_sha256": "66cad81b66bb6c386447d302d8b73530a95657ce3de404267b8df167ca3522a0",
+    "raw_preserved_at": "/tmp/gemini-beta-delivery-20261002/release-tag-push.log",
+    "formatting_only": "Trailing line whitespace normalized; substantive commands/results unchanged"
+  }
+}

@@ -1,35 +1,37 @@
-# Delivery / Release / Deployment — Gemini Voice/Turn Styles
+# Delivery / Release / Deployment — gemini-tts-voice-schema-audit
 
-## Current DR-003 Status
+## Current DR-004 Result
 
-**Both Gemini packages explicitly accepted; stable superseded by beta; latest integrated checks/docs Pass; repository finalization/publication proceeding. Not Delivery Completed yet.** Medium/High reviewed route unchanged. DR-001/002 history retained.
+**Repository finalization Completed; beta version/tag push Completed; publication running; Delivery not yet Completed.** Medium/High independent reviewed route unchanged.
 
-## User Verification
+## Repository Finalization — Completed
 
-Exact user **“okayyyy then finalize and release a beta version then”** after both-package/earlier-upgrade hold disclosure and explicit not-finalized status. `delivery-evidence/user-verification.md` records chronology. This current combined finalization instruction resolves predecessor DR-004 acceptance through its existing Delivery owner/user; not review/listening approval inference. No further paid authorization.
+Both ticket folders moved to `tickets/done/` before final commit. Old ticket finalcommit **39b9f473eae5865e3b8d3a3ad9317ee924af8da4**, new ticket finalcommit **176aad5ac6a59e1b06fe53b4a693df1c1a54b41f**, each pushed to its exact remote ticket branch. Checked target `origin/personal`777548b05 was updated on a clean isolated proxy; old merge **53a77b98e158222f8eef03946b436f3f174f3702**/push then new merge **77e716df6c0a4bb3540d204274caf877c20c2123**/push succeeded in required order. No force push; unrelated dirty root personal checkout preserved. Final target source/docs/lock non-ticket tree matched tested eda59e585, no post-check source edit.
 
-## Authorities / Integrated State
+## Beta Helper / Version / Tag — Completed
 
-Approved SR-012 requirements/SR-015design/ARCH-REV-002, IR-002, CRR-001 source, API-REV-00395%, CRR-002 durable13-case test Pass remain their named authority. New checkpoint1315a75b9; current target origin/personal777548b05 merged clean into new97775019d. No speech/SDK/lock/new-test delta from base. Old checkpointdd087b5c2 merges the checked combined candidate viaeda59e585, doc-only conflicts resolved locally to synchronized combined docs; no source/test fix by Delivery. Old archive/finalcommit39b9f473e/push; new fast-forwarded it. Non-ticket tree identical.
+User switched stable to **beta** after disclosed combined acceptance gate. Documented helper `bash scripts/desktop-release.sh beta --branch delivery/gemini-tts-beta-finalize-20261002 --no-push` on clean finalized proxy computed **1.4.92-beta.12**, bumped package and created releasecommit **d4d14fe9939336d945e07bf5149d73b6df8568f5**, annotatedtag `v1.4.92-beta.12` (object697be0e32ecce2158ff15bfe303ca98df5a456c1). Normal `git push origin HEAD:personal` and helper-created tag push succeeded. Remote tag peel/packageversion/releasecommit aligned. No manual tag or immediate duplicate workflow dispatch. Beta generatednotes; archived curatednotes were not used for stable release.
 
-## Current Validation and Docs
+## Publication / Rollout — In progress
 
-Fresh frozenoffline install/current server build/prebuild/bootstrap and **271/271 Pass**: core83, registeredAPI26 including13new speechcases, server135, Settings renderer27. Exact commands/exits/times `../gemini-38-tts-upgrade/delivery-evidence/final-integration.log`, `checks.md`. No new real provider call. Base independently completed Projects/AGY changes did not materially change Gemini handoff behavior; no renewed feature verification beyond combined instruction needed. Three canonical docs remain byte-identical/current; docs-sync Pass.
+One tag-push run per applicable workflow, exact d4d14fe99 source: Desktop **37056157303**, Android **37056157207**, iOS **37056157123**, ServerDocker **37056157160**. Job/asset/publication verification pending; tag push alone is not release success. No stable version published by this delivery; beta publication does not become stable. No production runtime rollout or public AppStore review approval inferred.
 
-## Repository Finalization
+## Checks / Docs / Verification
 
-Bootstrap recorded target `origin/personal`/`personal`, not changed. Old ticket already archived before finalcommit39b9f473e and pushed. New ticket will move to tickets/done before its finalcommit/push. Use clean target proxy to refresh/merge/push old then new; no force push. Root personal has unrelated owner edits/untracked files; preserve untouched, then safe ff update if it does not disturb them. Exact target commit/merge/push receipts pending.
+Combined explicit user instruction **“okayyyy then finalize and release a beta version then”** followed both-package/earlier-upgrade hold explanation; chronological reference `delivery-evidence/user-verification.md`. Earlier taskdone/stable choice superseded. Both acceptance holds resolved through existing owner/user, not review Pass.
 
-## Beta Release / Publication / Rollout
+Fresh current integrated frozenofflineinstall/serverbuild/prebuild/bootstrap and core83+API26+server135+Settings27 **271/271 Pass** on eda59e585/latest777548b05, same non-ticket source/docs tree asnew97775019d/finaltarget77e716df6. Evidence archived old `delivery-evidence/checks.md`, `final-integration.log`. Base did not change Gemini source/SDK/lock/schema/test behavior; no material re-verification required. Three canonical docs current/Pass; only documentation conflicts resolved locally, no source/test change by Delivery.
 
-**Applicable — beta**, not stable. Current targetpackage1.4.92-beta.11; documented helper computes nextunused beta (preflightbeta12, no reservation). Run helper beta with--no-push on clean target proxy; push release HEAD to recorded personal, then helper-created tag. Single tagpush Desktop/Android/iOS/Docker publication workflows; monitor all outcomes and published pre-release/assets/updater metadata. No immediate duplicate dispatch. Beta generatednotes used; archived curatednotes not used as stable notes. No runtime production rollout or public AppStore approval inferred. Exact version/tag/releasecommit/job/assets checks pending execution.
+## Cleanup — Pending publication-dependent safe removal
 
-## Evidence Scope / Transition / Rollback
+Old instanceiso-64476-efa6 already running:false; lifecycle stop--keep succeeded, ports released, private data retained, other instances untouched. Pre-existing ignored/untracked oldshared-dist preserved under/tmp beforebuild. Thisround untracked generated outputs excluded fromcommit. Dedicated two ticket worktrees/localbranches and clean proxy await safe merged/released-state cleanup. Remote ticket branches retain audit history; deletion not required. Root unrelated edits/data not discarded.
 
-Exactly3 authorized earlier VertexExpress calls: registeredschema existingLLM(noautotool), actualtool extraID249578-byteWAV, actual3-turnstyled656618-byteWAV. “Sounds great” is bounded USER listening, not engineer/reviewer audition, transcription/objective measurement/globalquality. Current deterministic checks source-equivalent, not live repetition or current entitlement. No all-voice/Arabicquality/FlashLite/custom/discovery claim.
+## Evidence and Safety Scope
 
-Voice/style feature directly usable/no migration. Inherited approved old startup rewrite only3savedretired.env selections; inherited processenv retired selection blocks manual operator correction. No operator data/config/vault operation by Delivery. Rollback if artifact/check/publication fails: stop promotion, retain completed repo finalization, correct/revert normalcommits; do not silently substitute oldmodel/key/mode/voice or rewrite owner settings.
+No new import/private-source read/paid call/engineer audition/transcription by Delivery. New API3 authorized calls and bounded USER listening stay scoped to originalcandidate/route/time; old historical formal and Solution evidence remain distinct. No future entitlement, allvoice, Arabicquality, FlashLitequality, customcreation/replication/discovery or current-live-result claim.
 
-## Cleanup and Final Gates
+New voice/style feature no migration. Old3savedretired.env selections transition toFlash as designed, inherited retiredprocessenv blocksoperator remediation; no DB/vault migration/ownerdata operation performed. Rollback visibility: retain completed merges if publication fails; retry only documented failed gates or normal revert/fix, no silent provider/model/config fallback.
 
-Old instance already running:false; lifecycle cleanup with--keep preserved testdata/released bothports; other instances untouched. Pre-existing old generated outputs preserved; untracked generatedbuilds excluded. Dedicated ticket worktree/localbranch cleanup pending safe merged/released state. Useracceptance Completed; integratedchecks/docs Pass; newarchive/finalcommit/push/targetmerge/publication/rollout/cleanup pending execution. No terminal success sent.
+## Evidence Receipts
+
+Shared exact commits/ref/helper/push records: `../gemini-tts-voice-schema-audit/delivery-evidence/finalization-receipt.json`, helper/pushlogs and `publication-initial.json`. Current full history in delivery-revision-record.md. No terminal return until publication/rollout and safecleanup complete.

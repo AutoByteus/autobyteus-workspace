@@ -1,0 +1,22 @@
+{
+  "target": "origin/personal",
+  "user_verification": "delivery-evidence/user-verification.md",
+  "old_ticket_commit": "39b9f473eae5865e3b8d3a3ad9317ee924af8da4",
+  "new_ticket_commit": "176aad5ac6a59e1b06fe53b4a693df1c1a54b41f",
+  "old_target_merge": "53a77b98e158222f8eef03946b436f3f174f3702",
+  "new_target_merge": "77e716df6c0a4bb3540d204274caf877c20c2123",
+  "ticket_pushes": "Completed; exact remote refs verified",
+  "ordered_target_pushes": "Completed, no force",
+  "finalization_proxy": "delivery/gemini-tts-beta-finalize-20261002",
+  "proxy_reason": "owner dirty root personal checkout preserved; normal HEAD:personal target pushes",
+  "beta_version": "1.4.92-beta.12",
+  "release_commit": "d4d14fe9939336d945e07bf5149d73b6df8568f5",
+  "annotated_tag_object": "697be0e32ecce2158ff15bfe303ca98df5a456c1",
+  "tag_peeled_commit": "d4d14fe9939336d945e07bf5149d73b6df8568f5",
+  "release_branch_and_tag_push": "Completed",
+  "helper": "bash scripts/desktop-release.sh beta --branch delivery/gemini-tts-beta-finalize-20261002 --no-push; followed by documented normal target/tag pushes",
+  "notes": "Generated beta notes; archived curated notes NOT used for stable publication",
+  "source_identity": "final target equals tested eda59e585 non-ticket tree before version-only release commit",
+  "publication": "In progress; not yet claimed finished",
+  "cleanup": "Ticket worktrees/local branches retained until verified publication; old instance already stopped/reaped with data kept"
+}

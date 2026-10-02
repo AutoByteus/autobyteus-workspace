@@ -11,6 +11,8 @@
 
 | DR-005 | Renewed explicit combined finalization/beta instruction | DR-004 verification hold | Combined acceptance received; latest integrated checks/docs Pass; repository finalization proceeding | handoff-summary.md, docs-sync-report.md, release-deployment-report.md, delivery-evidence/ |
 
+| DR-006 | Ordered repository finalization and beta helper/tag push | Accepted checked preparation | Repository finalized; beta tagged/pushed; publication in progress | release-deployment-report.md, handoff-summary.md, shared finalization-receipt.json |
+
 ## Revision Entries
 
 ### DR-001 — Initial delivery integration blocked
@@ -94,3 +96,10 @@
 - Release: beta selected; documented helper computes next unused version (preflight1.4.92-beta.12, not yet reserved), no curated stable-note sync, no duplicate immediate manual dispatch. Both packages will share one beta publication.
 - Historical evidence unchanged: API-REV-005 real WAV predates original integration; API-REV-00795% and CRR-008/009 own original candidates; Solution SR-014 later one-call current-key WAV is evidence-only, not new formal API pass. New package's exactly3 calls and bounded USER “sounds great” apply to new dialogue, not an engineer audition or old independent proof. Future availability/no blanket quality caveats retained.
 - Terminal: not eligible until finalization/publication/cleanup complete. Later completion records will contain exact commits/push/tag/jobs/assets; no success inferred here.
+
+### DR-006 — Repository finalization and beta launch
+
+- Current result: **Repository finalization Completed; beta version/tag push Completed; publication/cleanup pending. Not Delivery Completed.**
+- Exact finalization/source/push/tag/helper receipts in current release-deployment-report.md and shared `../gemini-tts-voice-schema-audit/delivery-evidence/finalization-receipt.json`; old/new finalcommits39b9f473e/176aad5ac, ordered targetmerges53a77b98e/77e716df6, releasecommitd4d14fe99 and helper-created v1.4.92-beta.12 pushed.
+- User acceptance reference unchanged, now both resolved; no new validation/live call, source effective unchanged except release packageversion. Docs-sync Pass retained; archive performed before finalcommit. Clean targetproxy preserved unrelated dirty root.
+- One tagpush perworkflow IDs37056157303/37056157207/37056157123/37056157160, publication not yet verified. Next owner action monitor outcomes/assets and safecleanup; do not replay finalization or immediately duplicate dispatch.
