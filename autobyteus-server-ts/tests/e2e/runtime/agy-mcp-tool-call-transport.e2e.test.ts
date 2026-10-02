@@ -25,6 +25,8 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const FAILURE = "PROBE-FAILURE-9920: deliberate failure";
 // Files entries inside the workspace are reported workspace-relative.
 const IMAGE_NAME = "mcp-blue-dog.png";
+const BROWSER = { tab_id: "browser-7318", status: "opened", url: "about:blank", title: "AGY probe" };
+const OPEN_ARGS = { url: "about:blank", reuse_existing: false };
 
 suite("AGY MCP tool calls through app WebSocket, history and Files", () => {
   let dataDir = "";
@@ -109,7 +111,8 @@ suite("AGY MCP tool calls through app WebSocket, history and Files", () => {
     // One start and one terminal event per provider step, in provider order, under these names.
     expect(starts.map((m) => m.payload["tool_name"])).toEqual(["view_file", "delegate_task",
       "mcp__shape-test__echo_args", "mcp__shape-test__json_result", "mcp__shape-test__always_fails",
-      "call_mcp_tool", "generate_image"]);
+      "call_mcp_tool", "generate_image", "open_tab", "open_tab", "mcp__shape-test__open_tab",
+      "open_tab", "list_tabs", "open_tab", "open_tab"]);
     expect(new Set(starts.map((m) => m.payload["invocation_id"])).size).toBe(starts.length);
     const expected: Array<{ type: string; toolName: string; args: Record<string, unknown>; result: unknown }> = [
       // A native tool keeps its name and parameters; its JSON-looking output stays text.
@@ -138,6 +141,20 @@ suite("AGY MCP tool calls through app WebSocket, history and Files", () => {
       { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "generate_image",
         args: { prompt: "blue dog", output_file_path: imagePath },
         result: { provider_state: "DONE", output: { file_path: imagePath } } },
+      // Actual AGY JSON output and MCP content envelopes both cross the wire without the AGY wrapper.
+      { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "open_tab", args: OPEN_ARGS, result: BROWSER },
+      { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "open_tab",
+        args: { url: "about:blank", reuse_existing: true }, result: { ...BROWSER, status: "reused" } },
+      // Same spelling is not sufficient: third-party and native tools retain their original wrappers.
+      { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "mcp__shape-test__open_tab", args: OPEN_ARGS,
+        result: { provider_state: "DONE", output: BROWSER } },
+      { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "open_tab", args: { url: "about:blank" },
+        result: { provider_state: "DONE", output: BROWSER } },
+      { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "list_tabs", args: {},
+        result: { provider_state: "DONE", output: { tabs: [BROWSER] } } },
+      { type: "TOOL_EXECUTION_FAILED", toolName: "open_tab", args: OPEN_ARGS,
+        result: { provider_state: "ERROR", output: null } },
+      { type: "TOOL_EXECUTION_SUCCEEDED", toolName: "open_tab", args: OPEN_ARGS, result: null },
     ];
     starts.forEach((start, index) => {
       const want = expected[index]!;
@@ -145,7 +162,9 @@ suite("AGY MCP tool calls through app WebSocket, history and Files", () => {
       const terminal = terminalOf(start);
       expect(terminal.map((m) => m.type)).toEqual([want.type]);
       expect(terminal[0]!.payload).toMatchObject({ tool_name: want.toolName, arguments: want.args,
-        turn_id: start.payload["turn_id"], result: want.result });
+        turn_id: start.payload["turn_id"],
+        provider_state: want.type === "TOOL_EXECUTION_FAILED" ? "ERROR" : "DONE" });
+      expect(terminal[0]!.payload["result"]).toEqual(want.result);
     });
     const failed = toolEvents.find((m) => m.type === "TOOL_EXECUTION_FAILED")!;
     expect(failed.payload).toMatchObject({ error: FAILURE, reason: FAILURE });
@@ -178,7 +197,9 @@ suite("AGY MCP tool calls through app WebSocket, history and Files", () => {
         const want = expected[index]!;
         const invocationId = start.payload["invocation_id"];
         expect(calls.find((row) => row["invocationId"] === invocationId)).toMatchObject({
-          toolName: want.toolName, toolArgs: want.args, toolResult: want.result });
+          toolName: want.toolName, toolArgs: want.args });
+        expect(calls.find((row) => row["invocationId"] === invocationId)?.["toolResult"]).toEqual(want.result);
+        expect(projection.activities.find((row) => row["invocationId"] === invocationId)?.["result"]).toEqual(want.result);
         expect(projection.activities.find((row) => row["invocationId"] === invocationId)).toMatchObject({
           toolName: want.toolName, arguments: want.args, result: want.result,
           status: want.type === "TOOL_EXECUTION_FAILED" ? "error" : "success" });
@@ -189,6 +210,31 @@ suite("AGY MCP tool calls through app WebSocket, history and Files", () => {
     await expectHistory();
     expect(await terminate()).toBe(true);
     await expectHistory();
+
+    // Existing persisted opaque values must remain directly readable, with no migration.
+    // Add a representative pre-fix record ONLY to this terminated test-owned run.
+    const tracePath = path.join(dataDir, "memory", "agents", runId, "raw_traces_active.jsonl");
+    const oldResult = { provider_state: "DONE", output: { ...BROWSER, tab_id: "old-saved-tab" } };
+    const oldInvocation = "saved-open-before-canonicalization";
+    const rows = (await fs.readFile(tracePath, "utf8")).trim().split("\n")
+      .map((line) => JSON.parse(line) as { seq?: number });
+    const seq = Math.max(...rows.map((row) => row.seq ?? 0)) + 1;
+    const common = { turn_id: "saved-old-turn", tool_name: "open_tab",
+      tool_call_id: oldInvocation, ts: Date.now() / 1000 };
+    await fs.appendFile(tracePath, [
+      { ...common, trace_type: "tool_call", seq, tool_args: OPEN_ARGS },
+      { ...common, trace_type: "tool_result", seq: seq + 1, tool_result: oldResult, tool_error: null },
+    ].map((row) => JSON.stringify(row)).join("\n") + "\n");
+    const bytesBeforeRead = await fs.readFile(tracePath, "utf8");
+    const retained = await observe();
+    const oldCall = retained.projection.conversation.find((row) => row["invocationId"] === oldInvocation);
+    expect(oldCall?.["toolResult"]).toEqual(oldResult);
+    expect(retained.projection.activities.find((row) => row["invocationId"] === oldInvocation))
+      .toMatchObject({ toolName: "open_tab", result: oldResult, status: "success" });
+    // New values remain canonical alongside the old value, and reading performs no disk rewrite.
+    expect(retained.projection.conversation.find((row) =>
+      row["invocationId"] === starts[7]!.payload["invocation_id"])?.["toolResult"]).toEqual(BROWSER);
+    expect(await fs.readFile(tracePath, "utf8")).toBe(bytesBeforeRead);
 
     const evidenceDir = process.env["AGY_MCP_EVIDENCE_DIR"];
     if (evidenceDir) {
