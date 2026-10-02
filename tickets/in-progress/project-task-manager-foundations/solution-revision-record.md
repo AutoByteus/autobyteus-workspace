@@ -13,6 +13,8 @@
 | SR-008 | Requirements | User prefers reusable MCP-wrapping client/skills | SD-CF-010/011; E-033/034; DEC-016 | Draft exposure decision / no design | Ready for Approval proposed hybrid slice / no design | BEH-009/UC-008/REQ-017/AC-023/024/SCN-012 added; runtime/client scope | Requirements Approval Hold |
 | SR-009 | Requirements | User defers CLI/client/skill, no scope increase | SD-CF-012; E-036 | Ready for Approval hybrid / no design | Ready for Approval native/MCP + manual UI / no design | REQ-010 restored; BEH-009/UC-008/REQ-017/AC-023/024/SCN-012 deferred; DEC-016 | Requirements Approval Hold |
 
+| SR-010 | Approval / architecture investigation | User “confirmed” then architecture turn interrupted | SD-AP-001; E-037–043 | SR-009 Ready for Approval | SR-009 approved basis; architecture not complete | Active REQ-001–004/007/009–016 and ACs + UF-017 supplement | Approval captured; no forward architecture handoff |
+
 ## SR-001 — Experimental manager/tool foundation analysis and UI brainstorming request
 - Phase/classification: Requirements / Initial Baseline.
 - Trigger: user's request to continue Projects/Tasks under disabled feature flag; public manager and optional Team; task tools and dependency-aware parallel delegation; analyze first, then Product Prototyper brainstorms UI directly with user.
@@ -148,3 +150,11 @@
 - Exact approved manual UI/external receipt/source pins/default-off, real voice/files/workspace/count continuity proposals and Manager/sidebar/resource-stop/scheduler/linkage exclusions unchanged. No Product modification/new handoff, source/runtime/data/feature change or product tests.
 - Evidence E-036 and full requirements-refinement-sr-009.md persisted before rule lookup; get_handoff_rules found no matching rule (routine approval hold; no new Product/marketing/completed architecture/receipt gap), no send_message_to required/performed. Documentation integrity checks pass. No design/task-size/risk/review/forward-engineering claim.
 - Next: obtain explicit complete SR-009 active requirements + unchanged exact manual Product supplement approval, then architecture for native/MCP tools/UI only.
+
+
+## SR-010 — Explicit narrowed-baseline approval and architecture investigation
+- Trigger/approval: user “confirmed” on 2026-10-02 directly answers the SR-009 complete narrowed-baseline approval request. SD-AP-001 approves canonical SR-009 at 299f2a2f85847f5b85fcc7beb8b79188dd688807, active REQ-001–004/007/009–016 and AC-001–004/008–010/012–022 plus exact unchanged UF-017 external ui-ux-spec/VIS-001–020 (84ed47b UI/f66efa9 receipt). Deferred/excluded requirements do not become active. Earlier proposals are now approved intent; Product's older SR-002 gaps remain historical externally.
+- Prior/current: SR-009 Ready for Approval → approved basis, SR-010 architecture investigation started, **not Architecture Design Complete**. Task size/risk/review/implementation N/A — completed design absent. No implementation or finalization authorization inferred.
+- Evidence E-038–043: current Project locks/serialization/released-source fixtures, migration authority and predecessor preserved/warning/missing outcomes/startup admission, registry/MCP/native/Claude exposure, run-owned files/path guards, local desktop voice, node caches/workspace registration, exact Product receipt/mocks. Technical target decisions not finalized; installed data and product tests not sampled/run.
+- Canonical requirements approval/status/active decision wording reconciled; requirements-approval-sr-010.md and investigation hold exact source/approval context. SR-001–009/Q-001 history and prior result files preserved. Worktree isolation/base/finalization unchanged.
+- Interruption: new user Refresh request arrives before architecture document or routing. Only owned documentation edits survived; no runtime launched or source/API/MCP/file/mic/flag actions. Follow Recovery for this requirement delta; no completed architecture handoff, review result or receiving specialist work claimed.
