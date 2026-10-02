@@ -64,6 +64,7 @@ const voiceInputStoreMock = reactive({
   isTranscribing: false,
   initialize: vi.fn().mockResolvedValue(undefined),
   cleanup: vi.fn().mockResolvedValue(undefined),
+  cancelOperationForTarget: vi.fn().mockResolvedValue(undefined),
   toggleRecording: vi.fn().mockResolvedValue(undefined),
 });
 

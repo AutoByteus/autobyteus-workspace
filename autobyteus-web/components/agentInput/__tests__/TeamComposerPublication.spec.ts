@@ -19,7 +19,7 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({
   applyRunNavigationEffect: vi.fn(),
 }) }));
 vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
-  isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
+  isAvailable: false, initialize: vi.fn(), cancelOperationForTarget: vi.fn(),
 }) }));
 const ROOT = 'flat-team';
 const execution = (id = 'fresh-verifier') => ({ kind: 'task_agent' as const, address: '/verifier' as const,
