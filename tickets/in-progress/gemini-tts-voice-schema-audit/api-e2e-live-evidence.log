@@ -1,0 +1,33 @@
+2026-10-02 VS-07
+Command: node test-support/live-e2e/.voice-acceptance-runner.mjs VS-07 /tmp/autobyteus-voice-acceptance-deon6v0q
+LIVE_VOICE_PREFLIGHT:{"caseId":"VS-07","scenarioId":"gemini.vertex-express.llm","health":"READY","configured":["provider.google.vertex-express.api-key"],"missing":[],"instructionCode":null}
+LIVE_VOICE_REQUEST:{"caseId":"VS-07","model":"gemini-3.8-flash","attempt":1}
+LIVE_VOICE_RESULT:{"caseId":"VS-07","status":"PASSED","providerRequests":1,"schemaAccepted":true,"noToolExecution":true}
+LIVE_VOICE_COUNT:{"caseId":"VS-07","providerRequests":1}
+Test Files1 passed; Tests1 passed; exit0
+
+2026-10-02 VS-05
+Command: node test-support/live-e2e/.voice-acceptance-runner.mjs VS-05 /tmp/autobyteus-voice-acceptance-deon6v0q
+LIVE_VOICE_PREFLIGHT:{"caseId":"VS-05","scenarioId":"gemini.vertex-express.audio","health":"READY","configured":["provider.google.vertex-express.api-key"],"missing":[],"instructionCode":null}
+LIVE_VOICE_REQUEST:{"caseId":"VS-05","model":"gemini-3.8-flash-tts","attempt":1}
+LIVE_VOICE_RESULT:{"caseId":"VS-05","status":"PASSED","providerRequests":1,"bytes":249578,"riff":true,"wave":true,"actualTool":true,"retainedForListening":false,"audibleAcceptance":"NOT_REVIEWED"}
+LIVE_VOICE_COUNT:{"caseId":"VS-05","providerRequests":1}
+Test Files1 passed; Tests1 passed; exit0
+
+2026-10-02 VS-06
+Command: node test-support/live-e2e/.voice-acceptance-runner.mjs VS-06 /tmp/autobyteus-voice-acceptance-deon6v0q
+LIVE_VOICE_PREFLIGHT:{"caseId":"VS-06","scenarioId":"gemini.vertex-express.audio","health":"READY","configured":["provider.google.vertex-express.api-key"],"missing":[],"instructionCode":null}
+LIVE_VOICE_REQUEST:{"caseId":"VS-06","model":"gemini-3.8-flash-tts","attempt":1}
+LIVE_VOICE_RESULT:{"caseId":"VS-06","status":"PASSED","providerRequests":1,"bytes":656618,"riff":true,"wave":true,"actualTool":true,"retainedForListening":true,"audibleAcceptance":"NOT_REVIEWED"}
+LIVE_VOICE_COUNT:{"caseId":"VS-06","providerRequests":1}
+Test Files1 passed; Tests1 passed; exit0
+
+Cleanup: all3 owned built servers stopped; canonical isolated test DB/key/journals/runtime absent; owned shared SDK dist absent; extra/original adapter audio removed. Retained only synthetic dialogue.wav (656618 bytes, mode0600 in directory0700) and value-free attempt records. Production/old Delivery instance untouched. Probe sources archived then removed from active directories.
+Provider total3; retries0; fallback0. Audible review NOT_REVIEWED.
+
+2026-10-02 VS-06 listening evidence (user provenance)
+Assistant supplied dialogue clip and asked confirmation of correct first/second/third order; calm first vs cheerful second; no style directions spoken.
+User response: sounds great.
+Interpretation: qualitative user confirmation of requested bounded listening check, not engineer audition or machine transcription.
+Final cleanup: dialogue.wav,three value-free attempt records and owned directory removed after exact-entry/regular-file checks; absence verified. Isolated vault/runtime/shared dist/active probe executables remain absent.
+Provider total unchanged3; retries0; fallback0; new calls this round0.

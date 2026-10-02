@@ -325,6 +325,49 @@ describe("MediaGenerationService", () => {
     );
   });
 
+  it.each([
+    { voice_name: "ar-001-advisor-1", style_instructions: "warm" },
+    {
+      mode: "multi-speaker", style_instructions: "warm", turn_styles: ["quiet", null, "excited"],
+      speaker_mapping: [{ speaker: "Joe", voice: "Puck" }, { speaker: "Jane", voice: "Kore" }],
+    },
+  ])("forwards approved speech configuration unchanged and retains publication/cleanup", async (generation_config) => {
+    const pathResolver = createPathResolver(outputPath);
+    const cleanup = vi.fn(async () => undefined);
+    const generateSpeech = vi.fn(async () => ({ audio_urls: ["/tmp/synthetic-audio.wav"] }));
+    const service = new MediaGenerationService({
+      modelResolver: createModelResolver(), pathResolver,
+      createAudioClient: vi.fn(async () => ({ generateSpeech, cleanup })),
+    });
+    await expect(service.generateSpeech(
+      { workspaceRootPath: tempDir },
+      { prompt: "Joe: One\nJane: Two\nJoe: Three", output_file_path: "speech.wav", generation_config },
+    )).resolves.toEqual({ file_path: outputPath });
+    expect(generateSpeech.mock.calls[0]?.[1]).toBe(generation_config);
+    expect(pathResolver.writeGeneratedMediaFromUrl).toHaveBeenCalledWith(
+      "/tmp/synthetic-audio.wav", outputPath, expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
+  it("propagates safe speech failure with no publication and preserves an existing output", async () => {
+    fs.writeFileSync(outputPath, "keep existing output");
+    const pathResolver = createPathResolver(outputPath);
+    const cleanup = vi.fn(async () => undefined);
+    const safeFailure = new Error("Google Gemini speech generation failed: Gemini TTS provider request failed (HTTP 404).");
+    const service = new MediaGenerationService({
+      modelResolver: createModelResolver(), pathResolver,
+      createAudioClient: vi.fn(async () => ({ generateSpeech: vi.fn(async () => { throw safeFailure; }), cleanup })),
+    });
+    await expect(service.generateSpeech(
+      { workspaceRootPath: tempDir },
+      { prompt: "Hello", output_file_path: "speech.wav", generation_config: { voice_name: "unavailable-id" } },
+    )).rejects.toBe(safeFailure);
+    expect(pathResolver.writeGeneratedMediaFromUrl).not.toHaveBeenCalled();
+    expect(fs.readFileSync(outputPath, "utf8")).toBe("keep existing output");
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
   it("generates video through the configured video client and writes the returned video URL", async () => {
     const modelResolver = createModelResolver();
     const pathResolver = createPathResolver(outputPath);

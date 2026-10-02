@@ -72,6 +72,56 @@ writable by the server process. Absolute local `input_images` entries,
 URLs may target any existing local file readable by the server process. URL and
 data URI image references continue to pass through unchanged.
 
+## Gemini Speech Tool Contract
+
+The existing `generate_speech` tool keeps `prompt`, `generation_config` and
+required `output_file_path`; success remains `{ file_path }`. The configured
+default model supplies its generation schema. Both current Gemini 3.8 speech
+models expose:
+
+- `mode`: `single-speaker` (default) or `multi-speaker`.
+- `voice_name`: single-speaker nonempty ID string without surrounding whitespace,
+  default `Kore`, forwarded unchanged. Help preserves the 30 featured prebuilt
+  choices and identifies `ar-001-advisor-1` (`Authoritative Advisor 1`, `ar-001`)
+  as a tested additional Vertex Express generation ID, not an Arabic-quality
+  or complete-library claim. Other IDs are caller-supplied and provider-dependent.
+- `style_instructions`: optional global delivery style, separate from transcript.
+- `speaker_mapping`: required in dialogue; one or two unique speaker names from
+  the prompt mapped to the existing featured prebuilt voice enum. Additional
+  single-speaker IDs do not expand this dialogue mapping subset.
+- `turn_styles`: optional dialogue-only array of string/null entries, exactly
+  one per `Speaker: utterance` line in order. A trimmed nonempty style overrides
+  global style; null or empty/whitespace inherits it. Omission keeps global-only
+  calls working through the same current normalizer.
+
+For example, with Gemini selected as the speech default:
+
+```json
+{
+  "prompt": "Narrator: First, the room is quiet.\nGuest: Second, the celebration begins!\nNarrator: Third, thank you.",
+  "generation_config": {
+    "mode": "multi-speaker",
+    "style_instructions": "Natural and clear",
+    "speaker_mapping": [
+      { "speaker": "Narrator", "voice": "Kore" },
+      { "speaker": "Guest", "voice": "Puck" }
+    ],
+    "turn_styles": ["Calm and slow", "Bright and cheerful", null]
+  },
+  "output_file_path": "dialogue.wav"
+}
+```
+
+Invalid voice strings, style counts/types or speaker mappings are rejected
+before provider initialization/request. A provider/access/quota rejection is a
+sanitized error, not a successful output or a trigger to substitute a route,
+credential, model or voice. Audio still passes production WAV validation and
+requested-path publication; failed requests do not overwrite an existing output.
+No new UI, voice creation/replication/discovery, recording/profile persistence,
+custom-voice dialogue, output format/rate control or more-than-two-speaker
+capability is added. Existing omitted-config `Kore` and global-only calls are
+directly usable; no new persisted-data migration is required for voice/styles.
+
 ## Synchronous Image-Generation Completion Boundary
 
 `generate_image` is the bounded synchronous media capability. Its
@@ -115,6 +165,16 @@ construction and invocation:
 - `DEFAULT_IMAGE_EDIT_MODEL`
 - `DEFAULT_SPEECH_GENERATION_MODEL`
 - `DEFAULT_VIDEO_GENERATION_MODEL`
+
+Blank `DEFAULT_SPEECH_GENERATION_MODEL` uses `gemini-3.8-flash-tts` in the server
+resolver and Settings display; Flash-Lite is separately selectable. An explicit
+non-Gemini selection remains authoritative. The inherited 3.8 model-upgrade
+transition durably rewrites only saved server-data `.env` selections of
+`gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-tts` or `gemini-2.5-pro-tts`
+to 3.8 Flash while preserving unrelated assignments. Failed writes block startup.
+An inherited process-environment retired choice instead requires operator
+correction and blocks startup; runtime creates no retired-model alias. This is
+an assignment-file transition, not a database/vault or voice-profile migration.
 
 `MEDIA_OPERATION_TIMEOUT_MS` is a separate capability-policy setting for
 future `generate_image` invocations; it does not affect model selection.

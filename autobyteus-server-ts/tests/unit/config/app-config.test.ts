@@ -23,6 +23,7 @@ const ENV_KEYS = [
   "LOG_LEVEL",
   "QWEN_BASE_URL",
   "TEST_KEY",
+  "DEFAULT_SPEECH_GENERATION_MODEL",
 ];
 
 const createTempConfigDir = async (envContents = ""): Promise<string> => {
@@ -498,5 +499,79 @@ describe("AppConfig", () => {
     expect(result).toBe(false);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+});
+
+
+describe("saved retired speech selection migration", () => {
+  const key = "DEFAULT_SPEECH_GENERATION_MODEL";
+  const previous = process.env[key];
+  afterEach(() => {
+    if (previous === undefined) delete process.env[key];
+    else process.env[key] = previous;
+  });
+
+  const envAt = async (selection?: string) => {
+    const dir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "speech-setting-"));
+    const file = path.join(dir, ".env");
+    const lines = ["AUTOBYTEUS_SERVER_HOST=http://localhost:8000", "UNRELATED_SETTING=keep-me"];
+    if (selection !== undefined) lines.push(`${key}=${selection}`);
+    await fsPromises.writeFile(file, `${lines.join("\n")}\n`, { mode: 0o600 });
+    return { dir, file };
+  };
+
+  it.each([
+    "gemini-3.1-flash-tts-preview",
+    "gemini-2.5-flash-tts",
+    "gemini-2.5-pro-tts",
+  ])("migrates %s before runtime and preserves unrelated bytes and mode", async (retired) => {
+    delete process.env[key];
+    const { dir, file } = await envAt(retired);
+    try {
+      const config = new AppConfig({ appDataDir: dir });
+      config.initialize();
+      expect(config.get(key)).toBe("gemini-3.8-flash-tts");
+      expect(process.env[key]).toBe("gemini-3.8-flash-tts");
+      expect(await fsPromises.readFile(file, "utf-8")).toBe(
+        `AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nUNRELATED_SETTING=keep-me\n${key}=gemini-3.8-flash-tts\n`,
+      );
+      expect((await fsPromises.stat(file)).mode & 0o777).toBe(0o600);
+      config.initialize();
+      expect(await fsPromises.readFile(file, "utf-8")).not.toContain(retired);
+    } finally { await fsPromises.rm(dir, { recursive: true, force: true }); }
+  });
+
+  it.each([undefined, "", "gemini-3.8-flash-lite-tts", "gpt-4o-mini-tts", "unknown-model"])(
+    "does not rewrite non-retired selection %s", async (selection) => {
+      delete process.env[key];
+      const { dir, file } = await envAt(selection);
+      try {
+        const before = await fsPromises.readFile(file, "utf-8");
+        new AppConfig({ appDataDir: dir }).initialize();
+        expect(await fsPromises.readFile(file, "utf-8")).toBe(before);
+      } finally { await fsPromises.rm(dir, { recursive: true, force: true }); }
+    }
+  );
+
+  it("migrates the file but preserves an inherited current override", async () => {
+    process.env[key] = "gpt-4o-mini-tts";
+    const { dir, file } = await envAt("gemini-2.5-flash-tts");
+    try {
+      const config = new AppConfig({ appDataDir: dir });
+      config.initialize();
+      expect(config.get(key)).toBe("gpt-4o-mini-tts");
+      expect(config.getConfigData()[key]).toBe("gemini-3.8-flash-tts");
+      expect(await fsPromises.readFile(file, "utf-8")).toContain(`${key}=gemini-3.8-flash-tts`);
+    } finally { await fsPromises.rm(dir, { recursive: true, force: true }); }
+  });
+
+  it("rejects an inherited retired override without rewriting the file", async () => {
+    process.env[key] = "gemini-2.5-pro-tts";
+    const { dir, file } = await envAt("gemini-2.5-flash-tts");
+    try {
+      const before = await fsPromises.readFile(file, "utf-8");
+      expect(() => new AppConfig({ appDataDir: dir }).initialize()).toThrow(/external configuration/);
+      expect(await fsPromises.readFile(file, "utf-8")).toBe(before);
+    } finally { await fsPromises.rm(dir, { recursive: true, force: true }); }
   });
 });

@@ -502,12 +502,14 @@ export class LiveE2eScenarioExecution {
     await executeGraphql(this.serverUrl, `
       mutation UseGeminiMode($mode: GeminiSetupMode!) {
         useGeminiMode(mode: $mode) {
-          activeMode
-          aiStudioConfigured
-          vertexExpressConfigured
-          vertexProject {
-            project
-            location
+          setup {
+            activeMode
+            aiStudioConfigured
+            vertexExpressConfigured
+            vertexProject {
+              project
+              location
+            }
           }
         }
       }

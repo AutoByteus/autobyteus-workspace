@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-64476-efa6",
+    "wasRunning": false,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-pmDaYI",
+    "dataRootRemoved": false,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-64476-efa6.log"
+  }
+}
