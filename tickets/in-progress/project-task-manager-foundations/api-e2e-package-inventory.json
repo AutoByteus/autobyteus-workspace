@@ -1,8 +1,8 @@
 {
   "ticket": "PROJ-TASK-MANAGER-20261002-001",
-  "revision": "API-REV-001",
-  "result": "Blocked",
-  "confidence": 90.7,
+  "revision": "API-REV-002",
+  "result": "Pass \u2014 user-authorized validation scope",
+  "confidence": 95.0,
   "testCodeCheckpoint": "e4764d76a34328bacd62e76856689e6da6300da4",
   "originalUpstreamCount": 129,
   "pathsExist": true,
@@ -1647,8 +1647,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-coverage-investigation.md",
-      "bytes": 25848,
-      "sha256": "f21b3fb02a011d2380963016b418f6b71119780703fbc3ebaa1beef05db6653a",
+      "bytes": 28800,
+      "sha256": "076753630ffef5cd885a42544057576dda521f9b2039b26fae803519247007f2",
       "category": "API/E2E evidence"
     },
     {
@@ -1713,8 +1713,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-execution-coverage-report.md",
-      "bytes": 30299,
-      "sha256": "41ec23b42121f97e0a5d85a70bab693a7ddc7544262397830684aede5e39a021",
+      "bytes": 31514,
+      "sha256": "39d8adafce5590fa45fda57fda3f750b6fe83c921ff7160ed801e3d4776e8eab",
       "category": "API/E2E evidence"
     },
     {
@@ -1761,8 +1761,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-revision-record.md",
-      "bytes": 4863,
-      "sha256": "446a5f9d5fb17be7fd4692e67b7b1ef2e26f7e66caa1f38f016dbacfb2fe74a9",
+      "bytes": 8572,
+      "sha256": "2f2acacfa005f599981e5a9f794e8de9e569be01a27aa6cb05ad259144a6ee69",
       "category": "API/E2E evidence"
     },
     {
@@ -1797,8 +1797,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-case-ledger.md",
-      "bytes": 11355,
-      "sha256": "d6a826560444a6e257e7360470596679adea1a5954e9ad1a37d10655232e6c22",
+      "bytes": 12563,
+      "sha256": "09c5cc35e25addc52a2c4323c39f65561ef534525170997250f9270e92f34829",
       "category": "API/E2E evidence"
     },
     {
@@ -2076,8 +2076,18 @@
       "bytes": 49832,
       "sha256": "054867be58960591abf4445ba7567f084157591e0614833d498cc39da4954b04",
       "category": "Upstream"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-user-voice-validation-waiver.md",
+      "category": "User validation direction",
+      "bytes": 2048,
+      "sha256": "670f4e27adb9fa531694b3941b8bb0b4e30f888237b2af93fde5c2f86cadba77"
     }
   ],
-  "note": "Cumulative package prepared for later handoff. No handoff sent while Blocked. Inventory does not hash itself.",
-  "evidenceRepositoryHygiene": "Source/test whitespace check passed. Raw logs/exact patch intentionally preserve their output whitespace; evidence-stage check warnings disclosed in report."
+  "note": "Complete cumulative package prepared for successful Large/High proportional test-code review; no full web typecheck or real microphone Pass claimed.",
+  "evidenceRepositoryHygiene": "Source/test whitespace check passed. Raw logs/exact patch intentionally preserve their output whitespace; evidence-stage check warnings disclosed in report.",
+  "priorRevision": "API-REV-001",
+  "priorResult": "Blocked",
+  "priorConfidence": 90.7,
+  "voiceRuntime": "Not Tested \u2014 user-waived; independently UNVERIFIED"
 }

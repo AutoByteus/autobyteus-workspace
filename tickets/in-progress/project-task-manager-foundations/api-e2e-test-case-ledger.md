@@ -18,7 +18,7 @@
 | TYPECHECK | Relevant full-web diagnostic regression investigation | Build/regression | 6 — documented repository/HTTP/browser/isolated-app | Pass |
 | WEB-PAGES | Ordinary page/keyboard/context/deletion/search fidelity | AC-013–017/019 | 7 — documented repository/HTTP/browser/isolated-app | Pass |
 | WEB-REFRESH | External tool commit -> physical Refresh/pending/error/order | AC-025 | 8 — documented repository/HTTP/browser/isolated-app | Pass |
-| DESKTOP | Isolated worktree product/optional real voice capability | AC-018 | 9 — documented repository/HTTP/browser/isolated-app | Pass typed/Refresh; Blocked real voice |
+| DESKTOP | Isolated worktree product/optional real voice capability | AC-018 | 9 — documented repository/HTTP/browser/isolated-app | Pass typed/Refresh; Not Tested real voice — user-waived |
 
 ## Execution Events
 | Sequence | Case | Event | Expected | Observed | Result | Evidence / next action |
@@ -60,3 +60,13 @@
 Round1 / API-REV-001 completed with overall **Blocked /90.7%**; prior result N/A. Last recorded execution event32; final hygiene note below. No owned process/case still running. Final supported ordinary browser evidence: api-e2e-browser-accepted/result.json16/16 Pass; prior harness attempts retained, not production failures. REPO-SERVER/API-MCP/FILES/AGG/REPO-WEB/WEB-PAGES/REFRESH Pass; TYPECHECK investigation completed, checker remains Fail387 vs base388, no new failing sites/codes, one existing message-shape delta. DESKTOP typed/unavailable/Refresh Pass; installed real voice DESKTOP-VOICE Blocked pending consent/device/spoken user input. All owned cleanup complete. No teammate handoff; future successful Large/High proportional test-code review Required. Ledger timing deviations are disclosed in the canonical report.
 
 Finalization: test checkpoint e4764d76a34328bacd62e76856689e6da6300da4, evidence commit34c9e60ce. Source/test whitespace check Pass; staged raw evidence logs/exact-patch whitespace warnings retained and disclosed, not altered to hide output. No push/integration. get_handoff_rules confirms no rule applies to Blocked; no member notification sent. User dependency request outstanding.
+
+## Round2 Re-entry — API-REV-002
+Prior result API-REV-001 Blocked /90.7% preserved above. The user explicitly removes the optional actual voice test obligation; no runtime rerun or new test evidence.
+
+| Event | Case | Expected | Observed | Current result | Evidence |
+|---|---|---|---|---|---|
+| 33 | DESKTOP-VOICE | Resolve prior optional dependency before proceeding | User says no further voice input test needed and accepts Pass; no capture/install performed | Not Tested — user-waived | api-e2e-user-voice-validation-waiver.md |
+| 34 | RETAINED-RESULTS | Existing code/evidence unchanged | Clean branch and all345 previous package hashes verified; tests e4764d76a unchanged | Pass — evidence integrity, no suite rerun | package inventory/test checkpoint |
+
+Current reconciliation: **Pass for user-authorized scope /95.0%**; seven scoped categories95%, hardware claim excluded rather than upgraded. REPO/API/WEB/DESKTOP typed results retained; checker still Fail, regression investigation retained. Additional broader validation Not Required; successful Large/High proportional test-code review Required. No owned case/process running, no further microphone dependency request.
