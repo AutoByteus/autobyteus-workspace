@@ -1,0 +1,24 @@
+{
+  "upstream_reference_count": 129,
+  "missing_references": [],
+  "source_rows": 73,
+  "current_source_rows": 67,
+  "max_effective_lines": 453,
+  "delta_over_220": [
+    [
+      "autobyteus-server-ts/src/projects/services/project-task-service.ts",
+      146,
+      116
+    ],
+    [
+      "autobyteus-web/components/projects/ProjectTaskDialog.vue",
+      0,
+      224
+    ],
+    [
+      "autobyteus-web/stores/projectTaskStore.ts",
+      93,
+      172
+    ]
+  ]
+}
