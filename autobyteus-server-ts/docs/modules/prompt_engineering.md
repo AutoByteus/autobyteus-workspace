@@ -272,6 +272,14 @@ spawning a new copy, `list_available_agents` when selected, and the member's
 own address. It does not instruct standalone agents to call `get_handoff_rules`;
 without applicable rules, results or specific blockers return to the requesting agent.
 
+The shared wording owner is `WORK_REQUEST_EXECUTION_LLM_INSTRUCTION` in
+`src/agent-collaboration/domain/agent-team-collaboration-llm-contract.ts`.
+The `send_message_to` tool and content-field descriptions likewise frame work
+requests, results, and blockers; argument fields and runtime dispatch are unchanged.
+This is model guidance, not runtime enforcement or a guarantee of compliance.
+Saved prompts/history are not rewritten, and this change does not force already
+running sessions to refresh their instructions.
+
 The shared composition used by Codex App Server and Claude Agent SDK stops
 after the shared identity/team sections. Those adapters place the resulting
 string into Codex `baseInstructions` or Claude SDK `systemPrompt`; their
