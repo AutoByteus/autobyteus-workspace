@@ -9,8 +9,6 @@ import {
 } from '~/services/collaborators/collaboratorCandidatesService'
 import {
   mentionToken,
-  mentionsPresentInText,
-  removeMentionFromText,
   type RequestedCollaboratorMention,
 } from '~/utils/collaborators/collaboratorMentionText'
 import type { AgentContext } from '~/types/agent/AgentContext'
@@ -21,23 +19,8 @@ export interface RunMentionOption extends ChatTargetOption {
   candidate: CollaboratorMentionCandidate
 }
 
-/** A chosen mention whose `@Name` is still in the composer text. */
-export type RunMentionChip = Readonly<{ key: string; kind: 'agent' | 'agent_team'; name: string }>
-
 const mentionKey = (mention: Pick<RequestedCollaboratorMention, 'kind' | 'definitionId'>): string =>
   `${mention.kind}:${mention.definitionId}`
-
-/** The chips of a composer: its chosen mentions whose `@Name` is still in the text. */
-export const runMentionChipsOf = (context: AgentContext | null): RunMentionChip[] => context
-  ? mentionsPresentInText(context.requirement, context.requestedMentions)
-    .map((mention) => Object.freeze({ key: mentionKey(mention), kind: mention.kind, name: mention.name }))
-  : []
-
-/** Removing a chip keeps the words and drops the mention (`@Name` → `Name`). */
-export const removeRunMentionChip = (context: AgentContext, chip: RunMentionChip): void => {
-  context.requestedMentions = context.requestedMentions.filter((entry) => mentionKey(entry) !== chip.key)
-  context.requirement = removeMentionFromText(context.requirement, chip.name)
-}
 
 /**
  * `@` over a live-run textarea: an `@query` token before the caret opens the menu of shared

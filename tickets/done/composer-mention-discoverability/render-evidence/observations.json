@@ -1,0 +1,52 @@
+{
+  "copyEnglish": "Ask anything · @ for an agent or team",
+  "copyChinese": "随便问 · @ 选择智能体或团队",
+  "nativeDeletionUndo": "@ deletion deactivates; native Meta+z restores known identity and highlight",
+  "clipboardPaste": "native paste retains active known mention",
+  "localeMetrics": {
+    "clientWidth": 702,
+    "clientHeight": 68,
+    "scrollTop": 0,
+    "scrollLeft": 0,
+    "viewportWidth": 702,
+    "viewportHeight": 68,
+    "transform": "matrix(1, 0, 0, 1, 0, 0)",
+    "metricMatch": true,
+    "reconstructed": true
+  },
+  "pageErrors": [],
+  "longDraft": {
+    "clientWidth": 702,
+    "clientHeight": 220,
+    "scrollTop": 1504,
+    "scrollLeft": 0,
+    "viewportWidth": 702,
+    "viewportHeight": 220,
+    "transform": "matrix(1, 0, 0, 1, 0, -1504)",
+    "metricMatch": true,
+    "reconstructed": true
+  },
+  "panelResize": {
+    "clientWidth": 298,
+    "clientHeight": 220,
+    "scrollTop": 2992,
+    "scrollLeft": 0,
+    "viewportWidth": 298,
+    "viewportHeight": 220,
+    "transform": "matrix(1, 0, 0, 1, 0, -2992)",
+    "metricMatch": true,
+    "reconstructed": true
+  },
+  "completedAttachment": [
+    {
+      "kind": "uploaded",
+      "id": "completed",
+      "locator": "/test-owned/completed.txt",
+      "storedFilename": "completed.txt",
+      "displayName": "completed.txt",
+      "phase": "draft",
+      "type": "Text"
+    }
+  ],
+  "highContrast": "found native Canvas covering backdrop; corrected to foreground outline in forced-colors only"
+}

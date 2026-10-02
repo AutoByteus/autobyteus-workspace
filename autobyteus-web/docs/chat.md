@@ -212,11 +212,36 @@ the launch target and is unchanged.
 - **Scope.** `useComposerTarget` sets `mentionScope` from the active target
   (`composables/agentInput/runMentionScope.ts`); launch drafts and read-only
   views have none and show no menu.
+- **Discovery.** A mention-capable empty run editor uses the native placeholder
+  "Ask anything · @ for an agent or team" (zh-CN: "随便问 · @ 选择智能体或团队")
+  inside the message box below Context Files. It disappears when typing and is
+  never draft content. It takes priority over custom/skill run placeholders;
+  without mention capability the existing placeholder chain stays unchanged.
+  Removing the slash cue does not remove actual `/` skills or skill chips.
 - **Choosing** (`useRunMentionMenu`) writes `@Name ` into the text and records
-  the mention in `AgentContext.requestedMentions`. `MentionChipRow` shows a chip
-  while `@Name` is in the text; removing a chip keeps the words (`@Name` →
-  `Name`). ↑/↓, Enter/Tab and Escape work as in New chat; Enter with no match is
-  swallowed. The textarea exposes combobox semantics while a menu is open.
+  the chosen kind/definition id/name in `AgentContext.requestedMentions`, with
+  the caret after the trailing space. There is one quiet highlighted inline
+  `@Name`, no separate top mention row or remove button. ↑/↓, Enter/Tab and
+  Escape work as in New chat; Enter with no match is swallowed. The textarea
+  exposes combobox semantics while a menu is open.
+- **Native editing.** Deleting `@` leaves plain `Name` and deactivates the
+  mention; deleting the whole token removes the name; editing its name
+  deactivates it. Undo/restoring the exact previously chosen token reactivates
+  that selected definition. Arbitrary typed names do not create selected
+  identities. `mentionsPresentInText` filters active identities for both
+  highlighting and send; native edits do not prune retained choices or erase
+  unrelated text/attachments.
+- **Renderer ownership.** `AgentUserInputTextArea.vue` owns a decorative,
+  `aria-hidden`, noninteractive background mirror using `splitMentionText` and
+  escaped Vue interpolation. The native textarea remains the only editor and
+  accessibility surface, retaining caret, selection, paste, IME and undo.
+  Shared typography/padding plus client dimensions (excluding scrollbars),
+  scroll offsets and a scoped `ResizeObserver` keep wrapped highlights aligned;
+  observer/window listeners clean up on unmount. Context changes derive the
+  decoration from that context's own draft and choices. Forced colors uses a
+  system-color outline with transparent decorative glyphs over readable native
+  text. The former `MentionChipRow` and chip-only removal helpers are deleted;
+  no rich-text model, persisted spans or migration replaces them.
 - **Sending.** The Agent, Team, Org and Agent-collaboration stores send
   `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server adds the
   collaborator on send and appends a `[Mentioned collaborators]` note to the
@@ -232,7 +257,8 @@ the launch target and is unchanged.
 - **Failure notice.** A send rejected with `COLLABORATOR_ADD_FAILED` (every
   transport maps it to `CollaboratorAddRejection`,
   `services/collaborators/collaboratorAddFailures.ts`) posts nothing: the draft
-  and its chips stay, and `CollaboratorAddFailureNotice` (above the box) shows
+  text, selected definitions and attachments stay, and
+  `CollaboratorAddFailureNotice` (above the box) shows
   "Couldn't add <name> to this run" with the reason from
   `AgentContext.collaboratorAddFailure`. It can be dismissed and is replaced by
   the next send. Success has no notice; the tree shows the result.
@@ -263,7 +289,7 @@ the launch target and is unchanged.
   shows deliveries user-style.
 - **Standalone runs** gain children: rows under the run row
   (`AgentRunTaskRows`), a child's own conversation (titled by its name, with the
-  ⚙ and ＋ header controls and a "Message <name>…" box, F-04), the run row
+  ⚙ and ＋ header controls and the mention-aware input described above), the run row
   returning to the run's own agent, and a "Team" tab once the run has
   children. `stores/agentRunCollaborationStore.ts`
   reads a stopped run's stored view with `agentRunCollaboration` (never restoring
@@ -305,3 +331,13 @@ the launch target and is unchanged.
   on replay, the add-failure notice and the Agent-root lifecycle. It runs in an
   owned temp data root on a real runtime. It needs Chrome, a logged-in runtime
   CLI and a prior `pnpm -C autobyteus-server-ts build`; case F01 needs LM Studio.
+- Browser probe: `pnpm test:e2e:composer-mention-discoverability`
+  (`tests/e2e/composer-mention-discoverability-probe.mjs`): native selection,
+  editing/undo/paste, keyboard menus, completed upload-client retention,
+  rejection/acceptance, context switching, wrapping/scroll/resize, English/zh-CN
+  and forced colors. It needs installed dependencies, Nuxt preparation, built
+  workspace contract outputs and Chrome/Chromium. It starts owned Nuxt/HTTP
+  fixtures on free ports and removes its temporary page/closes its processes.
+  Candidate/upload endpoints and the owning run-store transport outcome are
+  doubles; production editor, upload client and local submission are real.
+  This is renderer evidence, not live-provider/full-desktop or real OS IME proof.

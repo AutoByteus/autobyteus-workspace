@@ -1,7 +1,9 @@
+import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import {
   AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION,
+  WORK_REQUEST_EXECUTION_LLM_INSTRUCTION,
   DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
   DELEGATE_TASK_LLM_DESCRIPTION,
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
@@ -15,9 +17,28 @@ const sha256 = (value: string): string =>
   createHash("sha256").update(value, "utf8").digest("hex");
 
 const APPROVED_SINGLE_RECIPIENT_HANDOFF_PARAGRAPH =
-  "When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies, finish normally.";
+  "When you finish your own work or are blocked, call `get_handoff_rules`. Evaluate the returned rules against your outcome. Select the single rule whose `when` condition most specifically applies, and notify only its `recipient_address` using `send_message_to`. Do not notify additional recipients for the same outcome. If no rule applies to an incoming work request, return the result or specific blocker to the requesting agent using `send_message_to`; otherwise, finish normally.";
 
 describe("approved AgentTeam collaboration LLM contract", () => {
+  it("requires skill-governed work and preserves intermediate handoffs and requester fallback", () => {
+    expect(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION).toBe(
+      "On receiving a work request, follow your own agent instructions and applicable skills. " +
+      "Do not send acknowledgements or promises to work. " +
+      "Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input. " +
+      "Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.",
+    );
+    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).toContain("### Work Requests and Results");
+    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).not.toContain("### Ordinary Communication");
+    expect(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION).not.toContain("If no rule applies, finish normally.");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("work request, result, or blocker");
+    expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).not.toContain("ordinary message");
+  });
+
+  it("keeps the documented Team example identical to the rendered collaboration section", () => {
+    const documentation = readFileSync(new URL("../../../docs/modules/prompt_engineering.md", import.meta.url), "utf8");
+    expect(documentation).toContain(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION);
+  });
+
   it("pins the exact approved prompt, tool descriptions, and field descriptions", () => {
     expect({
       sendTool: sha256(SEND_MESSAGE_TO_LLM_DESCRIPTION),
@@ -29,14 +50,14 @@ describe("approved AgentTeam collaboration LLM contract", () => {
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
       collaborationPrompt: sha256(AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION),
     }).toEqual({
-      sendTool: "9f1573a4fde6535ecb87ac75f0e8c28c06637bb4745723e4c3d9c1d3ab44b10c",
+      sendTool: "c2911fdc939324ebfa2cc7d66c32e479a4b4b996004e8628b2900ce78c365909",
       sendRecipient: "b9c340525eb1af6c31faaa12c1cb8ccb18d7110cec8577bef85df196dfd0b801",
-      sendExactRun: "80516600b7452a84f2ba972cb32aca0a2521f98959318386a94c5bb58cdf7bfd",
+      sendExactRun: "c847864e1dfe9745cab69b255ad3960185cf6c93ff78b647f809ec9fa85971cb",
       delegateTool: "6119c6b09eba5dd0ba706de167daca3e0507b9d96d0fb703bc1b8611384ec7e6",
       delegateRecipient: "c53d279b572b829451a03b34195be0dc913ca61f397412e769aecd128a04de0a",
       delegateDescription: "b5e9223456da4f02bd95fa69a1b0298b255f62839f3a8ea657adece6ad4a88dc",
       delegateReferences: "7d4b59ec1a78e52a8c09657dbb5e296cf424bb0b5f9148c06fc59b3b10997c69",
-      collaborationPrompt: "8bbb75a854846220183f819729557db5e2b9e85eb85b697931c25b0b97e943c2",
+      collaborationPrompt: "36bbec94d4433debdb4c2416b7195cda7704c035cb4a53b56ee0c36b32d8970e",
     });
   });
 

@@ -1,0 +1,20 @@
+# Implementation rendered-result inspection — IR-001
+
+This is implementation self-validation, not independent API/E2E certification. Production native textarea, Context Files component and existing picker rendered in owned Nuxt dev /implementation-composer-self-check at http://127.0.0.1:3991. Fixture is small hand-written synthetic state, stored here as self-check.page.vue and temporarily copied into pages/. The temporary production page was removed before production build. No Product fixture imported, backend/provider used or user's app/data touched. Backend requests were intercepted on ticket-owned endpoint 3999; only the candidate list was supplied. The synthetic target's send is a no-op, not proof of admission/routing.
+
+## Inspection and interaction
+- Directly compared empty/selected production component crops to approved composer-1512.png / composer-selected-1512.png / composer-1024.png. Same 15px/24px text, 12px/10px inset, Context Files/border/focus treatment, quiet sky highlight and no duplicate top row. Original surrounding shell is intentionally not replicated.
+- Inspected 1512×952 and 1024×640 browser viewports and 300px parent-panel width. Selected picker keyboard Enter leaves native caret after space; Escape retains text.
+- Native Backspace deletion of @ keeps name/prose and deactivates highlight/DTO projection without losing chosen identity. Native macOS Meta+z restores exact token, known identity projection and highlight. Native clipboard Meta+v retains selection while adding unrelated prose.
+- Long 35-line draft, wrapped mention (including multi-line token), tabs, trailing newline, maximum 220px height, native vertical scrollbar/scroll and parent-only resize. DOM assertions confirm exact reconstructed text, equal font/padding/wrap/tab metrics, client viewport dimensions and corresponding scroll transform. ResizeObserver updates occur at the browser layout callback, not synchronously in the click event. Context switching removes previous highlights and restores its own text/selection; completed synthetic uploaded attachment record survives editing/context changes.
+- English and Chinese actual catalog copy, Chinese glyphs and newline/tab layout inspected; aria-hidden and pointer-events:none decorative projection, native accessible message label and combobox semantics preserved.
+- Found forced-colors native Canvas painting over background highlight. Corrected forced-colors only to transparent-glyph foreground outline (system Highlight), preserving readable native system-color text and noninteractive decoration; inspected forced-colors-fixed-1024.png. Normal approved sky styling is unchanged.
+- No pageerror events on these inspected interactions. Assertions/observations saved in observations.json. These are implementation observations, not a durable independent executable probe.
+
+## Evidence disposition
+Current: empty-1512.png, selected-1512.png, empty-1024.png, selected-1024.png, zh-selected-1024.png, long-scrolled-1024.png, narrow-scrolled-300.png, forced-colors-fixed-1024.png, observations.json. Superseded first-pass captures showed pre-correction high contrast or incomplete synthetic attachment shape and were removed; they are not current acceptance evidence. Correct production attachment record was subsequently used; no actual upload was performed here.
+
+## Remaining coverage
+Real OS IME composition, audio-enabled voice capture, cross-engine rendering, nonzero horizontal scroll in a browser, real upload completion/admission rejection, full Agent/Team/Org/task journeys and actual focused-agent delivery remain independent validation scope. Native IME handling itself was not modified. Unit checks exercise both scroll axes and rejection/acceptance at the component boundary; store checks exercise existing local held submissions. Do not translate mock attachment retention or no-op send into a real backend pass.
+
+Cleanup: owned headless Chrome closed; owned Nuxt dev session stopped; temporary page deleted. No installed desktop process or Product preview stopped. No release/integration claim.
