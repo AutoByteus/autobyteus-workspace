@@ -32,6 +32,6 @@ Canonical Chat docs still described the deleted top chip row and its remove butt
 ## Verification / Continuation
 Docs sync Pass; `git diff --check` passed. Runtime/coverage source unchanged by Delivery. No-impact decision N/A (real docs impact corrected).
 Independent architecture/source/test review artifacts N/A — not applicable, direct route; no review Pass fabricated.
-Next: explicit user verification of this candidate, then fresh target check, archive/commit/push/merge/push and safe task cleanup. No upstream ambiguity/product defect found; user verification hold is not a finding requiring reroute. UI-CLOSE-001 honored; DATA-001/BASE-002 remain externally deferred.
+DR-002 continuation Completed: explicit UV-001 acceptance, unchanged fresh target, archive/commit/push/merge/push and safe task cleanup; release explicitly Not required. No upstream ambiguity/product defect found; user verification hold is not a finding requiring reroute. UI-CLOSE-001 honored; DATA-001/BASE-002 remain externally deferred.
 
 Delivery-only pre-verification checks: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-evidence/pre-verification-checks.log (diff hygiene, two probe syntax checks, temporary pages absent, inventory paths present; not a functional test rerun).
