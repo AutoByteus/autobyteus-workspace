@@ -9,6 +9,8 @@
 | DR-003 | User requested an Electron build for hands-on verification | DR-002 verification hold | Apple Silicon personal build and isolated-launch smoke Pass; verification still pending | `handoff-summary.md`, `release-deployment-report.md` |
 | DR-004 | User requested the test instance be started | DR-003 build ready; verification pending | Isolated test instance running for user; verification pending | `handoff-summary.md`, `release-deployment-report.md` |
 
+| DR-005 | Renewed explicit combined finalization/beta instruction | DR-004 verification hold | Combined acceptance received; latest integrated checks/docs Pass; repository finalization proceeding | handoff-summary.md, docs-sync-report.md, release-deployment-report.md, delivery-evidence/ |
+
 ## Revision Entries
 
 ### DR-001 — Initial delivery integration blocked
@@ -78,3 +80,17 @@
 - Why this delivery revision was recorded: Preserve an exact operational record of the active disposable test instance and its cleanup obligation without misclassifying readiness as user acceptance.
 - Next recipient/action: User performs testing and reports result; Delivery stops `iso-64476-efa6` on request or after the user finishes, then follows acceptance and later-base gates.
 - Remaining blockers, rollback concerns, or untested scope: Explicit user verification absent; release choice pending; later base refresh remains mandatory before finalization. The test instance has a disposable isolated database. Do not stop or delete it while the user is testing, and do not use it as a production deployment.
+
+### DR-005 — Predecessor hold reconciled and combined current-state checks
+
+- Trigger: after explicit disclosure that **both Gemini packages including this earlier upgrade** needed acceptance and no finalization had occurred, user instructed **“okayyyy then finalize and release a beta version then”**. This current combined-scope finalization instruction resolves old DR-004 acceptance hold and supersedes stable selection. Reference `delivery-evidence/user-verification.md`; no new paid authorization.
+- Prior: DR-004 user-test readiness, distinct verification/finalization hold.
+- Current: **Explicit acceptance received; integrated checks/docs Pass; finalization proceeding, not yet Delivery Completed**. Large/High reviewed route unchanged.
+- Integration: old cumulative dirty docs/reviewer/API/solution evidence checkpoint `dd087b5c2`; integrated reviewed new package/current target through merge `eda59e585...` of new `97775019d...`, which includes origin/personal `777548b05...`. Reuses upstream approved/reviewed SR-015 dependency resolution, no new source conflict/edit. Three doc-only conflicts resolved locally to synchronized combined docs; source/lock/non-ticket tree byte-identical to new candidate.
+- Checks: frozen offline install, current-worktree server build/prebuild/bootstrap, 83 core +26 registered API +135 server +27 Settings renderer **271/271 Pass**. Evidence exact commands `delivery-evidence/final-integration.log`, interpretation `checks.md`; no new live call/import/private read/listening. Base changed no Gemini source/SDK/lock or speech behavior, no renewed material-state verification needed.
+- Docs: current three combined canonical docs preserve old model/default/saved-env transition and new accepted voice/style semantics; docs-sync-report.md updated after checked integration.
+- Operational cleanup: old instance registry showed `running:false`; lifecycle `stop iso-64476-efa6 --keep` returned `wasRunning:false`, both ports released, private test root preserved. Other instances untouched. Evidence `isolated-cleanup.json`.
+- Repository: archive before final commit, ticket commit/push then target merge/push pending at this preparation record. Recorded target still origin/personal; clean finalization proxy will preserve unrelated dirty root checkout.
+- Release: beta selected; documented helper computes next unused version (preflight1.4.92-beta.12, not yet reserved), no curated stable-note sync, no duplicate immediate manual dispatch. Both packages will share one beta publication.
+- Historical evidence unchanged: API-REV-005 real WAV predates original integration; API-REV-00795% and CRR-008/009 own original candidates; Solution SR-014 later one-call current-key WAV is evidence-only, not new formal API pass. New package's exactly3 calls and bounded USER “sounds great” apply to new dialogue, not an engineer audition or old independent proof. Future availability/no blanket quality caveats retained.
+- Terminal: not eligible until finalization/publication/cleanup complete. Later completion records will contain exact commits/push/tag/jobs/assets; no success inferred here.

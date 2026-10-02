@@ -54,3 +54,7 @@
 - Result: **Pass** for docs synchronization on the integrated branch.
 - Next delivery action: Present `handoff-summary.md` and release notes to the user and wait for explicit verification/acceptance and release choice. Do not archive, push, merge, tag or deploy before that signal.
 - Notes: `git diff --check` passed after docs edits. Source code and durable tests were not changed by Delivery. Integrated deterministic/API/browser/preflight evidence is current to `c6586a07f`; the real Vertex provider call remains pre-integration historical evidence, not a fresh merged-commit call. No manual listening was performed.
+
+## DR-005 Current Combined Docs Refresh
+
+Latest source `eda59e585...` includes origin/personal `777548b05...` and accepted/reviewed voice package. Three documentation-only integration conflicts were resolved to the richer synchronized current combined docs; they preserve all old model/default/retired saved-file transition contracts and add accepted voice/turn-style semantics. No source conflict or source edit by Delivery. Current install/build/271 tests Pass; exact evidence `delivery-evidence/checks.md`. User acceptance/beta instruction now received; prior DR-002 waiting text above is historical. Current docs-sync **Pass** on this integrated tree, not on stale c658 only.
