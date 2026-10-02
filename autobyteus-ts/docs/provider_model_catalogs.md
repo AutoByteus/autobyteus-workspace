@@ -100,8 +100,8 @@ or credentials.
 | Image | `gemini-3.1-flash-image` | `gemini-3.1-flash-image` | Gemini | 2026-07-03 | Current Gemini 3.1 Flash Image / Nano Banana 2 model ID; replaces the shut-down preview catalog ID without an alias. |
 | Image | `gemini-3-pro-image` | `gemini-3-pro-image` | Gemini | 2026-07-03 | Current Gemini 3 Pro Image model ID; replaces the shut-down preview catalog ID without an alias. |
 | Video | `gemini-omni-flash-preview` | `gemini-omni-flash-preview` | Gemini | 2026-07-03 | Docs-backed registration for creation-only `text_to_video`, `image_to_video`, and `reference_to_video` through `GeminiVideoClient` and the Gemini Interactions API; live provider generation was not validated in the delivery environment. |
-| Audio / TTS | `gemini-3.1-flash-tts-preview` | `gemini-3.1-flash-tts-preview` | Gemini | 2026-04-25 | Registered in audio catalog and Gemini runtime mapping. |
-| Audio / TTS | `gemini-2.5-pro-tts` | `gemini-2.5-pro-preview-tts` | Gemini | 2026-04-25 | User-facing compact ID maps to the documented preview API value. |
+| Audio / TTS | `gemini-3.8-flash-tts` | `gemini-3.8-flash-tts` | Gemini | 2026-10-01 | Current default Gemini speech model; exact ID for API-key and Vertex modes. |
+| Audio / TTS | `gemini-3.8-flash-lite-tts` | `gemini-3.8-flash-lite-tts` | Gemini | 2026-10-01 | Separate selectable Gemini speech model; exact ID for API-key and Vertex modes. |
 
 ## xAI Grok 4.7
 
@@ -468,6 +468,29 @@ surface differs. `OpenAIImageClient` owns the request-shape split:
 Gemini TTS model registration and runtime mapping are separate. Add the model
 to `AudioClientFactory` first, then add any API-key or Vertex-specific mapping
 to `resolveGeminiRuntimeModelName` through `src/utils/gemini-model-mapping.ts`.
+
+The built-in Gemini speech catalog now contains only `gemini-3.8-flash-tts`
+and `gemini-3.8-flash-lite-tts`. The former is the server/web fallback when
+`DEFAULT_SPEECH_GENERATION_MODEL` is blank; the latter remains an explicit
+choice. The retired built-in `gemini-3.1-flash-tts-preview`,
+`gemini-2.5-flash-tts`, and `gemini-2.5-pro-tts` are not runtime aliases or
+silent fallbacks. OpenAI speech models remain separate and available.
+
+`GeminiAudioClient` sends each utterance as transcript text and puts optional
+style and speaker information in `speechMetadata`, rather than appending style
+instructions to the spoken text. It retains single-speaker voice selection and
+validated one- or two-speaker mappings. The unary response must contain audio:
+an already-WAV response is validated as a playable PCM WAV container, while a
+supported PCM response with valid rate/channels is wrapped as WAV. Empty,
+malformed, unsupported, or header-only output fails explicitly instead of
+returning a success file. This is a format/structure guarantee, not a claim of
+manual audible quality verification.
+
+The shared `@google/genai` dependency is 2.24.0 for this cutover. Gemini
+LLM/image/video catalogs were not changed as a side effect of the speech
+upgrade; their adapter regressions need checking when the SDK graph changes.
+Model listing and a successful historical provider call do not guarantee
+future availability for every Gemini mode, key, project, region, or quota.
 
 ### Gemini Image Models
 

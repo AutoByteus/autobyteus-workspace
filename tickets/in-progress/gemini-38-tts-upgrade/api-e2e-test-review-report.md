@@ -2,72 +2,49 @@
 
 ## Review Meta
 
-- Review Round: 2 (`CRR-007`, 2026-10-01).
-- Trigger: `/api_e2e_engineer` `API-REV-006` Pass / 95.0% after bounded API/E2E-owned correction of `CRR-006 / TR-001`. The actual one-call Vertex Express TTS success remains `API-REV-005` evidence; no provider call occurred in round 6.
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (`SR-004`; `SCN-002/004`, `AC-003/004/007/009`).
-- Investigation Notes Reviewed As Context: `investigation-notes.md`.
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (`SR-004`, `SR-006`, evidence-only `SR-011/012`).
-- Design Spec Reviewed As Context: `design-spec.md` (`SR-006`).
-- Supplemental Task Artifacts Reviewed As Context: `solution-handoff-sr006.md`, `solution-blocker-sr007.md`, `solution-access-update-sr008.md`, `solution-vertex-recheck-sr009.md`, `solution-hold-sr010.md`, `solution-vertex-recheck-sr011.md`, `solution-validation-update-sr012.md`; behavior-defining supplement N/A.
-- Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md` (`ARCH-REV-002` Pass).
-- Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (`IR-002`).
-- Original Code Review Report: `code-review-report.md` (`CRR-002` source Pass and historical failure-origin rounds); not reopened by this test review.
-- Code Review Revision Record: `code-review-revision-record.md`; Current Code Review Revision ID: `CRR-007`.
-- Coverage Investigation: `api-e2e-coverage-investigation.md`.
-- Execution Coverage Report: `api-e2e-execution-coverage-report.md` (`API-REV-006` Pass).
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (`API-REV-001–006`).
-- Delivery Revision Record Reviewed As Context: N/A — no delivery re-entry.
-- API/E2E Result: **Pass**. `API-REV-006` is non-paid test correction/validation; `API-REV-005` is the retained real exact-model Vertex Express audio proof.
-- Final Validation Confidence: **95.0%**, as reported by API/E2E; not rescored here. Broader validation was Not Required for the bounded pure test correction.
-- Task classification/route: **Large / High**, independent reviewed route unchanged.
-- Prior unresolved test-review findings rechecked: `TR-001` — **resolved** by provider-aware output assertions and focused tests (below).
-- Supported Product Scenario Basis Confirmed: **Yes**. Approved `SCN-002/004` establishes speech and isolated Google live validation. The preserved non-Google audio choice (`AC-003`) and existing OpenAI factory/client establish the shared runner's supported MP3 route independently of its fixture.
+- Review Round: 3 (`CRR-009`, 2026-10-01).
+- Trigger: `/api_e2e_engineer` `API-REV-007` post-integration Pass / 95.0% on merge `c6586a07f`, following `IR-003` and `CRR-008` source Pass. This is a proportional **no-durable-test-change** confirmation, not another deep test-code audit.
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (`SR-004`, `SCN-001/002/004/005`, `AC-001–010`).
+- Investigation Notes / Solution Revision Record Reviewed As Context: `investigation-notes.md`, `solution-revision-record.md` through evidence-only `SR-012`.
+- Design Spec / Supplemental Task Artifacts Reviewed As Context: `design-spec.md` (`SR-006`); behavior-defining supplement N/A; solution coordination notes `SR-007–012` retained as historical access/evidence context.
+- Architecture Review Revision Record / Implementation Revision Record Reviewed As Context: `architecture-review-revision-record.md` (`ARCH-REV-002` Pass), `implementation-revision-record.md` (`IR-003` integrated candidate).
+- Original Code Review Report / Revision Record: `code-review-report.md` (`CRR-008` integrated source Pass), `code-review-revision-record.md` (current `CRR-009`).
+- Coverage Investigation / Execution Coverage Report / API Revision Record: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md` (`API-REV-007` Pass), `api-e2e-revision-record.md` (`API-REV-001–007`); case ledger events 60–71 terminal.
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (`DR-001` historical integration blocker); delivery/docs/user verification not complete.
+- API/E2E Result: **Pass** on integrated merge. Final Validation Confidence: **95.0%** as reported by API/E2E, not rescored here; broader validation **Required and executed** for merged Settings/GraphQL neighbors.
+- Task classification/route: **Large / High**, reviewed route unchanged.
+- Prior unresolved test-review findings rechecked: **None**. `TR-001` was resolved in `CRR-007`; merged helper/harness 22/22 and no test-path edit this round leave that conclusion intact.
+- Supported Product Scenario Basis Confirmed: **Yes**. Approved speech, settings, safe operational validation and shared-SDK preservation scenarios remain independent of test fixtures. No new scenario is inferred from preflight or tests.
 
 ## Changed Durable Test Scope
 
-Temporary probes, live output, logs, vault state, and execution artifacts are excluded. No durable test was removed.
-
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `test-support/live-e2e/live-e2e-harness.ts` | Updated | `SCN-004`, `API-05/06`; existing live agent flows | Activate Gemini mode via current GraphQL result shape; construct the test-only AgentRun facade with its required product input normalizer. | `useGeminiMode { setup { ... } }` matches schema. A no-op path resolver is proportionate for selected attachment-free flows; focused harness 22/22 passed. |
-| `test-support/live-e2e/live-e2e-scenarios.mjs` | Updated | `SCN-004`, `AC-007` | Add scoped AI Studio exact-model audio route. | Correct model/mode/secret slot; its historical quota rejection remains separate. |
-| `test-support/live-e2e/live-e2e-audio-assertions.ts` | Added | `SCN-002/004`, `AC-004/007`; preserved OpenAI audio route | Shared nonempty-file check, with WAV-specific header/size check only for Gemini. | Pure test-support helper, not production code. |
-| `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Updated | `SCN-002/004`, `AC-004/007` | Exercise production client/provider, read generated file, apply format-aware assertion, clean owned output. | Every audio provider checks nonempty bytes; Gemini retains >44-byte RIFF/WAVE predicate. |
-| `autobyteus-server-ts/tests/unit/secret-management/live-e2e-audio-assertions.test.ts` | Added | `TR-001` regression guard | Positive/negative tests of pure provider-aware assertion. | 3/3 pass: OpenAI MP3 accepted, empty rejected, Gemini WAV required. |
+| None in `API-REV-007` | N/A | N/A | N/A | `git status`/diff and current API report show documentation artifacts only, no source/test edits or removals after `c6586a07f`. The cumulative five test/support paths passed review in `CRR-007`; the relevant Gemini audio/assertion branch survived the clean auto-merge and current helper/harness 22/22 passed. |
 
-- No durable test file changed: **No** (cumulative scope includes API-REV-001/002/006 changes).
-- Review result when no durable test file changed: N/A.
+- No durable test file changed: **Yes**.
+- Review result when no durable test file changed: **Not Applicable** (clean proportional confirmation).
+- Cumulative previously reviewed paths remain: `test-support/live-e2e/live-e2e-harness.ts`, `test-support/live-e2e/live-e2e-scenarios.mjs`, `test-support/live-e2e/live-e2e-audio-assertions.ts`, `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts`, `autobyteus-server-ts/tests/unit/secret-management/live-e2e-audio-assertions.test.ts`. No removal.
 
 ## Proportional Test-Code Checks
 
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | `gemini.ai-studio.audio` follows existing registry convention; format assertion is isolated in a named helper with focused unit coverage. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | All audio outputs must have nonempty file bytes. Gemini alone requires >44 bytes with RIFF/WAVE signatures, complementing the production adapter's PCM/WAV validator. No audible-playback or AI Studio success is claimed. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Existing preflight/client branch retained; pure helper centralizes the only shared format rule rather than duplicating it. Product normalizer is reused in the test facade. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | Synthetic helper cases 3/3 and harness tests 22/22 passed without provider calls; no-import preflight 2/2 READY/missing; generated-file cleanup remains limited to adapter-owned temp directory. Real provider execution is explicit and conditional. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | Existing live capability file remains organized by operation with registry-based selection; no source-file size thresholds or forced splitting applied. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | Stale AgentRun facade requirement was corrected; real-provider file correctly skips without `RUN_REAL_E2E`. No duplicate or removed test. |
-| Added, updated, and removed coverage agrees with investigation and execution evidence | Pass | Investigation and ledger events 52–59 record `TR-001` correction, incidental facade fix, build, focused 3/3, 27/27, 22/22 and non-paid preflight. Current report distinguishes retained API-REV-005 live proof from API-REV-006 no-call checks. |
-| Test callers and fixtures exercise an independently established supported scenario rather than proving one by themselves | Pass | `SCN-002/004`, preserved OpenAI audio choice and actual factory/client contracts establish the routes. Test-only synthetic bytes verify assertion logic, not product behavior. |
-| Each test enters through its scenario's real trigger and follows the real actor's or event's steps, without a setup real use does not produce | Pass | Scoped runner uses preflight, real mode activation and factory/client. No-op path resolution is limited to the selected attachment-free test flows; it does not purport to validate attachment normalization. |
+| Scenario grouping and names make intent clear | N/A | No API-REV-007 durable test delta; `CRR-007` Pass remains applicable. |
+| Assertions prove approved requirements rather than incidental details | N/A | No assertion changed; provider-format-aware audio predicate remains and merged helper/harness 22/22 passed. |
+| Fixture/helper reuse, isolation and determinism | N/A | No fixture/helper edit; API-REV-007 used isolated backend/browser, test-owned DB, no-import preflight and cleanup. |
+| File coherence, no stale/duplicated/disabled tests | N/A | No test addition/removal; provider file transformed/skipped without `RUN_REAL_E2E` and was not reported as a real provider pass. |
+| Coverage agrees with investigation and execution evidence | Pass | API-REV-007 report/ledger distinguish 76/76 core, 80/80 server config, 27/27 web, 23/23 API, 22/22 helper/harness, rendered Settings and preflight 2/2 from **Not Tested** merged-commit real provider calls. |
+| Independent supported scenario and real trigger/path | Pass | `SCN-001/002/004/005` and design spines remain the authority. Preflight is explicitly only preflight; historical API-REV-005 real WAV/LLM results are identified as **pre-integration**, not relabeled current calls. |
 
 ## Findings
 
-No open actionable finding.
-
-### Prior Finding Resolution
-
-| Finding ID | Prior Status | Current Status | Verification Evidence |
-| --- | --- | --- | --- |
-| `TR-001` | Open / Local Fix (`CRR-006`) | **Resolved** | `assertLiveAudioFileBytes` rejects empty output for every provider, applies >44-byte RIFF/WAVE only when `providerId === 'GEMINI'`, and the shared live branch calls it after file read. Existing OpenAI factory/client defaults to MP3. Focused synthetic 3/3, OpenAI/Gemini audio factory/client 27/27, server helper/harness 22/22 and no-import preflight 2/2 passed. |
-
-The historical API-REV-005 genuine Vertex Express TTS success remains route/key/time-specific. API-REV-006 did not repeat that paid call or import a secret. No production source defect, source-score change, or new requirement is inferred.
+No open test-code finding. No provider call or secret import occurred in `API-REV-007`; the prior actual Vertex Express TTS WAV success remains historical, route/key/time-specific evidence. The integrated `API-REV-007` Pass rests on unchanged production adapter/model/mode/SDK, coherent rebuilt lock graph, current deterministic/API/browser checks and explicit provenance—not a fabricated new paid result. AI Studio historical quota and manual listening limitations remain separate. This confirmation does not reopen `CRR-008` source review or `CRR-007` five-path test review.
 
 ## Latest Authoritative Result
 
-- Result: **Pass**.
-- Changed durable test/support paths reviewed: all five paths in the scope table; no removal.
+- Result: **Not Applicable** — no durable API/E2E test-code delta in the successful post-integration round; prior test review Pass remains valid.
+- Changed durable test paths reviewed: **None** in `API-REV-007`; five cumulative paths previously reviewed in `CRR-007` are listed above and attached downstream.
 - Unresolved finding IDs: **None**.
-- Recommended Recipient: `/delivery_engineer` for integrated delivery, documentation sync and applicable finalization via result-based handoff.
-- Notes: Preserve `CRR-002` source Pass, `API-REV-005` real Vertex Express WAV proof, and `API-REV-006` bounded non-paid regression evidence. Future provider availability, separate historical AI Studio quota and absence of manual audible playback remain bounded, not hidden.
+- Recommended Recipient: `/delivery_engineer` for resuming integrated docs sync, explicit user verification and applicable finalization/release gates.
+- Notes: `API-REV-007` integrated validation is Pass / 95.0%; it made no real provider request. Do not claim current entitlement, audible playback, completed delivery, push or release.

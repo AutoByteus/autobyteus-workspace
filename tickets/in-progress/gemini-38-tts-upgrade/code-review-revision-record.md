@@ -13,6 +13,8 @@ The latest applicable `code-review-report.md` or `api-e2e-test-review-report.md`
 | `CRR-005` | `code-review-report.md` | API/E2E failure-origin / `API-REV-004`, `API-06` | Fail / Unclear | Fail / Unclear, repeated Vertex Express 404; wait | None; `CR-001` stays resolved |
 | `CRR-006` | `api-e2e-test-review-report.md` | Proportional successful-test review / `API-REV-005` | No prior test-review result | Fail / Local Fix | `TR-001`; `CR-001` stays resolved |
 | `CRR-007` | `api-e2e-test-review-report.md` | Proportional test re-review / `API-REV-006` | Fail / Local Fix | Pass | `TR-001` resolved; `CR-001` stays resolved |
+| `CRR-008` | `code-review-report.md` | Latest-base source re-review / `IR-003`, delivery `DR-001` | Source Pass (pre-integration) | Pass (integrated source) | `CR-001` stays resolved; delivery lock blocker resolved |
+| `CRR-009` | `api-e2e-test-review-report.md` | Post-integration successful-API test confirmation / `API-REV-007` | Test review Pass (`CRR-007`, pre-integration) | Not Applicable (no durable test delta) | None; `TR-001` stays resolved |
 
 ## Revision Entries
 
@@ -161,3 +163,48 @@ None.
 - Material score or classification changes: proportional test review Fail / Local Fix → **Pass**; no implementation-source score or API/E2E 95.0% confidence change.
 - Recommended recipient: `/delivery_engineer`.
 - Remaining risks or uncertainty: API-REV-005 real provider success is key/route/time-specific; separate AI Studio quota and manual listening remain outside this bounded test correction.
+
+### CRR-008 — Latest-base lock integration source re-review
+
+- Canonical review report updated: `code-review-report.md` in this ticket directory; separate `api-e2e-test-review-report.md` remains authoritative for `CRR-007` pre-integration test-code review.
+- Review entry point and round: Implementation Review, source round 3 / cumulative code-review result 8.
+- Triggering role/report/finding: `/implementation_engineer`; current `implementation-handoff.md`, `implementation-revision-record.md` (`IR-003`), historical delivery `release-deployment-report.md` / `delivery-revision-record.md` (`DR-001` lock conflict).
+- Relevant solution revisions: `SR-004`, `SR-006`, evidence-only `SR-012`; architecture review `ARCH-REV-002`; implementation `IR-003`; API/E2E `API-REV-005/006` **pre-integration**; delivery `DR-001` Blocked / Local Fix.
+- Prior authoritative result: `CRR-002` source Pass / 9.4 for pre-integration source; `CRR-007` test-code Pass and API-REV-006 Pass / 95.0% pre-integration. Current authoritative **source** result: **Pass / 9.4** on merge `c6586a07f` into `b0b077b02`; post-merge API/E2E remains pending.
+- Result rationale: `git show --remerge-diff` shows the only manual merge resolution in root lock `@protobufjs` package/snapshot regions. Current `@google/genai@2.24.0` snapshot resolves to coherent `protobufjs@7.5.4`, matching the installed SDK's `^7.5.4` dependency, package/snapshot graph and nested lock; no 7.6.2 references remain. Frozen offline install and implementation builds/suites passed. Reviewer inspected relevant auto-merged AppConfig/live files and current task source, rebuilt missing generated shared `dist`, then independently reran core 30/30, server 39/39 and web Settings 4/4 focused checks. Initial built-server startup failure before rebuild was an environment prerequisite, not a source defect; same suite passed after documented build.
+- Supported scenario/material-premise basis: approved `SCN-001–005`, design `DS-001–008`, and ordinary frozen workspace install/build as a supported operational contract. `CAND-LOCK-001` verified resolved; `CAND-ENV-001` rejected as source finding. No unsupported scenario drives a deduction or new machinery.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Resolved | Resolved | `IR-002/003`, `CRR-002/008` | Current Gemini WAV validator and independent focused merged-core 30/30 (including audio) pass; no task audio source delta from first merge parent. |
+| `TR-001` | Resolved | Resolved | `API-REV-006`, `CRR-007/008` | Current merged live audio assertion remains provider-format-aware; no conflict in that branch. |
+| Delivery `DR-001` lock blocker | Blocked | Resolved for source candidate | `DR-001`, `IR-003`, `CRR-008` | Clean merge commit, coherent root lock graph, frozen offline install/build and focused current-tree checks. Delivery itself still incomplete. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: source 9.4 unchanged; Large/High unchanged; no post-integration API confidence is assigned by review.
+- Recommended recipient: `/api_e2e_engineer` primary; `/implementation_engineer` informational after primary succeeds.
+- Remaining risks or uncertainty: post-integration API/E2E, docs sync, explicit user verification and finalization pending; pre-integration real provider result is not re-labeled current validation.
+
+### CRR-009 — No post-integration durable test-code delta
+
+- Canonical review report updated: `api-e2e-test-review-report.md` in this ticket directory; `code-review-report.md` remains authoritative for integrated source `CRR-008`.
+- Review entry point and round: proportional successful API/E2E test-code review, round 3 / cumulative code-review result 9.
+- Triggering role/report/scenario: `/api_e2e_engineer`; latest `api-e2e-execution-coverage-report.md` and ledger events 60–71, `API-REV-007` post-integration Pass / 95.0%; no new durable test path.
+- Relevant solution revisions: `SR-004`, `SR-006`, evidence-only `SR-012`; architecture review `ARCH-REV-002`; implementation `IR-003`; source review `CRR-008`; API/E2E `API-REV-007` (with API-REV-005 real-provider proof explicitly pre-integration); delivery `DR-001` historical blocker.
+- Prior authoritative result: `CRR-007` test-code Pass on five cumulative paths and `CRR-008` integrated source Pass. Current test-review result: **Not Applicable** because API-REV-007 changed no durable source/test code, with prior test-code Pass preserved.
+- Result rationale: Current tree on merge `c6586a07f` has documentation-only post-merge edits; no added, updated or removed durable test file from API-REV-007. The Gemini audio/assertion branch remained intact through clean auto-merge. API/E2E independently ran merged helper/harness 22/22 plus core/server/web/API checks, rendered Settings, and no-import preflight. No provider call was made in this round; report properly labels API-REV-005 actual WAV/LLM evidence as pre-integration. No repeated deep test review or paid retry is justified solely by the test-review gate.
+- Supported scenario/material-premise basis: approved `SCN-001/002/004/005`; no test or preflight establishes a new scenario.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `TR-001` | Resolved | Resolved | `API-REV-006/007`, `CRR-007/009` | Provider-aware helper/live branch unchanged; merged helper/harness 22/22. |
+| `CR-001` | Resolved | Resolved | `IR-002/003`, `CRR-002/008/009` | Integrated source review and current core audio tests; no source delta in API-REV-007. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no test-code score; Not Applicable result; API/E2E's integrated 95.0% and Large/High route reported, not rescored by reviewer.
+- Recommended recipient: `/delivery_engineer`.
+- Remaining risks or uncertainty: present provider entitlement and manual audible playback not proven by API-REV-007; historical AI Studio quota separate. Delivery docs, explicit user verification, finalization/release pending.

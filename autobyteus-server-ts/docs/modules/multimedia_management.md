@@ -116,5 +116,22 @@ construction and invocation:
 - `DEFAULT_SPEECH_GENERATION_MODEL`
 - `DEFAULT_VIDEO_GENERATION_MODEL`
 
+For speech, an unset or blank `DEFAULT_SPEECH_GENERATION_MODEL` resolves to
+`gemini-3.8-flash-tts` in both the server tool resolver and Settings display.
+`gemini-3.8-flash-lite-tts` is a separate selectable catalog row. An explicit
+valid non-Gemini speech choice remains authoritative. Neither a missing
+provider credential nor an unavailable selected model triggers a silent
+substitute; the invocation reports the failure.
+
+At server configuration initialization, an explicitly saved server-data `.env`
+selection of `gemini-3.1-flash-tts-preview`, `gemini-2.5-flash-tts`, or
+`gemini-2.5-pro-tts` is durably rewritten to `gemini-3.8-flash-tts`, preserving
+unrelated assignments. A write/verification failure blocks startup instead
+of running with an unregistered old choice. If the same retired value is
+inherited from the process environment, startup instead requires the operator
+to update that external configuration; it does not rewrite the caller's
+environment or create a compatibility alias. This is an assignment-file
+transition, not a database or vault migration.
+
 `MEDIA_OPERATION_TIMEOUT_MS` is a separate capability-policy setting for
 future `generate_image` invocations; it does not affect model selection.
