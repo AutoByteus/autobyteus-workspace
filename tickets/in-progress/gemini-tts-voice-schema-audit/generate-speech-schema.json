@@ -1,0 +1,110 @@
+{
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "description": "Verbatim text to speak. In multi-speaker mode, each turn is a separate 'Speaker: utterance' line matching speaker_mapping; optional turn_styles follows that order."
+    },
+    "output_file_path": {
+      "type": "string",
+      "description": "Required local output path; use .wav for Gemini. Existing workspace/absolute path policy applies."
+    },
+    "generation_config": {
+      "type": "object",
+      "description": "Model-specific parameters for configured Gemini 3.8 TTS; configured default model/runtime remains authoritative.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "single-speaker",
+            "multi-speaker"
+          ],
+          "default": "single-speaker",
+          "description": "Single voice or existing up-to-two-prebuilt-speaker dialogue."
+        },
+        "voice_name": {
+          "type": "string",
+          "default": "Kore",
+          "pattern": "^\\S(?:[\\s\\S]*\\S)?$",
+          "description": "Single-speaker prebuilt/Extended Google voice ID, forwarded unchanged. Featured choices (not exhaustive): Zephyr, Puck, Charon, Kore, Fenrir, Leda, Orus, Aoede, Callirrhoe, Autonoe, Enceladus, Iapetus, Umbriel, Algieba, Despina, Erinome, Algenib, Rasalgethi, Laomedeia, Achernar, Alnilam, Schedar, Gacrux, Pulcherrima, Achird, Zubenelgenubi, Vindemiatrix, Sadachbia, Sadaltager, Sulafat. Tested addition: ar-001-advisor-1 (Authoritative Advisor 1, ar-001; generation verified on Vertex Express, not Arabic quality). Other supplied IDs are not pre-verified; provider may reject them. No custom lifecycle promise."
+        },
+        "style_instructions": {
+          "type": "string",
+          "description": "Optional global delivery instructions, separate from transcript; fallback for turns without a nonempty override."
+        },
+        "speaker_mapping": {
+          "type": "array",
+          "description": "Required in multi-speaker mode: one or two unique speakers matching prompt labels. Existing featured prebuilt voices only.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "speaker": {
+                "type": "string",
+                "description": "Exact speaker label used before the first colon in dialogue lines."
+              },
+              "voice": {
+                "type": "string",
+                "enum": [
+                  "Zephyr",
+                  "Puck",
+                  "Charon",
+                  "Kore",
+                  "Fenrir",
+                  "Leda",
+                  "Orus",
+                  "Aoede",
+                  "Callirrhoe",
+                  "Autonoe",
+                  "Enceladus",
+                  "Iapetus",
+                  "Umbriel",
+                  "Algieba",
+                  "Despina",
+                  "Erinome",
+                  "Algenib",
+                  "Rasalgethi",
+                  "Laomedeia",
+                  "Achernar",
+                  "Alnilam",
+                  "Schedar",
+                  "Gacrux",
+                  "Pulcherrima",
+                  "Achird",
+                  "Zubenelgenubi",
+                  "Vindemiatrix",
+                  "Sadachbia",
+                  "Sadaltager",
+                  "Sulafat"
+                ],
+                "description": "Featured prebuilt dialogue voice; this constraint is distinct from single-speaker voice_name."
+              }
+            },
+            "required": [
+              "speaker",
+              "voice"
+            ]
+          }
+        },
+        "turn_styles": {
+          "type": "array",
+          "description": "Optional multi-speaker-only ordered style entries, exactly one per parsed dialogue line. Nonempty string overrides global style; null or empty/whitespace inherits it. Wrong count/type fails before generation. Omit array to use global style for all turns.",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "required": []
+    }
+  },
+  "required": [
+    "prompt",
+    "output_file_path"
+  ]
+}
