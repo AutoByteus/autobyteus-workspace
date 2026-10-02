@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { createRequire } from "node:module";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -254,6 +255,12 @@ describe("Run projection tool-call GraphQL e2e", () => {
     query: string,
     variables?: Record<string, unknown>,
   ): Promise<T> => {
+    // These fixtures seed disk directly after beforeEach deletes the prior package.
+    // Publish the complete current package as production run creation does; the
+    // process-level readiness snapshot deliberately does not rescan on every read.
+    if (typeof variables?.runId === "string") {
+      await new RootRunPackageReadinessIndex(memoryDir).admitCurrent("agent", variables.runId);
+    }
     const result = await graphql({
       schema,
       source: query,

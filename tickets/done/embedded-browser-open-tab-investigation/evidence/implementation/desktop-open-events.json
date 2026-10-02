@@ -1,0 +1,68 @@
+[
+  {
+    "id": "rt_1790962302951_6cb175f8-40c0-4cbe-bcac-44e9d0800fd4",
+    "ts": 1790962302.951,
+    "turn_id": "eafb9343-46e9-4372-b380-dbdc8551e315",
+    "seq": 4,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-eafb9343-46e9-4372-b380-dbdc8551e315-4",
+    "tool_args": {
+      "reuse_existing": false,
+      "url": "https://example.com/?autobyteus-implementation=IR001"
+    }
+  },
+  {
+    "id": "rt_1790962303518_80c41fbc-fe15-40fa-840e-a46b0b07119b",
+    "ts": 1790962303.518,
+    "turn_id": "eafb9343-46e9-4372-b380-dbdc8551e315",
+    "seq": 5,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-eafb9343-46e9-4372-b380-dbdc8551e315-4",
+    "tool_result": {
+      "tab_id": "9a16eb",
+      "status": "opened",
+      "url": "https://example.com/?autobyteus-implementation=IR001",
+      "title": "Example Domain"
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790962381116_f321a7b7-59c5-44ac-9481-26a32a193872",
+    "ts": 1790962381.116,
+    "turn_id": "a19d1160-543b-409f-b477-4f556f86db1b",
+    "seq": 2,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-a19d1160-543b-409f-b477-4f556f86db1b-8",
+    "tool_args": {
+      "reuse_existing": false,
+      "url": "https://example.com/?autobyteus-implementation=IR001-repeat"
+    }
+  },
+  {
+    "id": "rt_1790962381606_3d324972-b24f-40ef-9d4d-916085ef38f1",
+    "ts": 1790962381.606,
+    "turn_id": "a19d1160-543b-409f-b477-4f556f86db1b",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-a19d1160-543b-409f-b477-4f556f86db1b-8",
+    "tool_result": {
+      "tab_id": "f23a11",
+      "status": "opened",
+      "url": "https://example.com/?autobyteus-implementation=IR001-repeat",
+      "title": "Example Domain"
+    },
+    "tool_error": null
+  }
+]

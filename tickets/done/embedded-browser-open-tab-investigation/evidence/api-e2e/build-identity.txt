@@ -1,0 +1,2 @@
+38b97a8cefb1184b0500248e117258958307e6019e8614fc581be6f0fa0ec35b  autobyteus-server-ts/dist/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js
+38b97a8cefb1184b0500248e117258958307e6019e8614fc581be6f0fa0ec35b  autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js

@@ -1,0 +1,131 @@
+[
+  {
+    "id": "rt_1790963195539_43ab95de-b763-4adf-918f-7fee7a24c3c5",
+    "ts": 1790963195.539,
+    "turn_id": "2568050e-f61b-47f6-b265-287e3daa058c",
+    "seq": 2,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "view_file",
+    "tool_call_id": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-2",
+    "tool_args": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/open_tab.json"
+    }
+  },
+  {
+    "id": "rt_1790963195540_fcab2ba2-9e84-423e-903e-57d7a71052d5",
+    "ts": 1790963195.54,
+    "turn_id": "2568050e-f61b-47f6-b265-287e3daa058c",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "view_file",
+    "tool_call_id": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-2",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": "1 lines, 686 bytes"
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790963199027_3cdd5f91-6f63-41b0-bdec-390ac29656d6",
+    "ts": 1790963199.027,
+    "turn_id": "2568050e-f61b-47f6-b265-287e3daa058c",
+    "seq": 4,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-4",
+    "tool_args": {
+      "reuse_existing": false,
+      "url": "http://127.0.0.1:60426/first"
+    }
+  },
+  {
+    "id": "rt_1790963199157_b0a61895-74f1-4341-86a1-6ca222a80e59",
+    "ts": 1790963199.157,
+    "turn_id": "2568050e-f61b-47f6-b265-287e3daa058c",
+    "seq": 5,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-2568050e-f61b-47f6-b265-287e3daa058c-4",
+    "tool_result": {
+      "tab_id": "c4cffe",
+      "status": "opened",
+      "url": "http://127.0.0.1:60426/first",
+      "title": "API-E2E Browser Proof"
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790963297363_9b167ad9-3dcc-466c-a8e6-4e2a93aa4235",
+    "ts": 1790963297.363,
+    "turn_id": "1062f709-8f27-4e50-aab6-a4655c72dd84",
+    "seq": 2,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-1062f709-8f27-4e50-aab6-a4655c72dd84-8",
+    "tool_args": {
+      "reuse_existing": false,
+      "url": "http://127.0.0.1:60426/second"
+    }
+  },
+  {
+    "id": "rt_1790963297465_7a60fd39-ee9c-40ac-a292-86d2d34aff1c",
+    "ts": 1790963297.465,
+    "turn_id": "1062f709-8f27-4e50-aab6-a4655c72dd84",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-1062f709-8f27-4e50-aab6-a4655c72dd84-8",
+    "tool_result": {
+      "tab_id": "874f12",
+      "status": "opened",
+      "url": "http://127.0.0.1:60426/second",
+      "title": "API-E2E Browser Proof"
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790963341581_65c4b92e-16cc-42a7-854e-91769048887e",
+    "ts": 1790963341.581,
+    "turn_id": "5a68162f-8ca7-4f49-8aa8-ce215eb0a6dc",
+    "seq": 2,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-5a68162f-8ca7-4f49-8aa8-ce215eb0a6dc-12",
+    "tool_args": {
+      "reuse_existing": false,
+      "url": "http://127.0.0.1:60426/third"
+    }
+  },
+  {
+    "id": "rt_1790963341684_5bed1e9d-c7ad-4fb3-ad6a-5f2d3c88a3f3",
+    "ts": 1790963341.684,
+    "turn_id": "5a68162f-8ca7-4f49-8aa8-ce215eb0a6dc",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-5a68162f-8ca7-4f49-8aa8-ce215eb0a6dc-12",
+    "tool_result": {
+      "tab_id": "2a801b",
+      "status": "opened",
+      "url": "http://127.0.0.1:60426/third",
+      "title": "API-E2E Browser Proof"
+    },
+    "tool_error": null
+  }
+]

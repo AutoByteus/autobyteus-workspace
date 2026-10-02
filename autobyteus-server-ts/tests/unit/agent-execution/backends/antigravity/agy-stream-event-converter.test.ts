@@ -361,6 +361,77 @@ describe("AGY canonical stream conversion", () => {
     const toolFields = (event: { payload: Record<string, unknown> } | undefined) =>
       ({ tool_name: event?.payload.tool_name, arguments: event?.payload.arguments, invocation_id: event?.payload.invocation_id });
 
+    describe("AutoByteus open_tab result contract", () => {
+      const parameters = { ServerName: "autobyteus_agent_tools", ToolName: "open_tab",
+        Arguments: { url: "about:blank", reuse_existing: false } };
+      const result = { tab_id: "c1c04e", status: "opened", url: "about:blank", title: "Probe" };
+
+      it.each([
+        ["object", result],
+        ["JSON text", JSON.stringify(result)],
+        ["structured content", { structuredContent: result }],
+        ["MCP text content", { content: [{ type: "text", text: JSON.stringify(result) }] }],
+        ["reused tab", { ...result, status: "reused" }],
+      ])("emits canonical %s with unchanged identity and exactly one start/terminal", (_label, output) => {
+        const converter = start();
+        const active = mcpStep(6, "ACTIVE", parameters);
+        const done = mcpStep(6, "DONE", parameters, { output });
+        const events = [...converter.convert(active), ...converter.convert(active), ...converter.convert(done)];
+        expect(events.map((event) => event.eventType)).toEqual([
+          AgentRunEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+        ]);
+        expect(events[0]?.payload).toEqual({ turn_id: "turn", invocation_id: "agy-tool-turn-6",
+          tool_name: "open_tab", arguments: parameters.Arguments });
+        expect(events[1]).toEqual({ eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+          runId: "run", statusHint: null, payload: { ...events[0]?.payload, provider_state: "DONE",
+            result: { ...result, status: _label === "reused tab" ? "reused" : "opened" } } });
+        expect(converter.convert(done)).toEqual([]);
+        expect(converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } })
+          .map((event) => event.eventType)).toEqual([AgentRunEventType.TURN_COMPLETED]);
+      });
+
+      it.each([null, undefined, "not JSON", { status: "opened" }])(
+        "does not fabricate a tab identity for output %j", (output) => {
+          const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+          try {
+            const events = start().convert(mcpStep(6, "DONE", parameters, { output }));
+            expect(events.at(-1)?.payload.result).toEqual(output ?? null);
+            expect(events.at(-1)?.payload.provider_state).toBe("DONE");
+          } finally { warn.mockRestore(); }
+        });
+
+      it.each([
+        ["ERROR", "navigation failed", AgentRunEventType.TOOL_EXECUTION_FAILED],
+        ["DONE", "navigation failed", AgentRunEventType.TOOL_EXECUTION_FAILED],
+        ["ERROR", "permission denied", AgentRunEventType.TOOL_DENIED],
+        ["DONE", "permission denied", AgentRunEventType.TOOL_DENIED],
+      ])("preserves %s with explicit %s instead of canonicalizing success", (state, error, eventType) => {
+        const events = start().convert(mcpStep(6, state, parameters, { output: JSON.stringify(result), error }));
+        expect(events.map((event) => event.eventType)).toEqual([AgentRunEventType.TOOL_EXECUTION_STARTED, eventType]);
+        expect(events.at(-1)?.payload).toEqual({ ...events[0]?.payload, provider_state: state,
+          error, reason: error, result: { provider_state: state, output: result } });
+        expect(events.at(-1)?.statusHint).toBe("ERROR");
+      });
+
+      it.each([
+        ["third-party open_tab", { ...parameters, ServerName: "other" }, "mcp__other__open_tab"],
+        ["other browser tool", { ...parameters, ToolName: "navigate_to" }, "navigate_to"],
+        ["non-browser MCP tool", { ...parameters, ToolName: "delegate_task" }, "delegate_task"],
+        ["incomplete MCP identity", { ToolName: "open_tab" }, "call_mcp_tool"],
+      ])("preserves the generic envelope for %s", (_label, args, toolName) => {
+        const events = start().convert(mcpStep(6, "DONE", args, { output: result }));
+        expect(events.at(-1)?.payload.tool_name).toBe(toolName);
+        expect(events.at(-1)?.payload.result).toEqual({ provider_state: "DONE", output: result });
+      });
+
+      it("does not normalize a native tool named open_tab", () => {
+        const message = mcpStep(6, "DONE", parameters, { output: JSON.stringify(result) });
+        message.step_update.tool_name = "open_tab";
+        const events = start().convert(message);
+        expect(events.at(-1)?.payload.result).toEqual({ provider_state: "DONE", output: JSON.stringify(result) });
+      });
+    });
+
     it("presents an AutoByteus agent tool under its bare name and own arguments on start and success", () => {
       const converter = start();
       const parameters = { Arguments: { description: "Do the work", recipient_address: "/worker" },

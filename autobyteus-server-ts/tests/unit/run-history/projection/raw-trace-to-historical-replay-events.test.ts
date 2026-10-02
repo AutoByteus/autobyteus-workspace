@@ -75,6 +75,25 @@ describe("raw trace to historical replay events", () => {
     });
   });
 
+  it("preserves historical AGY envelopes and canonical open_tab results as opaque payloads", () => {
+    const canonical = { tab_id: "c1c04e", status: "opened", url: "about:blank", title: "Probe" };
+    const results = [{ provider_state: "DONE", output: canonical }, canonical];
+    const records = results.flatMap((toolResult, index) => [
+      { traceType: "tool_call", toolCallId: `open-${index}`, toolName: "open_tab",
+        toolArgs: { url: "about:blank" }, turnId: "turn", seq: index * 2 + 1, ts: index * 2 + 1 },
+      { traceType: "tool_result", toolCallId: `open-${index}`, toolResult,
+        turnId: "turn", seq: index * 2 + 2, ts: index * 2 + 2 },
+    ]);
+    const original = JSON.stringify(records);
+    const events = buildHistoricalReplayEvents(records);
+    expect(events).toHaveLength(2);
+    results.forEach((toolResult, index) => {
+      expect(events[index]).toMatchObject({ kind: "tool", invocationId: `open-${index}`,
+        toolName: "open_tab", toolResult, status: "success" });
+    });
+    expect(JSON.stringify(records)).toBe(original);
+  });
+
   it("restores an AGY provider ERROR denial as denied without changing generic error mapping", () => {
     const events = buildHistoricalReplayEvents([
       { traceType: "tool_call", toolCallId: "agy-denied", toolName: "run_command", toolArgs: {}, turnId: "turn", seq: 1, ts: 1 },

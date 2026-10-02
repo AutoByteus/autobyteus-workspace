@@ -170,7 +170,8 @@ tool on the run-scoped AutoByteus Agent Tools server keeps its bare canonical
 name (for example `send_message_to` or `delegate_task`), as in other runtimes;
 a tool on any other MCP server is named `mcp__<server>__<tool>`. The event's
 arguments are the wrapper's `Arguments` only (empty when absent), identical on
-the start and terminal events. The result keeps `{ provider_state, output }`;
+the start and terminal events. Except for successful AutoByteus `open_tab`
+(described below), the result keeps `{ provider_state, output }`;
 output text that is a JSON object or array is presented as structured JSON,
 and any other output is unchanged. A wrapper without a non-blank `ServerName`
 and `ToolName` is presented as AGY reported it (`call_mcp_tool` with the
@@ -178,6 +179,24 @@ provider parameters). Native image handling is decided from the provider's
 tool name, so an MCP tool named `generate_image` is never treated as AGY's
 native image tool. Runs recorded before this behavior keep their stored
 `call_mcp_tool` presentation.
+
+For a successful `open_tab` projected from `autobyteus_agent_tools`, the
+converter passes the projected MCP output through the shared
+`normalizeBrowserMcpToolResult` and emits that canonical result directly:
+`result.tab_id`, not `result.output.tab_id`. Event-level `provider_state: DONE`,
+invocation/turn identity and event ordering are preserved. This lets the
+existing eligible embedded-window handler focus the returned local session and
+select Browser; it does not change shell leases or remote/unavailable-shell
+suppression. Native tools named `open_tab`, third-party MCP tools, other browser
+tools and failure/denial paths retain their existing behavior. Missing output
+does not manufacture a tab identity.
+
+This is producer-side contract normalization, not renderer envelope parsing or
+browser-session recovery. Existing nested historical results remain opaque and
+readable without rewriting stored traces; reopening a saved run does not replay
+browser focus. No cookie/session reset or migration is required. See
+[Browser Sessions](../../../autobyteus-web/docs/browser_sessions.md#antigravity)
+for the presentation boundary.
 
 AGY turns have no idle timeout. A turn ends only on AGY `result`, AGY process
 exit/error or a stream protocol violation, or user Stop/Terminate; the 60 s

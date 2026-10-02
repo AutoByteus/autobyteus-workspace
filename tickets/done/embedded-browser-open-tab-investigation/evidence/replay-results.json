@@ -1,0 +1,114 @@
+{
+  "scope": "Diagnostic boundary replay, not full Electron E2E; UI/IPC and manager doubles",
+  "productionRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation",
+  "cases": 11,
+  "results": [
+    {
+      "label": "Exact recorded incident 51da23",
+      "calls": [],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Same payload, canonical result only 51da23",
+      "calls": [
+        [
+          "focus",
+          "51da23"
+        ],
+        [
+          "select",
+          "browser"
+        ]
+      ],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Exact recorded incident 15ee0d",
+      "calls": [],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Same payload, canonical result only 15ee0d",
+      "calls": [
+        [
+          "focus",
+          "15ee0d"
+        ],
+        [
+          "select",
+          "browser"
+        ]
+      ],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Production AGY converter -> renderer handler",
+      "calls": [],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Canonical object control",
+      "calls": [
+        [
+          "focus",
+          "probe1"
+        ],
+        [
+          "select",
+          "browser"
+        ]
+      ],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Canonical JSON string control",
+      "calls": [
+        [
+          "focus",
+          "probe1"
+        ],
+        [
+          "select",
+          "browser"
+        ]
+      ],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Remote window preserves suppression",
+      "calls": [],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Unavailable browser preserves suppression",
+      "calls": [],
+      "assertion": "PASS"
+    },
+    {
+      "label": "Native session upsert alone does not attach to shell",
+      "snapshot": {
+        "activeTabId": null,
+        "sessions": []
+      },
+      "assertion": "PASS"
+    },
+    {
+      "label": "Explicit focus attaches session to shell snapshot",
+      "snapshot": {
+        "activeTabId": "probe1",
+        "sessions": [
+          {
+            "tab_id": "probe1",
+            "title": "Harmless probe",
+            "url": "about:blank",
+            "deviceEmulation": {
+              "mode": "desktop",
+              "profile": null
+            }
+          }
+        ]
+      },
+      "assertion": "PASS"
+    }
+  ]
+}

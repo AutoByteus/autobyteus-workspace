@@ -1,0 +1,31 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts --run
+
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web
+
+stderr | services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts (6 tests) 4ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  19:25:43
+   Duration  6.98s (transform 3.23s, setup 6.35s, collect 13ms, tests 4ms, environment 239ms, prepare 164ms)
