@@ -2,7 +2,7 @@
 
 ## Status
 
-- State: **User-verified 2026-10-02** ("finalize, no need to release thanks"). Being finalized into `origin/personal`; no release (DR-002). Before finalization the ticket branch was re-integrated with `origin/personal` @ `e8b0e95da` (13 new commits: agent-initiated collaborators and the `1.4.92-beta.8` bump) as `195be2e27`. No ticket files overlapped, the merge was clean, and the full check set re-passed with identical counts. See release-deployment-report.md.
+- State: **Delivered (DR-002).** User-verified 2026-10-02 ("finalize, no need to release thanks"). Finalized into `origin/personal` @ `6b67749d3` by fast-forward; no release. Worktree and local branch cleaned up. Before finalization the ticket branch was re-integrated with `origin/personal` @ `e8b0e95da` (13 new commits: agent-initiated collaborators and the `1.4.92-beta.8` bump) as `195be2e27`. No ticket files overlapped, the merge was clean, and the full check set re-passed with identical counts. See release-deployment-report.md.
 - History: DR-001 held for verification at `593baccad` (base `314b5a976`).
 - Classification (preserved): task_size `Medium`, architectural_risk `High`, reviewed route.
 - Approved baseline: requirements `SR-001` (approved 2026-10-01), design `SR-002`.
@@ -21,10 +21,10 @@
 
 ## Branch / Integration State
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve`
-- Branch: `codex/agy-linked-skills-always-auto-approve` (local only; not pushed)
-- Commits: `e5edfafdf` (implementation) → `993ac7a3c` (delivery checkpoint: API/E2E durable tests + review artifacts) → `593baccad` (merge of `origin/personal` @ `314b5a976`, 15 new base commits; clean, no conflicts)
-- Finalization target: `origin/personal`
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve` (removed after finalization)
+- Branch: `codex/agy-linked-skills-always-auto-approve`. Pushed to origin and kept there; the local branch was deleted.
+- Commits: `e5edfafdf` (implementation) → `993ac7a3c` (delivery checkpoint: API/E2E durable tests and review artifacts) → `593baccad` (merge of `origin/personal` @ `314b5a976`, 15 base commits) → `8c1606c1e` (DR-001 delivery artifacts) → `195be2e27` (merge of `origin/personal` @ `e8b0e95da`, 13 base commits) → `6b67749d3` (ticket archive). All merges were clean.
+- Finalization target: `origin/personal`, fast-forwarded `e8b0e95da..6b67749d3`.
 - Excluded from commits: untracked SDK build output `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/`.
 
 ## Post-Integration Verification (on `593baccad`)
