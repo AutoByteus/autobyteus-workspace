@@ -1,0 +1,14 @@
+{
+  "input": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-package-inventory.json",
+  "referencesChecked": 346,
+  "missing": [],
+  "mismatches": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-revision-record.md",
+      "expected": "c091f1763f15ca7cd0aff2d7659cd2ada2b4938349289d185241021dd8d3a21b",
+      "actual": "3b8cb3a310d7812cbebdec0aed3f71f8b05c30f1401d4489376d2a2030be143f",
+      "disposition": "Expected as-of CRR-001 snapshot; CRR-002 appended by incoming reviewer"
+    }
+  ],
+  "unexpectedMismatches": 0
+}

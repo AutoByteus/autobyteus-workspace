@@ -21,13 +21,13 @@ The primary actors and capabilities within the system.
 *   **[Agent Orgs](./docs/agent_orgs.md)**: Composing direct Agents and reusable flat Teams into coordinator-free organizations.
 *   **[Skills](./docs/skills.md)**: Reusable, file-based capabilities (scripts) that agents can learn.
 *   **[Tools & MCP](./docs/tools_and_mcp.md)**: External tools and the Model Context Protocol (MCP) integration for expanding agent capabilities.
-*   **[Prompt Engineering](./docs/prompt_engineering.md)**: Managing the system prompts that define agent personas and behaviors.
+*   **[Prompt Engineering](../autobyteus-server-ts/docs/modules/prompt_engineering.md)**: Managing the system prompts that define agent personas and behaviors.
 
 ### Chapter 3: Interface & Environment (The "Body")
 The tools and environments where agents live and users interact.
 
 *   **[File Explorer](./docs/file_explorer.md)**: The file system interface, workspace management, and real-time synchronization.
-*   **[Projects](./docs/projects.md)**: Node-scoped Projects behind the `ENABLE_PROJECTS` capability: named containers with described links to registered workspaces and description-only Project Tasks shown on a three-column board.
+*   **[Projects](./docs/projects.md)**: Node-scoped Projects behind the `ENABLE_PROJECTS` capability: named containers with aggregate workspace links, durable Task text/context, read-only status on a continuous three-column board, manual Refresh, and separately selected agent status tools.
 *   **[Terminal](./docs/terminal.md)**: The integrated terminal emulator for executing system commands.
 *   **[Content Rendering](./docs/content_rendering.md)**: How the system displays rich content like Markdown, Code, and Mermaid diagrams.
 *   **[Settings](./docs/settings.md)**: Application configuration, API key management, and system monitoring.

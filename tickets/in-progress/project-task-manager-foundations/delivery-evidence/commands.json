@@ -1,0 +1,16 @@
+{
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+  "integratedHead": "a5123e7d08f66bbb08440340db167fa4ccb5eba0",
+  "commands": {
+    "shared-prepare.log": "pnpm -C autobyteus-server-ts prepare:shared",
+    "server-integrated.log": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects tests/unit/agent-tools/project-tasks tests/unit/context-files tests/unit/startup/agent-tool-loader.test.ts tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts tests/architecture/projects-boundaries.test.ts tests/e2e/projects tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch",
+    "renderer-integrated.log": "pnpm -C autobyteus-web test:nuxt stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts composables/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts tests/integration/voice-input-extension.integration.test.ts --run",
+    "voice-fixture-isolated-rerun.log": "pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.integration.test.ts --run"
+  },
+  "exitCodes": {
+    "shared-prepare.log": 0,
+    "server-integrated.log": 0,
+    "renderer-integrated.log": 1,
+    "voice-fixture-isolated-rerun.log": 0
+  }
+}
