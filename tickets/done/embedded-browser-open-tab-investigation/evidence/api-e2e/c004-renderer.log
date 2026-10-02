@@ -1,0 +1,33 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web
+
+stderr | services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/web-boundary-guard.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/web-boundary-guard.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts (6 tests) 3ms
+ ✓ tests/integration/web-boundary-guard.integration.test.ts (3 tests) 116ms
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  19:44:30
+   Duration  6.19s (transform 3.40s, setup 10.91s, collect 26ms, tests 120ms, environment 472ms, prepare 284ms)

@@ -1,0 +1,14 @@
+
+> autobyteus@1.4.92-beta.9 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web
+> vitest --config ./electron/vitest.config.ts electron/browser/__tests__/browser-shell-controller.spec.ts electron/browser/__tests__/browser-tab-manager.spec.ts --run
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/embedded-browser-open-tab-investigation/autobyteus-web/electron
+
+ ✓ browser/__tests__/browser-shell-controller.spec.ts (8 tests) 7ms
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 76ms
+
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+   Start at  19:44:37
+   Duration  437ms (transform 150ms, setup 0ms, collect 212ms, tests 82ms, environment 0ms, prepare 124ms)

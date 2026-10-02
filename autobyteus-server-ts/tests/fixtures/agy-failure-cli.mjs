@@ -128,7 +128,21 @@ if (arg === "--version") {
         writeFileSync(imagePath, "fake image bytes");
         step(7, "DONE", "call_mcp_tool", generate, { output: JSON.stringify({ file_path: imagePath }) });
       }
-      reply(8, "MCP_DONE");
+      // Browser contract regression: only successful own-MCP open_tab becomes canonical.
+      const browser = { tab_id: "browser-7318", status: "opened", url: "about:blank", title: "AGY probe" };
+      const open = { Arguments: { url: "about:blank", reuse_existing: false },
+        ServerName: "autobyteus_agent_tools", ToolName: "open_tab" };
+      call(8, "call_mcp_tool", open, "DONE", { output: JSON.stringify(browser) });
+      call(9, "call_mcp_tool", { ...open, Arguments: { url: "about:blank", reuse_existing: true } }, "DONE",
+        { output: { content: [{ type: "text", text: JSON.stringify({ ...browser, status: "reused" }) }] } });
+      call(10, "call_mcp_tool", { ...open, ServerName: "shape-test" }, "DONE", { output: browser });
+      call(11, "open_tab", { url: "about:blank" }, "DONE", { output: browser });
+      call(12, "call_mcp_tool", { Arguments: {}, ServerName: "autobyteus_agent_tools", ToolName: "list_tabs" },
+        "DONE", { output: { tabs: [browser] } });
+      call(13, "call_mcp_tool", open, "ERROR",
+        { output: null, error: { message: "BROWSER-PROBE: navigation failed" } });
+      call(14, "call_mcp_tool", open, "DONE", { output: null });
+      reply(15, "MCP_DONE");
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "MCP_DONE" } });
     } else if (imageDone) {
       const base = { conversation_id, step_index: 1, step_type: "tool", tool_name: "generate_image" };

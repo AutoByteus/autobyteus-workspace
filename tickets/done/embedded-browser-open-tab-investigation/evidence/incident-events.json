@@ -1,0 +1,44 @@
+[
+  {
+    "id": "rt_1790956737522_9873aca6-9eb4-42eb-8422-6580921b2f37",
+    "ts": 1790956737.522,
+    "turn_id": "79c497ca-60ba-49b8-bb92-19fdb744a5fb",
+    "seq": 11,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-79c497ca-60ba-49b8-bb92-19fdb744a5fb-79",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": {
+        "tab_id": "51da23",
+        "status": "opened",
+        "url": "https://ceac.state.gov/genniv/",
+        "title": "Just a moment..."
+      }
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790957231641_fae85022-ae03-4f76-9f96-32f7c65f0ede",
+    "ts": 1790957231.641,
+    "turn_id": "522e1b6e-a029-407e-9715-08d355a67be6",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-522e1b6e-a029-407e-9715-08d355a67be6-152",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": {
+        "tab_id": "15ee0d",
+        "status": "opened",
+        "url": "https://ceac.state.gov/genniv/",
+        "title": "Nonimmigrant Visa - Instructions Page"
+      }
+    },
+    "tool_error": null
+  }
+]

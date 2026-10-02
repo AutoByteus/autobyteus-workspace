@@ -1,3 +1,5 @@
+import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
+import { OPEN_TAB_TOOL_NAME } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { projectAgyMcpToolCall, projectAgyMcpToolOutput } from "./agy-mcp-tool-call.js";
 import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-message.js";
@@ -129,7 +131,11 @@ export class AgyStreamEventConverter {
       }));
     } else {
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
-        ...common, result: { provider_state: "DONE", output }, provider_state: "DONE",
+        ...common,
+        result: mcpCall?.toolName === OPEN_TAB_TOOL_NAME
+          ? normalizeBrowserMcpToolResult(OPEN_TAB_TOOL_NAME, output)
+          : { provider_state: "DONE", output },
+        provider_state: "DONE",
       }));
     }
     return events;

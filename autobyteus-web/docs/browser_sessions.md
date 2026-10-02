@@ -89,7 +89,7 @@ The server owns:
 - stable browser tool contract
 - input parsing and semantic validation
 - browser tool manifest
-- runtime-specific tool projection for Codex and Claude
+- runtime-specific tool projection for Codex, Claude and Antigravity
 - runtime-specific browser tool event canonicalization before streaming
 - bridge client dispatch through `BrowserToolService`
 
@@ -336,6 +336,21 @@ prefix and known stable browser tool names.
 Unknown browser-like suffixes and tools from other MCP servers must remain raw so the converter does not rewrite unrelated MCP traffic.
 Conversation tool cards, Activity rows, and Browser-shell focus handling consume the backend-provided canonical event contract; they should not strip MCP prefixes or parse Claude MCP result envelopes as presentation logic.
 
+### Antigravity
+
+Antigravity reports MCP calls through `call_mcp_tool`. Calls whose
+`ServerName` is `autobyteus_agent_tools` are projected to their bare tool name.
+For successful `open_tab` only, the converter applies the shared browser result
+normalizer to the MCP output, exposing `result.tab_id` directly rather than
+nesting it under the generic AGY `result.output` envelope. Provider state remains
+event metadata. This lets the existing eligible embedded-window handler focus
+the returned session and select Browser.
+
+Native tools, third-party MCP calls, other tool results, failures and denials
+retain their existing representation. Remote/unavailable-shell guards and
+window session ownership are unchanged. Existing history is not rewritten and
+old sessions are not automatically attached by replaying saved results.
+
 ## OAuth / Social Login Limits
 
 Popup support removes the old in-app popup block, which is why popup-driven login flows such as X -> Google can now progress inside Browser tabs.
@@ -362,6 +377,18 @@ Browser changes should keep all of these green:
 - Claude browser unit suites
 - live Codex browser integration scenarios
 - live Claude browser integration scenarios
+- AGY converter and MCP transport regressions for canonical own-server
+  `open_tab`, preserved native/third-party/error cases and opaque saved history
+
+For AGY `open_tab` presentation changes, also validate a corrected worktree-built
+isolated desktop with a real AGY run: request a harmless page from Activity,
+confirm automatic Browser selection, correlate the returned `tab_id` with the
+active shell session, and verify native page content with positive viewport
+bounds. Repeat from Activity without manually focusing Browser or injecting
+results. Reopen saved history and verify exact results without replayed focus.
+Backend success or assignment while the tools panel is collapsed is not, by
+itself, evidence that the page was visible. Follow the workspace
+[testing guideline](../../TESTING.md) and clean up only test-owned instances.
 
 Electron browser lifecycle regression coverage should explicitly protect:
 
