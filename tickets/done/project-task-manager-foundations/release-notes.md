@@ -1,7 +1,9 @@
-# Project Task Manager Foundations — Repository Handoff Notes
+# Project Task Manager Foundations — Beta Scope Notes
 
-Status: prepared before integrated user verification; **not published**, no new
-version/tag/release or deployment requested. Feature remains experimental/default-off.
+Status: prepared before integrated verification in DR-002; user now accepted and
+requested a new beta. Publication pending. Beta script uses generated GitHub notes;
+this archived artifact retains feature scope/residuals, not a claimed script input.
+Feature remains experimental/default-off.
 
 ## Changes
 - Exactly three selected node-local native/Agent Tools MCP tools: list_projects,
@@ -34,7 +36,9 @@ No current full web checker/build/package Pass. Previous packaged typed/detail/
 external-native-write→Refresh proof is pre-integration only. Original intermittent
 install cause UNPROVEN; raw failures/whitespace/OOM history retained.
 
-Repository finalization is pending explicit integrated acceptance. Separate
-release/publication/deployment is not required for this repository-only handoff;
-if requested later, use documented release flow and archived notes, not this
-file as authorization or a fabricated rollout result.
+User accepted integrated evidence and authorized finalization/new beta on2026-10-02.
+Latest target merged seven unrelated AGY/browser/version commits without changing
+Projects/composer/voice contracts; current Delivery server150/renderer135/Electron9
+and server build passed. Full web checker/hardware limitations remain. Publication
+and rollout authority is release-deployment-report.md; no installed client/default
+change is implied by a GitHub beta release.

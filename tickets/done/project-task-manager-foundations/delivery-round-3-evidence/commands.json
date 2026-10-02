@@ -1,0 +1,59 @@
+[
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts prepare:shared",
+    "log": "shared-prepare.log",
+    "exitCode": 0,
+    "elapsedSeconds": 4.45,
+    "completedAt": "2026-10-02T19:11:59.335472+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts build",
+    "log": "server-build.log",
+    "exitCode": 0,
+    "elapsedSeconds": 14.617,
+    "completedAt": "2026-10-02T19:12:13.954031+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects tests/unit/agent-tools/project-tasks tests/unit/context-files tests/unit/startup/agent-tool-loader.test.ts tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts tests/architecture/projects-boundaries.test.ts tests/e2e/projects tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch",
+    "log": "server-current-serial.log",
+    "exitCode": 0,
+    "elapsedSeconds": 21.92,
+    "completedAt": "2026-10-02T19:12:35.874539+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts composables/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts tests/integration/voice-input-extension.integration.test.ts components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts components/agentInput/__tests__/TeamComposerPublication.spec.ts utils/collaborators/__tests__/collaboratorMentionText.spec.ts --run",
+    "log": "renderer-current.log",
+    "exitCode": 0,
+    "elapsedSeconds": 12.941,
+    "completedAt": "2026-10-02T19:12:48.816345+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:electron electron/__tests__/preload.spec.ts electron/extensions/__tests__/voiceInputRuntimeService.spec.ts electron/extensions/__tests__/managedExtensionService.spec.ts electron/extensions/__tests__/extensionCatalog.spec.ts --run",
+    "log": "electron-current.log",
+    "exitCode": 0,
+    "elapsedSeconds": 2.874,
+    "completedAt": "2026-10-02T19:12:51.690951+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/antigravity/agy-stream-event-converter.test.ts tests/unit/run-history/raw-trace-to-historical-replay-events.test.ts --no-watch",
+    "log": "upstream-agy-smoke.log",
+    "exitCode": 1,
+    "elapsedSeconds": 0.439,
+    "completedAt": "2026-10-02T19:12:52.130906+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts --no-watch",
+    "log": "upstream-agy-smoke-corrected.log",
+    "exitCode": 0,
+    "elapsedSeconds": 1.372,
+    "completedAt": "2026-10-02T19:13:13.226936+00:00",
+    "priorAttempt": "upstream-agy-smoke.log: Delivery harness supplied nonexistent paths; no tests executed. Corrected to paths observed in git diff; no source/test correction."
+  }
+]

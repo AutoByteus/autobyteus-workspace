@@ -1,0 +1,6 @@
+{
+  "capturedAt": "2026-10-02T19:12:17.105330+00:00",
+  "head": "2056b04f3b654ffe583aa956c371869f7d06444d",
+  "status": " M tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md\n M tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md\n M tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md\n?? .article-work/\n?? applications/brief-studio/dist/\n?? applications/socratic-math-teacher/dist/\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? tickets/done/chat-composer-menus-open-upward/solution-designer-terminal-receipt.md\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/finalization-receipt.json\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-failed.log\n?? tickets/done/embedded-browser-open-tab-investigation/evidence/delivery/ios-retry.md\n",
+  "policy": "Unrelated main workspace changes remain untouched; finalization in separate clean clone."
+}
