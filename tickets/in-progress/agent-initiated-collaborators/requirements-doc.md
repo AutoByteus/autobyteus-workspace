@@ -1,7 +1,9 @@
 # Requirements Document — agent-initiated-collaborators
 
 ## Document Status
-- Status: **Approved** (SR-005, 2026-10-01). REQ-003 and AC-003 were narrowed with the user's approval: the user said
+- Status: **Approved** (SR-007, 2026-10-01). It adds REQ-012 and AC-013 (copy placement by address), approved by the user:
+  "approve. i trust your suggestion", after the Solution Designer's recommendation following CRR-005 DI-01.
+- Earlier status: Approved (SR-005). REQ-003 and AC-003 were narrowed with the user's approval: the user said
   "…you can almost like assume I will never do that… please continue", after the Solution Designer proposed the narrower
   REQ-003.
 - Earlier approval: SR-002.
@@ -118,6 +120,15 @@ Blocking findings must trace to these REQ/AC/preserved IDs.
   - follow up on a copy by run ID.
 - **REQ-010: Same outcome as `@`.** A user `@` and an agent bring-in of the same definition produce and reuse the same
   single collaborator instance.
+- **REQ-012: Copy placement by address** (all run types). A task copy is recorded and shown inside the delegator's own
+  team instance whose address is the copy address's parent; otherwise at the top level of the run.
+  - A copy of a teammate stays inside its team instance.
+  - A copy of a top-level address (a catalog agent or team, a collaborator, or an Org-level configured placement) is
+    placed at the top level.
+  - The delegator is still recorded. "Started by …" stays in the accessible label only (predecessor REQ-009).
+  - **Behavior change, approved:** in Org and standalone runs, copies used to be placed under the delegator's host.
+    A mounted-team member's copy of an Org-level agent now appears at the Org top level.
+  - Existing stored runs keep their recorded placement.
 - **REQ-011: Visible in the UI.** Agent-initiated collaborators and copies appear like user-added ones: rows under the run,
   Team/Org tab messages, "From <Sender>:".
 
@@ -145,6 +156,14 @@ Blocking findings must trace to these REQ/AC/preserved IDs.
 - **AC-009 (REQ-009):** The prompt and tool descriptions carry the new wording on every runtime.
 - **AC-010 (REQ-010):** `@` after an agent bring-in, and an agent bring-in after `@`, both reuse one instance.
 - **AC-011 (REQ-011):** The UI shows agent-initiated collaborators and copies, as in the predecessor visuals.
+- **AC-013 (REQ-012):**
+  - In an Org, a mounted-team member's `delegate_task("/marketing_team")` is recorded in `rootOrg.taskExecutions` and
+    shown at the Org top level. The delegator is recorded (`delegatorAgentRunId`) and "Started by <delegator>" stays in
+    the row's accessible label only, per the predecessor's REQ-009 (no visible line).
+  - The same member's copy of its own teammate stays under its team.
+  - Equivalent placements hold in Team and standalone runs (a collaborator-team member delegating a top-level address
+    → top level).
+  - Existing stored copies open where they were recorded.
 - **AC-012 (preserved):** `@`, configured messaging, Org configured handoffs, delegated-copy lifecycle and existing history
   are unchanged.
 
@@ -189,6 +208,7 @@ Blocking findings must trace to these REQ/AC/preserved IDs.
 - REQ-009→AC-009
 - REQ-010→AC-010
 - REQ-011→AC-011
+- REQ-012→AC-013
 
 ## Architecture Phase Input
 - A persisted source for catalog copies.

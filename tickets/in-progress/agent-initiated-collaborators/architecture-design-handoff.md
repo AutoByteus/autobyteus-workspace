@@ -44,3 +44,7 @@ Large/High → `/software_engineering_team/architecture_reviewer`.
 - SR-004 (ARCH-REV-001 response) delivered to /software_engineering_team/architecture_reviewer on 2026-10-01.
 - SR-005 (REQ-003 narrowed; AR-005 resolved) delivered to /software_engineering_team/architecture_reviewer on 2026-10-01.
 - ARCH-REV-003 Pass on SR-005 recorded 2026-10-01; implementation handoff delivered by the reviewer.
+- SR-006 (CRR-003 CR-001 design revision; CR-002 carried) delivered to /software_engineering_team/architecture_reviewer on 2026-10-01.
+- ARCH-REV-004 Pass on SR-006 recorded 2026-10-01; implementation handoff delivered by the reviewer.
+- SR-007 (REQ-012 copy placement; CRR-005 DI-01) delivered to /software_engineering_team/architecture_reviewer on 2026-10-01.
+- ARCH-REV-005 Pass on SR-007 recorded 2026-10-01; implementation handoff delivered by the reviewer.

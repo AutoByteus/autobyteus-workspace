@@ -5,16 +5,19 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/requirements-doc.md` (Approved SR-005; REQ-003/AC-003 narrowed with user approval)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/investigation-notes.md` (E-01–E-12)
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/design-spec.md` (SR-005)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/design-spec.md` (SR-007)
 - Supplemental Task Artifacts Reviewed: the predecessor's approved UI/UX spec, reused unchanged: `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/cross-scope-agent-mentions-sr008/ui-ux-spec.md` (VIS-001–015).
-- Relevant Solution Revision IDs: SR-001, SR-002 (requirements approved), SR-003 (design), SR-004 (answers ARCH-REV-001), SR-005 (REQ-003 narrowed; bindings removed)
+- Relevant Solution Revision IDs: SR-001, SR-002 (requirements approved), SR-003 (design), SR-004 (answers ARCH-REV-001), SR-005 (REQ-003 narrowed; bindings removed), SR-006 (member collaboration scope, CRR-003 CR-001), SR-007 (copy placement by address, CRR-005 DI-01; REQ-012/AC-013 approved)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: SR-005 revised package answering ARCH-REV-002 (AR-005). It includes a user-approved narrowing of REQ-003/AC-003 and the reclassification of P-001.
-- Prior Review Round Reviewed: Round 2 (`ARCH-REV-002`, Fail)
-- Latest Authoritative Round: 3
-- Round 2 additional evidence: `agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts:17-19` ("The package is created lazily: the first tree commit … writes the messages file, then the tree, and then records the catalog flag. A run that never has a collaborator never gets a package."); web `WorkspaceHistoryWorkspaceSection.vue:178` and `runTreeProjection.ts:273` read `hasCollaboration`.
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: SR-007, for code review CRR-005 DI-01 (Org catalog copy nested under the delegator's team). It includes a user-approved REQ-012/AC-013.
+- Prior Review Round Reviewed: Round 4 (`ARCH-REV-004`, Pass on SR-006)
+- Latest Authoritative Round: 5
+- Round 5 additional evidence:
+  - CRR-005 DI-01 row (`agent-org-task-execution-adapter.ts:86` → `requireAgent(delegator).host`);
+  - investigation notes E-14;
+  - Team root `team-execution-scope-resolver.ts#resolveTargetOwner` (deepest-first containing ancestor whose address is the target's parent, else `/`; read in the predecessor review and unchanged).
 - Current-State Evidence Basis: worktree `codex/agent-initiated-collaborators` @ `84224a58d`. Code read:
   - `collaborator-address-allocator.ts` (first-free slug, order-dependent);
   - `collaborator-candidate-policy.ts` (`inRunDefinitionIds` returns definition IDs only; the `@` exclusions);
@@ -29,7 +32,7 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed`. Under SR-005, REQ-003 requires deterministic, collision-distinct addresses, and an unknown address returns the normal not-found. Listing never writes.
+- Overall Basis Status: `Confirmed`. Under SR-005, REQ-003 requires deterministic, collision-distinct addresses, and an unknown address returns the normal not-found. Listing never writes. SR-006 adds the member-scope invariant that REQ-007, AC-005 and AC-007 already require.
 - Approved intent understood:
   - an opt-in discovery tool with the same eligibility as `@`;
   - `send_message_to(address)` reaches the one instance at that address and brings it in on first use, with the same admission as `@`;
@@ -148,6 +151,44 @@ Pass for the map, staleness under collision, instance-relative resolution, bring
 
 - Reachability: `Not Reachable`; this is an unsupported version path, as in the predecessor. Residual only.
 
+## Member Collaboration Scope Review (SR-006, CR-001)
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| One owner, used by all roots at construction and at restore | Pass | `resolveMemberCollaborationScope` (pure). The three per-root special cases are removed (Removal plan row). |
+| Rule 1: a non-root team-instance member gets the hosting instance's handoffs and team instruction | Pass | Every TeamRun is prepared from exactly one source: a configured or mounted node, a collaborator entry, or a task source / catalog `source`. |
+| Org preserved behavior (AC-012) | Pass | Mounted Team runs carry the Org-wide handoffs today, so `from`-filtering inside the instance yields today's edges, cross-placement ones included. The instruction remains the mounted team definition's. Direct Agents, and copies at their address, keep the Org scope (rule 2). |
+| Team-root preserved behavior | Pass | Configured members, and task copies at their address, keep the root scope (rule 2). |
+| Catalog Agent copy in a Team root gets no root-team instruction (CR-001) | Pass | Rule 3 |
+| `teamScoped` unchanged | Pass | The predecessor's AR-003 rule |
+| Tests | Pass | Every rule, live on Claude plus one other runtime; see the notes below |
+
+Implementation notes (non-blocking):
+- The hosting-team facts must be optional in `resolveMemberCollaborationScope`, because root-hosted agents (Org/Agent `rootAgents`) have no hosting TeamRun. Rules 2–3 apply to them.
+- Add two tests to the CR-001 set:
+  - an Org **mounted configured** team member's cross-placement Org handoffs (to non-team placements) and its team instruction are unchanged (AC-012);
+  - a catalog team copy's members keep their own handoffs after Stop → reopen → message (restore path).
+
+Review note: CRR-003 correctly records CR-001 as partly a gap in this review's round 1. The SR-003 file mapping omitted the member-context builders, and this review did not trace member scope for catalog copies. This round traced it for every copy kind and root.
+
+## Copy Placement Review (SR-007, DI-01, REQ-012)
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Approved basis | Pass | REQ-012/AC-013 added with the user's approval ("approve. i trust your suggestion"); the Org and standalone behavior change is approved. Stored runs keep their placement. |
+| One owner across roots | Pass | `resolveTaskCopyHost` in `agent-collaboration/execution/task/task-copy-host.ts`, generalized from the Team root rule. It replaces `requireAgent(delegator).host` in the Org and Agent-root adapters. |
+| Instance-correctness | Pass | The deepest-first walk matches the delegator's **own** instance first. A member of an Org copy of `/se` delegating to `/se/impl` is hosted by its copy's TeamRun, not the mounted `/se`, which is consistent with REQ-007. |
+| Team-root regression | Pass | Same rule as `resolveTargetOwner`; a test is listed |
+| Root-hosted copies supported in the Org and Agent root | Pass | Existing `hostKind: "root"` paths (`rootAgents.prepareTask`, `teams.prepareRootTaskTeam`) already serve copies started by root-level agents |
+| Independence from member scope and resolution | Pass | CR-001 rule 2 is by address (a configured root placement or a copy at it) and rule 3 is the default. REQ-007 resolution is sender-instance based. Neither depends on the copy's host. |
+| Persisted data | Pass | `Directly Usable — No Migration`. Readers accept task executions at the root and under teams; restore uses the recorded host. A restore test of a pre-existing nested copy is listed. |
+| Lifetime | Pass | Root-hosted copies live with the root; idle shutdown is per copy. A copy no longer shares its delegator team's TeamRun lifetime, which is the intended DI-01 correction. |
+
+Implementation notes (non-blocking):
+- Root-hosted delegators (Org/Agent `rootAgents`, the Agent-root host) have no containing team ancestors, so the walk returns the root.
+- If an adapter re-checks the host at commit (as the Team adapter does with `expectedHost`), it must use the same owner.
+- AC-013's "shown … with 'Started by <delegator>'" must follow the predecessor's REQ-009/VIS-006/009: the starter goes in the row's **accessible label**. No visible "Started by" line is reintroduced.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
@@ -158,20 +199,9 @@ None.
 
 ## Findings
 
-None open. The resolution of each finding is in `architecture-review-revision-record.md` under ARCH-REV-003.
+None open. DI-01 (code review) is addressed by the design. CR-001 and CR-002 remain resolved. Earlier architecture findings stay as recorded in ARCH-REV-003/004.
 
-- AR-001: Obsolete. REQ-003 was narrowed with the user's approval and P-001 is reclassified as unsupported; the bindings are removed.
-- AR-002: Resolved (SR-004), retained.
-- AR-003: Resolved (SR-004), retained.
-- AR-004: Resolved (SR-004).
-- AR-005: Obsolete. Listing never writes.
-
-Non-blocking wording cleanup, forwarded to implementation:
-- Three phrases in `design-spec.md` still mention the removed stale-address behavior:
-  - the BEH-002 row ("stale ⇒ not found");
-  - Key Tradeoffs ("stale-safe");
-  - the address-map test line ("stale detection").
-- Under SR-005 these mean only that an unknown address returns the normal not-found. No stale-detection machinery is to be built.
+Non-blocking wording cleanup, still open from SR-005: the leftover "stale" phrases in `design-spec.md` mean only that an unknown address returns not-found.
 
 ## Classification
 
@@ -183,16 +213,14 @@ N/A (Pass).
 
 ## Residual Risks
 
-- Admission inside delivery holds the root gate during `validateMany` and one tree write on the first message. This is acceptable and once per collaborator.
-- If a mid-run rename, unshare or reuse of a listed name ever happens (unsupported, P-001), a call may reach the definition that currently owns the slug. This is accepted by the user.
-- Live exposure of the context-bound opt-in tool through MCP on AGY and ACP is unverified. This is an escalation trigger.
-- The REQ-007 Org behavior change is user-approved and documented.
-- Prompt and wording regressions are covered by snapshot tests.
-- A downgrade ignores `source` (P-003), which is unsupported.
+- Admission inside delivery holds the root gate during `validateMany` and one tree write on the first message.
+- Unsupported mid-run catalog name reuse (P-001) is accepted by the user.
+- The REQ-007 and REQ-012 Org behavior changes are user-approved. A mounted member's copy of another Org-level address (for example `/coordinator`) now appears at the Org top level.
+- A downgrade ignores `source`, which is unsupported.
 - D-1 and D-2 are deferred refactors.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. P-001 is reclassified as Unsupported and drives nothing. P-002 and P-004 are resolved. P-003 is Not Reachable.
-- Notes: the SR-005 package is ready for implementation from `84224a58d`.
+- Material-Premise Gate: `Pass`. The DI-01 scenario (a mounted Team member delegates a listed catalog team, SC-002/UC-003) is Supported Normal and live-evidenced. No new premises.
+- Notes: the SR-007 package is ready for implementation from `f8ea65289`.

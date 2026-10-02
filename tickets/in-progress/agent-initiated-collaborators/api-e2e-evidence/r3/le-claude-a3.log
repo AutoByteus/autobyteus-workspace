@@ -1,0 +1,372 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:97177) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T20:52:41.018Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-2Kl24c/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Populating agent definition cache for the first time...
+[2026-10-01T20:52:41.492Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+[2026-10-01T20:52:41.499Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-lead-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-lead-c9391c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-mate-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-mate-c9391c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[2026-10-01T20:52:42.584Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Team Definition created successfully with ID: aic-squad-c9391c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-echo-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-echo-c9391c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-pm-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-pm-c9391c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Created and registered workspace ID: agent_ws_2626c3f02e20bfdf8fceac793821bbac97966e83d9af6e38090ffa7ef1a4a864
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_2626c3f02e20bfdf8fceac793821bbac97966e83d9af6e38090ffa7ef1a4a864
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_pm_c9391c_2528ca1579d745fca308439d4ebaa860'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent websocket attached for run aic_pm_c9391c_2528ca1579d745fca308439d4ebaa860
+Created agent session 8ee962b2-aa86-49b4-8cf8-75f72968d7ce for run aic_pm_c9391c_2528ca1579d745fca308439d4ebaa860
+Agent WebSocket connected: session=8ee962b2-aa86-49b4-8cf8-75f72968d7ce, run=aic_pm_c9391c_2528ca1579d745fca308439d4ebaa860
+
+(node:97177) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_2626c3f02e20bfdf8fceac793821bbac97966e83d9af6e38090ffa7ef1a4a864
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_lead_c9391c_a7851be668934612a03b4b6f1336f700'.
+
+(node:97177) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_2626c3f02e20bfdf8fceac793821bbac97966e83d9af6e38090ffa7ef1a4a864
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_mate_c9391c_673b3812bd2c4282808fc43b4a48016c'.
+
+(node:97177) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_2626c3f02e20bfdf8fceac793821bbac97966e83d9af6e38090ffa7ef1a4a864
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_echo_c9391c_73e3da7697674056ad52564e386a509c'.
+
+(node:97177) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-FoP3iS.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_2626c3f02e20bfdf8fceac793821bbac97966e83d9af6e38090ffa7ef1a4a864
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_mate_c9391c_7883b3ac0fe54c088c48dabcff3fb2ad'.
+
+(node:97177) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Closed agent session 8ee962b2-aa86-49b4-8cf8-75f72968d7ce
+Agent WebSocket disconnected: 8ee962b2-aa86-49b4-8cf8-75f72968d7ce
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[2026-10-01T20:53:13.072Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Team Definition with ID aic-squad-c9391c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-lead-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-lead-c9391c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-mate-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-mate-c9391c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-echo-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-echo-c9391c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-pm-c9391c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-pm-c9391c deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (30 tests | 29 skipped) 32141ms
+     ✓ claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop  31605ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 29 skipped (30)
+   Start at  22:52:34
+   Duration  38.75s (transform 4.58s, setup 16ms, import 6.11s, tests 32.14s, environment 0ms)
+

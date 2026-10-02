@@ -1,0 +1,4 @@
+L01 Pass Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run
+L02 Pass Host crash without collaborators: Archive succeeds and the lingering root is ended
+Summary: 2 Pass, 0 Fail, 0 Not Applicable
+exit 0

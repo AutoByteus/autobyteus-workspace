@@ -1,8 +1,8 @@
 # Design Spec — agent-initiated-collaborators
 
 ## Solution And Approval Basis
-- **Current solution revision ID:** `SR-005`. It revises SR-004 after the user narrowed REQ-003 (SR-005) and for
-  ARCH-REV-002 (AR-005). The requirements basis is `SR-005`.
+- **Current solution revision ID:** `SR-007`. It revises SR-006 for CRR-005 DI-01 (copy placement). The requirements
+  basis is `SR-007` (adds REQ-012 and AC-013, user-approved).
 - **Approved requirements:** `requirements-doc.md` (Approved, SR-002). The user said "all clear right? then i approve"
   (2026-10-01).
 - **Supplements:** none new. The UI reuses the predecessor's approved VIS-001–015
@@ -210,7 +210,7 @@ Nothing is kept as a wrapper.
 | --- | --- |
 | DS-001 | The tool handler resolves the sender's root from its member context and asks the root for available agents. The root builds its `CollaboratorRootPort` and calls `policy.listEligible`: the same kind exclusions as `@`, but in-run definitions are kept and marked with their in-run address. Every other entry gets `CatalogAddressMap.addressFor(definitionId)`. In-run entries are listed once, at the address chosen by the in-run precedence (AR-002). **No write of any kind** (AR-005). |
 | DS-002 | Under the root gate, `MessageRecipientResolution` tries, in order: the sender's own team instance (deepest first, skipping the root `/`); the run-wide index; then a catalog hit, where `CatalogAddressMap.definitionFor(address)` names an eligible definition; otherwise the normal not found. A sender-instance prefix match never falls through (AR-003). For a catalog hit it calls `CollaboratorAdmission.ensure(…, senderRunId)` through a gate-internal variant (no re-acquire). That validates runnability, allocates identities, commits one tree write and hosts Offline handles, after which the address resolves run-wide to the new instance. Delivery then proceeds unchanged, and the first message starts it. Admission failure: `COLLABORATOR_ADD_FAILED`, with nothing written or delivered. |
-| DS-003 | Placement order: configured, collaborator, catalog. A catalog placement builds a source snapshot with `CollaboratorEntryBuilder` (no identities) and the root launch configuration. The lifecycle's adapter prepares the copy from the placement's source (agent: `prepareTaskAgent`; team: `taskTeams.create`, then `prepareTaskTeam` with the source handoffs). The tree write records the task execution with `source`. On restore, the per-root task source resolver uses the record's `source` first, then configured or collaborator. The host rule is unchanged. |
+| DS-003 | Placement order: configured, collaborator, catalog. A catalog placement builds a source snapshot with `CollaboratorEntryBuilder` (no identities) and the root launch configuration. The lifecycle's adapter prepares the copy from the placement's source (agent: `prepareTaskAgent`; team: `taskTeams.create`, then `prepareTaskTeam` with the source handoffs). The tree write records the task execution with `source`. On restore, the per-root task source resolver uses the record's `source` first, then configured or collaborator. The host is chosen by `resolveTaskCopyHost` (REQ-012, see Copy Placement By Address). |
 | DS-004 | The exposure builder adds `list_available_agents` when the definition's `toolNames` include it and a member context exists (eligible runs only). MCP adapter provider: `list-available-agents-mcp-adapter-provider.ts`. Prompt and tool descriptions are updated in one shared contract module. |
 | DS-005 | Task-copy DTOs carry the optional `source`. `agentSourceSelectors` resolves a copy's definition and settings from `source` when present. Rows and contexts render as for other task copies. |
 
@@ -248,6 +248,8 @@ Nothing is kept as a wrapper.
 | `CollaboratorMentionAdmission.admit` combined ensure-plus-compose | `CollaboratorAdmission.ensure` plus note composition at the `@` call sites | In This Change |
 | Per-root inline resolution order (`getMessagePlacement` call sites in resolvers) | Shared `MessageRecipientResolution` with root index ports | In This Change |
 | "Already existing" wording in tool and prompt text | New wording | In This Change |
+| Delegator-host placement in the Org and Agent-root adapters (`requireAgent(delegator).host`) | `resolveTaskCopyHost` (DI-01) | In This Change |
+| Per-root member-scope special cases (`collaboratorMemberScope` and the `scope` override in `member-team-context-builder.ts`; `agentOrgHandoffs` / `resolveFreshInstruction` branching in the Org scope builder; `collaboratorOf` in the Agent-root builder) | `resolveMemberCollaborationScope` (CR-001) | In This Change |
 
 ## Return Or Event Spine(s)
 `collaborator_added` (existing) is emitted for agent-initiated adds as well. `task_execution_started` (existing) carries
@@ -266,6 +268,98 @@ Nothing is kept as a wrapper.
 | Description text for list entries | DS-001 | From the definition's description (Team: its description) |
 | Hash suffix | `CatalogAddressMap` | `base_<6 lowercase hex of sha256(definitionId)>`, applied to every colliding definition |
 | Localization | Web | None new (tool cards are generic) |
+
+## Member Collaboration Scope (CR-001)
+
+**Invariant:** a member's collaboration scope (its outgoing handoff rules and its authored enclosing instruction) comes
+from **the authored unit its placement belongs to**. That unit is decided by **one owner**, used by all three roots for
+every member at construction and at restore.
+
+- **Owner:** `agent-collaboration/execution/domain/member-instance-scope.ts` → `resolveMemberCollaborationScope(input)`.
+  It is pure.
+- **Inputs:**
+  - the member's address;
+  - its hosting TeamRun's scope facts (`{address, teamDefinitionId, handoffs}`, taken from the hosting TeamRun's context);
+  - the root's scope facts (`{rootKind, configuredRootAddresses, rootHandoffs, rootDefinitionKind/id}`).
+- **Rule, applied in order:**
+  1. **Member of a non-root team instance.** The member's parent address equals the hosting TeamRun's address, and that
+     address is not `/`. The member gets **that instance's** handoffs (filtered by `from === memberAddress`) and that
+     instance's team-definition instruction.
+     - The hosting TeamRun's context is the single source of truth, because every team instance is prepared from exactly
+       one source:
+       - a configured or mounted team node;
+       - a collaborator entry;
+       - a task copy's source: the copied placement's source, or the recorded `source` for catalog copies.
+     - This covers configured and mounted teams, collaborator teams, ordinary team copies and **catalog team copies**.
+  2. **Root-level member at a configured root placement.** This is a Team root's configured member, or an Org's direct
+     Agent, **or a task copy at that same address**. It gets the **root** scope: root handoffs filtered by
+     `from === memberAddress`, plus the root definition's instruction (the root Team's or the Org's).
+  3. **Anything else.** A collaborator Agent, a **catalog Agent copy** (in any root, including a Team root), any member of
+     an Agent root that is not inside a team instance, or an agent hosted by a team it is not a member of (for example a
+     copy delegated by a team member to a root-level address). It gets the **standalone scope**: no handoffs, no enclosing
+     instruction.
+     - **A catalog Agent copy in a Team root gets no root-team instruction** (as requested in CR-001).
+- **`teamScoped`** (`get_handoff_rules` exposure) is unchanged from the predecessor's AR-003 rule. It is true for Team and
+  Org root members and for members of any team instance. It is false for the Agent-root host and for agents directly
+  under an Agent root.
+- **Instruction freshness:** as for existing collaborator teams, the team or Org definition's instruction is read from the
+  current definition on a fresh start, and on restore the existing restore behavior applies unchanged.
+- **Call sites, all replaced by the owner:**
+  - Team root: `member-team-context-builder.ts` (`scope` override, `collaboratorMemberScope`), `team-flat-execution-callbacks.ts`,
+    `flat-team-execution-callbacks.ts`, `team-root-materializer.ts`.
+  - Org root: `agent-org-execution-scope-builder.ts` (`agentOrgHandoffs`, `resolveFreshInstruction`, the instance branch).
+  - Agent root: `agent-run-collaboration-root-builder.ts#buildChildContext` (`collaboratorOf`).
+  - The hosting TeamRun's facts reach the builders through the existing member-context callback, as the `hostTeam`
+    argument.
+- **Note to implementation:** the uncommitted worktree change (`member-instance-scope.ts`, `memberInstanceScope`, edits
+  in the three builders) already follows rule 1. It must be completed to rules 2–3, and the per-root special cases above
+  must be removed in favor of the owner.
+
+## Copy Placement By Address (DI-01, REQ-012)
+
+**Rule:** one shared, pure owner, `resolveTaskCopyHost(index, delegatorAgentRunId, targetAddress)`, moved from the Team
+root's `TeamExecutionScopeResolver.resolveTargetOwner` into `agent-collaboration/execution/task/task-copy-host.ts`. It is
+used by all three task adapters.
+- Walk the delegator's containing team instances, deepest first (`listTeamAncestorsDeepestFirst`). The host is the first
+  instance whose address equals `getParentAgentTeamAddress(targetAddress)`.
+- If there is none, the host is the root.
+- The result is `{hostKind: "root"}` or `{hostKind: "team", hostRunId}`.
+
+**Evidence (investigation notes, E-14):**
+- Org (`agent-org-task-execution-adapter.ts:86`) and Agent-root (`agent-run-collaboration-task-execution-adapter.ts:92`)
+  adapters use `requireAgent(delegator).host`.
+- The Team root uses the address rule.
+- The Org rule's only recorded basis is "stored at exact delegator host" (flat-agent-organization-model design-spec,
+  line 5449), chosen when only configured targets existed.
+
+**What placement affects:**
+- the persisted record location (`rootOrg.taskExecutions` versus a team's `taskExecutions`);
+- the physical memory path of new copies;
+- UI nesting.
+
+**What it does not affect:**
+- lifetime: mounted teams and root-hosted copies live with the root, and idle shutdown is per copy;
+- member scope: owned by the CR-001 resolver;
+- address resolution (REQ-007).
+
+**Persisted data:** `Directly Usable — No Migration`. Existing copies keep their recorded host. Readers already accept
+task executions at the root and under any team, and restore uses the recorded host.
+
+**Call sites:**
+- `team-execution-scope-resolver.ts`: becomes a thin use of the shared owner, or is removed;
+- `agent-org-task-execution-adapter.ts`: activation host selection;
+- `agent-run-collaboration-task-execution-adapter.ts`: activation host selection.
+
+The restore paths are unchanged.
+
+**Tests:**
+- Org: a mounted-team member's catalog `/marketing_team` copy → `rootOrg.taskExecutions` with the delegator recorded;
+  its teammate copy → under its team; the `/coordinator` copy from inside a mounted team → root. The UI row is at the
+  top level; "Started by" is in the accessible label only.
+- Agent root: a collaborator-team member delegating `/computer_use_agent` → root.
+- Team root: unchanged (regression).
+- A pre-existing stored copy under a team restores in place.
+- API/E2E LE-O1 placement assertion.
 
 ## Ownership Boundaries
 - Only roots write trees.
@@ -370,6 +464,7 @@ entry's definition fields without identities. No overlap: it never appears on co
 | File | Change |
 | --- | --- |
 | `services/collaborators/agentSourceSelectors.ts` | A task copy's `source` is the first source |
+| `services/teamExecution/teamExecutionTreeSelectors.ts#projectNavigationRows` | **CR-002 (Local Fix):** format the names of a catalog copy (a team with `source`) and its members with the shared display-name formatter, as for collaborators and as the Agent and Org roots already do (evidence `api-e2e-evidence/desktop/DT-04`, `DT-05` vs `DO-04`) |
 | Team, Org and Agent-root view indexes, hydration | Pass `source` through |
 
 ## Applied Patterns
@@ -451,4 +546,13 @@ Tests:
 - **`list_available_agents`:** exposure only when selected, on every runtime. Output shape. Exclusions equal to `@`.
   In-run addresses.
 - **Wording:** snapshots of the prompt and tool descriptions on every runtime.
-- **Web:** a catalog copy's rows and context come from `source`.
+- **Member scope (CR-001), in Team, Org and Agent roots, live on Claude plus one other runtime:**
+  - a catalog team copy's members get the source team's handoffs and team instruction; the copy's lead follows its
+    handoff to its own mate;
+  - parallel copies each use their own;
+  - a catalog Agent copy in a Team root gets no handoffs and **no root-team instruction**;
+  - a collaborator Agent gets the standalone scope;
+  - a configured member's task copy keeps the root scope;
+  - Org direct agents keep the Org instruction;
+  - unit tests of `resolveMemberCollaborationScope`, covering every rule.
+- **Web:** a catalog copy's rows and context come from `source`; CR-002 formatted names for Team-root catalog copies.

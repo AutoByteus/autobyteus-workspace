@@ -1,0 +1,49 @@
+
+> @autobyteus/team-stream-contracts@0.1.0 test /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-team-stream-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/team-stream-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-team-stream-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: SEND_MESSAGE accepts optional mentions
+ok 1 - SEND_MESSAGE accepts optional mentions
+  ---
+  duration_ms: 1.8935
+  type: 'test'
+  ...
+# Subtest: the Team tree carries collaborators and COLLABORATOR_ADDED carries one entry
+ok 2 - the Team tree carries collaborators and COLLABORATOR_ADDED carries one entry
+  ---
+  duration_ms: 2.335125
+  type: 'test'
+  ...
+# Subtest: validates and preserves the exact cumulative summary on a team token event
+ok 3 - validates and preserves the exact cumulative summary on a team token event
+  ---
+  duration_ms: 4.084416
+  type: 'test'
+  ...
+# Subtest: requires a non-negative safe-integer report generation
+ok 4 - requires a non-negative safe-integer report generation
+  ---
+  duration_ms: 0.639083
+  type: 'test'
+  ...
+# Subtest: team stream carries background-task snapshots with execution identity and rejects to-do messages
+ok 5 - team stream carries background-task snapshots with execution identity and rejects to-do messages
+  ---
+  duration_ms: 0.404833
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 99.306083
+exit 0

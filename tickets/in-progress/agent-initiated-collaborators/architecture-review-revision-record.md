@@ -9,6 +9,8 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-001 | Round 1 / initial review of SR-003 | SR-002, SR-003 | N/A | Fail | AR-001, AR-002, AR-003, AR-004 |
 | ARCH-REV-002 | Round 2 / SR-004 answers ARCH-REV-001 | SR-004 | Fail | Fail | AR-001–AR-004 resolved; AR-005 new |
 | ARCH-REV-003 | Round 3 / SR-005: REQ-003 narrowed (user), bindings removed | SR-005 | Fail | Pass | AR-001 obsolete, AR-005 obsolete; AR-002–AR-004 retained as resolved |
+| ARCH-REV-004 | Round 4 / SR-006 for CRR-003 CR-001 (member scope) | SR-006 | Pass | Pass | None new (CR-001 from code review addressed) |
+| ARCH-REV-005 | Round 5 / SR-007 for CRR-005 DI-01 (copy placement) | SR-007 | Pass | Pass | None new (DI-01 from code review addressed) |
 
 ## Revision Entries
 
@@ -100,3 +102,67 @@ None.
   - the REQ-007 Org change (approved);
   - unsupported mid-run catalog reuse (accepted);
   - downgrade (unsupported).
+
+### ARCH-REV-004 — SR-006: one owner for member collaboration scope; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/design-review-report.md`
+- Review round and trigger: Round 4. SR-006 is a design revision for code review CRR-003 (CR-001 Design Impact, user-directed; CR-002 Local Fix), after API/E2E API-REV-001 failed.
+- Triggering role, report path, and finding IDs: `/software_engineering_team/solution_designer`; `code-review-report.md` CR-001 and CR-002; evidence E-13.
+- Relevant solution revision IDs: SR-006 (requirements SR-005 unchanged).
+- Prior authoritative decision: Pass (ARCH-REV-003).
+- Current authoritative decision: Pass.
+- What changed:
+  - The new "Member Collaboration Scope" section was verified: one pure owner and three ordered rules, applied at construction and at restore in all three roots.
+  - The Org and Team-root preserved behavior was confirmed against the committed Org scope builder (Org-wide handoffs on mounted TeamRuns; the team or Org instruction derivation).
+  - CR-001 is acknowledged as partly a round-1 review gap: the member-context builders were absent from the mapping and member scope for catalog copies was not traced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005 | As recorded in ARCH-REV-003 | Unchanged | — | — |
+| CR-001 (code review) | Design Impact | Addressed by design | SR-006 § Member Collaboration Scope; Removal row; tests | Single owner; rules cover configured, mounted, collaborator and catalog copies plus root-level kinds; Org edges preserved |
+
+- New or remaining finding IDs: none.
+- Non-blocking items:
+  - optional host facts for root-hosted agents;
+  - two added tests (Org mounted-member cross-placement handoffs preserved; catalog-copy scope after restore);
+  - the leftover "stale" wording.
+- Material classification changes: none. The classification stays Large/High.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`, then an informational notice to `/software_engineering_team/solution_designer`.
+- Remaining risks or uncertainty:
+  - the gate held during first-message admission;
+  - AGY/ACP MCP exposure;
+  - prompt snapshot changes for catalog Agent copies in Team roots.
+
+### ARCH-REV-005 — SR-007: copy placement by address with one shared owner; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/design-review-report.md`
+- Review round and trigger: Round 5. SR-007 is for code review CRR-005 DI-01 (Design Impact), with REQ-012/AC-013 newly approved by the user.
+- Triggering role, report path, and finding IDs: `/software_engineering_team/solution_designer`; `code-review-report.md` DI-01; evidence E-14.
+- Relevant solution revision IDs: SR-007.
+- Prior authoritative decision: Pass (ARCH-REV-004).
+- Current authoritative decision: Pass.
+- What changed:
+  - Verified `resolveTaskCopyHost` as the single placement owner: deepest-first own instance, else the root.
+  - Confirmed independence from member scope (CR-001 rules) and from REQ-007 resolution, plus the existing root-hosted copy paths, no migration, and the restore of stored nested copies.
+  - DI-01 is partly a gap in this review's rounds 1 and 4: "host rule unchanged" was accepted without testing catalog addresses delegated from inside a mounted Team.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005 | As recorded | Unchanged | — | — |
+| DI-01 (code review) | Design Impact | Addressed by design | SR-007 § Copy Placement By Address; REQ-012/AC-013 | Single owner replaces `requireAgent(delegator).host` at the Org and Agent-root adapter call sites; tests in all three roots plus a stored-copy restore |
+
+- New or remaining finding IDs: none.
+- Non-blocking items:
+  - root-hosted delegators resolve to the root;
+  - any commit-time host recheck uses the same owner;
+  - "Started by" stays in the accessible label only (predecessor REQ-009);
+  - the leftover "stale" wording.
+- Material classification changes: none. The classification stays Large/High.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`, then an informational notice to `/software_engineering_team/solution_designer`.
+- Remaining risks or uncertainty:
+  - the gate held during first-message admission;
+  - the approved Org behavior changes (REQ-007, REQ-012).

@@ -1,0 +1,18 @@
+  · A01 DI-001: coordinator messaged its teammate by its handoff
+A01 Pass UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; send adds the collaborator Offline at once; send_message_to briefing; "From" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion
+A02 Pass AC-006 / AC-016: Stop → reopen → the collaborator shows the briefing as "From Research Assistant:" (replay) and wakes with the same run ID
+A03 Pass AC-006 / AC-016 server restart: rows stored; the host conversation shows "From Code Reviewer:" on replay; a send to the collaborator restores the host
+A04 Pass AC-016: a stored delivery without a recorded sender (an old trace) keeps the user-style presentation; the user message is unchanged
+A05 Pass AC-006 / design AR-001: viewing a stopped run's collaborator (clicking it, or reloading with it selected) does not restore the host; only a send does
+  · T01 DI-001: teammate started (handoff reached it)
+T01 Pass UXJ-001 Team run: VIS-001 menu; send adds the collaborator Team at once, opened, Offline (VIS-015, F-02, F-03); send_message_to briefing; Team tab briefing + report rows; "From Product Prototyper:" (VIS-004); DI-001 handoff; CR-003 next send with a mention (VIS-006); exclusion
+T02 Pass UXJ-002 / VIS-005: the collaborator Team coordinator view starts with "From Researcher:" (no task notice); direct chat
+O01 Pass UXJ-004 Org run: VIS-008 menu; two mentions add an Agent and a Team (Offline at once); send_message_to briefings; "From" reports; Org tab briefing + report rows with formatted names (VIS-009)
+O02 Pass UXJ-004 / VIS-010: the Org collaborator Agent view starts with "From Analyst:"; direct chat
+F01 Not Applicable UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the run's model becomes unavailable (LM Studio host changed in settings); a mention send is refused in standalone, Team and Org runs — notice, draft and chip kept, no message, no row, still offered; the kept draft sends once the host is restored — LM Studio is not reachable on 127.0.0.1:1234
+L01 Not Applicable Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run — host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)
+L02 Not Applicable Host crash without collaborators: Archive succeeds and the lingering root is ended — host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)
+P01 Pass Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`
+N01 Pass AC-013 New chat `@` is still the launch-target picker
+Summary: 11 Pass, 0 Fail, 3 Not Applicable
+exit 0

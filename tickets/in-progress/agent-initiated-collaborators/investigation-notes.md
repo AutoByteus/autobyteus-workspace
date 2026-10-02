@@ -87,6 +87,29 @@
 - **E-12, opt-in tool path.** See E-06 (`publish_artifacts`). The context a tool sees is the sender's
   `MemberExecutionContext`; every eligible run has one (predecessor REQ-012).
 
+- **E-13, member scope (code review CRR-003, CR-001; live evidence `api-e2e-evidence/le-claude-2.log`, `le-claude-3.log`, `le-codex-2.log`, `le-agy.log`).**
+  - Inside a catalog team copy, `get_handoff_rules` returns `[]` and the member gets no team instruction (in a Team root,
+    it gets the root team's instruction).
+  - Each root derives member scope its own way:
+    - `member-team-context-builder.ts#collaboratorMemberScope` uses the root `teamContext` for everyone except
+      collaborators;
+    - `agent-org-execution-scope-builder.ts#agentOrgHandoffs` / `resolveFreshInstruction` cover Org and collaborator
+      handoffs only;
+    - `agent-run-collaboration-root-builder.ts#buildChildContext` (`collaboratorOf`) looks in `collaborators[]` only.
+  - The hosting TeamRun of every team instance is already prepared from its own source (configured node, collaborator
+    entry or task `source`), so its context holds the right handoffs and definition.
+  - An uncommitted worktree change (`member-instance-scope.ts`) started deriving scope from the hosting TeamRun.
+
+- **E-14, copy placement (CRR-005 DI-01; evidence `api-e2e-evidence/desktop/DO-05-org-rows-r2.png`, ledger R2-6).**
+  - Org and Agent-root adapters place copies at `requireAgent(delegator).host`
+    (`agent-org-task-execution-adapter.ts:86`, `agent-run-collaboration-task-execution-adapter.ts:92`).
+  - The Team root places by address (`TeamExecutionScopeResolver.resolveTargetOwner`).
+  - The Org rule's recorded basis is only "Fresh task Team is stored at exact delegator host"
+    (`tickets/done/flat-agent-organization-model/design-spec.md:5449`), from a time when only configured targets
+    existed.
+  - Placement affects the record location, the memory path of new copies and UI nesting. It does not affect lifetime,
+    member scope or address resolution.
+
 ## Open questions (to the user with the requirements)
 - **Q-1:** does `delegate_task` to a catalog address that is not in the run also add the collaborator instance (an
   Offline row), or only the copy? Recommendation: only the copy.

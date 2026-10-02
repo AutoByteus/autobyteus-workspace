@@ -1,0 +1,376 @@
+{
+  "startedAt": "2026-10-01T19:07:42.539Z",
+  "controlPort": "51918",
+  "backend": "http://127.0.0.1:51919",
+  "model": "haiku",
+  "phases": {
+    "D0": {
+      "startedAt": "2026-10-01T19:07:42.582Z",
+      "shots": [
+        "D0-public-package-imported.png",
+        "D0-tool-picker.png"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "public package imported; Project Manager defined with list_available_agents",
+          "details": {
+            "defs": {
+              "productPrototyper": "product-prototyper",
+              "seTeam": "software-engineering-team",
+              "productTeam": "product-team",
+              "marketingTeam": "marketing-team",
+              "researchEngineer": "research-engineer",
+              "pm": "project-manager"
+            },
+            "orgs": [
+              {
+                "id": "autobyteus-org",
+                "name": "AutoByteus Org"
+              },
+              {
+                "id": "northstar-operating-company",
+                "name": "Northstar Operating Company"
+              },
+              {
+                "id": "software-development-department",
+                "name": "Software Development Department"
+              }
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "the tool picker shows list_available_agents on the Project Manager",
+          "details": null
+        }
+      ],
+      "result": "Pass"
+    },
+    "DA": {
+      "startedAt": "2026-10-01T19:08:00.240Z",
+      "model": "haiku",
+      "rows": [
+        "task_team:software engineering team:offline",
+        "task_team_child:SD solution designer:live",
+        "task_team_child:AR architecture reviewer:offline",
+        "task_team_child:IE implementation engineer:offline",
+        "task_team_child:CR code reviewer:offline",
+        "task_team_child:AE api e2e engineer:offline",
+        "task_team_child:DE delivery engineer:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "agent-initiated collaborator Team row under the PM run",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "two catalog-copy rows for Product Team under the PM run",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "one collaborator, added by the PM",
+          "details": {
+            "collaborators": [
+              [
+                "agent_team",
+                "/software_engineering_team",
+                "project_manager_93d744f3708f4aefa467a3869c8797f1"
+              ]
+            ],
+            "copies": [
+              [
+                "/product_team",
+                true
+              ],
+              [
+                "/product_team",
+                true
+              ]
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "two catalog copies with source; no collaborator for Product Team (Q-1)",
+          "details": {
+            "collaborators": [
+              [
+                "agent_team",
+                "/software_engineering_team",
+                "project_manager_93d744f3708f4aefa467a3869c8797f1"
+              ]
+            ],
+            "copies": [
+              [
+                "/product_team",
+                true
+              ],
+              [
+                "/product_team",
+                true
+              ]
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "solution designer view starts \"From Project Manager:\"",
+          "details": [
+            "From Project Manager:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "catalog copy coordinator view renders its task",
+          "details": "PP\nproduct prototyper\nIdle\nYou\nTask delegator address: /project_manager\nTask delegator AgentRun ID: project_manager_93d744f3708f4aefa467a3869c8797f1\n\nDescription:\nReply in one sentence about a login s"
+        },
+        {
+          "ok": true,
+          "label": "@ menu no longer offers the brought-in Software Engineering Team",
+          "details": [
+            "agent-package-creator",
+            "codex",
+            "computer-use-operator",
+            "daily-assistant",
+            "product-prototyper",
+            "research-engineer",
+            "resume-designer",
+            "software-tutorial-video-maker",
+            "article-writing-team",
+            "classroom-simulation-team",
+            "evidence-driven-delivery-team",
+            "kids-coloring-story-team",
+            "kids-picture-story-team",
+            "manga-video-studio-team",
+            "marketing-team",
+            "narrated-presentation-video-team",
+            "product-team",
+            "research-to-deck-team",
+            "software-product-promo-video-team",
+            "storm-team"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Team tab lists the PM's message to the solution designer",
+          "details": [
+            "Message 1. Okt., 21:08 from solution designer Ready to support your software engineering work—please share your request and I'll investigate requirements and produce an architecture design with your approval.",
+            "Message 1. Okt., 21:08 to solution designer Solution designer: reply to me with send_message_to in one short sentence. Text only, no files."
+          ]
+        }
+      ],
+      "shots": [
+        "DA-01-pm-rows.png",
+        "DA-02-solution-designer-view.png",
+        "DA-03-product-team-copy-view.png",
+        "DA-04-pm-team-tab.png"
+      ],
+      "tree": {
+        "collaborators": [
+          [
+            "agent_team",
+            "/software_engineering_team",
+            "project_manager_93d744f3708f4aefa467a3869c8797f1"
+          ]
+        ],
+        "copies": [
+          [
+            "/product_team",
+            true
+          ],
+          [
+            "/product_team",
+            true
+          ]
+        ]
+      },
+      "teamTab": [
+        "Message 1. Okt., 21:08 from solution designer Ready to support your software engineering work—please share your request and I'll investigate requirements and produce an architecture design with your approval.",
+        "Message 1. Okt., 21:08 to solution designer Solution designer: reply to me with send_message_to in one short sentence. Text only, no files."
+      ],
+      "result": "Pass"
+    },
+    "DT": {
+      "startedAt": "2026-10-01T19:08:34.203Z",
+      "model": "haiku",
+      "rows": [
+        "task_team:software engineering team:offline",
+        "task_team_child:SD solution designer:live",
+        "task_team_child:AR architecture reviewer:offline",
+        "task_team_child:IE implementation engineer:offline",
+        "task_team_child:CR code reviewer:offline",
+        "task_team_child:AE api e2e engineer:offline",
+        "task_team_child:DE delivery engineer:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live",
+        "task_agent:PP product prototyper:live",
+        "task_team:marketing team:offline"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "Team root: agent-initiated collaborator row (Product Prototyper)",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_agent:PP product prototyper:live",
+            "task_team:marketing team:offline"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Team root: catalog-copy row (Marketing Team)",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_agent:PP product prototyper:live",
+            "task_team:marketing team:offline"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "F-02: Team-root catalog copy and its members show spaced names",
+          "details": [
+            "task_team:marketing team:Temporary task team, marketing team, level 1, offline, Started by solution_designer, /marketing_team",
+            "task_team_child:MC\nmarketing content creator:Temporary task agent, marketing content creator, level 2, idle, /marketing_team/marketing_content_creator",
+            "task_team_child:CU\ncomputer use operator:Temporary task agent, computer use operator, level 2, offline, /marketing_team/computer_use_operator"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Product Prototyper view starts \"From Solution Designer:\"",
+          "details": [
+            "From Solution Designer:"
+          ]
+        },
+        {
+          "ok": false,
+          "label": "Team tab lists the message to Product Prototyper",
+          "details": []
+        }
+      ],
+      "shots": [
+        "DT-01-team-rows.png",
+        "DT-02-team-copy-names.png",
+        "DT-02b-product-prototyper-view.png",
+        "DT-03-marketing-copy-view.png"
+      ],
+      "rowsExpanded": [
+        "task_team:software engineering team:offline",
+        "task_team_child:SD solution designer:live",
+        "task_team_child:AR architecture reviewer:offline",
+        "task_team_child:IE implementation engineer:offline",
+        "task_team_child:CR code reviewer:offline",
+        "task_team_child:AE api e2e engineer:offline",
+        "task_team_child:DE delivery engineer:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live",
+        "task_agent:PP product prototyper:live",
+        "task_team:marketing team:offline",
+        "task_team_child:MC marketing content creator:live",
+        "task_team_child:CU computer use operator:offline"
+      ],
+      "teamTab": [],
+      "result": "Fail"
+    },
+    "DTtab": {
+      "startedAt": "2026-10-01T19:12:28.144Z",
+      "teamTab": [
+        "Message 1. Okt., 21:08 from product prototyper Ready to work with you on prototyping requirements and designs.",
+        "Message 1. Okt., 21:08 to product prototyper Reply to me with send_message_to in one short sentence. Text only, no files."
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "Team tab (solution designer) lists the message to Product Prototyper",
+          "details": [
+            "Message 1. Okt., 21:08 from product prototyper Ready to work with you on prototyping requirements and designs.",
+            "Message 1. Okt., 21:08 to product prototyper Reply to me with send_message_to in one short sentence. Text only, no files."
+          ]
+        }
+      ],
+      "shots": [
+        "DT-06-team-tab.png"
+      ],
+      "result": "Pass"
+    }
+  },
+  "observations": [],
+  "state_teamRunId": "software_engineering_team_e3de9b7b729b4be98125267e5c31515c",
+  "definitions": {
+    "productPrototyper": "product-prototyper",
+    "seTeam": "software-engineering-team",
+    "productTeam": "product-team",
+    "marketingTeam": "marketing-team",
+    "researchEngineer": "research-engineer"
+  },
+  "pageErrors": []
+}

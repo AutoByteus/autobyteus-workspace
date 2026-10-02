@@ -1,0 +1,26 @@
+  [old-server] /Users/normy/.hermes/node/bin/node /private/tmp/aic-r2old/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 51165 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-old-placement-bzMzUG/server-data
+  … old-server health
+  … org snapshot
+  … old-rule Org copy
+  … org snapshot
+  ✓ round-2 server: the mounted member's top-level copy is stored under its team (old rule)
+  … squad brought in
+  … old-rule Agent-root copy
+  ✓ round-2 server: the collaborator member's top-level copy is stored inside the collaborator team (old rule)
+  [old-server] exited code=0 signal=null
+  [new-server] /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 51165 --data-dir /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-old-placement-bzMzUG/server-data
+  … new-server health
+  ✓ round-3 server restores the stored Org run
+  … org snapshot
+  ✓ Org: the stored copy opens where it was recorded
+  … stored Org copy answers
+  ✓ Org: the stored copy answers on the round-3 server
+  … new-rule Org copy
+  … org snapshot
+  ✓ Org: a new copy by the same member goes to rootOrg.taskExecutions (new rule) beside the stored one
+  ✓ Agent root: the stored copy opens where it was recorded
+  … stored Agent-root copy answers
+  ✓ Agent root: the stored copy answers on the round-3 server
+  [new-server] exited code=0 signal=null
+OLD-PLACEMENT PASS
+exit 0

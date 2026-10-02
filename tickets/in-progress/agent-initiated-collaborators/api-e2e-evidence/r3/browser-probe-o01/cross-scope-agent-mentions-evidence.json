@@ -1,0 +1,131 @@
+{
+  "startedAt": "2026-10-01T21:24:05.945Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "O01": {
+      "title": "UXJ-004 Org run: VIS-008 menu; two mentions add an Agent and a Team (Offline at once); send_message_to briefings; \"From\" reports; Org tab briefing + report rows with formatted names (VIS-009)",
+      "result": "Pass",
+      "ms": 49758,
+      "details": {
+        "orgRunId": "launch_org_d04ac0ef30dd40a6a9e07333b0f32416",
+        "options": [
+          "research-assistant",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team"
+        ],
+        "footer": "analyst gets your message and brings them into this run",
+        "chips": 2,
+        "firstAgentRows": [
+          {
+            "text": "CR\ncode reviewer",
+            "status": "offline"
+          },
+          {
+            "text": "PP\nproduct prototyper",
+            "status": "offline"
+          },
+          {
+            "text": "PB\nprototype bootstrapper",
+            "status": "offline"
+          }
+        ],
+        "agentRows": [
+          {
+            "text": "CR\ncode reviewer",
+            "label": "code reviewer, idle, Started by analyst, /code_reviewer, code_reviewer_f267fb2a5c9c49b79670b1e25e5511fd",
+            "avatar": true
+          },
+          {
+            "text": "PP\nproduct prototyper",
+            "label": "product prototyper, idle, /product_team/product_prototyper, product_prototyper_6fe312e368b544e6863e82cc5228e9a8",
+            "avatar": true
+          },
+          {
+            "text": "PB\nprototype bootstrapper",
+            "label": "prototype bootstrapper, idle, /product_team/prototype_bootstrapper, prototype_bootstrapper_48f094ee877247c1a1300ddb918956da",
+            "avatar": true
+          }
+        ],
+        "cards": [
+          {
+            "text": "send_message_to",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          },
+          {
+            "text": "send_message_to",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "orgTabRows": [
+          "Message Oct 1, 11:25 PM from product prototyper Repository workspace is empty and needs initialization before we can proceed with launch page planning.",
+          "Message Oct 1, 11:24 PM from code reviewer I'm a code reviewer and can't help with launch page planning; you may need a product strategy or design agent for this task.",
+          "Message Oct 1, 11:24 PM to product prototyper Please help plan the launch page and report back to me with your findings and recommendations.",
+          "Message Oct 1, 11:24 PM to code reviewer Please help plan the launch page and report back to me with your findings and recommendations."
+        ]
+      }
+    },
+    "O02": {
+      "title": "UXJ-004 / VIS-010: the Org collaborator Agent view starts with \"From Analyst:\"; direct chat",
+      "result": "Pass",
+      "ms": 4166,
+      "details": {
+        "from": [
+          "From Analyst:"
+        ],
+        "hasNotice": false
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 54450
+    },
+    {
+      "label": "frontend",
+      "pid": 54491
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 54491,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 54450,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LTZJR6"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-LTZJR6",
+  "backendUrl": "http://127.0.0.1:57961",
+  "frontUrl": "http://127.0.0.1:57962",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 0,
+    "notApplicable": 0
+  },
+  "completedAt": "2026-10-01T21:25:11.652Z"
+}

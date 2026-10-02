@@ -61,3 +61,39 @@
   to `/software_engineering_team/implementation_engineer`; not repeated here. Editorial tidy only (no behavior or design
   change): three leftover "stale" phrases in design-spec.md (BEH-002 row, Key Tradeoffs, address-map test line), as the
   reviewer noted.
+
+## SR-006 — 2026-10-01 — Design revision for CRR-003 (CR-001 Design Impact; CR-002 Local Fix)
+- Trigger: code review CRR-003 after API/E2E API-REV-001 failed. Members of a catalog team copy get no own handoffs or
+  instruction in all three roots (live on Claude, Codex and AGY). The user directed that it be classified as a design issue.
+- Design change:
+  - a new section, "Member Collaboration Scope": one owner, `resolveMemberCollaborationScope`, with three rules
+    (team-instance member → hosting instance scope; configured root placement or a copy at it → root scope; else →
+    standalone scope);
+  - all per-root special cases removed;
+  - a catalog Agent copy in a Team root gets no root-team instruction;
+  - `teamScoped` unchanged;
+  - file mapping, removal and tests updated.
+- CR-002 (formatted names for Team-root catalog copy rows) is carried as a Local Fix in the web file mapping.
+- Requirements unchanged (REQ-007 "one unit" and AC-005/AC-007 already require it). Large/High. Routing: architecture
+  reviewer, then implementation.
+- Evidence: E-13. The in-progress uncommitted implementation change is noted for reconciliation.
+- 2026-10-01 note (no new SR round): ARCH-REV-004 gave **Pass** on SR-006 (requirements basis SR-005). The reviewer
+  delivered the implementation handoff to `/software_engineering_team/implementation_engineer`, with three non-blocking
+  notes:
+  - the hosting-team input is optional for root-hosted agents;
+  - add a test that an Org mounted member's cross-placement handoffs are preserved;
+  - add a test that a catalog copy keeps its scope after restore.
+  Not repeated here. Report: `design-review-report.md`.
+
+## SR-007 — 2026-10-01 — Copy placement by address (CRR-005 DI-01); requirements and design
+- Trigger: code review CRR-005 DI-01. An Org catalog copy was nested under the delegator's team. The user asked for an
+  investigated recommendation and approved it ("approve. i trust your suggestion").
+- Requirements: REQ-012 and AC-013 added (a behavior change for Org and standalone copy placement; stored runs keep
+  their placement).
+- Design: a new section, "Copy Placement By Address", with one shared owner, `resolveTaskCopyHost` (generalized from the
+  Team root rule), used by all three adapters. No migration. Tests added.
+- Evidence: E-14. Large/High. Routing: architecture reviewer.
+- 2026-10-01 note (no new SR round): ARCH-REV-005 gave **Pass** on SR-007. The reviewer delivered the implementation
+  handoff to `/software_engineering_team/implementation_engineer`; not repeated here. Editorial consistency fix only
+  (no intent change): REQ-012 and AC-013 now say "Started by" stays in the accessible label only, matching the shipped
+  predecessor REQ-009.
