@@ -1,0 +1,27 @@
+[
+  {
+    "projectId": "project_25620851-8140-4146-b1c2-b258848476f7",
+    "name": "Implementation review",
+    "description": "Test-owned project for rendered implementation inspection.",
+    "createdAt": "2026-10-02T15:58:39.585Z",
+    "updatedAt": "2026-10-02T15:59:50.060Z",
+    "workspaces": [
+      {
+        "workspaceId": "agent_ws_2f79c0ed87cb96a4ad6c8a360d7ac2a74303de3add57d6ee22d7bc3eaa32f6bf",
+        "workspaceRootPath": "/tmp/project-task-foundations-no-folder-1790956789963",
+        "description": "Metadata registration only; no folder creation.",
+        "addedAt": "2026-10-02T15:59:50.060Z"
+      }
+    ],
+    "tasks": [
+      {
+        "taskId": "project_task_40ccfb9f-aee2-43f2-9fce-021e7e4cfd9a",
+        "description": "Review the new Refresh control\nExternal manifest write while the board is open.",
+        "status": "DONE",
+        "createdAt": "2026-10-02T16:00:32.709Z",
+        "updatedAt": "2026-10-02T16:01:11.776Z",
+        "contextFiles": []
+      }
+    ]
+  }
+]

@@ -36,20 +36,14 @@
       />
     </ul>
 
-    <ProjectWorkspaceLinkDialog
-      v-if="linkDialog.open"
-      :project="project"
-      :link="linkDialog.link"
-      @close="closeLinkDialog"
-      @saved="closeLinkDialog"
-    />
+
   </section>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import ProjectWorkspaceLinkDialog from '~/components/projects/ProjectWorkspaceLinkDialog.vue'
 import ProjectWorkspaceRow from '~/components/projects/ProjectWorkspaceRow.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectStore } from '~/stores/projectStore'
@@ -62,19 +56,12 @@ const { t } = useLocalization()
 const projectStore = useProjectStore()
 
 const headingId = `project-workspaces-heading-${Math.random().toString(36).slice(2, 8)}`
-const linkDialog = reactive<{ open: boolean; link: ProjectWorkspace | null }>({ open: false, link: null })
 const unlinkingWorkspaceId = ref<string | null>(null)
 const rowError = ref<string | null>(null)
 
+const router = useRouter()
 const openLinkDialog = (link: ProjectWorkspace | null): void => {
-  rowError.value = null
-  linkDialog.link = link
-  linkDialog.open = true
-}
-
-const closeLinkDialog = (): void => {
-  linkDialog.open = false
-  linkDialog.link = null
+  void router.push({path: `/projects/${props.project.projectId}/edit`, query: {tab: 'workspaces', ...(link ? {workspace: link.workspaceId} : {addWorkspace: '1'})}})
 }
 
 const unlink = async (link: ProjectWorkspace): Promise<void> => {

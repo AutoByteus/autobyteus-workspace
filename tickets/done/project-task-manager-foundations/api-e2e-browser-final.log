@@ -1,0 +1,37 @@
+
+> autobyteus@1.4.92-beta.9 test:e2e:projects /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> node tests/e2e/projects-feature-probe.mjs --skip-server-build --output-dir=../tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final
+
+[PT-E2E-001] Fresh node default off, guarded routes, selected native tools do not enable UI
+[PT-E2E-001] Pass
+[PT-E2E-002] Ordinary New Project validation/focus/Cancel and zero-link save to Tasks
+[PT-E2E-002] Pass
+[PT-E2E-003] Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab
+[PT-E2E-003] Pass
+[PT-E2E-004] Aggregate save failure retains Project; separate successful registration remains, no mkdir
+[PT-E2E-004] Pass
+[PT-E2E-005] Task ordinary composer validation, search-preserving Cancel, typed/file save clears search
+[PT-E2E-005] Pass
+[PT-E2E-006] Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape
+[PT-E2E-006] Pass
+[PT-E2E-007] External selected tool commit -> physical non-deduplicated Refresh preserves search/route and moves status
+[PT-E2E-007] Pass
+[PT-E2E-008] Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct
+[PT-E2E-008] Pass
+[PT-E2E-009] Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping
+[PT-E2E-009] Pass
+[PT-E2E-010] Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting
+[PT-E2E-010] Pass
+[PT-E2E-011] All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project
+[PT-E2E-011] Pass
+[PT-E2E-012] Ordinary route read/Refresh ordering: late old Project response cannot populate another Project
+[PT-E2E-012] Pass
+[PT-E2E-013] 120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation
+[PT-E2E-013] Pass
+[PT-E2E-014] Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery
+[PT-E2E-014] Pass
+[PT-E2E-015] Normal Settings toggle invalidates nav/route without reload, retains Tasks and other settings
+[PT-E2E-015] Pass
+[PT-E2E-016] zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys
+[PT-E2E-016] Pass
+{"result":"Pass","error":null,"cases":{"PT-E2E-001":"Pass","PT-E2E-002":"Pass","PT-E2E-003":"Pass","PT-E2E-004":"Pass","PT-E2E-005":"Pass","PT-E2E-006":"Pass","PT-E2E-007":"Pass","PT-E2E-008":"Pass","PT-E2E-009":"Pass","PT-E2E-010":"Pass","PT-E2E-011":"Pass","PT-E2E-012":"Pass","PT-E2E-013":"Pass","PT-E2E-014":"Pass","PT-E2E-015":"Pass","PT-E2E-016":"Pass"},"cleanup":{"frontend":"terminated:8262","nodeA":"terminated:8441","nodeB":"terminated:8251","tempRootRemoved":true}}

@@ -1,0 +1,32 @@
+{
+  "initialStagedDiffCheck": "Failed: conventional patch blank-context lines and final empty log lines only; production/test source diff check already passed. No test execution failure or hidden source defect.",
+  "ownedLogNormalization": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-3.log",
+      "change": "terminal empty lines removed only; diagnostics/commands/outcomes unchanged",
+      "priorSha256": "90c15e8f079536ba20c82409528cdd97efa63076c3a2f5ccb2cb6de3a7193c67",
+      "currentSha256": "775e0a5b9f2bdaf2c6c4c74d6e7738c9c680622794d62d7d058b860a958f9090"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-2.log",
+      "change": "terminal empty lines removed only; diagnostics/commands/outcomes unchanged",
+      "priorSha256": "30de34f08ac58f86aa102afea9db2c319f7c97477dcfa67dd970ec2d50059593",
+      "currentSha256": "313b31d1dc765ee289d8dd63b4d87a6cb040b7f966d6fe309d7a66f2a56ca494"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-1.log",
+      "change": "terminal empty lines removed only; diagnostics/commands/outcomes unchanged",
+      "priorSha256": "f033df9074159a0e9bb02f40490f322a1b5f0f3f57169b0a2070dc46eeeb2363",
+      "currentSha256": "c402ef08016fea777b6a685494410da0d013cbd0fb7b8f3b154f7712e0437d34"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/renderer-expanded.log",
+      "change": "terminal empty lines removed only; diagnostics/commands/outcomes unchanged",
+      "priorSha256": "2b4ddad93d4c8333511e88e1e9accb12ba0a53bc7021f2ada414f1473172f0e1",
+      "currentSha256": "54606e8779c9c46e6711f48aebb30c90953ba359638ff41df2d6bf239d95a33d"
+    }
+  ],
+  "patchRepresentation": "git show --format=fuller --no-ext-diff --unified=0 4d88b42e2360a6827cb31e2481410607ca1407ad; valid zero-context diff avoids staging context-space whitespace",
+  "deliveryOriginals": "Unchanged; no prior Delivery/API/IR-001 raw evidence normalized or rewritten.",
+  "finalStagedDiffCheck": "See successful command result; final package rehashed after this artifact-only hygiene correction."
+}

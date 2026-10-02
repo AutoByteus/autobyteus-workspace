@@ -47,6 +47,7 @@
     </div>
 
     <template v-else>
+      <p v-if="notice" class="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status" data-testid="project-save-notice">{{ notice }}</p>
       <header class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0">
           <h1 class="break-words text-2xl font-semibold text-slate-900" data-testid="project-detail-name">{{ project.name }}</h1>
@@ -59,14 +60,13 @@
           </p>
         </div>
         <div class="flex flex-shrink-0 gap-2">
-          <button
-            type="button"
+          <NuxtLink
+            :to="`/projects/${projectId}/edit${activeTab === 'workspaces' ? '?tab=workspaces' : ''}`"
             class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
             data-testid="project-edit-button"
-            @click="showEditDialog = true"
           >
             {{ t('projects.components.projects.ProjectDetail.edit') }}
-          </button>
+          </NuxtLink>
           <button
             type="button"
             class="rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
@@ -109,13 +109,6 @@
       </div>
     </template>
 
-    <ProjectFormDialog
-      v-if="showEditDialog && project"
-      :project="project"
-      @close="showEditDialog = false"
-      @saved="showEditDialog = false"
-    />
-
     <ProjectDialogFrame
       v-if="showDeleteDialog && project"
       :title="t('projects.components.projects.ProjectDetail.deleteTitle')"
@@ -123,14 +116,17 @@
       test-id="project-delete-dialog"
       @close="showDeleteDialog = false"
     >
-      <p class="text-sm text-slate-700" data-testid="project-delete-message">{{ deleteMessage }}</p>
+      <p v-if="deleteLoading" role="status" class="text-sm text-slate-600">{{ t('projects.ui.checkingDelete') }}</p>
+      <p v-else-if="deleteCount !== null" class="text-sm text-slate-700" data-testid="project-delete-message">{{ deleteMessage }}</p>
       <p class="mt-2 text-sm text-slate-500">{{ t('projects.components.projects.ProjectDetail.deleteScope') }}</p>
       <p v-if="deleteError" role="alert" class="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" data-testid="project-delete-error">
         {{ deleteError }}
+        <button type="button" class="ml-2 underline" @click="openDeleteDialog">{{ t('projects.common.retry') }}</button>
       </p>
       <template #actions>
         <button
           type="button"
+          ref="deleteCancel"
           data-dialog-initial-focus
           class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
           :disabled="deleting"
@@ -142,7 +138,7 @@
         <button
           type="button"
           class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-60"
-          :disabled="deleting"
+          :disabled="deleting || deleteLoading || deleteCount === null"
           data-testid="project-delete-confirm"
           @click="confirmDelete"
         >
@@ -154,17 +150,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import ProjectDialogFrame from '~/components/projects/ProjectDialogFrame.vue'
-import ProjectFormDialog from '~/components/projects/ProjectFormDialog.vue'
 import ProjectTaskBoard from '~/components/projects/ProjectTaskBoard.vue'
 import ProjectWorkspacesPanel from '~/components/projects/ProjectWorkspacesPanel.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectStore } from '~/stores/projectStore'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+import { useProjectNotice } from '~/composables/projects/useProjectNotice'
 import { projectErrorMessageKey } from '~/utils/projects/projectErrorMessageKey'
 
 type ProjectDetailTab = 'tasks' | 'workspaces'
@@ -194,8 +190,14 @@ const project = computed(() => projectStore.getProjectById(props.projectId))
 // Tasks is the default tab; `?tab=workspaces` selects Workspaces.
 const activeTab = computed<ProjectDetailTab>(() => (route.query.tab === 'workspaces' ? 'workspaces' : 'tasks'))
 
-const showEditDialog = ref(false)
+let alive = true, loadSequence = 0, deleteSequence = 0
+const current = (id: string, revision: number) => alive && props.projectId === id && windowNodeContextStore.bindingRevision === revision
+onBeforeUnmount(() => {alive = false; loadSequence++; deleteSequence++})
+const notice = useProjectNotice({created: t('projects.ui.created'), saved: t('projects.ui.saved'), 'task-created': t('projects.ui.taskCreated'), 'task-deleted': t('projects.ui.taskDeleted')})
 const showDeleteDialog = ref(false)
+const deleteLoading = ref(false)
+const deleteCancel = ref<HTMLButtonElement | null>(null)
+const deleteCount = ref<number | null>(null)
 const deleting = ref(false)
 const deleteError = ref<string | null>(null)
 
@@ -204,14 +206,16 @@ const deleteError = ref<string | null>(null)
  * refreshed in the background, so opening it from the grid does not flash a loading state.
  */
 const load = async (): Promise<void> => {
+  const id = props.projectId, revision = windowNodeContextStore.bindingRevision, sequence = ++loadSequence
   const cached = Boolean(project.value)
   state.value = cached ? 'ready' : 'loading'
   loadError.value = null
   try {
-    await projectStore.fetchProject(props.projectId)
+    await projectStore.fetchProject(id)
+    if (!current(id, revision) || sequence !== loadSequence) return
     state.value = 'ready'
   } catch (error) {
-    if (!cached) {
+    if (current(id, revision) && sequence === loadSequence && !cached) {
       loadError.value = error instanceof Error ? error.message : String(error)
       state.value = 'error'
     }
@@ -238,36 +242,47 @@ const handleTabKeydown = (event: KeyboardEvent, tab: ProjectDetailTab): void => 
   void nextTick(() => document.getElementById(tabId(target))?.focus())
 }
 
-// Count of Tasks deleted with the Project. `openTaskCount` is always loaded with the
-// Project, unlike the Task list (not loaded when landing on ?tab=workspaces). It equals
-// the total number of Tasks only while no Task can become DONE (no status mutation exists
-// yet); the Task-admission work must revisit this when it adds one.
 const deleteMessage = computed(() => {
-  const name = project.value?.name ?? ''
-  const count = project.value?.openTaskCount ?? 0
-  if (count === 0) return t('projects.components.projects.ProjectDetail.deleteMessage', { name })
-  return count === 1
-    ? t('projects.components.projects.ProjectDetail.deleteMessageOneTask', { name })
-    : t('projects.components.projects.ProjectDetail.deleteMessageTasks', { name, count })
+  const name = project.value?.name ?? '', count = deleteCount.value ?? 0
+  if (count === 0) return t('projects.components.projects.ProjectDetail.deleteMessage', {name})
+  return count === 1 ? t('projects.components.projects.ProjectDetail.deleteMessageOneTask', {name}) : t('projects.components.projects.ProjectDetail.deleteMessageTasks', {name, count})
 })
+const openDeleteDialog = async () => {
+  const id = props.projectId, revision = windowNodeContextStore.bindingRevision, token = ++deleteSequence
+  deleteError.value = null; deleteCount.value = null; deleteLoading.value = true; showDeleteDialog.value = true
+  try {
+    const fresh = await projectStore.fetchProject(id)
+    if (current(id, revision) && token === deleteSequence && showDeleteDialog.value) {
+      if (!fresh) throw new Error(t('projects.errors.projectNotFound'))
+      deleteCount.value = fresh.taskCount
 
-const openDeleteDialog = (): void => {
-  deleteError.value = null
-  showDeleteDialog.value = true
+    }
+  } catch (e) {if (current(id, revision) && token === deleteSequence) deleteError.value = e instanceof Error ? e.message : t('projects.errors.requestFailed')}
+  finally {
+    if (current(id, revision) && token === deleteSequence) {
+      deleteLoading.value = false
+      await nextTick()
+      // Preserve safe initial focus if the fresh count DOM update dropped it.
+      if (showDeleteDialog.value && document.activeElement === document.body) deleteCancel.value?.focus()
+    }
+  }
 }
 
 const confirmDelete = async (): Promise<void> => {
+  if (deleteLoading.value || deleteCount.value === null) return
+  const id = props.projectId, revision = windowNodeContextStore.bindingRevision
   deleting.value = true
   deleteError.value = null
   try {
-    await projectStore.deleteProject(props.projectId)
+    await projectStore.deleteProject(id, () => current(id, revision))
+    if (!current(id, revision)) return
     projectTaskStore.forget(props.projectId)
     showDeleteDialog.value = false
     await navigateTo('/projects')
   } catch (error) {
-    deleteError.value = t(projectErrorMessageKey(error))
+    if (current(id, revision)) deleteError.value = t(projectErrorMessageKey(error))
   } finally {
-    deleting.value = false
+    if (current(id, revision)) deleting.value = false
   }
 }
 

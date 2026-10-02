@@ -1,0 +1,7 @@
+{
+  "removedOwnPrepareOutput": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist"
+  ],
+  "noOtherWorktreeCleanup": true
+}

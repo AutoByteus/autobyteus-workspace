@@ -1,0 +1,425 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/projectTaskStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/projectStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskBoard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/voiceInputStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/projectStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/projectTaskStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskBoard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/voiceInputStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/projectStore.spec.ts (12 tests) 71ms
+ ✓ stores/__tests__/projectTaskStore.spec.ts (10 tests) 73ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts (16 tests) 75ms
+ ✓ components/projects/__tests__/ProjectsList.spec.ts (6 tests) 67ms
+ ❯ components/projects/__tests__/ProjectTaskBoard.spec.ts (8 tests | 4 failed) 133ms
+   × ProjectTaskBoard > loads the Project's Tasks into three columns in order with counts, newest first 24ms
+     → expected '2' to be 'To Do 2' // Object.is equality
+   × ProjectTaskBoard > shows an empty board with muted "No tasks" columns and New task for a Project without Tasks 10ms
+     → expected '0' to match / 0$/
+   × ProjectTaskBoard > searches across columns, updates counts and recovers from no matches 20ms
+     → expected [ 't3', 'text' ] to deeply equal [ 't3' ]
+   ✓ ProjectTaskBoard > links a contiguous row to the Task detail page 11ms
+   ✓ ProjectTaskBoard > offers no drag, move or status controls (REQ-003) 4ms
+   ✓ ProjectTaskBoard > uses a board-width container query, not viewport breakpoints, for the three-column switch 4ms
+   × ProjectTaskBoard > filters 150 Tasks quickly (REQ-014, QR-002) 56ms
+     → expected [ 't0', 'text', 't1', 'text', …(296) ] to have a length of 150 but got 300
+   ✓ ProjectTaskBoard > shows a retryable load error 3ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests) 168ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 50ms
+ ❯ components/projects/__tests__/ProjectDetail.spec.ts (13 tests | 1 failed) 122ms
+   ✓ ProjectDetail > shows a full-width page with Back, the header and the Tasks board by default 18ms
+   ✓ ProjectDetail > renders linked workspaces on ?tab=workspaces, marking unregistered ones unavailable 9ms
+   ✓ ProjectDetail > switches tabs through the URL without reloading the Project 18ms
+   ✓ ProjectDetail > moves between tabs with the arrow keys 7ms
+   ✓ ProjectDetail > shows a cached Project at once while it refreshes 3ms
+   ✓ ProjectDetail > shows a load error for an uncached Project 2ms
+   ✓ ProjectDetail > shows a not-found state for an unknown Project 2ms
+   ✓ ProjectDetail > opens the direct workspace editor and unlinks from the Workspaces tab 14ms
+   ✓ ProjectDetail > states the 0 Tasks deleted with the Project, even from the Workspaces tab (REQ-008) 8ms
+   ✓ ProjectDetail > states the 1 Tasks deleted with the Project, even from the Workspaces tab (REQ-008) 8ms
+   ✓ ProjectDetail > states the 4 Tasks deleted with the Project, even from the Workspaces tab (REQ-008) 10ms
+   × ProjectDetail > requires confirmation before deleting, and cancel keeps everything 15ms
+     → expected <body><div …(2)></div>
+…(12)</body> to be <button type="button" …(3)></button> // Object.is equality
+   ✓ ProjectDetail > deletes after confirmation, forgets its Tasks and returns to the Projects page 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > requires confirmation before deleting, and cancel keeps everything
+AssertionError: expected <body><div …(2)></div>
+…(12)</body> to be <button type="button" …(3)></button> // Object.is equality
+
+- Expected
++ Received
+
++ <body>
++   <div
++     data-v-app=""
++     id="__nuxt"
++   >
++     <!---->
++   </div>
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   >
++     <div
++       class="w-full px-4 py-5 sm:px-6 lg:px-8"
++       data-testid="project-detail"
++     >
++       <a
++         aria-label="Back to projects"
++         class="inline-flex items-center gap-1 rounded text-sm font-medium text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
++         data-testid="project-back-link"
++       >
++         <svg
++           aria-hidden="true"
++           class="h-4 w-4"
++           height="1em"
++           role="img"
++           viewBox="0 0 16 16"
++           width="1em"
++           xmlns="http://www.w3.org/2000/svg"
++           xmlns:xlink="http://www.w3.org/1999/xlink"
++         />
++          Projects
++       </a>
++
++       <!--v-if-->
++       <header
++         class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
++       >
++         <div
++           class="min-w-0"
++         >
++           <h1
++             class="break-words text-2xl font-semibold text-slate-900"
++             data-testid="project-detail-name"
++           >
++             autobyteus
++           </h1>
++           <p
++             class="mt-1 line-clamp-2 whitespace-pre-line break-words text-sm text-slate-600"
++             data-testid="project-detail-description"
++           >
++             AutoByteus product
++           </p>
++         </div>
++         <div
++           class="flex flex-shrink-0 gap-2"
++         >
++           <a
++             class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
++             data-testid="project-edit-button"
++           >
++             Edit
++           </a>
+            <button
++             class="rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
++             data-testid="project-delete-button"
++             type="button"
++           >
++             Delete
++           </button>
++         </div>
++       </header>
++       <div
++         aria-label="Project sections"
++         class="mt-5 flex gap-1 border-b border-slate-200"
++         data-testid="project-detail-tabs"
++         role="tablist"
++       >
++
++         <button
++           aria-controls="project-tabpanel-tasks-7bdyrv"
++           aria-selected="true"
++           class="-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 border-blue-600 text-blue-700"
++           data-testid="project-tab-tasks"
++           id="project-tab-tasks-7bdyrv"
++           role="tab"
++           tabindex="0"
++           type="button"
++         >
++           Tasks
++         </button>
++         <button
++           aria-controls="project-tabpanel-workspaces-7bdyrv"
++           aria-selected="false"
++           class="-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 border-transparent text-slate-600 hover:text-slate-900"
++           data-testid="project-tab-workspaces"
++           id="project-tab-workspaces-7bdyrv"
++           role="tab"
++           tabindex="-1"
++           type="button"
++         >
++           Workspaces
++         </button>
++
++       </div>
++       <div
++         aria-labelledby="project-tab-tasks-7bdyrv"
++         class="mt-5"
++         id="project-tabpanel-tasks-7bdyrv"
++         role="tabpanel"
++       >
++         <div
++           data-testid="project-task-board-stub"
++         >
++           p1
++         </div>
++       </div>
++
++       <teleport-stub
++         to="body"
++       >
++         <div
++           class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
++         >
++           <div
++             aria-busy="false"
++             aria-labelledby="project-dialog-title-1"
++             aria-modal="true"
++             class="flex max-h-[90vh] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-xl focus:outline-none max-w-lg"
++             data-testid="project-delete-dialog"
++             role="dialog"
++             tabindex="-1"
++           >
++             <header
++               class="border-b border-slate-100 px-6 pb-4 pt-5"
++             >
++               <h2
++                 class="text-lg font-semibold text-slate-900"
++                 id="project-dialog-title-1"
++               >
++                 Delete project?
++               </h2>
++             </header>
++             <div
++               class="flex-1 overflow-y-auto px-6 py-5"
++             >
++
++               <p
++                 class="text-sm text-slate-700"
++                 data-testid="project-delete-message"
++               >
++                 Delete the project “autobyteus”, its workspace links and its 4 tasks?
++               </p>
++               <p
++                 class="mt-2 text-sm text-slate-500"
++               >
++                 Workspaces, their files and run history are not changed.
++               </p>
++               <!--v-if-->
++
++             </div>
++             <footer
++               class="flex justify-end gap-3 border-t border-slate-100 bg-slate-50 px-6 py-4"
++             >
++
++               <button
+                  class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                  data-dialog-initial-focus=""
+                  data-testid="project-delete-cancel"
+                  type="button"
+                >
+                  Cancel
+                </button>
++               <button
++                 class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-60"
++                 data-testid="project-delete-confirm"
++                 type="button"
++               >
++                 Delete project
++               </button>
++
++             </footer>
++           </div>
++         </div>
++       </teleport-stub>
++     </div>
++   </div>
++ </body>
+
+ ❯ components/projects/__tests__/ProjectDetail.spec.ts:224:5
+    222|     const dialog = wrapper.get('[data-testid="project-delete-dialog"]')
+    223|     expect(dialog.attributes('role')).toBe('dialog')
+    224|     expect(document.activeElement).toBe(wrapper.get('[data-testid="pro…
+       |     ^
+    225|
+    226|     await wrapper.get('[data-testid="project-delete-cancel"]').trigger…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  components/projects/__tests__/ProjectTaskBoard.spec.ts > ProjectTaskBoard > loads the Project's Tasks into three columns in order with counts, newest first
+AssertionError: expected '2' to be 'To Do 2' // Object.is equality
+
+Expected: "To Do 2"
+Received: "2"
+
+ ❯ components/projects/__tests__/ProjectTaskBoard.spec.ts:63:38
+     61|     const order = wrapper.findAll('section').map((section) => section.…
+     62|     expect(order).toEqual(['project-task-column-TODO', 'project-task-c…
+     63|     expect(heading(wrapper, 'TODO')).toBe('To Do 2')
+       |                                      ^
+     64|     expect(heading(wrapper, 'IN_PROGRESS')).toBe('In Progress 1')
+     65|     expect(heading(wrapper, 'DONE')).toBe('Done 1')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  components/projects/__tests__/ProjectTaskBoard.spec.ts > ProjectTaskBoard > shows an empty board with muted "No tasks" columns and New task for a Project without Tasks
+AssertionError: expected '0' to match / 0$/
+
+- Expected:
+/ 0$/
+
++ Received:
+"0"
+
+ ❯ components/projects/__tests__/ProjectTaskBoard.spec.ts:75:40
+     73|
+     74|     for (const status of ['TODO', 'IN_PROGRESS', 'DONE']) {
+     75|       expect(heading(wrapper, status)).toMatch(/ 0$/)
+       |                                        ^
+     76|       expect(column(wrapper, status).get('[data-testid="project-task-c…
+     77|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  components/projects/__tests__/ProjectTaskBoard.spec.ts > ProjectTaskBoard > searches across columns, updates counts and recovers from no matches
+AssertionError: expected [ 't3', 'text' ] to deeply equal [ 't3' ]
+
+- Expected
++ Received
+
+  [
+    "t3",
++   "text",
+  ]
+
+ ❯ components/projects/__tests__/ProjectTaskBoard.spec.ts:91:38
+     89|
+     90|     await wrapper.get('[data-testid="project-tasks-search-input"]').se…
+     91|     expect(cardIds(wrapper, 'TODO')).toEqual(['t3'])
+       |                                      ^
+     92|     expect(cardIds(wrapper, 'IN_PROGRESS')).toEqual(['t2'])
+     93|     expect(heading(wrapper, 'TODO')).toBe('To Do 1')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  components/projects/__tests__/ProjectTaskBoard.spec.ts > ProjectTaskBoard > filters 150 Tasks quickly (REQ-014, QR-002)
+AssertionError: expected [ 't0', 'text', 't1', 'text', …(296) ] to have a length of 150 but got 300
+
+- Expected
++ Received
+
+- 150
++ 300
+
+ ❯ components/projects/__tests__/ProjectTaskBoard.spec.ts:141:38
+    139|     const wrapper = mountBoard()
+    140|     await flushPromises()
+    141|     expect(cardIds(wrapper, 'TODO')).toHaveLength(150)
+       |                                      ^
+    142|
+    143|     const started = performance.now()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  2 failed | 6 passed (8)
+      Tests  5 failed | 82 passed (87)
+   Start at  17:39:39
+   Duration  7.36s (transform 4.22s, setup 46.47s, collect 2.32s, tests 759ms, environment 2.35s, prepare 2.29s)
+
+ ELIFECYCLE  Command failed with exit code 1.

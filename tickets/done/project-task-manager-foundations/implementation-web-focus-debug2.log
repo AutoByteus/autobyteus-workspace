@@ -1,0 +1,297 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/projects/__tests__/ProjectDetail.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > states the 0 Tasks deleted with the Project, even from the Workspaces tab (REQ-008)
+FRAME BUTTON true BUTTON
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > states the 1 Tasks deleted with the Project, even from the Workspaces tab (REQ-008)
+FRAME BUTTON true BUTTON
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > states the 4 Tasks deleted with the Project, even from the Workspaces tab (REQ-008)
+FRAME BUTTON true BUTTON
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > requires confirmation before deleting, and cancel keeps everything
+FRAME BUTTON true BUTTON
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > deletes after confirmation, forgets its Tasks and returns to the Projects page
+FRAME BUTTON true BUTTON
+
+ ❯ components/projects/__tests__/ProjectDetail.spec.ts (13 tests | 1 failed) 108ms
+   ✓ ProjectDetail > shows a full-width page with Back, the header and the Tasks board by default 18ms
+   ✓ ProjectDetail > renders linked workspaces on ?tab=workspaces, marking unregistered ones unavailable 9ms
+   ✓ ProjectDetail > switches tabs through the URL without reloading the Project 17ms
+   ✓ ProjectDetail > moves between tabs with the arrow keys 6ms
+   ✓ ProjectDetail > shows a cached Project at once while it refreshes 3ms
+   ✓ ProjectDetail > shows a load error for an uncached Project 2ms
+   ✓ ProjectDetail > shows a not-found state for an unknown Project 2ms
+   ✓ ProjectDetail > opens the direct workspace editor and unlinks from the Workspaces tab 6ms
+   ✓ ProjectDetail > states the 0 Tasks deleted with the Project, even from the Workspaces tab (REQ-008) 9ms
+   ✓ ProjectDetail > states the 1 Tasks deleted with the Project, even from the Workspaces tab (REQ-008) 5ms
+   ✓ ProjectDetail > states the 4 Tasks deleted with the Project, even from the Workspaces tab (REQ-008) 9ms
+   × ProjectDetail > requires confirmation before deleting, and cancel keeps everything 10ms
+     → expected <body><div …(2)></div>
+…(12)</body> to be <button type="button" …(3)></button> // Object.is equality
+   ✓ ProjectDetail > deletes after confirmation, forgets its Tasks and returns to the Projects page 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/projects/__tests__/ProjectDetail.spec.ts > ProjectDetail > requires confirmation before deleting, and cancel keeps everything
+AssertionError: expected <body><div …(2)></div>
+…(12)</body> to be <button type="button" …(3)></button> // Object.is equality
+
+- Expected
++ Received
+
++ <body>
++   <div
++     data-v-app=""
++     id="__nuxt"
++   >
++     <!---->
++   </div>
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   />
++   <div
++     data-v-app=""
++   >
++     <div
++       class="w-full px-4 py-5 sm:px-6 lg:px-8"
++       data-testid="project-detail"
++     >
++       <a
++         aria-label="Back to projects"
++         class="inline-flex items-center gap-1 rounded text-sm font-medium text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
++         data-testid="project-back-link"
++       >
++         <svg
++           aria-hidden="true"
++           class="h-4 w-4"
++           height="1em"
++           role="img"
++           viewBox="0 0 16 16"
++           width="1em"
++           xmlns="http://www.w3.org/2000/svg"
++           xmlns:xlink="http://www.w3.org/1999/xlink"
++         />
++          Projects
++       </a>
++
++       <!--v-if-->
++       <header
++         class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
++       >
++         <div
++           class="min-w-0"
++         >
++           <h1
++             class="break-words text-2xl font-semibold text-slate-900"
++             data-testid="project-detail-name"
++           >
++             autobyteus
++           </h1>
++           <p
++             class="mt-1 line-clamp-2 whitespace-pre-line break-words text-sm text-slate-600"
++             data-testid="project-detail-description"
++           >
++             AutoByteus product
++           </p>
++         </div>
++         <div
++           class="flex flex-shrink-0 gap-2"
++         >
++           <a
++             class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
++             data-testid="project-edit-button"
++           >
++             Edit
++           </a>
+            <button
++             class="rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
++             data-testid="project-delete-button"
++             type="button"
++           >
++             Delete
++           </button>
++         </div>
++       </header>
++       <div
++         aria-label="Project sections"
++         class="mt-5 flex gap-1 border-b border-slate-200"
++         data-testid="project-detail-tabs"
++         role="tablist"
++       >
++
++         <button
++           aria-controls="project-tabpanel-tasks-vxa7qp"
++           aria-selected="true"
++           class="-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 border-blue-600 text-blue-700"
++           data-testid="project-tab-tasks"
++           id="project-tab-tasks-vxa7qp"
++           role="tab"
++           tabindex="0"
++           type="button"
++         >
++           Tasks
++         </button>
++         <button
++           aria-controls="project-tabpanel-workspaces-vxa7qp"
++           aria-selected="false"
++           class="-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 border-transparent text-slate-600 hover:text-slate-900"
++           data-testid="project-tab-workspaces"
++           id="project-tab-workspaces-vxa7qp"
++           role="tab"
++           tabindex="-1"
++           type="button"
++         >
++           Workspaces
++         </button>
++
++       </div>
++       <div
++         aria-labelledby="project-tab-tasks-vxa7qp"
++         class="mt-5"
++         id="project-tabpanel-tasks-vxa7qp"
++         role="tabpanel"
++       >
++         <div
++           data-testid="project-task-board-stub"
++         >
++           p1
++         </div>
++       </div>
++
++       <teleport-stub
++         to="body"
++       >
++         <div
++           class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
++         >
++           <div
++             aria-busy="false"
++             aria-labelledby="project-dialog-title-1"
++             aria-modal="true"
++             class="flex max-h-[90vh] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-xl focus:outline-none max-w-lg"
++             data-testid="project-delete-dialog"
++             role="dialog"
++             tabindex="-1"
++           >
++             <header
++               class="border-b border-slate-100 px-6 pb-4 pt-5"
++             >
++               <h2
++                 class="text-lg font-semibold text-slate-900"
++                 id="project-dialog-title-1"
++               >
++                 Delete project?
++               </h2>
++             </header>
++             <div
++               class="flex-1 overflow-y-auto px-6 py-5"
++             >
++
++               <p
++                 class="text-sm text-slate-700"
++                 data-testid="project-delete-message"
++               >
++                 Delete the project “autobyteus”, its workspace links and its 4 tasks?
++               </p>
++               <p
++                 class="mt-2 text-sm text-slate-500"
++               >
++                 Workspaces, their files and run history are not changed.
++               </p>
++               <!--v-if-->
++
++             </div>
++             <footer
++               class="flex justify-end gap-3 border-t border-slate-100 bg-slate-50 px-6 py-4"
++             >
++
++               <button
+                  class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                  data-dialog-initial-focus=""
+                  data-testid="project-delete-cancel"
+                  type="button"
+                >
+                  Cancel
+                </button>
++               <button
++                 class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-60"
++                 data-testid="project-delete-confirm"
++                 type="button"
++               >
++                 Delete project
++               </button>
++
++             </footer>
++           </div>
++         </div>
++       </teleport-stub>
++     </div>
++   </div>
++ </body>
+
+ ❯ components/projects/__tests__/ProjectDetail.spec.ts:224:5
+    222|     const dialog = wrapper.get('[data-testid="project-delete-dialog"]')
+    223|     expect(dialog.attributes('role')).toBe('dialog')
+    224|     expect(document.activeElement).toBe(wrapper.get('[data-testid="pro…
+       |     ^
+    225|
+    226|     await wrapper.get('[data-testid="project-delete-cancel"]').trigger…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  17:46:10
+   Duration  6.01s (transform 3.23s, setup 5.04s, collect 311ms, tests 108ms, environment 163ms, prepare 121ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -5,196 +5,117 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useProjectStore } from '~/stores/projectStore'
 import { GetProjectTasks } from '~/graphql/queries/projectTaskQueries'
 import { CreateProjectTask, DeleteProjectTask, UpdateProjectTask } from '~/graphql/mutations/projectTaskMutations'
-import type { ProjectTask } from '~/types/project'
-import {
-  ProjectRequestError,
-  throwProjectGraphqlErrors,
-  toProjectRequestError,
-} from '~/utils/projects/projectRequestError'
-
-export type ProjectTaskListStatus = 'loading' | 'ready' | 'error'
-
+import type { ProjectTask, ProjectTaskContextDraft, ProjectTaskContextChanges } from '~/types/project'
+import { ProjectRequestError, throwProjectGraphqlErrors, toProjectRequestError } from '~/utils/projects/projectRequestError'
 export interface ProjectTaskListState {
-  status: ProjectTaskListStatus
+  status: 'loading' | 'ready' | 'error'
   tasks: ProjectTask[]
+  hasLoaded: boolean
+  initialPending: boolean
+  refreshPending: boolean
   error: ProjectRequestError | null
 }
-
-/** Most recently updated first; `taskId` breaks ties (same order as the server). */
-const compareTasks = (left: ProjectTask, right: ProjectTask): number => {
-  const byUpdated = right.updatedAt.localeCompare(left.updatedAt)
-  return byUpdated !== 0 ? byUpdated : left.taskId.localeCompare(right.taskId)
-}
-
-const openCount = (tasks: ProjectTask[]): number => tasks.filter((task) => task.status !== 'DONE').length
-
-/**
- * Client cache and request owner for Project Tasks on the bound node, one list per Project.
- * Lists are dropped when the window is rebound to another node, and responses that arrive
- * after a rebinding are discarded. After each successful write the Project's open-Task
- * count is pushed to `projectStore`.
- */
+const empty = (): ProjectTaskListState => ({status: 'loading', tasks: [], hasLoaded: false, initialPending: false, refreshPending: false, error: null})
+const compare = (a: ProjectTask, b: ProjectTask) => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId)
+/** Current-node cache. Generations serve reads/local writes/route lifetimes, not a node-switch workflow. */
 export const useProjectTaskStore = defineStore('projectTasks', () => {
   const listsByProjectId = ref<Record<string, ProjectTaskListState>>({})
-  const windowNodeContextStore = useWindowNodeContextStore()
+  const searchByProjectId = ref<Record<string, string>>({})
+  const node = useWindowNodeContextStore()
   const inflight = new Map<string, Promise<ProjectTask[]>>()
-
-  const hasBindingRevisionChanged = (bindingRevisionAtStart: number): boolean => (
-    windowNodeContextStore.bindingRevision !== bindingRevisionAtStart
-  )
-
-  const ensureBackendReady = async (): Promise<void> => {
-    const isReady = await windowNodeContextStore.waitForBoundBackendReady()
-    if (!isReady) {
-      throw new ProjectRequestError(windowNodeContextStore.lastReadyError || 'Bound backend is not ready', null)
-    }
+  const epochs = new Map<string, {read: number; write: number; deleted: number}>()
+  const epoch = (id: string) => {
+    if (!epochs.has(id)) epochs.set(id, {read: 0, write: 0, deleted: 0})
+    return epochs.get(id)!
   }
-
-  const getList = (projectId: string): ProjectTaskListState | null => listsByProjectId.value[projectId] ?? null
-
-  const setList = (projectId: string, state: ProjectTaskListState): void => {
-    listsByProjectId.value = { ...listsByProjectId.value, [projectId]: state }
+  const getList = (id: string) => listsByProjectId.value[id] ?? null
+  const setList = (id: string, state: ProjectTaskListState) => { listsByProjectId.value = {...listsByProjectId.value, [id]: state} }
+  const setSearch = (id: string, search: string) => { searchByProjectId.value = {...searchByProjectId.value, [id]: search} }
+  const releaseRead = (id: string) => {
+    epoch(id).read++
+    inflight.delete(id)
+    const state = getList(id)
+    if (state) setList(id, {...state, initialPending: false, refreshPending: false})
   }
-
-  const invalidate = (): void => {
-    listsByProjectId.value = {}
-    inflight.clear()
+  const forget = (id: string) => {
+    releaseRead(id); epoch(id).deleted++
+    const {[id]: _old, ...rest} = listsByProjectId.value; listsByProjectId.value = rest
+    const {[id]: _search, ...search} = searchByProjectId.value; searchByProjectId.value = search
   }
-
-  /** Drops the cached Tasks of one Project (e.g. after the Project was deleted). */
-  const forget = (projectId: string): void => {
-    const { [projectId]: _removed, ...rest } = listsByProjectId.value
-    listsByProjectId.value = rest
-    inflight.delete(projectId)
+  const invalidate = () => {
+    for (const id of epochs.keys()) { releaseRead(id); epoch(id).deleted++ }
+    listsByProjectId.value = {}; searchByProjectId.value = {}; inflight.clear()
   }
-
-  const fetchTasks = async (projectId: string, force = false): Promise<ProjectTask[]> => {
-    const existing = getList(projectId)
-    if (!force && existing?.status === 'ready') {
-      return existing.tasks
-    }
-    const pending = inflight.get(projectId)
-    if (pending) {
-      return pending
-    }
-
-    const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
-    setList(projectId, { status: 'loading', tasks: existing?.tasks ?? [], error: null })
-
-    const load = async (): Promise<ProjectTask[]> => {
-      try {
-        await ensureBackendReady()
-        if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
-          return []
-        }
-        const { data, errors } = await getApolloClient().query({
-          query: GetProjectTasks,
-          variables: { projectId },
-          fetchPolicy: 'network-only',
-        })
-        if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
-          return []
-        }
-        throwProjectGraphqlErrors(errors)
-        const tasks = [...((data?.projectTasks ?? []) as ProjectTask[])].sort(compareTasks)
-        setList(projectId, { status: 'ready', tasks, error: null })
-        return tasks
-      } catch (cause) {
-        if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
-          return []
-        }
-        const failure = toProjectRequestError(cause)
-        setList(projectId, { status: 'error', tasks: [], error: failure })
-        throw failure
-      }
-    }
-    const request: Promise<ProjectTask[]> = load().finally(() => {
-      if (inflight.get(projectId) === request) {
-        inflight.delete(projectId)
-      }
-    })
-    inflight.set(projectId, request)
-    return request
+  const ready = async (revision: number) => {
+    if (!await node.waitForBoundBackendReady()) throw new ProjectRequestError(node.lastReadyError || 'Bound backend is not ready', null)
+    if (node.bindingRevision !== revision) throw new ProjectRequestError('Request no longer belongs to this node.', null)
   }
-
-  const mutate = async <TResult>(
-    mutation: unknown,
-    variables: Record<string, unknown>,
-    field: string,
-  ): Promise<{ result: TResult; isCurrentBinding: boolean }> => {
-    const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
+  const publish = (id: string, tasks: ProjectTask[]) => {
+    const sorted = [...tasks].sort(compare)
+    setList(id, {status: 'ready', tasks: sorted, hasLoaded: true, initialPending: false, refreshPending: false, error: null})
+    useProjectStore().setTaskCounts(id, sorted.length, sorted.filter((t) => t.status !== 'DONE').length)
+    return sorted
+  }
+  const read = async (id: string, refresh: boolean): Promise<ProjectTask[]> => {
+    const state = getList(id) ?? empty()
+    const owner = epoch(id)
+    const token = {revision: node.bindingRevision, read: ++owner.read, write: owner.write, deleted: owner.deleted}
+    const client = getApolloClient()
+    const current = () => node.bindingRevision === token.revision && owner.read === token.read && owner.write === token.write && owner.deleted === token.deleted
+    setList(id, {...state, status: state.hasLoaded ? 'ready' : 'loading', initialPending: !state.hasLoaded, refreshPending: refresh, error: null})
     try {
-      await ensureBackendReady()
-      const { data, errors } = await getApolloClient().mutate({ mutation, variables })
+      await ready(token.revision)
+      if (!current()) return []
+      const {data, errors} = await client.query({query: GetProjectTasks, variables: {projectId: id}, fetchPolicy: 'network-only', context: {queryDeduplication: false}})
+      if (!current()) return []
       throwProjectGraphqlErrors(errors)
-      const result = data?.[field] as TResult | undefined
-      if (result === undefined || result === null) {
-        throw new ProjectRequestError(`Project Task request '${field}' returned no result.`, null)
-      }
-      return { result, isCurrentBinding: !hasBindingRevisionChanged(bindingRevisionAtStart) }
+      return publish(id, (data?.projectTasks ?? []) as ProjectTask[])
     } catch (cause) {
-      throw toProjectRequestError(cause)
+      if (!current()) return []
+      const failure = toProjectRequestError(cause)
+      const previous = getList(id) ?? state
+      setList(id, {...previous, status: 'error', initialPending: false, refreshPending: false, error: failure})
+      throw failure
     }
   }
-
-  /** Applies a change to a Project's loaded list and pushes the new open count. */
-  const applyChange = async (projectId: string, change: (tasks: ProjectTask[]) => ProjectTask[]): Promise<void> => {
-    const current = getList(projectId)?.status === 'ready' ? getList(projectId)!.tasks : await fetchTasks(projectId, true)
-    const tasks = change(current).sort(compareTasks)
-    setList(projectId, { status: 'ready', tasks, error: null })
-    useProjectStore().setOpenTaskCount(projectId, openCount(tasks))
+  const startRead = (id: string, refresh: boolean) => {
+    const request = read(id, refresh).finally(() => { if (inflight.get(id) === request) inflight.delete(id) })
+    inflight.set(id, request); return request
   }
-
-  const createTask = async (projectId: string, description: string): Promise<ProjectTask> => {
-    const { result, isCurrentBinding } = await mutate<ProjectTask>(
-      CreateProjectTask,
-      { input: { projectId, description } },
-      'createProjectTask',
-    )
-    if (isCurrentBinding) {
-      await applyChange(projectId, (tasks) => [...tasks.filter((task) => task.taskId !== result.taskId), result])
-    }
-    return result
+  const fetchTasks = (id: string, force = false): Promise<ProjectTask[]> => {
+    if (force) return startRead(id, true)
+    if (getList(id)?.hasLoaded) return Promise.resolve(getList(id)!.tasks)
+    return inflight.get(id) ?? startRead(id, false)
   }
-
-  const updateTaskDescription = async (projectId: string, taskId: string, description: string): Promise<ProjectTask> => {
-    const { result, isCurrentBinding } = await mutate<ProjectTask>(
-      UpdateProjectTask,
-      { input: { projectId, taskId, description } },
-      'updateProjectTask',
-    )
-    if (isCurrentBinding) {
-      await applyChange(projectId, (tasks) => [...tasks.filter((task) => task.taskId !== taskId), result])
-    }
-    return result
+  const refreshTasks = (id: string): Promise<ProjectTask[]> => getList(id)?.refreshPending ? inflight.get(id)! : startRead(id, true)
+  const mutate = async <T>(id: string, mutation: unknown, input: Record<string, unknown>, field: string, change: (tasks: ProjectTask[], result: T) => ProjectTask[], eligible: () => boolean = () => true): Promise<T> => {
+    const revision = node.bindingRevision
+    const client = getApolloClient()
+    const owner = epoch(id), deleted = owner.deleted
+    owner.write++; releaseRead(id)
+    const current = () => node.bindingRevision === revision && owner.deleted === deleted && eligible()
+    try {
+      await ready(revision)
+      if (!current()) throw new ProjectRequestError('Task draft is no longer current.', null)
+      const {data, errors} = await client.mutate({mutation, variables: {input}})
+      throwProjectGraphqlErrors(errors)
+      const result = data?.[field] as T | undefined
+      if (result == null) throw new ProjectRequestError('Task mutation returned no result.', null)
+      owner.write++; releaseRead(id)
+      if (current()) {
+        const loaded = getList(id)
+        if (loaded?.hasLoaded) publish(id, change(loaded.tasks, result))
+        else await startRead(id, false).catch(() => undefined) // A returned Task is not a complete count snapshot.
+      }
+      return result
+    } catch (cause) { throw toProjectRequestError(cause) }
+    finally { owner.write++; if (current()) releaseRead(id) }
   }
-
-  const deleteTask = async (projectId: string, taskId: string): Promise<boolean> => {
-    const { result, isCurrentBinding } = await mutate<boolean>(
-      DeleteProjectTask,
-      { input: { projectId, taskId } },
-      'deleteProjectTask',
-    )
-    if (isCurrentBinding) {
-      await applyChange(projectId, (tasks) => tasks.filter((task) => task.taskId !== taskId))
-    }
-    return result
-  }
-
-  watch(
-    () => windowNodeContextStore.bindingRevision,
-    () => invalidate(),
-    { flush: 'sync' },
-  )
-
-  return {
-    listsByProjectId,
-    getList,
-    invalidate,
-    forget,
-    fetchTasks,
-    createTask,
-    updateTaskDescription,
-    deleteTask,
-  }
+  const createTask = (projectId: string, description: string, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean) => mutate<ProjectTask>(projectId, CreateProjectTask,
+    {projectId, description, ...(contextDraft ? {contextDraft} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
+  const updateTask = (projectId: string, taskId: string, description: string, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean) => mutate<ProjectTask>(projectId, UpdateProjectTask,
+    {projectId, taskId, description, ...(contextChanges ? {contextChanges} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
+  const deleteTask = (projectId: string, taskId: string, eligible?: () => boolean) => mutate<boolean>(projectId, DeleteProjectTask, {projectId, taskId}, 'deleteProjectTask', (tasks) => tasks.filter((t) => t.taskId !== taskId), eligible)
+  watch(() => node.bindingRevision, invalidate, {flush: 'sync'})
+  return {listsByProjectId, searchByProjectId, getList, setSearch, invalidate, forget, releaseRead, fetchTasks, refreshTasks, createTask, updateTask, deleteTask}
 })

@@ -1,0 +1,19 @@
+{
+  "head": "dba9a6b9010e54d2b745b3ad2bf0b43364cad6de",
+  "mergeAncestor": "a5123e7d08f66bbb08440340db167fa4ccb5eba0",
+  "correctionOnlyTwoTests": [
+    "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts",
+    "autobyteus-web/tests/integration/voice-input-extension.integration.test.ts"
+  ],
+  "mentionsEntireFileEqualsOneMockMemberReplacement": true,
+  "mentionTestsPreserved": 11,
+  "existingInstallScenarioEqualsOnlyLastErrorDiagnosticReplacement": true,
+  "runtimeArchiveCreatedBeforeListenAndBufferShaCaptured": true,
+  "voiceIntegrationTests": 2,
+  "productionChangedByIR002": false,
+  "fixtureHazardNotOriginalFailureCauseAttribution": true,
+  "coveredFileSha256": {
+    "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts": "b876c05e3820e21ea257b2903833fab22aab93e7495842833d15686ce35637ba",
+    "autobyteus-web/tests/integration/voice-input-extension.integration.test.ts": "cadc6d2813fe50b55f49829a49889b72b8162ffaf07c92dee06d4607f4cfecd2"
+  }
+}

@@ -1,0 +1,13 @@
+?? tickets/in-progress/project-task-manager-foundations/delivery-evidence/
+?? tickets/in-progress/project-task-manager-foundations/delivery-local-fix-request.md
+?? tickets/in-progress/project-task-manager-foundations/delivery-package-inventory.json
+?? tickets/in-progress/project-task-manager-foundations/delivery-revision-record.md
+?? tickets/in-progress/project-task-manager-foundations/docs-sync-report.md
+?? tickets/in-progress/project-task-manager-foundations/handoff-summary.md
+?? tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/
+?? tickets/in-progress/project-task-manager-foundations/release-deployment-report.md
+a5123e7d0 Merge remote-tracking branch 'origin/personal' into codex/project-task-manager-foundations
+5e902fc19 docs(validation): record CRR-002 proportional test review Pass
+35f608df7 docs(validation): accept user waiver of optional real voice retest
+17e292320 docs(validation): clarify untouched raw evidence hygiene
+34c9e60ce docs(validation): record task API/E2E evidence and real voice blocker

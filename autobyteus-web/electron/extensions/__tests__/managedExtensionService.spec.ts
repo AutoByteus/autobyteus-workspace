@@ -83,12 +83,12 @@ describe('ManagedExtensionService', () => {
   beforeEach(async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-extension-'))
 
+    // A release serves immutable bytes: hash and download the same archive.
+    const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
+    await createWorkerArchive(runtimeArchivePath)
+    const runtimeSha = createHash('sha256').update(await fs.readFile(runtimeArchivePath)).digest('hex')
+
     server = createServer(async (request, response) => {
-      const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
-
-      await createWorkerArchive(runtimeArchivePath)
-
-      const runtimeSha = createHash('sha256').update(await fs.readFile(runtimeArchivePath)).digest('hex')
 
       const manifest = {
         schemaVersion: 2,
@@ -165,7 +165,7 @@ describe('ManagedExtensionService', () => {
     const extensionRoot = path.join(tempDir, 'extensions', 'voice-input')
     const registryPath = path.join(tempDir, 'extensions', 'registry.json')
 
-    expect(voiceInput?.status).toBe('installed')
+    expect(voiceInput?.status, JSON.stringify(voiceInput)).toBe('installed')
     expect(voiceInput?.enabled).toBe(false)
     expect(await fs.readFile(registryPath, 'utf8')).toContain('"enabled": false')
     await expect(fs.access(path.join(extensionRoot, 'runtime', 'bin', process.platform === 'win32' ? 'voice-input-worker.cmd' : 'voice-input-worker'))).resolves.toBeUndefined()
@@ -197,14 +197,15 @@ describe('ManagedExtensionService', () => {
   it('preserves enabled state and language mode across reinstall', async () => {
     const service = new ManagedExtensionService(tempDir)
 
-    await service.install('voice-input')
+    const installed = await service.install('voice-input')
+    expect(installed.find(entry => entry.id === 'voice-input')?.status, JSON.stringify(installed)).toBe('installed')
     await service.updateVoiceInputSettings('voice-input', { languageMode: 'zh', audioInputDeviceId: 'virtual-source' })
     await service.enable('voice-input')
 
     const state = await service.reinstall('voice-input')
     const voiceInput = state.find((entry) => entry.id === 'voice-input')
 
-    expect(voiceInput?.status).toBe('installed')
+    expect(voiceInput?.status, JSON.stringify(voiceInput)).toBe('installed')
     expect(voiceInput?.enabled).toBe(true)
     expect(voiceInput?.settings.languageMode).toBe('zh')
     expect(voiceInput?.settings.audioInputDeviceId).toBe('virtual-source')

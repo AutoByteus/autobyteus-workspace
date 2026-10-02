@@ -18,7 +18,7 @@ vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ colla
 vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => reactive({
   isAvailable: false, isStarting: false, isRecording: false, isTranscribing: false,
   initialize: vi.fn(async () => undefined), cleanup: vi.fn(async () => undefined),
-  cancelOperationForSource: vi.fn(async () => undefined), toggleRecording: vi.fn(async () => undefined),
+  cancelOperationForTarget: vi.fn(async () => undefined), toggleRecording: vi.fn(async () => undefined),
 }) }))
 vi.mock('~/stores/contextFileUploadStore', () => ({ useContextFileUploadStore: () => reactive({ isUploading: false }) }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => reactive({ isEmbeddedWindow: false }) }))

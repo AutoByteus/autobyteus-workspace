@@ -1,0 +1,8 @@
+{
+  "oldRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+  "currentRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization",
+  "oldTicket": "tickets/in-progress/project-task-manager-foundations",
+  "currentTicket": "tickets/done/project-task-manager-foundations",
+  "policy": "Current delivery-owned docs use current absolute paths. Historical upstream reports and DR-001/002 entries remain unchanged; old paths are as-of references. Cumulative current inventory maps all repository references; external Product references stay unchanged.",
+  "archivedAt": "2026-10-02T19:14:34.473383+00:00"
+}

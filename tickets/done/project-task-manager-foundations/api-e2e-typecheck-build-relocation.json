@@ -1,0 +1,16 @@
+{
+  "ownedBackupRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-api-e2e-build-backup-h7t2nsxz",
+  "items": [
+    {
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/electron-dist",
+      "backup": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-api-e2e-build-backup-h7t2nsxz/electron-dist"
+    },
+    {
+      "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/resources",
+      "backup": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-task-api-e2e-build-backup-h7t2nsxz/resources"
+    }
+  ],
+  "reason": "Own stopped generated package output is included by Nuxt broad glob; no tsconfig suppression/heap override",
+  "restored": true,
+  "ownedBackupRootRemoved": true
+}

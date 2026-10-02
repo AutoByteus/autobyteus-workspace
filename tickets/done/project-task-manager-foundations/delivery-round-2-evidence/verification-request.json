@@ -1,0 +1,21 @@
+{
+  "package": "PROJ-TASK-MANAGER-20261002-001",
+  "deliveryRevision": "DR-002",
+  "candidateHead": "ba1e6c94d0670ecac8ac59a883fab4dacfdcc3a2",
+  "currentBase": "5e3cb2f720e6fc80173099075daf55594ed58de9",
+  "scope": "Integrated candidate plus five docs/handoff/notes edits; repository finalization to origin/personal only, no release/deployment/default change.",
+  "userVerificationReceived": false,
+  "requestStatus": "User prompt submitted; request_user_input_async confirmed accepted=true",
+  "choices": [
+    "Fresh isolated worktree build for hands-on verification",
+    "Explicit integrated acceptance on recorded evidence and repository-only finalization",
+    "Requested changes"
+  ],
+  "residuals": [
+    "Real voice Not Tested \u2014 user-waived, independently UNVERIFIED; AC-018 unchanged",
+    "Last full VueTSC FAILED387/base388 PRE-INTEGRATION; no current full checker/web build/package Pass",
+    "Prior package observations pre-integration; current Projects browser and doubled composer fixture separate evidence classes"
+  ],
+  "requestAcceptanceIsUserVerification": false,
+  "prompt": "Do you verify and accept this integrated Projects/Tasks package for repository finalization to origin/personal, or would you like a fresh isolated worktree build first? Real voice remains user-waived/unverified, and there is no current full typecheck or packaged-app Pass. No release, deployment or default-setting change is proposed."
+}

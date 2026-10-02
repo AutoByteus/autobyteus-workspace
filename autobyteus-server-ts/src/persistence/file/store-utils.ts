@@ -195,6 +195,7 @@ export const writeRawFile = async (filePath: string, content: string): Promise<v
 export const updateJsonArrayFile = async <T>(
   filePath: string,
   updater: (rows: T[]) => Promise<T[]> | T[],
+  onCommitted?: (rows: T[]) => void,
 ): Promise<T[]> =>
   withFilePathLock(filePath, async () => {
     await ensureParentDir(filePath);
@@ -203,6 +204,8 @@ export const updateJsonArrayFile = async <T>(
     const tempPath = getTempPath(filePath);
     await fs.writeFile(tempPath, encodeJson(nextRows), "utf-8");
     await fs.rename(tempPath, filePath);
+    // Observers must be synchronous and non-throwing. Other callers are unchanged.
+    onCommitted?.(nextRows);
     return nextRows;
   });
 

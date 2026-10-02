@@ -1,0 +1,251 @@
+{
+  "surface": "normal development stack; implementation self-inspection, not API/E2E sign-off",
+  "observations": [
+    {
+      "name": "01-new-project-desktop",
+      "url": "/projects/new",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "H1",
+      "text": "Projects\nNew project\n\nName your project. Workspaces can be added now or later.\n\nName (required)\nDescription (optional)\nWorkspaces (optional)\n\nAdd now or later. Describe what each workspace is for.\n\nAdd workspace\n\nNo workspaces linked. You can add them later.\n\nCancel\nCreate project"
+    },
+    {
+      "name": "02-project-required-desktop",
+      "url": "/projects/new",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "project-name-input",
+      "text": "Projects\nNew project\n\nName your project. Workspaces can be added now or later.\n\nName (required)\n\nEnter a project name.\n\nDescription (optional)\nWorkspaces (optional)\n\nAdd now or later. Describe what each workspace is for.\n\nAdd workspace\n\nNo workspaces linked. You can add them later.\n\nCancel\nCreate project"
+    },
+    {
+      "name": "03-created-empty-board-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7?notice=created",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "BODY",
+      "text": "Projects\n\nProject created.\n\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n0\n\nNo tasks"
+    },
+    {
+      "name": "04-new-task-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/new",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "task-page-heading",
+      "text": "Back to tasks\n\nImplementation review\n\nNew task\n\nDescribe the work to be done. You can add more detail as the task develops.\n\nTask details\nDescription (required)\n\nThe first line is the task's summary on the board. Use the remaining lines for context and expected outcomes.\n\nContext Files (0)\nDrag, paste or upload\n\nCtrl+Enter or ⌘+Enter to save\n\nFiles are saved with this task on the selected node. Voice input requires the optional desktop extension.\n\nCancel\nCreate task"
+    },
+    {
+      "name": "05-task-required-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/new",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "task-page-description-input",
+      "text": "Back to tasks\n\nImplementation review\n\nNew task\n\nDescribe the work to be done. You can add more detail as the task develops.\n\nTask details\nDescription (required)\n\nThe first line is the task's summary on the board. Use the remaining lines for context and expected outcomes.\n\nContext Files (0)\nDrag, paste or upload\n\nCtrl+Enter or ⌘+Enter to save\n\nFiles are saved with this task on the selected node. Voice input requires the optional desktop extension.\n\nDescribe the task.\n\nCancel\nCreate task"
+    },
+    {
+      "name": "06-context-upload-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/new",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "task-page-description-input",
+      "text": "Back to tasks\n\nImplementation review\n\nNew task\n\nDescribe the work to be done. You can add more detail as the task develops.\n\nTask details\nDescription (required)\n\nThe first line is the task's summary on the board. Use the remaining lines for context and expected outcomes.\n\nContext Files (2)\nimplementation-note.txt\n\nFile · 28 B\n\nlayout-check.png\n\nImage · 68 B\n\nClear all\n\nCtrl+Enter or ⌘+Enter to save\n\nFiles are saved with this task on the selected node. Voice input requires the optional desktop extension.\n\nCancel\nCreate task"
+    },
+    {
+      "name": "07-continuous-board-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7?notice=task-created",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "BODY",
+      "text": "Projects\n\nTask created.\n\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n1\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files\nIn Progress\n0\n\nNo tasks\n\nDone\n0\n\nNo tasks"
+    },
+    {
+      "name": "08-task-detail-files-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/project_task_43d19ad9-b736-47f4-89fb-b95e80213059",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "task-page-heading",
+      "text": "Back to tasks\nImplementation review\nTask details\nTo Do\nEdit task\nDelete task\nDescription\n\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n\nContext Files (2)\nimplementation-note.txt\n\nFile · 28 B\n\nlayout-check.png\n\nImage · 68 B"
+    },
+    {
+      "name": "09-image-preview-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/project_task_43d19ad9-b736-47f4-89fb-b95e80213059",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "BUTTON",
+      "text": "Back to tasks\nImplementation review\nTask details\nTo Do\nEdit task\nDelete task\nDescription\n\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n\nContext Files (2)\nimplementation-note.txt\n\nFile · 28 B\n\nlayout-check.png\n\nImage · 68 B\n\nlayout-check.png\n\nClose preview"
+    },
+    {
+      "name": "10-task-delete-inline-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/project_task_43d19ad9-b736-47f4-89fb-b95e80213059",
+      "width": 1512,
+      "height": 862,
+      "scrollWidth": 1512,
+      "focus": "task-page-delete-cancel",
+      "text": "Back to tasks\nImplementation review\nTask details\nTo Do\nEdit task\nDelete task\nDelete task?\n\nDelete the task “Inspect durable task context”? This cannot be undone.\n\nCancel\nDelete task\nDescription\n\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n\nContext Files (2)\nimplementation-note.txt\n\nFile · 28 B\n\nlayout-check.png\n\nImage · 68 B"
+    },
+    {
+      "name": "11-task-actions-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/project_task_43d19ad9-b736-47f4-89fb-b95e80213059",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "task-page-delete",
+      "text": "Back to tasks\nImplementation review\nTask details\nTo Do\nEdit task\nDelete task\nDescription\n\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n\nContext Files (2)\nimplementation-note.txt\n\nFile · 28 B\n\nlayout-check.png\n\nImage · 68 B"
+    },
+    {
+      "name": "12-continuous-board-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "BODY",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n1\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files\nIn Progress\n0\n\nNo tasks\n\nDone\n0\n\nNo tasks"
+    },
+    {
+      "name": "13-no-match-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "project-tasks-search-input",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\n\nNo matching tasks\n\nTry another search.\n\nClear search"
+    },
+    {
+      "name": "14-task-composer-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/new",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "task-page-heading",
+      "text": "Back to tasks\n\nImplementation review\n\nNew task\n\nDescribe the work to be done. You can add more detail as the task develops.\n\nTask details\nDescription (required)\n\nThe first line is the task's summary on the board. Use the remaining lines for context and expected outcomes.\n\nContext Files (0)\nDrag, paste or upload\n\nCtrl+Enter or ⌘+Enter to save\n\nFiles are saved with this task on the selected node. Voice input requires the optional desktop extension.\n\nCancel\nCreate task"
+    },
+    {
+      "name": "15-project-form-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/edit",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "H1",
+      "text": "Back to project\nEdit project\n\nUpdate project details and linked workspaces.\n\nName (required)\nDescription (optional)\nWorkspaces (optional)\n\nAdd now or later. Describe what each workspace is for.\n\nAdd workspace\n\nNo workspaces linked. You can add them later.\n\nCancel\nSave changes"
+    },
+    {
+      "name": "16-new-folder-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/edit",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "workspace-description-0",
+      "text": "Back to project\nEdit project\n\nUpdate project details and linked workspaces.\n\nName (required)\nDescription (optional)\nWorkspaces (optional)\n\nAdd now or later. Describe what each workspace is for.\n\nAdd workspace\nExisting workspace\nNew folder\nFolder path\nDescription (optional)\nCancel\nSave changes"
+    },
+    {
+      "name": "17-project-workspaces-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7?notice=saved&tab=workspaces",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "project-tab-workspaces",
+      "text": "Projects\n\nChanges saved.\n\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nWorkspaces\n\nRegistered workspaces that belong to this project, with a note on what each one is for.\n\nAdd workspace\nproject-task-foundations-no-folder-1790956789963\n\n/tmp/project-task-foundations-no-folder-1790956789963\n\nMetadata registration only; no folder creation.\n\nEdit\nUnlink"
+    },
+    {
+      "name": "18-refresh-filtered-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "BODY",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n1\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "19-refresh-complete-narrow",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "focus": "project-tasks-search-input",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n1\nReview the new Refresh control\nExternal manifest write while the board is open.\nDone\n1\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "20-refresh-complete-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "project-tasks-search-input",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n1\nReview the new Refresh control\nExternal manifest write while the board is open.\nDone\n1\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "21-project-delete-count-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "project-delete-cancel",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n1\nReview the new Refresh control\nExternal manifest write while the board is open.\nDone\n1\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "22-refresh-pending-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "BODY",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefreshing…\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n2\nReview the new Refresh control\nExternal manifest write while the board is open.\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "23-refresh-error-retains-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "BODY",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\n\nTasks were not refreshed. Previously loaded tasks are still shown.\n\nFailed to fetch\n\nTry again\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n2\nReview the new Refresh control\nExternal manifest write while the board is open.\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "24-board-container-single-column",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7",
+      "width": 1070,
+      "height": 806,
+      "scrollWidth": 1070,
+      "focus": "BODY",
+      "text": "Projects\nImplementation review\n\nTest-owned project for rendered implementation inspection.\n\nEdit\nDelete\nTasks\nWorkspaces\nSearch tasks\nRefresh\nNew task\nTo Do\n0\n\nNo tasks\n\nIn Progress\n0\n\nNo tasks\n\nDone\n2\nReview the new Refresh control\nExternal manifest write while the board is open.\nInspect durable task context\nUse the attached implementation note to check real saved context after reload.\n2 files"
+    },
+    {
+      "name": "25-edit-project-existing-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/edit",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "H1",
+      "text": "Back to project\nEdit project\n\nUpdate project details and linked workspaces.\n\nName (required)\nDescription (optional)\nWorkspaces (optional)\n\nAdd now or later. Describe what each workspace is for.\n\nAdd workspace\nExisting workspace\nNew folder\nWorkspace\nSelect a workspace\nproject-task-foundations-no-folder-1790956789963\n\n/tmp/project-task-foundations-no-folder-1790956789963\n\nDescription (optional)\nCancel\nSave changes"
+    },
+    {
+      "name": "26-edit-task-real-delta-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/project_task_43d19ad9-b736-47f4-89fb-b95e80213059/edit",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "task-page-description-input",
+      "text": "Back to tasks\n\nImplementation review\n\nEdit task\n\nUpdate the description and context files without changing this task's identity or status.\n\nTask details\nDescription (required)\n\nThe first line is the task's summary on the board. Use the remaining lines for context and expected outcomes.\n\nContext Files (1)\nlayout-check.png\n\nImage · 68 B\n\nClear all\n\nCtrl+Enter or ⌘+Enter to save\n\nFiles are saved with this task on the selected node. Voice input requires the optional desktop extension.\n\nCancel\nSave changes"
+    },
+    {
+      "name": "27-task-saved-delta-desktop",
+      "url": "/projects/project_25620851-8140-4146-b1c2-b258848476f7/tasks/project_task_43d19ad9-b736-47f4-89fb-b95e80213059?notice=saved",
+      "width": 1512,
+      "height": 806,
+      "scrollWidth": 1512,
+      "focus": "task-page-heading",
+      "text": "Back to tasks\nImplementation review\nTask details\nDone\nEdit task\nDelete task\n\nChanges saved.\n\nDescription\n\nInspect durable task context\nUpdated description, unchanged Done status; explicit file removal.\n\nContext Files (1)\nlayout-check.png\n\nImage · 68 B"
+    }
+  ],
+  "errors": [],
+  "narrowFix": "toolbar wraps search at board-container <480px",
+  "voice": "optional desktop extension unavailable in browser, not simulated"
+}

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { flushPromises, mount } from '@vue/test-utils'
+import { flushPromises, mount, RouterLinkStub } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import ProjectTaskBoard from '../ProjectTaskBoard.vue'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
@@ -12,6 +12,7 @@ const task = (taskId: string, description: string, updatedAt: string, status: Pr
   projectId: 'p1',
   description,
   status,
+  contextFiles: [],
   createdAt: updatedAt,
   updatedAt,
 })
@@ -19,7 +20,7 @@ const task = (taskId: string, description: string, updatedAt: string, status: Pr
 // The store keeps lists newest-updated first; seed them that way.
 const seed = (tasks: ProjectTask[]) => {
   store.fetchTasks = vi.fn(async (projectId: string) => {
-    store.listsByProjectId = { ...store.listsByProjectId, [projectId]: { status: 'ready', tasks, error: null } }
+    store.listsByProjectId = { ...store.listsByProjectId, [projectId]: {status: 'ready', tasks, hasLoaded: true, initialPending: false, refreshPending: false, error: null} }
     return tasks
   }) as any
 }
@@ -28,16 +29,16 @@ const mountBoard = () => mount(ProjectTaskBoard, {
   props: { projectId: 'p1' },
   global: {
     stubs: {
-      ProjectTaskDialog: { props: ['projectId', 'task'], template: '<div data-testid="project-task-dialog-stub">{{ task ? task.taskId : "new" }}</div>' },
+      NuxtLink: RouterLinkStub,
     },
   },
 })
 
 const column = (wrapper: ReturnType<typeof mountBoard>, status: string) => wrapper.get(`[data-testid="project-task-column-${status}"]`)
 const cardIds = (wrapper: ReturnType<typeof mountBoard>, status: string) =>
-  column(wrapper, status).findAll('button[data-testid^="project-task-card-"]').map((card) => card.attributes('data-testid')!.replace('project-task-card-', ''))
+  column(wrapper, status).findAll('a[data-testid^="project-task-row-"]').map((card) => card.attributes('data-testid')!.replace('project-task-row-', ''))
 const heading = (wrapper: ReturnType<typeof mountBoard>, status: string) =>
-  column(wrapper, status).get('h2').findAll('span').map((span) => span.text()).join(' ')
+  column(wrapper, status).get('h2').text().replace(/(\D)(\d+)$/, '$1 $2')
 
 describe('ProjectTaskBoard', () => {
   beforeEach(() => {
@@ -74,8 +75,7 @@ describe('ProjectTaskBoard', () => {
       expect(heading(wrapper, status)).toMatch(/ 0$/)
       expect(column(wrapper, status).get('[data-testid="project-task-column-empty"]').text()).toBe('No tasks')
     }
-    await wrapper.get('[data-testid="project-tasks-new-button"]').trigger('click')
-    expect(wrapper.get('[data-testid="project-task-dialog-stub"]').text()).toBe('new')
+    expect(wrapper.findAllComponents(RouterLinkStub).find((link) => link.attributes('data-testid') === 'project-tasks-new-button')?.props('to')).toBe('/projects/p1/tasks/new')
   })
 
   it('searches across columns, updates counts and recovers from no matches', async () => {
@@ -101,13 +101,12 @@ describe('ProjectTaskBoard', () => {
     expect(cardIds(wrapper, 'TODO')).toEqual(['t3', 't1'])
   })
 
-  it('opens a card in the dialog', async () => {
+  it('links a contiguous row to the Task detail page', async () => {
     seed([task('t1', 'a', '2026-09-27T01:00:00.000Z')])
     const wrapper = mountBoard()
     await flushPromises()
 
-    await wrapper.get('[data-testid="project-task-card-t1"]').trigger('click')
-    expect(wrapper.get('[data-testid="project-task-dialog-stub"]').text()).toBe('t1')
+    expect(wrapper.findAllComponents(RouterLinkStub).find((link) => link.attributes('data-testid') === 'project-task-row-t1')?.props('to')).toBe('/projects/p1/tasks/t1')
   })
 
   it('offers no drag, move or status controls (REQ-003)', async () => {
@@ -116,7 +115,7 @@ describe('ProjectTaskBoard', () => {
     await flushPromises()
 
     expect(wrapper.findAll('[draggable="true"], select')).toHaveLength(0)
-    expect(column(wrapper, 'TODO').findAll('button')).toHaveLength(1)
+    expect(column(wrapper, 'TODO').findAll('button')).toHaveLength(0)
   })
 
   it('uses a board-width container query, not viewport breakpoints, for the three-column switch', async () => {
@@ -149,7 +148,7 @@ describe('ProjectTaskBoard', () => {
 
   it('shows a retryable load error', async () => {
     store.fetchTasks = vi.fn(async (projectId: string) => {
-      store.listsByProjectId = { [projectId]: { status: 'error', tasks: [], error: new Error('offline') as any } }
+      store.listsByProjectId = { [projectId]: { status: 'error', hasLoaded: false, initialPending: false, refreshPending: false, tasks: [], error: new Error('offline') as any } }
       throw new Error('offline')
     }) as any
     const wrapper = mountBoard()

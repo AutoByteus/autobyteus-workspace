@@ -1,0 +1,15 @@
+{
+  "onlyDoubleInterfaceChanged": true,
+  "allAssertionsBodiesPreserved": true,
+  "focused1AndPublication4CasesUnchanged": true,
+  "productionSourceChanged": false,
+  "mockContractsMatchRealVoiceInputButton": true,
+  "files": [
+    "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts",
+    "autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts"
+  ],
+  "sha256": {
+    "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts": "c6dd97e9fb5716ed73bc655155399f29d336774513021d7811c5b66ec3d952b8",
+    "autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts": "f97d895d8bd8b16a72d88a26c7fb9383a75e5292039c42ac9ab338638a8b5cf1"
+  }
+}

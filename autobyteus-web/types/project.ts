@@ -18,6 +18,7 @@ export interface Project {
   updatedAt: string
   workspaces: ProjectWorkspace[]
   /** Number of this Project's Tasks whose status is not DONE. */
+  taskCount: number
   openTaskCount: number
 }
 
@@ -26,7 +27,12 @@ export type ProjectTaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE'
 export const PROJECT_TASK_STATUSES: readonly ProjectTaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE']
 
 /** A Project Task. It has no title: the description is its content, and its first line is its summary. */
+export interface ProjectTaskContextFile { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator?: string }
+export interface ProjectTaskContextDraft { draftId: string; storedFilenames: string[] }
+export interface ProjectTaskContextChanges { draftId?: string; addStoredFilenames?: string[]; removeStoredFilenames?: string[] }
+export interface ProjectWorkspaceInput { workspaceId: string; description: string }
 export interface ProjectTask {
+  contextFiles: ProjectTaskContextFile[]
   taskId: string
   projectId: string
   description: string

@@ -1,0 +1,105 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts composables/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+stderr | stores/__tests__/projectTaskStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/projectStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectsList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/voiceInputStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/projects/__tests__/ProjectTaskBoard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/projectTaskStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/projectStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectTaskBoard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/projects/__tests__/ProjectsList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/voiceInputStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/VoiceInputExtensionCard.spec.ts (8 tests) 34ms
+ ✓ stores/__tests__/projectStore.spec.ts (13 tests) 125ms
+ ✓ components/projects/__tests__/ProjectsList.spec.ts (6 tests) 60ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts (19 tests) 131ms
+ ✓ components/projects/__tests__/ProjectTaskBoard.spec.ts (8 tests) 123ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests) 197ms
+ ✓ stores/__tests__/projectTaskStore.spec.ts (16 tests) 340ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 56ms
+ ✓ components/projects/__tests__/ProjectDetail.spec.ts (13 tests) 125ms
+stderr | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/projects/__tests__/useProjectNotice.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/projects/__tests__/useProjectNotice.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (5 tests) 11ms
+ ✓ composables/projects/__tests__/useProjectNotice.spec.ts (2 tests) 9ms
+
+ Test Files  11 passed (11)
+      Tests  112 passed (112)
+   Start at  18:03:28
+   Duration  8.30s (transform 4.20s, setup 53.84s, collect 3.13s, tests 1.21s, environment 2.81s, prepare 2.03s)

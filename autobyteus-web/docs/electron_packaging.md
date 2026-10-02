@@ -959,7 +959,7 @@ platform validation responsibility rather than an inferred pass.
   - `AutoByteus/autobyteus-voice-runtime`
 - The extension lifecycle is:
   - `Install` downloads the platform runtime bundle into `~/.autobyteus/extensions/voice-input` and then performs local backend/model bootstrap for that machine
-  - `Enable` turns on the shared composer microphone without re-downloading
+  - `Enable` turns on shared composer/Task dictation without re-downloading
   - `Disable` turns off dictation while keeping the installed assets on disk
   - `Remove` deletes the managed extension assets and resets Voice Input-specific state
 - The published runtime release stays lightweight:
@@ -974,27 +974,44 @@ platform validation responsibility rather than an inferred pass.
 
 #### Capture Startup And Ownership
 
-The renderer's `voiceInputStore` owns one shared capture lifecycle for the
-composer and the Settings test control:
+The renderer's `voiceInputStore` owns one shared capture lifecycle for composer,
+Project Task draft and Settings test controls:
 
-- activation commits `isStarting` synchronously, before permission, device,
-  `getUserMedia`, `AudioContext`, or AudioWorklet initialization, so the
-  initiating control can render immediate pending feedback and reject duplicate
-  starts;
-- capture resources stay local to the pending attempt and are published to the
-  store only after the same attempt and source are still current; denial,
-  worklet failure, cancellation, and unmount stop/close any partially acquired
-  stream or audio context;
-- `recordingSource` distinguishes `composer` from `settings-test`.
-  `cancelOperationForSource(...)` only cancels a matching start or recording,
-  so unmounting one surface cannot stop the other surface's operation; and
-- successful startup transitions from starting to recording, while stop moves
-  the captured audio into transcription. Source-scoped cancellation does not
-  discard a transcription that no longer depends on the initiating component.
+- activation sets isStarting synchronously before permission, device,
+  getUserMedia, AudioContext or AudioWorklet initialization. Pending resources
+  remain local until the same attempt and destination are current; denial,
+  startup failure, cancellation and unmount dispose partially acquired capture;
+- recordingSource distinguishes composer, project-task and settings-test.
+  Composer/Task callers supply a VoiceTranscriptTarget with key, isCurrent and
+  appendTranscript. useComposerVoiceTarget adapts the actual composer context;
+  the Task draft owns its editable text. No active-AgentContext lookup, fake run
+  identity, auto-save/run launch or automatic audio attachment is involved;
+- generic `components/voiceInput/VoiceInputButton.vue` cancels only the matching
+  target on replacement/unmount. `cancelOperationForTarget(key)` cannot cancel
+  another destination. Settings uses source-scoped cancellation without a text
+  sink. Source cancellation can invalidate a matching pending transcription too;
+- `disposeCapture()` releases streams/worklet/context without invalidating the
+  operation generation. Stop can release capture before local IPC transcription
+  and still deliver to a current target. It is not interchangeable with cleanup;
+- cancellation/cleanup increments the generation, clears the text sink and
+  settles a pending audio flush. An already dispatched uncancellable IPC remains
+  globally busy until its finally block settles; late text/error is ignored.
+  This avoids starting competing capture while pretending the worker stopped.
 
-These are frontend state/resource rules only. They do not change the managed
-extension assets, local transcription runtime/model, IPC result contract, or
-persisted data.
+Unavailable browser/extension/device capability leaves typed and file authoring
+usable, without sample-transcript fallback. Transcribed text remains editable
+and requires explicit Task Save/composer Send. Capture/IPC/fake-worker repository
+fixtures prove these contracts, not real microphone permissions, official worker
+installation or live Electron transcription capability.
+
+Managed-extension HTTP test fixtures should build one immutable archive before
+listening and serve the captured bytes whose SHA appears in the manifest. Do not
+regenerate archives per request, retry checksum failures or weaken verification.
+Synthetic archive-timestamp hazards are not proof of an actual installed failure.
+
+These destination/resource rules do not change managed release assets, local
+model policy, IPC result shape or persisted extension settings. See
+[Projects](projects.md#optional-local-voice-destination) for Task authoring scope.
 
 ## Related Documentation
 

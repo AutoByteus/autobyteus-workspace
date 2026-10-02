@@ -2,6 +2,7 @@ import {
   Arg,
   Field,
   InputType,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -23,7 +24,28 @@ registerEnumType(ProjectTaskStatus, {
 });
 
 @ObjectType()
+export class ProjectTaskContextFile {
+  @Field(() => String) storedFilename!: string;
+  @Field(() => String) displayName!: string;
+  @Field(() => String) mimeType!: string;
+  @Field(() => Int) sizeBytes!: number;
+  @Field(() => String) locator!: string;
+}
+@InputType()
+export class ProjectTaskContextDraftInput {
+  @Field(() => String) draftId!: string;
+  @Field(() => [String]) storedFilenames!: string[];
+}
+@InputType()
+export class ProjectTaskContextChangesInput {
+  @Field(() => String, {nullable: true}) draftId?: string;
+  @Field(() => [String], {nullable: true}) addStoredFilenames?: string[];
+  @Field(() => [String], {nullable: true}) removeStoredFilenames?: string[];
+}
+
+@ObjectType()
 export class ProjectTask {
+  @Field(() => [ProjectTaskContextFile]) contextFiles!: ProjectTaskContextFile[];
   @Field(() => String)
   taskId!: string;
 
@@ -45,6 +67,7 @@ export class ProjectTask {
 
 @InputType()
 export class CreateProjectTaskInput {
+  @Field(() => ProjectTaskContextDraftInput, {nullable: true}) contextDraft?: ProjectTaskContextDraftInput;
   @Field(() => String)
   projectId!: string;
 
@@ -54,6 +77,7 @@ export class CreateProjectTaskInput {
 
 @InputType()
 export class UpdateProjectTaskInput {
+  @Field(() => ProjectTaskContextChangesInput, {nullable: true}) contextChanges?: ProjectTaskContextChangesInput;
   @Field(() => String)
   projectId!: string;
 
@@ -74,6 +98,7 @@ export class DeleteProjectTaskInput {
 }
 
 const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
+  contextFiles: task.contextFiles,
   taskId: task.taskId,
   projectId: task.projectId,
   description: task.description,
@@ -108,7 +133,7 @@ export class ProjectTaskResolver {
   async updateProjectTask(
     @Arg("input", () => UpdateProjectTaskInput) input: UpdateProjectTaskInput,
   ): Promise<ProjectTask> {
-    return withProjectErrors(async () => toGraphqlTask(await this.service.updateTaskDescription(input)));
+    return withProjectErrors(async () => toGraphqlTask(await this.service.updateTask(input)));
   }
 
   @Mutation(() => Boolean)

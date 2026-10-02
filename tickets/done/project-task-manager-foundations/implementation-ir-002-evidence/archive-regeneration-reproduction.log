@@ -1,0 +1,52 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest tests/integration/voice-input-extension.ir002-regression.test.ts --run -t 'serves the manifest checksum'
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+stderr | tests/integration/voice-input-extension.ir002-regression.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/voice-input-extension.ir002-regression.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ tests/integration/voice-input-extension.ir002-regression.test.ts (2 tests | 1 failed | 1 skipped) 1152ms
+   × voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads 1151ms
+     → expected false to be true // Object.is equality
+   ↓ voice input extension integration > installs, enables, and inserts transcript text into the draft
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/voice-input-extension.ir002-regression.test.ts > voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/voice-input-extension.ir002-regression.test.ts:232:34
+    230|     await new Promise((resolve) => setTimeout(resolve, 1100))
+    231|     const second = await download()
+    232|     expect(second.equals(first)).toBe(true)
+       |                                  ^
+    233|     expect(createHash('sha256').update(second).digest('hex')).toBe(ass…
+    234|     const nextManifestResponse = await fetch(`${serverBaseUrl}/manifes…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  19:49:46
+   Duration  7.19s (transform 3.40s, setup 5.41s, collect 80ms, tests 1.15s, environment 209ms, prepare 141ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

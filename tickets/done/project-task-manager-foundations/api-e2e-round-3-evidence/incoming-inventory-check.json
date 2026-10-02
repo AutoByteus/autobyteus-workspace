@@ -1,0 +1,2775 @@
+{
+  "incoming": 459,
+  "matched": 457,
+  "expectedCRR003SnapshotDifferences": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-report.md",
+      "expected": "7dfa38923f6907923b5e342b280305e28f8ba4cb591a2cc08d55ed73d3b3a94c",
+      "observed": "de8817eaa14791a30c6de3656ff12f4bde45749b26fddc74e7769af6833bb304",
+      "match": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-revision-record.md",
+      "expected": "3b8cb3a310d7812cbebdec0aed3f71f8b05c30f1401d4489376d2a2030be143f",
+      "observed": "a5bdc38c3dbf84e52d47fcde65ccda564cd098883059243f327228eb917f9117",
+      "match": false
+    }
+  ],
+  "checks": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/prototype-bootstrap-report.md",
+      "expected": "5ab7661a9832ddc8d2a008a4494337f9691158dbb2c76228041658cdc25714b8",
+      "observed": "5ab7661a9832ddc8d2a008a4494337f9691158dbb2c76228041658cdc25714b8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/final-browser-validation.json",
+      "expected": "574f934fdf56433faa9061c9d939d3418e569ea5825567cec17a4211c044c681",
+      "observed": "574f934fdf56433faa9061c9d939d3418e569ea5825567cec17a4211c044c681",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/final-build-output.txt",
+      "expected": "a05056ef13a7cc7fa917ff42eb27c826467feeb6fefff6769adab4780ef78429",
+      "observed": "a05056ef13a7cc7fa917ff42eb27c826467feeb6fefff6769adab4780ef78429",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/handoff-notes.md",
+      "expected": "f9f385b27792fa402d34d2999d880898ca11ceec1490e1921936cba0dd67e83e",
+      "observed": "f9f385b27792fa402d34d2999d880898ca11ceec1490e1921936cba0dd67e83e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/integration-validation.json",
+      "expected": "b3b8f987b1bca010755a7fd145287b33634cc43026e3ac40c5b5f2c0f2642a4a",
+      "observed": "b3b8f987b1bca010755a7fd145287b33634cc43026e3ac40c5b5f2c0f2642a4a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/prototype-change-log.md",
+      "expected": "a155cb8a322ecad0b21f71a799d048cb8830675622c358f9a830610728d0a70f",
+      "observed": "a155cb8a322ecad0b21f71a799d048cb8830675622c358f9a830610728d0a70f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/prototype-runbook.md",
+      "expected": "9fa02feae6f818536d6e352919b901ad7498d333e067ffa2282c2ab8b9bd44b5",
+      "observed": "9fa02feae6f818536d6e352919b901ad7498d333e067ffa2282c2ab8b9bd44b5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/prototype-ticket.md",
+      "expected": "cd2d95258c1fccc53ee0b574a75ab7cfd67d4613b912bf4951a25d306380507e",
+      "observed": "cd2d95258c1fccc53ee0b574a75ab7cfd67d4613b912bf4951a25d306380507e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/requirement-impact.md",
+      "expected": "0c33c4b11c895aaf4b1241ff7c17a1ad9d782f3e240628476902a4ca3286ec22",
+      "observed": "0c33c4b11c895aaf4b1241ff7c17a1ad9d782f3e240628476902a4ca3286ec22",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/DATA-001-assessment.md",
+      "expected": "8fb831bcd002baba277c7b2911ceac642358a9e2a595f737d750a6203d047a65",
+      "observed": "8fb831bcd002baba277c7b2911ceac642358a9e2a595f737d750a6203d047a65",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/current-project-board.jpg",
+      "expected": "c1ede4f2a0d5673fc098bdf46f888832adbc91e1c9874c77baccef58b100118a",
+      "observed": "c1ede4f2a0d5673fc098bdf46f888832adbc91e1c9874c77baccef58b100118a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/integrated-default-board.jpg",
+      "expected": "5ece2e1336a04018767eb6128b8e26b3d3c3b403a844bb550afb2f46afbfff45",
+      "observed": "5ece2e1336a04018767eb6128b8e26b3d3c3b403a844bb550afb2f46afbfff45",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/integrated-default-task-detail.jpg",
+      "expected": "61dc0c2ec96769eaeb6ca9de13d696eb7fb2c9967d5db5840e18595c7dff480f",
+      "observed": "61dc0c2ec96769eaeb6ca9de13d696eb7fb2c9967d5db5840e18595c7dff480f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-1-browser-checks.json",
+      "expected": "9b97806f1563d256c54a8cc9c46d1a3d7cff38dcf45976282aead20f172fb35f",
+      "observed": "9b97806f1563d256c54a8cc9c46d1a3d7cff38dcf45976282aead20f172fb35f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-1-edit-project-desktop.jpg",
+      "expected": "00f6d451be2875d1cf7170514fa3769cb5d87819710d1111ce7a2c461e6bbd6f",
+      "observed": "00f6d451be2875d1cf7170514fa3769cb5d87819710d1111ce7a2c461e6bbd6f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-1-new-project-desktop.jpg",
+      "expected": "8d5c663256f445a308448ca12fada007565e9405b50ee7fe5286895500eacf90",
+      "observed": "8d5c663256f445a308448ca12fada007565e9405b50ee7fe5286895500eacf90",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-1-new-project-empty.jpg",
+      "expected": "f4be94db5b1b5917e1210f5fb2ffe020565ba0242dd0ee71851e4c62ba5ef9f5",
+      "observed": "f4be94db5b1b5917e1210f5fb2ffe020565ba0242dd0ee71851e4c62ba5ef9f5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-1-new-project-phone-empty.jpg",
+      "expected": "0fbeb543f4cc781866f83657a7197339769f537fe83f9efb0426b662f277d793",
+      "observed": "0fbeb543f4cc781866f83657a7197339769f537fe83f9efb0426b662f277d793",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-1-new-project-phone-workspace.jpg",
+      "expected": "ae9e0bb0a5ebcc576264bb787c3f0069d5321fa346c2ad8eda82cac3901c2419",
+      "observed": "ae9e0bb0a5ebcc576264bb787c3f0069d5321fa346c2ad8eda82cac3901c2419",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-2-created-notice-cleared.jpg",
+      "expected": "18fe31fb644b58352cb111b34e7bc654f29b76f6e85a7b0f259bfd5a26d56b94",
+      "observed": "18fe31fb644b58352cb111b34e7bc654f29b76f6e85a7b0f259bfd5a26d56b94",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-2-created-notice-visible.jpg",
+      "expected": "92796d011c17a75317a6ac927ce9c2a60556ea48a09357c5ee5c4c61bd71b8a5",
+      "observed": "92796d011c17a75317a6ac927ce9c2a60556ea48a09357c5ee5c4c61bd71b8a5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-2-notice-checks.json",
+      "expected": "3a57a62fb7aeabd27842928eaceb68e4a63c50643c5c660641a13e519211e310",
+      "observed": "3a57a62fb7aeabd27842928eaceb68e4a63c50643c5c660641a13e519211e310",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-new-task-desktop.jpg",
+      "expected": "00c27095ae9d5c372805d8c9483d9f3053fe0a4fe06738caa352c65c66677b9c",
+      "observed": "00c27095ae9d5c372805d8c9483d9f3053fe0a4fe06738caa352c65c66677b9c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-new-task-narrow.jpg",
+      "expected": "61bc394f98814559c52f357ab2f991270af8a59e14bd8765be262b65f827e7e3",
+      "observed": "61bc394f98814559c52f357ab2f991270af8a59e14bd8765be262b65f827e7e3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-review-ready.jpg",
+      "expected": "00c27095ae9d5c372805d8c9483d9f3053fe0a4fe06738caa352c65c66677b9c",
+      "observed": "00c27095ae9d5c372805d8c9483d9f3053fe0a4fe06738caa352c65c66677b9c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-task-delete-inline.jpg",
+      "expected": "601ce2da154daee1f333455a29f0802ee703aafdfbe4f46929bff433e46600b3",
+      "observed": "601ce2da154daee1f333455a29f0802ee703aafdfbe4f46929bff433e46600b3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-task-detail-desktop.jpg",
+      "expected": "4cc62b4f7a20e798e0e5cd621b3091e3fc7464cedcad6011f4bab36fd583863d",
+      "observed": "4cc62b4f7a20e798e0e5cd621b3091e3fc7464cedcad6011f4bab36fd583863d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-task-detail-narrow.jpg",
+      "expected": "d4e8fe9b4d8f5bfef979f1feb7d6acbb7987eb9fd0cdb893cf98de73ce80864b",
+      "observed": "d4e8fe9b4d8f5bfef979f1feb7d6acbb7987eb9fd0cdb893cf98de73ce80864b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-3-task-page-checks.json",
+      "expected": "06489202cd979543430afdc81e747b302255ef2da1138b5f72b4a3085cccfc82",
+      "observed": "06489202cd979543430afdc81e747b302255ef2da1138b5f72b4a3085cccfc82",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-agent-composer-reference.jpg",
+      "expected": "1c5b78f6ff7f2a358061dec8ed090e46aa1255bb3991e8b2d5637bf7d28c8bd3",
+      "observed": "1c5b78f6ff7f2a358061dec8ed090e46aa1255bb3991e8b2d5637bf7d28c8bd3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-task-composer-desktop.jpg",
+      "expected": "361a62e420e2466db6f82123a0e002b19799e45ef55945895c78e89410f9cc7e",
+      "observed": "361a62e420e2466db6f82123a0e002b19799e45ef55945895c78e89410f9cc7e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-task-composer-narrow-actions.jpg",
+      "expected": "4825e889e975fd26601d8ef713e2254832c9e59cdc79195585f8f09b83e86d64",
+      "observed": "4825e889e975fd26601d8ef713e2254832c9e59cdc79195585f8f09b83e86d64",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-task-composer-narrow.jpg",
+      "expected": "27de879000afc8cdfee606f9051a83c83faab1b7a8eb9290e61dec83de9cd763",
+      "observed": "27de879000afc8cdfee606f9051a83c83faab1b7a8eb9290e61dec83de9cd763",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-task-context-detail.jpg",
+      "expected": "02d231ff5740679009dfb0e7b4735b613c4515d2271e91adcf3638bfe530d601",
+      "observed": "02d231ff5740679009dfb0e7b4735b613c4515d2271e91adcf3638bfe530d601",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-task-input-checks.json",
+      "expected": "b14e237ef646766f12ca9133768d25bc706c32e498c8063259de39e4779b1034",
+      "observed": "b14e237ef646766f12ca9133768d25bc706c32e498c8063259de39e4779b1034",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-voice-error.jpg",
+      "expected": "dc0bafe216c5e57afbc76cb2d6d6d0780ab40b1c9553761e6faaa8195467cf2c",
+      "observed": "dc0bafe216c5e57afbc76cb2d6d6d0780ab40b1c9553761e6faaa8195467cf2c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-4-voice-recording.jpg",
+      "expected": "e56a9140d416906bb313d3f1032bdf58afb69b893cb5933b1cbca2d7130e1e3e",
+      "observed": "e56a9140d416906bb313d3f1032bdf58afb69b893cb5933b1cbca2d7130e1e3e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-browser-checks.json",
+      "expected": "b3f4c4ac83cd862e9d9ddd6f13475cdbada11983bcb7708dcba23323f2e4c88c",
+      "observed": "b3f4c4ac83cd862e9d9ddd6f13475cdbada11983bcb7708dcba23323f2e4c88c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-continuous-columns-desktop.jpg",
+      "expected": "e39ab2502dc6b751612dbce763fba8ed74c50a71e717c1e5b6598fcc206c3608",
+      "observed": "e39ab2502dc6b751612dbce763fba8ed74c50a71e717c1e5b6598fcc206c3608",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-continuous-columns-narrow.jpg",
+      "expected": "553b7efb7078270fba1d40b7daaf6eb2d7bb338da8eaa35e9c74d64fefbe8e85",
+      "observed": "553b7efb7078270fba1d40b7daaf6eb2d7bb338da8eaa35e9c74d64fefbe8e85",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-created-task-list.jpg",
+      "expected": "e3798b149cbfb751fea206bafced6296f10f87f70b2ae53e510402d7f423645c",
+      "observed": "e3798b149cbfb751fea206bafced6296f10f87f70b2ae53e510402d7f423645c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-edit-project-desktop.jpg",
+      "expected": "773e16118206d0ea9693fa1e46012b9671bb43577862369c967d547e27d1edd4",
+      "observed": "773e16118206d0ea9693fa1e46012b9671bb43577862369c967d547e27d1edd4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-edit-project-narrow.jpg",
+      "expected": "29fcbc536d5abcf0e45f1a2cffd4fe04e6201964a1e083aed9477b02b259d1ee",
+      "observed": "29fcbc536d5abcf0e45f1a2cffd4fe04e6201964a1e083aed9477b02b259d1ee",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-final-simplification-checks.json",
+      "expected": "6e765d2bef331775dd0f8cd23a1c1fd37816d6dafa79facfa2f279ab5ad3388b",
+      "observed": "6e765d2bef331775dd0f8cd23a1c1fd37816d6dafa79facfa2f279ab5ad3388b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-board-checks.json",
+      "expected": "dd931489ece3cd00af456a5d40b2c7dbe342b436c220f3d986a722c8d203d21e",
+      "observed": "dd931489ece3cd00af456a5d40b2c7dbe342b436c220f3d986a722c8d203d21e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-board-created.jpg",
+      "expected": "3891fac93b84306a42b9b785d05baef439163753c76f85bb0e42eaea759c8df5",
+      "observed": "3891fac93b84306a42b9b785d05baef439163753c76f85bb0e42eaea759c8df5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-board-desktop.jpg",
+      "expected": "434d0a2bd8c4066bbcf87c5db46fd9ba844ee877da51484f1e77b88654dcb45e",
+      "observed": "434d0a2bd8c4066bbcf87c5db46fd9ba844ee877da51484f1e77b88654dcb45e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-board-narrow.jpg",
+      "expected": "7d2e42d4790bc6936572b985a3504f31426491a10270b1868023537277313944",
+      "observed": "7d2e42d4790bc6936572b985a3504f31426491a10270b1868023537277313944",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-project-form-desktop.jpg",
+      "expected": "f5fc093d8b8981d43dbae5963c7b6151677777713c2c6cfa5195cfac89f1bf95",
+      "observed": "f5fc093d8b8981d43dbae5963c7b6151677777713c2c6cfa5195cfac89f1bf95",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-project-form-narrow.jpg",
+      "expected": "f177c22a9bc58d8c3ae1df90570aec33522cbb34c58febdb44265c5db8ecedc3",
+      "observed": "f177c22a9bc58d8c3ae1df90570aec33522cbb34c58febdb44265c5db8ecedc3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-task-actions-desktop.jpg",
+      "expected": "b7c30b2795d55ad0eda1ac478b1dd95ca566c35eb302e087894873835709a30a",
+      "observed": "b7c30b2795d55ad0eda1ac478b1dd95ca566c35eb302e087894873835709a30a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-simple-task-actions-narrow.jpg",
+      "expected": "3483039882813dc915689043dc82a4b770fb3d735956ae61906d0cc04c20cb0d",
+      "observed": "3483039882813dc915689043dc82a4b770fb3d735956ae61906d0cc04c20cb0d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-board-desktop.jpg",
+      "expected": "3fc1f96d666cfdbafc8dbf4098dd57b8336261c647b282d06d287aba92501761",
+      "observed": "3fc1f96d666cfdbafc8dbf4098dd57b8336261c647b282d06d287aba92501761",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-board-narrow.jpg",
+      "expected": "c8e276e2f662b3e00a9f42545751fbf51ea8d6f5df21302072cea9605dbce54d",
+      "observed": "c8e276e2f662b3e00a9f42545751fbf51ea8d6f5df21302072cea9605dbce54d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-detail-desktop.jpg",
+      "expected": "f4d7863704998447aaf806bcfebd59b69583dd10471c90bd8329c789b1528b4f",
+      "observed": "f4d7863704998447aaf806bcfebd59b69583dd10471c90bd8329c789b1528b4f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-detail-files.jpg",
+      "expected": "14b10e4fd149eb43041074d031dd9d7a24684144023584e9a6f8ed1c65bf1a10",
+      "observed": "14b10e4fd149eb43041074d031dd9d7a24684144023584e9a6f8ed1c65bf1a10",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-detail-narrow.jpg",
+      "expected": "6b7cc933791c0fda462493fa10d8ba4d692f7c7f821903962d7182a0e7fe7251",
+      "observed": "6b7cc933791c0fda462493fa10d8ba4d692f7c7f821903962d7182a0e7fe7251",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-list-desktop.jpg",
+      "expected": "3a7092289248a6cfba908c89249a66de73f8fc8c34bf23b0fe69bfcd158eab4c",
+      "observed": "3a7092289248a6cfba908c89249a66de73f8fc8c34bf23b0fe69bfcd158eab4c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-task-list-narrow.jpg",
+      "expected": "05deea0922afa9ca6bfd9a220503bd3b2034576feaf058439e0e243887d91a6d",
+      "observed": "05deea0922afa9ca6bfd9a220503bd3b2034576feaf058439e0e243887d91a6d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-workspace-actions-narrow.jpg",
+      "expected": "797908dcaac82508cd6364551aa281d7008fa7798d296a8daadb16a22ada3753",
+      "observed": "797908dcaac82508cd6364551aa281d7008fa7798d296a8daadb16a22ada3753",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-5-workspace-editor-narrow.jpg",
+      "expected": "c6fd76ef55ecfb52d699fd1e88a1e0e444f9696ff8bd1171017d2bcf8c2a94fd",
+      "observed": "c6fd76ef55ecfb52d699fd1e88a1e0e444f9696ff8bd1171017d2bcf8c2a94fd",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-6-existing-workspace-desktop.jpg",
+      "expected": "88c9b5b46d9e28a0cbd8a5b39a1a2a53257da1bd0c650808562b9fe2c44d2e42",
+      "observed": "88c9b5b46d9e28a0cbd8a5b39a1a2a53257da1bd0c650808562b9fe2c44d2e42",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-6-new-folder-desktop.jpg",
+      "expected": "ad99f2b05f5628f23dd9b3bec1fc571498bd8fc39b601a2de98cfd75d0c3175e",
+      "observed": "ad99f2b05f5628f23dd9b3bec1fc571498bd8fc39b601a2de98cfd75d0c3175e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-6-workspace-choice-checks.json",
+      "expected": "d37b831784afa7b0793c60f7f81afcf763d6af6c451590403fd9da78f10815b9",
+      "observed": "d37b831784afa7b0793c60f7f81afcf763d6af6c451590403fd9da78f10815b9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/round-6-workspace-choices-narrow.jpg",
+      "expected": "c2fb86ad3c69ff3052d0ae746fa08ef3b60ebed0c232ef7f49822c938c51afd5",
+      "observed": "c2fb86ad3c69ff3052d0ae746fa08ef3b60ebed0c232ef7f49822c938c51afd5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/test-fixtures/layout-reference.svg",
+      "expected": "38542c791e935def96afa37d4eb735dd283afc467a84a60873cfb8d42dac6a86",
+      "observed": "38542c791e935def96afa37d4eb735dd283afc467a84a60873cfb8d42dac6a86",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/test-fixtures/review-note.txt",
+      "expected": "ff7b7c9c9289d1b1fe17583560589fc46ca8ecdd27238b0e1ba9dcca8db32a6b",
+      "observed": "ff7b7c9c9289d1b1fe17583560589fc46ca8ecdd27238b0e1ba9dcca8db32a6b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-board-only-feedback.png",
+      "expected": "a9d5cb47288746488215bae849f93a53a2720037e8517e668eb16530621344a9",
+      "observed": "a9d5cb47288746488215bae849f93a53a2720037e8517e668eb16530621344a9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-continuous-column-feedback.png",
+      "expected": "85c0c4a64f492260ae2b3c6feae55e205b963cd2d3792f90ff717c5077000571",
+      "observed": "85c0c4a64f492260ae2b3c6feae55e205b963cd2d3792f90ff717c5077000571",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-edit-project-overlay.png",
+      "expected": "8bb963d9b1e65e3ce0a83b57c087f08100e1aa472fc6268ac1c7c693b9518722",
+      "observed": "8bb963d9b1e65e3ce0a83b57c087f08100e1aa472fc6268ac1c7c693b9518722",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-new-project-overlay.png",
+      "expected": "1924aabcf8ef7b7d840c686440ab0f18be717f5985fe105fd7f61670cf5f544e",
+      "observed": "1924aabcf8ef7b7d840c686440ab0f18be717f5985fe105fd7f61670cf5f544e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-project-form-design-feedback.png",
+      "expected": "c5ac6907a59bd6e0e426901c643391f4812819a6a30fdeb86942454ec4fb0b6b",
+      "observed": "c5ac6907a59bd6e0e426901c643391f4812819a6a30fdeb86942454ec4fb0b6b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-success-notice-feedback.png",
+      "expected": "5eaced97e6529efe8320e2326603669673ef5fa3f4edc923091e39b43482d651",
+      "observed": "5eaced97e6529efe8320e2326603669673ef5fa3f4edc923091e39b43482d651",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-task-actions-feedback.png",
+      "expected": "48f0988095249ee2afcdd5c010609111e10e265c21d7b676789da139ebb75a7e",
+      "observed": "48f0988095249ee2afcdd5c010609111e10e265c21d7b676789da139ebb75a7e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-task-board-return-feedback.png",
+      "expected": "bae67a84df6182505dcd3f62f00417b2e6223240fb6dbc64e7b2edf4c00de280",
+      "observed": "bae67a84df6182505dcd3f62f00417b2e6223240fb6dbc64e7b2edf4c00de280",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-task-detail-feedback.png",
+      "expected": "551cc3eefb9ec4423fcc8cb3807023ccdaf89cd3a074da773a41e14c77556efb",
+      "observed": "551cc3eefb9ec4423fcc8cb3807023ccdaf89cd3a074da773a41e14c77556efb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-task-list-design-feedback.png",
+      "expected": "0202fbfe7ea154aafec2a1585fc2b55d67e3f7f897310e5a4ffae8491c7c37bd",
+      "observed": "0202fbfe7ea154aafec2a1585fc2b55d67e3f7f897310e5a4ffae8491c7c37bd",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-evidence/user-task-popup-feedback.png",
+      "expected": "274d9a00d6f395343b320f08abb47fd25fbf07dfc578952a4b9d9a30c3321a17",
+      "observed": "274d9a00d6f395343b320f08abb47fd25fbf07dfc578952a4b9d9a30c3321a17",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-round-1.md",
+      "expected": "9751fab3d4d5b1bfbdbe0eeb5c0da043f2df74a0f1c2dfd041691eea6eb3fee6",
+      "observed": "9751fab3d4d5b1bfbdbe0eeb5c0da043f2df74a0f1c2dfd041691eea6eb3fee6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-round-3.md",
+      "expected": "0132e70560c4b18f2d17d2ea1e5c83e434fddfd3ac9a31b3523abf8ddd14f61a",
+      "observed": "0132e70560c4b18f2d17d2ea1e5c83e434fddfd3ac9a31b3523abf8ddd14f61a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-round-4.md",
+      "expected": "ba0d3b08fa90872a9e10e7b647e085dcbdd6a99846d5b6e4b847182bbd79ee00",
+      "observed": "ba0d3b08fa90872a9e10e7b647e085dcbdd6a99846d5b6e4b847182bbd79ee00",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-round-5.md",
+      "expected": "d4325476675390a3012c74707acb54d79e481d666701c1d27ef9cdaa75b07696",
+      "observed": "d4325476675390a3012c74707acb54d79e481d666701c1d27ef9cdaa75b07696",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/review-round-6.md",
+      "expected": "5fe733aa30af07297c376f60bc0880dbaec6690fe31d0b5f84ee0fc6ce7a4379",
+      "observed": "5fe733aa30af07297c376f60bc0880dbaec6690fe31d0b5f84ee0fc6ce7a4379",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-behavior-test-matrix.md",
+      "expected": "3bcd627f797bbd143044f8c00c0203580a4c1b0b4b31b3fdcf7dad23d26b0b01",
+      "observed": "3bcd627f797bbd143044f8c00c0203580a4c1b0b4b31b3fdcf7dad23d26b0b01",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-brainstorm-record.md",
+      "expected": "25b7cd91ae421f6ac25c1b0f1f91cced29a420b0cf5f412bf8498874c1416a43",
+      "observed": "25b7cd91ae421f6ac25c1b0f1f91cced29a420b0cf5f412bf8498874c1416a43",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-ux-spec.md",
+      "expected": "13d87e659aee53449e3fb1f59bed3c843459ebdb5e50cfb863d188c9eef9bb82",
+      "observed": "13d87e659aee53449e3fb1f59bed3c843459ebdb5e50cfb863d188c9eef9bb82",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-001-projects-index-desktop-1512x862.jpg",
+      "expected": "c69dccff2bd68b1fb4b454fe133d6975e63855babc013928de01bd89907fe9f2",
+      "observed": "c69dccff2bd68b1fb4b454fe133d6975e63855babc013928de01bd89907fe9f2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-002-continuous-board-desktop-1512x806.jpg",
+      "expected": "880fca8c8f2f9c23579885ee85e91f4cd048ef7c07b794d5f3f260b8f020e843",
+      "observed": "880fca8c8f2f9c23579885ee85e91f4cd048ef7c07b794d5f3f260b8f020e843",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-003-new-project-desktop-1512x806.jpg",
+      "expected": "27fec372d6359ccba587c5fd46e734edd82599bc2355f3705b3f3140dc780be1",
+      "observed": "27fec372d6359ccba587c5fd46e734edd82599bc2355f3705b3f3140dc780be1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-004-edit-project-existing-desktop-1512x806.jpg",
+      "expected": "63d9cabc0aceec02cc99595a6e6fc7485be0e559b2e8f75868eee0fc951371ba",
+      "observed": "63d9cabc0aceec02cc99595a6e6fc7485be0e559b2e8f75868eee0fc951371ba",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-005-edit-project-new-folder-desktop-1512x806.jpg",
+      "expected": "56aa7952454a42af0265fad64785759633483bed5b4ccfdcefc831d5b9805955",
+      "observed": "56aa7952454a42af0265fad64785759633483bed5b4ccfdcefc831d5b9805955",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-006-project-workspaces-desktop-1512x806.jpg",
+      "expected": "a260573fa87e13d8de8b0040e02bdbc41c0114d6e027e29f5e089d30170d6336",
+      "observed": "a260573fa87e13d8de8b0040e02bdbc41c0114d6e027e29f5e089d30170d6336",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-007-new-task-desktop-1512x862.jpg",
+      "expected": "c9d91bb8ee5f1eb2e82ab55673d592b1f359383003f3fc4bcb816f72d764812b",
+      "observed": "c9d91bb8ee5f1eb2e82ab55673d592b1f359383003f3fc4bcb816f72d764812b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-008-task-detail-desktop-1512x806.jpg",
+      "expected": "28bf9f118781a8017d62c9cab3c52e78001da35fbf5d3dea5f68b9de023f51e2",
+      "observed": "28bf9f118781a8017d62c9cab3c52e78001da35fbf5d3dea5f68b9de023f51e2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-009-task-delete-confirmation-desktop-1512x806.jpg",
+      "expected": "f7c187b56a031b8dd78a03ac4b6f7362e6a88743c834df7920b41c33f5bd1716",
+      "observed": "f7c187b56a031b8dd78a03ac4b6f7362e6a88743c834df7920b41c33f5bd1716",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-010-continuous-board-narrow-390x844.jpg",
+      "expected": "566b0e8c9b7be19a8372e16beee7305e16c14dc9c10579ab59dbadc4a457690c",
+      "observed": "566b0e8c9b7be19a8372e16beee7305e16c14dc9c10579ab59dbadc4a457690c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-011-project-form-narrow-390x844.jpg",
+      "expected": "0ec173c4121875c7231308e35fe752c046f311b01ee352d9ee28ae5f8f285651",
+      "observed": "0ec173c4121875c7231308e35fe752c046f311b01ee352d9ee28ae5f8f285651",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-012-task-composer-narrow-390x844.jpg",
+      "expected": "a2443f49678745d7b1d6794db6dabadb5333b1f78fedbba1f06b542bda11003c",
+      "observed": "a2443f49678745d7b1d6794db6dabadb5333b1f78fedbba1f06b542bda11003c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-013-task-validation-desktop-1512x862.jpg",
+      "expected": "8776545e7c79c5aea2671367717306207aa0a658740833f60223375536aca744",
+      "observed": "8776545e7c79c5aea2671367717306207aa0a658740833f60223375536aca744",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-014-task-voice-recording-desktop-1512x862.jpg",
+      "expected": "e10445558e9c07d9682d328b726f7ce5b9ddd31332e95d695a80a204916f7216",
+      "observed": "e10445558e9c07d9682d328b726f7ce5b9ddd31332e95d695a80a204916f7216",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-015-task-context-files-desktop-1512x806.jpg",
+      "expected": "88de4c62d94b10bf414fbc2041014b26f30afd3231fc4729ae332b10d062826c",
+      "observed": "88de4c62d94b10bf414fbc2041014b26f30afd3231fc4729ae332b10d062826c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-016-edit-task-desktop-1512x806.jpg",
+      "expected": "eb81456b11d04cb204e67d85d8fef2bdd576f6e90c71ef775b32017f868264d5",
+      "observed": "eb81456b11d04cb204e67d85d8fef2bdd576f6e90c71ef775b32017f868264d5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-017-board-no-match-desktop-1512x806.jpg",
+      "expected": "0dd4d6fc52e079e16b4ce2ffaeae3dabdfdb4e3f7b2c63806b32207e37f92fce",
+      "observed": "0dd4d6fc52e079e16b4ce2ffaeae3dabdfdb4e3f7b2c63806b32207e37f92fce",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-018-project-validation-desktop-1512x806.jpg",
+      "expected": "bee33273a68a3dc6cb241471d869b3aaa0747440d99ad27544f8617d4d6be1a0",
+      "observed": "bee33273a68a3dc6cb241471d869b3aaa0747440d99ad27544f8617d4d6be1a0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-019-empty-board-desktop-1512x806.jpg",
+      "expected": "33822b1f61a520199f5e6210dbc4c175822df904c7ec5437486c019473debf95",
+      "observed": "33822b1f61a520199f5e6210dbc4c175822df904c7ec5437486c019473debf95",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/visual-references/VIS-020-task-actions-narrow-390x844.jpg",
+      "expected": "7f18b3dd5e99e15b44d759312cca07d4da6ff418a1e25ae46fe4c711cb390c82",
+      "observed": "7f18b3dd5e99e15b44d759312cca07d4da6ff418a1e25ae46fe4c711cb390c82",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/TESTING.md",
+      "expected": "ebb7696c4b3eff25c2e44d82918360a97b847eb39351dbcb91648d203d93bfa8",
+      "observed": "ebb7696c4b3eff25c2e44d82918360a97b847eb39351dbcb91648d203d93bfa8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/AGENTS.md",
+      "expected": "08ecaf5c8aea25d325630b2643cdcf48c9798ce93a0037ab9b8c4bf776b35731",
+      "observed": "08ecaf5c8aea25d325630b2643cdcf48c9798ce93a0037ab9b8c4bf776b35731",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/docs/modules/agent_tools_mcp_server.md",
+      "expected": "187d1591a89017411553e63870b505c64c5de86d19fccfeadcda713af04f761d",
+      "observed": "187d1591a89017411553e63870b505c64c5de86d19fccfeadcda713af04f761d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/docs/modules/projects.md",
+      "expected": "42b2a63267715249a3d7733d57874a61a88a29bdb4ccccd2c9874a342a99c9db",
+      "observed": "42b2a63267715249a3d7733d57874a61a88a29bdb4ccccd2c9874a342a99c9db",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts",
+      "expected": "ddab050d17a0d6b74b42eaa4dcb742eda05795d904f6291db743069614308bb2",
+      "observed": "ddab050d17a0d6b74b42eaa4dcb742eda05795d904f6291db743069614308bb2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts",
+      "expected": "c02c47797b0eafb7750ceeb8246a790059dc2a32b1480be1aaffba23d7cd76e0",
+      "observed": "c02c47797b0eafb7750ceeb8246a790059dc2a32b1480be1aaffba23d7cd76e0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/fixtures/project-task-tool-writer.mjs",
+      "expected": "0b303ac6e9a008409c30fd8fbe48cb72e6b4f38dec140c6de413458171f38f10",
+      "observed": "0b303ac6e9a008409c30fd8fbe48cb72e6b4f38dec140c6de413458171f38f10",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/AGENTS.md",
+      "expected": "0fa3a9df4b7f3b0ff025f7dd40ae7618920e3718257e2ffd61d64285f6655d72",
+      "observed": "0fa3a9df4b7f3b0ff025f7dd40ae7618920e3718257e2ffd61d64285f6655d72",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+      "expected": "92ae0abfcdd4d53308e41dc77c0a3bd7924061be6d9ad9daf3037ec7f561a786",
+      "observed": "92ae0abfcdd4d53308e41dc77c0a3bd7924061be6d9ad9daf3037ec7f561a786",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts",
+      "expected": "b876c05e3820e21ea257b2903833fab22aab93e7495842833d15686ce35637ba",
+      "observed": "b876c05e3820e21ea257b2903833fab22aab93e7495842833d15686ce35637ba",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.spec.ts",
+      "expected": "44b112fe3353c8701496721e42d7653a958a9fca43a5bcc6b2a8d12ea54fce1a",
+      "observed": "44b112fe3353c8701496721e42d7653a958a9fca43a5bcc6b2a8d12ea54fce1a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/components/voiceInput/VoiceInputButton.vue",
+      "expected": "3b33911c3b2ed2c591ca92b17e3b90137f7fe76cfb9b7e17686842616cea10ba",
+      "observed": "3b33911c3b2ed2c591ca92b17e3b90137f7fe76cfb9b7e17686842616cea10ba",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/docs/electron_packaging.md",
+      "expected": "e82fb9150bfce9931cace83fd0defd6a090546ef055441d01e9f0577f5c1b0f8",
+      "observed": "e82fb9150bfce9931cace83fd0defd6a090546ef055441d01e9f0577f5c1b0f8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/docs/projects.md",
+      "expected": "707256461158e10fbe5485daeee59c3751f9f7996cc6a3ecbf29f82abb707678",
+      "observed": "707256461158e10fbe5485daeee59c3751f9f7996cc6a3ecbf29f82abb707678",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/electron/extensions/__tests__/managedExtensionService.spec.ts",
+      "expected": "980c958373b23d77fc6c16f0cce8d1bcf69f7fc99cabff94a1074f257db1682e",
+      "observed": "980c958373b23d77fc6c16f0cce8d1bcf69f7fc99cabff94a1074f257db1682e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-feature-probe.mjs",
+      "expected": "93d08042de1f5017938a3d25743b13dc6ce51036b5f8be26f83bec72fff2798b",
+      "observed": "93d08042de1f5017938a3d25743b13dc6ce51036b5f8be26f83bec72fff2798b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/integration/voice-input-extension.integration.test.ts",
+      "expected": "cadc6d2813fe50b55f49829a49889b72b8162ffaf07c92dee06d4607f4cfecd2",
+      "observed": "cadc6d2813fe50b55f49829a49889b72b8162ffaf07c92dee06d4607f4cfecd2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1.log",
+      "expected": "5c8f425850948bb491647791b87d30360351cd237202647a119b8659e7346054",
+      "observed": "5c8f425850948bb491647791b87d30360351cd237202647a119b8659e7346054",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-001-pass.png",
+      "expected": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "observed": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-002-pass.png",
+      "expected": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "observed": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-003-pass.png",
+      "expected": "5870372583d53650902bd4a5876aa0db2d31109941738d3b3bcd6d03dbc5c4f1",
+      "observed": "5870372583d53650902bd4a5876aa0db2d31109941738d3b3bcd6d03dbc5c4f1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-004-pass.png",
+      "expected": "8313e8536fcfe9daafbd05572b1cc46ff6ee075391f5d9bcbb27dbbdb1eef239",
+      "observed": "8313e8536fcfe9daafbd05572b1cc46ff6ee075391f5d9bcbb27dbbdb1eef239",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-005-pass.png",
+      "expected": "297d7a39617099f3e0c949f4e463fbb47e994d8f612d2fdb02fee910f2e463e6",
+      "observed": "297d7a39617099f3e0c949f4e463fbb47e994d8f612d2fdb02fee910f2e463e6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-006-pass.png",
+      "expected": "24bba2759c074c34c20faee360298954e28d158539c1781d48e6bae10f6fe65a",
+      "observed": "24bba2759c074c34c20faee360298954e28d158539c1781d48e6bae10f6fe65a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-007-failure.png",
+      "expected": "ca46d0ac2885d8fa9e3a751d169e5fca093ed724c3bc83bb55442faa54529d44",
+      "observed": "ca46d0ac2885d8fa9e3a751d169e5fca093ed724c3bc83bb55442faa54529d44",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-008-failure.png",
+      "expected": "1e79880955583e1e91ec87bbeca2e93620e37652140aa4fb254c75e3f6dcad13",
+      "observed": "1e79880955583e1e91ec87bbeca2e93620e37652140aa4fb254c75e3f6dcad13",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-009-failure.png",
+      "expected": "1e79880955583e1e91ec87bbeca2e93620e37652140aa4fb254c75e3f6dcad13",
+      "observed": "1e79880955583e1e91ec87bbeca2e93620e37652140aa4fb254c75e3f6dcad13",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-010-pass.png",
+      "expected": "8cc49aeb3172a6612b59e8a56334704a6a6c70dfb0e8aebc541331e7a676e9ec",
+      "observed": "8cc49aeb3172a6612b59e8a56334704a6a6c70dfb0e8aebc541331e7a676e9ec",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-011-failure.png",
+      "expected": "74d5f21dcafcdab36d0a4c78101112757140eced9e6fc64d095476e25ea504da",
+      "observed": "74d5f21dcafcdab36d0a4c78101112757140eced9e6fc64d095476e25ea504da",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool.log",
+      "expected": "ed34d0c8396378a8dd999b07bfda80fb65dd78b9b5edd16666a37d140f78f66a",
+      "observed": "ed34d0c8396378a8dd999b07bfda80fb65dd78b9b5edd16666a37d140f78f66a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/frontend.log",
+      "expected": "c77ab9d68904ccf45b0766af8fb3f5acbc98b0b945142aff80f91eed13d660da",
+      "observed": "c77ab9d68904ccf45b0766af8fb3f5acbc98b0b945142aff80f91eed13d660da",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/node-a-backend.log",
+      "expected": "ecc8eb9b4cacf8e9a3ce6c8fd22fb9456789779b4cbc0b9540275d9c42b908d1",
+      "observed": "ecc8eb9b4cacf8e9a3ce6c8fd22fb9456789779b4cbc0b9540275d9c42b908d1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/node-a-migrate.log",
+      "expected": "70a113124df1704ae2a94fc848c2bdd5039c99fa267f71008642baaea944dff5",
+      "observed": "70a113124df1704ae2a94fc848c2bdd5039c99fa267f71008642baaea944dff5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/node-b-backend.log",
+      "expected": "e567134e8907cd04bb4a809a48159ac5444b772cd251406daca8a00eb19e3d62",
+      "observed": "e567134e8907cd04bb4a809a48159ac5444b772cd251406daca8a00eb19e3d62",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/node-b-migrate.log",
+      "expected": "0964cdf1bef98113adc1eaebb1be2101ff277879af260c7f2610b54252ca82c5",
+      "observed": "0964cdf1bef98113adc1eaebb1be2101ff277879af260c7f2610b54252ca82c5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/result.json",
+      "expected": "0e01cb36645a9ecf35d21739e6c6629d70e7dd280b3173b915d762645caaa78d",
+      "observed": "0e01cb36645a9ecf35d21739e6c6629d70e7dd280b3173b915d762645caaa78d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2.log",
+      "expected": "21722fdbcd8137775869eafdf5a536c4d0809780b11dbc9f586771f3ec649b3b",
+      "observed": "21722fdbcd8137775869eafdf5a536c4d0809780b11dbc9f586771f3ec649b3b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-001-pass.png",
+      "expected": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "observed": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-002-pass.png",
+      "expected": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "observed": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-003-pass.png",
+      "expected": "dd27bd5befe94d0fc8b9d9ddad0f3d4c745b8b63953587d8175a90941cfb61c2",
+      "observed": "dd27bd5befe94d0fc8b9d9ddad0f3d4c745b8b63953587d8175a90941cfb61c2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-004-pass.png",
+      "expected": "1dd26c6e4610705c96ccc9c6b3664dfc40dc0bbdfb78b438d7d60f5c4fc2acce",
+      "observed": "1dd26c6e4610705c96ccc9c6b3664dfc40dc0bbdfb78b438d7d60f5c4fc2acce",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-005-pass.png",
+      "expected": "a9ef0d13c700c33c8531ba174187f48019f614739dc78d9655b4443864171c08",
+      "observed": "a9ef0d13c700c33c8531ba174187f48019f614739dc78d9655b4443864171c08",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-006-pass.png",
+      "expected": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "observed": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-007-pass.png",
+      "expected": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "observed": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-008-pass.png",
+      "expected": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "observed": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-009-failure.png",
+      "expected": "2756c4c768ff528832d1f0a435394956d269d86df4801e4bb5bc58deff0183f5",
+      "observed": "2756c4c768ff528832d1f0a435394956d269d86df4801e4bb5bc58deff0183f5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-010-pass.png",
+      "expected": "73eaf601dc81679af3c0879c681b6f5883e310f4984bcb2f0d98517f5d11bdd2",
+      "observed": "73eaf601dc81679af3c0879c681b6f5883e310f4984bcb2f0d98517f5d11bdd2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-011-pass.png",
+      "expected": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "observed": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-012-pass.png",
+      "expected": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "observed": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-013-failure.png",
+      "expected": "bbba4004b2d9afa0dbd9cac33ee8348b23888d91e4fee898dec13b828d6bf2a0",
+      "observed": "bbba4004b2d9afa0dbd9cac33ee8348b23888d91e4fee898dec13b828d6bf2a0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-014-failure.png",
+      "expected": "48554298ab1268393f7c715e14f5d6402b1a80667d7932ebc4fd135067c10bb1",
+      "observed": "48554298ab1268393f7c715e14f5d6402b1a80667d7932ebc4fd135067c10bb1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-015-failure.png",
+      "expected": "fb81d74d0a73b3fe40cd50d320ccadcb34bec5c0fc6931c3717b72e7dbc393eb",
+      "observed": "fb81d74d0a73b3fe40cd50d320ccadcb34bec5c0fc6931c3717b72e7dbc393eb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-016-pass.png",
+      "expected": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "observed": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/external-tool-1.json",
+      "expected": "22ded2ab8e124b161289768db39a1e87c4095cfa7d4977c01b2a8cc22b0a998b",
+      "observed": "22ded2ab8e124b161289768db39a1e87c4095cfa7d4977c01b2a8cc22b0a998b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/external-tool-2.json",
+      "expected": "89b9103c26934a35dbe81727b201c93ebb8e6a53e1b2517e89ff0d4ca8ea427b",
+      "observed": "89b9103c26934a35dbe81727b201c93ebb8e6a53e1b2517e89ff0d4ca8ea427b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/external-tool-3.json",
+      "expected": "b9bb52192d4ee78fbbcbc20c62b5cedb595a570ed03edb11c71b2927aa6e74e4",
+      "observed": "b9bb52192d4ee78fbbcbc20c62b5cedb595a570ed03edb11c71b2927aa6e74e4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/external-tool.log",
+      "expected": "7590761ff8190cd2a1c695553a8bb718675a29da77cf1c791653a0aaad08492a",
+      "observed": "7590761ff8190cd2a1c695553a8bb718675a29da77cf1c791653a0aaad08492a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/frontend.log",
+      "expected": "6d2f6c056e202aec920251b818c0372b084cfe20975fdd8d17ed0d344ec24fe3",
+      "observed": "6d2f6c056e202aec920251b818c0372b084cfe20975fdd8d17ed0d344ec24fe3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/node-a-backend.log",
+      "expected": "21d0e3fb516fe40241fa6b45906a6d40a28a41a9715d09edfed4c7bc6a7a9cce",
+      "observed": "21d0e3fb516fe40241fa6b45906a6d40a28a41a9715d09edfed4c7bc6a7a9cce",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/node-a-migrate.log",
+      "expected": "6b62f3075c36bb86acdc94acde5e4be9f6d408ee023b2dd6e6ac36ae53cfcc86",
+      "observed": "6b62f3075c36bb86acdc94acde5e4be9f6d408ee023b2dd6e6ac36ae53cfcc86",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/node-b-backend.log",
+      "expected": "3d769c4ae4eeaf4901454b94e9149a9788dd746185556d11d75992d507b31db0",
+      "observed": "3d769c4ae4eeaf4901454b94e9149a9788dd746185556d11d75992d507b31db0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/node-b-migrate.log",
+      "expected": "340313976b5ecb60dcd2159433fed7ddb4f9b9e21cb95ad9bfee4d42888e0655",
+      "observed": "340313976b5ecb60dcd2159433fed7ddb4f9b9e21cb95ad9bfee4d42888e0655",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-2/result.json",
+      "expected": "19b56a6504e315cc1fbe84f066e784af0cf9f65385a5e366aa408656e9aac6c4",
+      "observed": "19b56a6504e315cc1fbe84f066e784af0cf9f65385a5e366aa408656e9aac6c4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted.log",
+      "expected": "eb372b1e65bdcdedc5c3f44f68304f1d546c8fb03b343e05551911d4813f8220",
+      "observed": "eb372b1e65bdcdedc5c3f44f68304f1d546c8fb03b343e05551911d4813f8220",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-001-pass.png",
+      "expected": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "observed": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-002-pass.png",
+      "expected": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "observed": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-003-pass.png",
+      "expected": "52d178b8e75b0b9fc7f849b953a1bfe86a001a82b715783bfb3e9dfc340122fe",
+      "observed": "52d178b8e75b0b9fc7f849b953a1bfe86a001a82b715783bfb3e9dfc340122fe",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-004-pass.png",
+      "expected": "e145103f68dde9a7b8b07dc103c967250002c2900ab46b734bf3cf0ef894005b",
+      "observed": "e145103f68dde9a7b8b07dc103c967250002c2900ab46b734bf3cf0ef894005b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-005-pass.png",
+      "expected": "297d7a39617099f3e0c949f4e463fbb47e994d8f612d2fdb02fee910f2e463e6",
+      "observed": "297d7a39617099f3e0c949f4e463fbb47e994d8f612d2fdb02fee910f2e463e6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-006-pass.png",
+      "expected": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "observed": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-007-pass.png",
+      "expected": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "observed": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-008-pass.png",
+      "expected": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "observed": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-009-pass.png",
+      "expected": "32e43e8f21ed9d77000e0dfcc7a659aed6cb5595d0dee4b66cb498600c40d2a6",
+      "observed": "32e43e8f21ed9d77000e0dfcc7a659aed6cb5595d0dee4b66cb498600c40d2a6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-010-pass.png",
+      "expected": "726ee85a9be0415ec365a384995ff1f9fa4f7c98aeb6e45e1ad08c1423aaced6",
+      "observed": "726ee85a9be0415ec365a384995ff1f9fa4f7c98aeb6e45e1ad08c1423aaced6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-011-pass.png",
+      "expected": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "observed": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-012-pass.png",
+      "expected": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "observed": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-013-pass.png",
+      "expected": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "observed": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-014-pass.png",
+      "expected": "1ca704fe007e48c1e93c5ea2d7d4571fba337cb197e3da5282020c02e4253f20",
+      "observed": "1ca704fe007e48c1e93c5ea2d7d4571fba337cb197e3da5282020c02e4253f20",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-015-pass.png",
+      "expected": "cd16f48aac505a46f7c28cb8e8c25c348997e44f65aa131f15f1fc727bf1a17d",
+      "observed": "cd16f48aac505a46f7c28cb8e8c25c348997e44f65aa131f15f1fc727bf1a17d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-016-pass.png",
+      "expected": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "observed": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/continuous-board-390.png",
+      "expected": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "observed": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/external-tool-1.json",
+      "expected": "13b992104dac325c413459d995298c1d50b79fdc370bbcb54c50bfe12421966a",
+      "observed": "13b992104dac325c413459d995298c1d50b79fdc370bbcb54c50bfe12421966a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/external-tool-2.json",
+      "expected": "50f0dfffd789231a99823e372e8ab816918467f6469c473c70a3866d4f1d55d1",
+      "observed": "50f0dfffd789231a99823e372e8ab816918467f6469c473c70a3866d4f1d55d1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/external-tool-3.json",
+      "expected": "dd0eafba6ec8fa24dcf3edc59f355f5cca79c5cb54e28a341c2142dffb27b59b",
+      "observed": "dd0eafba6ec8fa24dcf3edc59f355f5cca79c5cb54e28a341c2142dffb27b59b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/external-tool.log",
+      "expected": "91359df4ae68721aaed94e0376155b54d7d5443ad8a191db9dc6c6e16f916bf6",
+      "observed": "91359df4ae68721aaed94e0376155b54d7d5443ad8a191db9dc6c6e16f916bf6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/frontend.log",
+      "expected": "d71703a818da3eb6a20a01ef47fb9d87418e471681a6b8aef01584c46a1c8ee5",
+      "observed": "d71703a818da3eb6a20a01ef47fb9d87418e471681a6b8aef01584c46a1c8ee5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/node-a-backend.log",
+      "expected": "a685449e23c937875c630fa122ce6676e075b7668c55d42d36f9607712d38123",
+      "observed": "a685449e23c937875c630fa122ce6676e075b7668c55d42d36f9607712d38123",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/node-a-migrate.log",
+      "expected": "f344a7e2c0a4a75836df49c7a523c585d4063f4a4933e49a554a770f5a014a3a",
+      "observed": "f344a7e2c0a4a75836df49c7a523c585d4063f4a4933e49a554a770f5a014a3a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/node-b-backend.log",
+      "expected": "53ef44bdd8a5d375b3c9ba683ef26777e0a0353545b21f2638590e6a0e5436a9",
+      "observed": "53ef44bdd8a5d375b3c9ba683ef26777e0a0353545b21f2638590e6a0e5436a9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/node-b-migrate.log",
+      "expected": "ce6497ee5bdac52979f6a34eb8899d8b8ed78b86ed9d772805eba93c0a660513",
+      "observed": "ce6497ee5bdac52979f6a34eb8899d8b8ed78b86ed9d772805eba93c0a660513",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/ordinary-task-390.png",
+      "expected": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "observed": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-accepted/result.json",
+      "expected": "5c7308ac187ef92875f2a6f20041d1f22be01e459e382bf6affe6b6d68d124b0",
+      "observed": "5c7308ac187ef92875f2a6f20041d1f22be01e459e382bf6affe6b6d68d124b0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final.log",
+      "expected": "715dfc6c7fedcb5e3604f9e7ced4951776f719bf33cd9fe00c2345142540da93",
+      "observed": "715dfc6c7fedcb5e3604f9e7ced4951776f719bf33cd9fe00c2345142540da93",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-001-pass.png",
+      "expected": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "observed": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-002-pass.png",
+      "expected": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "observed": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-003-pass.png",
+      "expected": "e35b1bba0eecee17c9e468c8de44bce3c46a3e1a799950ab8155696f472c3bcd",
+      "observed": "e35b1bba0eecee17c9e468c8de44bce3c46a3e1a799950ab8155696f472c3bcd",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-004-pass.png",
+      "expected": "c56bd1c04ba920d56869b42ca6083ae50534faa0138006cc6bb903621552fd40",
+      "observed": "c56bd1c04ba920d56869b42ca6083ae50534faa0138006cc6bb903621552fd40",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-005-pass.png",
+      "expected": "a9ef0d13c700c33c8531ba174187f48019f614739dc78d9655b4443864171c08",
+      "observed": "a9ef0d13c700c33c8531ba174187f48019f614739dc78d9655b4443864171c08",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-006-pass.png",
+      "expected": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "observed": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-007-pass.png",
+      "expected": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "observed": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-008-pass.png",
+      "expected": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "observed": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-009-pass.png",
+      "expected": "9f56d288da20fc8ccb14fd2bf55ffb597acf0aff83f3ec0387c1d16a7ce880b5",
+      "observed": "9f56d288da20fc8ccb14fd2bf55ffb597acf0aff83f3ec0387c1d16a7ce880b5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-010-pass.png",
+      "expected": "2fa94615f5aec14d4311bcc101d3150c5eb1cec6c0cfd5536193a44fdbfb55a4",
+      "observed": "2fa94615f5aec14d4311bcc101d3150c5eb1cec6c0cfd5536193a44fdbfb55a4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-011-pass.png",
+      "expected": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "observed": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-012-pass.png",
+      "expected": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "observed": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-013-pass.png",
+      "expected": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "observed": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-014-pass.png",
+      "expected": "412e5451808283d55084bd0a3219aee32717464358cc410a22b5d6245344b031",
+      "observed": "412e5451808283d55084bd0a3219aee32717464358cc410a22b5d6245344b031",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-015-pass.png",
+      "expected": "fb81d74d0a73b3fe40cd50d320ccadcb34bec5c0fc6931c3717b72e7dbc393eb",
+      "observed": "fb81d74d0a73b3fe40cd50d320ccadcb34bec5c0fc6931c3717b72e7dbc393eb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-016-pass.png",
+      "expected": "e5d985a82486b4972ac412fe768a1af16a460e818261d02ed48d614a9aa86996",
+      "observed": "e5d985a82486b4972ac412fe768a1af16a460e818261d02ed48d614a9aa86996",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/continuous-board-390.png",
+      "expected": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "observed": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/external-tool-1.json",
+      "expected": "0e35ca17f8bc9a0a9dc5da0494263f197b59444efe1760dad437991f58e007fe",
+      "observed": "0e35ca17f8bc9a0a9dc5da0494263f197b59444efe1760dad437991f58e007fe",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/external-tool-2.json",
+      "expected": "5b50cd727711f36a35a0192ce0573ee2a137137007c80d553ef202e6c6f9f1d1",
+      "observed": "5b50cd727711f36a35a0192ce0573ee2a137137007c80d553ef202e6c6f9f1d1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/external-tool-3.json",
+      "expected": "67f8534ea771a505263d9b580e0d69ce6fbba608665318d39c5b5606439ceba0",
+      "observed": "67f8534ea771a505263d9b580e0d69ce6fbba608665318d39c5b5606439ceba0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/external-tool.log",
+      "expected": "21fe911c80df25db38bd11756f96528af9c56601ca7517d9359f734761e37e5a",
+      "observed": "21fe911c80df25db38bd11756f96528af9c56601ca7517d9359f734761e37e5a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/frontend.log",
+      "expected": "48aab115eb79b78acc8d13c88bf772f978a2b6e475d7d4df9c5805dffbd57c74",
+      "observed": "48aab115eb79b78acc8d13c88bf772f978a2b6e475d7d4df9c5805dffbd57c74",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/node-a-backend.log",
+      "expected": "b23d2c20ba2f872eae44f728ff1eadf3aef371d4b75a636a6d192931c4ab2682",
+      "observed": "b23d2c20ba2f872eae44f728ff1eadf3aef371d4b75a636a6d192931c4ab2682",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/node-a-migrate.log",
+      "expected": "159df11abf2bbbb5eb3d4366ecac9a303d09644da8b33d0f23445175beca3af5",
+      "observed": "159df11abf2bbbb5eb3d4366ecac9a303d09644da8b33d0f23445175beca3af5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/node-b-backend.log",
+      "expected": "f79f5761036bd86fddb718aba2097c6b452d6a0d77467a994c09b451c632b5ef",
+      "observed": "f79f5761036bd86fddb718aba2097c6b452d6a0d77467a994c09b451c632b5ef",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/node-b-migrate.log",
+      "expected": "7a16e6545b7d00b339f2ea754ce3fca97aaee3fdb82112fd5fcbfbe0b6f11f47",
+      "observed": "7a16e6545b7d00b339f2ea754ce3fca97aaee3fdb82112fd5fcbfbe0b6f11f47",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/ordinary-task-390.png",
+      "expected": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "observed": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-final/result.json",
+      "expected": "7e0a02f935b9b1b0439cb12a16a83af6213a757891ce8906dbdfc58ed2493f5f",
+      "observed": "7e0a02f935b9b1b0439cb12a16a83af6213a757891ce8906dbdfc58ed2493f5f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported.log",
+      "expected": "78b777a6215a4d30cf09e22835bf5eb0abeecb704b3b914aef20df252066d3d5",
+      "observed": "78b777a6215a4d30cf09e22835bf5eb0abeecb704b3b914aef20df252066d3d5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-001-pass.png",
+      "expected": "338ca99ef2b87189e7cc4217c03e3f94619b8cd6289b81519b3ac2f7f6aee151",
+      "observed": "338ca99ef2b87189e7cc4217c03e3f94619b8cd6289b81519b3ac2f7f6aee151",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-002-pass.png",
+      "expected": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "observed": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-003-pass.png",
+      "expected": "0c828bb8267d2ed7577ce5a5d3a89f016571ae46bd941d8013828cfa5531d2c2",
+      "observed": "0c828bb8267d2ed7577ce5a5d3a89f016571ae46bd941d8013828cfa5531d2c2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-004-pass.png",
+      "expected": "9155b22c264f99acd21dece5cd9bff6f71e0bad36c624e2346cddf2f9528b776",
+      "observed": "9155b22c264f99acd21dece5cd9bff6f71e0bad36c624e2346cddf2f9528b776",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-005-pass.png",
+      "expected": "297d7a39617099f3e0c949f4e463fbb47e994d8f612d2fdb02fee910f2e463e6",
+      "observed": "297d7a39617099f3e0c949f4e463fbb47e994d8f612d2fdb02fee910f2e463e6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-006-pass.png",
+      "expected": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "observed": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-007-pass.png",
+      "expected": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "observed": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-008-pass.png",
+      "expected": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "observed": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-009-pass.png",
+      "expected": "1da116ba556764e72699eedbab615c4a0567cb8e635c2a1e679e655ef20200c3",
+      "observed": "1da116ba556764e72699eedbab615c4a0567cb8e635c2a1e679e655ef20200c3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-010-pass.png",
+      "expected": "0739b315fbb66bacf98810fef685e7e65dbe8286d1b59d022f0891254aa40588",
+      "observed": "0739b315fbb66bacf98810fef685e7e65dbe8286d1b59d022f0891254aa40588",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-011-pass.png",
+      "expected": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "observed": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-012-pass.png",
+      "expected": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "observed": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-013-pass.png",
+      "expected": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "observed": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-014-pass.png",
+      "expected": "1ca704fe007e48c1e93c5ea2d7d4571fba337cb197e3da5282020c02e4253f20",
+      "observed": "1ca704fe007e48c1e93c5ea2d7d4571fba337cb197e3da5282020c02e4253f20",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-015-failure.png",
+      "expected": "55b7777f8598db84c325a48dcb2dc87b6c4607fd88663530d405401ad266f2d2",
+      "observed": "55b7777f8598db84c325a48dcb2dc87b6c4607fd88663530d405401ad266f2d2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-016-pass.png",
+      "expected": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "observed": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/continuous-board-390.png",
+      "expected": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "observed": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/external-tool-1.json",
+      "expected": "702520a04b96f183a2b0c45008f517427a15ffb9e3a1b1d825c6f521f5b5abb6",
+      "observed": "702520a04b96f183a2b0c45008f517427a15ffb9e3a1b1d825c6f521f5b5abb6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/external-tool-2.json",
+      "expected": "19c9348e365cf6db91a5795cf29f55016cd439648f7a90487a2911bb7b3a6cbb",
+      "observed": "19c9348e365cf6db91a5795cf29f55016cd439648f7a90487a2911bb7b3a6cbb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/external-tool-3.json",
+      "expected": "ac4c478804f0df82d01ff6ab3365bcd1613404cc921ff4d55f42c8d1ad8374b2",
+      "observed": "ac4c478804f0df82d01ff6ab3365bcd1613404cc921ff4d55f42c8d1ad8374b2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/external-tool.log",
+      "expected": "4a06709d081e802a3fb91619d567e9aa3ce349bb57445e4eb9075ec69d0cbef1",
+      "observed": "4a06709d081e802a3fb91619d567e9aa3ce349bb57445e4eb9075ec69d0cbef1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/frontend.log",
+      "expected": "65aef9f57d4bbe382ff49d381e4a143526380bd4afddd6fbb3a5cd46aa93dc2c",
+      "observed": "65aef9f57d4bbe382ff49d381e4a143526380bd4afddd6fbb3a5cd46aa93dc2c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/node-a-backend.log",
+      "expected": "9cb070d5f229c79dc245fab4bdcbb92cff88bea0ed08ac4362a12b6c7aa12c91",
+      "observed": "9cb070d5f229c79dc245fab4bdcbb92cff88bea0ed08ac4362a12b6c7aa12c91",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/node-a-migrate.log",
+      "expected": "37184f2621e4067c36c911f5dd7c4b1b1255b15139c21a79134636899d424b85",
+      "observed": "37184f2621e4067c36c911f5dd7c4b1b1255b15139c21a79134636899d424b85",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/node-b-backend.log",
+      "expected": "e5baee6a1804e28141071ea037244a9b4f86993cdf749800f96bbbd4b1d445f2",
+      "observed": "e5baee6a1804e28141071ea037244a9b4f86993cdf749800f96bbbd4b1d445f2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/node-b-migrate.log",
+      "expected": "dc7d60438568242672d773b00a0aa66ee4aaa119e186f6619f8e7d1df96caabf",
+      "observed": "dc7d60438568242672d773b00a0aa66ee4aaa119e186f6619f8e7d1df96caabf",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/ordinary-task-390.png",
+      "expected": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "observed": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-supported/result.json",
+      "expected": "3eaa51b2ef7e49dac4e5fee5402f18e1a651708487c28762c646f187cc699644",
+      "observed": "3eaa51b2ef7e49dac4e5fee5402f18e1a651708487c28762c646f187cc699644",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified.log",
+      "expected": "023b296152f3e5e6ea1fcb948a121f092c6a16065da821dd44e8e97efba14c6c",
+      "observed": "023b296152f3e5e6ea1fcb948a121f092c6a16065da821dd44e8e97efba14c6c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-001-pass.png",
+      "expected": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "observed": "8322f2a3850ea3f6bacba9afac14a5410db9af454b5a65690b5af3afdebd85f7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-002-pass.png",
+      "expected": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "observed": "70f2f1f9177b6f407dbe991856073ed205e94a41c3d9d5f22a5b0351e3c2c345",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-003-pass.png",
+      "expected": "292fb4b452b15a3b9472cc290d174535cf0a836de21495f2b90e15529d18d1b0",
+      "observed": "292fb4b452b15a3b9472cc290d174535cf0a836de21495f2b90e15529d18d1b0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-004-pass.png",
+      "expected": "7520ff0df610cb3ff19794c06f02e3b254d13b867d5ba092c6e3a3fe458f3617",
+      "observed": "7520ff0df610cb3ff19794c06f02e3b254d13b867d5ba092c6e3a3fe458f3617",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-005-pass.png",
+      "expected": "a9ef0d13c700c33c8531ba174187f48019f614739dc78d9655b4443864171c08",
+      "observed": "a9ef0d13c700c33c8531ba174187f48019f614739dc78d9655b4443864171c08",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-006-pass.png",
+      "expected": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "observed": "9a86812d837eee8c6ee6561d171e607716e9cc2e51e3588e1f4ce670f59829f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-007-pass.png",
+      "expected": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "observed": "987d888ff38bb29786f50fb008b872833ac591551e90b851b5140e3ea10d76cc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-008-pass.png",
+      "expected": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "observed": "c70e2b04540ab05380ed8029f2a3f05b29b32f9dbc881b40c93c9675978bd243",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-009-pass.png",
+      "expected": "1da116ba556764e72699eedbab615c4a0567cb8e635c2a1e679e655ef20200c3",
+      "observed": "1da116ba556764e72699eedbab615c4a0567cb8e635c2a1e679e655ef20200c3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-010-pass.png",
+      "expected": "0739b315fbb66bacf98810fef685e7e65dbe8286d1b59d022f0891254aa40588",
+      "observed": "0739b315fbb66bacf98810fef685e7e65dbe8286d1b59d022f0891254aa40588",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-011-pass.png",
+      "expected": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "observed": "f2b08c540c81f270ed49b02fb6e88fd46dbdc1e2bb880e6be608a1a37a3e112c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-012-pass.png",
+      "expected": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "observed": "038b8fc783c1f27178ff9de06adea2b13d25e3ca9fafc40d06453278f81d8ca4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-013-pass.png",
+      "expected": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "observed": "f3c604fc350bc3a867a18dc1108e83498c5a021ca0a826a84af59e30627eb726",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-014-pass.png",
+      "expected": "412e5451808283d55084bd0a3219aee32717464358cc410a22b5d6245344b031",
+      "observed": "412e5451808283d55084bd0a3219aee32717464358cc410a22b5d6245344b031",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-015-failure.png",
+      "expected": "55b7777f8598db84c325a48dcb2dc87b6c4607fd88663530d405401ad266f2d2",
+      "observed": "55b7777f8598db84c325a48dcb2dc87b6c4607fd88663530d405401ad266f2d2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-016-pass.png",
+      "expected": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "observed": "dbd6cd85696c5b155052540a6d7ab4bc5c4fe5c5795329c900ca60f9896b315e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/continuous-board-390.png",
+      "expected": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "observed": "a9fa75ebe4d13d6c52d2959665158c1163f11cc5cdd34d70bb03f8a48339cd31",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/external-tool-1.json",
+      "expected": "8bc309c751d01d77b68e8209d06d2575aebf86da019317bbbf3e4efe3710cc1f",
+      "observed": "8bc309c751d01d77b68e8209d06d2575aebf86da019317bbbf3e4efe3710cc1f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/external-tool-2.json",
+      "expected": "dca3d44cc09c0c91dd0204e2f3366d3e32bbb68876fbf99b5fd2cd0bd30a2db7",
+      "observed": "dca3d44cc09c0c91dd0204e2f3366d3e32bbb68876fbf99b5fd2cd0bd30a2db7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/external-tool-3.json",
+      "expected": "04b1ef1c87dac40d30464238e9f398670c2d9e6bc6209ff42462fef792d874e8",
+      "observed": "04b1ef1c87dac40d30464238e9f398670c2d9e6bc6209ff42462fef792d874e8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/external-tool.log",
+      "expected": "483611a45c41f3455326d6ccc8a3f2fddbc40153fc929a3a3756e86c73e458a9",
+      "observed": "483611a45c41f3455326d6ccc8a3f2fddbc40153fc929a3a3756e86c73e458a9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/frontend.log",
+      "expected": "682087d06d365e51908523f7b59fa7eb4b9119b1490b9dee24559925662b31df",
+      "observed": "682087d06d365e51908523f7b59fa7eb4b9119b1490b9dee24559925662b31df",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/node-a-backend.log",
+      "expected": "38676581dcb7f33ffe7af78c4d3d5f5ff1180fc808b735fc7d8400d9d9eb64d0",
+      "observed": "38676581dcb7f33ffe7af78c4d3d5f5ff1180fc808b735fc7d8400d9d9eb64d0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/node-a-migrate.log",
+      "expected": "22d9f277a5fef739b2422153c6c2deea4bcc117dbb1e0d09c5ba3f7900666dba",
+      "observed": "22d9f277a5fef739b2422153c6c2deea4bcc117dbb1e0d09c5ba3f7900666dba",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/node-b-backend.log",
+      "expected": "493ca41b20be05268eaa1c4f7b989f3e0c1f27d01e08b76d165b630dff4b6b29",
+      "observed": "493ca41b20be05268eaa1c4f7b989f3e0c1f27d01e08b76d165b630dff4b6b29",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/node-b-migrate.log",
+      "expected": "5420b1a9ee1d67cf6b8781c40d114efa19114147fb5c9df436d310e33be21a9e",
+      "observed": "5420b1a9ee1d67cf6b8781c40d114efa19114147fb5c9df436d310e33be21a9e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/ordinary-task-390.png",
+      "expected": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "observed": "3a4d39c5ffcf716da1ba209f7c0a349fab622926043605132ca99f9d56f6230d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-verified/result.json",
+      "expected": "07c9d8d11dcd8c486307351f417676aa182c61feac202a0341a0dc0f46afe8f3",
+      "observed": "07c9d8d11dcd8c486307351f417676aa182c61feac202a0341a0dc0f46afe8f3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-coverage-investigation.md",
+      "expected": "076753630ffef5cd885a42544057576dda521f9b2039b26fae803519247007f2",
+      "observed": "076753630ffef5cd885a42544057576dda521f9b2039b26fae803519247007f2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-desktop-observations.json",
+      "expected": "a8c714a4a0df24af9bf3f1df83c1769ccd2d5b65fb44beef26e0103bca86b8f6",
+      "observed": "a8c714a4a0df24af9bf3f1df83c1769ccd2d5b65fb44beef26e0103bca86b8f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-desktop-tool-refresh.json",
+      "expected": "a7da2aba1d4f09bd961cb5f4ebe93f6ca63a440d1a8e02e59c01bfc5ac53be5c",
+      "observed": "a7da2aba1d4f09bd961cb5f4ebe93f6ca63a440d1a8e02e59c01bfc5ac53be5c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-desktop-tool-refresh.log",
+      "expected": "6ab8d25acf01338c234072b3bceb26848be3898aa7243dfad5b3be43aa4c8528",
+      "observed": "6ab8d25acf01338c234072b3bceb26848be3898aa7243dfad5b3be43aa4c8528",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-desktop-tool-write.json",
+      "expected": "6dd59bbde0169b236002459f4b2403f0adb7a558b7fb4ec8b58172d55d76140b",
+      "observed": "6dd59bbde0169b236002459f4b2403f0adb7a558b7fb4ec8b58172d55d76140b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-desktop-tool-write.log",
+      "expected": "6ab8d25acf01338c234072b3bceb26848be3898aa7243dfad5b3be43aa4c8528",
+      "observed": "6ab8d25acf01338c234072b3bceb26848be3898aa7243dfad5b3be43aa4c8528",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-durable-test-diff.patch",
+      "expected": "c792faf115e51832dbe4a691f8c5f4c8bf00652befc084b6806c7280cec24d89",
+      "observed": "c792faf115e51832dbe4a691f8c5f4c8bf00652befc084b6806c7280cec24d89",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-electron-baseline.log",
+      "expected": "036e4844e5ef733082aa4e9a3218585b9c98dc0dd65bd2167641ab55a225b0f0",
+      "observed": "036e4844e5ef733082aa4e9a3218585b9c98dc0dd65bd2167641ab55a225b0f0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-electron-final.log",
+      "expected": "fd4e7c7791609a9512cac170c6f2fbf9bd76ae6125531d282009660a6085203f",
+      "observed": "fd4e7c7791609a9512cac170c6f2fbf9bd76ae6125531d282009660a6085203f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-electron-rerun.log",
+      "expected": "1df9d8d61d184ff44a75bfc93be0c1b8f9597ed279690196a1f659e1d90981e4",
+      "observed": "1df9d8d61d184ff44a75bfc93be0c1b8f9597ed279690196a1f659e1d90981e4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-electron-unit.log",
+      "expected": "95a6c59b99b3974b3a7be7df1b0cbb273af41eea5f8c9b28ebdcee1512c4bec8",
+      "observed": "95a6c59b99b3974b3a7be7df1b0cbb273af41eea5f8c9b28ebdcee1512c4bec8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-execution-coverage-report.md",
+      "expected": "39d8adafce5590fa45fda57fda3f750b6fe83c921ff7160ed801e3d4776e8eab",
+      "observed": "39d8adafce5590fa45fda57fda3f750b6fe83c921ff7160ed801e3d4776e8eab",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-http-final.log",
+      "expected": "8e5d4f25fcfffaa3dbdbb8b36e225a425eb50b7bf8e57c5278cfd17b70384ccc",
+      "observed": "8e5d4f25fcfffaa3dbdbb8b36e225a425eb50b7bf8e57c5278cfd17b70384ccc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-http-rerun.log",
+      "expected": "1cddb8c239d633712f06fc786ce4943af909b601fbad0bdc0326043e8f86b824",
+      "observed": "1cddb8c239d633712f06fc786ce4943af909b601fbad0bdc0326043e8f86b824",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-http.log",
+      "expected": "c942bbe403220e9e29baf2dba012ddbb029de82b9e64eee96b7f5b96b08a4d5d",
+      "observed": "c942bbe403220e9e29baf2dba012ddbb029de82b9e64eee96b7f5b96b08a4d5d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-isolated-build.log",
+      "expected": "572b5a0505b2c99ff9551dcddb1c915df481e467d4a6e4f4b6a299f4e97cc555",
+      "observed": "572b5a0505b2c99ff9551dcddb1c915df481e467d4a6e4f4b6a299f4e97cc555",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-isolated-list-after-stop.json",
+      "expected": "1dd62cb99cb43aba5f1a9ca5b3fef4fb343dfa127551413b704ae4b77a8dbfde",
+      "observed": "1dd62cb99cb43aba5f1a9ca5b3fef4fb343dfa127551413b704ae4b77a8dbfde",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-isolated-start.json",
+      "expected": "7ae44ce93d66d7b6a586f8a61b9f3ed663489ac6dbded1a94881dcd4d72bbe9b",
+      "observed": "7ae44ce93d66d7b6a586f8a61b9f3ed663489ac6dbded1a94881dcd4d72bbe9b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-isolated-stop.json",
+      "expected": "7d183f195bfc97974b92687ec2e02a64ebbc45af2b3759add2509ac61a3767f2",
+      "observed": "7d183f195bfc97974b92687ec2e02a64ebbc45af2b3759add2509ac61a3767f2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-package-inventory.json",
+      "expected": "85300db772f6e039f77de48fe773572334593056493334eea8e69f497794e62f",
+      "observed": "85300db772f6e039f77de48fe773572334593056493334eea8e69f497794e62f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-revision-record.md",
+      "expected": "2f2acacfa005f599981e5a9f794e8de9e569be01a27aa6cb05ad259144a6ee69",
+      "observed": "2f2acacfa005f599981e5a9f794e8de9e569be01a27aa6cb05ad259144a6ee69",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-server-baseline.log",
+      "expected": "65d85cc96eb18c957dbdfad281e9a271e180ede795c0d83accc47cefcbf78676",
+      "observed": "65d85cc96eb18c957dbdfad281e9a271e180ede795c0d83accc47cefcbf78676",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-server-build.log",
+      "expected": "edd94a6760358b3a20a89fa58b512a09c81249d82012044dc624b869c0f51183",
+      "observed": "edd94a6760358b3a20a89fa58b512a09c81249d82012044dc624b869c0f51183",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-server-final.log",
+      "expected": "8c4533e3f5b663ea97e335c9fb719249742f0dc560749a5fb08a4111d1e7e2cf",
+      "observed": "8c4533e3f5b663ea97e335c9fb719249742f0dc560749a5fb08a4111d1e7e2cf",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-shared-final.log",
+      "expected": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "observed": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-shared-prepare.log",
+      "expected": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "observed": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-case-ledger.md",
+      "expected": "09c5cc35e25addc52a2c4323c39f65561ef534525170997250f9270e92f34829",
+      "observed": "09c5cc35e25addc52a2c4323c39f65561ef534525170997250f9270e92f34829",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-checkpoint.txt",
+      "expected": "97dcc96dc65226ee594af7a90d25211f413dc6f2ea21421c8b3a80f19fc7bea3",
+      "observed": "97dcc96dc65226ee594af7a90d25211f413dc6f2ea21421c8b3a80f19fc7bea3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-review-report.md",
+      "expected": "fa2cf0b337ca04d0928ab1c214ba5fc5c254a19163ef2183d364d77a52890453",
+      "observed": "fa2cf0b337ca04d0928ab1c214ba5fc5c254a19163ef2183d364d77a52890453",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-typecheck-baseline-build.log",
+      "expected": "943323f3184faa850e3d4a1b10e38884008c78653a5bdafa27ebcd1f2c499980",
+      "observed": "943323f3184faa850e3d4a1b10e38884008c78653a5bdafa27ebcd1f2c499980",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-typecheck-baseline-prepare.log",
+      "expected": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7",
+      "observed": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-typecheck-baseline-root.txt",
+      "expected": "7385e9dcdf0dd887d95d174e2561123c5d3d1504287c44825f3cfd67a5661e4e",
+      "observed": "7385e9dcdf0dd887d95d174e2561123c5d3d1504287c44825f3cfd67a5661e4e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-typecheck-baseline-setup.log",
+      "expected": "6c0d70360e382e36b834cb37e263ae937a1c0a52d8e99e5d1597e6e7d0b904eb",
+      "observed": "6c0d70360e382e36b834cb37e263ae937a1c0a52d8e99e5d1597e6e7d0b904eb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-typecheck-build-relocation.json",
+      "expected": "c6ad7c3478db2a215351961dc95d4522a25332073504a84e35f778fb8cca2d94",
+      "observed": "c6ad7c3478db2a215351961dc95d4522a25332073504a84e35f778fb8cca2d94",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-typecheck-comparison.json",
+      "expected": "0e747bec96b87eda3ffbafec19ac44b510fca61e708718af7c5547c0db44df6e",
+      "observed": "0e747bec96b87eda3ffbafec19ac44b510fca61e708718af7c5547c0db44df6e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-user-voice-validation-waiver.md",
+      "expected": "670f4e27adb9fa531694b3941b8bb0b4e30f888237b2af93fde5c2f86cadba77",
+      "observed": "670f4e27adb9fa531694b3941b8bb0b4e30f888237b2af93fde5c2f86cadba77",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-final-prepare.log",
+      "expected": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7",
+      "observed": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-guards.log",
+      "expected": "344b7f595a09d1d06734b0771b903a811851e31663a8bd66b50e7250a52643d9",
+      "observed": "344b7f595a09d1d06734b0771b903a811851e31663a8bd66b50e7250a52643d9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-typecheck-baseline.log",
+      "expected": "27aad943bb7564c6cd6ed5a774beef0a303096068172abd1b560d0cafcfd6ead",
+      "observed": "27aad943bb7564c6cd6ed5a774beef0a303096068172abd1b560d0cafcfd6ead",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-typecheck-final-clean.log",
+      "expected": "c6444bba9e97f9e627c9a20909a0e3f2668630b66fce62bd8c52084f7431ffb6",
+      "observed": "c6444bba9e97f9e627c9a20909a0e3f2668630b66fce62bd8c52084f7431ffb6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-typecheck-final.log",
+      "expected": "a33189f3b7136424c32e3ea6113002005969f0a647a515297b08e06a3d308780",
+      "observed": "a33189f3b7136424c32e3ea6113002005969f0a647a515297b08e06a3d308780",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-typecheck.log",
+      "expected": "0163e315e83ba9a752db5d759b742d582f7ee060feb0e2f05ecc6a3cb6b7d5d9",
+      "observed": "0163e315e83ba9a752db5d759b742d582f7ee060feb0e2f05ecc6a3cb6b7d5d9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-web-unit.log",
+      "expected": "682e45a5d925d4c9521c49d9c4ee12527e63c4e95a941585c00894ba66622df9",
+      "observed": "682e45a5d925d4c9521c49d9c4ee12527e63c4e95a941585c00894ba66622df9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/architecture-clarification-sr-015.md",
+      "expected": "6ebd6d540934aa69e78721772c2b65dd1062a8036e3634845990ddd98aa80bf0",
+      "observed": "6ebd6d540934aa69e78721772c2b65dd1062a8036e3634845990ddd98aa80bf0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/architecture-pass-receipt-sr-015.md",
+      "expected": "6548643f8b5526952284260d7e09b0e392fdcf4b21c87f2e32d858cf2a96c0bf",
+      "observed": "6548643f8b5526952284260d7e09b0e392fdcf4b21c87f2e32d858cf2a96c0bf",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/architecture-review-revision-record.md",
+      "expected": "9127c3c39ba07e741235b095deab7443403047358ec922428a37ebb8514645e7",
+      "observed": "9127c3c39ba07e741235b095deab7443403047358ec922428a37ebb8514645e7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-inventory-check.json",
+      "expected": "97243ea62ff67a3dc38b2caead6279130cb1acd39fa8fe3d01000423063c0b5d",
+      "observed": "97243ea62ff67a3dc38b2caead6279130cb1acd39fa8fe3d01000423063c0b5d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-project-boundaries.log",
+      "expected": "6f9a7ceccbbef808e6ac733ab09f1115242a05c75887b1fe7ab9c43bcc147dee",
+      "observed": "6f9a7ceccbbef808e6ac733ab09f1115242a05c75887b1fe7ab9c43bcc147dee",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-report.md",
+      "expected": "7dfa38923f6907923b5e342b280305e28f8ba4cb591a2cc08d55ed73d3b3a94c",
+      "observed": "de8817eaa14791a30c6de3656ff12f4bde45749b26fddc74e7769af6833bb304",
+      "match": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-revision-record.md",
+      "expected": "3b8cb3a310d7812cbebdec0aed3f71f8b05c30f1401d4489376d2a2030be143f",
+      "observed": "a5bdc38c3dbf84e52d47fcde65ccda564cd098883059243f327228eb917f9117",
+      "match": false
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-server-typecheck.log",
+      "expected": "9f24c4a2e9006941e16c10aa52b3d88ab9c6d98cd586e1a7e2c2d87a27619062",
+      "observed": "9f24c4a2e9006941e16c10aa52b3d88ab9c6d98cd586e1a7e2c2d87a27619062",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-server-unit.log",
+      "expected": "73e00bcbfe50fe8588c981bdcc7caa6af9bc407b4ecfb23a87c6a58bbfd681e1",
+      "observed": "73e00bcbfe50fe8588c981bdcc7caa6af9bc407b4ecfb23a87c6a58bbfd681e1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-shared-prepare.log",
+      "expected": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "observed": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-source-audit.md",
+      "expected": "4c84979f6581a067eb173bf33ade09971e252f419a750426d5b037cf54e80094",
+      "observed": "4c84979f6581a067eb173bf33ade09971e252f419a750426d5b037cf54e80094",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/code-review-web-unit.log",
+      "expected": "379a50dcdb9064687b8c7dd0f5748159c8d829e218424301584859ede3821ec9",
+      "observed": "379a50dcdb9064687b8c7dd0f5748159c8d829e218424301584859ede3821ec9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/artifact-check.json",
+      "expected": "aad0fb587ac9b7341446f06a0a97541eb91f6a515cf377510dac3622019147fe",
+      "observed": "aad0fb587ac9b7341446f06a0a97541eb91f6a515cf377510dac3622019147fe",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/commands.json",
+      "expected": "9054671d042a3ce959e3dfd154692776b71a39f511230b061d98ab496ace2f54",
+      "observed": "9054671d042a3ce959e3dfd154692776b71a39f511230b061d98ab496ace2f54",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/generated-output-cleanup.json",
+      "expected": "93de98ebca6f76e4b3cbbedff3343d7ed19b0ac753ea456a1765eda2621429c7",
+      "observed": "93de98ebca6f76e4b3cbbedff3343d7ed19b0ac753ea456a1765eda2621429c7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/handoff-receipt.json",
+      "expected": "0aee1663bad76a338f3accca009a691feb1f0665b0254961811e6b0d88bcd182",
+      "observed": "0aee1663bad76a338f3accca009a691feb1f0665b0254961811e6b0d88bcd182",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/incoming-inventory-check.json",
+      "expected": "68934f36a492e5fc0b12459a49ab8e531b2dff5075f7cad4f9b3a128f81117a0",
+      "observed": "68934f36a492e5fc0b12459a49ab8e531b2dff5075f7cad4f9b3a128f81117a0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/integration-refresh.json",
+      "expected": "744aee6b4671010227f771d66fd9354bb99e49559cc2f50ad61fac5f7aefa4ec",
+      "observed": "744aee6b4671010227f771d66fd9354bb99e49559cc2f50ad61fac5f7aefa4ec",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/renderer-integrated.log",
+      "expected": "5ac93f47eef57f3a2091c6e1f912c3e76d9846f0108bc35d5abe600533446d2a",
+      "observed": "5ac93f47eef57f3a2091c6e1f912c3e76d9846f0108bc35d5abe600533446d2a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/server-integrated.log",
+      "expected": "c80b60175ff127c6ddc805ee688bfba6b3a3cee90ac984a63efa3ccd8979b1ea",
+      "observed": "c80b60175ff127c6ddc805ee688bfba6b3a3cee90ac984a63efa3ccd8979b1ea",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/shared-prepare.log",
+      "expected": "ad535e7c3781cd6987dd1e02550c21bd3d0562d883a41646bd6fdc30cccff245",
+      "observed": "ad535e7c3781cd6987dd1e02550c21bd3d0562d883a41646bd6fdc30cccff245",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/voice-fixture-isolated-rerun.log",
+      "expected": "fa04bd0d39db26336bd9fb6f45ef8a50fb0d9cc6ef71d380a934bfa4692fe66b",
+      "observed": "fa04bd0d39db26336bd9fb6f45ef8a50fb0d9cc6ef71d380a934bfa4692fe66b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-local-fix-request.md",
+      "expected": "be878473c3618ba634c8388e246ec8d7a0eb1b7df3c9ebaab0a5d694d1571607",
+      "observed": "be878473c3618ba634c8388e246ec8d7a0eb1b7df3c9ebaab0a5d694d1571607",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-package-inventory.json",
+      "expected": "b13e29e11784505cc1b0feca363a6e7eb873b1c21e3a49a3661477bd6de6fd9d",
+      "observed": "b13e29e11784505cc1b0feca363a6e7eb873b1c21e3a49a3661477bd6de6fd9d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-revision-record.md",
+      "expected": "2da8c9bfd2ed534337351dbe07e1e825258612ca7da6018c3d4f3d2073698dd2",
+      "observed": "2da8c9bfd2ed534337351dbe07e1e825258612ca7da6018c3d4f3d2073698dd2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/design-handoff-sr-014.md",
+      "expected": "8a5c69b72d9168e3018cdfb6289babbbcc2e09ab2090c70cfac1d88c9583a614",
+      "observed": "8a5c69b72d9168e3018cdfb6289babbbcc2e09ab2090c70cfac1d88c9583a614",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/design-review-report.md",
+      "expected": "f36b9eb4d530095e5e2ec9707e36a5c6621a6815678bfc085914066e1685199f",
+      "observed": "f36b9eb4d530095e5e2ec9707e36a5c6621a6815678bfc085914066e1685199f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/design-spec.md",
+      "expected": "75ba65e78d0293452f7873fb477c7a602fac08d41e8ab2e4889d4d3bcc1d62ff",
+      "observed": "75ba65e78d0293452f7873fb477c7a602fac08d41e8ab2e4889d4d3bcc1d62ff",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/docs-sync-report.md",
+      "expected": "edffbef6a66437bb9c018c2c3614a94afc29d43ebab96d11cb5731ce27ee4482",
+      "observed": "edffbef6a66437bb9c018c2c3614a94afc29d43ebab96d11cb5731ce27ee4482",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/handoff-summary.md",
+      "expected": "478b3c8b0ea7bebd4c93448e7356f151acc28692e4700413f7cd8ae318d333b1",
+      "observed": "478b3c8b0ea7bebd4c93448e7356f151acc28692e4700413f7cd8ae318d333b1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/01-new-project-desktop.png",
+      "expected": "de13cd699398570a105166ab131180ff67d6f6917d055c3d2af9f0f4147e0f6c",
+      "observed": "de13cd699398570a105166ab131180ff67d6f6917d055c3d2af9f0f4147e0f6c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/02-project-required-desktop.png",
+      "expected": "cef96b72341e77efab3c1dac6df911463a4f4c1a76d3b55acdee7b2687961900",
+      "observed": "cef96b72341e77efab3c1dac6df911463a4f4c1a76d3b55acdee7b2687961900",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/03-created-empty-board-desktop.png",
+      "expected": "e128e67c534fdd34c7926d96e6fea56c421ca13272eda366f6c69f867aa5f49e",
+      "observed": "e128e67c534fdd34c7926d96e6fea56c421ca13272eda366f6c69f867aa5f49e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/04-new-task-desktop.png",
+      "expected": "994644a8aaf3e6d40b64cf11b548b055c5aaf144dca950a4ce4faf03aabaedc4",
+      "observed": "994644a8aaf3e6d40b64cf11b548b055c5aaf144dca950a4ce4faf03aabaedc4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/05-task-required-desktop.png",
+      "expected": "a45aca98b02f2b30c0d096f5a17efeea6d0e4a5f9df73e2205a0b04e2d5736e8",
+      "observed": "a45aca98b02f2b30c0d096f5a17efeea6d0e4a5f9df73e2205a0b04e2d5736e8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/06-context-upload-desktop.png",
+      "expected": "d57366873f4ebde107462832220bb48007ece00c89f4bf3ce36b2b1eb7758a59",
+      "observed": "d57366873f4ebde107462832220bb48007ece00c89f4bf3ce36b2b1eb7758a59",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/07-continuous-board-desktop.png",
+      "expected": "dd02a57ff3763469f722db40831b72b8c621bc0d941c64eccd6ae2641294bd9b",
+      "observed": "dd02a57ff3763469f722db40831b72b8c621bc0d941c64eccd6ae2641294bd9b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/08-task-detail-files-desktop.png",
+      "expected": "1b98771680b10cf72a89d892d6007d65e9040da634b0009b9c52910cb0dc0405",
+      "observed": "1b98771680b10cf72a89d892d6007d65e9040da634b0009b9c52910cb0dc0405",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/09-image-preview-desktop.png",
+      "expected": "f95a8526e96fb46c435d09554cf755f39a3d45fad4e35ad9ac1ad23e42d3c28f",
+      "observed": "f95a8526e96fb46c435d09554cf755f39a3d45fad4e35ad9ac1ad23e42d3c28f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/10-task-delete-inline-desktop.png",
+      "expected": "a9e93c1919002d04e0a9051d471ca8768609efdd9a6cafd106d00f2de53c98ec",
+      "observed": "a9e93c1919002d04e0a9051d471ca8768609efdd9a6cafd106d00f2de53c98ec",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/11-task-actions-narrow.png",
+      "expected": "c0d98dfd87ef7376556ec5e03e0aae29ab04fc773df589497b8c968b92197487",
+      "observed": "c0d98dfd87ef7376556ec5e03e0aae29ab04fc773df589497b8c968b92197487",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/12-continuous-board-narrow.png",
+      "expected": "6856a41970419017b958c83bf7ac34c6c63dc2d3432f6d7b90f5d6cc49ddeba8",
+      "observed": "6856a41970419017b958c83bf7ac34c6c63dc2d3432f6d7b90f5d6cc49ddeba8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/13-no-match-narrow.png",
+      "expected": "0ad03f6cfb77095dd73277f7c07657351d3ad460e94410ec6c4c6e5522bcae02",
+      "observed": "0ad03f6cfb77095dd73277f7c07657351d3ad460e94410ec6c4c6e5522bcae02",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/14-task-composer-narrow.png",
+      "expected": "dad5256c61c8f26b7606c071b0f4772b1f4106b54ede13cb41dd86a024e7afdb",
+      "observed": "dad5256c61c8f26b7606c071b0f4772b1f4106b54ede13cb41dd86a024e7afdb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/15-project-form-narrow.png",
+      "expected": "17f6037ac6bbbb659b8e366e0afc639aa5f5fb74cdfc7b51811a7c1888d80a8e",
+      "observed": "17f6037ac6bbbb659b8e366e0afc639aa5f5fb74cdfc7b51811a7c1888d80a8e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/16-new-folder-narrow.png",
+      "expected": "2cb12550b4bd59450ed6b83546b9d9822d426160a981182df00b663551d99cc0",
+      "observed": "2cb12550b4bd59450ed6b83546b9d9822d426160a981182df00b663551d99cc0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/17-project-workspaces-narrow.png",
+      "expected": "4b6920f6f2a37e1700f4c95fb7a24909096c60db943e455aa0ec2842c64c0f31",
+      "observed": "4b6920f6f2a37e1700f4c95fb7a24909096c60db943e455aa0ec2842c64c0f31",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/18-refresh-filtered-narrow.png",
+      "expected": "733d47074233914cb6380d83bff816f295bd4cc62cdee6f5ad87f9d1c23f8e83",
+      "observed": "733d47074233914cb6380d83bff816f295bd4cc62cdee6f5ad87f9d1c23f8e83",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/19-refresh-complete-narrow.png",
+      "expected": "93e2968e53c96e3ba59ce78a6d00a4d52a9e39b0354f801163082ed34b05c153",
+      "observed": "93e2968e53c96e3ba59ce78a6d00a4d52a9e39b0354f801163082ed34b05c153",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/20-refresh-complete-desktop.png",
+      "expected": "910b6be4ad02add26a6da8f4e297440bd9f2cf1e58e347fc677792f2fbe3e0c4",
+      "observed": "910b6be4ad02add26a6da8f4e297440bd9f2cf1e58e347fc677792f2fbe3e0c4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/21-project-delete-count-desktop.png",
+      "expected": "c02933cbbc975602c2b9331f1984e1318f819e7de9038d0df98bd2ceace3c7bc",
+      "observed": "c02933cbbc975602c2b9331f1984e1318f819e7de9038d0df98bd2ceace3c7bc",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/22-refresh-pending-desktop.png",
+      "expected": "21b95d3c8c7d4d761d20996ef7cb33d93ae5dcfdfd13781e25ba735006556a4a",
+      "observed": "21b95d3c8c7d4d761d20996ef7cb33d93ae5dcfdfd13781e25ba735006556a4a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/23-refresh-error-retains-desktop.png",
+      "expected": "edb139208df9fa568bba4f5d130528a9b9166f4f169d9ac0ed16d68b0e66225e",
+      "observed": "edb139208df9fa568bba4f5d130528a9b9166f4f169d9ac0ed16d68b0e66225e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/24-board-container-single-column.png",
+      "expected": "9d79c28fb7fd53df1f45f77fc040c108acdfbeaed5260bb679368bf7f9ec36f7",
+      "observed": "9d79c28fb7fd53df1f45f77fc040c108acdfbeaed5260bb679368bf7f9ec36f7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/25-edit-project-existing-desktop.png",
+      "expected": "3f99f1715c3cb519a531b8cec442326509f549250b8fbb5422ea71be7d267a44",
+      "observed": "3f99f1715c3cb519a531b8cec442326509f549250b8fbb5422ea71be7d267a44",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/26-edit-task-real-delta-desktop.png",
+      "expected": "8b60aeab2b3752710543f92e7b13e1e25b00a41e15536339182d80004be9efe5",
+      "observed": "8b60aeab2b3752710543f92e7b13e1e25b00a41e15536339182d80004be9efe5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/27-task-saved-delta-desktop.png",
+      "expected": "7b27bbb05daef6ee9d84c3b66304688113850837d3de7b747d72b91402e97403",
+      "observed": "7b27bbb05daef6ee9d84c3b66304688113850837d3de7b747d72b91402e97403",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/preview-project-record.json",
+      "expected": "ed74c80125d1941d444564707120775a2f3e48557a49166bbd16ce43bfa808a6",
+      "observed": "ed74c80125d1941d444564707120775a2f3e48557a49166bbd16ce43bfa808a6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-evidence/render-observations.json",
+      "expected": "3e99de89aac274743833474beaeee2eac2fd2806ba64a98c68b5375ad2abf71b",
+      "observed": "3e99de89aac274743833474beaeee2eac2fd2806ba64a98c68b5375ad2abf71b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-handoff.md",
+      "expected": "4bf5d843ec76c78933faa7be82d6fecd8f7b963fc3ea843a28c80cc77f7a9971",
+      "observed": "4bf5d843ec76c78933faa7be82d6fecd8f7b963fc3ea843a28c80cc77f7a9971",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-install.log",
+      "expected": "e98546ae9efabd70a4efd98642aa502d490c6f4339ecef5f9a75c1345916ad1b",
+      "observed": "e98546ae9efabd70a4efd98642aa502d490c6f4339ecef5f9a75c1345916ad1b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/archive-regeneration-reproduction-source.txt",
+      "expected": "6ffe79a0173bcfbf24d00a18085b2ae2b2d77c7546930b8642d504393115f368",
+      "observed": "6ffe79a0173bcfbf24d00a18085b2ae2b2d77c7546930b8642d504393115f368",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/archive-regeneration-reproduction.log",
+      "expected": "f387a6a8ad8cf1e1ec30e6a56f8510ebc3d086e70ffcc593dee75072d3ded65a",
+      "observed": "f387a6a8ad8cf1e1ec30e6a56f8510ebc3d086e70ffcc593dee75072d3ded65a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/artifact-hygiene.json",
+      "expected": "b0bfdad52d36317ea3ab1bf68a085f5dcda4480685dcaed21e2f2ea12851f329",
+      "observed": "b0bfdad52d36317ea3ab1bf68a085f5dcda4480685dcaed21e2f2ea12851f329",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/commands.json",
+      "expected": "4b28246800b38057c642aaf0ec01b063fde3e47ea0c964eeee12c389f3e17773",
+      "observed": "4b28246800b38057c642aaf0ec01b063fde3e47ea0c964eeee12c389f3e17773",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/handoff-rule.json",
+      "expected": "6957aa4b168b9442ec217b0ba70ef2d1355646500b2d0d247b4b90070ea84fef",
+      "observed": "6957aa4b168b9442ec217b0ba70ef2d1355646500b2d0d247b4b90070ea84fef",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/incoming-inventory-check.json",
+      "expected": "fda5df498c041e18dfd26032c208c8800351b1ffba5ef37221973ef35110fc2f",
+      "observed": "fda5df498c041e18dfd26032c208c8800351b1ffba5ef37221973ef35110fc2f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/initial-state.txt",
+      "expected": "157370f42da941142f814be5f1a33c4d727f44229b018985316937001eb8ddd2",
+      "observed": "157370f42da941142f814be5f1a33c4d727f44229b018985316937001eb8ddd2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/renderer-expanded.log",
+      "expected": "54606e8779c9c46e6711f48aebb30c90953ba359638ff41df2d6bf239d95a33d",
+      "observed": "54606e8779c9c46e6711f48aebb30c90953ba359638ff41df2d6bf239d95a33d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/source-audit.json",
+      "expected": "af0b52e08fd088057a2cee4ebe63f6a673baf648f350ad1289b0b37a6e1d9bb8",
+      "observed": "af0b52e08fd088057a2cee4ebe63f6a673baf648f350ad1289b0b37a6e1d9bb8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/test-delta.patch",
+      "expected": "3934b1307798a1ddf4b5ea047e544cc357709392cc3cc186e19a2039d90cf251",
+      "observed": "3934b1307798a1ddf4b5ea047e544cc357709392cc3cc186e19a2039d90cf251",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-1.log",
+      "expected": "c402ef08016fea777b6a685494410da0d013cbd0fb7b8f3b154f7712e0437d34",
+      "observed": "c402ef08016fea777b6a685494410da0d013cbd0fb7b8f3b154f7712e0437d34",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-2.log",
+      "expected": "313b31d1dc765ee289d8dd63b4d87a6cb040b7f966d6fe309d7a66f2a56ca494",
+      "observed": "313b31d1dc765ee289d8dd63b4d87a6cb040b7f966d6fe309d7a66f2a56ca494",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-3.log",
+      "expected": "775e0a5b9f2bdaf2c6c4c74d6e7738c9c680622794d62d7d058b860a958f9090",
+      "observed": "775e0a5b9f2bdaf2c6c4c74d6e7738c9c680622794d62d7d058b860a958f9090",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-local-fix-ir-002.md",
+      "expected": "1af524bb7d33cfdc13d963c80d89e9a29b2939505db78762c5ce0e76506311a0",
+      "observed": "1af524bb7d33cfdc13d963c80d89e9a29b2939505db78762c5ce0e76506311a0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-local-source-audit.md",
+      "expected": "d68774c54fe8d571145a3870234f43f558581039d67eeca4059631b10765f3ff",
+      "observed": "d68774c54fe8d571145a3870234f43f558581039d67eeca4059631b10765f3ff",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-localization-audit.log",
+      "expected": "caeef7fee4d28a21fa4e49daec52607aedca79751cf23d8dd6eb38588799f5b2",
+      "observed": "caeef7fee4d28a21fa4e49daec52607aedca79751cf23d8dd6eb38588799f5b2",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-preview-external-write.log",
+      "expected": "920cfc299198bac9c7cebb1bbe852344f9325fde24a069d4807e2ae1b3ba6313",
+      "observed": "920cfc299198bac9c7cebb1bbe852344f9325fde24a069d4807e2ae1b3ba6313",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-preview-final.log",
+      "expected": "8b237d9d5892cdcc9eb9d2683a9e9a6e51a2a418f4525a7e95040509316a0966",
+      "observed": "8b237d9d5892cdcc9eb9d2683a9e9a6e51a2a418f4525a7e95040509316a0966",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-preview.log",
+      "expected": "023cea56af1fd6eed28abcbdda2b64b5b5015d113921267892e6b26f81442573",
+      "observed": "023cea56af1fd6eed28abcbdda2b64b5b5015d113921267892e6b26f81442573",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-rendered-check.md",
+      "expected": "f92215d05801eb5189bdb4cbefa6e2440506c0d3e3b25150022c3d5b453d2045",
+      "observed": "f92215d05801eb5189bdb4cbefa6e2440506c0d3e3b25150022c3d5b453d2045",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-revision-record.md",
+      "expected": "801d0badf00890c8f8291956b952d1739c5ee61dbfc4759cf99ab33b434b1e6a",
+      "observed": "801d0badf00890c8f8291956b952d1739c5ee61dbfc4759cf99ab33b434b1e6a",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-build-final.log",
+      "expected": "9ee61fccd2d8bf7e50b8dc64b1cd503d6ecc6baa8e85ea2079e3db65c8f77065",
+      "observed": "9ee61fccd2d8bf7e50b8dc64b1cd503d6ecc6baa8e85ea2079e3db65c8f77065",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-build.log",
+      "expected": "d8d5afb11fe77f9823be9e4c4b6dc05d6b98203c23b66d9518443bae79980382",
+      "observed": "d8d5afb11fe77f9823be9e4c4b6dc05d6b98203c23b66d9518443bae79980382",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-typecheck-final.log",
+      "expected": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "observed": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-typecheck.log",
+      "expected": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "observed": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-unit-final.log",
+      "expected": "05d36fc5f5ce45d88d0dd80325a05d998189f560092bc3a67c104c2060074b18",
+      "observed": "05d36fc5f5ce45d88d0dd80325a05d998189f560092bc3a67c104c2060074b18",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-unit-r2.log",
+      "expected": "370badf4775ecfa74431ff76fe923811fd05b06e24281bbf1a3bd988fe6663f0",
+      "observed": "370badf4775ecfa74431ff76fe923811fd05b06e24281bbf1a3bd988fe6663f0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-unit-r3.log",
+      "expected": "aefa4f494015f37a03f695b36e98e502e03fcf815480f08391d0bafc4e69e740",
+      "observed": "aefa4f494015f37a03f695b36e98e502e03fcf815480f08391d0bafc4e69e740",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-server-unit.log",
+      "expected": "bb3d26821406cfea7f233d6047b72d46279cfbe18786c9354c972d2ba4a399d5",
+      "observed": "bb3d26821406cfea7f233d6047b72d46279cfbe18786c9354c972d2ba4a399d5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-shared-build.log",
+      "expected": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "observed": "03688784b6837f58061c8b8c04e3aa92737c25c7f6c3032bd9f7c6548b3a1c74",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-source-delta.tsv",
+      "expected": "ef364a3c439491191b756bc4eb78b315dfc1a54457a1b97f747b3982da5e9da5",
+      "observed": "ef364a3c439491191b756bc4eb78b315dfc1a54457a1b97f747b3982da5e9da5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-upstream-reference-inventory.md",
+      "expected": "d309afa9902476dabd31371268a89ac9047ca286d436973ca0da81d011abf27c",
+      "observed": "d309afa9902476dabd31371268a89ac9047ca286d436973ca0da81d011abf27c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-build-final.log",
+      "expected": "1be6f55a3a774f57b824515e3250b504fb971addbed29c8135b0725a6c5ef574",
+      "observed": "1be6f55a3a774f57b824515e3250b504fb971addbed29c8135b0725a6c5ef574",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-build.log",
+      "expected": "b58c774b7fcfc6fe76774a7e31f0cc187c07d70c9cff8ad14279b471260350c9",
+      "observed": "b58c774b7fcfc6fe76774a7e31f0cc187c07d70c9cff8ad14279b471260350c9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-draft-unit.log",
+      "expected": "f3a3e9f41b61ad71f0669e7256645ab9fa169405ae320527514cca18d84859fa",
+      "observed": "f3a3e9f41b61ad71f0669e7256645ab9fa169405ae320527514cca18d84859fa",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-focus-check.log",
+      "expected": "4054115afdc9ac1918f3ecbfaa2a2fbe5f00d66f536deff37c355907137c75e0",
+      "observed": "4054115afdc9ac1918f3ecbfaa2a2fbe5f00d66f536deff37c355907137c75e0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-focus-debug.log",
+      "expected": "d8bc9fdacded4fb2574dd171653da1b33cb2150e2bf4445e78ac128e79c3e2a0",
+      "observed": "d8bc9fdacded4fb2574dd171653da1b33cb2150e2bf4445e78ac128e79c3e2a0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-focus-debug2.log",
+      "expected": "6f40cf42fdb6ddbfc38aa9565aa25c41869162675662f89faa609f30c1749f04",
+      "observed": "6f40cf42fdb6ddbfc38aa9565aa25c41869162675662f89faa609f30c1749f04",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-guards.log",
+      "expected": "347cc22fea24c44854d2021db0b4a0ef66775ba86df74597ab30be4b23c9586f",
+      "observed": "347cc22fea24c44854d2021db0b4a0ef66775ba86df74597ab30be4b23c9586f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-notice-unit.log",
+      "expected": "c1ea44c15a22a7bd98b888b2f5af1701a0e51cd2f4cb36c35f764ea59ce28024",
+      "observed": "c1ea44c15a22a7bd98b888b2f5af1701a0e51cd2f4cb36c35f764ea59ce28024",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-prepare.log",
+      "expected": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7",
+      "observed": "2d39caaf377734dd6a805d0e4f9fd97fada8d1c33bf6c96777d680844aae6fe7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-typecheck-final.log",
+      "expected": "0163e315e83ba9a752db5d759b742d582f7ee060feb0e2f05ecc6a3cb6b7d5d9",
+      "observed": "0163e315e83ba9a752db5d759b742d582f7ee060feb0e2f05ecc6a3cb6b7d5d9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-typecheck-new-vue.log",
+      "expected": "512ce38ba9af6a80bd121af3a3ba19a098dd8bf15dbaa3f8f1a0d5a35860b97c",
+      "observed": "512ce38ba9af6a80bd121af3a3ba19a098dd8bf15dbaa3f8f1a0d5a35860b97c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-typecheck-pinned.log",
+      "expected": "e2f63d46916946d420c4dcac9d86fdc47fd04737c10945cd5fb92d514a566a67",
+      "observed": "e2f63d46916946d420c4dcac9d86fdc47fd04737c10945cd5fb92d514a566a67",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-typecheck-repository-ts.log",
+      "expected": "04fb2bc34a5bbdd55c26aca2e3fb39ed1ce7dc36bd263f07a64fcc9f61312139",
+      "observed": "04fb2bc34a5bbdd55c26aca2e3fb39ed1ce7dc36bd263f07a64fcc9f61312139",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-typecheck.log",
+      "expected": "bf371ff94149752479212485ca66bad8bf66c54a4c8aade244bc8626e22eddff",
+      "observed": "bf371ff94149752479212485ca66bad8bf66c54a4c8aade244bc8626e22eddff",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-unit-final.log",
+      "expected": "5f0c5e0ed41102177b7e548f3d87bc86c4dc2e10dbebdbbb3267b78048cf7fe7",
+      "observed": "5f0c5e0ed41102177b7e548f3d87bc86c4dc2e10dbebdbbb3267b78048cf7fe7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-unit-r2.log",
+      "expected": "54b2fa67726ce3a7fdc5ea09d9c5f0d9e5713707baa39322279e3a27e32f942d",
+      "observed": "54b2fa67726ce3a7fdc5ea09d9c5f0d9e5713707baa39322279e3a27e32f942d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-unit-r3.log",
+      "expected": "d81d0e732a6ed4952f922e31d221bc8e2fa34703d78c7d5787591f1b9febe057",
+      "observed": "d81d0e732a6ed4952f922e31d221bc8e2fa34703d78c7d5787591f1b9febe057",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-unit-r4.log",
+      "expected": "410e08dfb529023f80b9fffc6ea01b11ef20ecf844c97e855c856ef3b6859aeb",
+      "observed": "410e08dfb529023f80b9fffc6ea01b11ef20ecf844c97e855c856ef3b6859aeb",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-unit.log",
+      "expected": "f65421685ab4b0b363e8a2ac57ef9f3ba7191daa3b3a0bdca24ea5a6dc058045",
+      "observed": "f65421685ab4b0b363e8a2ac57ef9f3ba7191daa3b3a0bdca24ea5a6dc058045",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-web-voice-r3.log",
+      "expected": "1ace538a997e1201e77341879f93453b31970fd3b0491372b20d10c5b03e99af",
+      "observed": "1ace538a997e1201e77341879f93453b31970fd3b0491372b20d10c5b03e99af",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/investigation-notes.md",
+      "expected": "838d68b8bef4857809d3db5a41b7296ea85bb45718a629f3a7fce94ed241547c",
+      "observed": "838d68b8bef4857809d3db5a41b7296ea85bb45718a629f3a7fce94ed241547c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/product-design-handoff-sr-002.md",
+      "expected": "b63538f55f4ea674dc06a3b0bc0bb2256807db0f772091e615e7c3d64f085db5",
+      "observed": "b63538f55f4ea674dc06a3b0bc0bb2256807db0f772091e615e7c3d64f085db5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/product-design-handoff.md",
+      "expected": "80aa0490ed680e0cf897f1d0da6e77ee346867cbb88db16f71e04a189ac318ab",
+      "observed": "80aa0490ed680e0cf897f1d0da6e77ee346867cbb88db16f71e04a189ac318ab",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/release-deployment-report.md",
+      "expected": "dd2532700b8e37542c956666433eb54f54f36556afa10f8f49266d583105fe0c",
+      "observed": "dd2532700b8e37542c956666433eb54f54f36556afa10f8f49266d583105fe0c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-approval-sr-010.md",
+      "expected": "bedbe9cb7540c7ac583508d5dafa532db7f9840b72d8fd4ca5e1306439a74220",
+      "observed": "bedbe9cb7540c7ac583508d5dafa532db7f9840b72d8fd4ca5e1306439a74220",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-approval-sr-013.md",
+      "expected": "9238c8f803d9c6735c31e856824332a0b9e4500ca7d9915f88d760347d599d1b",
+      "observed": "9238c8f803d9c6735c31e856824332a0b9e4500ca7d9915f88d760347d599d1b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-doc.md",
+      "expected": "af654e06487a78f79627f1f89d8d485768b47fd7afb49ea9b48ce0d59b7c937f",
+      "observed": "af654e06487a78f79627f1f89d8d485768b47fd7afb49ea9b48ce0d59b7c937f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-003.md",
+      "expected": "f36f991a06f592d2a40dceeca0b02a9ff61c836482da822226bb3e83931ba716",
+      "observed": "f36f991a06f592d2a40dceeca0b02a9ff61c836482da822226bb3e83931ba716",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-004.md",
+      "expected": "0f7ae6f0d74c412d29f1e8b971e75a6c031a1ddaa5e7419485c2f9b05e683c1f",
+      "observed": "0f7ae6f0d74c412d29f1e8b971e75a6c031a1ddaa5e7419485c2f9b05e683c1f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-005.md",
+      "expected": "e9cf28f973c6f1168043baa550e32b834aa0a5e63904b6cddf8870d81662637c",
+      "observed": "e9cf28f973c6f1168043baa550e32b834aa0a5e63904b6cddf8870d81662637c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-006.md",
+      "expected": "2919fe976b47414045011c79d43d2ae1be6ae6db8da61aa38eac531d738043a4",
+      "observed": "2919fe976b47414045011c79d43d2ae1be6ae6db8da61aa38eac531d738043a4",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-007.md",
+      "expected": "ac22db3e5e2102d4df9ec7bef4af6f3478b3f529f9edfec8607d2bc87a439516",
+      "observed": "ac22db3e5e2102d4df9ec7bef4af6f3478b3f529f9edfec8607d2bc87a439516",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-008.md",
+      "expected": "07a0f500382c7078ce1530e4fb5e415cfd68c8e39cec5308e38a108d52e85ebd",
+      "observed": "07a0f500382c7078ce1530e4fb5e415cfd68c8e39cec5308e38a108d52e85ebd",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-009.md",
+      "expected": "50b3b796c5534586288bbdc193cf67d57ded31e8edb6829e9863d12e9bfa462c",
+      "observed": "50b3b796c5534586288bbdc193cf67d57ded31e8edb6829e9863d12e9bfa462c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-011.md",
+      "expected": "e86ef7d6e7a7eca249e910e58ca6ba0387fa0651db63adb374dbf92e10696121",
+      "observed": "e86ef7d6e7a7eca249e910e58ca6ba0387fa0651db63adb374dbf92e10696121",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-refinement-sr-012.md",
+      "expected": "689dcb8bd267459fffd4f3abfea3a4edb396835ca2ad512ab459d6b605927aa3",
+      "observed": "689dcb8bd267459fffd4f3abfea3a4edb396835ca2ad512ab459d6b605927aa3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/skill-cli-feasibility.md",
+      "expected": "0945b7e9a7bfadb9a6a02dee73a1453722aca1d1d7d44e8d985bc8a4da970cbe",
+      "observed": "0945b7e9a7bfadb9a6a02dee73a1453722aca1d1d7d44e8d985bc8a4da970cbe",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/solution-revision-record.md",
+      "expected": "054867be58960591abf4445ba7567f084157591e0614833d498cc39da4954b04",
+      "observed": "054867be58960591abf4445ba7567f084157591e0614833d498cc39da4954b04",
+      "match": true
+    }
+  ],
+  "note": "Checked before current API artifact edits. CRR-003 appended reviewer report/history after IR-002 inventory snapshot; all other457 matched."
+}

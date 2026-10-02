@@ -1,6 +1,10 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const settingsMessages = {
+  'settings.voiceInput.controls.starting': '正在启动麦克风…',
+  'settings.voiceInput.controls.transcribing': '正在转写…',
+  'settings.voiceInput.controls.stop': '停止录音',
+  'settings.voiceInput.controls.start': '开始语音输入',
   'settings.page.backAriaLabel': '返回工作区',
   'settings.page.backLabel': '返回工作区',
   'settings.page.resizeNavigationLabel': '调整设置菜单宽度',
