@@ -10,7 +10,7 @@ import { MultimediaRuntime } from '../runtimes.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
-import { GEMINI_TTS_VOICES, GEMINI_VOICE_METADATA_DESC } from './gemini-tts-voices.js';
+import { GEMINI_TTS_VOICES, GEMINI_VOICE_METADATA_DESC, GEMINI_SINGLE_VOICE_DESC } from './gemini-tts-voices.js';
 
 const OPENAI_TTS_VOICES = [
   'alloy',
@@ -69,7 +69,7 @@ export class AudioClientFactory extends Singleton {
       new ParameterDefinition({
         name: 'voice',
         type: ParameterType.ENUM,
-        description: `The voice to assign to this speaker.${GEMINI_VOICE_METADATA_DESC}`,
+        description: `The featured prebuilt voice to assign to this dialogue speaker.${GEMINI_VOICE_METADATA_DESC}`,
         enumValues: GEMINI_TTS_VOICES,
         required: true
       })
@@ -86,22 +86,29 @@ export class AudioClientFactory extends Singleton {
       }),
       new ParameterDefinition({
         name: 'voice_name',
-        type: ParameterType.ENUM,
+        type: ParameterType.STRING,
         defaultValue: 'Kore',
-        enumValues: GEMINI_TTS_VOICES,
-        description: `The voice to use for single-speaker generation.${GEMINI_VOICE_METADATA_DESC}`
+        pattern: '^\\S(?:[\\s\\S]*\\S)?$',
+        description: GEMINI_SINGLE_VOICE_DESC
       }),
       new ParameterDefinition({
         name: 'style_instructions',
         type: ParameterType.STRING,
-        description: "Optional instructions on the style of speech, e.g., 'Say this in a dramatic whisper'."
+        description: 'Optional global delivery instructions, separate from the transcript; fallback for turns without a nonempty override.'
       }),
       new ParameterDefinition({
         name: 'speaker_mapping',
         type: ParameterType.ARRAY,
         description:
-          'Required for multi-speaker mode. A list of objects, each mapping a speaker name from the prompt to a voice name.',
+          'Required for multi-speaker mode. One or two unique speakers matching prompt labels, mapped to featured prebuilt voices only.',
         arrayItemSchema: speakerMappingItemSchema
+      }),
+      new ParameterDefinition({
+        name: 'turn_styles',
+        type: ParameterType.ARRAY,
+        description:
+          'Optional multi-speaker-only ordered style entries, exactly one per dialogue line. A nonempty string overrides global style; null or empty/whitespace inherits it. Wrong count/type fails before generation. Omit the array to use global style for all turns.',
+        arrayItemSchema: { anyOf: [{ type: 'string' }, { type: 'null' }] }
       })
     ]);
 

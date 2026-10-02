@@ -33,5 +33,18 @@ const GEMINI_VOICE_DETAILS: Record<string, { gender: string; description: string
 
 export const GEMINI_TTS_VOICES = Object.keys(GEMINI_VOICE_DETAILS);
 export const GEMINI_VOICE_METADATA_DESC =
-  '\n\nDetailed Voice Options:\n' +
+  '\n\nFeatured prebuilt voices (not the full Google catalog):\n' +
   GEMINI_TTS_VOICES.map((name) => `- ${name} (${GEMINI_VOICE_DETAILS[name].gender}): ${GEMINI_VOICE_DETAILS[name].description}`).join('\n');
+
+// Descriptive evidence, not a single-speaker allowlist or a dialogue voice list.
+export const GEMINI_VERIFIED_EXTENDED_VOICES = [
+  { id: 'ar-001-advisor-1', displayName: 'Authoritative Advisor 1', languageCode: 'ar-001' }
+] as const;
+
+export const GEMINI_SINGLE_VOICE_DESC =
+  'Single-speaker prebuilt/Extended Google voice ID, forwarded unchanged on the configured route.' +
+  GEMINI_VOICE_METADATA_DESC + '\n\nTested additional IDs:\n' +
+  GEMINI_VERIFIED_EXTENDED_VOICES.map(({ id, displayName, languageCode }) =>
+    `- ${id} (${displayName}, ${languageCode}): generation verified on Vertex Express; Arabic pronunciation/quality not tested.`
+  ).join('\n') +
+  '\nOther caller-supplied IDs are not pre-verified and the provider may reject them. No custom voice lifecycle support is promised.';
