@@ -6,7 +6,6 @@ Latest docs-sync-report.md, handoff-summary.md and release-deployment-report.md 
 | ID | Entry / trigger | Prior result | Current result | Affected artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass API-REV-001 / IR-001 / SR-005 | N/A | Docs sync Pass; Blocked on final user verification | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, user-verification-record.md, release-notes.md, delivery-package-manifest.json |
-
 | DR-002 | Explicit UV-001 user verification and finalization instruction | DR-001 verification hold | Delivery Completed; no release required | handoff-summary.md, release-deployment-report.md, docs-sync-report.md, user-verification-record.md, delivery-package-manifest.json, cleanup evidence |
 
 ## DR-001 — Current integrated candidate prepared for verification

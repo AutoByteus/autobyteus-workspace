@@ -49,6 +49,7 @@
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-evidence/integration-refresh.log",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-evidence/post-verification-refresh.log",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-evidence/pre-verification-checks.log",
+    "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-evidence/receipt-publication.log",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-package-manifest.json",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/delivery-revision-record.md",
     "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/composer-mention-discoverability/dependency-install.log",
@@ -237,7 +238,9 @@
     "finalization_target": "origin/personal",
     "merge_commit": "e44e6b8baf22fecc72624a852fde69e0655540b2",
     "merge_push": "Completed; ls-remote confirmed",
-    "receipt_commit_resolution": "git log -1 --format=%H -- tickets/done/composer-mention-discoverability/release-deployment-report.md"
+    "receipt_commit_resolution": "git log -1 --format=%H -- tickets/done/composer-mention-discoverability/release-deployment-report.md",
+    "dr002_receipt_commit": "677314cef960bf32e2ba91b37bd2f40218f316f0",
+    "dr002_receipt_push": "Completed; local and ls-remote confirmed"
   },
   "cleanup": {
     "worktree_remove": "Completed",
