@@ -18,7 +18,7 @@ const project = (projectId: string, name: string, description = '', workspaces: 
 
 const mountList = () => mount(ProjectsList, {
   global: {
-    stubs: { NuxtLink: RouterLinkStub, ProjectFormDialog: { template: '<div data-testid="project-form-dialog-stub"></div>' } },
+    stubs: { NuxtLink: RouterLinkStub },
   },
 })
 
@@ -72,10 +72,10 @@ describe('ProjectsList', () => {
     expect(wrapper.findAll('[data-testid^="project-card-p"]')).toHaveLength(2)
   })
 
-  it('opens the create dialog', async () => {
+  it('links New project to the ordinary authoring page', async () => {
     const wrapper = mountList()
     await wrapper.get('[data-testid="projects-new-button"]').trigger('click')
-    expect(wrapper.find('[data-testid="project-form-dialog-stub"]').exists()).toBe(true)
+    expect(wrapper.findAllComponents(RouterLinkStub).find((link) => link.attributes('data-testid') === 'projects-new-button')?.props('to')).toBe('/projects/new')
   })
 
   it('links each card to its project detail route', async () => {
@@ -83,7 +83,7 @@ describe('ProjectsList', () => {
     const wrapper = mountList()
     await flushPromises()
 
-    expect(wrapper.getComponent(RouterLinkStub).props('to')).toBe('/projects/project_1')
+    expect(wrapper.findAllComponents(RouterLinkStub).find((link) => link.props('to') === '/projects/project_1')).toBeDefined()
   })
 
   it('uses singular forms for one open task and one workspace (REQ-009)', async () => {

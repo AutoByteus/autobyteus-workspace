@@ -3,7 +3,7 @@ import path from "node:path";
 import type { ContextFileDraftOwnerDescriptor } from "../domain/context-file-owner-types.js";
 import { ContextFileLayout } from "../store/context-file-layout.js";
 
-const DEFAULT_DRAFT_TTL_MS = 24 * 60 * 60 * 1000;
+import { CONTEXT_FILE_DRAFT_TTL_MS } from "../domain/context-file-upload-policy.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -13,7 +13,7 @@ const logger = {
 export class ContextFileDraftCleanupService {
   constructor(
     private readonly layout: ContextFileLayout,
-    private readonly draftTtlMs: number = DEFAULT_DRAFT_TTL_MS,
+    private readonly draftTtlMs: number = CONTEXT_FILE_DRAFT_TTL_MS,
   ) {}
 
   async cleanupExpiredDrafts(): Promise<void> {

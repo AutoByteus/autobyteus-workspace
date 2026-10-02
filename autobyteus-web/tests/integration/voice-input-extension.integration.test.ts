@@ -256,7 +256,11 @@ describe('voice input extension integration', () => {
     } as any
     voiceInputStore.isRecording = true
     voiceInputStore.recordingSource = 'composer'
-    voiceInputStore.composerTargetContext = activeContextStoreMock.activeAgentContext
+    voiceInputStore.transcriptTarget = {
+      key: 'fixture-composer',
+      isCurrent: () => true,
+      appendTranscript: (text) => { activeContextStoreMock.activeAgentContext.requirement += ' ' + text },
+    }
 
     await voiceInputStore.stopRecording()
 

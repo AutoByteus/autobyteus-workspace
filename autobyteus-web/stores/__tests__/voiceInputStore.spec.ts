@@ -50,6 +50,12 @@ vi.mock('~/composables/useToasts', () => ({
 
 import { useVoiceInputStore } from '../voiceInputStore'
 
+const sink = (context = activeContextStoreMock.activeAgentContext) => ({
+  key: context.contextId,
+  isCurrent: () => activeContextStoreMock.activeAgentContext === context,
+  appendTranscript: (text: string) => {context.requirement = `${context.requirement} ${text}`.trim()},
+})
+
 describe('voiceInputStore', () => {
   beforeEach(() => {
     vi.useRealTimers()
@@ -125,12 +131,12 @@ describe('voiceInputStore', () => {
     }))
     const store = useVoiceInputStore()
 
-    const startup = store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
+    const startup = store.startRecording({ source: 'composer', target: sink() })
     expect(store.isStarting).toBe(true)
     expect(store.isRecording).toBe(false)
     expect(store.recordingSource).toBe('composer')
 
-    await store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
+    await store.startRecording({ source: 'composer', target: sink() })
     expect(extensionsStoreMock.initialize).toHaveBeenCalledOnce()
 
     await store.cancelOperationForSource('settings-test')
@@ -170,7 +176,7 @@ describe('voiceInputStore', () => {
     permissionsQueryMock.mockResolvedValue({ state: 'denied' })
     const store = useVoiceInputStore()
 
-    await store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
+    await store.startRecording({ source: 'composer', target: sink() })
 
     expect(getUserMediaMock).not.toHaveBeenCalled()
     expect(store.isStarting).toBe(false)
@@ -272,7 +278,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
+    store.transcriptTarget = sink()
 
     await store.stopRecording()
 
@@ -322,7 +328,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
+    store.transcriptTarget = sink()
 
     await store.stopRecording()
 
@@ -370,7 +376,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
+    store.transcriptTarget = sink()
 
     await store.stopRecording()
 
@@ -418,7 +424,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
+    store.transcriptTarget = sink()
 
     await store.stopRecording()
 
@@ -426,7 +432,7 @@ describe('voiceInputStore', () => {
     expect(addToastMock).toHaveBeenCalledWith('No transcript returned. Try speaking closer to the microphone.', 'info')
   })
 
-  it('keeps composer transcript text with the member that started recording when focus changes', async () => {
+  it('discards a transcript when its composer destination is no longer current', async () => {
     const architectureContext = createContext('ctx-architecture', 'please review')
     const apiE2eContext = createContext('ctx-api-e2e', '')
     activeContextStoreMock.activeAgentContext = architectureContext
@@ -452,9 +458,9 @@ describe('voiceInputStore', () => {
     } as any)
 
     const store = useVoiceInputStore()
-    await store.startRecording({ source: 'composer', targetContext: activeContextStoreMock.activeAgentContext as any })
-    expect((store.composerTargetContext as unknown as MockAgentContext)?.contextId).toBe('ctx-architecture')
-    expect(store.composerTargetContext?.requirement).toBe('please review')
+    await store.startRecording({ source: 'composer', target: sink() })
+    expect(store.transcriptTarget?.key).toBe('ctx-architecture')
+
 
     const capturePayload = {
       audioData: new Uint8Array([1, 2, 3]).buffer,
@@ -484,7 +490,7 @@ describe('voiceInputStore', () => {
     await store.stopRecording()
 
     expect(activeContextStoreMock.updateRequirementForContext).not.toHaveBeenCalled()
-    expect(architectureContext.requirement).toBe('please review world')
+    expect(architectureContext.requirement).toBe('please review')
     expect(apiE2eContext.requirement).toBe('')
 
     vi.unstubAllGlobals()
@@ -698,4 +704,63 @@ describe('voiceInputStore', () => {
       'error',
     )
   })
+  const mockCapture = (store: ReturnType<typeof useVoiceInputStore>, flush = true) => {
+    const stop = vi.fn()
+    store.stream = {getTracks: () => [{stop}]} as any
+    store.audioContext = {close: vi.fn().mockResolvedValue(undefined)} as any
+    store.audioWorklet = {port: {postMessage: vi.fn(() => {
+      if (flush) queueMicrotask(() => store.flushPromiseResolve?.({
+        audioData: new Uint8Array([1,2]).buffer,
+        diagnostics: {inputSampleRate: 48000, wavSampleRate: 48000, durationMs: 100, rms: .1, peak: .2, sampleCount: 4800},
+      }))
+    })}} as any
+    store.isRecording = true
+    store.recordingSource = 'project-task'
+    return stop
+  }
+  it('settles a cancelled pending FLUSH, stops media and releases global busy without an IPC request', async () => {
+    const store = useVoiceInputStore(), append = vi.fn()
+    store.transcriptTarget = {key: 'task-local', isCurrent: () => true, appendTranscript: append}
+    const stop = mockCapture(store, false)
+    const pending = store.stopRecording()
+    await store.cancelOperationForTarget('task-local')
+    await pending
+    expect(stop).toHaveBeenCalledOnce()
+    expect(store.isTranscribing).toBe(false)
+    expect(window.electronAPI.transcribeVoiceInput).not.toHaveBeenCalled()
+    expect(append).not.toHaveBeenCalled()
+  })
+  it('ignores uncancellable late IPC text after Cancel while keeping global busy until settlement', async () => {
+    const store = useVoiceInputStore(), append = vi.fn()
+    let resolve!: (value: unknown) => void
+    window.electronAPI.transcribeVoiceInput = vi.fn(() => new Promise((r) => {resolve = r})) as any
+    store.transcriptTarget = {key: 'task-local', isCurrent: () => true, appendTranscript: append}
+    mockCapture(store)
+    const pending = store.stopRecording()
+    await vi.waitFor(() => expect(window.electronAPI.transcribeVoiceInput).toHaveBeenCalledOnce())
+    await store.cancelOperationForTarget('task-local')
+    expect(store.isTranscribing).toBe(true)
+    await store.startRecording({source: 'settings-test'})
+    expect(getUserMediaMock).not.toHaveBeenCalled()
+    resolve({ok: true, text: 'must not append', noSpeech: false, detectedLanguage: 'en'})
+    await pending
+    expect(append).not.toHaveBeenCalled()
+    expect(store.isTranscribing).toBe(false)
+    expect(store.recordingSource).toBeNull()
+    expect(addToastMock).not.toHaveBeenCalled()
+  })
+  it('disposes capture when its sink becomes ineligible before flush completion (guard contract, not node journey)', async () => {
+    const store = useVoiceInputStore(), append = vi.fn()
+    let eligible = true
+    store.transcriptTarget = {key: 'task-local', isCurrent: () => eligible, appendTranscript: append}
+    const stop = mockCapture(store)
+    const pending = store.stopRecording()
+    eligible = false
+    await pending
+    expect(stop).toHaveBeenCalledOnce()
+    expect(store.isTranscribing).toBe(false)
+    expect(window.electronAPI.transcribeVoiceInput).not.toHaveBeenCalled()
+    expect(append).not.toHaveBeenCalled()
+  })
+
 })

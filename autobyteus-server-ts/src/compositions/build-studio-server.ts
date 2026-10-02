@@ -1,3 +1,4 @@
+import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
@@ -295,7 +296,7 @@ export const buildStudioServer = async (input: {
         origin: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       });
-      await app.register(multipart, { limits: { fileSize: 25 * 1024 * 1024 } });
+      await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } });
       await app.register(websocket);
       await registerRemoteAccessPolicyPlugin(app);
       await registerMobileWebStaticRoutes(app);

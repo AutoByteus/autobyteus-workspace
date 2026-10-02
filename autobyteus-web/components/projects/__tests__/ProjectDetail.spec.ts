@@ -10,7 +10,7 @@ import type { Project } from '~/types/project'
 
 const { navigateToMock, routerMock } = vi.hoisted(() => ({
   navigateToMock: vi.fn(),
-  routerMock: { replace: vi.fn() },
+  routerMock: { replace: vi.fn(), push: vi.fn() },
 }))
 mockNuxtImport('navigateTo', () => navigateToMock)
 
@@ -27,7 +27,8 @@ const project: Project = {
   description: 'AutoByteus product',
   createdAt: '',
   updatedAt: '',
-  openTaskCount: 4,
+  taskCount: 4,
+  openTaskCount: 2,
   workspaces: [
     {
       workspaceId: 'agent_ws_a1',
@@ -57,12 +58,8 @@ const mountDetail = () => mount(ProjectDetail, {
     stubs: {
       teleport: true,
       NuxtLink: RouterLinkStub,
-      ProjectFormDialog: { template: '<div data-testid="project-form-dialog-stub"></div>' },
       ProjectTaskBoard: { props: ['projectId'], template: '<div data-testid="project-task-board-stub">{{ projectId }}</div>' },
-      ProjectWorkspaceLinkDialog: {
-        props: ['project', 'link'],
-        template: '<div data-testid="project-link-dialog-stub">{{ link ? link.workspaceId : "add" }}</div>',
-      },
+
     },
   },
 })
@@ -183,13 +180,13 @@ describe('ProjectDetail', () => {
     wrapper.unmount()
   })
 
-  it('opens the link dialog and unlinks from the Workspaces tab', async () => {
+  it('opens the direct workspace editor and unlinks from the Workspaces tab', async () => {
     route.query = { tab: 'workspaces' }
     const wrapper = mountDetail()
     await flushPromises()
 
     await wrapper.get('[data-testid="project-add-workspace-button"]').trigger('click')
-    expect(wrapper.get('[data-testid="project-link-dialog-stub"]').text()).toBe('add')
+    expect(routerMock.push).toHaveBeenCalledWith({path: '/projects/p1/edit', query: {tab: 'workspaces', addWorkspace: '1'}})
 
     await wrapper.get('[data-testid="project-workspace-row-agent_ws_b2"] [data-testid="project-workspace-unlink"]').trigger('click')
     await flushPromises()
@@ -204,7 +201,7 @@ describe('ProjectDetail', () => {
   ])('states the %i Tasks deleted with the Project, even from the Workspaces tab (REQ-008)', async (count, message) => {
     route.query = { tab: 'workspaces' }
     store.fetchProject = vi.fn(async () => {
-      store.projects = [{ ...project, openTaskCount: count }] as any
+      store.projects = [{ ...project, taskCount: count, openTaskCount: 0 }] as any
       return store.projects[0]
     }) as any
     const wrapper = mountDetail()
@@ -239,10 +236,11 @@ describe('ProjectDetail', () => {
     await flushPromises()
 
     await wrapper.get('[data-testid="project-delete-button"]').trigger('click')
+    await flushPromises()
     await wrapper.get('[data-testid="project-delete-confirm"]').trigger('click')
     await flushPromises()
 
-    expect(store.deleteProject).toHaveBeenCalledWith('p1')
+    expect(store.deleteProject).toHaveBeenCalledWith('p1', expect.any(Function))
     expect(forgetSpy).toHaveBeenCalledWith('p1')
     expect(navigateToMock).toHaveBeenCalledWith('/projects')
     wrapper.unmount()

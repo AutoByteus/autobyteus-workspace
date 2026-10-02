@@ -172,11 +172,14 @@ export const useWorkspaceStore = defineStore('workspace', {
       }
     },
 
-    async createWorkspace(config: { root_path: string }): Promise<string> {
+    async createWorkspace(config: { root_path: string }, eligible: () => boolean = () => true): Promise<string> {
       this.loading = true;
       this.error = null;
       const client = getApolloClient();
+      const node = useWindowNodeContextStore();
+      const revision = node.bindingRevision;
       try {
+        if (!await node.waitForBoundBackendReady() || node.bindingRevision !== revision || !eligible()) throw new Error("Workspace request is no longer eligible on this node.");
         const { data, errors } = await client.mutate<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>({
           mutation: CreateWorkspace,
           variables: {
@@ -194,6 +197,7 @@ export const useWorkspaceStore = defineStore('workspace', {
           throw new Error('Failed to create workspace metadata: No data returned.');
         }
 
+        if (node.bindingRevision !== revision || !eligible()) throw new Error("Workspace response is no longer current.");
         const newWorkspace = data.createWorkspace as any;
         const rootPath = workspaceRootFromPayload(newWorkspace, config.root_path);
         this.removeWorkspaceEntriesByRootPath(rootPath);
@@ -202,11 +206,11 @@ export const useWorkspaceStore = defineStore('workspace', {
         this.registerWorkspaceInfoMetadata(workspaceInfo);
         return workspaceInfo.workspaceId;
       } catch (e: any) {
-        this.error = e;
+        if (node.bindingRevision === revision && eligible()) this.error = e;
         console.error('Error creating workspace metadata:', e);
         throw e;
       } finally {
-        this.loading = false;
+        if (node.bindingRevision === revision) this.loading = false;
       }
     },
 

@@ -28,7 +28,7 @@
         data-file-drop-target="true"
       ></textarea>
 
-      <VoiceInputButton :target="target" class="absolute bottom-2 right-14" />
+      <VoiceInputButton :target="voiceTarget" class="absolute bottom-2 right-14" />
 
       <MessagePrimaryActionButton
         class="absolute bottom-2 right-2"
@@ -96,7 +96,8 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget';
-import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue';
+import { useComposerVoiceTarget } from '~/composables/voiceInput/useComposerVoiceTarget';
+import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue';
 import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue';
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
 import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
@@ -351,6 +352,7 @@ onMounted(async () => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
 });
+const voiceTarget = useComposerVoiceTarget(() => props.target);
 </script>
 
 <style scoped>

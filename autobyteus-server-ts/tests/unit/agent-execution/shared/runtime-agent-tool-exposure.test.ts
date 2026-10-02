@@ -101,6 +101,7 @@ describe("runtime-agent-tool-exposure", () => {
       enabledBrowserToolNames: [],
       enabledMediaToolNames: [],
       enabledTaskDelegationToolNames: [],
+      enabledProjectTaskToolNames: [],
       sendMessageToEnabled: false,
       getHandoffRulesEnabled: false,
       publishArtifactsEnabled: false,

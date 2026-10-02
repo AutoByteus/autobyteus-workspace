@@ -7,6 +7,7 @@ export const ProjectTaskFields = gql`
     description
     status
     createdAt
+    contextFiles { storedFilename displayName mimeType sizeBytes locator }
     updatedAt
   }
 `

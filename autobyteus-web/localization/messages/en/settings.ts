@@ -1,6 +1,10 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const settingsMessages = {
+  'settings.voiceInput.controls.starting': 'Starting microphone...',
+  'settings.voiceInput.controls.transcribing': 'Transcribing...',
+  'settings.voiceInput.controls.stop': 'Stop recording',
+  'settings.voiceInput.controls.start': 'Start voice input',
   'settings.page.backAriaLabel': 'Back to workspace',
   'settings.page.backLabel': 'Back to Workspace',
   'settings.page.resizeNavigationLabel': 'Resize Settings menu',

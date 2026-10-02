@@ -24,6 +24,7 @@ const task = (taskId: string, updatedAt: string, status: ProjectTask['status'] =
   projectId: 'p1',
   description: `Task ${taskId}`,
   status,
+  contextFiles: [],
   createdAt: '2026-09-26T00:00:00.000Z',
   updatedAt,
 })
@@ -115,7 +116,7 @@ describe('projectTaskStore', () => {
 
     const store = useProjectTaskStore()
     await store.fetchTasks('p1')
-    await store.updateTaskDescription('p1', 't1', 'edited')
+    await store.updateTask('p1', 't1', 'edited')
 
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
       variables: { input: { projectId: 'p1', taskId: 't1', description: 'edited' } },
@@ -180,4 +181,80 @@ describe('projectTaskStore', () => {
     await expect(pending).resolves.toEqual([])
     expect(store.getList('p1')).toBeNull()
   })
+  it('Refresh dispatches a new physical read rather than joining an older fetch, and ignores the older result', async () => {
+    const store = useProjectTaskStore()
+    let older!: (value: unknown) => void, newer!: (value: unknown) => void
+    apolloClientMock.query
+      .mockReturnValueOnce(new Promise((resolve) => {older = resolve}))
+      .mockReturnValueOnce(new Promise((resolve) => {newer = resolve}))
+    const pending = store.fetchTasks('p1')
+    await vi.waitFor(() => expect(apolloClientMock.query).toHaveBeenCalledTimes(1))
+    const refreshed = store.refreshTasks('p1')
+    const duplicate = store.refreshTasks('p1')
+    await vi.waitFor(() => expect(apolloClientMock.query).toHaveBeenCalledTimes(2))
+    expect(apolloClientMock.query.mock.calls[1][0]).toMatchObject({fetchPolicy: 'network-only', context: {queryDeduplication: false}})
+    newer({data: {projectTasks: [task('new', '2026-10-02T02:00:00Z', 'DONE')]}})
+    await refreshed
+    await duplicate
+    expect(apolloClientMock.query).toHaveBeenCalledTimes(2)
+    older({data: {projectTasks: [task('stale', '2026-10-02T01:00:00Z')]}})
+    await pending
+    expect(store.getList('p1')?.tasks.map((t) => t.taskId)).toEqual(['new'])
+    expect(useProjectStore().getProjectById('p1')).toMatchObject({taskCount: 1, openTaskCount: 0})
+  })
+
+  it.each([[[]], [[task('t1', '2026-10-02T01:00:00Z')]]])('keeps the last successful snapshot, count and search after a failed Refresh', async (tasks) => {
+    const store = useProjectTaskStore()
+    apolloClientMock.query.mockResolvedValueOnce({data: {projectTasks: tasks}})
+    await store.fetchTasks('p1')
+    store.setSearch('p1', 'kept')
+    apolloClientMock.query.mockRejectedValueOnce(new Error('offline'))
+    await expect(store.refreshTasks('p1')).rejects.toThrow('offline')
+    expect(store.getList('p1')).toMatchObject({hasLoaded: true, tasks, refreshPending: false})
+    expect(store.searchByProjectId.p1).toBe('kept')
+    expect(useProjectStore().getProjectById('p1')?.taskCount).toBe(tasks.length)
+  })
+
+  it('route release prevents a pending read publishing, and Project deletion cannot be resurrected by it', async () => {
+    const store = useProjectTaskStore()
+    let resolve!: (value: unknown) => void
+    apolloClientMock.query.mockReturnValueOnce(new Promise((r) => {resolve = r}))
+    const pending = store.fetchTasks('p1')
+    await vi.waitFor(() => expect(apolloClientMock.query).toHaveBeenCalledOnce())
+    store.releaseRead('p1')
+    store.forget('p1')
+    resolve({data: {projectTasks: [task('obsolete', '2026-10-02T00:00:00Z')]}})
+    await pending
+    expect(store.getList('p1')).toBeNull()
+  })
+
+  it('a read dispatched during a local write cannot overwrite the successful write', async () => {
+    const store = useProjectTaskStore()
+    apolloClientMock.query.mockResolvedValueOnce({data: {projectTasks: []}})
+    await store.fetchTasks('p1')
+    let written!: (value: unknown) => void, read!: (value: unknown) => void
+    apolloClientMock.mutate.mockReturnValueOnce(new Promise((r) => {written = r}))
+    const saving = store.createTask('p1', 'New')
+    await vi.waitFor(() => expect(apolloClientMock.mutate).toHaveBeenCalledOnce())
+    apolloClientMock.query.mockReturnValueOnce(new Promise((r) => {read = r}))
+    const refreshing = store.refreshTasks('p1')
+    await vi.waitFor(() => expect(apolloClientMock.query).toHaveBeenCalledTimes(2))
+    written({data: {createProjectTask: task('created', '2026-10-02T00:00:00Z')}})
+    await saving
+    read({data: {projectTasks: []}})
+    await refreshing
+    expect(store.getList('p1')?.tasks.map((t) => t.taskId)).toEqual(['created'])
+  })
+
+  it('does not dispatch a write after its authoring lifetime expires while waiting for readiness', async () => {
+    let release!: (value: boolean) => void
+    vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockReturnValueOnce(new Promise((r) => {release = r}))
+    let eligible = true
+    const pending = useProjectTaskStore().createTask('p1', 'No stale dispatch', undefined, () => eligible)
+    eligible = false
+    release(true)
+    await expect(pending).rejects.toThrow('no longer current')
+    expect(apolloClientMock.mutate).not.toHaveBeenCalled()
+  })
+
 })
