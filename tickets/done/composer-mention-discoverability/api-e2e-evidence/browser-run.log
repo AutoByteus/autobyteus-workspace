@@ -1,0 +1,8 @@
+
+> autobyteus@1.4.92-beta.9 test:e2e:composer-mention-discoverability /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-web
+> node tests/e2e/composer-mention-discoverability-probe.mjs --output-dir ../tickets/in-progress/composer-mention-discoverability/api-e2e-evidence/browser --ledger /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/tickets/in-progress/composer-mention-discoverability/api-e2e-test-case-ledger.md
+
+B01 Pass: capability gating and native exact copy across supported scope shapes
+B02 Pass: chosen-only selection, caret, native deletion/undo/whole-token/name-edit and paste
+B03 Pass: keyboard dismissal/no-match, slash skills and completed upload held rejection/acceptance
+B04 Pass: layout at 1512/1024/300 panel, scroll/resize, locale, forced colors and context isolation

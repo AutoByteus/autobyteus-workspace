@@ -316,7 +316,7 @@ const mentionAndSend = async (page, prefix, query, id, rest) => {
 const cases = []
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
-defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; send adds the collaborator Offline at once; send_message_to briefing; "From" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion', async (page) => {
+defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), inline selected mentions; send adds the collaborator Offline at once; send_message_to briefing; "From" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion', async (page) => {
   const r = {}
   await newChat(page)
   await pickModel(page)
@@ -364,20 +364,21 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; 
   await page.keyboard.press('Escape'); await delay(300)
   assert(!(await page.locator(sel('run-mention-menu')).isVisible().catch(() => false)) && (await input.inputValue()) === '@zzz', 'Escape did not close or dropped text')
 
-  // VIS-003: chip; × keeps the words and drops the mention.
+  // composer-mention-discoverability AC-002/003 supersedes historical VIS-003: native inline selection only.
   await input.fill(''); await page.keyboard.type('please ask @')
   await page.locator(sel('run-mention-menu')).waitFor()
   await choose(page, 'code', ids.reviewer)
-  await page.locator(sel('run-mention-chip-Code Reviewer')).waitFor()
+  await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').filter({ hasText: '@Code Reviewer' }).waitFor()
   r.textAfterChoose = await input.inputValue()
   assert(r.textAfterChoose === 'please ask @Code Reviewer ', 'token not replaced by @Name', r.textAfterChoose)
-  await page.locator(`${sel('run-mention-chip-Code Reviewer')} button`).click(); await delay(300)
+  await input.evaluate((element) => { const at = element.value.indexOf('@Code Reviewer'); element.focus(); element.setSelectionRange(at + 1, at + 1) });
+  await page.keyboard.press('Backspace'); await delay(300)
   r.textAfterRemove = await input.inputValue()
-  assert(!(await page.locator(sel('run-mention-chip-Code Reviewer')).count()) && r.textAfterRemove.trim() === 'please ask Code Reviewer', 'chip removal', r.textAfterRemove)
+  assert(!(await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').count()) && r.textAfterRemove.trim() === 'please ask Code Reviewer', 'native @ deletion retains words and deactivates selection', r.textAfterRemove)
   await input.fill(''); await page.keyboard.type('please ask @')
   await choose(page, 'code', ids.reviewer)
   await page.keyboard.type('to review the phrase "hello world" and report back.')
-  await shot(page, 'A01-03-composer-chip-VIS-003')
+  await shot(page, 'A01-03-composer-inline-AC002')
 
   // TR-006: send → the collaborator is added at once, Offline, before the briefing.
   await page.keyboard.press('Enter')
@@ -391,7 +392,7 @@ defineCase('A01', 'UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; 
   r.entry = { address: entry.address, agentRunId: entry.agentRunId, launch: entry.launchConfiguration }
   assert(entry.launchConfiguration.runtimeKind === runtime && entry.launchConfiguration.llmModelIdentifier === state.model, 'collaborator did not take the root settings', entry)
   await page.locator(sel('user-message-mention')).first().waitFor({ timeout: 30000 })
-  assert((await input.inputValue()) === '' && !(await page.locator(sel('agent-input-mention-chips')).isVisible().catch(() => false)), 'composer not cleared after an accepted send')
+  assert((await input.inputValue()) === '' && !(await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').count()) && !(await page.locator(sel('agent-input-mention-chips')).count()), 'composer not cleared after an accepted send')
   // The host briefs it with send_message_to; it starts and reports back.
   await waitFor('briefing and report', async () => {
     const msgs = (await agentRootView(state.agentRunId))?.communication_messages.messages ?? []
@@ -685,7 +686,7 @@ defineCase('O01', 'UXJ-004 Org run: VIS-008 menu; two mentions add an Agent and 
   await page.keyboard.type('and @')
   await choose(page, 'product', ids.productTeam)
   await page.keyboard.type('to plan the launch page and report back.')
-  r.chips = await page.locator(`${sel('agent-input-mention-chips')} [data-test^="run-mention-chip-"]`).count()
+  r.inlineHighlights = await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').count()
   await page.keyboard.press('Enter')
   const taskAgentRows = page.locator('[data-test^="agent-org-task-agent-row-"]')
   await taskAgentRows.first().waitFor({ timeout: 60000 })
@@ -722,7 +723,7 @@ defineCase('O02', 'UXJ-004 / VIS-010: the Org collaborator Agent view starts wit
   return r
 })
 
-defineCase('F01', 'UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the run\'s model becomes unavailable (LM Studio host changed in settings); a mention send is refused in standalone, Team and Org runs — notice, draft and chip kept, no message, no row, still offered; the kept draft sends once the host is restored', async (page) => {
+defineCase('F01', 'UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the run\'s model becomes unavailable (LM Studio host changed in settings); a mention send is refused in standalone, Team and Org runs — notice, draft and inline highlight kept, no message, no row, still offered; the kept draft sends once the host is restored', async (page) => {
   const r = { attempts: {} }
   const lmStudioUp = await fetch('http://127.0.0.1:1234/v1/models', { signal: AbortSignal.timeout(3000) }).then((x) => x.ok).catch(() => false)
   if (!lmStudioUp) return { notApplicable: 'LM Studio is not reachable on 127.0.0.1:1234' }
@@ -756,7 +757,7 @@ defineCase('F01', 'UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the 
     a.notice = await page.locator(sel('collaborator-add-failure')).innerText()
     a.alert = await page.locator(`${sel('collaborator-add-failure')}, ${sel('collaborator-add-failures')}`).evaluateAll((els) => els.map((e) => e.getAttribute('role')))
     a.draft = await runComposer(page).inputValue()
-    a.chipKept = await page.locator(sel('run-mention-chip-Code Reviewer')).isVisible()
+    a.highlightKept = await page.locator('[data-test="composer-mention-mirror"] .mention-highlight').filter({ hasText: '@Code Reviewer' }).isVisible()
     a.messageSent = (await conversationText(page)).includes(marker)
     a.after = await rowCount()
     a.stillOffered = (await gql('query($k:String!,$id:String!){collaboratorMentionCandidates(rootSubjectKind:$k,rootRunId:$id){candidates{definitionId}}}', { k: rootKind, id: rootRunId }))
@@ -764,7 +765,7 @@ defineCase('F01', 'UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the 
     r.attempts[key] = a
     await shot(page, `F01-${key}-add-failed-notice-VIS-007`)
     assert(/Couldn.t add Code Reviewer to this run/.test(a.notice) && /Nothing was added\./.test(a.notice) && a.alert.includes('alert'), `${key}: notice text/role`, a)
-    assert(a.draft.includes(marker) && a.chipKept && !a.messageSent, `${key}: draft and chip must stay and nothing be sent`, a)
+    assert(a.draft.includes(marker) && a.highlightKept && !a.messageSent, `${key}: draft and inline highlight must stay and nothing be sent`, a)
     assert(a.after === a.before && a.stillOffered, `${key}: a row was added or the definition is no longer offered`, a)
   }
   // Standalone run.

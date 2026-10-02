@@ -1,0 +1,7 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+│
+◆  Types generated in .nuxt.
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json

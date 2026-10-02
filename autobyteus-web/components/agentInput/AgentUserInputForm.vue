@@ -8,7 +8,6 @@
       <ContextFilePathInputArea :target="target" />
     </div>
     <div class="border-t border-gray-100" :class="hasMenus ? 'rounded-b-xl' : ''">
-      <MentionChipRow :chips="mentionChips" @remove="removeMention" />
       <div
         v-if="skillTagging && requestedSkillNames.length"
         class="flex flex-wrap items-center gap-1.5 px-3 pt-2.5"
@@ -25,8 +24,6 @@
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
 import SkillTagChips from '~/components/chat/SkillTagChips.vue';
-import MentionChipRow from '~/components/agentInput/MentionChipRow.vue';
-import { removeRunMentionChip, runMentionChipsOf, type RunMentionChip } from '~/composables/agentInput/useRunMentionMenu';
 import { computed } from 'vue';
 import { useComposerTarget } from '~/composables/agentInput/useComposerTarget';
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
@@ -41,11 +38,6 @@ const props = defineProps<{
 const target = useComposerTarget();
 const requestedSkillNames = computed(() => target.value?.context.requestedSkillNames ?? []);
 const hasMenus = computed(() => Boolean(props.skillTagging) || Boolean(target.value?.mentionScope));
-const mentionChips = computed(() => (target.value?.mentionScope ? runMentionChipsOf(target.value.context) : []));
-const removeMention = (chip: RunMentionChip) => {
-  const context = target.value?.context;
-  if (context) removeRunMentionChip(context, chip);
-};
 const removeSkill = (name: string) => {
   const context = target.value?.context;
   if (!context) return;

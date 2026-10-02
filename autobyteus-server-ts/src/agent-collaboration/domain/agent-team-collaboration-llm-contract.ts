@@ -1,15 +1,23 @@
 const lines = (...values: string[]): string => values.join("\n");
 
+export const WORK_REQUEST_EXECUTION_LLM_INSTRUCTION = [
+  "On receiving a work request, follow your own agent instructions and applicable skills.",
+  "Do not send acknowledgements or promises to work.",
+  "Use `send_message_to` only at a workflow-defined handoff point or when blocked and needing external input.",
+  "Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.",
+].join(" ");
+
 const RULE_BASED_HANDOFF_LLM_INSTRUCTION = [
   "When you finish your own work or are blocked, call `get_handoff_rules`.",
   "Evaluate the returned rules against your outcome. Select the single rule whose",
   "`when` condition most specifically applies, and notify only its `recipient_address`",
   "using `send_message_to`. Do not notify additional recipients for the same outcome.",
-  "If no rule applies, finish normally.",
+  "If no rule applies to an incoming work request, return the result or specific blocker",
+  "to the requesting agent using `send_message_to`; otherwise, finish normally.",
 ].join(" ");
 
 export const SEND_MESSAGE_TO_LLM_DESCRIPTION = lines(
-  "Send one self-contained ordinary message to the one Agent or AgentTeam instance",
+  "Send a self-contained work request, result, or blocker to the one Agent or AgentTeam instance",
   "at an address, or to one exact AgentRun. Use exactly one selector:",
   "recipient_address for one canonical absolute non-root Agent-or-AgentTeam",
   "address, or target_agent_run_id for one exact AgentRun. An Agent address",
@@ -27,7 +35,7 @@ export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =
   "Canonical absolute non-root Agent-or-AgentTeam address beginning with '/'. It reaches the one instance at that address: an Agent's instance, or an AgentTeam instance's coordinator; inside your own team instance, a teammate's address reaches the member of that same instance. An available agent or team that is not yet in the run is brought in on first use. Provide either recipient_address or target_agent_run_id, never both.";
 
 export const SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION =
-  "Exact AgentRun.runId to receive an ordinary message: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
+  "Exact AgentRun.runId to receive a work request, result, or blocker: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
 
 export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
   "Spawn one new copy of an Agent or AgentTeam and give it this work as its",
@@ -53,12 +61,16 @@ export const DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION =
 export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "## AgentTeam Collaboration",
   "",
+  "### Work Requests and Outcomes",
+  "",
+  WORK_REQUEST_EXECUTION_LLM_INSTRUCTION,
+  "",
   "Choose the collaboration mode based on your primary intent.",
   "`send_message_to` reaches the one instance at an address, brought in on first use.",
   "`delegate_task` always spawns a new copy of an Agent or AgentTeam for new work.",
   "Never use both to deliver the same work.",
   "",
-  "### Ordinary Communication",
+  "### Work Requests and Results",
   "",
   "Use `send_message_to` to communicate with the one Agent or AgentTeam instance",
   "at an address.",

@@ -1,0 +1,26 @@
+# Product Design Request
+
+- Result: Product Design Requested; purpose: New Request.
+- Package: composer-mention-discoverability; current revision SR-001; approval state Draft/not approved.
+- Original request (2026-10-02): user @Product Prototyper asks for UI hint that @ is available and improvements to doubled selected mention: one blue chip above, another @Name in prose. Full request/evidence in investigation.
+- Requested outcome: improve discoverability and make selection feel coherent. Do not assume inline rich-text editor, chip-only design or removal semantics were chosen.
+- Focused decisions: cue wording/placement/visibility; selected representation; edit/removal/caret; coexistence with / skills. Product owns its working mode and repository/ticket lifecycle.
+- Critical journey: existing Agent/Team/Org run composer empty → @ picker → selected collaborator in draft → edit/remove → send. Include applicable constrained width, no-match, keyboard and rejected-send contexts without redesigning unrelated surfaces.
+- Constraints/non-goals: preserve eligibility, identity, focus/routing, attachments/unrelated text, candidate menu interaction and failure draft retention. No new-chat launch-target, backend/collaborator lifecycle, tree or context-files redesign unless separately requested and approved.
+- Evidence: supplied images corroborated by current frontend. Source explanation: separate MentionChipRow plus native textarea token/metadata in useRunMentionMenu. Existing cross-scope-agent-mentions REQ-002 explicitly prescribed duplicate chip/text; this new request is a presentation refinement requiring new confirmation, not a claim old implementation was incorrect.
+- Requirement/context IDs: BEH-001–003, SCN-001–004, UC-001–004, REQ-001–004, AC-001–004, DEC-001–004.
+- Requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/tickets/in-progress/composer-mention-discoverability/requirements-doc.md
+- Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/tickets/in-progress/composer-mention-discoverability/investigation-notes.md
+- History: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/tickets/in-progress/composer-mention-discoverability/solution-revision-record.md
+- Screenshot 1: /Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_095d04b9448d4862b16e3a02cd09ee18/solution_designer_67869b1634e941e5af26cb9c162ffe4a/context_files/ctx_4aff6cd7db41__image.png
+- Screenshot 2: /Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_095d04b9448d4862b16e3a02cd09ee18/solution_designer_67869b1634e941e5af26cb9c162ffe4a/context_files/ctx_3c1dff42b160__image.png
+- Historical Product-owned context: /Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/cross-scope-agent-mentions-sr008/ui-ux-spec.md (new result not available/approved).
+- Frontend context: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-web/components/agentInput/AgentUserInputForm.vue, AgentUserInputTextArea.vue, MentionChipRow.vue; /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability/autobyteus-web/composables/agentInput/useRunMentionMenu.ts; source base e04cfef23550c3b78286a53befc6bd5d71fb1061.
+- Workspace: /Users/normy/autobyteus_org/autobyteus-worktrees/composer-mention-discoverability; branch codex/composer-mention-discoverability; refreshed base origin/personal at e04cfef23550c3b78286a53befc6bd5d71fb1061; finalization target origin/personal. Product workspace lifecycle separately owned.
+- Design/task-size/risk/review/implementation/delivery: N/A — not started, no implementation-ready claim.
+- Blockers: none for Product request. Open decisions above prevent final requirements approval/design; user remains authority.
+- Expected result: focused user-reviewable UI proposal, with Product-owned artifacts and explicit confirmation references for accepted behavior; link exact source/revision and final visual references if applicable. Return uncertainties rather than infer approval.
+- Next Solution Designer action: read returned package, reconcile intended behavior, capture explicit requirements approval, then architecture.
+- Rule lookup: get_handoff_rules returned three architecture/delivery-only rules; none matches Product Design Requested. No rule-driven recipient selected.
+- Ordinary user-directed communication: user explicitly mentioned collaborator /product_prototyper and requested UI help; send this persisted context to that exact user-provided address. This is not an inferred rule recipient or implementation handoff.
+- Communication status: confirmed DELIVERED / accepted=true to /product_prototyper, target_agent_run_id product_prototyper_3341cdc3b9f044779d58fa22ab7d9485. No further forwarding or receiving-role work performed.

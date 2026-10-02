@@ -1,0 +1,1 @@
+pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts --no-watch
