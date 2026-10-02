@@ -2,6 +2,7 @@ import type { MemberExecutionContext } from "../../../../agent-collaboration/exe
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/services/send-message-to-tool-contract.js";
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../../../agent-communication/services/get-handoff-rules-tool-contract.js";
+import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../../../agent-tools/agent-discovery/list-available-agents-contract.js";
 import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
@@ -13,6 +14,7 @@ export type ClaudeSessionToolingOptions = {
   enabledTaskDelegationToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
+  listAvailableAgentsToolingEnabled: boolean;
   agentToolsMcpToolingRequested: boolean;
   agentToolsMcpEnabledToolNames: string[];
   allowedTools: string[];
@@ -41,6 +43,8 @@ export const resolveClaudeSessionToolingOptions = (input: {
     input.runtimeToolExposure.publishArtifactsEnabled;
   const taskDelegationToolingEnabled =
     Boolean(input.memberExecutionContext) && enabledTaskDelegationToolNames.length > 0;
+  const listAvailableAgentsToolingEnabled = input.runtimeToolExposure.listAvailableAgentsEnabled
+    && Boolean(input.memberExecutionContext?.collaboration.listAvailableAgents);
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({
     sendMessageToToolingEnabled,
     getHandoffRulesToolingEnabled,
@@ -49,6 +53,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
+    listAvailableAgentsToolingEnabled,
   });
   const agentToolsMcpEnabledToolNames = normalizeToolNames(
     input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
@@ -66,6 +71,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
+    listAvailableAgentsToolingEnabled,
     agentToolsMcpToolingRequested: agentToolsMcpEnabledToolNames.length > 0,
     agentToolsMcpEnabledToolNames,
     allowedTools,
@@ -80,6 +86,7 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   enabledTaskDelegationToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
+  listAvailableAgentsToolingEnabled: boolean;
 }): string[] => {
   const toolNames = new Set<string>();
   if (input.sendMessageToToolingEnabled) {
@@ -101,6 +108,9 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   }
   if (input.publishArtifactsToolingEnabled) {
     toolNames.add(PUBLISH_ARTIFACTS_TOOL_NAME);
+  }
+  if (input.listAvailableAgentsToolingEnabled) {
+    toolNames.add(LIST_AVAILABLE_AGENTS_TOOL_NAME);
   }
   return [...toolNames];
 };

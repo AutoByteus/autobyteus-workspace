@@ -1,0 +1,372 @@
+{
+  "startedAt": "2026-10-01T18:01:28.704Z",
+  "controlPort": "59571",
+  "backend": "http://127.0.0.1:59572",
+  "model": "haiku",
+  "phases": {
+    "D0": {
+      "startedAt": "2026-10-01T18:01:28.760Z",
+      "shots": [
+        "D0-public-package-imported.png",
+        "D0-tool-picker.png"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "public package imported; Project Manager defined with list_available_agents",
+          "details": {
+            "defs": {
+              "productPrototyper": "product-prototyper",
+              "seTeam": "software-engineering-team",
+              "productTeam": "product-team",
+              "marketingTeam": "marketing-team",
+              "researchEngineer": "research-engineer",
+              "pm": "project-manager"
+            },
+            "orgs": [
+              {
+                "id": "autobyteus-org",
+                "name": "AutoByteus Org"
+              },
+              {
+                "id": "northstar-operating-company",
+                "name": "Northstar Operating Company"
+              },
+              {
+                "id": "software-development-department",
+                "name": "Software Development Department"
+              }
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "the tool picker shows list_available_agents on the Project Manager",
+          "details": null
+        }
+      ],
+      "result": "Pass"
+    },
+    "DA": {
+      "startedAt": "2026-10-01T18:01:43.529Z",
+      "model": "haiku",
+      "rows": [
+        "task_team:software engineering team:offline",
+        "task_team_child:SD solution designer:live",
+        "task_team_child:AR architecture reviewer:offline",
+        "task_team_child:IE implementation engineer:offline",
+        "task_team_child:CR code reviewer:offline",
+        "task_team_child:AE api e2e engineer:offline",
+        "task_team_child:DE delivery engineer:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:live",
+        "task_team_child:PB prototype bootstrapper:live"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "agent-initiated collaborator Team row under the PM run",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "two catalog-copy rows for Product Team under the PM run",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:live",
+            "task_team_child:PB prototype bootstrapper:live"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "one collaborator, added by the PM",
+          "details": {
+            "collaborators": [
+              [
+                "agent_team",
+                "/software_engineering_team",
+                "project_manager_90a291d3ced0419985ab9a130950a7ed"
+              ]
+            ],
+            "copies": [
+              [
+                "/product_team",
+                true
+              ],
+              [
+                "/product_team",
+                true
+              ]
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "two catalog copies with source; no collaborator for Product Team (Q-1)",
+          "details": {
+            "collaborators": [
+              [
+                "agent_team",
+                "/software_engineering_team",
+                "project_manager_90a291d3ced0419985ab9a130950a7ed"
+              ]
+            ],
+            "copies": [
+              [
+                "/product_team",
+                true
+              ],
+              [
+                "/product_team",
+                true
+              ]
+            ]
+          }
+        },
+        {
+          "ok": true,
+          "label": "solution designer view starts \"From Project Manager:\"",
+          "details": [
+            "From Project Manager:"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "catalog copy coordinator view renders its task",
+          "details": "PP\nproduct prototyper\nIdle\nYou\nTask delegator address: /project_manager\nTask delegator AgentRun ID: project_manager_90a291d3ced0419985ab9a130950a7ed\n\nDescription:\nReply in one sentence about a login s"
+        },
+        {
+          "ok": true,
+          "label": "@ menu no longer offers the brought-in Software Engineering Team",
+          "details": [
+            "agent-package-creator",
+            "codex",
+            "computer-use-operator",
+            "daily-assistant",
+            "product-prototyper",
+            "research-engineer",
+            "resume-designer",
+            "software-tutorial-video-maker",
+            "probe-twin-11873e",
+            "probe-twin-11873e-2",
+            "probe-pm-11873e",
+            "article-writing-team",
+            "classroom-simulation-team",
+            "evidence-driven-delivery-team",
+            "kids-coloring-story-team",
+            "kids-picture-story-team",
+            "manga-video-studio-team",
+            "marketing-team",
+            "narrated-presentation-video-team",
+            "product-team",
+            "research-to-deck-team",
+            "software-product-promo-video-team",
+            "storm-team"
+          ]
+        },
+        {
+          "ok": true,
+          "label": "Team tab lists the PM's message to the solution designer",
+          "details": [
+            "Message 1. Okt., 20:01 to solution designer Solution designer: reply to me with send_message_to in one short sentence. Text only, no files."
+          ]
+        }
+      ],
+      "shots": [
+        "DA-01-pm-rows.png",
+        "DA-02-solution-designer-view.png",
+        "DA-03-product-team-copy-view.png",
+        "DA-04-pm-team-tab.png"
+      ],
+      "tree": {
+        "collaborators": [
+          [
+            "agent_team",
+            "/software_engineering_team",
+            "project_manager_90a291d3ced0419985ab9a130950a7ed"
+          ]
+        ],
+        "copies": [
+          [
+            "/product_team",
+            true
+          ],
+          [
+            "/product_team",
+            true
+          ]
+        ]
+      },
+      "teamTab": [
+        "Message 1. Okt., 20:01 to solution designer Solution designer: reply to me with send_message_to in one short sentence. Text only, no files."
+      ],
+      "result": "Pass"
+    },
+    "DT": {
+      "startedAt": "2026-10-01T18:02:15.527Z",
+      "model": "haiku",
+      "rows": [
+        "task_team:software engineering team:offline",
+        "task_team_child:SD solution designer:live",
+        "task_team_child:AR architecture reviewer:offline",
+        "task_team_child:IE implementation engineer:offline",
+        "task_team_child:CR code reviewer:offline",
+        "task_team_child:AE api e2e engineer:offline",
+        "task_team_child:DE delivery engineer:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:offline",
+        "task_team_child:PB prototype bootstrapper:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:offline",
+        "task_team_child:PB prototype bootstrapper:offline",
+        "task_agent:PP product prototyper:live",
+        "task_team:marketing_team:offline"
+      ],
+      "checks": [
+        {
+          "ok": true,
+          "label": "Team root: agent-initiated collaborator row (Product Prototyper)",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:offline",
+            "task_team_child:PB prototype bootstrapper:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:offline",
+            "task_team_child:PB prototype bootstrapper:offline",
+            "task_agent:PP product prototyper:live",
+            "task_team:marketing_team:offline"
+          ]
+        },
+        {
+          "ok": false,
+          "label": "Team root: catalog-copy row (Marketing Team)",
+          "details": [
+            "task_team:software engineering team:offline",
+            "task_team_child:SD solution designer:live",
+            "task_team_child:AR architecture reviewer:offline",
+            "task_team_child:IE implementation engineer:offline",
+            "task_team_child:CR code reviewer:offline",
+            "task_team_child:AE api e2e engineer:offline",
+            "task_team_child:DE delivery engineer:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:offline",
+            "task_team_child:PB prototype bootstrapper:offline",
+            "task_team:product team:offline",
+            "task_team_child:PP product prototyper:offline",
+            "task_team_child:PB prototype bootstrapper:offline",
+            "task_agent:PP product prototyper:live",
+            "task_team:marketing_team:offline"
+          ]
+        },
+        {
+          "ok": false,
+          "label": "Product Prototyper view starts \"From Solution Designer:\"",
+          "details": [
+            "From Product Prototyper:"
+          ]
+        }
+      ],
+      "shots": [
+        "DT-01-team-rows.png",
+        "DT-02-product-prototyper-view.png",
+        "DT-error.png"
+      ],
+      "result": "Error",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-team-transient-execution-row\"][data-transient-kind=\"task_team_child\"]').filter({ hasText: /marketing content creator/i }).first()\n"
+    },
+    "DO": {
+      "startedAt": "2026-10-01T18:13:04.656Z",
+      "org": {
+        "id": "software-development-department",
+        "name": "Software Development Department"
+      },
+      "model": "haiku",
+      "result": "Error",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"chat-target-option-software-development-department\"]')\n",
+      "shots": [
+        "DO-error.png"
+      ]
+    }
+  },
+  "observations": [
+    {
+      "t": "DT rows not complete",
+      "d": [
+        "task_team:software engineering team:offline",
+        "task_team_child:SD solution designer:live",
+        "task_team_child:AR architecture reviewer:offline",
+        "task_team_child:IE implementation engineer:offline",
+        "task_team_child:CR code reviewer:offline",
+        "task_team_child:AE api e2e engineer:offline",
+        "task_team_child:DE delivery engineer:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:offline",
+        "task_team_child:PB prototype bootstrapper:offline",
+        "task_team:product team:offline",
+        "task_team_child:PP product prototyper:offline",
+        "task_team_child:PB prototype bootstrapper:offline",
+        "task_agent:PP product prototyper:live",
+        "task_team:marketing_team:offline"
+      ]
+    }
+  ],
+  "state_teamRunId": "software_engineering_team_53945560e1dc4992baeb750235403bf5",
+  "definitions": {
+    "productPrototyper": "product-prototyper",
+    "seTeam": "software-engineering-team",
+    "productTeam": "product-team",
+    "marketingTeam": "marketing-team",
+    "researchEngineer": "research-engineer",
+    "pm": "project-manager"
+  },
+  "orgs": [
+    {
+      "id": "autobyteus-org",
+      "name": "AutoByteus Org"
+    },
+    {
+      "id": "northstar-operating-company",
+      "name": "Northstar Operating Company"
+    },
+    {
+      "id": "software-development-department",
+      "name": "Software Development Department"
+    }
+  ],
+  "state_pmRunId": "project_manager_90a291d3ced0419985ab9a130950a7ed",
+  "pageErrors": []
+}

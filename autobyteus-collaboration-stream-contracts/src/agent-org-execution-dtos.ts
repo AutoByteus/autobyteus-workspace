@@ -24,6 +24,21 @@ const configuredAgent = z.object({
   platformAgentRunId: nullableText, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
 }).strict();
 
+type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
+/** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
+export type TaskAgentExecutionSourceDto = Readonly<{
+  kind: "agent";
+  agentDefinitionId: string;
+  launchConfiguration: LaunchConfigurationDto;
+}>;
+export type TaskTeamExecutionSourceDto = Readonly<{
+  kind: "agent_team";
+  teamDefinitionId: string;
+  coordinatorAddress: string;
+  members: readonly Readonly<{ address: string; agentDefinitionId: string }>[];
+  handoffs: readonly Readonly<{ from: string; to: string; rules: readonly string[] }>[];
+  defaultLaunchConfiguration: LaunchConfigurationDto;
+}>;
 type TaskAgentExecutionDto = Readonly<{
   address: string;
   agentRunId: string;
@@ -31,6 +46,7 @@ type TaskAgentExecutionDto = Readonly<{
   /** Absent for children recorded before the delegator was stored. */
   delegatorAgentRunId?: string;
   startedAt: string;
+  source?: TaskAgentExecutionSourceDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
   address: string;
@@ -52,12 +68,22 @@ type TaskTeamExecutionDto = Readonly<{
   /** Absent for children recorded before the delegator was stored. */
   delegatorAgentRunId?: string;
   startedAt: string;
+  source?: TaskTeamExecutionSourceDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
+const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
+const taskAgentSource: z.ZodType<TaskAgentExecutionSourceDto> = z.object({
+  kind: z.literal("agent"), agentDefinitionId: nonEmptyStringSchema, launchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+}).strict();
+const taskTeamSource: z.ZodType<TaskTeamExecutionSourceDto> = z.object({
+  kind: z.literal("agent_team"), teamDefinitionId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
+  members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema }).strict()).min(1),
+  handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+}).strict();
 const taskAgent: z.ZodType<TaskAgentExecutionDto> = z.object({
   address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
-  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
+  delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp, source: taskAgentSource.optional(),
 }).strict();
 const taskTeamMember: z.ZodType<TaskTeamMemberExecutionDto> = z.lazy(() => z.union([
   z.object({ address: agentAddressSchema, agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText }).strict(),
@@ -66,10 +92,12 @@ const taskTeamMember: z.ZodType<TaskTeamMemberExecutionDto> = z.lazy(() => z.uni
 const taskTeam: z.ZodType<TaskTeamExecutionDto> = z.lazy(() => z.object({
   address: agentAddressSchema, teamRunId: nonEmptyStringSchema, members: z.array(taskTeamMember),
   taskExecutions: z.array(taskExecution), delegatorAgentRunId: nonEmptyStringSchema.optional(), startedAt: timestamp,
+  source: taskTeamSource.optional(),
 }).strict());
 const taskExecution: z.ZodType<TaskExecutionDto> = z.lazy(() => z.union([taskAgent, taskTeam]));
 /** Shared by every collaboration root view (Org and Agent roots). */
 export const taskExecutionDtoSchema = taskExecution;
+export type CollaborationTaskExecutionDto = TaskExecutionDto;
 
 const configuredTeam = z.object({
   address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
@@ -86,7 +114,6 @@ const configuredTeam = z.object({
   }
 });
 
-const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 
 /**
  * One collaborator of a run: one instance of a shared Agent or Agent Team definition added

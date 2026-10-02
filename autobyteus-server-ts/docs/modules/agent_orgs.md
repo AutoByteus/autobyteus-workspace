@@ -139,9 +139,17 @@ rejects invalid/self-resolving endpoints and duplicate effective pairs.
 
 Runtime collaboration tools operate only inside the active root scope.
 `get_handoff_rules` exposes the current Agent's eligible rules,
-`send_message_to` targets an already existing execution, and
-`delegate_task` spawns a fresh delegated child (a task Agent or task Team) and
-returns its run ID. Logical addresses never discover unrelated roots.
+`send_message_to` reaches the one instance at an address (an available catalog
+Agent or Team is brought in on its first message), and `delegate_task` always
+spawns a new copy (a task Agent or task Team) and returns its run ID. Logical
+addresses never discover unrelated roots.
+
+**Team copies are one unit (REQ-007, behavior change).** A message from inside a
+Team instance to an address inside that Team resolves within that same instance.
+A delegated copy of a mounted Team therefore reaches its own members, no longer
+the mounted Team's. Configured Org handoffs between configured placements are
+unchanged (the sender's instance is the mounted Team itself). Reaching another
+instance of the same Team is possible only by run ID.
 
 ## Launch Configuration And Admission
 
@@ -251,13 +259,31 @@ queue.
   them in `restore` mode; termination includes them. `send_message_to` resolves
   configured placements, then collaborators (a Team goes to its coordinator) and
   collaborator Team members; the first message starts the instance. Member
-  contexts read the live tree: a collaborator Agent gets no Org instruction, a
-  collaborator Team member gets its Team's handoffs and instruction. The Org's
+  contexts follow the shared member-scope owner (see
+  [Agent Team Execution](./agent_team_execution.md)): a mounted Team member keeps the Org handoffs
+  its TeamRun carries and its Team instruction; a configured direct Agent gets the Org's; a member
+  of a collaborator Team or of any copy (including a catalog copy) gets that instance's; a
+  collaborator Agent or catalog Agent copy gets none. The Org's
   index records `collaborator` and `collaborator_team_member` executions; a
   collaborator Team hosts its members' delegations in its entry's
   `taskExecutions`. `delegate_task` to a collaborator address starts an extra
   copy (`AgentOrgTaskSourceResolver` projects it from the entry). The Org, its
   members and its mounted Teams are never offered with `@`.
+- Copy placement by address (REQ-012, behavior change): a delegated copy is recorded inside the
+  delegator's own Team instance only when the copy's address is a member of it (a teammate copy);
+  any other copy (an Org-level Agent or mounted Team, a collaborator, a catalog Agent or Team) is
+  recorded in `rootOrg.taskExecutions` at the Org top level, with `delegatorAgentRunId`. Earlier copies
+  keep their recorded host. One owner: `resolveTaskCopyHost`.
+- Agent-initiated collaborators and catalog copies: `AgentOrgRecipientResolver`
+  resolves `send_message_to(address)` with the shared `MessageRecipientResolution`
+  (sender instance, run-wide, then a catalog bring-in through
+  `AgentOrgRunCollaborators.bringInAt`, serialized with `@` admissions by the
+  root's `CollaboratorAdmissionQueue`; see
+  [Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution)) and
+  `delegate_task(address)` with a catalog placement after configured and
+  collaborator placements. A catalog copy records its `source`, which
+  `AgentOrgTaskSourceResolver` reads first on activation and restore.
+  `AgentOrgRun.listAvailableAgents(sender)` serves `list_available_agents`.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
   same-root wake-on-message in `restore` mode, one liveness predicate

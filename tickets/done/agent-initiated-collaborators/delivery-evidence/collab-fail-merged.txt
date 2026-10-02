@@ -1,0 +1,7 @@
+correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses
+keeps all pre-existing Org snapshot runtime kinds valid
+parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes
+rejects duplicate and sidecar AgentOrg member identities
+requires each configured Team coordinator to be one of that Team's direct Agents
+requires explicit family and exact matching branch
+requires one correlated status for every live Agent execution

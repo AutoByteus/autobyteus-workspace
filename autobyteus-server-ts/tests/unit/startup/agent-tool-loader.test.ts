@@ -6,6 +6,7 @@ const specs = [
   ["../agent-tools/browser/register-browser-tools.js", "registerBrowserTools", "browser"],
   ["../agent-tools/task-delegation/register-task-delegation-tools.js", "registerTaskDelegationTools", "task_delegation"],
   ["../agent-tools/agent-communication/register-agent-communication-tools.js", "registerAgentCommunicationTools", "agent_communication"],
+  ["../agent-tools/agent-discovery/list-available-agents-tool.js", "registerAgentDiscoveryTools", "agent_discovery"],
   ["../agent-tools/published-artifacts/register-published-artifact-tools.js", "registerPublishedArtifactTools", "published_artifact"],
   ["../agent-tools/media/register-media-tools.js", "registerMediaTools", "media"],
   ["../agent-tools/search/register-search-tool.js", "registerProvisionedSearchTool", "search"],
@@ -36,7 +37,7 @@ const buildModuleLoader = (input: {
 };
 
 describe("AgentToolRegistryReadiness", () => {
-  it("registers Core first, five server units next, and Search last with ordered results", async () => {
+  it("registers Core first, six server units next, and Search last with ordered results", async () => {
     const publisher = { publish: vi.fn() };
     const observations: Array<{ key: string; dependency: unknown }> = [];
     const modules = buildModuleLoader({
@@ -53,6 +54,7 @@ describe("AgentToolRegistryReadiness", () => {
       "browser",
       "task_delegation",
       "agent_communication",
+      "agent_discovery",
       "published_artifact",
       "media",
       "search",
@@ -77,7 +79,7 @@ describe("AgentToolRegistryReadiness", () => {
     expect(concurrent).toBe(first);
     const result = await first;
     expect(await readiness.registerRequiredGroups()).toBe(result);
-    expect(modules.loader).toHaveBeenCalledTimes(7);
+    expect(modules.loader).toHaveBeenCalledTimes(8);
   });
 
   it("names a server registrar failure, never starts Search, and never retries", async () => {
@@ -94,7 +96,7 @@ describe("AgentToolRegistryReadiness", () => {
     );
     await expect(readiness.registerRequiredGroups()).rejects.toBeInstanceOf(AggregateError);
     expect(modules.loads).not.toContain("search");
-    expect(modules.loader).toHaveBeenCalledTimes(6);
+    expect(modules.loader).toHaveBeenCalledTimes(7);
     const aggregate = await first.catch((error: unknown) => error as AggregateError);
     expect(aggregate.errors.map((error) => String(error))).toEqual(expect.arrayContaining([
       expect.stringContaining("Task Delegation Tools"),

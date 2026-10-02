@@ -1,0 +1,1356 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94358) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-02T02:19:45.337Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-appdata-uAaZ9O/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Populating agent definition cache for the first time...
+[2026-10-02T02:19:45.470Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+[2026-10-02T02:19:45.470Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005)
+Agent definition cache populated with 2 items.
+
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > autobyteus_deepseek: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > codex_app_server: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > codex_app_server: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > codex_app_server: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > codex_app_server: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > codex_app_server: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > codex_app_server: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Added new agent definition with ID aic-helper-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition created successfully with ID: aic-helper-2b4d04
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Added new agent definition with ID aic-twin-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition created successfully with ID: aic-twin-2b4d04
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Added new agent definition with ID aic-twin-2b4d04-2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition created successfully with ID: aic-twin-2b4d04-2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Added new agent definition with ID aic-plain-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition created successfully with ID: aic-plain-2b4d04
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Added new agent definition with ID aic-pm-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition created successfully with ID: aic-pm-2b4d04
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-j2MLN9
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-j2MLN9.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Created and registered workspace ID: agent_ws_760012d391a7841f05bc63111dcf8c4d56eb4ef1f721d0120a576edbae6484c7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-j2MLN9
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-j2MLN9.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Reusing registered workspace ID: agent_ws_760012d391a7841f05bc63111dcf8c4d56eb4ef1f721d0120a576edbae6484c7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Published claude_agent_sdk agent run 'aic_plain_2b4d04_cbbb68b742234641a76248c3306f42f4'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent websocket attached for run aic_plain_2b4d04_cbbb68b742234641a76248c3306f42f4
+Created agent session afbf7abd-c1a4-4775-974f-0fa388cf5351 for run aic_plain_2b4d04_cbbb68b742234641a76248c3306f42f4
+Agent WebSocket connected: session=afbf7abd-c1a4-4775-974f-0fa388cf5351, run=aic_plain_2b4d04_cbbb68b742234641a76248c3306f42f4
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Created and registered workspace ID: agent_ws_cf056698e6515b102eaeaa5073f8a58ef487f9cdb7eb57c0ac067e087eaf821a
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Reusing registered workspace ID: agent_ws_cf056698e6515b102eaeaa5073f8a58ef487f9cdb7eb57c0ac067e087eaf821a
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Published claude_agent_sdk agent run 'aic_pm_2b4d04_61758cbf1d84437fbd470da05c24de02'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent websocket attached for run aic_pm_2b4d04_61758cbf1d84437fbd470da05c24de02
+Created agent session 0be9dab5-4199-4356-85a2-4589eb518223 for run aic_pm_2b4d04_61758cbf1d84437fbd470da05c24de02
+Agent WebSocket connected: session=0be9dab5-4199-4356-85a2-4589eb518223, run=aic_pm_2b4d04_61758cbf1d84437fbd470da05c24de02
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Reusing registered workspace ID: agent_ws_cf056698e6515b102eaeaa5073f8a58ef487f9cdb7eb57c0ac067e087eaf821a
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Published claude_agent_sdk agent run 'aic_helper_2b4d04_44240563d8d44bd2a1e91df7f99edb80'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-n3sPrp.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Reusing registered workspace ID: agent_ws_cf056698e6515b102eaeaa5073f8a58ef487f9cdb7eb57c0ac067e087eaf821a
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Published claude_agent_sdk agent run 'aic_twin_2b4d04_aff521e42cc0466f8f83610dab32b31b'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Closed agent session 0be9dab5-4199-4356-85a2-4589eb518223
+Agent WebSocket disconnected: 0be9dab5-4199-4356-85a2-4589eb518223
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Closed agent session afbf7abd-c1a4-4775-974f-0fa388cf5351
+Agent WebSocket disconnected: afbf7abd-c1a4-4775-974f-0fa388cf5351
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Removed agent definition with ID aic-helper-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition with ID aic-helper-2b4d04 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Removed agent definition with ID aic-twin-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition with ID aic-twin-2b4d04 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Removed agent definition with ID aic-twin-2b4d04-2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition with ID aic-twin-2b4d04-2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Removed agent definition with ID aic-plain-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition with ID aic-plain-2b4d04 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+In-memory cache: Removed agent definition with ID aic-pm-2b4d04.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+Agent Definition with ID aic-pm-2b4d04 deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing 40262ms
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+In-memory cache: Added new agent definition with ID aic-lead-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Definition created successfully with ID: aic-lead-63fda1
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+In-memory cache: Added new agent definition with ID aic-mate-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Definition created successfully with ID: aic-mate-63fda1
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[2026-10-02T02:20:27.045Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Team Definition created successfully with ID: aic-squad-63fda1
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+In-memory cache: Added new agent definition with ID aic-pm-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Definition created successfully with ID: aic-pm-63fda1
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Created and registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Published claude_agent_sdk agent run 'aic_pm_63fda1_a23b1c8c2d5444c490bb873911c3bbb8'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent websocket attached for run aic_pm_63fda1_a23b1c8c2d5444c490bb873911c3bbb8
+Created agent session 9983f09c-d116-4f52-bbfc-ea3331295ea8 for run aic_pm_63fda1_a23b1c8c2d5444c490bb873911c3bbb8
+Agent WebSocket connected: session=9983f09c-d116-4f52-bbfc-ea3331295ea8, run=aic_pm_63fda1_a23b1c8c2d5444c490bb873911c3bbb8
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Published claude_agent_sdk agent run 'aic_lead_63fda1_4dfc9c85756940c88bd8feb58246287c'.
+Published claude_agent_sdk agent run 'aic_mate_63fda1_d38c4fc787094e7eb0d11df19095de35'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Published claude_agent_sdk agent run 'aic_lead_63fda1_feeb80e7a20b4d46981a347b162f6137'.
+Published claude_agent_sdk agent run 'aic_mate_63fda1_da308b7f877d46569fb7b01e8105a9fd'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Published claude_agent_sdk agent run 'aic_lead_63fda1_4c28d87f693c4a208c3d94815441bc2b'.
+Published claude_agent_sdk agent run 'aic_mate_63fda1_4ad9bc39429840d598e4020f4a241ef3'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Published claude_agent_sdk agent run 'aic_pm_63fda1_a23b1c8c2d5444c490bb873911c3bbb8'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-P2r0D2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Reusing registered workspace ID: agent_ws_667b90a39dda17f61943e4f44ff874bb9bc007e81e2ce69fe38006b5782a590f
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Published claude_agent_sdk agent run 'aic_lead_63fda1_4dfc9c85756940c88bd8feb58246287c'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Closed agent session 9983f09c-d116-4f52-bbfc-ea3331295ea8
+Agent WebSocket disconnected: 9983f09c-d116-4f52-bbfc-ea3331295ea8
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+[2026-10-02T02:21:03.894Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Team Definition with ID aic-squad-63fda1 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+In-memory cache: Removed agent definition with ID aic-lead-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Definition with ID aic-lead-63fda1 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+In-memory cache: Removed agent definition with ID aic-mate-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Definition with ID aic-mate-63fda1 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+In-memory cache: Removed agent definition with ID aic-pm-63fda1.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+Agent Definition with ID aic-pm-63fda1 deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop 38144ms
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-lead-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-lead-411e8c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-mate-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-mate-411e8c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[2026-10-02T02:21:04.951Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Team Definition created successfully with ID: aic-squad-411e8c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-echo-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-echo-411e8c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Added new agent definition with ID aic-pm-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition created successfully with ID: aic-pm-411e8c
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Created and registered workspace ID: agent_ws_0cd3738a2e485daafa6ace9be30a3435e8089b4900ef33d2d1e2988c83312c14
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_0cd3738a2e485daafa6ace9be30a3435e8089b4900ef33d2d1e2988c83312c14
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_pm_411e8c_cbaefd8f5cc44cc98fad602a4da5439d'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent websocket attached for run aic_pm_411e8c_cbaefd8f5cc44cc98fad602a4da5439d
+Created agent session 848e9c92-aea9-4158-ada6-9f1a7c58b384 for run aic_pm_411e8c_cbaefd8f5cc44cc98fad602a4da5439d
+Agent WebSocket connected: session=848e9c92-aea9-4158-ada6-9f1a7c58b384, run=aic_pm_411e8c_cbaefd8f5cc44cc98fad602a4da5439d
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_0cd3738a2e485daafa6ace9be30a3435e8089b4900ef33d2d1e2988c83312c14
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_lead_411e8c_a863f18c7ac8401d894002fda91a349b'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_0cd3738a2e485daafa6ace9be30a3435e8089b4900ef33d2d1e2988c83312c14
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_mate_411e8c_b63dcb628ea44374bae76c9b20bed0d1'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_0cd3738a2e485daafa6ace9be30a3435e8089b4900ef33d2d1e2988c83312c14
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_echo_411e8c_c7637fd2c68d46e2b8ccd2f7176d8ff7'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-TjMQ8O.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Reusing registered workspace ID: agent_ws_0cd3738a2e485daafa6ace9be30a3435e8089b4900ef33d2d1e2988c83312c14
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Published claude_agent_sdk agent run 'aic_mate_411e8c_112e0849d575406ca17151b6d135d8aa'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Closed agent session 848e9c92-aea9-4158-ada6-9f1a7c58b384
+Agent WebSocket disconnected: 848e9c92-aea9-4158-ada6-9f1a7c58b384
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+[2026-10-02T02:21:34.855Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Team Definition with ID aic-squad-411e8c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-lead-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-lead-411e8c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-mate-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-mate-411e8c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-echo-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-echo-411e8c deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+In-memory cache: Removed agent definition with ID aic-pm-411e8c.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+Agent Definition with ID aic-pm-411e8c deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop 30961ms
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-lead-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-lead-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-mate-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-mate-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[2026-10-02T02:21:35.813Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Team Definition created successfully with ID: aic-squad-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-helper-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-helper-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-racer-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-racer-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-echo-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-echo-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-coord-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-coord-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Added new agent definition with ID aic-worker-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition created successfully with ID: aic-worker-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[2026-10-02T02:21:35.907Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-host-team-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Team Definition created successfully with ID: aic-host-team-1b66ee
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Created and registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent team websocket attached for team run aic_host_team_1b66ee_a6b1d58b63874be4acac39948c86a1ce
+Created agent session fce014e5-2c5c-4a6b-a75a-c61faa64d919 for run aic_host_team_1b66ee_a6b1d58b63874be4acac39948c86a1ce
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Team WebSocket connected: session=fce014e5-2c5c-4a6b-a75a-c61faa64d919, run=aic_host_team_1b66ee_a6b1d58b63874be4acac39948c86a1ce
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_coord_1b66ee_8c783efaf1fe465f8280fd0cc1460636'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_lead_1b66ee_fc6e3da7622345c08e9d505f61db8e26'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_lead_1b66ee_26565cee1b694345b0385afb385b4bd0'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_mate_1b66ee_710782839852448e830fcff358db2445'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_mate_1b66ee_932a7588f174444cb46c53c87f5c1f5b'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_lead_1b66ee_23751469097d455baec414852e6ca00c'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_mate_1b66ee_caded87facfb4a738bb22ccc99eba011'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_echo_1b66ee_4ce1a9cee49b45cfab9c28d5c4394b05'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_echo_1b66ee_482e3d79934d415db01578b95fc5d5bd'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_helper_1b66ee_a5fb7988d89843d1bf8b390e9ea01dd8'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_echo_1b66ee_ed46338212fa4de4825301a109f6baaf'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_mate_1b66ee_a8e90ac2dbaa4e4499b0327fb095f807'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_worker_1b66ee_b77aea7d872b4179abd24a7d4b56803e'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_racer_1b66ee_a52b3d9d4484445a9392138b94ca9c2e'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[LE-T1] race results: [["aic_coord_1b66ee_8c783efaf1fe465f8280fd0cc1460636","aic_racer_1b66ee_a52b3d9d4484445a9392138b94ca9c2e"],["aic_worker_1b66ee_b77aea7d872b4179abd24a7d4b56803e","aic_racer_1b66ee_a52b3d9d4484445a9392138b94ca9c2e"]]
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Closed agent session fce014e5-2c5c-4a6b-a75a-c61faa64d919
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent team websocket attached for team run aic_host_team_1b66ee_a6b1d58b63874be4acac39948c86a1ce
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Created agent session eee22662-8c63-4f6b-a4ba-6458a4388d92 for run aic_host_team_1b66ee_a6b1d58b63874be4acac39948c86a1ce
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Team WebSocket connected: session=eee22662-8c63-4f6b-a4ba-6458a4388d92, run=aic_host_team_1b66ee_a6b1d58b63874be4acac39948c86a1ce
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_coord_1b66ee_8c783efaf1fe465f8280fd0cc1460636'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_lead_1b66ee_23751469097d455baec414852e6ca00c'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-3gpTTe.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Reusing registered workspace ID: agent_ws_73803bda7b9ed9c88c0021c5391c9bddd16ed72866e9f5cc67a3adc54d2526f7
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Published claude_agent_sdk agent run 'aic_lead_1b66ee_fc6e3da7622345c08e9d505f61db8e26'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Closed agent session eee22662-8c63-4f6b-a4ba-6458a4388d92
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[2026-10-02T02:22:52.071Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Team Definition with ID aic-squad-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+[2026-10-02T02:22:52.082Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-host-team-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Team Definition with ID aic-host-team-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-lead-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-lead-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-mate-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-mate-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-helper-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-helper-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-racer-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-racer-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-echo-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-echo-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-coord-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-coord-1b66ee deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+In-memory cache: Removed agent definition with ID aic-worker-1b66ee.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+Agent Definition with ID aic-worker-1b66ee deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen 77235ms
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Added new agent definition with ID aic-org-coord-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition created successfully with ID: aic-org-coord-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Added new agent definition with ID aic-org-lead-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition created successfully with ID: aic-org-lead-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Added new agent definition with ID aic-org-mate-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition created successfully with ID: aic-org-mate-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Added new agent definition with ID aic-helper-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition created successfully with ID: aic-helper-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[2026-10-02T02:22:52.935Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-org-squad-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Team Definition created successfully with ID: aic-org-squad-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Created and registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_coord_48b7d2_bb2901fcc7e243f7bd34b2c7212c354d'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_lead_48b7d2_6e1f112784294bee8582f5a053fc61b9'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_mate_48b7d2_342028aee19d4eb09d4e198190d001a3'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_lead_48b7d2_b29c9b7598404efeaef85ac6498ecb3a'.
+Published claude_agent_sdk agent run 'aic_org_mate_48b7d2_e9ff23d1471747069d2a24107510aaea'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Added new agent definition with ID aic-lead-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition created successfully with ID: aic-lead-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Added new agent definition with ID aic-mate-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition created successfully with ID: aic-mate-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[2026-10-02T02:23:08.311Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Team Definition created successfully with ID: aic-squad-48b7d2
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_lead_48b7d2_2f96b1790e8344c8ac94bc4844a49af9'.
+Published claude_agent_sdk agent run 'aic_mate_48b7d2_87bdef08895c4e6b9f45c61c1fb91bbb'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_lead_48b7d2_83efef358f46473b88f2b8e919e0aa7a'.
+Published claude_agent_sdk agent run 'aic_mate_48b7d2_fc35ba69d5234956b479cafec94e1ebc'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_mate_48b7d2_53461f4faa22402d9fe39f53d8e59815'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_helper_48b7d2_0c927c153cf6473eac5bc0961cd9be94'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_coord_48b7d2_bb2901fcc7e243f7bd34b2c7212c354d'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_org_lead_48b7d2_6e1f112784294bee8582f5a053fc61b9'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-xsVp8g.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Reusing registered workspace ID: agent_ws_c249fe9f3cc6f397b420f7e47c9f0b4ab016204c6efe38cb8ab4a5836e41deea
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Published claude_agent_sdk agent run 'aic_lead_48b7d2_2f96b1790e8344c8ac94bc4844a49af9'.
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[2026-10-02T02:24:05.528Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-org-squad-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Team Definition with ID aic-org-squad-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+[2026-10-02T02:24:05.543Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Team Definition with ID aic-squad-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Removed agent definition with ID aic-org-coord-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition with ID aic-org-coord-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Removed agent definition with ID aic-org-lead-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition with ID aic-org-lead-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Removed agent definition with ID aic-org-mate-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition with ID aic-org-mate-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Removed agent definition with ID aic-helper-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition with ID aic-helper-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Removed agent definition with ID aic-lead-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition with ID aic-lead-48b7d2 deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+In-memory cache: Removed agent definition with ID aic-mate-48b7d2.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+Agent Definition with ID aic-mate-48b7d2 deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in 73468ms
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Added new agent definition with ID aic-helper-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition created successfully with ID: aic-helper-812ffc
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Added new agent definition with ID aic-lead-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition created successfully with ID: aic-lead-812ffc
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Added new agent definition with ID aic-mate-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition created successfully with ID: aic-mate-812ffc
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+[2026-10-02T02:24:06.395Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID aic-squad-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Team Definition created successfully with ID: aic-squad-812ffc
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Added new agent definition with ID aic-pm-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition created successfully with ID: aic-pm-812ffc
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-ooJuyh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-ooJuyh.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Created and registered workspace ID: agent_ws_a2c89f4e7232a2d5c83421763537a1f466911bd6b36148dba3325f38c7691fdf
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-ooJuyh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-e2e-ws-ooJuyh.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Reusing registered workspace ID: agent_ws_a2c89f4e7232a2d5c83421763537a1f466911bd6b36148dba3325f38c7691fdf
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Published claude_agent_sdk agent run 'aic_pm_812ffc_7782ea7558e8429da4e2c088b950a18e'.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent websocket attached for run aic_pm_812ffc_7782ea7558e8429da4e2c088b950a18e
+Created agent session 193209b1-d333-40d6-a37c-fb57cd219219 for run aic_pm_812ffc_7782ea7558e8429da4e2c088b950a18e
+Agent WebSocket connected: session=193209b1-d333-40d6-a37c-fb57cd219219, run=aic_pm_812ffc_7782ea7558e8429da4e2c088b950a18e
+
+(node:94358) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: list_available_agents, mcp__autobyteus_agent_tools__list_available_agents, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Closed agent session 193209b1-d333-40d6-a37c-fb57cd219219
+Agent WebSocket disconnected: 193209b1-d333-40d6-a37c-fb57cd219219
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+[2026-10-02T02:24:15.924Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID aic-squad-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Team Definition with ID aic-squad-812ffc deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Removed agent definition with ID aic-helper-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition with ID aic-helper-812ffc deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Removed agent definition with ID aic-lead-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition with ID aic-lead-812ffc deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Removed agent definition with ID aic-mate-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition with ID aic-mate-812ffc deleted successfully.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+In-memory cache: Removed agent definition with ID aic-pm-812ffc.
+
+stdout | tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+Agent Definition with ID aic-pm-812ffc deleted successfully.
+
+ ✓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > claude_agent_sdk: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing 10376ms
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > antigravity_cli: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > antigravity_cli: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > antigravity_cli: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > antigravity_cli: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > antigravity_cli: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > antigravity_cli: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > grok_build: LE-A1 list is opt-in and read-only; first message brings in; reuse with @ in both orders; failures create nothing
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > grok_build: LE-A2 three catalog copies with source, each one unit, no collaborator; restore after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > grok_build: LE-A3 Agent root — a collaborator-team member's top-level copy is placed at the root, its teammate copy inside the team; kept after Stop
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > grok_build: LE-T1 Team root — catalog copies and a brought-in team stay apart with their own scope; catalog Agent copies get none; configured scope kept after Stop → reopen
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > grok_build: LE-O1 Org root — a copy of a mounted Team stays inside the copy; configured, mounted and cross-placement handoffs kept (also after Stop → reopen); catalog copy scope; a member brings in
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts > Agent-initiated collaborators on real runtimes (SR-005) > grok_build: LE-F1 SC-004 — a run whose model left the catalog: bring-in and catalog copy fail with the reason and add nothing
+
+ Test Files  1 passed (1)
+      Tests  6 passed | 30 skipped (36)
+   Start at  04:19:37
+   Duration  278.00s (transform 4.74s, setup 16ms, import 6.84s, tests 270.64s, environment 0ms)
+

@@ -1,0 +1,49 @@
+{
+  "pmRunId": "project_manager_de05f2f851304e04888e5a1f762c7d63",
+  "teamRunId": null,
+  "before": {
+    "agent": {
+      "active": true,
+      "collaborators": [
+        [
+          "/software_engineering_team",
+          "software_engineering_team_dff7036f006d412bbd1f70f071167f33"
+        ]
+      ],
+      "copies": [
+        [
+          "/product_team",
+          "product_team_2e3d8b0e73b4445e914ce75503fef8ed",
+          "{\"kind\":\"agent_team\",\"teamDefinitionId\":\"product-team\",\"coordinatorAddress\":\"/product_team/product_prototyper\",\"members\":[{\"address\":\"/product_team/product_prototyper\",\"agentDefinitionId\":\"team-local-agent:product-team:product-prototyper\"},{\"address\":\"/product_team/prototype_bootstrapper\",\"agentDefinitionId\":\"team-local-agent:product-team:prototype-bootstrapper\"}],\"handoffs\":[{\"from\":\"/product_team/product_prototyper\",\"to\":\"/product_team/prototype_bootstrapper\",\"rules\":[\"When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package.\"]},{\"from\":\"/product_team/prototype_bootstrapper\",\"to\":\"/product_team/product_prototyper\",\"rules\":[\"When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery.\"]}],\"defaultLaunchConfiguration\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"haiku\",\"llmConfig\":null,\"autoExecuteTools\":true,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-placement-ws-Rbb8ro\"}}"
+        ]
+      ]
+    },
+    "team": {
+      "collaborators": [],
+      "copies": []
+    }
+  },
+  "after": {
+    "agent": {
+      "active": false,
+      "collaborators": [
+        [
+          "/software_engineering_team",
+          "software_engineering_team_dff7036f006d412bbd1f70f071167f33"
+        ]
+      ],
+      "copies": [
+        [
+          "/product_team",
+          "product_team_2e3d8b0e73b4445e914ce75503fef8ed",
+          "{\"kind\":\"agent_team\",\"teamDefinitionId\":\"product-team\",\"coordinatorAddress\":\"/product_team/product_prototyper\",\"members\":[{\"address\":\"/product_team/product_prototyper\",\"agentDefinitionId\":\"team-local-agent:product-team:product-prototyper\"},{\"address\":\"/product_team/prototype_bootstrapper\",\"agentDefinitionId\":\"team-local-agent:product-team:prototype-bootstrapper\"}],\"handoffs\":[{\"from\":\"/product_team/product_prototyper\",\"to\":\"/product_team/prototype_bootstrapper\",\"rules\":[\"When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package.\"]},{\"from\":\"/product_team/prototype_bootstrapper\",\"to\":\"/product_team/product_prototyper\",\"rules\":[\"When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery.\"]}],\"defaultLaunchConfiguration\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"haiku\",\"llmConfig\":null,\"autoExecuteTools\":true,\"workspaceRootPath\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/aic-placement-ws-Rbb8ro\"}}"
+        ]
+      ]
+    },
+    "team": {
+      "collaborators": [],
+      "copies": []
+    }
+  },
+  "woken": true
+}

@@ -5,29 +5,19 @@ import {
 } from "../../agent-collaboration/domain/agent-team-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { delegationTargetUnavailableMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
-import type { TeamExecutionIndex, TeamMessagePlacement } from "./team-execution-index.js";
+import type { TeamExecutionIndex } from "./team-execution-index.js";
 import type { TeamDelegationPlacement } from "./resolved-team-recipient.js";
 
-/** Resolves addresses by subject: message ingress versus delegation placement. */
+/**
+ * Team-root address rules: canonical non-root recipients, and the in-run delegation
+ * placements. Message resolution is the shared `MessageRecipientResolution`.
+ */
 export class TeamRecipientResolver {
-  /**
-   * The one execution a message reaches: a configured Agent, then a collaborator Agent, a
-   * collaborator Team (its coordinator) or a collaborator Team member. The first message
-   * starts a collaborator.
-   */
-  resolveMessageRecipient(index: TeamExecutionIndex, recipientAddress: string): TeamMessagePlacement {
-    const address = this.requireNonRootAddress(recipientAddress);
-    const placement = index.getMessagePlacement(address);
-    if (placement) return placement;
-    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration target '${address}' was not found.`);
-  }
-
   /**
    * A configured Agent placement first, then a collaborator of this run (or a member of a
    * collaborator Team). Delegating there starts an extra copy (REQ-013).
    */
-  resolveDelegationPlacement(index: TeamExecutionIndex, recipientAddress: string): TeamDelegationPlacement {
-    const address = this.requireNonRootAddress(recipientAddress);
+  resolveInRunDelegationPlacement(index: TeamExecutionIndex, address: AgentTeamAddress): TeamDelegationPlacement {
     const node = index.getConfiguredPlacement(address);
     if (node) return Object.freeze({ kind: "agent", address: node.address });
     const collaborator = index.getCollaborator(address);
@@ -37,11 +27,11 @@ export class TeamRecipientResolver {
     if (index.getMessagePlacement(address)?.kind === "agent") return Object.freeze({ kind: "agent", address });
     throw new CollaborationContractError(
       "COLLABORATION_TARGET_NOT_FOUND",
-      delegationTargetUnavailableMessage(address, true),
+      delegationTargetUnavailableMessage(address),
     );
   }
 
-  private requireNonRootAddress(recipientAddress: string): AgentTeamAddress {
+  requireNonRootAddress(recipientAddress: string): AgentTeamAddress {
     let address: AgentTeamAddress;
     try {
       address = assertAgentTeamAddress(recipientAddress);

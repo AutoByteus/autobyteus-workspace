@@ -1,6 +1,9 @@
 import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-contracts'
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import {
+  catalogAgentSourceAt,
+  catalogTeamSourceAt,
+  collaborationTaskExecutionLists,
   collaboratorAgentSourceAt,
   collaboratorExecutionNodes,
   collaboratorTeamSourceAt,
@@ -118,6 +121,10 @@ export class AgentOrgExecutionViewIndex {
     if (matches.length !== 1) throw new Error(`Team '${teamRunId}' has no unique exact coordinator.`)
     return matches[0]!
   }
+  /** Catalog copies carry their own source (REQ-011). */
+  private catalogTasks() {
+    return collaborationTaskExecutionLists(this.view.execution_tree.rootOrg)
+  }
   private register(runId: string): void {
     if (this.allRunIds.has(runId)) throw new Error(`Duplicate Org execution '${runId}'.`)
     this.allRunIds.add(runId)
@@ -129,6 +136,7 @@ export class AgentOrgExecutionViewIndex {
     const source = configured
       ? ('agentRunId' in configured ? configured : null)
       : collaboratorAgentSourceAt(this.view.execution_tree.rootOrg.collaborators ?? [], execution.address)
+        ?? catalogAgentSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Agent source at '${execution.address}'.`)
     this.agentsById.set(execution.agentRunId, Object.freeze({ agentRunId: execution.agentRunId,
       address: parseAgentTeamAddress(execution.address), source, execution, host, delegation, kind, live }))
@@ -139,6 +147,7 @@ export class AgentOrgExecutionViewIndex {
     const source = configured
       ? ('teamRunId' in configured ? configured : null)
       : collaboratorTeamSourceAt(this.view.execution_tree.rootOrg.collaborators ?? [], execution.address)
+        ?? catalogTeamSourceAt(this.catalogTasks(), execution.address)
     if (!source) throw new Error(`No captured Team source at '${execution.address}'.`)
     this.teamsById.set(execution.teamRunId, Object.freeze({ teamRunId: execution.teamRunId,
       address: parseAgentTeamAddress(execution.address), source, execution, delegation, live }))

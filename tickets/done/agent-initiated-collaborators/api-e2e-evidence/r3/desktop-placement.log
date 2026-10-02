@@ -1,0 +1,6 @@
+  ✗ Org: the solution designer's /marketing_team copy is shown at the Org top level (level 1) {"label":"marketing team, Started by solution designer, /marketing_team, marketing_team_7bf368f2fc044d8498aa928850fd18b3","text":"marketing team"}
+  ✓ Agent root: the SE team member's /product_team copy is shown at the run's top level (level 1)
+  ✗ teammate copies (code reviewer) stay inside their team (level ≥ 2) in both runs [{"label":"Temporary task agent, code reviewer, level 2, idle, Started by solution designer, /software_engineering_team/code_reviewer","text":"CR code reviewer"},{"label":"code reviewer, idle, Started by solution designer, /software_engineering_team/code_reviewer, code_reviewer_576c707ce9344b5c973f93d6e51b89f7","text":"CR code reviewer"}]
+  ✓ "Started by solution designer" is in the accessible label only, not visible text
+PLACEMENT FAIL
+exit 0

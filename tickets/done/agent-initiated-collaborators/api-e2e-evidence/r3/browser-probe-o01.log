@@ -1,0 +1,4 @@
+O01 Pass UXJ-004 Org run: VIS-008 menu; two mentions add an Agent and a Team (Offline at once); send_message_to briefings; "From" reports; Org tab briefing + report rows with formatted names (VIS-009)
+O02 Pass UXJ-004 / VIS-010: the Org collaborator Agent view starts with "From Analyst:"; direct chat
+Summary: 2 Pass, 0 Fail, 0 Not Applicable
+exit 0

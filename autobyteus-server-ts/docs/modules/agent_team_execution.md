@@ -411,9 +411,34 @@ A Team root hosts each collaborator in its root TeamRun's
 executions (a collaborator Team's parent is the root TeamRun, so a member's
 physical scope is `[collaboratorTeamRunId]`). Admission prepares, commits, then
 publishes; `materializeTeamRoot` re-hosts collaborators with the root in
-`restore` mode; the root TeamRun's termination includes them. Member contexts of
-a collaborator Agent carry no enclosing instruction or handoffs; members of a
-collaborator Team (and copies of it) get that Team's handoffs and instruction.
+`restore` mode; the root TeamRun's termination includes them.
+
+**Member collaboration scope (CR-001).** One owner,
+`agent-collaboration/execution/domain/member-instance-scope.ts#resolveMemberCollaborationScope`,
+decides every member's outgoing handoffs and enclosing instruction in all three roots, at
+construction and restore. The hosting TeamRun's own context reaches it as `hostTeam` through the
+member-context callback. Rules, in order:
+1. a direct member of its non-root hosting Team instance (collaborator Team, any copy, including a
+   catalog copy prepared from its recorded `source`) gets that instance's handoffs and Team
+   instruction;
+2. a root-level member at a configured root placement (or a copy at its address) gets the root's
+   handoffs and instruction;
+3. anything else (a collaborator Agent, a catalog Agent copy, an Agent hosted by a Team it is not a
+   member of) gets none — a catalog Agent copy in a Team root gets no root-Team instruction.
+
+Agent-initiated collaborators (REQ-004/005/007) use the same hosting. The root's
+message and delegation addressing lives in `services/team-run-message-delivery.ts`
+(`TeamRunMessageDelivery`), called inside the materialization gate:
+`send_message_to(address)` resolves with the shared `MessageRecipientResolution`
+(the sender's own Team instance first, then run-wide, then a catalog bring-in via
+`TeamRunCollaborators.bringInAt`; the materialization gate admits concurrently,
+so `@` admissions and bring-ins are serialized by the root's
+`CollaboratorAdmissionQueue`), and `delegate_task(address)`
+adds a catalog placement with a source snapshot after configured and
+collaborator placements. Copies are placed by address through the shared
+`resolveTaskCopyHost` (REQ-012; the Team root's rule, now shared by all roots); catalog copies
+record `source` on their task execution and restore from it.
+`listAvailableAgents(sender)` is read-only and takes no gate.
 
 A successful Agent target creates one task Agent at the logical member's
 address. A successful AgentTeam target creates one task-scoped TeamRun and sends
@@ -516,12 +541,15 @@ After optional authored `Team Instruction`, the Carpenter prompt renders one
 section, before `Working Environment`. The shared exact renderer supplies the
 canonical member address, logical directory/file analogy, absolute non-root
 address rule, Team coordinator ingress rule, and the complete intent-first
-collaboration contract. The exact copy distinguishes ordinary communication
-with an existing execution from starting a fresh delegated instance (its
-"Delegated Agents" section), prohibits duplicate work-packet delivery, tells the
-Agent to talk to a delegated instance only through its returned run ID, states
-that a quiet delegated agent is shut down and restored with its conversation on
-the next message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
+collaboration contract (REQ-009 wording). The exact copy distinguishes ordinary
+communication with the one instance at an address (its "Ordinary
+Communication" section), where a teammate's address reaches the member of the
+sender's own team instance and an available agent or team is brought in on
+first use, from spawning a new copy with every `delegate_task` call (its
+"Delegated Agents" section). It also prohibits duplicate work-packet delivery,
+tells the Agent to follow up on a copy only through its returned run ID, states
+that a quiet copy is shut down and restored with its conversation on the next
+message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
 Agent selects the single rule whose condition most specifically applies and
 notifies only that rule's recipient; it does not fan out one outcome to
 additional recipients. The renderer injects no flat recipient, representative,
@@ -530,7 +558,9 @@ or delegation roster. Runtime exposure automatically includes `get_handoff_rules
 copy across AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
-service. An Agent target delivers to that real Agent. An AgentTeam target
+service, the sender's own Team instance first: a teammate address inside a
+collaborator Team or a delegated Team copy reaches that same instance's member,
+never another copy (REQ-007). An Agent target delivers to that real Agent. An AgentTeam target
 delivers through its exact direct coordinator ingress. Child managers forward a
 root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
@@ -542,7 +572,10 @@ Team Communication or member-input record.
 
 Successful logical messaging returns that existing Agent or AgentTeam
 coordinator run as flat `target_agent_run_id`; rejection returns null identity.
-This message creates no new execution. A successful `delegate_task` already
+A run ID never creates an execution; a first message to an available catalog
+address brings that one instance in (see
+[Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution)).
+A successful `delegate_task` already
 starts the child and delivers the complete assignment to its fresh ingress.
 Callers must not resend the assignment through logical-address messaging; all
 later exchange with the child, in both directions, uses its run ID.

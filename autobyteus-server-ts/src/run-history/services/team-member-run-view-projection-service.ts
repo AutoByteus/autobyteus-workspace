@@ -4,7 +4,11 @@ import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
 import { AgentRunViewProjectionService, type RunProjection } from "./agent-run-view-projection-service.js";
 import { TeamRunExecutionTreeLocationService } from "./team-run-execution-tree-location-service.js";
-import { collaboratorExecutionSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import {
+  catalogCopyExecutionSource,
+  collaboratorExecutionSource,
+  taskExecutionListsOf,
+} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
 
 const required = (value: string, field: string): string => {
@@ -74,19 +78,25 @@ export class TeamMemberRunViewProjectionService {
     if (!location || location.rootTeamRunId !== root) {
       throw new Error(`AgentRun '${run}' was not found in root TeamRun '${root}'.`);
     }
-    if (!location.configuredPlacement && !collaboratorExecutionSource(location.tree.rootTeam.collaborators, location.memberAddress)) {
-      throw new Error(`AgentRun '${run}' has no configured launch placement or collaborator source.`);
+    if (!location.configuredPlacement && !childSourceOf(location)) {
+      throw new Error(`AgentRun '${run}' has no configured launch placement, collaborator or catalog source.`);
     }
     return location;
   }
 }
 
+const childSourceOf = (location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution) =>
+  collaboratorExecutionSource(location.tree.rootTeam.collaborators, location.memberAddress)
+  ?? catalogCopyExecutionSource(taskExecutionListsOf({
+    taskExecutions: location.tree.rootTeam.taskExecutions, collaborators: location.tree.rootTeam.collaborators,
+  }), location.agentRunId);
+
 const metadataFor = (
   location: import("./team-run-execution-tree-location-service.js").LocatedTeamAgentExecution,
 ): AgentRunMetadata => {
   const configured = location.configuredPlacement;
-  // A collaborator run has no configured placement: its entry supplies the definition and settings.
-  const source = configured ?? collaboratorExecutionSource(location.tree.rootTeam.collaborators, location.memberAddress)!;
+  // A collaborator or catalog-copy run has no configured placement: its entry or recorded source supplies it.
+  const source = configured ?? childSourceOf(location)!;
   const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,

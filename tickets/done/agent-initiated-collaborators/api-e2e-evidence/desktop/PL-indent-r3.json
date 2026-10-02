@@ -1,0 +1,56 @@
+[
+  {
+    "label": "Agents & teams",
+    "name": "software engineering team",
+    "x": 99,
+    "y": 81
+  },
+  {
+    "label": "Call send_message_to exactly once now with these exact JSON arguments: {\"recipient_address\":\"/software_engineering_team\",\"content\":\"Solution designer: reply with the single word READY. No tools, no files.\"}. Do not call any other tool. Then reply with the single word DONE. organization tree",
+    "name": "software engineering team",
+    "x": 99,
+    "y": 81
+  },
+  {
+    "label": "Software Development Department execution hierarchy",
+    "name": "product team",
+    "x": 112,
+    "y": 518
+  },
+  {
+    "label": "product team. Team status: Offline",
+    "name": "product team",
+    "x": 112,
+    "y": 518
+  },
+  {
+    "label": "software engineering team. Team status: Idle",
+    "name": "software engineering team",
+    "x": 112,
+    "y": 608
+  },
+  {
+    "label": "solution designer, idle, /software_engineering_team/solution_designer, solution_designer_e244c14301864221b3dfd0ea307bc2ac",
+    "name": "solution designer",
+    "x": 126,
+    "y": 638
+  },
+  {
+    "label": "code reviewer, offline, /software_engineering_team/code_reviewer, code_reviewer_13aef3dfd9c341ff90cd174570af160b",
+    "name": "code reviewer",
+    "x": 126,
+    "y": 728
+  },
+  {
+    "label": "code reviewer, idle, Started by solution designer, /software_engineering_team/code_reviewer, code_reviewer_576c707ce9344b5c973f93d6e51b89f7",
+    "name": "code reviewer",
+    "x": 126,
+    "y": 818
+  },
+  {
+    "label": "marketing team, Started by solution designer, /marketing_team, marketing_team_7bf368f2fc044d8498aa928850fd18b3",
+    "name": "marketing team",
+    "x": 96,
+    "y": 848
+  }
+]

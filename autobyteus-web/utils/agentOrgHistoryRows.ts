@@ -9,7 +9,12 @@ import {
   type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
 import { foldTeamAggregateStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
-import { collaboratorExecutionNodes, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import {
+  catalogTeamSourceAt,
+  collaborationTaskExecutionLists,
+  collaboratorExecutionNodes,
+  collaboratorTeamSourceAt,
+} from '~/services/collaborators/agentSourceSelectors'
 
 export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
@@ -112,6 +117,7 @@ const statusSource = (
       const source = configured && 'teamRunId' in configured
         ? configured
         : collaboratorTeamSourceAt(rootOrg.collaborators ?? [], team.address)
+          ?? catalogTeamSourceAt(collaborationTaskExecutionLists(rootOrg), team.address)
       if (!source) throw new Error(`Missing captured Team source '${team.address}'.`)
       const findMembers = (node: TaskTeamNode): { agentRunId: string; address: string }[] => node.members.flatMap((member) =>
         'agentRunId' in member ? [member] : findMembers(member))

@@ -26,8 +26,9 @@ const validateInvariants = (tree: AgentRunCollaborationTreeFile): void => {
   }
   const collaboratorAddresses = new Set(tree.collaborators.map((entry) => entry.address));
   for (const task of tree.taskExecutions) {
-    if (!collaboratorAddresses.has(task.address)) {
-      throw new Error(`Task execution at '${task.address}' is not a collaborator of this Agent run.`);
+    // A catalog copy carries its own source; every other copy is an extra copy of a collaborator.
+    if (!task.source && !collaboratorAddresses.has(task.address)) {
+      throw new Error(`Task execution at '${task.address}' is not a collaborator or catalog copy of this Agent run.`);
     }
   }
   validateCollaboratorInvariants({

@@ -1,0 +1,23 @@
+{
+  "runtimeKind": "antigravity_cli",
+  "model": "gemini-3.8-flash-low",
+  "expected": [
+    "/probe_twin_5bd158_0e09d0",
+    "/probe_twin_5bd158_ab0538"
+  ],
+  "reply": "/probe_twin_5bd158_0e09d0, /probe_twin_5bd158_ab0538",
+  "modelSawExactAddresses": true,
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool": "list_available_agents",
+      "result": "{\"provider_state\":\"DONE\",\"output\":{\"agents\":[{\"name\":\"Probe Twin 5bd158\",\"kind\":\"agent\",\"address\":\"/probe_twin_5bd158_0e09d0\",\"description\":\"probe\"},{\"name\":\"Probe Twin 5bd158\",\"kind\":\"agent\",\"address\":\"/probe_twin_5bd158_ab0538\",\"description\":\"probe\"}]}}"
+    }
+  ],
+  "conversationToolCalls": [
+    {
+      "tool": "list_available_agents",
+      "result": "{\"provider_state\":\"DONE\",\"output\":{\"agents\":[{\"name\":\"Probe Twin 5bd158\",\"kind\":\"agent\",\"address\":\"/probe_twin_5bd158_0e09d0\",\"description\":\"probe\"},{\"name\":\"Probe Twin 5bd158\",\"kind\":\"agent\",\"address\":\"/probe_twin_5bd158_ab0538\",\"description\":\"probe\"}]}}"
+    }
+  ]
+}

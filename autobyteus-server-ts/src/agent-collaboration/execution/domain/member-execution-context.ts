@@ -16,6 +16,7 @@ import {
   requireMemberTaskCommandCapability,
   type MemberTaskCommandCapability,
 } from "../task/member-task-command-capability.js";
+import type { AvailableCollaborator } from "../../collaborators/collaborator-candidate-policy.js";
 
 export type MemberLogicalMessageInput = Readonly<{
   recipientAddress: AgentTeamAddress;
@@ -28,19 +29,26 @@ export type MemberLogicalMessageDelivery = (
   input: MemberLogicalMessageInput,
 ) => Promise<AgentOperationResult>;
 
+/** `list_available_agents` bound to this member (DS-001); read-only. */
+export type MemberAvailableAgentsLister = () => Promise<readonly AvailableCollaborator[]>;
+
 export class MemberCollaborationContext {
   readonly outgoingHandoffs: readonly CollaborationHandoff[];
   readonly deliverLogicalMessage: MemberLogicalMessageDelivery;
+  /** Null where the run has no catalog (application-owned and internal runs). */
+  readonly listAvailableAgents: MemberAvailableAgentsLister | null;
 
   constructor(input: {
     outgoingHandoffs?: readonly CollaborationHandoff[] | null;
     deliverLogicalMessage: MemberLogicalMessageDelivery;
+    listAvailableAgents?: MemberAvailableAgentsLister | null;
   }) {
     if (typeof input.deliverLogicalMessage !== "function") {
       throw new Error("deliverLogicalMessage is required.");
     }
     this.outgoingHandoffs = Object.freeze(cloneCollaborationHandoffs(input.outgoingHandoffs ?? []));
     this.deliverLogicalMessage = async (message) => input.deliverLogicalMessage(normalizeMessage(message));
+    this.listAvailableAgents = input.listAvailableAgents ?? null;
     Object.freeze(this);
   }
 }

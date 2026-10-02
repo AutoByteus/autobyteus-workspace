@@ -1,40 +1,63 @@
 import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { delegationTargetUnavailableMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
-import type {
-  AgentRunCollaborationExecutionIndex,
-  AgentRunCollaborationMessagePlacement,
-} from "./agent-run-collaboration-execution-index.js";
+import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import {
+  resolveMessageRecipient,
+  type MessageRecipientResult,
+} from "../../agent-collaboration/collaborators/message-recipient-resolution.js";
+import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { AgentRunCollaborationExecutionIndex } from "./agent-run-collaboration-execution-index.js";
+import type { AgentRunCollaborationCollaborators } from "./agent-run-collaboration-collaborators.js";
 import type { AgentRunCollaborationPlacement } from "./agent-run-collaboration-task-execution-adapter.js";
 
 /**
- * Resolves Agent-root addresses by subject. Messages reach the host or a collaborator (a
- * collaborator Team through its coordinator, or one of its members); delegation targets are
- * the run's collaborators (an extra copy, REQ-013).
+ * Resolves Agent-root addresses by subject (DS-002, DS-003). Called inside the root operation
+ * gate, so a catalog bring-in never re-enters it. The first bring-in or catalog delegation
+ * creates the run's collaboration package (REQ-008); resolving alone never writes.
  */
 export class AgentRunCollaborationRecipientResolver {
-  resolveMessageRecipient(index: AgentRunCollaborationExecutionIndex, addressInput: string): AgentRunCollaborationMessagePlacement {
-    const address = this.requireAddress(addressInput);
-    const placement = index.getMessagePlacement(address);
-    if (placement) return placement;
-    throw new CollaborationContractError(
-      "COLLABORATION_TARGET_NOT_FOUND",
-      `Collaboration target '${address}' was not found in this Agent run.`,
-    );
+  constructor(private readonly options: Readonly<{
+    getIndex(): AgentRunCollaborationExecutionIndex;
+    collaborators: AgentRunCollaborationCollaborators;
+  }>) {}
+
+  /**
+   * The one instance a message reaches: within the sender's own Team instance first
+   * (REQ-007), then the host, a collaborator (a Team through its coordinator) or a
+   * collaborator-Team member, then a catalog bring-in.
+   */
+  resolveMessageRecipient(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<MessageRecipientResult> {
+    return resolveMessageRecipient({
+      port: () => this.options.getIndex(),
+      senderAgentRunId: sender.agentRunId,
+      address: this.requireAddress(addressInput),
+      catalog: { bringIn: (address) => this.options.collaborators.bringInAt({ address, senderRunId: sender.agentRunId }) },
+      notFoundMessage: (address) => `Collaboration target '${address}' was not found in this Agent run.`,
+    });
   }
 
-  resolveDelegationPlacement(index: AgentRunCollaborationExecutionIndex, addressInput: string): AgentRunCollaborationPlacement {
+  /** A catalog teammate, a collaborator (an extra copy, REQ-013), then a catalog copy. */
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<AgentRunCollaborationPlacement> {
     const address = this.requireAddress(addressInput);
+    return resolveDelegationPlacement({
+      port: this.options.getIndex(),
+      senderAgentRunId: sender.agentRunId,
+      address,
+      resolveInRun: () => this.resolveInRunDelegationPlacement(address),
+      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId }),
+    });
+  }
+
+  private resolveInRunDelegationPlacement(address: AgentTeamAddress): AgentRunCollaborationPlacement {
+    const index = this.options.getIndex();
     const collaborator = index.getCollaborator(address);
     if (collaborator?.kind === "agent_team") {
       return Object.freeze({ kind: "agent_team", address: collaborator.address, coordinatorAddress: collaborator.coordinatorAddress });
     }
     const placement = index.getMessagePlacement(address);
     if (placement?.kind === "agent" && address !== index.hostAddress) return Object.freeze({ kind: "agent", address });
-    throw new CollaborationContractError(
-      "COLLABORATION_TARGET_NOT_FOUND",
-      delegationTargetUnavailableMessage(address, index.listCollaborators().length > 0),
-    );
+    throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 
   private requireAddress(addressInput: string): AgentTeamAddress {

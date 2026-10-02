@@ -6,7 +6,7 @@ import { createTeamAgentContext, createTeamConfigurationView } from '~/services/
 import { AgentOrgExecutionViewIndex } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
-import { collaboratorAgentSourceAt, collaboratorTeamSourceAt, teamAgentSourceAt } from '../agentSourceSelectors'
+import { catalogAgentSourceAt, catalogTeamSourceAt, collaboratorAgentSourceAt, collaboratorTeamSourceAt, teamAgentSourceAt } from '../agentSourceSelectors'
 
 const created = '2026-09-30T00:00:00.000Z'
 const launch = { runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'root-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null }
@@ -113,5 +113,69 @@ describe('collaborator-aware sources', () => {
     expect(index.coordinator('product-run').agentRunId).toBe('prototyper-run')
     expect(collaboratorAgentSourceAt(view.execution_tree.rootOrg.collaborators, '/product_team')).toBeNull()
     expect(collaboratorTeamSourceAt(view.execution_tree.rootOrg.collaborators, '/product_team')?.coordinatorAddress).toBe('/product_team/prototyper')
+  })
+
+  it('a catalog copy and its members take their source from the copy (REQ-011)', () => {
+    const tree = teamTree()
+    const productSource = {
+      kind: 'agent_team' as const, team_definition_id: 'product-team', coordinator_address: '/product_team/product_prototyper',
+      members: [
+        { address: '/product_team/product_prototyper', agent_definition_id: 'prototyper' },
+        { address: '/product_team/prototype_bootstrapper', agent_definition_id: 'bootstrapper' },
+      ],
+      handoffs: [], default_launch_configuration: launch,
+    }
+    const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
+    const state = createTeamExecutionViewState({
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, messages: [],
+      configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
+      initialFocusedAgentRunId: 'researcher-run',
+      agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
+      createAgentContext: (agentRunId, address, nextTree) => createTeamAgentContext({ tree: nextTree, agentRunId, address, workspaceMetadata: null }),
+    })
+    const started = state.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: { change_sequence: 1, parent_team_run_id: 'team-run', execution: {
+      kind: 'task_team', address: '/product_team', team_run_id: 'copy-run',
+      members: [
+        { kind: 'task_team_agent', address: '/product_team/product_prototyper', agent_run_id: 'copy-prototyper', platform_agent_run_id: null },
+        { kind: 'task_team_agent', address: '/product_team/prototype_bootstrapper', agent_run_id: 'copy-bootstrapper', platform_agent_run_id: null },
+      ],
+      task_executions: [], delegator_agent_run_id: 'researcher-run', started_at: created, source: productSource,
+    } } } as never)
+    expect(started.disposition).toBe('applied')
+    expect(state.getAgentContext('copy-bootstrapper')?.config.agentDefinitionId).toBe('bootstrapper')
+    const rows = state.listNavigationRows()
+    // CR-002: a catalog copy and its members read as spaced names, like collaborators.
+    expect(rows.find((row) => row.key === 'team:copy-run')).toMatchObject({ kind: 'task_team', delegatedBy: 'researcher', displayName: 'product team' })
+    expect(rows.find((row) => row.agentRunId === 'copy-prototyper')).toMatchObject({ coordinator: true, displayName: 'product prototyper' })
+    expect(rows.find((row) => row.agentRunId === 'copy-bootstrapper')).toMatchObject({ displayName: 'prototype bootstrapper' })
+    // A configured member keeps its address basename.
+    expect(rows.find((row) => row.agentRunId === 'researcher-run')).toMatchObject({ displayName: 'researcher' })
+    expect(teamAgentSourceAt(state.getExecutionTree(), '/product_team/product_prototyper')).toMatchObject({ agent_definition_id: 'prototyper', launch_configuration: launch })
+    expect(state.getExecutionTree().root_team.collaborators).toEqual([])
+  })
+
+  it('an Org view index resolves catalog copies and their members from source', () => {
+    const view = JSON.parse(JSON.stringify(taskBearingView())) as AgentOrgExecutionViewDto & { execution_tree: { rootOrg: any } }
+    const orgLaunch = view.execution_tree.rootOrg.defaultLaunchConfiguration
+    view.execution_tree.rootOrg.taskExecutions.push(
+      { address: '/writer', agentRunId: 'writer-copy', platformAgentRunId: null, delegatorAgentRunId: 'agent-director', startedAt: created,
+        source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: orgLaunch } },
+      { address: '/product_team', teamRunId: 'product-copy', delegatorAgentRunId: 'agent-director', startedAt: created, taskExecutions: [],
+        members: [{ address: '/product_team/prototyper', agentRunId: 'copy-prototyper', platformAgentRunId: null }],
+        source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper',
+          members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper' }], handoffs: [], defaultLaunchConfiguration: orgLaunch } },
+    )
+    view.agent_statuses.push(
+      { agent_run_id: 'writer-copy', member_address: '/writer', status: 'offline' },
+      { agent_run_id: 'copy-prototyper', member_address: '/product_team/prototyper', status: 'offline' },
+    )
+    const index = new AgentOrgExecutionViewIndex(view)
+    expect(index.requireAgent('writer-copy')).toMatchObject({ kind: 'task', source: { agentDefinitionId: 'writer' } })
+    expect(index.requireAgent('copy-prototyper')).toMatchObject({ kind: 'task_team_member', source: { agentDefinitionId: 'prototyper' } })
+    expect(index.coordinator('product-copy').agentRunId).toBe('copy-prototyper')
+    const tasks = view.execution_tree.rootOrg.taskExecutions
+    expect(catalogTeamSourceAt(tasks, '/product_team')).toEqual({ address: '/product_team', coordinatorAddress: '/product_team/prototyper' })
+    expect(catalogAgentSourceAt(tasks, '/product_team')).toBeNull()
+    expect(catalogAgentSourceAt(tasks, '/nobody')).toBeNull()
   })
 })

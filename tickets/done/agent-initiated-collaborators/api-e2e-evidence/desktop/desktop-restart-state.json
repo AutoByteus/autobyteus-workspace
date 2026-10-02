@@ -1,0 +1,81 @@
+{
+  "pmRunId": "project_manager_90a291d3ced0419985ab9a130950a7ed",
+  "teamRunId": "software_engineering_team_53945560e1dc4992baeb750235403bf5",
+  "before": {
+    "agent": {
+      "active": true,
+      "collaborators": [
+        [
+          "/software_engineering_team",
+          "software_engineering_team_657a98c2f3934f4f9019bed4581b90b9"
+        ]
+      ],
+      "copies": [
+        [
+          "/product_team",
+          "product_team_dc663e20e49348b9884f06f2f5571062",
+          "{\"kind\":\"agent_team\",\"teamDefinitionId\":\"product-team\",\"coordinatorAddress\":\"/product_team/product_prototyper\",\"members\":[{\"address\":\"/product_team/product_prototyper\",\"agentDefinitionId\":\"team-local-agent:product-team:product-prototyper\"},{\"address\":\"/product_team/prototype_bootstrapper\",\"agentDefinitionId\":\"team-local-agent:product-team:prototype-bootstrapper\"}],\"handoffs\":[{\"from\":\"/product_team/product_prototyper\",\"to\":\"/product_team/prototype_bootstrapper\",\"rules\":[\"When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package.\"]},{\"from\":\"/product_team/prototype_bootstrapper\",\"to\":\"/product_team/product_prototyper\",\"rules\":[\"When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery.\"]}],\"defaultLaunchConfiguration\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"haiku\",\"llmConfig\":null,\"autoExecuteTools\":true,\"workspaceRootPath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rFfs2J/server-data/temp_workspace\"}}"
+        ],
+        [
+          "/product_team",
+          "product_team_013b53b2ac5a45bba58374edea6cb59c",
+          "{\"kind\":\"agent_team\",\"teamDefinitionId\":\"product-team\",\"coordinatorAddress\":\"/product_team/product_prototyper\",\"members\":[{\"address\":\"/product_team/product_prototyper\",\"agentDefinitionId\":\"team-local-agent:product-team:product-prototyper\"},{\"address\":\"/product_team/prototype_bootstrapper\",\"agentDefinitionId\":\"team-local-agent:product-team:prototype-bootstrapper\"}],\"handoffs\":[{\"from\":\"/product_team/product_prototyper\",\"to\":\"/product_team/prototype_bootstrapper\",\"rules\":[\"When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package.\"]},{\"from\":\"/product_team/prototype_bootstrapper\",\"to\":\"/product_team/product_prototyper\",\"rules\":[\"When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery.\"]}],\"defaultLaunchConfiguration\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"haiku\",\"llmConfig\":null,\"autoExecuteTools\":true,\"workspaceRootPath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rFfs2J/server-data/temp_workspace\"}}"
+        ]
+      ]
+    },
+    "team": {
+      "collaborators": [
+        [
+          "/product_prototyper",
+          "product_prototyper_d06109f349a74d13bb3844ffb21db133"
+        ]
+      ],
+      "copies": [
+        [
+          "/marketing_team",
+          "marketing_team_d635b4c05b2e456181cc9a2c3641e686",
+          "{\"kind\":\"agent_team\",\"team_definition_id\":\"marketing-team\",\"coordinator_address\":\"/marketing_team/marketing_content_creator\",\"members\":[{\"address\":\"/marketing_team/marketing_content_creator\",\"agent_definition_id\":\"team-local-agent:marketing-team:marketing-content-creator\"},{\"address\":\"/marketing_team/computer_use_operator\",\"agent_definition_id\":\"computer-use-operator\"}],\"handoffs\":[{\"from\":\"/marketing_team/marketing_content_creator\",\"to\":\"/marketing_team/computer_use_operator\",\"rules\":[\"When a publish-request.md for a user-approved channel package is saved and ready for publishing.\",\"When a task-request.md for other computer work (site data, research, reply candidates, source capture, media download, screenshots, or tool work) is saved and ready.\"]},{\"from\":\"/marketing_team/computer_use_operator\",\"to\":\"/marketing_team/marketing_content_creator\",\"rules\":[\"When task-result.md for a Marketing Content Creator request is saved with outcome Completed, Blocked, or Needs Decision.\"]}],\"default_launch_configuration\":{\"runtime_kind\":\"claude_agent_sdk\",\"llm_model_identifier\":\"haiku\",\"llm_config\":null,\"auto_execute_tools\":true,\"workspace_root_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rFfs2J/server-data/temp_workspace\"}}"
+        ]
+      ]
+    }
+  },
+  "after": {
+    "agent": {
+      "active": false,
+      "collaborators": [
+        [
+          "/software_engineering_team",
+          "software_engineering_team_657a98c2f3934f4f9019bed4581b90b9"
+        ]
+      ],
+      "copies": [
+        [
+          "/product_team",
+          "product_team_dc663e20e49348b9884f06f2f5571062",
+          "{\"kind\":\"agent_team\",\"teamDefinitionId\":\"product-team\",\"coordinatorAddress\":\"/product_team/product_prototyper\",\"members\":[{\"address\":\"/product_team/product_prototyper\",\"agentDefinitionId\":\"team-local-agent:product-team:product-prototyper\"},{\"address\":\"/product_team/prototype_bootstrapper\",\"agentDefinitionId\":\"team-local-agent:product-team:prototype-bootstrapper\"}],\"handoffs\":[{\"from\":\"/product_team/product_prototyper\",\"to\":\"/product_team/prototype_bootstrapper\",\"rules\":[\"When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package.\"]},{\"from\":\"/product_team/prototype_bootstrapper\",\"to\":\"/product_team/product_prototyper\",\"rules\":[\"When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery.\"]}],\"defaultLaunchConfiguration\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"haiku\",\"llmConfig\":null,\"autoExecuteTools\":true,\"workspaceRootPath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rFfs2J/server-data/temp_workspace\"}}"
+        ],
+        [
+          "/product_team",
+          "product_team_013b53b2ac5a45bba58374edea6cb59c",
+          "{\"kind\":\"agent_team\",\"teamDefinitionId\":\"product-team\",\"coordinatorAddress\":\"/product_team/product_prototyper\",\"members\":[{\"address\":\"/product_team/product_prototyper\",\"agentDefinitionId\":\"team-local-agent:product-team:product-prototyper\"},{\"address\":\"/product_team/prototype_bootstrapper\",\"agentDefinitionId\":\"team-local-agent:product-team:prototype-bootstrapper\"}],\"handoffs\":[{\"from\":\"/product_team/product_prototyper\",\"to\":\"/product_team/prototype_bootstrapper\",\"rules\":[\"When Product Prototyper classifies the outcome as Baseline Needed (initial bootstrap, correction, or refresh) for an existing frontend, send the fixed bootstrap payload defined in the product-prototype-repository-management skill, without the requirements or Product ticket package.\"]},{\"from\":\"/product_team/prototype_bootstrapper\",\"to\":\"/product_team/product_prototyper\",\"rules\":[\"When Prototype Bootstrapper classifies a bootstrap, correction, or refresh as Completed or Blocked, return the runnable baseline or precise blocker, the bootstrap report, source pin, and comparison evidence to Product Prototyper for acceptance or recovery.\"]}],\"defaultLaunchConfiguration\":{\"runtimeKind\":\"claude_agent_sdk\",\"llmModelIdentifier\":\"haiku\",\"llmConfig\":null,\"autoExecuteTools\":true,\"workspaceRootPath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rFfs2J/server-data/temp_workspace\"}}"
+        ]
+      ]
+    },
+    "team": {
+      "collaborators": [
+        [
+          "/product_prototyper",
+          "product_prototyper_d06109f349a74d13bb3844ffb21db133"
+        ]
+      ],
+      "copies": [
+        [
+          "/marketing_team",
+          "marketing_team_d635b4c05b2e456181cc9a2c3641e686",
+          "{\"kind\":\"agent_team\",\"team_definition_id\":\"marketing-team\",\"coordinator_address\":\"/marketing_team/marketing_content_creator\",\"members\":[{\"address\":\"/marketing_team/marketing_content_creator\",\"agent_definition_id\":\"team-local-agent:marketing-team:marketing-content-creator\"},{\"address\":\"/marketing_team/computer_use_operator\",\"agent_definition_id\":\"computer-use-operator\"}],\"handoffs\":[{\"from\":\"/marketing_team/marketing_content_creator\",\"to\":\"/marketing_team/computer_use_operator\",\"rules\":[\"When a publish-request.md for a user-approved channel package is saved and ready for publishing.\",\"When a task-request.md for other computer work (site data, research, reply candidates, source capture, media download, screenshots, or tool work) is saved and ready.\"]},{\"from\":\"/marketing_team/computer_use_operator\",\"to\":\"/marketing_team/marketing_content_creator\",\"rules\":[\"When task-result.md for a Marketing Content Creator request is saved with outcome Completed, Blocked, or Needs Decision.\"]}],\"default_launch_configuration\":{\"runtime_kind\":\"claude_agent_sdk\",\"llm_model_identifier\":\"haiku\",\"llm_config\":null,\"auto_execute_tools\":true,\"workspace_root_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-rFfs2J/server-data/temp_workspace\"}}"
+        ]
+      ]
+    }
+  },
+  "woken": true
+}

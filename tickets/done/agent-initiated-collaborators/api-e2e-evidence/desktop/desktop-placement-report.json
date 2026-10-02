@@ -1,0 +1,130 @@
+{
+  "checks": [
+    {
+      "ok": false,
+      "label": "Org: the solution designer's /marketing_team copy is shown at the Org top level (level 1)",
+      "details": {
+        "label": "marketing team, Started by solution designer, /marketing_team, marketing_team_7bf368f2fc044d8498aa928850fd18b3",
+        "text": "marketing team"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Agent root: the SE team member's /product_team copy is shown at the run's top level (level 1)",
+      "details": {
+        "label": "Temporary task team, product team, level 1, offline, Started by solution designer, /product_team",
+        "text": "product team"
+      }
+    },
+    {
+      "ok": false,
+      "label": "teammate copies (code reviewer) stay inside their team (level ≥ 2) in both runs",
+      "details": [
+        {
+          "label": "Temporary task agent, code reviewer, level 2, idle, Started by solution designer, /software_engineering_team/code_reviewer",
+          "text": "CR code reviewer"
+        },
+        {
+          "label": "code reviewer, idle, Started by solution designer, /software_engineering_team/code_reviewer, code_reviewer_576c707ce9344b5c973f93d6e51b89f7",
+          "text": "CR code reviewer"
+        }
+      ]
+    },
+    {
+      "ok": true,
+      "label": "\"Started by solution designer\" is in the accessible label only, not visible text",
+      "details": [
+        {
+          "label": "marketing team, Started by solution designer, /marketing_team, marketing_team_7bf368f2fc044d8498aa928850fd18b3",
+          "text": "marketing team"
+        },
+        {
+          "label": "Temporary task team, product team, level 1, offline, Started by solution designer, /product_team",
+          "text": "product team"
+        },
+        {
+          "label": "Temporary task agent, code reviewer, level 2, idle, Started by solution designer, /software_engineering_team/code_reviewer",
+          "text": "CR code reviewer"
+        },
+        {
+          "label": "code reviewer, idle, Started by solution designer, /software_engineering_team/code_reviewer, code_reviewer_576c707ce9344b5c973f93d6e51b89f7",
+          "text": "CR code reviewer"
+        }
+      ]
+    }
+  ],
+  "rows": {
+    "marketing": [
+      {
+        "label": "marketing team, Started by solution designer, /marketing_team, marketing_team_7bf368f2fc044d8498aa928850fd18b3",
+        "text": "marketing team"
+      },
+      {
+        "label": "marketing content creator, idle, /marketing_team/marketing_content_creator, marketing_content_creator_94422f27222e434ca4ab8dba5fc3ee9f",
+        "text": "MC marketing content creator"
+      },
+      {
+        "label": "computer use operator, idle, /marketing_team/computer_use_operator, computer_use_operator_a2a67147af50409d96dff72586c0a041",
+        "text": "CU computer use operator"
+      }
+    ],
+    "product": [
+      {
+        "label": "Temporary task team, product team, level 1, offline, Started by solution designer, /product_team",
+        "text": "product team"
+      },
+      {
+        "label": "Temporary task agent, product prototyper, level 2, idle, /product_team/product_prototyper",
+        "text": "PP product prototyper"
+      },
+      {
+        "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+        "text": "PB prototype bootstrapper"
+      },
+      {
+        "label": "product prototyper, offline, /product_team/product_prototyper, product_prototyper_41ad5bb697004a70b59e4d5457e0d4a5",
+        "text": "PP product prototyper"
+      },
+      {
+        "label": "prototype bootstrapper, offline, /product_team/prototype_bootstrapper, prototype_bootstrapper_43157d4eacff42749a6133fce8143a93",
+        "text": "PB prototype bootstrapper"
+      }
+    ],
+    "codeReviewer": [
+      {
+        "label": "Temporary task agent, code reviewer, level 2, offline, /software_engineering_team/code_reviewer",
+        "text": "CR code reviewer"
+      },
+      {
+        "label": "Temporary task agent, code reviewer, level 2, idle, Started by solution designer, /software_engineering_team/code_reviewer",
+        "text": "CR code reviewer"
+      },
+      {
+        "label": "code reviewer, offline, /software_engineering_team/code_reviewer, code_reviewer_13aef3dfd9c341ff90cd174570af160b",
+        "text": "CR code reviewer"
+      },
+      {
+        "label": "code reviewer, idle, Started by solution designer, /software_engineering_team/code_reviewer, code_reviewer_576c707ce9344b5c973f93d6e51b89f7",
+        "text": "CR code reviewer"
+      }
+    ]
+  },
+  "org": {
+    "orgRunId": "software_development_department_589e179fadff4d4baa5fe2c257c1047b",
+    "top": "marketing_team_7bf368f2fc044d8498aa928850fd18b3",
+    "mate": "code_reviewer_576c707ce9344b5c973f93d6e51b89f7"
+  },
+  "agent": {
+    "pmRunId": "project_manager_de05f2f851304e04888e5a1f762c7d63",
+    "copies": [
+      [
+        "/software_engineering_team/code_reviewer",
+        "code_reviewer_725cde3a8b944217840ed9dc0b24b06e"
+      ],
+      [
+        "/product_team",
+        "product_team_2e3d8b0e73b4445e914ce75503fef8ed"
+      ]
+    ]
+  }
+}

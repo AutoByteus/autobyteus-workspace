@@ -11,7 +11,11 @@ import {
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
-import { collaboratorExecutionSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import {
+  catalogCopyExecutionSource,
+  collaboratorExecutionSource,
+  taskExecutionListsOf,
+} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -111,17 +115,24 @@ export class AgentOrgMemberRunViewProjectionService {
     if (!location || location.rootRunId !== root || location.memberAddress !== address) {
       throw new Error(`AgentRun '${run}' at '${address}' was not found in AgentOrg '${root}'.`);
     }
-    if (!location.configuredPlacement && !collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)) {
-      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement or collaborator source.`);
+    if (!location.configuredPlacement && !childSourceOf(location)) {
+      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement, collaborator or catalog source.`);
     }
     return location;
   }
 }
 
+const childSourceOf = (location: LocatedAgentOrgAgentExecution) =>
+  collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)
+  ?? catalogCopyExecutionSource(taskExecutionListsOf({
+    taskExecutions: location.tree.rootOrg.taskExecutions,
+    teams: location.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member] : []),
+    collaborators: location.tree.rootOrg.collaborators,
+  }), location.agentRunId);
+
 const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata => {
-  // A collaborator run has no configured placement: its entry supplies the definition and settings.
-  const source = location.configuredPlacement
-    ?? collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)!;
+  // A collaborator or catalog-copy run has no configured placement: its entry or recorded source supplies it.
+  const source = location.configuredPlacement ?? childSourceOf(location)!;
   const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,

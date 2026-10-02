@@ -26,7 +26,7 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
-import { collaboratorAgentSourceAt, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { collaboratorAgentSourceAt, collaboratorTeamSourceAt, catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
 import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
@@ -296,9 +296,12 @@ export class AgentOrgExecutionContext {
     const address = parseAgentTeamAddress(execution.address)
     const configured = this.index.configured.get(address)
     const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
+    // A catalog copy carries its own source (REQ-011).
     const source = configured
       ?? collaboratorAgentSourceAt(collaborators, address)
       ?? collaboratorTeamSourceAt(collaborators, address)
+      ?? catalogAgentSourceAt([execution], address)
+      ?? catalogTeamSourceAt([execution], address)
     const hostKnown = event.host_kind === 'root'
       ? event.host_run_id === this.orgRunId
       : this.index.teams.has(event.host_run_id)

@@ -1,6 +1,8 @@
 import type {
   TaskAgentExecution,
+  TaskAgentExecutionSource,
   TaskTeamExecution,
+  TaskTeamExecutionSource,
   TaskTeamMemberExecution,
 } from "../../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TeamRunAgentTeamNode, TeamRunNode } from "../../../agent-team-execution/domain/team-run-config.js";
@@ -23,18 +25,23 @@ export const projectTaskAgentExecution = (input: {
   agentRunId: string;
   delegatorAgentRunId: string;
   startedAt: string;
+  /** Only for a copy started from the catalog. */
+  source?: TaskAgentExecutionSource | null;
 }): TaskAgentExecution => Object.freeze({
   address: input.address,
   agentRunId: input.agentRunId,
   platformAgentRunId: null,
   delegatorAgentRunId: input.delegatorAgentRunId,
   startedAt: input.startedAt,
+  ...(input.source ? { source: input.source } : {}),
 });
 
 export const projectTaskTeamExecution = (input: {
   node: TeamRunAgentTeamNode;
   delegatorAgentRunId: string;
   startedAt: string;
+  /** Only for a copy started from the catalog. */
+  source?: TaskTeamExecutionSource | null;
 }): TaskTeamExecution => Object.freeze({
   address: input.node.address,
   teamRunId: input.node.teamRunId,
@@ -42,4 +49,5 @@ export const projectTaskTeamExecution = (input: {
   taskExecutions: Object.freeze([]),
   delegatorAgentRunId: input.delegatorAgentRunId,
   startedAt: input.startedAt,
+  ...(input.source ? { source: input.source } : {}),
 });

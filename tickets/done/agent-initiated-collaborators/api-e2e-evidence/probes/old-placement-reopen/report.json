@@ -1,0 +1,57 @@
+{
+  "checks": [
+    {
+      "ok": true,
+      "label": "round-2 server: the mounted member's top-level copy is stored under its team (old rule)",
+      "details": "members[1].taskExecutions[0]"
+    },
+    {
+      "ok": true,
+      "label": "round-2 server: the collaborator member's top-level copy is stored inside the collaborator team (old rule)",
+      "details": "collaborators[0].taskExecutions[0]"
+    },
+    {
+      "ok": true,
+      "label": "round-3 server restores the stored Org run",
+      "details": "Agent organization run restored successfully."
+    },
+    {
+      "ok": true,
+      "label": "Org: the stored copy opens where it was recorded",
+      "details": {
+        "oldOrgPath": "members[1].taskExecutions[0]",
+        "newOrgPath": "members[1].taskExecutions[0]"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Org: the stored copy answers on the round-3 server",
+      "details": null
+    },
+    {
+      "ok": true,
+      "label": "Org: a new copy by the same member goes to rootOrg.taskExecutions (new rule) beside the stored one",
+      "details": "taskExecutions[0]"
+    },
+    {
+      "ok": true,
+      "label": "Agent root: the stored copy opens where it was recorded",
+      "details": {
+        "oldAgentPath": "collaborators[0].taskExecutions[0]",
+        "newAgentPath": "collaborators[0].taskExecutions[0]"
+      }
+    },
+    {
+      "ok": true,
+      "label": "Agent root: the stored copy answers on the round-3 server",
+      "details": null
+    }
+  ],
+  "paths": {
+    "oldOrg": "members[1].taskExecutions[0]",
+    "oldAgent": "collaborators[0].taskExecutions[0]",
+    "reopenedOrg": "members[1].taskExecutions[0]",
+    "newOrgCopy": "taskExecutions[0]",
+    "reopenedAgent": "collaborators[0].taskExecutions[0]"
+  }
+}

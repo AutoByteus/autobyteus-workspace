@@ -55,8 +55,8 @@ member context from its Agent root (see
 `send_message_to` and `delegate_task` from its first turn. A task Agent directly
 under an Agent root is not Team-scoped and has no `get_handoff_rules`. Server
 helper runs and application-owned runs have no member context and keep their
-explicitly configured set. Browser, media, publishing, and configured
-MCP-origin tools remain explicitly selected and availability-gated.
+explicitly configured set. Browser, media, publishing, `list_available_agents`
+and configured MCP-origin tools remain explicitly selected and availability-gated.
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -138,6 +138,34 @@ return `target_agent_run_id:null`. The removed generic `result` field is not a
 compatibility surface. AutoByteus JSON and MCP text/structured results preserve
 the same strict shape.
 
+## Server-Owned Agent Discovery Tool
+
+`list_available_agents` (`src/agent-tools/agent-discovery/`) is an **opt-in**
+tool (REQ-001): it is registered in the tool registry (category Agent
+Communication) so it appears in the tool picker, and an agent gets it only when
+its definition's `toolNames` select it. It is never added automatically.
+`RuntimeAgentToolExposure.listAvailableAgentsEnabled` records the selection.
+
+- The tool takes no arguments and returns
+  `{ agents: [{ name, kind: "agent" | "agent_team", address, description }] }`,
+  the same JSON on every runtime.
+- It is bound to the sender's `MemberExecutionContext`:
+  `MemberCollaborationContext.listAvailableAgents` calls the sender's root
+  (`listAvailableAgents(sender)` on the Team, Org and Agent roots), which answers
+  from `CollaboratorCandidatePolicy.listEligible` and `CatalogAddressMap`. The
+  handler adds no logic and nothing is written (see
+  [Agent Communication](./agent_communication.md#collaborators)).
+- AutoByteus binds a local tool instance to the member context
+  (`createBoundListAvailableAgentsTool`); Codex, Claude, AGY and the other MCP
+  runtimes receive it through the Agent Tools MCP adapter
+  (`list-available-agents-mcp-adapter-provider.ts`), available only to a sender
+  whose context can list. Runs without a catalog (application-owned and server
+  helper runs) have no lister, so the tool is skipped there.
+
+The tool controls discovery only. Any agent may bring in or delegate to an
+available address with `send_message_to` or `delegate_task` whether or not it
+has the tool (REQ-006).
+
 ## Server-Hosted Agent Tools MCP Server
 
 `src/agent-tools/mcp` provides the AutoByteus Agent Tools MCP Server, a
@@ -167,8 +195,8 @@ fresh current context. A process restart rematerializes the descriptor against
 the new listener. `tools/list` returns only tools enabled for that run-session,
 and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
-`send_message_to`, `get_handoff_rules`, browser, media, task-delegation, and `publish_artifacts`
-tool families by delegating to their existing family manifests/services instead
+`send_message_to`, `get_handoff_rules`, browser, media, task-delegation, `publish_artifacts`
+and `list_available_agents` tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
 such as prefixed `db_query` at the provider boundary while the proxy owns the
@@ -214,16 +242,27 @@ Every `delegate_task` call must be bound to an active collaboration root and
 the current member identity. Each root resolves the required canonical absolute
 non-root `recipient_address` with `resolveDelegationPlacement`: configured
 placements first, then the run's collaborators (shared Agents and Agent Teams
-brought in with `@`, or a member of a collaborator Team; see
-[Agent Communication](./agent_communication.md#collaborators)). Delegating to a
-collaborator address starts a fresh **extra copy** (an ordinary delegated child
-with the system task notice and its own run IDs); the hosted collaborator
-instance itself is unaffected. The normal way to work with a collaborator is
-`send_message_to`, which uses `resolveMessageRecipient`: a configured Agent or
-Team (its coordinator), a collaborator Agent, a collaborator Team (its
-coordinator) or a collaborator Team member, and the first message starts it.
-An Agent cannot delegate to its own logical placement. There is no
-caller-supplied target kind, flat-name lookup, or compatibility input.
+brought in with `@` or by an agent's first message, or a member of a
+collaborator Team), then an eligible **catalog** Agent or Agent Team at its
+listed address (`CatalogAddressMap`; see `list_available_agents`), including a
+teammate inside the sender's own catalog Team copy (taken from that copy's
+snapshot). See [Agent Communication](./agent_communication.md#collaborators).
+Every call starts a fresh copy: an ordinary delegated child with the system task
+notice and its own run IDs. Parallel copies are allowed, and there is no limit.
+- Delegating to a collaborator leaves the hosted instance unaffected.
+- Delegating to a catalog address adds **only the copy**, never a collaborator
+  entry. The copy records its `source` (`TaskExecutionSource`), which activation
+  and restore read first.
+- Copies are placed by address (`resolveTaskCopyHost`, REQ-012): a teammate
+  copy inside the delegator's own Team instance, any other copy at the root.
+
+The normal way to keep working with one ongoing instance is `send_message_to`
+(`MessageRecipientResolution`): the sender's own Team instance first, then a
+configured member or a collaborator, otherwise a listed catalog Agent or Team
+brought in on first use. In Team and Org roots an Agent cannot delegate to its
+own logical placement. The Agent root refuses only the host's address, so a
+collaborator that delegates to its own address gets an extra copy (C-11). There
+is no caller-supplied target kind, flat-name lookup, or compatibility input.
 
 `delegate_task` takes ready-to-run `description` content (objective, context,
 constraints, done conditions, expected output, and reference guidance) and
@@ -241,18 +280,24 @@ The result is a strict union, also published as the MCP output schema
 { target_agent_run_id: null, message: "<why nothing started>" }
 ```
 
-An address that is neither a configured placement nor a collaborator of the run
-returns `{ target_agent_run_id: null, message }` (the message says the user can
-bring one in with `@`); it is not a tool error. Collaborators are added only by
-the user's `@` send, which the root validates before the message is posted; a
-collaborator that cannot run with the run's settings is rejected there with
-`COLLABORATOR_ADD_FAILED`, not through a `delegate_task` result. Input errors (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`) and a
+An address that is neither a configured placement, a collaborator nor an
+available catalog agent of the run returns `{ target_agent_run_id: null,
+message }` ("'…' is not a mounted Agent or Agent Team, a collaborator or an
+available agent of this run."); it is not a tool error. A catalog copy that
+cannot run with the run's settings also starts nothing and returns
+`{ target_agent_run_id: null, message: "<name> cannot be delegated to: <reason>" }`.
+Collaborators are added by the user's `@` send or by an agent's first
+`send_message_to` to a listed address; both use the same admission, and a
+failure there is `COLLABORATOR_ADD_FAILED`. Input errors (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`) and a
 root that is not admitting (`ROOT_RUN_NOT_ACTIVE`) are tool errors raised before
 anything is prepared. The original logical `recipient_address` remains the mounted
 definition, not an alias for the child.
 
 The two collaboration modes are intentionally not interchangeable.
-`send_message_to` contacts an existing execution and creates nothing.
+`send_message_to` reaches the one instance at an address. A listed catalog
+Agent or Team that is not yet in the run is brought in on first use, and later
+messages reach the same instance. Messaging never creates a second instance,
+and `send_message_to` by run ID creates nothing.
 `delegate_task` starts a fresh child and delivers the complete work packet as
 the creation call; the same packet must not be resent through
 `send_message_to`. After delegation, parent and child communicate only through

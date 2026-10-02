@@ -1,5 +1,4 @@
-import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import { getAgentTeamAddressSegments } from "../../agent-collaboration/domain/agent-team-address.js";
+import { resolveMemberCollaborationScope, type MemberHostTeam } from "../../agent-collaboration/execution/domain/member-instance-scope.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { prepareCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
@@ -17,7 +16,7 @@ import {
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { CollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -44,7 +43,7 @@ export type AgentRunCollaborationRootBuilderDependencies = Readonly<{
   memoryLocator?: RootedAgentMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
-  collaboratorAdmission?: CollaboratorMentionAdmission;
+  collaboratorAdmission?: CollaboratorAdmission;
 }>;
 
 /** Builds one complete Agent root (registries, callbacks, persistence) around a loaded package. */
@@ -70,8 +69,8 @@ export class AgentRunCollaborationRootBuilder {
       return run;
     };
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
-      buildMemberExecutionContext: async ({ identity, physicalScope }) => this.buildChildContext({
-        identity, physicalScope, tree: () => run?.getExecutionTreeSnapshot() ?? input.tree, requireRun,
+      buildMemberExecutionContext: async ({ identity, physicalScope, hostTeam }) => this.buildChildContext({
+        identity, physicalScope, hostTeam, requireRun,
       }),
       publishAgentEvent: (identity, event) => {
         if (!run?.isActive()) {
@@ -140,29 +139,35 @@ export class AgentRunCollaborationRootBuilder {
   }
 
   /**
-   * A child directly under the root (a collaborator Agent or an extra copy) belongs to no Team
-   * (no handoff rules); a member of a collaborator Team (or of an extra copy of it) is
-   * Team-scoped with that Team's handoffs and instructions.
+   * A child directly under the root (a collaborator Agent or any Agent copy) belongs to no Team
+   * (no handoff rules); a member of its hosting Team instance (a collaborator Team or any copy,
+   * including a catalog copy prepared from its recorded source) is Team-scoped with that
+   * instance's handoffs and instructions (REQ-007).
    */
   private async buildChildContext(input: Readonly<{
     identity: CollaborationMemberExecutionIdentity;
     physicalScope: RootExecutionPhysicalScope;
-    tree(): AgentRunCollaborationTreeSnapshot;
+    hostTeam?: MemberHostTeam | null;
     requireRun(): AgentRunCollaborationRoot;
   }>): Promise<MemberExecutionContext> {
     const teamScoped = input.physicalScope.ancestorTeamRunIds.length > 0;
-    const collaborator = collaboratorOf(input.tree(), input.identity.memberAddress);
-    const team = teamScoped && collaborator?.kind === "agent_team" ? collaborator : null;
-    const instruction = team
-      ? (await this.dependencies.teamDefinitions.getDefinitionById(team.teamDefinitionId).catch(() => null))?.instructions?.trim() || null
+    // CR-001: the one owner; an Agent root has no configured placements, handoffs or instruction of its own.
+    const scope = resolveMemberCollaborationScope({
+      memberAddress: input.identity.memberAddress,
+      hostTeam: input.hostTeam,
+      root: { configuredRootAddresses: [], handoffs: [], definition: null },
+    });
+    const instruction = scope.instructionDefinition
+      ? (await this.dependencies.teamDefinitions.getDefinitionById(scope.instructionDefinition.definitionId).catch(() => null))?.instructions?.trim() || null
       : null;
     return new MemberExecutionContext({
       identity: input.identity,
       teamScoped,
       authoredEnclosingScopeInstruction: instruction,
       collaboration: new MemberCollaborationContext({
-        outgoingHandoffs: team ? team.handoffs.filter((handoff) => handoff.from === input.identity.memberAddress) : [],
+        outgoingHandoffs: scope.outgoingHandoffs,
         deliverLogicalMessage: (message) => input.requireRun().deliverLogicalMessage(input.identity, message),
+        listAvailableAgents: () => input.requireRun().listAvailableAgents(input.identity),
       }),
       tasks: Object.freeze({
         root: input.identity.root,
@@ -171,8 +176,3 @@ export class AgentRunCollaborationRootBuilder {
     });
   }
 }
-
-const collaboratorOf = (tree: AgentRunCollaborationTreeSnapshot, address: AgentTeamAddress) => {
-  const segment = getAgentTeamAddressSegments(address)[0];
-  return tree.collaborators.find((entry) => getAgentTeamAddressSegments(entry.address)[0] === segment) ?? null;
-};

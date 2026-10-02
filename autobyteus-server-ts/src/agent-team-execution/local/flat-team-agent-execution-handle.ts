@@ -109,6 +109,11 @@ export class FlatTeamAgentExecutionHandle {
       physicalScope: this.options.teamContext.physicalScope,
       execution,
       sourceNode: this.options.config,
+      hostTeam: Object.freeze({
+        address: this.options.teamContext.teamNode.address,
+        teamDefinitionId: this.options.teamContext.teamNode.teamDefinitionId,
+        handoffs: this.options.teamContext.handoffs,
+      }),
     });
     const handle = (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({
       identity,

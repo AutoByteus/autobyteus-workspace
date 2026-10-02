@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { catalogCopyExecutionSource, taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
@@ -184,7 +185,8 @@ export class AgentRunCollaborationLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.platformAgentRunId,
       configuredPlacement: null,
-      launchConfiguration: collaboratorLaunchConfiguration(index.getCollaborator(collaboratorAddress)),
+      launchConfiguration: collaboratorLaunchConfiguration(index.getCollaborator(collaboratorAddress))
+        ?? catalogCopyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
       executionKind: agent.executionKind,
       startedAt: agent.startedAt,
       groupPath: Object.freeze(groups.map((team): LocatedExecutionGroup => Object.freeze({

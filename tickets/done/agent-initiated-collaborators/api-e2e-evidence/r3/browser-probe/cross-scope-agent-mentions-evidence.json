@@ -1,0 +1,599 @@
+{
+  "startedAt": "2026-10-01T21:11:53.610Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "A01": {
+      "title": "UXJ-005 standalone run: menu (VIS-011/002/014, a11y), chips; send adds the collaborator Offline at once; send_message_to briefing; \"From\" report; Team tab briefing + report rows (VIS-012); collaborator view (VIS-013, F-04); direct chat; run-row return; collaborator Team opened once with DI-001 handoff; exclusion",
+      "result": "Pass",
+      "ms": 60170,
+      "details": {
+        "runId": "research_assistant_3b0785dad5584d0783f63fff3ff396d0",
+        "packageBeforeMention": false,
+        "options": [
+          "code-reviewer",
+          "researcher",
+          "writer",
+          "analyst",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "product-team",
+          "review-team"
+        ],
+        "menuText": "Bring into this run @ · ↑↓ to move, Enter to choose\n\nAgents\nCR\nCode Reviewer\nReviews text and code.\nR\nResearcher\nTeam researcher.\nW\nWriter\nTeam writer.\nA\nAnalyst\nOrg analyst.\nPP\nProduct Prototyper\nBuilds UI prototypes.\nPB\nPrototype Bootstrapper\nSets up prototype repositories.\nAgent teams\nPT\nProduct Team\n2 members · coordinator product_prototyper\nRT\nReview Team\n2 members · coordinator researcher\nResearch Assistant gets your message and brings them into this run",
+        "footer": "Research Assistant gets your message and brings them into this run",
+        "aria": {
+          "role": "combobox",
+          "expanded": "true",
+          "controls": "agent-mention-menu-v-0-2",
+          "active": "agent-mention-menu-v-0-2-option-0"
+        },
+        "geometry": {
+          "menuBottom": 855,
+          "textareaTop": 861,
+          "above": true
+        },
+        "emptyText": "No agents or teams match\nAgent Orgs can’t be mentioned.",
+        "textAfterChoose": "please ask @Code Reviewer ",
+        "textAfterRemove": "please ask Code Reviewer ",
+        "firstSeen": {
+          "rows": [
+            {
+              "kind": "task_agent",
+              "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+              "text": "CR\ncode reviewer",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 933
+        },
+        "entry": {
+          "address": "/code_reviewer",
+          "agentRunId": "code_reviewer_727ce1ea6b2f4da891f6452916f1dc44",
+          "launch": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "haiku",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-tFLjkG/server-data/temp_workspace"
+          }
+        },
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "cards": [
+          {
+            "text": "send_message_to",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "hostFrom": [
+          "From Code Reviewer:"
+        ],
+        "tabs": [
+          "Files",
+          "Team",
+          "Terminal",
+          "Activity",
+          "Token",
+          "Artifacts",
+          "VNC Viewer"
+        ],
+        "teamTabRows": [
+          "Message Oct 1, 11:12 PM from code reviewer The phrase \"hello world\" is a classic, universally understood greeting that is clear, appropriate, and effective as an introduction or test statement in any context.",
+          "Message Oct 1, 11:12 PM to code reviewer Please review the phrase \"hello world\" and report back your findings to me at /research_assistant with send_message_to."
+        ],
+        "childTitle": "code reviewer",
+        "runRowHighlighted": false,
+        "childHeaderControls": {
+          "settings": true,
+          "newRun": true
+        },
+        "childPlaceholder": "Message code reviewer…",
+        "childFrom": [
+          "From Research Assistant:"
+        ],
+        "childHasNotice": false,
+        "backTitle": "Say hello in one short sentence.",
+        "teamFirstSeen": {
+          "rows": [
+            {
+              "kind": "task_agent",
+              "label": "Temporary task agent, code reviewer, level 1, idle, Started by research assistant, /code_reviewer",
+              "text": "CR\ncode reviewer",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team",
+              "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+              "text": "product team",
+              "avatar": false,
+              "dot": false,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+              "text": "PP\nproduct prototyper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+              "text": "PB\nprototype bootstrapper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 924
+        },
+        "di001": "coordinator reported without using its handoff (model choice)",
+        "optionsAfter": [
+          "researcher",
+          "writer",
+          "analyst",
+          "review-team"
+        ],
+        "small": {
+          "top": 243,
+          "bottom": 543,
+          "vh": 640
+        }
+      }
+    },
+    "A02": {
+      "title": "AC-006 / AC-016: Stop → reopen → the collaborator shows the briefing as \"From Research Assistant:\" (replay) and wakes with the same run ID",
+      "result": "Pass",
+      "ms": 9544,
+      "details": {
+        "storedRunIds": [
+          "code_reviewer_727ce1ea6b2f4da891f6452916f1dc44",
+          "product_team_dd8d3f306ec84721aacfac7e858c0aca"
+        ],
+        "rowsAfterReopen": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "replayFrom": [
+          "From Research Assistant:"
+        ],
+        "hostActiveAfterWake": true
+      }
+    },
+    "A03": {
+      "title": "AC-006 / AC-016 server restart: rows stored; the host conversation shows \"From Code Reviewer:\" on replay; a send to the collaborator restores the host",
+      "result": "Pass",
+      "ms": 14645,
+      "details": {
+        "hostActive": true,
+        "rows": [
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, offline, Started by research assistant, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by research assistant, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "hostReplayFrom": [
+          "From Code Reviewer:",
+          "From Product Prototyper:"
+        ],
+        "hostActiveAfter": true
+      }
+    },
+    "A04": {
+      "title": "AC-016: a stored delivery without a recorded sender (an old trace) keeps the user-style presentation; the user message is unchanged",
+      "result": "Pass",
+      "ms": 6946,
+      "details": {
+        "traceFiles": [
+          "raw_traces_active.jsonl",
+          "collaboration/product_team_dd8d3f306ec84721aacfac7e858c0aca/product_prototyper_f72ddacea95346818b6c9cb2e3d69867/raw_traces_active.jsonl",
+          "collaboration/code_reviewer_727ce1ea6b2f4da891f6452916f1dc44/raw_traces_active.jsonl"
+        ],
+        "strippedTraces": 4,
+        "from": [],
+        "userStyle": true,
+        "userMention": 2
+      }
+    },
+    "A05": {
+      "title": "AC-006 / design AR-001: viewing a stopped run's collaborator (clicking it, or reloading with it selected) does not restore the host; only a send does",
+      "result": "Pass",
+      "ms": 25364,
+      "details": {
+        "afterReloadHostSelected": false,
+        "afterClickingCollaborator": false,
+        "url": "http://127.0.0.1:56129/chat?id=research_assistant_3b0785dad5584d0783f63fff3ff396d0",
+        "afterReloadWithCollaboratorSelected": false,
+        "rootView": false
+      }
+    },
+    "T01": {
+      "title": "UXJ-001 Team run: VIS-001 menu; send adds the collaborator Team at once, opened, Offline (VIS-015, F-02, F-03); send_message_to briefing; Team tab briefing + report rows; \"From Product Prototyper:\" (VIS-004); DI-001 handoff; CR-003 next send with a mention (VIS-006); exclusion",
+      "result": "Pass",
+      "ms": 81168,
+      "details": {
+        "teamRunId": "review_team_3931759985554803a0d964f285c048c2",
+        "options": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "product-team"
+        ],
+        "footer": "researcher gets your message and brings them into this run",
+        "firstSeen": {
+          "rows": [
+            {
+              "kind": "task_team",
+              "label": "Temporary task team, product team, level 1, offline, Started by researcher, /product_team",
+              "text": "product team",
+              "avatar": false,
+              "dot": false,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+              "text": "PP\nproduct prototyper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+              "text": "PB\nprototype bootstrapper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ],
+          "ms": 929,
+          "afterSettle": [
+            {
+              "kind": "task_team",
+              "label": "Temporary task team, product team, level 1, offline, Started by researcher, /product_team",
+              "text": "product team",
+              "avatar": false,
+              "dot": false,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, product prototyper, level 2, offline, /product_team/product_prototyper",
+              "text": "PP\nproduct prototyper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            },
+            {
+              "kind": "task_team_child",
+              "label": "Temporary task agent, prototype bootstrapper, level 2, offline, /product_team/prototype_bootstrapper",
+              "text": "PB\nprototype bootstrapper",
+              "avatar": true,
+              "dot": true,
+              "startedByVisible": false
+            }
+          ]
+        },
+        "teamEntry": {
+          "address": "/product_team",
+          "teamRunId": "product_team_71824a09ef054cc7a32e950542318997",
+          "members": [
+            "product_prototyper_a34585ec83cb46799611e2069307d4d2",
+            "prototype_bootstrapper_eca9a30764c1447ba8784dabd8f329a1"
+          ]
+        },
+        "cards": [
+          {
+            "text": "send_message_to",
+            "error": false,
+            "success": true,
+            "classes": "rounded-lg border overflow-hidden transition-all duration-200 bg-white border-gray-200 cursor-pointer hover:bg-gray-50"
+          }
+        ],
+        "teamTabRows": [
+          "Message Oct 1, 11:15 PM from product prototyper I've designed and prototyped a tiny settings page with clear section grouping, interactive toggle switches, and responsive layout. Key findings: visual hierarchy through grouped sections, recognizable component patterns (toggles/selects/inputs), compact 16px spacing, instant interactive feedback, mobile-optimized 44px touch targets, and clear action buttons. The prototype demonstrates best practices for minimal settings UI design.",
+          "Message Oct 1, 11:14 PM to product prototyper Please design a tiny settings page and report back to me with your findings."
+        ],
+        "rowsAfterReport": [
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by researcher, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, idle, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "di001": "teammate started (handoff reached it)",
+        "secondSend": "task-agent-row",
+        "rowsBoth": [
+          {
+            "kind": "task_team",
+            "label": "Temporary task team, product team, level 1, offline, Started by researcher, /product_team",
+            "text": "product team",
+            "avatar": false,
+            "dot": false,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, product prototyper, level 2, idle, /product_team/product_prototyper",
+            "text": "PP\nproduct prototyper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_team_child",
+            "label": "Temporary task agent, prototype bootstrapper, level 2, idle, /product_team/prototype_bootstrapper",
+            "text": "PB\nprototype bootstrapper",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          },
+          {
+            "kind": "task_agent",
+            "label": "Temporary task agent, code reviewer, level 1, idle, Started by researcher, /code_reviewer",
+            "text": "CR\ncode reviewer",
+            "avatar": true,
+            "dot": true,
+            "startedByVisible": false
+          }
+        ],
+        "optionsAfter": [
+          "analyst",
+          "research-assistant"
+        ],
+        "findings": []
+      }
+    },
+    "T02": {
+      "title": "UXJ-002 / VIS-005: the collaborator Team coordinator view starts with \"From Researcher:\" (no task notice); direct chat",
+      "result": "Pass",
+      "ms": 4409,
+      "details": {
+        "from": [
+          "From Researcher:",
+          "From Prototype Bootstrapper:"
+        ],
+        "hasNotice": false,
+        "title": "product prototyper"
+      }
+    },
+    "O01": {
+      "title": "UXJ-004 Org run: VIS-008 menu; two mentions add an Agent and a Team (Offline at once); send_message_to briefings; \"From\" reports; Org tab briefing + report rows with formatted names (VIS-009)",
+      "result": "Fail",
+      "ms": 434400,
+      "error": "Timed out waiting for reports from both collaborators",
+      "details": null
+    },
+    "O02": {
+      "title": "UXJ-004 / VIS-010: the Org collaborator Agent view starts with \"From Analyst:\"; direct chat",
+      "result": "Pass",
+      "ms": 4481,
+      "details": {
+        "from": [
+          "From Analyst:"
+        ],
+        "hasNotice": false
+      }
+    },
+    "F01": {
+      "title": "UXJ-003 / VIS-007 / AC-008 / AC-011 with a real failure: the run's model becomes unavailable (LM Studio host changed in settings); a mention send is refused in standalone, Team and Org runs — notice, draft and chip kept, no message, no row, still offered; the kept draft sends once the host is restored",
+      "result": "Not Applicable",
+      "ms": 2,
+      "reason": "LM Studio is not reachable on 127.0.0.1:1234"
+    },
+    "L01": {
+      "title": "Host crash keeps the root and its child; the child still answers; the host wakes on a send; after another crash Delete ends the root first and removes the run",
+      "result": "Not Applicable",
+      "ms": 0,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "L02": {
+      "title": "Host crash without collaborators: Archive succeeds and the lingering root is ended",
+      "result": "Not Applicable",
+      "ms": 0,
+      "reason": "host-crash cases need a process-bound runtime; run with --runtime antigravity_cli --cases L01,L02 (current: claude_agent_sdk)"
+    },
+    "P01": {
+      "title": "Old data: Team and Org runs whose trees have no `collaborators` reopen, continue and offer `@`",
+      "result": "Pass",
+      "ms": 38976,
+      "details": {
+        "teamRunId": "review_team_726e0568e5184885b1ab0b69af704598",
+        "teamHadCollaboratorsKey": true,
+        "orgRunId": "launch_org_17d8b1593abb4860bb8979921bac1066",
+        "orgHadCollaboratorsKey": true,
+        "teamMenu": [
+          "analyst",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "product-team"
+        ],
+        "orgCollaboratorsAfterContinue": []
+      }
+    },
+    "N01": {
+      "title": "AC-013 New chat `@` is still the launch-target picker",
+      "result": "Pass",
+      "ms": 1140,
+      "details": {
+        "targets": [
+          "analyst",
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "code-reviewer",
+          "product-prototyper",
+          "prototype-bootstrapper",
+          "research-assistant",
+          "researcher",
+          "writer",
+          "product-team",
+          "review-team"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 35883
+    },
+    {
+      "label": "frontend",
+      "pid": 35909
+    },
+    {
+      "label": "backend-restart",
+      "pid": 37032
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 35883,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 37032,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 35909,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 35883,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-tFLjkG"
+    }
+  ],
+  "observations": [
+    {
+      "text": "A01 DI-001: coordinator reported without using its handoff (model choice)",
+      "details": null
+    },
+    {
+      "text": "T01 DI-001: teammate started (handoff reached it)",
+      "details": null
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cross-scope-mentions-tFLjkG",
+  "backendUrl": "http://127.0.0.1:56128",
+  "frontUrl": "http://127.0.0.1:56129",
+  "definitions": {
+    "research": "research-assistant",
+    "reviewer": "code-reviewer",
+    "researcher": "researcher",
+    "writer": "writer",
+    "analyst": "analyst",
+    "prototyper": "product-prototyper",
+    "bootstrapper": "prototype-bootstrapper",
+    "productTeam": "product-team",
+    "reviewTeam": "review-team",
+    "org": "launch-org"
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 10,
+    "fail": 1,
+    "notApplicable": 3
+  },
+  "completedAt": "2026-10-01T21:23:25.825Z"
+}
