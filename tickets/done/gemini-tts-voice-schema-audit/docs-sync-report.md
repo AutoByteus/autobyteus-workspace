@@ -54,3 +54,7 @@ The long-lived provider catalog still listed retired TTS rows, while media docs 
 - Checks: `git diff --check` plus local doc/schema/link consistency check; no production or durable test edit by Delivery.
 - Next action: explicit user delivery verification/acceptance and release decision. Separately reconcile old `gemini-38-tts-upgrade` DR-004 verification/finalization hold before any transitive target merge/push/release.
 - API-REV-003 remains the upstream validation authority for the b1416a4bb candidate, reported 95.0%; Delivery's fresh non-paid tests separately cover b76e65f integration. Exactly three historical authorized Vertex Express calls remain three; no new call/import/private-source read or audition. User “sounds great.” is bounded qualitative listening evidence, not delivery acceptance or broad acoustic/language quality.
+
+## DR-003 Latest Accepted Combined State
+
+Post-signal latest origin/personal777548b05 integrated via97775019d; old authoritative package carried througheda59e585/archived39b9f473e. Same non-ticket source/docs tree; Gemini source/SDK/lock/schema behavior unchanged by unrelated base,271 current focused tests/install/serverbuild Pass. Three canonical docs remain truthful and unchanged; no extra semantic doc edit required. Old3docs-only reconciliation selected current richer combined docs, preserving saved-setting transition. User combinedacceptance/beta choice received; old verificationhold is no longer current. Current docs sync **Pass**.

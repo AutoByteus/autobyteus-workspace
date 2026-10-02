@@ -63,25 +63,29 @@ Additional Delivery docs-check evidence: `/Users/normy/autobyteus_org/autobyteus
 
 Pinned source c6586a07f3c2585aa13673875c1bc34c971b6e5e was incorporated through 332cbb2ad. The paths below point to the existing owner’s actual worktree, not inherited stale copies. Its DR-004 acceptance/finalization and user-test cleanup remain unresolved. This new package cannot authorize transitive target finalization. No old artifact was edited.
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/architecture-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/implementation-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/code-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/code-review-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/api-e2e-execution-coverage-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/api-e2e-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/api-e2e-test-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/docs-sync-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/handoff-summary.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/release-deployment-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/delivery-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-38-tts-upgrade/tickets/in-progress/gemini-38-tts-upgrade/solution-current-key-probe-sr014.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/requirements-doc.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/investigation-notes.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/architecture-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/implementation-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/implementation-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/code-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/code-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-execution-coverage-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/api-e2e-test-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/docs-sync-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/handoff-summary.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/release-deployment-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/delivery-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/gemini-38-tts-upgrade/solution-current-key-probe-sr014.md`
 
 ## DR-002 update
 
 - Current user delivery acceptance/stable selection and unchanged-base preflight: `delivery-evidence/release-preflight.md`. Current canonical delivery reports/history updated; old DR-004 remains separately unresolved at this result.
+
+## DR-003 Combined Finalization
+
+User chronology `delivery-evidence/user-verification.md`; predecessor archived actual authoritative package and current271-test evidence under `../gemini-38-tts-upgrade/`. Delivery reports reflect combined acceptance/beta, not unresolved historical DR-004. After target merge, durable canonical files reside in root `tickets/done/` for each package; transient worktree paths are provenance only.
