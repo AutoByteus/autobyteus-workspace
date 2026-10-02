@@ -362,6 +362,7 @@ describe("AgentStreamHandler", () => {
     });
     let isActive = true;
     const backend = {
+      compactionRecovery: { kind: "unsupported" as const },
       runId,
       runtimeKind: "codex_app_server",
       getContext: () => context,
@@ -414,6 +415,7 @@ describe("AgentStreamHandler", () => {
       payload: {
         status: "offline",
         agent_id: runId,
+        recoverableBlock: null,
       },
     }));
     expect(connection.close).not.toHaveBeenCalled();
