@@ -1,0 +1,1350 @@
+START 2026-10-02T17:24:57Z
+INTEGRATED_HEAD b76e65f291a48fbcc69490ae61f23569d36477e7
+REMOTE_BASE 5e3cb2f720e6fc80173099075daf55594ed58de9
+
+COMMAND: pnpm -C autobyteus-server-ts build
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 101ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+COMMAND: core speech/model/SDK wire regression
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-ts
+
+···················································································
+
+ Test Files  4 passed (4)
+      Tests  83 passed (83)
+   Start at  19:25:12
+   Duration  382ms (transform 357ms, setup 70ms, import 587ms, tests 93ms, environment 0ms)
+
+
+COMMAND: registered speech/media/catalog/provider lifecycle API
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+·······stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:61150) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > executes the four canonical media tools through the AutoByteus local registry and writes output files
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > revokes a cancelled image publication lease and suppresses a late provider completion
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > applies default media model setting changes to future AutoByteus schemas and invocations
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes nested speech and video generation_config schemas through the GraphQL tools query
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > exposes video model catalog rows through the GraphQL provider query
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stderr | tests/e2e/media/server-owned-media-tools.e2e.test.ts > server-owned media tools API/E2E boundary > normalizes media input paths consistently for workspace, external absolute, file URL, URL/data URI, missing, non-file, and traversal references
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+······stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > exposes the approved model-derived schema through registered gemini-3.8-flash-tts tool discovery
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > exposes the approved model-derived schema through registered gemini-3.8-flash-tts tool discovery
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > exposes the approved model-derived schema through registered gemini-3.8-flash-tts tool discovery
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > exposes the approved model-derived schema through registered gemini-3.8-flash-lite-tts tool discovery
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > exposes the approved model-derived schema through registered gemini-3.8-flash-lite-tts tool discovery
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > exposes the approved model-derived schema through registered gemini-3.8-flash-lite-tts tool discovery
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > forwards a genuine extra voice ID unchanged and publishes the validated WAV at the requested path
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > forwards a genuine extra voice ID unchanged and publishes the validated WAV at the requested path
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > forwards a genuine extra voice ID unchanged and publishes the validated WAV at the requested path
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > uses old omitted-config arguments directly with the preserved Kore default
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > uses old omitted-config arguments directly with the preserved Kore default
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > uses old omitted-config arguments directly with the preserved Kore default
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > preserves three-turn order/text/speaker association and nullable override/inheritance through tool coercion
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > preserves three-turn order/text/speaker association and nullable override/inheritance through tool coercion
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > preserves three-turn order/text/speaker association and nullable override/inheritance through tool coercion
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > uses historical global-only dialogue arguments directly without migration
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > uses historical global-only dialogue arguments directly without migration
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > uses historical global-only dialogue arguments directly without migration
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":["one"]}
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":["one"]}
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":["one"]}
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":[false,null]}
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":[false,null]}
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":[false,null]}
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":null}
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":null}
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"turn_styles":null}
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"speaker_mapping":[{"speaker":"Narrator","voice":"ar-001-advisor-1"}]}
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"speaker_mapping":[{"speaker":"Narrator","voice":"ar-001-advisor-1"}]}
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"speaker_mapping":[{"speaker":"Narrator","voice":"ar-001-advisor-1"}]}
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"speaker_mapping":[{"speaker":"Unknown","voice":"Kore"}]}
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"speaker_mapping":[{"speaker":"Unknown","voice":"Kore"}]}
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > rejects unsupported dialogue input before credentials/HTTP and publishes no success: {"speaker_mapping":[{"speaker":"Unknown","voice":"Kore"}]}
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > returns only safe HTTP 404 on selected-provider failure and preserves existing output
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > returns only safe HTTP 404 on selected-provider failure and preserves existing output
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > returns only safe HTTP 404 on selected-provider failure and preserves existing output
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > returns only safe HTTP 429 on selected-provider failure and preserves existing output
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stderr | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > returns only safe HTTP 429 on selected-provider failure and preserves existing output
+Attempted to unregister tool 'generate_image', but it was not found in the registry.
+Attempted to unregister tool 'edit_image', but it was not found in the registry.
+Attempted to unregister tool 'generate_speech', but it was not found in the registry.
+Attempted to unregister tool 'generate_video', but it was not found in the registry.
+
+stdout | tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts > configured Gemini generate_speech public tool integration (non-paid) > returns only safe HTTP 429 on selected-provider failure and preserves existing output
+Successfully unregistered tool definition: 'generate_image'
+Successfully unregistered tool definition: 'edit_image'
+Successfully unregistered tool definition: 'generate_speech'
+Successfully unregistered tool definition: 'generate_video'
+
+·············
+
+ Test Files  4 passed (4)
+      Tests  26 passed (26)
+   Start at  19:25:13
+   Duration  10.26s (transform 3.33s, setup 27ms, import 5.20s, tests 4.33s, environment 0ms)
+
+
+COMMAND: speech schema/service and combined base harness/config regressions
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/secret-management/live-e2e-harness.test.ts
+AgentFactory (Singleton) initialized.
+
+··················stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-71HUsm
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-71HUsm/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-71HUsm/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-71HUsm/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > initializes base URL and sqlite db path when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jfclFq/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > preserves an explicit DATABASE_URL when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VOrC7K/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > delivers and projects a persisted SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-zeSIuN/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ZTTRa5
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ZTTRa5/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ZTTRa5/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-ZTTRa5/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_LOG_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/custom-logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-kVUDNq/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if getBaseUrl is called before initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets custom app data dir when valid
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-wCf0bH
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-wCf0bH/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > accepts an initial app data dir in the constructor
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UbCTLj
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-3wjAxe/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir after initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-pkFK38/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir for non-existent path
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Skill path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Agent package root path must be absolute and will be ignored: relative-source
+Agent package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Application package root path must be absolute and will be ignored: relative-root
+Application package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > exposes md-centric agent/team path helpers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-oS7m2k/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets and gets config values and updates the env file
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Zm88bo
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Zm88bo/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > discards the exact retired stream-parser key while preserving unrelated settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UhMqz0/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > rejects the exact retired key through normal and durable writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KgTrMs
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Could not update config file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/.env: Error: EACCES: permission denied, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/.env'. Changes will only be valid for the current session.
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-8nhFYZ/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > durably replaces the env file before publishing runtime state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-yMTcvM/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > preserves the exact env file mode under a restrictive process umask
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-RwQkWq/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > keeps file and runtime state unchanged when durable replacement fails before commit
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-LIbfj5/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > requires initialization and retains the sensitive-setting guard for durable writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-VhfBPE/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > creates temp workspace directory under the app data dir by default
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-N12LVP
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-N12LVP/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_TEMP_WORKSPACE_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jz3xlI
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-jz3xlI/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-6aNLtc
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-6aNLtc/.env
+loadEnvironment() is deprecated. Use initialize() instead.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-6aNLtc/.env
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-3.1-flash-tts-preview before runtime and preserves unrelated bytes and mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-TtkKh5/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-2.5-flash-tts before runtime and preserves unrelated bytes and mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-VJBD1z/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-2.5-pro-tts before runtime and preserves unrelated bytes and mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Mpknz0/memory
+============================================================
+
+·····························stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection undefined
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-dPLBCG/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-owWXKm/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection gemini-3.8-flash-lite-tts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-nxRPVq/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection gpt-4o-mini-tts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-SfgR1x/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection unknown-model
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Hc6Ads/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates the file but preserves an inherited current override
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-jbULqE/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > rejects an inherited retired override without rewriting the file
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/gemini-tts-voice-schema-audit/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-e844Jy
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-e844Jy/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-e844Jy/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-e844Jy/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+
+········stdout | tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts
+AgentFactory (Singleton) initialized.
+
+···stdout | tests/unit/agent-tools/media/media-generation-service.test.ts
+AgentFactory (Singleton) initialized.
+
+·············stdout | tests/unit/services/server-settings-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > saves and reads the nonsecret numeric context override, including clearing it
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting OPENAI_API_KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_APIKEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_API-KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_ACCESS_TOKEN write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting customPassword write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_SECRET write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_PRIVATE_KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_PRIVATE-KEY write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_CREDENTIAL write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting CUSTOM_TOKENS write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE_SECRET write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > keeps credential-like setting PREFIX_AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE write-only and absent from ordinary reads
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes and validates the live response update interval
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists the compound model/config with the durable setting writer
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_MODEL_SETTINGS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 22 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 22 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 22 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 22 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 22 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads a boolean setting as true, false, or null for the requested key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists a boolean setting as normalized strings for the requested key
+Initialized server settings service with 22 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > registers ENABLE_PROJECTS as an editable predefined setting
+Initialized server settings service with 22 predefined settings
+
+······························································
+
+ Test Files  10 passed (10)
+      Tests  133 passed (133)
+   Start at  19:25:24
+   Duration  7.76s (transform 3.00s, setup 54ms, import 6.01s, tests 493ms, environment 1ms)
+
+END 2026-10-02T17:25:31Z
