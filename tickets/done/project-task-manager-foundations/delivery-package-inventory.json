@@ -1,16 +1,20 @@
 {
   "ticket": "PROJ-TASK-MANAGER-20261002-001",
   "deliveryRevision": "DR-003",
-  "result": "Delivery Completed \u2014 finalized/published/cleaned; terminal send after records push",
+  "result": "Delivery Completed \u2014 beta.11 finalized/published/cleaned; later beta.12 preserved",
   "taskSize": "Large",
   "architecturalRisk": "High",
   "route": "Reviewed",
+  "publishedReleaseCommit": "777548b050527ab3ff5904a085c0c95677e50e74",
+  "publishedReleaseVersion": "1.4.92-beta.11",
+  "postPublicationRecordTarget": "cc143577b8ca3bcf40469dcf5f1f928438f56a02",
+  "currentCheckoutPackageVersion": "1.4.92-beta.12",
   "checkedBase": "2056b04f3b654ffe583aa956c371869f7d06444d",
   "initialMerge": "a5123e7d08f66bbb08440340db167fa4ccb5eba0",
   "finalRefreshMerge": "0ac39a28d3abaf493a6673992ae01106452db38e",
   "incomingReferencesPreservedWithSelf": 538,
   "originalUpstreamCount": 129,
-  "currentReferenceCount": 608,
+  "currentReferenceCount": 609,
   "relocationPolicy": "All prior cumulative references retained under current archived paths; as-of upstream inventories/histories preserved. External Product references unchanged.",
   "files": [
     {
@@ -651,7 +655,7 @@
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/autobyteus-web/package.json",
       "bytes": 8997,
-      "sha256": "e449dc9368ba77efe7dc4543da4b31e9fbc529eba5308756d9606f5748a5c72f"
+      "sha256": "54214668e7ec1dacf80d4157690555ac30a01a5eefa75472db3002e99496ff65"
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/autobyteus-web/tests/e2e/composer-mention-discoverability-probe.mjs",
@@ -2314,6 +2318,11 @@
       "sha256": "aea5023d017ea66961bf6678f98c06dc8cfc2798e4906153364013fef55cf6f8"
     },
     {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/evidence-only-target-reconciliation.json",
+      "bytes": 888,
+      "sha256": "117564cd6d6c5dd22c61b3e8c9e12736646df07616c3d1e032d3b526ed9f0518"
+    },
+    {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/generated-output-cleanup.json",
       "bytes": 168,
       "sha256": "5ed666f03a66f2be6c4541f5bb4cccfd315140b94c754a693d5b9810a848e6c5"
@@ -2390,8 +2399,8 @@
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/rebuild-delivery-inventory.py",
-      "bytes": 2471,
-      "sha256": "9bba151a66ce636c5161eb5a8192fd4a17e1d2fd082da9382b50ba9f538cf45f"
+      "bytes": 2759,
+      "sha256": "7231a406674f3e6f0004759fe06d22cd5fee57965fb74e5be28fc50572b946fb"
     },
     {
       "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/release-workflows-initial.json",

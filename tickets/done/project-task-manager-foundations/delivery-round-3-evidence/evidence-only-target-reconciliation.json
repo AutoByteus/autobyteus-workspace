@@ -1,0 +1,13 @@
+{
+  "recordCheckpoint": "ec9dd9624",
+  "mergedPostPublicationTarget": "cc143577b8ca3bcf40469dcf5f1f928438f56a02",
+  "evidenceOnlyMerge": "c10d0dbb11bea868721baa06768bed56eea5877e",
+  "mergeParents": [
+    "ec9dd9624105c1c327e4c44d354e422eedf1f9f1",
+    "cc143577b8ca3bcf40469dcf5f1f928438f56a02"
+  ],
+  "publishedSnapshotStill": "777548b050527ab3ff5904a085c0c95677e50e74",
+  "projectsTaskContextManagedVoiceComposerChangedSincePublishedSnapshot": [],
+  "noRuntimeRerunRationale": "Already-completed beta.11 finalization/publication is not replayed. This only reconciles durable evidence records with later independently finalized TTS/beta.12 target; no accepted Projects/source contract change. Executable JSON/Python parse and repository hygiene checks apply to record-only append; no fresh beta.12 functional certification claimed.",
+  "checkedAt": "2026-10-02T20:03:10.783930+00:00"
+}
