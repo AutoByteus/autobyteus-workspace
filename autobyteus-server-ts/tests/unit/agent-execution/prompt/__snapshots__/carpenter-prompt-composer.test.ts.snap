@@ -12,6 +12,10 @@ Be helpful.
 
 ## Collaboration
 
+### Work Requests and Outcomes
+
+On receiving a work request, follow your own agent instructions and applicable skills. Do not send acknowledgements or promises to work. Use \`send_message_to\` when your instructions or skill call for a handoff, or when you are blocked. Follow applicable handoff rules; otherwise, return the result or specific blocker to the requesting agent.
+
 You can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.
 
 - A user message may end with a \`[Mentioned collaborators]\` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.

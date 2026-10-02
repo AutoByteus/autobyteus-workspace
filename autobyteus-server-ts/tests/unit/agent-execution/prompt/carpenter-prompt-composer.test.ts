@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../../../src/agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import {
   composeNativeAutoByteusPrompt,
@@ -9,6 +10,7 @@ import { testMemberExecutionContext } from "../../../fixtures/current-team-run-f
 import { MemberCollaborationContext, MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import {
   createAgentRootExecutionIdentity,
+  createRootExecutionIdentity,
   createCollaborationMemberExecutionIdentity,
 } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 
@@ -90,7 +92,7 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt).toContain("└── /C              (nested AgentTeam)");
     expect(prompt).toContain("The letters in this example are placeholders only.");
     expect(prompt).not.toContain("requirements_engineering");
-    expect(prompt).toContain("## AgentTeam Collaboration\n\nChoose the collaboration mode based on your primary intent.");
+    expect(prompt).toContain("## AgentTeam Collaboration\n\n### Work Requests and Outcomes");
     expect(prompt.indexOf("## Team Instruction")).toBeLessThan(prompt.indexOf("## AgentTeam Addressing"));
     expect(prompt.indexOf("## AgentTeam Addressing")).toBeLessThan(prompt.indexOf("## AgentTeam Collaboration"));
     expect(prompt.indexOf("## AgentTeam Collaboration")).toBeLessThan(prompt.indexOf("## Working Environment"));
@@ -257,5 +259,47 @@ describe("standalone collaboration section (Agent-root host)", () => {
       memberExecutionContext: null,
     });
     expect(prompt).not.toContain("## Collaboration");
+  });
+});
+
+describe.each([
+  ["shared", composeSharedCarpenterPrompt],
+  ["native", composeNativeAutoByteusPrompt],
+] as const)("%s work-request guidance", (_runtime, compose) => {
+  it.each([
+    ["Team member", "agent_team", "/worker", true],
+    ["Org member", "agent_org", "/engineering/worker", true],
+    ["collaborator Team coordinator", "agent", "/product/coordinator", true],
+    ["standalone host", "agent", "/assistant", false],
+    ["standalone collaborator", "agent", "/researcher", false],
+    ["delegated Agent copy", "agent", "/worker_copy", false],
+  ] as const)("projects one shared paragraph for %s before tool mechanics", (_label, rootSubjectKind, memberAddress, teamScoped) => {
+    const root = createRootExecutionIdentity({ rootSubjectKind, rootRunId: "root-run" });
+    const context = new MemberExecutionContext({
+      identity: createCollaborationMemberExecutionIdentity({ root, memberAddress, agentRunId: "member-run" }),
+      teamScoped,
+      collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
+      tasks: { root, delegateTask: async () => ({ target_agent_run_id: null, message: "none" }) },
+    });
+    const prompt = compose({
+      agentDefinition: definition(), memberExecutionContext: context, workspaceRootPath: "/tmp/workspace",
+    });
+    expect(prompt.split(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toHaveLength(2);
+    expect(prompt.match(/^### Work Requests and Outcomes$/gm)).toHaveLength(1);
+    expect(prompt.indexOf(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION)).toBeLessThan(
+      prompt.indexOf(teamScoped ? "Choose the collaboration mode" : "- `send_message_to`"),
+    );
+    expect(prompt.includes("get_handoff_rules")).toBe(teamScoped);
+    expect(prompt).toContain("delegate_task");
+    expect(prompt).toContain("target_agent_run_id");
+    expect(prompt).toContain(memberAddress);
+  });
+
+  it("does not add collaboration guidance without a member context", () => {
+    const prompt = compose({
+      agentDefinition: definition(), memberExecutionContext: null, workspaceRootPath: "/tmp/workspace",
+    });
+    expect(prompt).not.toContain(WORK_REQUEST_EXECUTION_LLM_INSTRUCTION);
+    expect(prompt).not.toContain("get_handoff_rules");
   });
 });
