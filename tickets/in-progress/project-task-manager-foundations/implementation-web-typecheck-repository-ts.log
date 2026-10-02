@@ -1,0 +1,2 @@
+components/agentTeams/form/AgentTeamLibraryPanel.vue(2,304): error TS1005: ',' expected.
+pages/agent-orgs.vue(2,103): error TS1005: ';' expected.

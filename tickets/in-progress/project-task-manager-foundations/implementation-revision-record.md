@@ -1,0 +1,21 @@
+# Implementation Revision Record
+
+Current code and implementation-handoff.md are authoritative; this record locates the baseline, not an inferred prior result or independent finding-resolution proof.
+
+## Revision Index
+| Revision | Trigger / report / round | Findings | Classification | Related revisions | Result |
+|---|---|---|---|---|---|
+| IR-001 | Architecture Reviewer; design-review-report.md; ARCH-REV-002 / Round 2 | N/A (initial); ARCH-F-001 independently resolved upstream | Initial Baseline; Large / High | Current SR-015; cumulative SR-001–015; ARCH-REV-001 history / ARCH-REV-002 Pass; CRR/API-REV/DR N/A | Implementation Complete — Ready for Code Review; no specialist acceptance |
+
+## IR-001 — Reviewed Task tools / manual authoring / Refresh baseline
+- Trigger: passed cumulative approved SD-AP-001/002 package, ARCH-REV-002 / SR-015; `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/design-review-report.md`.
+- Prior authoritative implementation result: **N/A**. Triggering implementation finding IDs: **N/A**. No missing record is treated as a previous pass/fail. ARCH-F-001 belongs to upstream design history, not an implementation-owned resolution claim.
+- Current authoritative result: **Implementation Complete — Ready for Code Review**, Large/High confirmed; canonical implementation-handoff.md and source/test checkpoint **560a51129b3d49a84868cc7b47f6a055150fe175** on assigned isolated branch. No integration/push/feature enablement or independent AC acceptance.
+- Related solution: current SR-015, cumulative SR-001–015; architecture ARCH-REV-001 historical Fail and ARCH-REV-002 current Pass. Code review CRR-* N/A; API/E2E API-REV-* N/A; delivery DR-* N/A.
+- Why recorded: initial execution of the completed architecture against explicit approvals and exact external UF-017 UI base, including the subsequently approved Refresh. Baseline captures actual code/local evidence rather than upstream review or prototype validation as implementation proof.
+- Affected approved IDs: BEH-001/002/005/006/007/008/010, preserved BEH-003/004, deferred BEH-009; DS-001–010; active REQ-001–004/007/009–016/018 and linked active AC/scenarios. Deferred/excluded IDs remain unchanged.
+- Delta: exact selected three-tool contract/manifest/native/MCP exposure, current-record patch and total counts, known-field Project projection and narrow rename commit proof, neutral upload policy/writer, Task-owned durable context/drafts/byte reads/cleanup, aggregate workspace form, ordinary routes/continuous rows/detail/composer, physical Refresh and count publication, text sink/capture disposal/cancellation, obsolete overlay/card/description-only paths removed. Actual paths and preserved outcomes are in handoff trace/source-delta inventory.
+- Local corrections in this initial round: strict test/fixture caller updates; callback/postcommit/byte fault tests; request/count/route and voice late-settlement guards; locale literals/types; deletion initial-focus settlement; actual narrow Refresh toolbar search wrapping; compound route keys; trailing-file whitespace. These are not separate downstream review rounds.
+- Focused validation: server 124 tests/16 files + TS/full build/bootstrap; renderer 112 tests/11 files + web build/boundary/localization guards. Real temporary byte fixtures, count/deferred/guard contracts and existing composer/settings checks. Normal isolated-development rendered self-inspection: 27 desktop/narrow states; real uploads/reload/Cancel/edit/delete/registration/Refresh/focus; no final renderer page errors. See final logs and rendered check.
+- Remaining limitation: full web VueTSC failed with 387 diagnostics outside changed/new files (not all origins independently diagnosed); not a full pass. Optional real local desktop microphone/extension/device/IPC and independent native/MCP HTTP/auth/realistic API/E2E, product AC acceptance and delivery still pending. No unsupported interactive node-switch implementation/test journey added.
+- Next routing: final get_handoff_rules selected the initial-complete Large/High source-review rule to exact /software_engineering_team/code_reviewer; not direct API/E2E. No additional recipient or delegation.
