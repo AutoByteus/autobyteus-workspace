@@ -14,9 +14,9 @@
 - Triggering upstream report, verification, or evidence: `api-e2e-test-review-report.md`, `code-review-revision-record.md` (CRR-001, CRR-002), `api-e2e-execution-coverage-report.md` (API-REV-001, 95.3%).
 - Prior authoritative result: N/A
 - Current authoritative result: The ticket branch is checkpointed (`993ac7a3c`) and merged with `origin/personal` @ `314b5a976` as `593baccad`, with no conflicts. The post-integration checks passed. Docs sync is verified as `Updated` (five docs, authored in the change). Release notes are drafted. Delivery is held for explicit user verification.
-- Docs sync report: `tickets/in-progress/agy-linked-skills-always-auto-approve/docs-sync-report.md`
-- Handoff summary: `tickets/in-progress/agy-linked-skills-always-auto-approve/handoff-summary.md`
-- Release/publication/deployment report: `tickets/in-progress/agy-linked-skills-always-auto-approve/release-deployment-report.md`
+- Docs sync report: `tickets/done/agy-linked-skills-always-auto-approve/docs-sync-report.md`
+- Handoff summary: `tickets/done/agy-linked-skills-always-auto-approve/handoff-summary.md`
+- Release/publication/deployment report: `tickets/done/agy-linked-skills-always-auto-approve/release-deployment-report.md`
 - Integration and post-integration verification: Server build-tsc pass. Unit: 23 files / 309 tests. Fake-CLI E2E: 5 files / 17 tests, including E01–E08. Web: 33 files / 290 tests. Web guards pass.
 - User verification/finalization state: Awaiting user verification. Nothing pushed or merged.
 - Terminal return to `/solution_designer`: `Not yet eligible`

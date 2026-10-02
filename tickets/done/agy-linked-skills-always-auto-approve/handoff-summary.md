@@ -2,7 +2,8 @@
 
 ## Status
 
-- State: **Awaiting explicit user verification** (DR-001). Nothing has been pushed or merged yet.
+- State: **User-verified 2026-10-02** ("finalize, no need to release thanks"). Being finalized into `origin/personal`; no release (DR-002). Before finalization the ticket branch was re-integrated with `origin/personal` @ `e8b0e95da` (13 new commits: agent-initiated collaborators and the `1.4.92-beta.8` bump) as `195be2e27`. No ticket files overlapped, the merge was clean, and the full check set re-passed with identical counts. See release-deployment-report.md.
+- History: DR-001 held for verification at `593baccad` (base `314b5a976`).
 - Classification (preserved): task_size `Medium`, architectural_risk `High`, reviewed route.
 - Approved baseline: requirements `SR-001` (approved 2026-10-01), design `SR-002`.
 

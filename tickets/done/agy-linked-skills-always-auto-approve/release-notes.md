@@ -1,7 +1,8 @@
 # Release notes — Antigravity linked skills and always-on auto-approve
 
-Status: drafted before user verification. The version and publication are decided at
-finalization (see release-deployment-report.md).
+Status: user-verified 2026-10-02. Merged to `personal` with **no release or
+publication** at the user's request. These notes are for the next release that
+includes this change.
 
 ## Fixes
 

@@ -4,13 +4,13 @@
 
 - Ticket `agy-linked-skills-always-auto-approve`: AGY links skills into the run capsule and always auto-approves. task_size `Medium`, architectural_risk `High`, reviewed route.
 - Repository finalization target: `origin/personal`.
-- Release/publication: **to be decided by the user at verification.** The repo's documented beta method is `bash scripts/desktop-release.sh beta …`, which was used for `v1.4.92-beta.6` and `v1.4.92-beta.7`.
+- Release/publication: **Not required.** The user declined a release on 2026-10-02.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve/tickets/in-progress/agy-linked-skills-always-auto-approve/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agy-linked-skills-always-auto-approve/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve/tickets/in-progress/agy-linked-skills-always-auto-approve/delivery-revision-record.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agy-linked-skills-always-auto-approve/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: Holding for explicit user verification.
 
@@ -36,41 +36,50 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: —
-- Renewed verification required after later re-integration: — (decided at finalization)
-- Renewed verification received: —
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: User message on 2026-10-02: "finalize, no need to release thanks", replying to the DR-001 handoff at `593baccad`.
+- Renewed verification required after later re-integration: `No`. The 13 new base commits (`314b5a976..e8b0e95da`: agent-initiated collaborators, the `1.4.92-beta.8` bump, and that ticket's archive and docs) touch no ticket file and no AGY, skills or auto-approve code or docs. All checks re-passed with identical counts, so what the user verified is unchanged.
+- Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: —
+
+## Pre-Finalization Re-Integration
+
+- Finalization target re-fetched after verification: `origin/personal` @ `e8b0e95da` (advanced by 13 commits beyond `314b5a976`)
+- Delivery-owned edits protected before re-integration: `Completed` (`8c1606c1e`, the DR-001 delivery artifacts)
+- Re-integration method / result: `Merge`, `Completed` (`195be2e27`, no conflicts, no ticket-file overlap). `agent-run-command-coordinator.ts` changed in base, and it carries the REQ-006 error path; E03/E04 re-passed.
+- Re-run checks on `195be2e27`: server build tsc exit 0. Unit: 23 files passed, 3 skipped, 309 tests. Fake-CLI E2E: 5 files / 17 tests (E01–E08). Web: 33 files / 290 tests. Web guards: all three pass.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve/tickets/in-progress/agy-linked-skills-always-auto-approve/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agy-linked-skills-always-auto-approve/docs-sync-report.md`
 - Docs sync result: `Updated` (the edits were authored in `e5edfafdf` and verified on the integrated state; delivery made no further doc changes)
 - Docs updated: server `antigravity_cli_runtime.md`, `skills.md`, `agent_execution.md`; web `agent_execution_architecture.md`, `remote_access.md`
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (pending user verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/agy-linked-skills-always-auto-approve/`
 
 ## Version / Tag / Release Commit
 
-Pending user decision at verification.
+Not required. The user declined a release ("no need to release"), so there is no version bump, tag or release commit.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` and `handoff-architecture-design-complete.md` (finalization target `origin/personal`)
 - Ticket branch: `codex/agy-linked-skills-always-auto-approve`
-- Ticket branch commit result: Pending
-- Ticket branch push result: Pending
+- Ticket branch commit result: In progress (archive commit on top of `195be2e27`)
+- Ticket branch push result: In progress
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Repository finalization status: Pending user verification
+- Target advanced after verification / acceptance: `Yes` (`314b5a976` → `e8b0e95da`; re-integrated, see above)
+- Repository finalization status: In progress. Final commit hashes and push results are recorded in DR-002 of `delivery-revision-record.md` after finalization.
 
 ## Release / Publication / Deployment
 
-- Applicable: Pending user decision
-- Release notes handoff result: Pending
+- Applicable: `No`
+- Release/publication/deployment result: `Not required` (user decision, 2026-10-02)
+- Release notes handoff result: `Not required`. The archived `release-notes.md` is kept for a future release.
 
 ## Post-Finalization Cleanup
 
@@ -79,7 +88,7 @@ Pending user decision at verification.
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-linked-skills-always-auto-approve/tickets/in-progress/agy-linked-skills-always-auto-approve/release-notes.md`
+- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/agy-linked-skills-always-auto-approve/release-notes.md`
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
