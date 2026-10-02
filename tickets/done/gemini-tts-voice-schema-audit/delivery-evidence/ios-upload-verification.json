@@ -1,0 +1,68 @@
+{
+  "run": 37056157123,
+  "job_id": 111004959919,
+  "conclusion": "success",
+  "steps": [
+    {
+      "name": "Set up job",
+      "conclusion": "success"
+    },
+    {
+      "name": "Checkout workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Select Xcode 26 or newer",
+      "conclusion": "success"
+    },
+    {
+      "name": "Install XcodeGen",
+      "conclusion": "success"
+    },
+    {
+      "name": "Initialize temporary publish paths",
+      "conclusion": "success"
+    },
+    {
+      "name": "Import iOS distribution certificate into temporary keychain",
+      "conclusion": "success"
+    },
+    {
+      "name": "Decode, verify, and install App Store provisioning profiles",
+      "conclusion": "success"
+    },
+    {
+      "name": "Generate project and ExportOptions.plist",
+      "conclusion": "success"
+    },
+    {
+      "name": "Archive and export signed IPA",
+      "conclusion": "success"
+    },
+    {
+      "name": "Upload IPA to App Store Connect/TestFlight",
+      "conclusion": "success"
+    },
+    {
+      "name": "Summarize iOS TestFlight upload",
+      "conclusion": "success"
+    },
+    {
+      "name": "Cleanup iOS signing material",
+      "conclusion": "success"
+    },
+    {
+      "name": "Upload iOS publish artifacts",
+      "conclusion": "success"
+    },
+    {
+      "name": "Post Checkout workspace",
+      "conclusion": "success"
+    },
+    {
+      "name": "Complete job",
+      "conclusion": "success"
+    }
+  ],
+  "scope": "Archive/export/signing/upload success; not public App Store review approval or Apple downstream processing availability"
+}

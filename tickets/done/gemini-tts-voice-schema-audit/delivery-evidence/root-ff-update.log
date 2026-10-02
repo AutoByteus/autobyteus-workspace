@@ -1,0 +1,1242 @@
+Updating 2056b04f3..cc143577b
+Fast-forward
+ .../docs/modules/agent_tools_mcp_server.md         |   41 +-
+ .../docs/modules/multimedia_management.md          |   60 +
+ autobyteus-server-ts/docs/modules/projects.md      |  401 +-
+ .../docs/modules/secret_management.md              |   15 +
+ .../autobyteus-collaboration-tool-exposure.ts      |    4 +-
+ .../session/claude-session-tooling-options.ts      |    6 +
+ .../shared/runtime-agent-tool-exposure.ts          |    3 +
+ .../mcp/agent-tool-mcp-session-registry.ts         |    1 +
+ .../default-agent-tool-mcp-adapter-providers.ts    |    3 +
+ .../project-task-tools-mcp-adapter-provider.ts     |   16 +
+ .../media/media-tool-parameter-schemas.ts          |    2 +-
+ .../project-tasks/project-task-native-tools.ts     |   37 +
+ .../project-tasks/project-task-tool-contract.ts    |   55 +
+ .../project-tasks/project-task-tool-manifest.ts    |   27 +
+ .../src/api/graphql/types/project-tasks.ts         |   27 +-
+ .../src/api/graphql/types/projects.ts              |   12 +
+ autobyteus-server-ts/src/api/rest/index.ts         |    3 +
+ .../src/api/rest/project-task-context-files.ts     |   47 +
+ .../src/compositions/build-studio-server.ts        |    3 +-
+ autobyteus-server-ts/src/config/app-config.ts      |    6 +-
+ .../src/config/media-default-model-settings.ts     |    2 +-
+ .../migrations/retired-speech-model-selection.ts   |   34 +
+ .../domain/context-file-upload-policy.ts           |   59 +
+ .../services/context-file-draft-cleanup-service.ts |    4 +-
+ .../services/context-file-upload-service.ts        |   73 +-
+ .../services/context-file-upload-writer.ts         |   25 +
+ .../src/persistence/file/store-utils.ts            |    3 +
+ .../context/project-task-context-layout.ts         |   48 +
+ .../projects/context/project-task-context-store.ts |  181 +
+ autobyteus-server-ts/src/projects/domain/models.ts |   16 +-
+ .../src/projects/domain/project-errors.ts          |    8 +-
+ .../src/projects/domain/project-task-context.ts    |   14 +
+ .../src/projects/services/project-service.ts       |   36 +-
+ .../src/projects/services/project-task-service.ts  |  262 +-
+ .../src/projects/stores/project-store.ts           |   35 +-
+ .../src/startup/agent-tool-loader.ts               |    2 +
+ .../e2e/media/gemini-speech-voice-tool.e2e.test.ts |  199 +
+ .../projects/project-task-boundaries.e2e.test.ts   |  223 ++
+ .../e2e/projects/projects-graphql.e2e.test.ts      |    2 +-
+ .../real-e2e-provider-capabilities.e2e.test.ts     |    9 +
+ .../server-settings-graphql.e2e.test.ts            |    2 +-
+ .../tests/fixtures/project-task-tool-writer.mjs    |   12 +
+ .../shared/runtime-agent-tool-exposure.test.ts     |    1 +
+ .../media/media-generation-service.test.ts         |   43 +
+ .../media/media-tool-parameter-schemas.test.ts     |   53 +-
+ .../project-tasks/project-task-tools.test.ts       |   82 +
+ .../tests/unit/config/app-config.test.ts           |   75 +
+ .../config/retired-speech-model-selection.test.ts  |   32 +
+ .../context-file-upload-writer.test.ts             |   28 +
+ .../tests/unit/projects/project-service.test.ts    |   51 +-
+ .../projects/project-task-context-store.test.ts    |  137 +
+ .../unit/projects/project-task-service.test.ts     |   45 +-
+ .../live-e2e-audio-assertions.test.ts              |   30 +
+ .../unit/services/server-settings-service.test.ts  |    4 +-
+ .../tests/unit/startup/agent-tool-loader.test.ts   |    8 +-
+ autobyteus-ts/docs/provider_model_catalogs.md      |   45 +-
+ autobyteus-ts/package.json                         |    2 +-
+ autobyteus-ts/pnpm-lock.yaml                       |   72 +-
+ .../multimedia/audio/api/gemini-audio-client.ts    |  355 +-
+ .../src/multimedia/audio/audio-client-factory.ts   |   62 +-
+ .../src/multimedia/audio/gemini-tts-voices.ts      |   50 +
+ autobyteus-ts/src/utils/gemini-model-mapping.ts    |   16 +-
+ .../llm/api/gemini-llm-wire-contract.test.ts       |   25 +
+ .../audio/api/gemini-audio-client.test.ts          |  365 +-
+ .../multimedia/audio/audio-client-factory.test.ts  |   99 +-
+ .../tests/unit/utils/gemini-model-mapping.test.ts  |   36 +-
+ autobyteus-web/AGENTS.md                           |    4 +-
+ .../agentInput/AgentUserInputTextArea.vue          |    6 +-
+ ...tUserInputTextArea.focusedInterrupt.e2e.spec.ts |    1 +
+ .../AgentUserInputTextArea.runMentions.spec.ts     |    2 +-
+ .../__tests__/AgentUserInputTextArea.spec.ts       |    3 +-
+ .../__tests__/TeamComposerPublication.spec.ts      |    2 +-
+ autobyteus-web/components/chat/ChatComposer.vue    |    6 +-
+ .../components/projects/ProjectDetail.vue          |   83 +-
+ .../components/projects/ProjectEditor.vue          |  124 +
+ .../components/projects/ProjectFormDialog.vue      |  157 -
+ .../components/projects/ProjectTaskBoard.vue       |  200 +-
+ .../components/projects/ProjectTaskCard.vue        |   24 -
+ .../components/projects/ProjectTaskDetail.vue      |   56 +
+ .../components/projects/ProjectTaskDialog.vue      |  224 --
+ .../components/projects/ProjectTaskDraftEditor.vue |   50 +
+ .../components/projects/ProjectTaskEditor.vue      |   23 +
+ .../components/projects/ProjectTaskRow.vue         |   27 +
+ .../components/projects/ProjectWorkspaceEntry.vue  |   29 +
+ .../projects/ProjectWorkspaceLinkDialog.vue        |  171 -
+ .../components/projects/ProjectWorkspacesPanel.vue |   23 +-
+ .../components/projects/ProjectsList.vue           |   15 +-
+ .../components/projects/TaskContextFiles.vue       |   56 +
+ .../projects/TaskDescriptionComposer.vue           |   64 +
+ .../projects/__tests__/ProjectDetail.spec.ts       |   20 +-
+ .../projects/__tests__/ProjectFormDialog.spec.ts   |  115 -
+ .../projects/__tests__/ProjectTaskBoard.spec.ts    |   23 +-
+ .../projects/__tests__/ProjectTaskCard.spec.ts     |   37 -
+ .../projects/__tests__/ProjectTaskDialog.spec.ts   |  161 -
+ .../ProjectWorkspaceLinkDialog.keyboard.spec.ts    |  155 -
+ .../__tests__/ProjectWorkspaceLinkDialog.spec.ts   |  156 -
+ .../projects/__tests__/ProjectsList.spec.ts        |    8 +-
+ .../__tests__/VoiceInputExtensionCard.spec.ts      |    2 +-
+ .../settings/mediaDefaultModelSettings.ts          |    2 +-
+ .../VoiceInputButton.vue                           |   37 +-
+ .../projects/__tests__/useProjectNotice.spec.ts    |   28 +
+ .../projects/__tests__/useProjectTaskDraft.spec.ts |   90 +
+ .../composables/projects/useProjectNotice.ts       |   19 +
+ .../composables/projects/useProjectTaskDraft.ts    |   79 +
+ .../composables/projects/useProjectTaskPage.ts     |   24 +
+ .../voiceInput/useComposerVoiceTarget.ts           |   20 +
+ autobyteus-web/docs/electron_packaging.md          |   61 +-
+ autobyteus-web/docs/projects.md                    |  457 ++-
+ .../__tests__/managedExtensionService.spec.ts      |   17 +-
+ autobyteus-web/graphql/queries/projectQueries.ts   |    1 +
+ .../graphql/queries/projectTaskQueries.ts          |    1 +
+ .../localization/messages/en/projects.ts           |  120 +-
+ .../localization/messages/en/settings.ts           |    4 +
+ .../localization/messages/zh-CN/projects.ts        |  120 +-
+ .../localization/messages/zh-CN/settings.ts        |    4 +
+ autobyteus-web/package.json                        |    2 +-
+ autobyteus-web/pages/projects/[id].vue             |   14 -
+ autobyteus-web/pages/projects/[id]/edit.vue        |    6 +
+ autobyteus-web/pages/projects/[id]/index.vue       |    6 +
+ .../pages/projects/[id]/tasks/[taskId]/edit.vue    |    6 +
+ .../pages/projects/[id]/tasks/[taskId]/index.vue   |    6 +
+ autobyteus-web/pages/projects/[id]/tasks/new.vue   |    6 +
+ autobyteus-web/pages/projects/new.vue              |    4 +
+ .../services/projects/projectTaskContextClient.ts  |   48 +
+ .../stores/__tests__/projectStore.spec.ts          |   15 +-
+ .../stores/__tests__/projectTaskStore.spec.ts      |   79 +-
+ .../stores/__tests__/voiceInputStore.spec.ts       |   89 +-
+ autobyteus-web/stores/projectStore.ts              |   83 +-
+ autobyteus-web/stores/projectTaskStore.ts          |  265 +-
+ autobyteus-web/stores/voiceInputStore.ts           |  137 +-
+ autobyteus-web/stores/workspace.ts                 |   10 +-
+ .../tests/e2e/projects-feature-probe.mjs           | 1962 ++--------
+ .../voice-input-extension.integration.test.ts      |   44 +-
+ autobyteus-web/types/project.ts                    |    6 +
+ autobyteus-web/types/projectWorkspaceDraft.ts      |    2 +
+ autobyteus-web/types/voiceInput.ts                 |   56 +
+ pnpm-lock.yaml                                     |   50 +-
+ test-support/live-e2e/live-e2e-audio-assertions.ts |   11 +
+ test-support/live-e2e/live-e2e-harness.ts          |   14 +-
+ test-support/live-e2e/live-e2e-scenarios.mjs       |    9 +-
+ .../api-e2e-coverage-investigation.md              |  147 +
+ .../api-e2e-execution-coverage-report.md           |   35 +
+ .../api-e2e-revision-record.md                     |   57 +
+ .../api-e2e-test-case-ledger.md                    |  165 +
+ .../api-e2e-test-review-report.md                  |   50 +
+ .../architecture-review-revision-record.md         |   51 +
+ .../gemini-38-tts-upgrade/code-review-report.md    |  168 +
+ .../code-review-revision-record.md                 |  210 ++
+ .../cumulative-package-manifest.md                 |   38 +
+ .../delivery-evidence/checks.md                    |   14 +
+ .../delivery-evidence/final-integration.log        | 1414 +++++++
+ .../delivery-evidence/isolated-cleanup.json        |   15 +
+ .../delivery-evidence/user-verification.md         |   12 +
+ .../delivery-revision-record.md                    |  105 +
+ .../gemini-38-tts-upgrade/design-review-report.md  |  221 ++
+ tickets/done/gemini-38-tts-upgrade/design-spec.md  |  168 +
+ .../done/gemini-38-tts-upgrade/docs-sync-report.md |   60 +
+ .../done/gemini-38-tts-upgrade/handoff-summary.md  |   17 +
+ .../implementation-handoff.md                      |  141 +
+ .../implementation-revision-record.md              |   73 +
+ .../gemini-38-tts-upgrade/investigation-notes.md   |  186 +
+ .../release-deployment-report.md                   |   37 +
+ .../done/gemini-38-tts-upgrade/release-notes.md    |   13 +
+ .../done/gemini-38-tts-upgrade/requirements-doc.md |  113 +
+ .../solution-access-update-sr008.md                |   24 +
+ .../solution-blocker-sr007.md                      |   35 +
+ .../solution-current-key-probe-sr014.md            |   20 +
+ .../solution-current-key-recheck-sr013.md          |   23 +
+ .../solution-handoff-sr006.md                      |   38 +
+ .../done/gemini-38-tts-upgrade/solution-handoff.md |   34 +
+ .../gemini-38-tts-upgrade/solution-hold-sr010.md   |   24 +
+ .../solution-revision-record.md                    |  172 +
+ .../solution-validation-update-sr012.md            |   19 +
+ .../solution-vertex-recheck-sr009.md               |   25 +
+ .../solution-vertex-recheck-sr011.md               |   24 +
+ .../api-e2e-coverage-investigation.md              |  115 +
+ .../api-e2e-execution-coverage-report.md           |   95 +
+ .../api-e2e-live-evidence.log                      |   33 +
+ .../api-e2e-live-probe-source.txt                  |  152 +
+ .../api-e2e-revision-record.md                     |   37 +
+ .../api-e2e-test-case-ledger.md                    |   50 +
+ .../api-e2e-test-review-report.md                  |   63 +
+ .../architecture-pass-notification-archrev001.md   |   16 +
+ .../architecture-pass-notification-archrev002.md   |   19 +
+ .../architecture-review-revision-record.md         |   55 +
+ .../code-review-report.md                          |  220 ++
+ .../code-review-revision-record.md                 |   60 +
+ .../cumulative-package-manifest.md                 |   91 +
+ .../delivery-evidence/archive-hygiene.md           |    3 +
+ .../delivery-evidence/checks.md                    |   26 +
+ .../delivery-evidence/doc-consistency.log          |    1 +
+ .../delivery-evidence/finalization-receipt.json    |   22 +
+ .../delivery-evidence/log-hygiene.md               |    5 +
+ .../delivery-evidence/post-integration.log         | 1350 +++++++
+ .../delivery-evidence/publication-initial.json     |   42 +
+ .../delivery-evidence/release-branch-push.log      |    6 +
+ .../delivery-evidence/release-helper.log           |   20 +
+ .../delivery-evidence/release-log-hygiene.json     |   44 +
+ .../delivery-evidence/release-preflight.md         |   32 +
+ .../delivery-evidence/release-tag-push.log         |    2 +
+ .../delivery-evidence/target-new-merge.log         |  102 +
+ .../delivery-evidence/target-new-push.log          |    6 +
+ .../delivery-evidence/target-old-merge.log         |  203 ++
+ .../delivery-evidence/target-old-push.log          |    6 +
+ .../delivery-evidence/user-verification.md         |   12 +
+ .../delivery-revision-record.md                    |   65 +
+ .../dependency-merge-conflict-ir001.patch          |   52 +
+ .../design-review-report.md                        |  307 ++
+ .../gemini-tts-voice-schema-audit/design-spec.md   |  309 ++
+ .../docs-sync-report.md                            |   60 +
+ .../generate-speech-schema.json                    |  110 +
+ .../handoff-summary.md                             |   17 +
+ .../implementation-base-blocker-ir001.md           |   35 +
+ .../implementation-base-validation-ir002.md        |   39 +
+ .../implementation-handoff.md                      |  124 +
+ .../implementation-revision-record.md              |   50 +
+ .../investigation-notes.md                         |  184 +
+ .../release-deployment-report.md                   |   37 +
+ .../gemini-tts-voice-schema-audit/release-notes.md |   13 +
+ .../requirements-doc.md                            |   56 +
+ .../solution-base-clarification-sr014.md           |   40 +
+ .../solution-base-recovery-sr015.md                |  116 +
+ .../solution-handoff-sr013.md                      |   54 +
+ .../solution-proposal-sr004.md                     |   28 +
+ .../solution-revision-record.md                    |  129 +
+ .../speech-value-recommendation-sr011.md           |   29 +
+ .../test-vault-runtime-explanation-sr007.md        |   33 +
+ .../test-vault-usability-assessment-sr006.md       |   18 +
+ .../voice-capability-clarification-sr009.md        |   19 +
+ .../voice-feature-probe-sr010.md                   |   82 +
+ .../voice-provider-probe-sr005.md                  |   23 +
+ .../voice-schema-audit-report.md                   |   55 +
+ .../voice-scope-update-sr008.md                    |   17 +
+ .../api-e2e-browser-1.log                          |   28 +
+ .../api-e2e-browser-1/PT-E2E-001-pass.png          |  Bin 0 -> 46938 bytes
+ .../api-e2e-browser-1/PT-E2E-002-pass.png          |  Bin 0 -> 45824 bytes
+ .../api-e2e-browser-1/PT-E2E-003-pass.png          |  Bin 0 -> 88266 bytes
+ .../api-e2e-browser-1/PT-E2E-004-pass.png          |  Bin 0 -> 95196 bytes
+ .../api-e2e-browser-1/PT-E2E-005-pass.png          |  Bin 0 -> 55245 bytes
+ .../api-e2e-browser-1/PT-E2E-006-pass.png          |  Bin 0 -> 54556 bytes
+ .../api-e2e-browser-1/PT-E2E-007-failure.png       |  Bin 0 -> 54092 bytes
+ .../api-e2e-browser-1/PT-E2E-008-failure.png       |  Bin 0 -> 54034 bytes
+ .../api-e2e-browser-1/PT-E2E-009-failure.png       |  Bin 0 -> 54034 bytes
+ .../api-e2e-browser-1/PT-E2E-010-pass.png          |  Bin 0 -> 55921 bytes
+ .../api-e2e-browser-1/PT-E2E-011-failure.png       |  Bin 0 -> 54069 bytes
+ .../api-e2e-browser-1/external-tool.log            |   34 +
+ .../api-e2e-browser-1/frontend.log                 |  166 +
+ .../api-e2e-browser-1/node-a-backend.log           |  274 ++
+ .../api-e2e-browser-1/node-a-migrate.log           |   91 +
+ .../api-e2e-browser-1/node-b-backend.log           |  129 +
+ .../api-e2e-browser-1/node-b-migrate.log           |   91 +
+ .../api-e2e-browser-1/result.json                  |  180 +
+ .../api-e2e-browser-2.log                          |   38 +
+ .../api-e2e-browser-2/PT-E2E-001-pass.png          |  Bin 0 -> 46938 bytes
+ .../api-e2e-browser-2/PT-E2E-002-pass.png          |  Bin 0 -> 45824 bytes
+ .../api-e2e-browser-2/PT-E2E-003-pass.png          |  Bin 0 -> 87652 bytes
+ .../api-e2e-browser-2/PT-E2E-004-pass.png          |  Bin 0 -> 93825 bytes
+ .../api-e2e-browser-2/PT-E2E-005-pass.png          |  Bin 0 -> 55419 bytes
+ .../api-e2e-browser-2/PT-E2E-006-pass.png          |  Bin 0 -> 53890 bytes
+ .../api-e2e-browser-2/PT-E2E-007-pass.png          |  Bin 0 -> 54066 bytes
+ .../api-e2e-browser-2/PT-E2E-008-pass.png          |  Bin 0 -> 54947 bytes
+ .../api-e2e-browser-2/PT-E2E-009-failure.png       |  Bin 0 -> 59376 bytes
+ .../api-e2e-browser-2/PT-E2E-010-pass.png          |  Bin 0 -> 59390 bytes
+ .../api-e2e-browser-2/PT-E2E-011-pass.png          |  Bin 0 -> 50960 bytes
+ .../api-e2e-browser-2/PT-E2E-012-pass.png          |  Bin 0 -> 49004 bytes
+ .../api-e2e-browser-2/PT-E2E-013-failure.png       |  Bin 0 -> 70072 bytes
+ .../api-e2e-browser-2/PT-E2E-014-failure.png       |  Bin 0 -> 56044 bytes
+ .../api-e2e-browser-2/PT-E2E-015-failure.png       |  Bin 0 -> 49629 bytes
+ .../api-e2e-browser-2/PT-E2E-016-pass.png          |  Bin 0 -> 61293 bytes
+ .../api-e2e-browser-2/external-tool-1.json         |    1 +
+ .../api-e2e-browser-2/external-tool-2.json         |    1 +
+ .../api-e2e-browser-2/external-tool-3.json         |    1 +
+ .../api-e2e-browser-2/external-tool.log            |   21 +
+ .../api-e2e-browser-2/frontend.log                 |   87 +
+ .../api-e2e-browser-2/node-a-backend.log           |  301 ++
+ .../api-e2e-browser-2/node-a-migrate.log           |   91 +
+ .../api-e2e-browser-2/node-b-backend.log           |  129 +
+ .../api-e2e-browser-2/node-b-migrate.log           |   91 +
+ .../api-e2e-browser-2/result.json                  |  230 ++
+ .../api-e2e-browser-accepted.log                   |   37 +
+ .../api-e2e-browser-accepted/PT-E2E-001-pass.png   |  Bin 0 -> 46938 bytes
+ .../api-e2e-browser-accepted/PT-E2E-002-pass.png   |  Bin 0 -> 45824 bytes
+ .../api-e2e-browser-accepted/PT-E2E-003-pass.png   |  Bin 0 -> 87827 bytes
+ .../api-e2e-browser-accepted/PT-E2E-004-pass.png   |  Bin 0 -> 94123 bytes
+ .../api-e2e-browser-accepted/PT-E2E-005-pass.png   |  Bin 0 -> 55245 bytes
+ .../api-e2e-browser-accepted/PT-E2E-006-pass.png   |  Bin 0 -> 53890 bytes
+ .../api-e2e-browser-accepted/PT-E2E-007-pass.png   |  Bin 0 -> 54066 bytes
+ .../api-e2e-browser-accepted/PT-E2E-008-pass.png   |  Bin 0 -> 54947 bytes
+ .../api-e2e-browser-accepted/PT-E2E-009-pass.png   |  Bin 0 -> 59300 bytes
+ .../api-e2e-browser-accepted/PT-E2E-010-pass.png   |  Bin 0 -> 59488 bytes
+ .../api-e2e-browser-accepted/PT-E2E-011-pass.png   |  Bin 0 -> 50960 bytes
+ .../api-e2e-browser-accepted/PT-E2E-012-pass.png   |  Bin 0 -> 49004 bytes
+ .../api-e2e-browser-accepted/PT-E2E-013-pass.png   |  Bin 0 -> 70541 bytes
+ .../api-e2e-browser-accepted/PT-E2E-014-pass.png   |  Bin 0 -> 50960 bytes
+ .../api-e2e-browser-accepted/PT-E2E-015-pass.png   |  Bin 0 -> 50638 bytes
+ .../api-e2e-browser-accepted/PT-E2E-016-pass.png   |  Bin 0 -> 61293 bytes
+ .../continuous-board-390.png                       |  Bin 0 -> 38609 bytes
+ .../api-e2e-browser-accepted/external-tool-1.json  |    1 +
+ .../api-e2e-browser-accepted/external-tool-2.json  |    1 +
+ .../api-e2e-browser-accepted/external-tool-3.json  |    1 +
+ .../api-e2e-browser-accepted/external-tool.log     |   21 +
+ .../api-e2e-browser-accepted/frontend.log          |   21 +
+ .../api-e2e-browser-accepted/node-a-backend.log    |  304 ++
+ .../api-e2e-browser-accepted/node-a-migrate.log    |   91 +
+ .../api-e2e-browser-accepted/node-b-backend.log    |  129 +
+ .../api-e2e-browser-accepted/node-b-migrate.log    |   91 +
+ .../api-e2e-browser-accepted/ordinary-task-390.png |  Bin 0 -> 50385 bytes
+ .../api-e2e-browser-accepted/result.json           |  251 ++
+ .../api-e2e-browser-final.log                      |   37 +
+ .../api-e2e-browser-final/PT-E2E-001-pass.png      |  Bin 0 -> 46938 bytes
+ .../api-e2e-browser-final/PT-E2E-002-pass.png      |  Bin 0 -> 45824 bytes
+ .../api-e2e-browser-final/PT-E2E-003-pass.png      |  Bin 0 -> 87744 bytes
+ .../api-e2e-browser-final/PT-E2E-004-pass.png      |  Bin 0 -> 94221 bytes
+ .../api-e2e-browser-final/PT-E2E-005-pass.png      |  Bin 0 -> 55419 bytes
+ .../api-e2e-browser-final/PT-E2E-006-pass.png      |  Bin 0 -> 53890 bytes
+ .../api-e2e-browser-final/PT-E2E-007-pass.png      |  Bin 0 -> 54066 bytes
+ .../api-e2e-browser-final/PT-E2E-008-pass.png      |  Bin 0 -> 54947 bytes
+ .../api-e2e-browser-final/PT-E2E-009-pass.png      |  Bin 0 -> 59345 bytes
+ .../api-e2e-browser-final/PT-E2E-010-pass.png      |  Bin 0 -> 59473 bytes
+ .../api-e2e-browser-final/PT-E2E-011-pass.png      |  Bin 0 -> 50960 bytes
+ .../api-e2e-browser-final/PT-E2E-012-pass.png      |  Bin 0 -> 49004 bytes
+ .../api-e2e-browser-final/PT-E2E-013-pass.png      |  Bin 0 -> 70541 bytes
+ .../api-e2e-browser-final/PT-E2E-014-pass.png      |  Bin 0 -> 50977 bytes
+ .../api-e2e-browser-final/PT-E2E-015-pass.png      |  Bin 0 -> 49629 bytes
+ .../api-e2e-browser-final/PT-E2E-016-pass.png      |  Bin 0 -> 63988 bytes
+ .../api-e2e-browser-final/continuous-board-390.png |  Bin 0 -> 38609 bytes
+ .../api-e2e-browser-final/external-tool-1.json     |    1 +
+ .../api-e2e-browser-final/external-tool-2.json     |    1 +
+ .../api-e2e-browser-final/external-tool-3.json     |    1 +
+ .../api-e2e-browser-final/external-tool.log        |   21 +
+ .../api-e2e-browser-final/frontend.log             |   21 +
+ .../api-e2e-browser-final/node-a-backend.log       |  301 ++
+ .../api-e2e-browser-final/node-a-migrate.log       |   91 +
+ .../api-e2e-browser-final/node-b-backend.log       |  129 +
+ .../api-e2e-browser-final/node-b-migrate.log       |   91 +
+ .../api-e2e-browser-final/ordinary-task-390.png    |  Bin 0 -> 50385 bytes
+ .../api-e2e-browser-final/result.json              |  251 ++
+ .../api-e2e-browser-supported.log                  |   38 +
+ .../api-e2e-browser-supported/PT-E2E-001-pass.png  |  Bin 0 -> 46757 bytes
+ .../api-e2e-browser-supported/PT-E2E-002-pass.png  |  Bin 0 -> 45824 bytes
+ .../api-e2e-browser-supported/PT-E2E-003-pass.png  |  Bin 0 -> 88060 bytes
+ .../api-e2e-browser-supported/PT-E2E-004-pass.png  |  Bin 0 -> 94814 bytes
+ .../api-e2e-browser-supported/PT-E2E-005-pass.png  |  Bin 0 -> 55245 bytes
+ .../api-e2e-browser-supported/PT-E2E-006-pass.png  |  Bin 0 -> 53890 bytes
+ .../api-e2e-browser-supported/PT-E2E-007-pass.png  |  Bin 0 -> 54066 bytes
+ .../api-e2e-browser-supported/PT-E2E-008-pass.png  |  Bin 0 -> 54947 bytes
+ .../api-e2e-browser-supported/PT-E2E-009-pass.png  |  Bin 0 -> 67200 bytes
+ .../api-e2e-browser-supported/PT-E2E-010-pass.png  |  Bin 0 -> 59436 bytes
+ .../api-e2e-browser-supported/PT-E2E-011-pass.png  |  Bin 0 -> 50960 bytes
+ .../api-e2e-browser-supported/PT-E2E-012-pass.png  |  Bin 0 -> 49004 bytes
+ .../api-e2e-browser-supported/PT-E2E-013-pass.png  |  Bin 0 -> 70541 bytes
+ .../api-e2e-browser-supported/PT-E2E-014-pass.png  |  Bin 0 -> 50960 bytes
+ .../PT-E2E-015-failure.png                         |  Bin 0 -> 112049 bytes
+ .../api-e2e-browser-supported/PT-E2E-016-pass.png  |  Bin 0 -> 61293 bytes
+ .../continuous-board-390.png                       |  Bin 0 -> 38609 bytes
+ .../api-e2e-browser-supported/external-tool-1.json |    1 +
+ .../api-e2e-browser-supported/external-tool-2.json |    1 +
+ .../api-e2e-browser-supported/external-tool-3.json |    1 +
+ .../api-e2e-browser-supported/external-tool.log    |   21 +
+ .../api-e2e-browser-supported/frontend.log         |   21 +
+ .../api-e2e-browser-supported/node-a-backend.log   |  301 ++
+ .../api-e2e-browser-supported/node-a-migrate.log   |   91 +
+ .../api-e2e-browser-supported/node-b-backend.log   |  129 +
+ .../api-e2e-browser-supported/node-b-migrate.log   |   91 +
+ .../ordinary-task-390.png                          |  Bin 0 -> 50385 bytes
+ .../api-e2e-browser-supported/result.json          |  250 ++
+ .../api-e2e-browser-verified.log                   |   38 +
+ .../api-e2e-browser-verified/PT-E2E-001-pass.png   |  Bin 0 -> 46938 bytes
+ .../api-e2e-browser-verified/PT-E2E-002-pass.png   |  Bin 0 -> 45824 bytes
+ .../api-e2e-browser-verified/PT-E2E-003-pass.png   |  Bin 0 -> 88164 bytes
+ .../api-e2e-browser-verified/PT-E2E-004-pass.png   |  Bin 0 -> 94911 bytes
+ .../api-e2e-browser-verified/PT-E2E-005-pass.png   |  Bin 0 -> 55419 bytes
+ .../api-e2e-browser-verified/PT-E2E-006-pass.png   |  Bin 0 -> 53890 bytes
+ .../api-e2e-browser-verified/PT-E2E-007-pass.png   |  Bin 0 -> 54066 bytes
+ .../api-e2e-browser-verified/PT-E2E-008-pass.png   |  Bin 0 -> 54947 bytes
+ .../api-e2e-browser-verified/PT-E2E-009-pass.png   |  Bin 0 -> 67200 bytes
+ .../api-e2e-browser-verified/PT-E2E-010-pass.png   |  Bin 0 -> 59436 bytes
+ .../api-e2e-browser-verified/PT-E2E-011-pass.png   |  Bin 0 -> 50960 bytes
+ .../api-e2e-browser-verified/PT-E2E-012-pass.png   |  Bin 0 -> 49004 bytes
+ .../api-e2e-browser-verified/PT-E2E-013-pass.png   |  Bin 0 -> 70541 bytes
+ .../api-e2e-browser-verified/PT-E2E-014-pass.png   |  Bin 0 -> 50977 bytes
+ .../PT-E2E-015-failure.png                         |  Bin 0 -> 112049 bytes
+ .../api-e2e-browser-verified/PT-E2E-016-pass.png   |  Bin 0 -> 61293 bytes
+ .../continuous-board-390.png                       |  Bin 0 -> 38609 bytes
+ .../api-e2e-browser-verified/external-tool-1.json  |    1 +
+ .../api-e2e-browser-verified/external-tool-2.json  |    1 +
+ .../api-e2e-browser-verified/external-tool-3.json  |    1 +
+ .../api-e2e-browser-verified/external-tool.log     |   21 +
+ .../api-e2e-browser-verified/frontend.log          |   21 +
+ .../api-e2e-browser-verified/node-a-backend.log    |  301 ++
+ .../api-e2e-browser-verified/node-a-migrate.log    |   91 +
+ .../api-e2e-browser-verified/node-b-backend.log    |  129 +
+ .../api-e2e-browser-verified/node-b-migrate.log    |   91 +
+ .../api-e2e-browser-verified/ordinary-task-390.png |  Bin 0 -> 50385 bytes
+ .../api-e2e-browser-verified/result.json           |  250 ++
+ .../api-e2e-coverage-investigation.md              |  207 ++
+ .../api-e2e-desktop-observations.json              |   52 +
+ .../api-e2e-desktop-tool-refresh.json              |    1 +
+ .../api-e2e-desktop-tool-refresh.log               |    7 +
+ .../api-e2e-desktop-tool-write.json                |    1 +
+ .../api-e2e-desktop-tool-write.log                 |    7 +
+ .../api-e2e-durable-test-diff.patch                | 2336 ++++++++++++
+ .../api-e2e-electron-baseline.log                  |   23 +
+ .../api-e2e-electron-final.log                     |   23 +
+ .../api-e2e-electron-rerun.log                     |   23 +
+ .../api-e2e-electron-unit.log                      |   42 +
+ .../api-e2e-execution-coverage-report.md           |  139 +
+ .../api-e2e-http-final.log                         |  492 +++
+ .../api-e2e-http-rerun.log                         |  465 +++
+ .../api-e2e-http.log                               |  502 +++
+ .../api-e2e-isolated-build.log                     |  640 ++++
+ .../api-e2e-isolated-list-after-stop.json          |    9 +
+ .../api-e2e-isolated-start.json                    |   20 +
+ .../api-e2e-isolated-stop.json                     |   15 +
+ .../api-e2e-package-inventory.json                 | 2708 ++++++++++++++
+ .../api-e2e-revision-record.md                     |   76 +
+ .../api-owned-test-delta.patch                     |   13 +
+ .../api-owned-test-preservation.json               |   15 +
+ .../api-e2e-round-3-evidence/artifact-hygiene.json |   82 +
+ .../cleanup-integrity.json                         |  148 +
+ .../api-e2e-round-3-evidence/commands.json         |  106 +
+ .../api-e2e-round-3-evidence/composer-browser.log  |    8 +
+ .../composer-browser/empty-1024.png                |  Bin 0 -> 8158 bytes
+ .../composer-browser/empty-1512.png                |  Bin 0 -> 8370 bytes
+ .../composer-browser/evidence.json                 |  498 +++
+ .../composer-browser/forced-colors-1024.png        |  Bin 0 -> 17147 bytes
+ .../composer-browser/long-1024.png                 |  Bin 0 -> 23657 bytes
+ .../composer-browser/long-1512.png                 |  Bin 0 -> 24204 bytes
+ .../composer-browser/narrow-zh-300.png             |  Bin 0 -> 18535 bytes
+ .../composer-browser/nuxt.log                      |   20 +
+ .../composer-browser/selected-1024.png             |  Bin 0 -> 9446 bytes
+ .../composer-browser/selected-1512.png             |  Bin 0 -> 9660 bytes
+ .../composer-browser/selected-zh-1024.png          |  Bin 0 -> 9351 bytes
+ .../composer-callers-baseline.log                  | 1419 ++++++++
+ .../composer-callers-rerun.log                     |   44 +
+ .../electron-regression.log                        |   22 +
+ .../api-e2e-round-3-evidence/entry-state.json      |   92 +
+ .../api-e2e-round-3-evidence/environment.json      |   13 +
+ .../api-e2e-round-3-evidence/handoff-rule.json     |   25 +
+ .../incoming-inventory-check.json                  | 2775 ++++++++++++++
+ .../api-e2e-round-3-evidence/mentions-narrow.log   |   25 +
+ .../api-e2e-round-3-evidence/projects-browser.log  |   37 +
+ .../projects-browser/PT-E2E-001-pass.png           |  Bin 0 -> 46757 bytes
+ .../projects-browser/PT-E2E-002-pass.png           |  Bin 0 -> 45824 bytes
+ .../projects-browser/PT-E2E-003-pass.png           |  Bin 0 -> 88041 bytes
+ .../projects-browser/PT-E2E-004-pass.png           |  Bin 0 -> 94453 bytes
+ .../projects-browser/PT-E2E-005-pass.png           |  Bin 0 -> 55419 bytes
+ .../projects-browser/PT-E2E-006-pass.png           |  Bin 0 -> 53890 bytes
+ .../projects-browser/PT-E2E-007-pass.png           |  Bin 0 -> 54066 bytes
+ .../projects-browser/PT-E2E-008-pass.png           |  Bin 0 -> 54947 bytes
+ .../projects-browser/PT-E2E-009-pass.png           |  Bin 0 -> 67200 bytes
+ .../projects-browser/PT-E2E-010-pass.png           |  Bin 0 -> 59436 bytes
+ .../projects-browser/PT-E2E-011-pass.png           |  Bin 0 -> 50960 bytes
+ .../projects-browser/PT-E2E-012-pass.png           |  Bin 0 -> 49004 bytes
+ .../projects-browser/PT-E2E-013-pass.png           |  Bin 0 -> 70541 bytes
+ .../projects-browser/PT-E2E-014-pass.png           |  Bin 0 -> 50960 bytes
+ .../projects-browser/PT-E2E-015-pass.png           |  Bin 0 -> 50675 bytes
+ .../projects-browser/PT-E2E-016-pass.png           |  Bin 0 -> 61293 bytes
+ .../projects-browser/continuous-board-390.png      |  Bin 0 -> 38609 bytes
+ .../projects-browser/external-tool-1.json          |    1 +
+ .../projects-browser/external-tool-2.json          |    1 +
+ .../projects-browser/external-tool-3.json          |    1 +
+ .../projects-browser/external-tool.log             |   21 +
+ .../projects-browser/frontend.log                  |   26 +
+ .../projects-browser/node-a-backend.log            |  306 ++
+ .../projects-browser/node-a-migrate.log            |   91 +
+ .../projects-browser/node-b-backend.log            |  129 +
+ .../projects-browser/node-b-migrate.log            |   91 +
+ .../projects-browser/ordinary-task-390.png         |  Bin 0 -> 50385 bytes
+ .../projects-browser/result.json                   |  251 ++
+ .../api-e2e-round-3-evidence/renderer-expanded.log |  127 +
+ .../renderer-final-135.log                         |  154 +
+ .../api-e2e-round-3-evidence/run-command.py        |   25 +
+ .../api-e2e-round-3-evidence/server-build.log      |   35 +
+ .../server-integrated-serial.log                   |  809 +++++
+ .../api-e2e-round-3-evidence/server-integrated.log |  811 +++++
+ .../api-e2e-round-3-evidence/shared-prepare.log    |   12 +
+ .../static-verification.json                       |   19 +
+ .../api-e2e-round-3-evidence/test-checkpoint.txt   |    1 +
+ .../api-e2e-round-3-evidence/test-delta.patch      |   54 +
+ .../voice-fixture-narrow.log                       |   31 +
+ .../api-e2e-server-baseline.log                    |  663 ++++
+ .../api-e2e-server-build.log                       |   35 +
+ .../api-e2e-server-final.log                       |  808 ++++
+ .../api-e2e-shared-final.log                       |   12 +
+ .../api-e2e-shared-prepare.log                     |   12 +
+ .../api-e2e-test-case-ledger.md                    |  139 +
+ .../api-e2e-test-checkpoint.txt                    |    1 +
+ .../api-e2e-test-review-report.md                  |   69 +
+ .../api-e2e-typecheck-baseline-build.log           |   20 +
+ .../api-e2e-typecheck-baseline-prepare.log         |    4 +
+ .../api-e2e-typecheck-baseline-root.txt            |    1 +
+ .../api-e2e-typecheck-baseline-setup.log           |   19 +
+ .../api-e2e-typecheck-build-relocation.json        |   16 +
+ .../api-e2e-typecheck-comparison.json              |   82 +
+ .../api-e2e-user-voice-validation-waiver.md        |   16 +
+ .../api-e2e-web-final-prepare.log                  |    4 +
+ .../api-e2e-web-guards.log                         |   10 +
+ .../api-e2e-web-typecheck-baseline.log             |  581 +++
+ .../api-e2e-web-typecheck-final-clean.log          |  580 +++
+ .../api-e2e-web-typecheck-final.log                |  100 +
+ .../api-e2e-web-typecheck.log                      |  580 +++
+ .../api-e2e-web-unit.log                           |  119 +
+ .../architecture-clarification-sr-015.md           |   77 +
+ .../architecture-pass-receipt-sr-015.md            |   21 +
+ .../architecture-review-revision-record.md         |   57 +
+ .../code-review-inventory-check.json               |   24 +
+ .../code-review-ir-002-evidence/commands.json      |   23 +
+ .../renderer-expanded.log                          |  127 +
+ .../code-review-ir-002-evidence/static-review.json |   48 +
+ .../code-review-project-boundaries.log             |   97 +
+ .../code-review-report.md                          |  249 ++
+ .../code-review-revision-record.md                 |  115 +
+ .../code-review-server-typecheck.log               |    1 +
+ .../code-review-server-unit.log                    |  402 ++
+ .../code-review-shared-prepare.log                 |   12 +
+ .../code-review-source-audit.md                    |   91 +
+ .../code-review-web-unit.log                       |  105 +
+ .../delivery-evidence/artifact-check.json          |    8 +
+ .../delivery-evidence/commands.json                |   16 +
+ .../generated-output-cleanup.json                  |   16 +
+ .../delivery-evidence/handoff-receipt.json         |   10 +
+ .../incoming-inventory-check.json                  |   14 +
+ .../delivery-evidence/integration-refresh.json     |   32 +
+ .../delivery-evidence/renderer-integrated.log      |  394 ++
+ .../delivery-evidence/server-integrated.log        |  808 ++++
+ .../delivery-evidence/shared-prepare.log           |   12 +
+ .../voice-fixture-isolated-rerun.log               |   31 +
+ .../delivery-local-fix-request.md                  |   37 +
+ .../delivery-package-inventory.json                | 2846 +++++++++++++++
+ .../delivery-revision-record.md                    |   40 +
+ .../canonical-docs-diff.patch                      | 1055 ++++++
+ .../current-base-refresh.json                      |   27 +
+ .../docs-artifact-check.json                       |   23 +
+ .../handoff-rule-disposition.json                  |   21 +
+ .../incoming-inventory-check.json                  |   21 +
+ .../prior-delivery-result-snapshot.json            |  101 +
+ .../verification-request.json                      |   21 +
+ .../artifact-relocation.json                       |    8 +
+ .../artifact-whitespace-check.json                 |    6 +
+ .../delivery-round-3-evidence/commands.json        |   59 +
+ .../dr002-authoritative-snapshot.json              |   22 +
+ .../delivery-round-3-evidence/electron-current.log |   23 +
+ .../generated-output-cleanup.json                  |    7 +
+ .../main-workspace-preservation.json               |    6 +
+ .../rebuild-delivery-inventory.py                  |   20 +
+ .../delivery-round-3-evidence/renderer-current.log |  155 +
+ .../delivery-round-3-evidence/run-checks.py        |   13 +
+ .../delivery-round-3-evidence/server-build.log     |   35 +
+ .../server-current-serial.log                      |  812 +++++
+ .../delivery-round-3-evidence/shared-prepare.log   |   12 +
+ .../upstream-agy-smoke-corrected.log               |   99 +
+ .../upstream-agy-smoke.log                         |    9 +
+ .../user-verification-and-refresh.json             |   18 +
+ .../design-handoff-sr-014.md                       |   67 +
+ .../design-review-report.md                        |  326 ++
+ .../design-spec.md                                 |  548 +++
+ .../docs-sync-report.md                            |   49 +
+ .../handoff-summary.md                             |   18 +
+ .../01-new-project-desktop.png                     |  Bin 0 -> 65932 bytes
+ .../02-project-required-desktop.png                |  Bin 0 -> 68133 bytes
+ .../03-created-empty-board-desktop.png             |  Bin 0 -> 53459 bytes
+ .../04-new-task-desktop.png                        |  Bin 0 -> 71938 bytes
+ .../05-task-required-desktop.png                   |  Bin 0 -> 74346 bytes
+ .../06-context-upload-desktop.png                  |  Bin 0 -> 81476 bytes
+ .../07-continuous-board-desktop.png                |  Bin 0 -> 62959 bytes
+ .../08-task-detail-files-desktop.png               |  Bin 0 -> 59039 bytes
+ .../09-image-preview-desktop.png                   |  Bin 0 -> 63290 bytes
+ .../10-task-delete-inline-desktop.png              |  Bin 0 -> 70712 bytes
+ .../11-task-actions-narrow.png                     |  Bin 0 -> 41108 bytes
+ .../12-continuous-board-narrow.png                 |  Bin 0 -> 39875 bytes
+ .../implementation-evidence/13-no-match-narrow.png |  Bin 0 -> 31589 bytes
+ .../14-task-composer-narrow.png                    |  Bin 0 -> 50784 bytes
+ .../15-project-form-narrow.png                     |  Bin 0 -> 47596 bytes
+ .../16-new-folder-narrow.png                       |  Bin 0 -> 56813 bytes
+ .../17-project-workspaces-narrow.png               |  Bin 0 -> 51653 bytes
+ .../18-refresh-filtered-narrow.png                 |  Bin 0 -> 41259 bytes
+ .../19-refresh-complete-narrow.png                 |  Bin 0 -> 46692 bytes
+ .../20-refresh-complete-desktop.png                |  Bin 0 -> 67715 bytes
+ .../21-project-delete-count-desktop.png            |  Bin 0 -> 79862 bytes
+ .../22-refresh-pending-desktop.png                 |  Bin 0 -> 71732 bytes
+ .../23-refresh-error-retains-desktop.png           |  Bin 0 -> 79404 bytes
+ .../24-board-container-single-column.png           |  Bin 0 -> 68019 bytes
+ .../25-edit-project-existing-desktop.png           |  Bin 0 -> 90369 bytes
+ .../26-edit-task-real-delta-desktop.png            |  Bin 0 -> 80202 bytes
+ .../27-task-saved-delta-desktop.png                |  Bin 0 -> 60708 bytes
+ .../preview-project-record.json                    |   27 +
+ .../render-observations.json                       |  251 ++
+ .../implementation-handoff.md                      |  133 +
+ .../implementation-install.log                     |   21 +
+ .../archive-regeneration-reproduction-source.txt   |  293 ++
+ .../archive-regeneration-reproduction.log          |   52 +
+ .../artifact-hygiene.json                          |   32 +
+ .../implementation-ir-002-evidence/commands.json   |   49 +
+ .../handoff-rule.json                              |    8 +
+ .../incoming-inventory-check.json                  | 2258 ++++++++++++
+ .../initial-state.txt                              |   13 +
+ .../renderer-expanded.log                          |  127 +
+ .../source-audit.json                              |   54 +
+ .../test-delta.patch                               |   62 +
+ .../voice-fixture-stability-1.log                  |   31 +
+ .../voice-fixture-stability-2.log                  |   31 +
+ .../voice-fixture-stability-3.log                  |   31 +
+ .../implementation-ir-002-package-inventory.json   | 2315 ++++++++++++
+ .../implementation-local-fix-ir-002.md             |   45 +
+ .../implementation-local-source-audit.md           |   77 +
+ .../implementation-localization-audit.log          |    9 +
+ .../implementation-preview-external-write.log      |   14 +
+ .../implementation-preview-final.log               |  224 ++
+ .../implementation-preview.log                     |  364 ++
+ .../implementation-rendered-check.md               |   35 +
+ .../implementation-revision-record.md              |   39 +
+ .../implementation-server-build-final.log          |   35 +
+ .../implementation-server-build.log                |   35 +
+ .../implementation-server-typecheck-final.log      |    1 +
+ .../implementation-server-typecheck.log            |    1 +
+ .../implementation-server-unit-final.log           |  402 ++
+ .../implementation-server-unit-r2.log              |  414 +++
+ .../implementation-server-unit-r3.log              |  396 ++
+ .../implementation-server-unit.log                 |  303 ++
+ .../implementation-shared-build.log                |   12 +
+ .../implementation-source-delta.tsv                |   97 +
+ .../implementation-upstream-reference-inventory.md |  133 +
+ .../implementation-web-build-final.log             |  256 ++
+ .../implementation-web-build.log                   |  256 ++
+ .../implementation-web-draft-unit.log              |   25 +
+ .../implementation-web-focus-check.log             |  282 ++
+ .../implementation-web-focus-debug.log             |   29 +
+ .../implementation-web-focus-debug2.log            |  297 ++
+ .../implementation-web-guards.log                  |   19 +
+ .../implementation-web-notice-unit.log             |   44 +
+ .../implementation-web-prepare.log                 |    4 +
+ .../implementation-web-typecheck-final.log         |  580 +++
+ .../implementation-web-typecheck-new-vue.log       |  588 +++
+ .../implementation-web-typecheck-pinned.log        |   19 +
+ .../implementation-web-typecheck-repository-ts.log |    2 +
+ .../implementation-web-typecheck.log               |   31 +
+ .../implementation-web-unit-final.log              |  105 +
+ .../implementation-web-unit-r2.log                 |  425 +++
+ .../implementation-web-unit-r3.log                 |  461 +++
+ .../implementation-web-unit-r4.log                 |   57 +
+ .../implementation-web-unit.log                    | 3842 ++++++++++++++++++++
+ .../implementation-web-voice-r3.log                |   41 +
+ .../investigation-notes.md                         |  295 ++
+ .../product-design-handoff-sr-002.md               |   74 +
+ .../product-design-handoff.md                      |  109 +
+ .../release-deployment-report.md                   |   27 +
+ .../release-notes.md                               |   44 +
+ .../requirements-approval-sr-010.md                |   11 +
+ .../requirements-approval-sr-013.md                |   11 +
+ .../requirements-doc.md                            |  293 ++
+ .../requirements-refinement-sr-003.md              |   91 +
+ .../requirements-refinement-sr-004.md              |   58 +
+ .../requirements-refinement-sr-005.md              |   39 +
+ .../requirements-refinement-sr-006.md              |   44 +
+ .../requirements-refinement-sr-007.md              |   37 +
+ .../requirements-refinement-sr-008.md              |   55 +
+ .../requirements-refinement-sr-009.md              |   40 +
+ .../requirements-refinement-sr-011.md              |   44 +
+ .../requirements-refinement-sr-012.md              |   41 +
+ .../skill-cli-feasibility.md                       |   48 +
+ .../solution-revision-record.md                    |  217 ++
+ 662 files changed, 66500 insertions(+), 4635 deletions(-)
+ create mode 100644 autobyteus-server-ts/src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.ts
+ create mode 100644 autobyteus-server-ts/src/agent-tools/project-tasks/project-task-native-tools.ts
+ create mode 100644 autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-contract.ts
+ create mode 100644 autobyteus-server-ts/src/agent-tools/project-tasks/project-task-tool-manifest.ts
+ create mode 100644 autobyteus-server-ts/src/api/rest/project-task-context-files.ts
+ create mode 100644 autobyteus-server-ts/src/config/migrations/retired-speech-model-selection.ts
+ create mode 100644 autobyteus-server-ts/src/context-files/domain/context-file-upload-policy.ts
+ create mode 100644 autobyteus-server-ts/src/context-files/services/context-file-upload-writer.ts
+ create mode 100644 autobyteus-server-ts/src/projects/context/project-task-context-layout.ts
+ create mode 100644 autobyteus-server-ts/src/projects/context/project-task-context-store.ts
+ create mode 100644 autobyteus-server-ts/src/projects/domain/project-task-context.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/fixtures/project-task-tool-writer.mjs
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/config/retired-speech-model-selection.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/context-files/context-file-upload-writer.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/secret-management/live-e2e-audio-assertions.test.ts
+ create mode 100644 autobyteus-ts/src/multimedia/audio/gemini-tts-voices.ts
+ create mode 100644 autobyteus-web/components/projects/ProjectEditor.vue
+ delete mode 100644 autobyteus-web/components/projects/ProjectFormDialog.vue
+ delete mode 100644 autobyteus-web/components/projects/ProjectTaskCard.vue
+ create mode 100644 autobyteus-web/components/projects/ProjectTaskDetail.vue
+ delete mode 100644 autobyteus-web/components/projects/ProjectTaskDialog.vue
+ create mode 100644 autobyteus-web/components/projects/ProjectTaskDraftEditor.vue
+ create mode 100644 autobyteus-web/components/projects/ProjectTaskEditor.vue
+ create mode 100644 autobyteus-web/components/projects/ProjectTaskRow.vue
+ create mode 100644 autobyteus-web/components/projects/ProjectWorkspaceEntry.vue
+ delete mode 100644 autobyteus-web/components/projects/ProjectWorkspaceLinkDialog.vue
+ create mode 100644 autobyteus-web/components/projects/TaskContextFiles.vue
+ create mode 100644 autobyteus-web/components/projects/TaskDescriptionComposer.vue
+ delete mode 100644 autobyteus-web/components/projects/__tests__/ProjectFormDialog.spec.ts
+ delete mode 100644 autobyteus-web/components/projects/__tests__/ProjectTaskCard.spec.ts
+ delete mode 100644 autobyteus-web/components/projects/__tests__/ProjectTaskDialog.spec.ts
+ delete mode 100644 autobyteus-web/components/projects/__tests__/ProjectWorkspaceLinkDialog.keyboard.spec.ts
+ delete mode 100644 autobyteus-web/components/projects/__tests__/ProjectWorkspaceLinkDialog.spec.ts
+ rename autobyteus-web/components/{agentInput => voiceInput}/VoiceInputButton.vue (53%)
+ create mode 100644 autobyteus-web/composables/projects/__tests__/useProjectNotice.spec.ts
+ create mode 100644 autobyteus-web/composables/projects/__tests__/useProjectTaskDraft.spec.ts
+ create mode 100644 autobyteus-web/composables/projects/useProjectNotice.ts
+ create mode 100644 autobyteus-web/composables/projects/useProjectTaskDraft.ts
+ create mode 100644 autobyteus-web/composables/projects/useProjectTaskPage.ts
+ create mode 100644 autobyteus-web/composables/voiceInput/useComposerVoiceTarget.ts
+ delete mode 100644 autobyteus-web/pages/projects/[id].vue
+ create mode 100644 autobyteus-web/pages/projects/[id]/edit.vue
+ create mode 100644 autobyteus-web/pages/projects/[id]/index.vue
+ create mode 100644 autobyteus-web/pages/projects/[id]/tasks/[taskId]/edit.vue
+ create mode 100644 autobyteus-web/pages/projects/[id]/tasks/[taskId]/index.vue
+ create mode 100644 autobyteus-web/pages/projects/[id]/tasks/new.vue
+ create mode 100644 autobyteus-web/pages/projects/new.vue
+ create mode 100644 autobyteus-web/services/projects/projectTaskContextClient.ts
+ create mode 100644 autobyteus-web/types/projectWorkspaceDraft.ts
+ create mode 100644 autobyteus-web/types/voiceInput.ts
+ create mode 100644 test-support/live-e2e/live-e2e-audio-assertions.ts
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/api-e2e-revision-record.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/architecture-review-revision-record.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/code-review-report.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/code-review-revision-record.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/cumulative-package-manifest.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/delivery-evidence/checks.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/delivery-evidence/final-integration.log
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/delivery-evidence/isolated-cleanup.json
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/delivery-evidence/user-verification.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/delivery-revision-record.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/design-review-report.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/design-spec.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/docs-sync-report.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/handoff-summary.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/implementation-handoff.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/implementation-revision-record.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/investigation-notes.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/release-deployment-report.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/release-notes.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/requirements-doc.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-access-update-sr008.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-blocker-sr007.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-current-key-probe-sr014.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-current-key-recheck-sr013.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-handoff-sr006.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-handoff.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-hold-sr010.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-revision-record.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-validation-update-sr012.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-vertex-recheck-sr009.md
+ create mode 100644 tickets/done/gemini-38-tts-upgrade/solution-vertex-recheck-sr011.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-live-evidence.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-live-probe-source.txt
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-revision-record.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev001.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/architecture-pass-notification-archrev002.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/architecture-review-revision-record.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/code-review-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/code-review-revision-record.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/cumulative-package-manifest.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/archive-hygiene.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/checks.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/doc-consistency.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/finalization-receipt.json
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/log-hygiene.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/post-integration.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/publication-initial.json
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-branch-push.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-helper.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-log-hygiene.json
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-preflight.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/release-tag-push.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-new-merge.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-new-push.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-old-merge.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/target-old-push.log
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-evidence/user-verification.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/delivery-revision-record.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/dependency-merge-conflict-ir001.patch
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/design-review-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/design-spec.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/docs-sync-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/generate-speech-schema.json
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/handoff-summary.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/implementation-base-blocker-ir001.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/implementation-base-validation-ir002.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/implementation-handoff.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/implementation-revision-record.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/investigation-notes.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/release-deployment-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/release-notes.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/requirements-doc.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/solution-base-clarification-sr014.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/solution-base-recovery-sr015.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/solution-handoff-sr013.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/solution-proposal-sr004.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/solution-revision-record.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/speech-value-recommendation-sr011.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/test-vault-runtime-explanation-sr007.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/test-vault-usability-assessment-sr006.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/voice-capability-clarification-sr009.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/voice-feature-probe-sr010.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/voice-provider-probe-sr005.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/voice-schema-audit-report.md
+ create mode 100644 tickets/done/gemini-tts-voice-schema-audit/voice-scope-update-sr008.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-007-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-008-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-009-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/PT-E2E-011-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-1/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-009-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-013-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-014-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-015-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/external-tool-1.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/external-tool-2.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/external-tool-3.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-2/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/continuous-board-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/external-tool-1.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/external-tool-2.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/external-tool-3.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/ordinary-task-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-accepted/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/continuous-board-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/external-tool-1.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/external-tool-2.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/external-tool-3.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/ordinary-task-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-final/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-015-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/continuous-board-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/external-tool-1.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/external-tool-2.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/external-tool-3.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/ordinary-task-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-supported/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-015-failure.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/continuous-board-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/external-tool-1.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/external-tool-2.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/external-tool-3.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/ordinary-task-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-browser-verified/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-desktop-observations.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-desktop-tool-refresh.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-desktop-tool-refresh.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-desktop-tool-write.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-desktop-tool-write.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-durable-test-diff.patch
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-electron-baseline.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-electron-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-electron-rerun.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-electron-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-http-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-http-rerun.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-http.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-isolated-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-isolated-list-after-stop.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-isolated-start.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-isolated-stop.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-package-inventory.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-revision-record.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/api-owned-test-delta.patch
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/api-owned-test-preservation.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/artifact-hygiene.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/cleanup-integrity.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/commands.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/empty-1024.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/empty-1512.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/evidence.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/forced-colors-1024.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/long-1024.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/long-1512.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/narrow-zh-300.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/nuxt.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/selected-1024.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/selected-1512.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser/selected-zh-1024.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-callers-baseline.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/composer-callers-rerun.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/electron-regression.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/entry-state.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/environment.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/handoff-rule.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/incoming-inventory-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/mentions-narrow.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-001-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-002-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-003-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-004-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-005-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-006-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-007-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-008-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-009-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-010-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-011-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-012-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-013-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-014-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-015-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/PT-E2E-016-pass.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/continuous-board-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/external-tool-1.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/external-tool-2.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/external-tool-3.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/external-tool.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/frontend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/node-a-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/node-a-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/node-b-backend.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/node-b-migrate.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/ordinary-task-390.png
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser/result.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/renderer-expanded.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/renderer-final-135.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/run-command.py
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/server-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/server-integrated-serial.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/server-integrated.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/shared-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/static-verification.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/test-checkpoint.txt
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/test-delta.patch
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-round-3-evidence/voice-fixture-narrow.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-server-baseline.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-server-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-server-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-shared-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-shared-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-test-checkpoint.txt
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-typecheck-baseline-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-typecheck-baseline-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-typecheck-baseline-root.txt
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-typecheck-baseline-setup.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-typecheck-build-relocation.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-typecheck-comparison.json
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-user-voice-validation-waiver.md
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-final-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-guards.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-typecheck-baseline.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-typecheck-final-clean.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-typecheck-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-typecheck.log
+ create mode 100644 tickets/done/project-task-manager-foundations/api-e2e-web-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/architecture-clarification-sr-015.md
+ create mode 100644 tickets/done/project-task-manager-foundations/architecture-pass-receipt-sr-015.md
+ create mode 100644 tickets/done/project-task-manager-foundations/architecture-review-revision-record.md
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-inventory-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-ir-002-evidence/commands.json
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-ir-002-evidence/renderer-expanded.log
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-ir-002-evidence/static-review.json
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-project-boundaries.log
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-report.md
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-revision-record.md
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-server-typecheck.log
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-server-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-shared-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-source-audit.md
+ create mode 100644 tickets/done/project-task-manager-foundations/code-review-web-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/artifact-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/commands.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/generated-output-cleanup.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/handoff-receipt.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/incoming-inventory-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/integration-refresh.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/renderer-integrated.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/server-integrated.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/shared-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-evidence/voice-fixture-isolated-rerun.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-local-fix-request.md
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-package-inventory.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-revision-record.md
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/canonical-docs-diff.patch
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/current-base-refresh.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/docs-artifact-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/handoff-rule-disposition.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/incoming-inventory-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/prior-delivery-result-snapshot.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-2-evidence/verification-request.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/artifact-relocation.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/artifact-whitespace-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/commands.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/dr002-authoritative-snapshot.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/electron-current.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/generated-output-cleanup.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/main-workspace-preservation.json
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/rebuild-delivery-inventory.py
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/renderer-current.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/run-checks.py
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/server-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/server-current-serial.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/shared-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/upstream-agy-smoke-corrected.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/upstream-agy-smoke.log
+ create mode 100644 tickets/done/project-task-manager-foundations/delivery-round-3-evidence/user-verification-and-refresh.json
+ create mode 100644 tickets/done/project-task-manager-foundations/design-handoff-sr-014.md
+ create mode 100644 tickets/done/project-task-manager-foundations/design-review-report.md
+ create mode 100644 tickets/done/project-task-manager-foundations/design-spec.md
+ create mode 100644 tickets/done/project-task-manager-foundations/docs-sync-report.md
+ create mode 100644 tickets/done/project-task-manager-foundations/handoff-summary.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/01-new-project-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/02-project-required-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/03-created-empty-board-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/04-new-task-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/05-task-required-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/06-context-upload-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/07-continuous-board-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/08-task-detail-files-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/09-image-preview-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/10-task-delete-inline-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/11-task-actions-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/12-continuous-board-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/13-no-match-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/14-task-composer-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/15-project-form-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/16-new-folder-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/17-project-workspaces-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/18-refresh-filtered-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/19-refresh-complete-narrow.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/20-refresh-complete-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/21-project-delete-count-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/22-refresh-pending-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/23-refresh-error-retains-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/24-board-container-single-column.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/25-edit-project-existing-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/26-edit-task-real-delta-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/27-task-saved-delta-desktop.png
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/preview-project-record.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-evidence/render-observations.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-handoff.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-install.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/archive-regeneration-reproduction-source.txt
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/archive-regeneration-reproduction.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/artifact-hygiene.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/commands.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/handoff-rule.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/incoming-inventory-check.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/initial-state.txt
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/renderer-expanded.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/source-audit.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/test-delta.patch
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-1.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-2.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-3.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-ir-002-package-inventory.json
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-local-fix-ir-002.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-local-source-audit.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-localization-audit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-preview-external-write.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-preview-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-preview.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-rendered-check.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-revision-record.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-build-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-typecheck-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-typecheck.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-unit-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-unit-r2.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-unit-r3.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-server-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-shared-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-source-delta.tsv
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-upstream-reference-inventory.md
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-build-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-build.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-draft-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-focus-check.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-focus-debug.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-focus-debug2.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-guards.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-notice-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-prepare.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-typecheck-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-typecheck-new-vue.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-typecheck-pinned.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-typecheck-repository-ts.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-typecheck.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-unit-final.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-unit-r2.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-unit-r3.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-unit-r4.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-unit.log
+ create mode 100644 tickets/done/project-task-manager-foundations/implementation-web-voice-r3.log
+ create mode 100644 tickets/done/project-task-manager-foundations/investigation-notes.md
+ create mode 100644 tickets/done/project-task-manager-foundations/product-design-handoff-sr-002.md
+ create mode 100644 tickets/done/project-task-manager-foundations/product-design-handoff.md
+ create mode 100644 tickets/done/project-task-manager-foundations/release-deployment-report.md
+ create mode 100644 tickets/done/project-task-manager-foundations/release-notes.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-approval-sr-010.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-approval-sr-013.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-doc.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-003.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-004.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-005.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-006.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-007.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-008.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-009.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-011.md
+ create mode 100644 tickets/done/project-task-manager-foundations/requirements-refinement-sr-012.md
+ create mode 100644 tickets/done/project-task-manager-foundations/skill-cli-feasibility.md
+ create mode 100644 tickets/done/project-task-manager-foundations/solution-revision-record.md

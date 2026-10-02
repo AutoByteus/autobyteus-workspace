@@ -1,0 +1,18 @@
+{
+  "image": "autobyteus/autobyteus-server",
+  "version_tag": "1.4.92-beta.12",
+  "version_manifest_digest": "sha256:9bc5b9a1521ce8b814bc122d0e9194956e5b96bb1a7bf69f36cd28f67aef05fa",
+  "beta_manifest_digest": "sha256:9bc5b9a1521ce8b814bc122d0e9194956e5b96bb1a7bf69f36cd28f67aef05fa",
+  "beta_equals_this_version": true,
+  "linux_architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "platform_digests": {
+    "amd64": "sha256:842e4c67ef6e685a1a612e454ac7c2d3c4ef89cdb50c8ce9288ba90e7d18fb77",
+    "arm64": "sha256:ea5978ffd106a4d36029642b8b9644ce5283126657dc3407a27e9b2579f9bc17"
+  },
+  "scope": "Public registry manifest verification; no local image pull/container start, no production runtime deployment. Beta does not update stable latest.",
+  "verified_after_workflow_success": true,
+  "verified_at_utc": "2026-10-02T20:23:16.707055+00:00"
+}

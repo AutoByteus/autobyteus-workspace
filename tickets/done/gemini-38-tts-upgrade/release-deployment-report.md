@@ -2,7 +2,7 @@
 
 ## Current DR-006 Result
 
-**Repository finalization Completed; beta version/tag push Completed; publication running; Delivery not yet Completed.** Large/High independent reviewed route unchanged.
+**Repository finalization Completed; beta version/tag push Completed; publication verified Completed; cleanup pending; Delivery not yet Completed.** Large/High independent reviewed route unchanged.
 
 ## Repository Finalization — Completed
 
@@ -12,9 +12,9 @@ Both ticket folders moved to `tickets/done/` before final commit. Old ticket fin
 
 User switched stable to **beta** after disclosed combined acceptance gate. Documented helper `bash scripts/desktop-release.sh beta --branch delivery/gemini-tts-beta-finalize-20261002 --no-push` on clean finalized proxy computed **1.4.92-beta.12**, bumped package and created releasecommit **d4d14fe9939336d945e07bf5149d73b6df8568f5**, annotatedtag `v1.4.92-beta.12` (object697be0e32ecce2158ff15bfe303ca98df5a456c1). Normal `git push origin HEAD:personal` and helper-created tag push succeeded. Remote tag peel/packageversion/releasecommit aligned. No manual tag or immediate duplicate workflow dispatch. Beta generatednotes; archived curatednotes were not used for stable release.
 
-## Publication / Rollout — In progress
+## Publication / Rollout — Completed
 
-One tag-push run per applicable workflow, exact d4d14fe99 source: Desktop **37056157303**, Android **37056157207**, iOS **37056157123**, ServerDocker **37056157160**. Job/asset/publication verification pending; tag push alone is not release success. No stable version published by this delivery; beta publication does not become stable. No production runtime rollout or public AppStore review approval inferred.
+One tag-push run per applicable workflow, exact d4d14fe99 source: Desktop **37056157303**, Android **37056157207**, iOS **37056157123**, ServerDocker **37056157160**. All four workflows success/attempt1; published pre-release17assets/updater metadata verified; iOS upload success and Docker multiarch version/beta digest match. Shared release-verification.md contains exact scope/evidence. No stable version published by this delivery; beta publication does not become stable. No production runtime rollout or public AppStore review approval inferred.
 
 ## Checks / Docs / Verification
 

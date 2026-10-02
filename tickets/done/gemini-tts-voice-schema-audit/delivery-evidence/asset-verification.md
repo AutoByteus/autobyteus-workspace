@@ -1,0 +1,5 @@
+# Published Asset Verification — Pass
+
+Published non-draft **pre-release v1.4.92-beta.12**, exact d4d14fe99 commit, **17 assets**. macOSarm64/x64 DMG+ZIP+blockmaps, Linuxx64/arm64 AppImage, Windowsx64 job's canonical Windows installer, AndroidAPK+SHA256, and4updater YAML files present/nonempty/uploaded. Metadata versions/references valid; supplied file sizes match releaseAPI, SHA512fields decode64bytes. Mac metadata has bothZIParchitectures; Linux embeddedblockMapSize validators pass. Windows NSIS metadata intentionally omits filesize; N/A for that metadata comparison, actual published size339946266bytes nonzero. DownloadedAndroidAPK SHA256 matchedpublishedchecksum. No desktopbinarylaunch/bytehash or signature/notarization claim added.
+
+Initial local verifier wrongly assumed Windows asset included '-x64' in name and everyfiles[] entry carried size; repository Windows build and actual updater use `AutoByteus_personal_windows-1.4.92-beta.12.exe`/sha512 withoutsize. Corrected verifier against actual documented build/metadata contract; no missing productasset/source/SDK/test change or CI failure.

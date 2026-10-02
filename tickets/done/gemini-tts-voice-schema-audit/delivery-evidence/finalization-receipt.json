@@ -17,6 +17,8 @@
   "helper": "bash scripts/desktop-release.sh beta --branch delivery/gemini-tts-beta-finalize-20261002 --no-push; followed by documented normal target/tag pushes",
   "notes": "Generated beta notes; archived curated notes NOT used for stable publication",
   "source_identity": "final target equals tested eda59e585 non-ticket tree before version-only release commit",
-  "publication": "In progress; not yet claimed finished",
-  "cleanup": "Ticket worktrees/local branches retained until verified publication; old instance already stopped/reaped with data kept"
+  "publication": "Completed; all 4 workflows success/attempt1; 17 assets verified",
+  "cleanup": "Pending safe worktree/local branch removal; old instance cleanup complete/data kept",
+  "docker_manifest_digest": "sha256:9bc5b9a1521ce8b814bc122d0e9194956e5b96bb1a7bf69f36cd28f67aef05fa",
+  "release_url": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.12"
 }
