@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **User verified on 2026-10-02**: "the task is done. i have tested. it works. lets finalize and release a new beta". The ticket is archived, finalized into `personal` and released as a new beta; see `release-deployment-report.md` for the final state.
+- Delivery state: **User verified on 2026-10-02**: "the task is done. i have tested. it works. lets finalize and release a new beta". **Delivery completed (DR-002).** The ticket is archived and finalized into `personal` (`e8b0e95da`). `v1.4.92-beta.8` is fully published: desktop (macOS, Windows, Linux with updater files), Android, iOS TestFlight and Server Docker, with all 4 workflows succeeding on the first attempt. Full cleanup is done, including stopping the isolated test instance. See `release-deployment-report.md`.
 - Classification (unchanged by delivery): `task_size=Large`, `architectural_risk=High`. Route: reviewed (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → test-code review → Delivery).
 - Review chain on the final candidate:
 
