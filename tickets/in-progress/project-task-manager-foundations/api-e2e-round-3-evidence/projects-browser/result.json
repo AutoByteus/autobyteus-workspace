@@ -1,0 +1,251 @@
+{
+  "startedAt": "2026-10-02T18:16:31.843Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PT-E2E-001": {
+      "title": "Fresh node default off, guarded routes and separate-node API isolation",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:51.459Z",
+      "observations": {
+        "otherNode": "project_6e60d5d1-42b0-4206-829a-53cc60f79b0d"
+      },
+      "finishedAt": "2026-10-02T18:16:52.444Z"
+    },
+    "PT-E2E-002": {
+      "title": "Ordinary New Project validation/focus/Cancel and zero-link save to Tasks",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:52.444Z",
+      "observations": {
+        "projectId": "project_875a2428-235d-4a66-9868-af883bf43388"
+      },
+      "finishedAt": "2026-10-02T18:16:56.209Z"
+    },
+    "PT-E2E-003": {
+      "title": "Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:56.210Z",
+      "observations": {
+        "links": [
+          {
+            "workspaceId": "agent_ws_8167a41fff77cadd205b1824c49eef5304d6e8a19496678186f00f88ed58d65e",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-waKAVX/original-workspace",
+            "displayName": "original-workspace",
+            "description": "existing context",
+            "availability": "AVAILABLE"
+          },
+          {
+            "workspaceId": "agent_ws_c1b8b90c74d31491b7b240bb09974cc0e34a31c0af424ef42f92e738aa671e11",
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-waKAVX/never-mkdir",
+            "displayName": "never-mkdir",
+            "description": "registered only",
+            "availability": "AVAILABLE"
+          }
+        ]
+      },
+      "finishedAt": "2026-10-02T18:16:57.310Z"
+    },
+    "PT-E2E-004": {
+      "title": "Aggregate save failure retains Project; separate successful registration remains, no mkdir",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:57.310Z",
+      "observations": {
+        "registeredPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-waKAVX/registration-survives"
+      },
+      "finishedAt": "2026-10-02T18:16:57.878Z"
+    },
+    "PT-E2E-005": {
+      "title": "Task ordinary composer validation, search-preserving Cancel, typed/file save clears search",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:57.878Z",
+      "observations": {
+        "task": {
+          "taskId": "project_task_75c961ce-a509-4ae8-af35-e54b80343ffc",
+          "projectId": "project_875a2428-235d-4a66-9868-af883bf43388",
+          "description": "Browser task\nFull second line",
+          "status": "TODO",
+          "createdAt": "2026-10-02T18:16:58.604Z",
+          "updatedAt": "2026-10-02T18:16:58.604Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_7667b50cde64__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_875a2428-235d-4a66-9868-af883bf43388/tasks/project_task_75c961ce-a509-4ae8-af35-e54b80343ffc/context-files/ctx_7667b50cde64__note.txt"
+            },
+            {
+              "storedFilename": "ctx_5925f2a1163f__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_875a2428-235d-4a66-9868-af883bf43388/tasks/project_task_75c961ce-a509-4ae8-af35-e54b80343ffc/context-files/ctx_5925f2a1163f__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-02T18:16:58.718Z"
+    },
+    "PT-E2E-006": {
+      "title": "Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:58.719Z",
+      "observations": {
+        "edited": {
+          "taskId": "project_task_75c961ce-a509-4ae8-af35-e54b80343ffc",
+          "projectId": "project_875a2428-235d-4a66-9868-af883bf43388",
+          "description": "Browser task revised\nFull second line",
+          "status": "TODO",
+          "createdAt": "2026-10-02T18:16:58.604Z",
+          "updatedAt": "2026-10-02T18:16:59.162Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_7667b50cde64__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_875a2428-235d-4a66-9868-af883bf43388/tasks/project_task_75c961ce-a509-4ae8-af35-e54b80343ffc/context-files/ctx_7667b50cde64__note.txt"
+            },
+            {
+              "storedFilename": "ctx_5925f2a1163f__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_875a2428-235d-4a66-9868-af883bf43388/tasks/project_task_75c961ce-a509-4ae8-af35-e54b80343ffc/context-files/ctx_5925f2a1163f__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-10-02T18:16:59.393Z"
+    },
+    "PT-E2E-007": {
+      "title": "External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:16:59.393Z",
+      "observations": {
+        "physicalQueries": 1
+      },
+      "finishedAt": "2026-10-02T18:17:01.702Z"
+    },
+    "PT-E2E-008": {
+      "title": "Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:01.705Z",
+      "observations": {
+        "retainedRows": [
+          "project-task-row-project_task_ef9c515a-22d0-4af9-b76e-6a061ce5aa64",
+          "project-task-row-project_task_75c961ce-a509-4ae8-af35-e54b80343ffc"
+        ]
+      },
+      "finishedAt": "2026-10-02T18:17:05.076Z"
+    },
+    "PT-E2E-009": {
+      "title": "Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:05.076Z",
+      "observations": {
+        "styles": [
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "A"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "A"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "A"
+          }
+        ]
+      },
+      "finishedAt": "2026-10-02T18:17:06.173Z"
+    },
+    "PT-E2E-010": {
+      "title": "Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:06.174Z",
+      "observations": {
+        "restarted": true
+      },
+      "finishedAt": "2026-10-02T18:17:08.585Z"
+    },
+    "PT-E2E-011": {
+      "title": "All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:08.585Z",
+      "observations": {
+        "warning": "Delete project?\n\nDelete the project “API E2E project”, its workspace links and its 3 tasks?\n\nWorkspaces, their files and run history are not changed.\n\nCancel\nDelete project"
+      },
+      "finishedAt": "2026-10-02T18:17:08.970Z"
+    },
+    "PT-E2E-012": {
+      "title": "Ordinary route read/Refresh ordering: late old Project response cannot populate another Project",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:08.971Z",
+      "observations": {
+        "realOldResponseReleased": true
+      },
+      "finishedAt": "2026-10-02T18:17:10.151Z"
+    },
+    "PT-E2E-013": {
+      "title": "120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:10.151Z",
+      "observations": {
+        "total": 120
+      },
+      "finishedAt": "2026-10-02T18:17:11.804Z"
+    },
+    "PT-E2E-014": {
+      "title": "Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:11.804Z",
+      "observations": {
+        "deletedTaskId": "project_task_035a5b1d-9244-4327-9fc7-bfbf1905645e"
+      },
+      "finishedAt": "2026-10-02T18:17:13.752Z"
+    },
+    "PT-E2E-015": {
+      "title": "Normal Settings toggle invalidates nav/route without reload, retains Tasks and other settings",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:13.752Z",
+      "observations": {
+        "noReload": true
+      },
+      "finishedAt": "2026-10-02T18:17:15.937Z"
+    },
+    "PT-E2E-016": {
+      "title": "zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys",
+      "result": "Pass",
+      "startedAt": "2026-10-02T18:17:15.937Z",
+      "observations": {
+        "rawKeys": 0
+      },
+      "finishedAt": "2026-10-02T18:17:16.819Z"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontend": "terminated:37122",
+    "nodeA": "terminated:37932",
+    "nodeB": "terminated:37111",
+    "tempRootRemoved": true
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-waKAVX",
+    "nodeA": "http://127.0.0.1:62805",
+    "nodeB": "http://127.0.0.1:62806",
+    "frontend": "http://127.0.0.1:62849"
+  },
+  "finishedAt": "2026-10-02T18:17:26.625Z"
+}

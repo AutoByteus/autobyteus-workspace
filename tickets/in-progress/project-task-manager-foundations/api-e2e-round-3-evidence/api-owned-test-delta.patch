@@ -1,0 +1,13 @@
+diff --git a/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts b/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+index a5928d165..4f208da8a 100644
+--- a/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
++++ b/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+@@ -66,0 +67 @@ const voiceInputStoreMock = reactive({
++  cancelOperationForTarget: vi.fn().mockResolvedValue(undefined),
+diff --git a/autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts b/autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts
+index 471c03c7e..029be49a6 100644
+--- a/autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts
++++ b/autobyteus-web/components/agentInput/__tests__/TeamComposerPublication.spec.ts
+@@ -22 +22 @@ vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
+-  isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
++  isAvailable: false, initialize: vi.fn(), cancelOperationForTarget: vi.fn(),

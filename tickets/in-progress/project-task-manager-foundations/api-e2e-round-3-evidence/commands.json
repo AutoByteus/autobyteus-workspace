@@ -1,0 +1,106 @@
+[
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts prepare:shared",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/shared-prepare.log",
+    "exitCode": 0,
+    "elapsedSeconds": 4.155,
+    "completedAt": "2026-10-02T18:10:17.121165+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/mentions-narrow.log",
+    "exitCode": 0,
+    "elapsedSeconds": 8.251,
+    "completedAt": "2026-10-02T18:10:30.336265+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.integration.test.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/voice-fixture-narrow.log",
+    "exitCode": 0,
+    "elapsedSeconds": 9.507,
+    "completedAt": "2026-10-02T18:10:54.274748+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts composables/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts tests/integration/voice-input-extension.integration.test.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/renderer-expanded.log",
+    "exitCode": 0,
+    "elapsedSeconds": 10.841,
+    "completedAt": "2026-10-02T18:11:13.725693+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:electron electron/__tests__/preload.spec.ts electron/extensions/__tests__/voiceInputRuntimeService.spec.ts electron/extensions/__tests__/managedExtensionService.spec.ts electron/extensions/__tests__/extensionCatalog.spec.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/electron-regression.log",
+    "exitCode": 0,
+    "elapsedSeconds": 2.889,
+    "completedAt": "2026-10-02T18:11:28.777386+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects tests/unit/agent-tools/project-tasks tests/unit/context-files tests/unit/startup/agent-tool-loader.test.ts tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts tests/architecture/projects-boundaries.test.ts tests/e2e/projects tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/server-integrated.log",
+    "exitCode": 0,
+    "elapsedSeconds": 21.055,
+    "completedAt": "2026-10-02T18:12:07.320273+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts build",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/server-build.log",
+    "exitCode": 0,
+    "elapsedSeconds": 14.501,
+    "completedAt": "2026-10-02T18:12:20.358596+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/projects tests/unit/agent-tools/project-tasks tests/unit/context-files tests/unit/startup/agent-tool-loader.test.ts tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts tests/architecture/projects-boundaries.test.ts tests/e2e/projects tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts --no-watch",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/server-integrated-serial.log",
+    "exitCode": 0,
+    "elapsedSeconds": 20.308,
+    "completedAt": "2026-10-02T18:13:05.283436+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts components/agentInput/__tests__/TeamComposerPublication.spec.ts utils/collaborators/__tests__/collaboratorMentionText.spec.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/composer-callers-baseline.log",
+    "exitCode": 1,
+    "elapsedSeconds": 8.449,
+    "completedAt": "2026-10-02T18:14:13.130408+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts components/agentInput/__tests__/TeamComposerPublication.spec.ts utils/collaborators/__tests__/collaboratorMentionText.spec.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/composer-callers-rerun.log",
+    "exitCode": 0,
+    "elapsedSeconds": 7.834,
+    "completedAt": "2026-10-02T18:14:47.423905+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts composables/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts tests/integration/voice-input-extension.integration.test.ts components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts components/agentInput/__tests__/TeamComposerPublication.spec.ts utils/collaborators/__tests__/collaboratorMentionText.spec.ts --run",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/renderer-final-135.log",
+    "exitCode": 0,
+    "elapsedSeconds": 11.232,
+    "completedAt": "2026-10-02T18:15:14.514652+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:e2e:composer-mention-discoverability --output-dir ../tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser --ledger ../tickets/in-progress/project-task-manager-foundations/api-e2e-test-case-ledger.md",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/composer-browser.log",
+    "exitCode": 0,
+    "elapsedSeconds": 27.885,
+    "completedAt": "2026-10-02T18:16:18.268283+00:00"
+  },
+  {
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "command": "pnpm -C autobyteus-web test:e2e:projects --skip-server-build --output-dir=../tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser",
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-round-3-evidence/projects-browser.log",
+    "exitCode": 0,
+    "elapsedSeconds": 67.992,
+    "completedAt": "2026-10-02T18:17:39.407793+00:00"
+  }
+]

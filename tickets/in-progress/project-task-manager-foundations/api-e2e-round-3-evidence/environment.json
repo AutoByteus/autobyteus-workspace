@@ -1,0 +1,13 @@
+{
+  "platform": "darwin-arm64",
+  "versions": {
+    "node": "v22.23.1",
+    "pnpm": "10.28.2",
+    "nuxt": "3.21.1",
+    "vue": "3.5.28",
+    "vitest": "3.2.4",
+    "typescript": "5.9.3"
+  },
+  "chromeComposerReported": "154.0.8037.97",
+  "metadataNote": "Initial root-relative direct vue package lookup unavailable (transitive dependency); resolved through actual Nuxt package dependency path. No install/config change."
+}
