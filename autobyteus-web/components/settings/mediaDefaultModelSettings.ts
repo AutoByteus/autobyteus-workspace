@@ -4,7 +4,7 @@ export const DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY = 'DEFAULT_SPEECH_GENER
 export const DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY = 'DEFAULT_VIDEO_GENERATION_MODEL'
 
 export const DEFAULT_IMAGE_MODEL_IDENTIFIER = 'gpt-image-1.5'
-export const DEFAULT_SPEECH_MODEL_IDENTIFIER = 'gemini-2.5-flash-tts'
+export const DEFAULT_SPEECH_MODEL_IDENTIFIER = 'gemini-3.8-flash-tts'
 export const DEFAULT_VIDEO_MODEL_IDENTIFIER = 'gemini-omni-flash-preview'
 
 export type MediaDefaultModelCatalogKind = 'image' | 'audio' | 'video'

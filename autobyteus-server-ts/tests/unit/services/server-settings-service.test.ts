@@ -216,7 +216,7 @@ describe("ServerSettingsService", () => {
     mockConfig.getConfigData.mockReturnValue({
       DEFAULT_IMAGE_EDIT_MODEL: "nano-banana-pro-app-rpa@host",
       DEFAULT_IMAGE_GENERATION_MODEL: "gpt-image-1.5",
-      DEFAULT_SPEECH_GENERATION_MODEL: "gemini-2.5-flash-tts",
+      DEFAULT_SPEECH_GENERATION_MODEL: "gemini-3.8-flash-tts",
     });
 
     const service = new ServerSettingsService();
@@ -235,7 +235,7 @@ describe("ServerSettingsService", () => {
       isDeletable: false,
     });
     expect(settings.find((item) => item.key === "DEFAULT_SPEECH_GENERATION_MODEL")).toMatchObject({
-      value: "gemini-2.5-flash-tts",
+      value: "gemini-3.8-flash-tts",
       description: expect.stringContaining("Default speech generation model identifier"),
       isEditable: true,
       isDeletable: false,

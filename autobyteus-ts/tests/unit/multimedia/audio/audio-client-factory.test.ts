@@ -25,17 +25,16 @@ describe('AudioClientFactory', () => {
     const models = AudioClientFactory.listModels();
     const identifiers = models.map((model) => model.modelIdentifier);
     expect(identifiers).toContain('gpt-4o-mini-tts');
-    expect(identifiers).toContain('gemini-3.1-flash-tts-preview');
-    expect(identifiers).toContain('gemini-2.5-flash-tts');
-    expect(identifiers).toContain('gemini-2.5-pro-tts');
-    expect(models.find((model) => model.modelIdentifier === 'gemini-2.5-pro-tts')?.value).toBe(
-      'gemini-2.5-pro-preview-tts'
-    );
+    expect(identifiers).toContain('gemini-3.8-flash-tts');
+    expect(identifiers).toContain('gemini-3.8-flash-lite-tts');
+    expect(identifiers).not.toContain('gemini-3.1-flash-tts-preview');
+    expect(identifiers).not.toContain('gemini-2.5-flash-tts');
+    expect(identifiers).not.toContain('gemini-2.5-pro-tts');
   });
 
   it('keeps model definitions credential-independent', () => {
     const model = AudioClientFactory.listModels()
-      .find((entry) => entry.modelIdentifier === 'gemini-2.5-pro-tts');
+      .find((entry) => entry.modelIdentifier === 'gemini-3.8-flash-lite-tts');
     expect(model).toBeDefined();
     expect(model).not.toHaveProperty('credentialProviderId');
     expect(model).not.toHaveProperty('authenticationRequirement');
@@ -53,22 +52,22 @@ describe('AudioClientFactory', () => {
 
   it('creates Gemini audio clients with user-facing identifiers and API values', () => {
     const latestClient = AudioClientFactory.createAudioClient(
-      'gemini-3.1-flash-tts-preview',
+      'gemini-3.8-flash-tts',
       new MultimediaConfig(),
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
       geminiRuntimeResolver(),
     );
-    const proClient = AudioClientFactory.createAudioClient(
-      'gemini-2.5-pro-tts',
+    const liteClient = AudioClientFactory.createAudioClient(
+      'gemini-3.8-flash-lite-tts',
       new MultimediaConfig(),
       geminiProviderApiKeyResolver({ aiStudio: 'synthetic-gemini-key' }),
       geminiRuntimeResolver(),
     );
 
     expect(latestClient).toBeInstanceOf(BaseAudioClient);
-    expect(latestClient.model.value).toBe('gemini-3.1-flash-tts-preview');
-    expect(proClient).toBeInstanceOf(BaseAudioClient);
-    expect(proClient.model.value).toBe('gemini-2.5-pro-preview-tts');
+    expect(latestClient.model.value).toBe('gemini-3.8-flash-tts');
+    expect(liteClient).toBeInstanceOf(BaseAudioClient);
+    expect(liteClient.model.value).toBe('gemini-3.8-flash-lite-tts');
   });
 
   it('throws for invalid identifier', () => {

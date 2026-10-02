@@ -9,6 +9,7 @@ import {
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
 import { forbiddenGenericSettingNames, retiredSettingNames } from "./app-config-setting-policy.js";
+import { migrateRetiredSpeechModelSelection } from "./migrations/retired-speech-model-selection.js";
 import {
   ApplicationDatabaseLocation,
   toPrismaSqliteUrl,
@@ -60,12 +61,10 @@ export class AppConfig {
     this.dataDir = configuredAppDataDir ? path.resolve(configuredAppDataDir) : this.appRootDir;
     console.info(`App data directory: ${this.dataDir}`);
 
-    logger.debug("AppConfig instance created.");
   }
 
   initialize(): void {
     if (this.initialized) {
-      console.info("initialize() called more than once. Ignoring.");
       return;
     }
 
@@ -80,7 +79,9 @@ export class AppConfig {
       }
     }
 
+    const inheritedSpeechSelection = process.env.DEFAULT_SPEECH_GENERATION_MODEL;
     this.loadConfigData();
+    migrateRetiredSpeechModelSelection(this.configFile!, this.configData, inheritedSpeechSelection);
     this.discardRetiredSettings();
     this.initializeBaseUrl();
 
@@ -121,7 +122,6 @@ export class AppConfig {
     logger.info(`DOWNLOAD DIRECTORY: ${this.getDownloadDir()}`);
     logger.info(`MEMORY DIRECTORY: ${this.getMemoryDir()}`);
     logger.info("=".repeat(60));
-    logger.info("AppConfig initialization completed successfully");
   }
 
   private loadConfigData(): void {
