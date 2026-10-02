@@ -154,6 +154,21 @@ single explicit `GEMINI_SETUP_MODE` selects exactly one construction strategy:
 - Vertex Project: `{ vertexai: true, project, location }`, with no API-key
   lookup.
 
+Speech model/voice availability is separate from catalog presence and credential
+status. Additional voice-ID synthesis and per-turn dialogue styles use only the
+configured Gemini mode; they do not query a different mode's voice catalog,
+switch credentials or fall back after rejection. The speech adapter exposes
+fixed failure categories and safe HTTP status rather than raw provider
+messages/bodies/causes. A prior successful Vertex Express generation proves
+that specific route/key/time, not all voices, languages or future entitlement.
+
+Real-provider preflight checks setup/scenario readiness, not paid generation.
+Live validation requires explicit supported import into an isolated test-owned
+SQLite vault and bounded execution authorization; do not provision or mutate the
+production vault merely to test speech. Review, docs sync and deterministic
+post-integration checks do not authorize another paid request or private-source
+read after the authorized calls have been consumed.
+
 Gemini catalog metadata has a separate provenance contract:
 
 - AI Studio is live-capable. It uses only the exact AI Studio metadata consumer

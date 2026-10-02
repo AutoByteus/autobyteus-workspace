@@ -14,6 +14,7 @@ import {
   selectedLiveE2eScenarioIds,
 } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
 import { LiveE2eEvidenceScanner } from '../../../../test-support/live-e2e/live-e2e-evidence-scanner.js';
+import { assertLiveAudioFileBytes } from '../../../../test-support/live-e2e/live-e2e-audio-assertions.js';
 
 const enabled = process.env.RUN_REAL_E2E === '1';
 const preflightOnly = process.env.AUTOBYTEUS_LIVE_E2E_PREFLIGHT_ONLY === '1';
@@ -181,13 +182,21 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
 
       if (scenario.operation === 'audio') {
         const client = await safeExternalOperation(scenarioId, () => execution.createAudioClient(scenario.model!));
+        let generatedFile: string | undefined;
         try {
           const result = await safeExternalOperation(scenarioId, () => client.generateSpeech(
             'Hello from the value-safe managed-provider audio test.',
           ));
           assertEvidenceClean(result);
           expect(result.audio_urls.length).toBeGreaterThan(0);
+          generatedFile = result.audio_urls[0];
+          if (!generatedFile) throw new Error('LIVE_E2E_AUDIO_FILE_MISSING');
+          const bytes = await fs.readFile(generatedFile);
+          assertLiveAudioFileBytes(bytes, scenario.providerId);
         } finally {
+          if (generatedFile && path.dirname(generatedFile) === path.join(os.tmpdir(), 'autobyteus_audio')) {
+            await fs.rm(generatedFile, { force: true });
+          }
           await client.cleanup();
         }
         return;

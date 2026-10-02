@@ -1,16 +1,12 @@
 const MODEL_RUNTIME_MAP: Record<string, Record<string, Record<string, string>>> = {
   tts: {
-    'gemini-3.1-flash-tts-preview': {
-      vertex: 'gemini-3.1-flash-tts-preview',
-      api_key: 'gemini-3.1-flash-tts-preview'
+    'gemini-3.8-flash-tts': {
+      vertex: 'gemini-3.8-flash-tts',
+      api_key: 'gemini-3.8-flash-tts'
     },
-    'gemini-2.5-flash-preview-tts': {
-      vertex: 'gemini-2.5-flash-tts',
-      api_key: 'gemini-2.5-flash-preview-tts'
-    },
-    'gemini-2.5-pro-preview-tts': {
-      vertex: 'gemini-2.5-pro-tts',
-      api_key: 'gemini-2.5-pro-preview-tts'
+    'gemini-3.8-flash-lite-tts': {
+      vertex: 'gemini-3.8-flash-lite-tts',
+      api_key: 'gemini-3.8-flash-lite-tts'
     }
   },
   llm: {
