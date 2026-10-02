@@ -1,0 +1,28 @@
+
+> autobyteus@1.4.92-beta.9 test:e2e:projects /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> node tests/e2e/projects-feature-probe.mjs --skip-server-build --output-dir=../tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1
+
+[PT-E2E-001] Fresh node default off, guarded routes, selected native tools do not enable UI
+[PT-E2E-001] Pass
+[PT-E2E-002] Ordinary New Project validation/focus/Cancel and zero-link save to Tasks
+[PT-E2E-002] Pass
+[PT-E2E-003] Aggregate Existing/New direct rows; mode drafts, normalization/no mkdir, saved links and origin tab
+[PT-E2E-003] Pass
+[PT-E2E-004] Aggregate save failure retains Project; separate successful registration remains, no mkdir
+[PT-E2E-004] Pass
+[PT-E2E-005] Task ordinary composer validation, search-preserving Cancel, typed/file save clears search
+[PT-E2E-005] Pass
+[PT-E2E-006] Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape
+[PT-E2E-006] Pass
+[PT-E2E-007] External selected tool commit -> physical non-deduplicated Refresh preserves search/route and moves status
+[PT-E2E-007] Fail: Error: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-tool-writer.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/node-a create_or_update_task {"project_id":"project_511ce0fe-3dc2-4125-8a15-f7063e25271c","description":"Browser external"} /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool-1.json exited 1/null; see /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool.log
+[PT-E2E-008] Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct
+[PT-E2E-008] Fail: locator.click: Timeout 30000ms exceeded.
+[PT-E2E-009] Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping
+[PT-E2E-009] Fail: Error: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/e2e/projects-tool-writer.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-NMGA3K/node-a create_or_update_task {"project_id":"project_511ce0fe-3dc2-4125-8a15-f7063e25271c","description":"Second contiguous To Do\nQuieter preview"} /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool-2.json exited 1/null; see /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-browser-1/external-tool.log
+[PT-E2E-010] Real backend process restart preserves Tasks, context HTTP bytes, links and feature setting
+[PT-E2E-010] Pass
+[PT-E2E-011] All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project
+[PT-E2E-011] Fail: Error: Full/open counts distinct
+{"result":"Fail","error":null,"cases":{"PT-E2E-001":"Pass","PT-E2E-002":"Pass","PT-E2E-003":"Pass","PT-E2E-004":"Pass","PT-E2E-005":"Pass","PT-E2E-006":"Pass","PT-E2E-007":"Fail","PT-E2E-008":"Fail","PT-E2E-009":"Fail","PT-E2E-010":"Pass","PT-E2E-011":"Fail"},"cleanup":{"frontend":"terminated:77717","nodeA":"terminated:82473","nodeB":"terminated:77706","tempRootRemoved":true}}
+ ELIFECYCLE  Command failed with exit code 1.

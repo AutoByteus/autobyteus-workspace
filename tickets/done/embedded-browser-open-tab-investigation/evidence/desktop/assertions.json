@@ -1,0 +1,19 @@
+{
+  "scenario": "Real UI -> Daily Assistant / gemini-3.8-flash-medium / antigravity_cli -> real MCP open_tab -> native Electron -> UI",
+  "outcome": "REPRODUCED missing auto-projection",
+  "testRun": "daily_assistant_adf79ed263184529ae67d37d82d70b00",
+  "tabId": "c1c04e",
+  "assertions": "PASS",
+  "checks": [
+    "Exactly one successful real open_tab",
+    "Original adapter output envelope observed",
+    "Activity stays selected; Browser unselected",
+    "Native page has Example Domain title and real DOM content",
+    "Shell snapshot empty even after manually selecting Browser",
+    "Native viewport initially 0 x 0",
+    "Diagnostic explicit-focus IPC attaches SAME tab",
+    "After focus same page has 626 x 757 viewport and Browser selected"
+  ],
+  "controlLimitation": "Explicit-focus control is diagnostic IPC, not a source fix or existing recovery UI",
+  "fixtureNote": "Initial assertion assumed Example Domain contained an h1; actual DOM has no h1. Corrected to observed title and nonempty documented content. No product assertion relaxed."
+}

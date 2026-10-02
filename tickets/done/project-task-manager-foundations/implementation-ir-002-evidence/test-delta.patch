@@ -1,0 +1,62 @@
+commit 4d88b42e2360a6827cb31e2481410607ca1407ad
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Fri Oct 2 19:51:24 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Fri Oct 2 19:51:24 2026 +0200
+
+    test(projects): reconcile integrated voice fixtures
+
+diff --git a/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts b/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+index 7754ffd64..1d2bc112a 100644
+--- a/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
++++ b/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+@@ -21 +21 @@ vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => reactive(
+-  cancelOperationForSource: vi.fn(async () => undefined), toggleRecording: vi.fn(async () => undefined),
++  cancelOperationForTarget: vi.fn(async () => undefined), toggleRecording: vi.fn(async () => undefined),
+diff --git a/autobyteus-web/tests/integration/voice-input-extension.integration.test.ts b/autobyteus-web/tests/integration/voice-input-extension.integration.test.ts
+index e38d1d256..0b4b69a4c 100644
+--- a/autobyteus-web/tests/integration/voice-input-extension.integration.test.ts
++++ b/autobyteus-web/tests/integration/voice-input-extension.integration.test.ts
+@@ -129,2 +129,5 @@ describe('voice input extension integration', () => {
+-    server = createServer(async (request, response) => {
+-      const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
++    // Model an immutable release: checksum and every download use the same bytes.
++    const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
++    await createWorkerArchive(runtimeArchivePath)
++    const runtimeArchive = await fs.readFile(runtimeArchivePath)
++    const runtimeSha = createHash('sha256').update(runtimeArchive).digest('hex')
+@@ -132,3 +135 @@ describe('voice input extension integration', () => {
+-      await createWorkerArchive(runtimeArchivePath)
+-
+-      const runtimeSha = createHash('sha256').update(await fs.readFile(runtimeArchivePath)).digest('hex')
++    server = createServer((request, response) => {
+@@ -167 +168 @@ describe('voice input extension integration', () => {
+-        response.end(await fs.readFile(runtimeArchivePath))
++        response.end(runtimeArchive)
+@@ -216,0 +218,23 @@ describe('voice input extension integration', () => {
++  it('serves the manifest checksum bytes unchanged across repeated downloads', async () => {
++    const manifestResponse = await fetch(`${serverBaseUrl}/manifest.json`)
++    expect(manifestResponse.ok).toBe(true)
++    const manifest = await manifestResponse.json()
++    const asset = manifest.assets[0]
++    const download = async () => {
++      const response = await fetch(asset.url)
++      expect(response.ok).toBe(true)
++      return Buffer.from(await response.arrayBuffer())
++    }
++    const first = await download()
++    expect(createHash('sha256').update(first).digest('hex')).toBe(asset.sha256)
++    // Cross tar's one-second mtime resolution to catch request-time regeneration.
++    await new Promise((resolve) => setTimeout(resolve, 1100))
++    const second = await download()
++    expect(second.equals(first)).toBe(true)
++    expect(createHash('sha256').update(second).digest('hex')).toBe(asset.sha256)
++    const nextManifestResponse = await fetch(`${serverBaseUrl}/manifest.json`)
++    expect(nextManifestResponse.ok).toBe(true)
++    const nextManifest = await nextManifestResponse.json()
++    expect(nextManifest.assets[0].sha256).toBe(asset.sha256)
++  })
++
+@@ -236 +260 @@ describe('voice input extension integration', () => {
+-    expect(extensionsStore.voiceInput?.status).toBe('installed')
++    expect(extensionsStore.voiceInput?.status, extensionsStore.voiceInput?.lastError ?? undefined).toBe('installed')

@@ -1,0 +1,27 @@
+{
+  "ticket": "PROJ-TASK-MANAGER-20261002-001",
+  "deliveryRevision": "DR-002",
+  "incomingHead": "ba1e6c94d0670ecac8ac59a883fab4dacfdcc3a2",
+  "branch": "codex/project-task-manager-foundations",
+  "fetchCommand": "git fetch origin personal",
+  "fetchExit": 0,
+  "preFetchBase": "5e3cb2f720e6fc80173099075daf55594ed58de9",
+  "checkedLatestBase": "5e3cb2f720e6fc80173099075daf55594ed58de9",
+  "aheadBehind": [
+    37,
+    0
+  ],
+  "integrationMethod": "Already current; no merge replay",
+  "preservedIntegrationMerge": "a5123e7d08f66bbb08440340db167fa4ccb5eba0",
+  "newBaseCommitsIntegratedThisRound": 0,
+  "checkpoint": "Not needed \u2014 no integration and tracked state clean",
+  "trackedState": "Clean",
+  "preExistingDeliveryUntrackedFiles": 16,
+  "globallyClean": false,
+  "postIntegrationExecutableRerun": false,
+  "noRerunRationale": "No remote base advance or source/test change since CRR-004 / API-REV-003 current integrated evidence; returned correction route completed. DR-001 merge and both parents already ancestors. Documentation-only updates planned.",
+  "currentCheckedExecutableAuthority": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-execution-coverage-report.md",
+  "currentTestReviewAuthority": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/api-e2e-test-review-report.md",
+  "userVerification": false,
+  "pushRelease": false
+}

@@ -1,0 +1,92 @@
+{
+  "at": "2026-10-02T18:09:48.681661+00:00",
+  "head": "dba9a6b9010e54d2b745b3ad2bf0b43364cad6de",
+  "branch": "codex/project-task-manager-foundations",
+  "status": "?? tickets/in-progress/project-task-manager-foundations/delivery-evidence/\n?? tickets/in-progress/project-task-manager-foundations/delivery-local-fix-request.md\n?? tickets/in-progress/project-task-manager-foundations/delivery-package-inventory.json\n?? tickets/in-progress/project-task-manager-foundations/delivery-revision-record.md\n?? tickets/in-progress/project-task-manager-foundations/docs-sync-report.md\n?? tickets/in-progress/project-task-manager-foundations/handoff-summary.md\n?? tickets/in-progress/project-task-manager-foundations/release-deployment-report.md\n",
+  "deliveryOwned": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/artifact-check.json",
+      "sha256": "aad0fb587ac9b7341446f06a0a97541eb91f6a515cf377510dac3622019147fe",
+      "bytes": 257
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/commands.json",
+      "sha256": "9054671d042a3ce959e3dfd154692776b71a39f511230b061d98ab496ace2f54",
+      "bytes": 1545
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/generated-output-cleanup.json",
+      "sha256": "93de98ebca6f76e4b3cbbedff3343d7ed19b0ac753ea456a1765eda2621429c7",
+      "bytes": 681
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/handoff-receipt.json",
+      "sha256": "0aee1663bad76a338f3accca009a691feb1f0665b0254961811e6b0d88bcd182",
+      "bytes": 462
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/incoming-inventory-check.json",
+      "sha256": "68934f36a492e5fc0b12459a49ab8e531b2dff5075f7cad4f9b3a128f81117a0",
+      "bytes": 739
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/integration-refresh.json",
+      "sha256": "744aee6b4671010227f771d66fd9354bb99e49559cc2f50ad61fac5f7aefa4ec",
+      "bytes": 1223
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/renderer-integrated.log",
+      "sha256": "5ac93f47eef57f3a2091c6e1f912c3e76d9846f0108bc35d5abe600533446d2a",
+      "bytes": 25960
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/server-integrated.log",
+      "sha256": "c80b60175ff127c6ddc805ee688bfba6b3a3cee90ac984a63efa3ccd8979b1ea",
+      "bytes": 66267
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/shared-prepare.log",
+      "sha256": "ad535e7c3781cd6987dd1e02550c21bd3d0562d883a41646bd6fdc30cccff245",
+      "bytes": 756
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-evidence/voice-fixture-isolated-rerun.log",
+      "sha256": "fa04bd0d39db26336bd9fb6f45ef8a50fb0d9cc6ef71d380a934bfa4692fe66b",
+      "bytes": 1830
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-local-fix-request.md",
+      "sha256": "be878473c3618ba634c8388e246ec8d7a0eb1b7df3c9ebaab0a5d694d1571607",
+      "bytes": 6050
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-package-inventory.json",
+      "sha256": "b13e29e11784505cc1b0feca363a6e7eb873b1c21e3a49a3661477bd6de6fd9d",
+      "bytes": 112520
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/delivery-revision-record.md",
+      "sha256": "2da8c9bfd2ed534337351dbe07e1e825258612ca7da6018c3d4f3d2073698dd2",
+      "bytes": 3613
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/docs-sync-report.md",
+      "sha256": "edffbef6a66437bb9c018c2c3614a94afc29d43ebab96d11cb5731ce27ee4482",
+      "bytes": 3226
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/handoff-summary.md",
+      "sha256": "478b3c8b0ea7bebd4c93448e7356f151acc28692e4700413f7cd8ae318d333b1",
+      "bytes": 2777
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/release-deployment-report.md",
+      "sha256": "dd2532700b8e37542c956666433eb54f54f36556afa10f8f49266d583105fe0c",
+      "bytes": 7112
+    }
+  ],
+  "generatedPrerequisites": {
+    "autobyteus-application-backend-sdk/dist": false,
+    "autobyteus-application-sdk-contracts/dist": false
+  }
+}

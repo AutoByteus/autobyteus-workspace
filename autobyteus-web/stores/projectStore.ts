@@ -12,7 +12,7 @@ import {
   UpdateProject,
   UpdateProjectWorkspace,
 } from '~/graphql/mutations/projectMutations'
-import type { Project } from '~/types/project'
+import type { Project, ProjectWorkspaceInput } from '~/types/project'
 import {
   ProjectRequestError,
   throwProjectGraphqlErrors as throwGraphqlErrors,
@@ -39,6 +39,13 @@ export const useProjectStore = defineStore('projects', () => {
   const loading = ref(false)
   const error = ref<ProjectRequestError | null>(null)
   const hasFetched = ref(false)
+  let mutationEpoch = 0, listRead = 0, countGeneration = 0
+  const projectReads = new Map<string, number>()
+  const counts = new Map<string, {generation: number; taskCount: number; openTaskCount: number}>()
+  const mergeCounts = (project: Project, atStart: number): Project => {
+    const newer = counts.get(project.projectId)
+    return newer && newer.generation > atStart ? {...project, taskCount: newer.taskCount, openTaskCount: newer.openTaskCount} : project
+  }
   const windowNodeContextStore = useWindowNodeContextStore()
 
   const hasBindingRevisionChanged = (bindingRevisionAtStart: number): boolean => (
@@ -53,6 +60,7 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   const invalidate = (): void => {
+    mutationEpoch++; listRead++; projectReads.clear(); counts.clear()
     projects.value = []
     loading.value = false
     error.value = null
@@ -67,36 +75,39 @@ export const useProjectStore = defineStore('projects', () => {
       return projects.value
     }
 
+    const client = getApolloClient()
     const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
+    const readToken = ++listRead, epoch = mutationEpoch, countAtStart = countGeneration
+    const current = () => !hasBindingRevisionChanged(bindingRevisionAtStart) && readToken === listRead && epoch === mutationEpoch
     loading.value = true
     error.value = null
 
     try {
       await ensureBackendReady()
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (!current()) {
         return []
       }
 
-      const { data, errors } = await getApolloClient().query({
+      const { data, errors } = await client.query({
         query: GetProjects,
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'network-only', context: {queryDeduplication: false},
       })
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (!current()) {
         return []
       }
       throwGraphqlErrors(errors)
 
-      projects.value = [...((data?.projects ?? []) as Project[])].sort(compareProjects)
+      projects.value = [...((data?.projects ?? []) as Project[])].map((p) => mergeCounts(p, countAtStart)).sort(compareProjects)
       hasFetched.value = true
       return projects.value
     } catch (cause) {
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (!current()) {
         return []
       }
       error.value = toRequestError(cause)
       throw error.value
     } finally {
-      if (!hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (readToken === listRead && !hasBindingRevisionChanged(bindingRevisionAtStart)) {
         loading.value = false
       }
     }
@@ -108,59 +119,68 @@ export const useProjectStore = defineStore('projects', () => {
    * detail load or failure never blanks or flags the Project list shown beside it.
    */
   const fetchProject = async (projectId: string): Promise<Project | null> => {
+    const client = getApolloClient()
     const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
 
+    const readToken = (projectReads.get(projectId) ?? 0) + 1, epoch = mutationEpoch, countAtStart = countGeneration
+    projectReads.set(projectId, readToken)
+    const current = () => !hasBindingRevisionChanged(bindingRevisionAtStart) && epoch === mutationEpoch && projectReads.get(projectId) === readToken
     try {
       await ensureBackendReady()
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (!current()) {
         return null
       }
 
-      const { data, errors } = await getApolloClient().query({
+      const { data, errors } = await client.query({
         query: GetProject,
         variables: { projectId },
-        fetchPolicy: 'network-only',
+        fetchPolicy: 'network-only', context: {queryDeduplication: false},
       })
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (!current()) {
         return null
       }
       throwGraphqlErrors(errors)
 
-      const project = (data?.project ?? null) as Project | null
+      const result = (data?.project ?? null) as Project | null
+      const project = result ? mergeCounts(result, countAtStart) : null
       projects.value = project
         ? upsertProject(projects.value, project)
         : projects.value.filter((entry) => entry.projectId !== projectId)
       return project
     } catch (cause) {
-      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+      if (!current()) {
         return null
       }
       throw toRequestError(cause)
     }
   }
 
-  /** Updates the cached open-Task count of one Project after a Task change. */
-  const setOpenTaskCount = (projectId: string, count: number): void => {
-    projects.value = projects.value.map((project) => (
-      project.projectId === projectId ? { ...project, openTaskCount: count } : project
-    ))
+  /** Counts originate only in complete Task snapshots or computed Project responses. */
+  const setTaskCounts = (projectId: string, taskCount: number, openTaskCount: number): void => {
+    counts.set(projectId, {generation: ++countGeneration, taskCount, openTaskCount})
+    projects.value = projects.value.map((project) => project.projectId === projectId ? {...project, taskCount, openTaskCount} : project)
   }
 
   const mutate = async <TResult>(
     mutation: DocumentNode,
     variables: Record<string, unknown>,
     field: string,
+    eligible: () => boolean = () => true,
   ): Promise<{ result: TResult; isCurrentBinding: boolean }> => {
+    const client = getApolloClient()
     const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
+    mutationEpoch++
     try {
       await ensureBackendReady()
-      const { data, errors } = await getApolloClient().mutate({ mutation, variables })
+      if (hasBindingRevisionChanged(bindingRevisionAtStart) || !eligible()) throw new ProjectRequestError('Request no longer belongs to this node.', null)
+      const { data, errors } = await client.mutate({ mutation, variables })
+      mutationEpoch++
       throwGraphqlErrors(errors)
       const result = data?.[field] as TResult | undefined
       if (result === undefined || result === null) {
         throw new ProjectRequestError(`Project request '${field}' returned no result.`, null)
       }
-      return { result, isCurrentBinding: !hasBindingRevisionChanged(bindingRevisionAtStart) }
+      return { result, isCurrentBinding: !hasBindingRevisionChanged(bindingRevisionAtStart) && eligible() }
     } catch (cause) {
       throw toRequestError(cause)
     }
@@ -170,23 +190,26 @@ export const useProjectStore = defineStore('projects', () => {
     mutation: DocumentNode,
     variables: Record<string, unknown>,
     field: string,
+    eligible: () => boolean = () => true,
   ): Promise<Project> => {
-    const { result, isCurrentBinding } = await mutate<Project>(mutation, variables, field)
+    const countAtStart = countGeneration
+    const { result, isCurrentBinding } = await mutate<Project>(mutation, variables, field, eligible)
     if (isCurrentBinding) {
-      projects.value = upsertProject(projects.value, result)
+      projects.value = upsertProject(projects.value, mergeCounts(result, countAtStart))
     }
     return result
   }
 
-  const createProject = (input: { name: string; description: string }): Promise<Project> =>
-    mutateProject(CreateProject, { input }, 'createProject')
+  const createProject = (input: { name: string; description: string; workspaces?: ProjectWorkspaceInput[] }, eligible?: () => boolean): Promise<Project> =>
+    mutateProject(CreateProject, { input }, 'createProject', eligible)
 
-  const updateProject = (input: { projectId: string; name: string; description: string }): Promise<Project> =>
-    mutateProject(UpdateProject, { input }, 'updateProject')
+  const updateProject = (input: { projectId: string; name: string; description: string; workspaces?: ProjectWorkspaceInput[] }, eligible?: () => boolean): Promise<Project> =>
+    mutateProject(UpdateProject, { input }, 'updateProject', eligible)
 
-  const deleteProject = async (projectId: string): Promise<boolean> => {
-    const { result, isCurrentBinding } = await mutate<boolean>(DeleteProject, { projectId }, 'deleteProject')
+  const deleteProject = async (projectId: string, eligible?: () => boolean): Promise<boolean> => {
+    const { result, isCurrentBinding } = await mutate<boolean>(DeleteProject, { projectId }, 'deleteProject', eligible)
     if (isCurrentBinding) {
+      counts.delete(projectId)
       projects.value = projects.value.filter((project) => project.projectId !== projectId)
     }
     return result
@@ -216,7 +239,7 @@ export const useProjectStore = defineStore('projects', () => {
     invalidate,
     fetchProjects,
     fetchProject,
-    setOpenTaskCount,
+    setTaskCounts,
     createProject,
     updateProject,
     deleteProject,

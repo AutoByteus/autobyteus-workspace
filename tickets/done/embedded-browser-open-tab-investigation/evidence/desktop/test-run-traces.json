@@ -1,0 +1,85 @@
+[
+  {
+    "id": "rt_1790958171063_f847859b-5ea9-4342-87b6-a6956e45250a",
+    "ts": 1790958171.062,
+    "turn_id": "79b4e9dd-724b-461d-937b-8612dfce07d3",
+    "seq": 1,
+    "trace_type": "user",
+    "content": "This is a controlled browser integration diagnostic in a disposable test instance. Please call the AutoByteus agent-tools MCP open_tab tool exactly once with url https://example.com/?autobyteus-browser-probe=20261002 . Do not use run_command, macOS open, other browser tools, or create/change any files. After the tool returns, report its exact result and stop. Do not claim the tab is visible, since that is being independently checked.",
+    "source_event": "AgentRun.postUserMessage"
+  },
+  {
+    "id": "rt_1790958173183_c932eddc-6e03-4aa3-ae09-736847fa9a89",
+    "ts": 1790958173.183,
+    "turn_id": "79b4e9dd-724b-461d-937b-8612dfce07d3",
+    "seq": 2,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "view_file",
+    "tool_call_id": "agy-tool-79b4e9dd-724b-461d-937b-8612dfce07d3-2",
+    "tool_args": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/autobyteus_agent_tools/open_tab.json"
+    }
+  },
+  {
+    "id": "rt_1790958173208_35ca9c23-299c-4d3c-9ff4-d0dd6a644e44",
+    "ts": 1790958173.208,
+    "turn_id": "79b4e9dd-724b-461d-937b-8612dfce07d3",
+    "seq": 3,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "view_file",
+    "tool_call_id": "agy-tool-79b4e9dd-724b-461d-937b-8612dfce07d3-2",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": "1 lines, 686 bytes"
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790958177671_b4bc1695-6a98-4c8d-9f86-a625fd565dfb",
+    "ts": 1790958177.671,
+    "turn_id": "79b4e9dd-724b-461d-937b-8612dfce07d3",
+    "seq": 4,
+    "trace_type": "tool_call",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-79b4e9dd-724b-461d-937b-8612dfce07d3-4",
+    "tool_args": {
+      "url": "https://example.com/?autobyteus-browser-probe=20261002"
+    }
+  },
+  {
+    "id": "rt_1790958178418_6a40c954-3781-4173-8064-34410ff6bf67",
+    "ts": 1790958178.418,
+    "turn_id": "79b4e9dd-724b-461d-937b-8612dfce07d3",
+    "seq": 5,
+    "trace_type": "tool_result",
+    "content": "",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "open_tab",
+    "tool_call_id": "agy-tool-79b4e9dd-724b-461d-937b-8612dfce07d3-4",
+    "tool_result": {
+      "provider_state": "DONE",
+      "output": {
+        "tab_id": "c1c04e",
+        "status": "opened",
+        "url": "https://example.com/?autobyteus-browser-probe=20261002",
+        "title": "Example Domain"
+      }
+    },
+    "tool_error": null
+  },
+  {
+    "id": "rt_1790958187882_430a34e9-edb5-4514-aae3-d7965b7477fc",
+    "ts": 1790958187.882,
+    "turn_id": "79b4e9dd-724b-461d-937b-8612dfce07d3",
+    "seq": 6,
+    "trace_type": "assistant",
+    "content": "The `open_tab` tool returned the following result:\n\n```json\n{\n  \"tab_id\": \"c1c04e\",\n  \"status\": \"opened\",\n  \"url\": \"https://example.com/?autobyteus-browser-probe=20261002\",\n  \"title\": \"Example Domain\"\n}\n```\n",
+    "source_event": "SEGMENT_END"
+  }
+]

@@ -3,6 +3,7 @@ import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-load
 
 const specs = [
   ["autobyteus-ts/tools/register-tools.js", "registerTools", "core"],
+  ["../agent-tools/project-tasks/project-task-native-tools.js", "registerProjectTaskTools", "project_tasks"],
   ["../agent-tools/browser/register-browser-tools.js", "registerBrowserTools", "browser"],
   ["../agent-tools/task-delegation/register-task-delegation-tools.js", "registerTaskDelegationTools", "task_delegation"],
   ["../agent-tools/agent-communication/register-agent-communication-tools.js", "registerAgentCommunicationTools", "agent_communication"],
@@ -37,7 +38,7 @@ const buildModuleLoader = (input: {
 };
 
 describe("AgentToolRegistryReadiness", () => {
-  it("registers Core first, six server units next, and Search last with ordered results", async () => {
+  it("registers Core first, seven server units next, and Search last with ordered results", async () => {
     const publisher = { publish: vi.fn() };
     const observations: Array<{ key: string; dependency: unknown }> = [];
     const modules = buildModuleLoader({
@@ -51,6 +52,7 @@ describe("AgentToolRegistryReadiness", () => {
 
     expect(results.map(({ key }) => key)).toEqual([
       "core",
+      "project_tasks",
       "browser",
       "task_delegation",
       "agent_communication",
@@ -79,7 +81,7 @@ describe("AgentToolRegistryReadiness", () => {
     expect(concurrent).toBe(first);
     const result = await first;
     expect(await readiness.registerRequiredGroups()).toBe(result);
-    expect(modules.loader).toHaveBeenCalledTimes(8);
+    expect(modules.loader).toHaveBeenCalledTimes(9);
   });
 
   it("names a server registrar failure, never starts Search, and never retries", async () => {
@@ -96,7 +98,7 @@ describe("AgentToolRegistryReadiness", () => {
     );
     await expect(readiness.registerRequiredGroups()).rejects.toBeInstanceOf(AggregateError);
     expect(modules.loads).not.toContain("search");
-    expect(modules.loader).toHaveBeenCalledTimes(7);
+    expect(modules.loader).toHaveBeenCalledTimes(8);
     const aggregate = await first.catch((error: unknown) => error as AggregateError);
     expect(aggregate.errors.map((error) => String(error))).toEqual(expect.arrayContaining([
       expect.stringContaining("Task Delegation Tools"),

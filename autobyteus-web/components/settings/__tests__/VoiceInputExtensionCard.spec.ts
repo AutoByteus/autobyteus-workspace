@@ -8,7 +8,7 @@ import type {
   VoiceInputLatestResult,
   VoiceInputPermissionState,
   VoiceInputRecordingSource,
-} from '~/stores/voiceInputStore'
+} from '~/types/voiceInput'
 
 interface VoiceInputStoreMock {
   initialize: ReturnType<typeof vi.fn>

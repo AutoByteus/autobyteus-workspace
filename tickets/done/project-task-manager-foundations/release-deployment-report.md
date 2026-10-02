@@ -1,0 +1,27 @@
+# Delivery / Release / Deployment Report
+
+## Status / authority
+DR-003 **In progress — explicit user accepted, finalization and beta publication pending**. Ticket PROJ-TASK-MANAGER-20261002-001, Large/High/Reviewed unchanged. DR-001 initial Blocked and DR-002 user hold preserved; not a terminal completion yet.
+
+## Explicit integrated acceptance / release applicability
+User replied to the integrated verification request: `finalze and release a new beta please` (2026-10-02). Accepted package ba1e6c94 plus DR-002 docs and disclosed residuals; authorization now covers origin/personal finalization and new beta. Hardware waiver remains separate. Exact receipt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/user-verification-and-refresh.json.
+
+## Latest target integration / checks
+Accepted base5e3cb2f; latest2056b04f3b654ffe583aa956c371869f7d06444d. Protected owned docs/artifacts checkpoint92984a5c7; merged seven upstream commits/no conflict at0ac39a28d3abaf493a6673992ae01106452db38e, both parents/initiala5123e7 preserved. Only unrelated AGY browser converter/tests/docs and beta.10 version; no material Projects/composer/voice handoff change, renewed approval not required. Shared prepare precedes serialized server build/testing. Delivery server150/150, renderer135/135, Electron9/9, upstream AGY smoke; exact logs/exits /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/commands.json. Extra smoke first used nonexistent Delivery harness paths, no test executed; corrected paths/no source change, raw failure retained. Prior API Projects16/composer4 evidence retained; not rerun.
+
+## Docs / data transition
+Docs sync Pass, five canonical docs; /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/docs-sync-report.md. Approved Directly Usable — No Migration; no persisted-data transition, installation/profile/settings/default/audio changes. No source/test/dependency edits by Delivery.
+
+## Repository finalization
+Target origin/personal. Main checkout has unrelated tracked/untracked changes, left untouched. Dedicated clean clone /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization, personal branch, will update target/merge/push without disturbing main. Ordered archive → ticket commit → ticket push → target update → ticket merge → target push. Current result **Pending**; exact SHAs/push receipts appended after commands succeed. Remote ticket branch retained unless safe cleanup says otherwise.
+
+## Release / publication / rollout
+Applicable **Yes**, explicit new beta request supersedes DR-002 repository-only applicability. Method root `bash scripts/desktop-release.sh beta`: next unused matching version/tag, version commit then branch/tag pushes; exactly one tag-triggered Desktop Release workflow. Beta is GitHub prerelease with generated notes, offered only to Receive beta updates clients. Archived /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/release-notes.md is retained scope/context prepared before acceptance, NOT a consumed beta script input (beta accepts no notes parameter). Publication **Pending**; no extra fresh-tag manual dispatch. CI packaging/full platform asset proof assessed separately. Production infrastructure deployment **Not required**, no environment requested; installed-client rollout/manual hardware verification **Not performed**, not required by this publication authorization.
+
+## Cleanup / completion / rollback
+Ticket worktree/local branch cleanup **Pending** until target contains candidate and applicable publication succeeds. Own shared-prepare untracked dist removed after checks; unrelated main/worktrees left untouched. No successful terminal return while publication/cleanup pending. Rollback visibility: preserve tag/evidence; if later supported defect, accountable correction/forward release, not silently rewrite/delete published tag or undo finalized merge.
+
+## Validation residuals
+Real mic/device/permission/official extension/transcript/live Electron IPC Not Tested — user-waived, independently UNVERIFIED; AC-018 unchanged. Last executed full VueTSC FAILED387/source-base388 PRE-INTEGRATION; websocket.ts:15:3 TS2322 message-shape origin partly unattributed; no new full checker Pass or suppression. Previous packaged typed/detail/native-write→Refresh observation remains pre-integration. Projects browser16 and composer fixture4 are separate evidence classes, not20live journeys; composer uses labeled doubles, no live Team/Manager/OS IME proof. MP-004 Not Reachable, injected units guard-only; no switching coordinator/recovery/subscriptions. Full VIS/pixel/phone/capacity certification absent. Manager/team externally user-owned; scheduler/assignment/run linkage/sidebar/stopping/client/scripts/skills/phone/default/installation scope excluded/deferred. Original intermittent installation cause UNPROVEN; prior failures/OOM/raw whitespace retained.
+
+CI package build/publication may renew platform packaging evidence, but does not erase full VueTSC failure or prove microphone/installed-client capability. No blanket attribution or whole-product acceptance claim.

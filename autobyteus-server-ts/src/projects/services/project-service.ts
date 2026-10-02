@@ -8,6 +8,7 @@ import type {
   ProjectView,
   ProjectWorkspaceLink,
   ProjectWorkspaceView,
+  ProjectWorkspaceInput,
   RemoveProjectWorkspaceCommand,
   UpdateProjectCommand,
   UpdateProjectWorkspaceCommand,
@@ -15,11 +16,14 @@ import type {
 import { ProjectError } from "../domain/project-errors.js";
 import { getProjectStore, type ProjectStore } from "../stores/project-store.js";
 
+import { getProjectTaskContextStore, type ProjectTaskContextStore } from "../context/project-task-context-store.js";
+
 type WorkspaceRegistrationLookup = Pick<WorkspaceManager, "getRegisteredWorkspaceRootPath">;
 type ProjectPersistence = Pick<ProjectStore, "listRecords" | "updateRecords">;
 
 type ProjectServiceDependencies = {
   store?: ProjectPersistence;
+  contextStore?: ProjectTaskContextStore;
   workspaceLookup?: WorkspaceRegistrationLookup;
   now?: () => Date;
   createId?: () => string;
@@ -38,7 +42,7 @@ const normalizeDescription = (description: string | null | undefined): string =>
 
 const nameKey = (name: string): string => name.toLocaleLowerCase();
 
-const compareByName = (left: ProjectView, right: ProjectView): number => {
+const compareByName = (left: Pick<ProjectView, "name" | "projectId">, right: Pick<ProjectView, "name" | "projectId">): number => {
   const byKey = nameKey(left.name).localeCompare(nameKey(right.name));
   return byKey !== 0 ? byKey : left.projectId.localeCompare(right.projectId);
 };
@@ -103,6 +107,10 @@ export class ProjectService {
     return views.sort(compareByName);
   }
 
+  async listProjectSummaries(): Promise<Array<Pick<ProjectView, "projectId" | "name" | "description">>> {
+    return (await this.store.listRecords()).map(({projectId, name, description}) => ({projectId, name, description})).sort(compareByName);
+  }
+
   async getProject(projectId: string): Promise<ProjectView | null> {
     const records = await this.store.listRecords();
     const record = records.find((entry) => entry.projectId === projectId);
@@ -123,8 +131,9 @@ export class ProjectService {
       tasks: [],
     };
 
-    await this.store.updateRecords((records) => {
+    await this.store.updateRecords(async (records) => {
       assertNameAvailable(records, name);
+      created.workspaces = await this.resolveFormLinks(created, command.workspaces ?? []);
       return [...records, created];
     });
 
@@ -135,9 +144,10 @@ export class ProjectService {
     const name = normalizeName(command.name);
     const description = normalizeDescription(command.description);
 
-    const updated = await this.updateProjectRecord(command.projectId, (project, records) => {
+    const updated = await this.updateProjectRecord(command.projectId, async (project, records) => {
       assertNameAvailable(records, name, project.projectId);
-      return { ...project, name, description };
+      const workspaces = command.workspaces == null ? project.workspaces : await this.resolveFormLinks(project, command.workspaces);
+      return { ...project, name, description, workspaces };
     });
     return this.toView(updated);
   }
@@ -153,6 +163,10 @@ export class ProjectService {
       removed = remaining.length !== records.length;
       return remaining;
     });
+    if (removed) {
+      try { await (this.deps.contextStore ?? getProjectTaskContextStore()).deleteOwner(projectId); }
+      catch (e) { console.warn("Project metadata deleted; context cleanup failed.", e); }
+    }
     return removed;
   }
 
@@ -207,6 +221,19 @@ export class ProjectService {
     return this.toView(updated);
   }
 
+  private async resolveFormLinks(project: Project, rows: ProjectWorkspaceInput[]): Promise<ProjectWorkspaceLink[]> {
+    const ids = rows.map((r) => r.workspaceId.trim());
+    if (new Set(ids).size !== ids.length) throw new ProjectError("WORKSPACE_ALREADY_LINKED", "Duplicate workspace links are not allowed.");
+    return Promise.all(rows.map(async (row, index) => {
+      const workspaceId = ids[index];
+      const existing = project.workspaces.find((l) => l.workspaceId === workspaceId);
+      if (existing) return { ...existing, description: normalizeDescription(row.description) };
+      const workspaceRootPath = await this.workspaceLookup.getRegisteredWorkspaceRootPath(workspaceId);
+      if (!workspaceRootPath) throw new ProjectError("WORKSPACE_NOT_REGISTERED", `Workspace '${workspaceId}' is not registered.`);
+      return {workspaceId, workspaceRootPath, description: normalizeDescription(row.description), addedAt: this.nowIso()};
+    }));
+  }
+
   private async updateProjectRecord(
     projectId: string,
     change: (project: Project, records: Project[]) => Project | Promise<Project>,
@@ -228,6 +255,7 @@ export class ProjectService {
     return {
       ...fields,
       workspaces,
+      taskCount: tasks.length,
       openTaskCount: tasks.filter((task) => task.status !== "DONE").length,
     };
   }

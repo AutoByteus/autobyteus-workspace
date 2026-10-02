@@ -47,6 +47,7 @@ const voiceInputStoreMock = reactive({
   isTranscribing: false,
   initialize: vi.fn().mockResolvedValue(undefined),
   cleanup: vi.fn().mockResolvedValue(undefined),
+  cancelOperationForTarget: vi.fn().mockResolvedValue(undefined),
   cancelOperationForSource: vi.fn().mockResolvedValue(undefined),
   toggleRecording: vi.fn().mockResolvedValue(undefined),
 })
@@ -199,7 +200,7 @@ describe('AgentUserInputTextArea', () => {
     expect(wrapper.text()).toContain('Starting microphone...')
 
     wrapper.unmount()
-    expect(voiceInputStoreMock.cancelOperationForSource).toHaveBeenCalledWith('composer')
+    expect(voiceInputStoreMock.cancelOperationForTarget).toHaveBeenCalledWith(expect.any(String))
   })
 
   it('disables send while context files are still uploading', async () => {

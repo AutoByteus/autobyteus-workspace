@@ -12,6 +12,7 @@ export type ClaudeSessionToolingOptions = {
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
+  enabledProjectTaskToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
   listAvailableAgentsToolingEnabled: boolean;
@@ -32,6 +33,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
   const enabledMediaToolNames = [
     ...input.runtimeToolExposure.enabledMediaToolNames,
   ];
+  const enabledProjectTaskToolNames = [...input.runtimeToolExposure.enabledProjectTaskToolNames];
   const enabledTaskDelegationToolNames = [
     ...input.runtimeToolExposure.enabledTaskDelegationToolNames,
   ];
@@ -51,6 +53,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledBrowserToolNames,
     enabledMediaToolNames,
     enabledTaskDelegationToolNames,
+    enabledProjectTaskToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
     listAvailableAgentsToolingEnabled,
@@ -69,6 +72,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledBrowserToolNames,
     enabledMediaToolNames,
     enabledTaskDelegationToolNames,
+    enabledProjectTaskToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
     listAvailableAgentsToolingEnabled,
@@ -84,6 +88,7 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
+  enabledProjectTaskToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
   listAvailableAgentsToolingEnabled: boolean;
@@ -101,6 +106,7 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   for (const toolName of input.enabledMediaToolNames) {
     toolNames.add(toolName);
   }
+  for (const name of input.enabledProjectTaskToolNames) toolNames.add(name);
   if (input.taskDelegationToolingEnabled) {
     for (const toolName of input.enabledTaskDelegationToolNames) {
       toolNames.add(toolName);

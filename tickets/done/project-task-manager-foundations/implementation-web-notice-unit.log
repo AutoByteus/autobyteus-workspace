@@ -1,0 +1,44 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/projects/__tests__/useProjectNotice.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  composables/projects/__tests__/useProjectNotice.spec.ts [ composables/projects/__tests__/useProjectNotice.spec.ts ]
+Error: Transform failed with 1 error:
+/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/localization/messages/en/settings.ts:418:41: ERROR: Expected ";" but found ":"
+  Plugin: vite:esbuild
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/localization/messages/en/settings.ts:418:41
+
+  Expected ";" but found ":"
+  416 |
+  417 |  export default settingsMessages;
+  418 |    'settings.voiceInput.controls.starting': 'Starting microphone...',
+      |                                           ^
+  419 |    'settings.voiceInput.controls.transcribing': 'Transcribing...',
+  420 |    'settings.voiceInput.controls.stop': 'Stop recording',
+
+ ❯ failureErrorWithLog ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467:15
+ ❯ ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:736:50
+ ❯ responseCallbacks.<computed> ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:603:9
+ ❯ handleIncomingPacket ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:658:12
+ ❯ Socket.readFromStdout ../node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:581:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  17:56:28
+   Duration  1.49s (transform 726ms, setup 0ms, collect 0ms, tests 0ms, environment 128ms, prepare 108ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

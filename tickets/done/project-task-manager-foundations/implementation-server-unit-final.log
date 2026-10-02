@@ -1,0 +1,402 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/projects/project-task-context-store.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > returns proven committed metadata even when subsequent lock finalization fails
+Project metadata committed; lock finalization failed. Error: release failure
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:90:65)
+    at Object.unlink (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at code (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/persistence/file/store-utils.ts:55:20)
+    at withFilePathLock (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/persistence/file/store-utils.ts:123:9)
+    at ProjectStore.updateRecords (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/projects/stores/project-store.ts:96:14)
+    at ProjectTaskService.createTask (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/projects/services/project-task-service.ts:59:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:93:18
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/projects/project-task-context-store.test.ts > Task-owned context transaction > cleanup failure cannot turn a confirmed file-removal commit into rollback
+Task context cleanup failed. Error: cleanup unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/projects/project-task-context-store.test.ts:119:63
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/projects/project-task-context-store.test.ts (9 tests) 896ms
+stdout | tests/unit/projects/project-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-service.test.ts (29 tests) 434ms
+stdout | tests/unit/projects/project-task-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/project-task-service.test.ts (15 tests) 345ms
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > shares complete reads, TODO create and known-ID description/status patches
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-zKVVhC
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_projects
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-45Ol9b
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_projects
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-E8BELo
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-GKr25m
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for list_project_tasks
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-XohmuU
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-SlLfcp
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-VZJJzP
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-sluGx2
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-ZHUEa0
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > preserves domain errors before BaseTool coercion for create_or_update_task
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > unknown Task IDs fail without creating and aborted native execution stays a transport error
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-lEKh3X
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > unknown Task IDs fail without creating and aborted native execution stays a transport error
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+stdout | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-tools-unit-1jzmKe
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+
+stderr | tests/unit/agent-tools/project-tasks/project-task-tools.test.ts > Project data tools — actual native preparation/execute and selected MCP adapter > exposes exactly explicit selections to catalog/Claude/native members, never legacy task aliases
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'create_or_update_task'
+
+ ✓ tests/unit/agent-tools/project-tasks/project-task-tools.test.ts (11 tests) 121ms
+stdout | tests/unit/context-files/context-file-access-containment.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/context-files/context-file-access-containment.test.ts (9 tests) 58ms
+ ✓ tests/unit/context-files/context-file-upload-writer.test.ts (1 test) 17ms
+stdout | tests/unit/context-files/context-file-exact-execution.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/context-files/context-file-exact-execution.test.ts (1 test) 17ms
+stdout | tests/unit/context-files/context-file-agent-collaboration-owner.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/context-files/context-file-agent-collaboration-owner.test.ts (3 tests) 19ms
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, seven server units next, and Search last with ordered results
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, seven server units next, and Search last with ordered results
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > registers Core first, seven server units next, and Search last with ordered results
+Registered required tool unit: Search Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > memoizes concurrent and repeated registration to one sticky result
+Registered required tool unit: Search Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a server registrar failure, never starts Search, and never retries
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:156:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:96:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20 {
+  [errors]: [
+    Error: Required tool unit 'Task Delegation Tools' registration failed: Error: delegation registry unavailable
+        at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:122:11)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        ... 3 lines matching cause stack trace ...
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20 {
+      [cause]: Error: delegation registry unavailable
+          at Object.onRegister (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:90:46)
+          at registerTaskDelegationTools (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:33:21)
+          at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:120:11)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at async Promise.allSettled (index 2)
+          at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:147:24)
+          at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:96:5
+          at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+    }
+  ]
+}
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Registered required tool unit: Core Tools
+
+stdout | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Browser Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Published Artifact Tools
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a missing registrar export and blocks Search
+Required agent tool readiness failed. AggregateError: Required server-owned tool registration failed.
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:156:15)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:112:21
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20 {
+  [errors]: [
+    Error: Required tool unit 'Media Tools' is missing export 'registerMediaTools'.
+        at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:115:11)
+        at processTicksAndRejections (node:internal/process/task_queues:103:5)
+        at async Promise.allSettled (index 6)
+        at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:147:24)
+        at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:112:21
+        at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+  ]
+}
+
+stderr | tests/unit/startup/agent-tool-loader.test.ts > AgentToolRegistryReadiness > names a module-load failure and retains the rejected memoized promise
+Required agent tool readiness failed. Error: Required tool unit 'Core Tools' could not load 'autobyteus-ts/tools/register-tools.js': Error: core module unavailable
+    at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:108:11)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:146:20) {
+  [cause]: Error: core module unavailable
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:28:45
+      at Mock (file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+      at loadUnit (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:106:20)
+      at AgentToolRegistryReadiness.registerOnce (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:146:26)
+      at AgentToolRegistryReadiness.registerRequiredGroups (/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/src/startup/agent-tool-loader.ts:140:32)
+      at /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-server-ts/tests/unit/startup/agent-tool-loader.test.ts:127:31
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:145:11
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:26
+      at file:///Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:1243:20
+      at new Promise (<anonymous>)
+}
+
+ ✓ tests/unit/startup/agent-tool-loader.test.ts (5 tests) 9ms
+ ✓ tests/unit/context-files/context-file-local-path-resolver.test.ts (2 tests) 5ms
+ ✓ tests/unit/context-files/context-file-owner-resolver.test.ts (7 tests) 5ms
+ ✓ tests/unit/context-files/context-file-owner-types.test.ts (13 tests) 4ms
+ ✓ tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts (7 tests) 3ms
+stdout | tests/unit/projects/projects-capability-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/projects/projects-capability-service.test.ts (3 tests) 3ms
+ ✓ tests/unit/context-files/context-file-path-environment.test.ts (8 tests) 3ms
+ ✓ tests/unit/context-files/context-file-layout.test.ts (1 test) 1ms
+
+ Test Files  16 passed (16)
+      Tests  124 passed (124)
+   Start at  18:05:11
+   Duration  12.56s (transform 2.66s, setup 69ms, import 8.81s, tests 1.94s, environment 1ms)

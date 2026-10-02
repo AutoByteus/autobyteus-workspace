@@ -1,0 +1,16 @@
+Read-only installed artifact inspection; no user-app execution or mutation.
+Version: 1.4.92-beta.9
+Renderer: /dist/renderer/_nuxt/workspace.BgYkGGB_.js sha256: f862a7a69499fa5bee7547e504d3f13bc2414a58dfed2380a932d64943e0a284
+bleTabs:a,setActiveTab:c,selectTabExplicitly:u,contextualScopeKey:d,useContextualDefaultTab:()=>{m(),gs+=1,Sn(d,m),nm(()=>{gs-=1})},allTabs:i}}const XC=Object.freeze(Object.defineProperty({__proto__:null,useRightSideTabs:Xi},Symbol.toStringTag,{value:"Module"})),QE="open_tab",ek=e=>{if(e&&typeof e=="object"&&!Array.isArray(e)){const t=e.tab_id;return typeof t=="string"&&t.trim().length>0?t.trim():null}if(typeof e=="string")try{const n=JSON.parse(e)?.tab_id;return typeof n=="string"&&n.trim().length>0?n.trim():null}catch{return null}return null},tk=async e=>{const t=xu(e);if(!t||t.toolName!==QE)return;const n=ek(t.result);if(!n)return;const r=Fc();if(!de().isEmbeddedWindow||!r.browserAvailable)return;const{setActiveTab:s}=Xi();try{await r.focusSession(n),s("browser")}catch(i){console.warn("[handleBrowserToolExecutionSucceeded] Failed to focus browser session after open_tab.",i)}},je=Object.freeze({conversationChanged:!1,eventMonitor:"NONE",navigation:Object.freeze({k
+Server: /Applications/AutoByteus.app/Contents/Resources/server/dist/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js sha256: 1c630a5035fec0e6bfc38d67e0e27077bb0f81e4cc534a25eec188088bb61233
+: "DONE",
+            }));
+        }
+        else {
+            events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+                ...common, result: { provider_state: "DONE", output }, provider_state: "DONE",
+            }));
+        }
+        return events;
+    }
+    /** AGY's stream omits

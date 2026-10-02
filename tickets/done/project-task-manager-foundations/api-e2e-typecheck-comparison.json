@@ -1,0 +1,82 @@
+{
+  "source_base": "e04cfef23550c3b78286a53befc6bd5d71fb1061",
+  "method": "Full diagnostic message blocks normalize only two owned roots, ignore location for message comparisons. Exact site+code and file+code checks also retained. No suppression/heap override.",
+  "initial": {
+    "current": 387,
+    "baseline": 388,
+    "added": [],
+    "removed": [
+      {
+        "signature": [
+          "tests/integration/voice-input-extension.integration.test.ts",
+          "TS2740",
+          "Type '{ contextId: string; requirement: string; contextFilePaths: never[]; }' is missing the following properties from type '{ config: { agentDefinitionId: string; agentDefinitionName: string; agentAvatarUrl?: string | null | undefined; llmModelIdentifier: string; runtimeKind: string; workspaceId: string | null; workspaceMetadata: { ...; } | null; autoExecuteTools: boolean; isLocked: boolean; llmConfig?: Record<...> | ... 1 more ... | und...': config, state, requestedSkillNames, requestedMentions, and 4 more."
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "latestAfterAllTestEdits": {
+    "current": 387,
+    "baseline": 388,
+    "added": [
+      {
+        "signature": [
+          "tests/setup/websocket.ts",
+          "TS2322",
+          "Type '() => Promise<{}>' is not assignable to type '{ (c: any, l: any): Promise<any>; raw: (c: any, l?: {}) => any; native(...i: any[]): any; create(i?: {}, c?: {}): ...; } & (() => Promise<{}>)'.\n  Type '() => Promise<{}>' is missing the following properties from type '{ (c: any, l: any): Promise<any>; raw: (c: any, l?: {}) => any; native(...i: any[]): any; create(i?: {}, c?: {}): ...; }': raw, native, create"
+        ],
+        "count": 1
+      }
+    ],
+    "removed": [
+      {
+        "signature": [
+          "tests/integration/voice-input-extension.integration.test.ts",
+          "TS2740",
+          "Type '{ contextId: string; requirement: string; contextFilePaths: never[]; }' is missing the following properties from type '{ config: { agentDefinitionId: string; agentDefinitionName: string; agentAvatarUrl?: string | null | undefined; llmModelIdentifier: string; runtimeKind: string; workspaceId: string | null; workspaceMetadata: { ...; } | null; autoExecuteTools: boolean; isLocked: boolean; llmConfig?: Record<...> | ... 1 more ... | und...': config, state, requestedSkillNames, requestedMentions, and 4 more."
+        ],
+        "count": 1
+      },
+      {
+        "signature": [
+          "tests/setup/websocket.ts",
+          "TS2322",
+          "Type '() => Promise<{}>' is not assignable to type '$Fetch<unknown, NitroFetchRequest> & (() => Promise<{}>)'.\n  Type '() => Promise<{}>' is missing the following properties from type '$Fetch<unknown, NitroFetchRequest>': raw, create"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "exactSiteAndCode": {
+    "current": 387,
+    "baseline": 388,
+    "added": [],
+    "removed": [
+      {
+        "signature": [
+          "tests/integration/voice-input-extension.integration.test.ts",
+          "259",
+          "5",
+          "TS2740"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "fileAndCode": {
+    "current": 387,
+    "baseline": 388,
+    "added": [],
+    "removed": [
+      {
+        "signature": [
+          "tests/integration/voice-input-extension.integration.test.ts",
+          "TS2740"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  "interpretation": "Initial same-environment comparison has zero added full-message signatures. Latest identical-count rerun after packaging/preparation has one changed full-message signature at unchanged tests/setup/websocket.ts:15:3 TS2322 (existing fetchMock shape), and the same one removed old voice fixture TS2740. No new failing file/code or exact sites. websocket.ts, nuxt.config.ts and lockfile are unchanged vs source base. Generated-type expansion origin not independently fully attributed; not a full typecheck Pass."
+}

@@ -1,0 +1,25 @@
+
+> autobyteus@1.4.92-beta.9 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts (11 tests) 79ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  20:10:24
+   Duration  5.76s (transform 3.16s, setup 5.12s, collect 58ms, tests 79ms, environment 170ms, prepare 127ms)

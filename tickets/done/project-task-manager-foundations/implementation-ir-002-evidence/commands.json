@@ -1,0 +1,49 @@
+{
+  "renderer-expanded.log": {
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/projectTaskStore.spec.ts stores/__tests__/projectStore.spec.ts stores/__tests__/voiceInputStore.spec.ts components/projects/__tests__ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts composables/projects/__tests__ components/chat/__tests__/ChatComposer.spec.ts tests/integration/voice-input-extension.integration.test.ts --run",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "startedAt": "2026-10-02T17:49:03.474726+00:00",
+    "finishedAt": "2026-10-02T17:49:17.339405+00:00",
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/renderer-expanded.log",
+    "scope": "implementation local rerun of the exact Delivery expanded renderer command, not API/E2E sign-off"
+  },
+  "archive-regeneration-reproduction.log": {
+    "command": "pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.ir002-regression.test.ts --run -t 'serves the manifest checksum'",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "startedAt": "2026-10-02T17:49:43.938084+00:00",
+    "finishedAt": "2026-10-02T17:49:54.052346+00:00",
+    "exitCode": 1,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/archive-regeneration-reproduction.log",
+    "scope": "test-only synthetic regression against pre-fix fixture; not proof of original DLF-002 cause",
+    "temporaryTest": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/integration/voice-input-extension.ir002-regression.test.ts",
+    "temporaryTestRemoved": true
+  },
+  "voice-fixture-stability-1.log": {
+    "command": "pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.integration.test.ts --run",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "startedAt": "2026-10-02T17:50:23.672658+00:00",
+    "finishedAt": "2026-10-02T17:50:33.334512+00:00",
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-1.log",
+    "scope": "serial implementation-local fixture stability; no real extension/model/device/IPC validation"
+  },
+  "voice-fixture-stability-2.log": {
+    "command": "pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.integration.test.ts --run",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "startedAt": "2026-10-02T17:50:33.335266+00:00",
+    "finishedAt": "2026-10-02T17:50:43.108212+00:00",
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-2.log",
+    "scope": "serial implementation-local fixture stability; no real extension/model/device/IPC validation"
+  },
+  "voice-fixture-stability-3.log": {
+    "command": "pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.integration.test.ts --run",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+    "startedAt": "2026-10-02T17:50:43.109130+00:00",
+    "finishedAt": "2026-10-02T17:50:53.445519+00:00",
+    "exitCode": 0,
+    "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/implementation-ir-002-evidence/voice-fixture-stability-3.log",
+    "scope": "serial implementation-local fixture stability; no real extension/model/device/IPC validation"
+  }
+}

@@ -1,0 +1,37 @@
+# SR-007 — Combined Task operation and skill/CLI investigation
+
+## Identity, workspace and status
+PROJ-TASK-MANAGER-20261002-001 / project-task-manager-foundations, 2026-10-02. Outcome **Draft — Requirements Decision Hold**; combined high-level create/update direction clarified, exact contract and runtime exposure/full baseline unapproved. Architecture, task-size/risk, reviews, implementation and production validation are **N/A — phases not reached**.
+
+Canonical isolated workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations`, branch codex/project-task-manager-foundations, refreshed base origin/personal@e04cfef23550c3b78286a53befc6bd5d71fb1061; finalization target origin/personal. Prior documentation checkpoint f50b22d90fbed16ed3e06a0834ba180ca0d8cea4; no source changes, remote push, integration, runtime/feature actions or installed-data writes. Previous turn interrupted after read-only checks; clean resume verified.
+
+## Original goal and new request
+Continue experimental/default-off Projects/Tasks with reusable task-management access and the previously approved small manual Projects/Tasks UI. User authors Manager/Team separately in agents repository; existing discovery/delegation/follow-up remain unchanged. New sidebar/workspace-run-history and resource-stopping proposals are explicitly deferred.
+
+SD-CF-008 reiterates optional status filtering (TODO example) alongside Project selection, description/status updates, and proposes calling the operation create-or-update. Proposed three capabilities are list_projects, list_project_tasks and create_or_update_task; exact naming remains provisional. Recommend one Task per call: omitted ID creates a required-description TODO Task, existing ID patches description/status, unknown supplied ID fails, omitted fields preserved. Plural wording is not approval of batching. No separate find/create/search/full-list-replacement capability.
+
+SD-CF-009 asks to investigate CLI/scripts plus skill instead of direct MCP and wonders how Bash can access server-owned state. This authorizes investigation, **not shipping a CLI/skill or selecting/replacing runtime surfaces**. No full baseline approval inferred. DEC-015 has a concrete combined-operation proposal; next material decision is DEC-016 exposure, not repeatedly asking whether creation is wanted.
+
+## Feasibility outcome and evidence limits
+Skill instructions can direct a shell-invoked client to call HTTP server APIs. Existing configured skills/materialization and shell subprocess support make this plausible without new skill infrastructure. Existing GraphQL has Project/Task reads/create/description edits; **status write/filter remain missing** regardless of chosen interface. Server retains validation/locked persistence; no script edits projects.json.
+
+Direct-API CLI avoids MCP for these calls. MCP-wrapper CLI changes the agent-facing interface but still uses MCP underneath. Our current main GraphQL route uses trusted-network/mobile policy, not generic per-agent credentials; MCP instead is loopback/active-run/session-tool filtered. Direct CLI does not automatically inherit that filter, sender identity or tool events. AUTOBYTEUS_SERVER_HOST is a candidate configured endpoint; propagation/reachability across providers/WSL/containers is not certified. No invented permission, authentication or token-efficiency claim.
+
+Recommend considering a small direct-API client + skill for owned Project CRUD if user chooses CLI-first; keep unrelated collaboration MCP unchanged. This is a feasibility recommendation, **not a selected technical design**. Full findings, candidate supported journey, alternatives and primary sources are in skill-cli-feasibility.md (E-029–032). No live API/shell-auth/delegation/parallel/runtime or product test performed; only read-only source/document inspection and owned documentation writes.
+
+## Canonical artifacts and unchanged external authority
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/requirements-doc.md`: SR-007 Draft; BEH-002/006, UC-002, REQ-002/010/015, AC-002/020/021, SCN-002 and DEC-015 refined; DEC-016 added. Other stable IDs/scoped contracts retained.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/investigation-notes.md`: E-001–032, user chronology, exact sources and full absolute inventory of still-relevant supplements/external artifacts.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/solution-revision-record.md`: SR-001–006 unchanged; SR-007 appended. Historical handoffs and requirements-refinement-sr-003/004/005/006 remain as-of records.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations/skill-cli-feasibility.md`: investigation-only supplement; alternatives/trust/environment gaps and primary documentation, no shipping approval.
+- Approved external manual UI `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-ux-spec.md` and VIS-001–020 under visual-references; UF-017 in ui-brainstorm-record.md, PFI-001–007 in handoff-notes.md and full receipt/validation/history/runbook/DATA inventory preserved by investigation-notes.md. Product ownership remains external/read-only; no competing UI spec/new sidebar handoff.
+- Exact approved UI 84ed47bac6877e2cdc6350cca789b0c30ffb55a3, accepted prototype base df2f5cdaf9b168298dcae79ac47c11f31dd82d7c, final integrated receipt f66efa9c5c1d9976137f6c134120529466b34e48, canonical root /Users/normy/autobyteus_org/autobyteus-web-prototype. Accepted source e9aa4a74ca36f62303bb7f5f0efd74bf89a9ea71 and root prototype-bootstrap-report.md remain distinct from investigation e04cfef; no newer parity certification.
+
+Manual UI/default-off/retained data and proposed real voice, durable Task context/MIME/25 MiB limits, normalized workspace registration, all-Task deletion count and explicit three-state status continuity remain unchanged. No runtime cleanup/Manager package/scheduler/linkage/sidebar scope added. Product validation remains synthetic/session-only, not persistence/API/MCP/real mic/files/phone certification; held DATA coupling limitation retained.
+
+## Next action and routing
+Ask user whether new Task access should be **CLI/skill instead, alongside native/MCP, or later**. Then refine affected runtime/operation ACs and obtain explicit complete requirements plus unchanged approved manual Product supplement approval before architecture. No production-engineering readiness or automatic surface switch.
+
+Full result persisted before handoff-rule lookup. Documentation checks pass: ordered stable BEH/UC/REQ/AC/SCN/DEC IDs, table consistency, byte-preserved SR-001–006/historical results, final external spec/all 20 screenshot locators and git diff --check. These are documentation checks, not production tests.
+
+get_handoff_rules called 2026-10-02 after persistence. **No matching rule**: routine requirements/feasibility decision hold, no new Product request/correction, approved marketing work, completed architecture or delivery receipt gap. Return to user for DEC-016; no send_message_to or delegation required/performed.

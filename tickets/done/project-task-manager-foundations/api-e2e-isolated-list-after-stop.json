@@ -1,0 +1,9 @@
+{
+  "command": "pnpm --silent isolated-app list",
+  "ok": true,
+  "ownedInstanceId": "iso-55019-e50e",
+  "ownedInstancePresent": false,
+  "unrelatedInstancesCount": 5,
+  "unrelatedInstancesModified": false,
+  "note": "Unrelated inventory identifiers omitted; only our instance was stopped."
+}

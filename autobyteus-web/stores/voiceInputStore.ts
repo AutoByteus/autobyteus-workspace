@@ -2,82 +2,18 @@ import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useExtensionsStore } from '~/stores/extensionsStore';
-import type { AgentContext } from '~/types/agent/AgentContext';
+import type { VoiceInputRecordingRequest, VoiceInputRecordingSource, VoiceInputPermissionState, VoiceInputStoreState, VoiceInputLatestResult, VoiceInputCapturePayload, VoiceInputCaptureDiagnostics } from '~/types/voiceInput';
 import {
   buildMicrophoneAccessError,
   disposeVoiceCaptureResources,
   ensureVoiceAudioContextRunning,
-  mergeTranscriptWithDraft,
   selectVoiceAudioInputDevices,
   toVoicePermissionState,
 } from '~/utils/voiceInputCapture';
 
-/**
- * What a recording is for. A composer recording names the context its transcript
- * goes into; the caller (the composer's target) decides, never the store.
- */
-export type VoiceInputRecordingRequest =
-  | { source: 'composer'; targetContext: AgentContext }
-  | { source: 'settings-test' };
-export type VoiceInputRecordingSource = VoiceInputRecordingRequest['source'];
-export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 'transcript-ready' | 'no-speech' | 'empty-transcript' | 'error';
-export type VoiceInputPermissionState = 'unknown' | 'prompt' | 'granted' | 'denied' | 'unsupported';
-
 const CAPTURE_START_TIMEOUT_MS = 2500;
 
 const t = (key: string, params?: Record<string, string | number>): string => localizationRuntime.translate(key, params);
-
-export interface VoiceInputAudioInputDevice {
-  deviceId: string;
-  label: string;
-}
-
-export interface VoiceInputCaptureDiagnostics {
-  inputSampleRate: number;
-  wavSampleRate: number;
-  durationMs: number;
-  rms: number;
-  peak: number;
-  sampleCount: number;
-}
-
-interface VoiceInputCapturePayload {
-  audioData: ArrayBuffer;
-  diagnostics: VoiceInputCaptureDiagnostics;
-}
-
-export interface VoiceInputLatestResult {
-  source: VoiceInputRecordingSource;
-  outcome: VoiceInputResultOutcome;
-  transcript: string;
-  detectedLanguage: string | null;
-  error: string | null;
-  diagnostics: VoiceInputCaptureDiagnostics | null;
-  completedAt: string;
-}
-
-interface VoiceInputStoreState {
-  initialized: boolean;
-  isElectron: boolean;
-  isStarting: boolean;
-  isRecording: boolean;
-  isTranscribing: boolean;
-  recordingSource: VoiceInputRecordingSource | null;
-  liveInputLevel: number;
-  error: string | null;
-  latestResult: VoiceInputLatestResult | null;
-  audioContext: AudioContext | null;
-  audioWorklet: AudioWorkletNode | null;
-  stream: MediaStream | null;
-  flushPromiseResolve: ((payload: VoiceInputCapturePayload) => void) | null;
-  audioInputDevices: VoiceInputAudioInputDevice[];
-  microphonePermissionState: VoiceInputPermissionState;
-  mediaDeviceListenerRegistered: boolean;
-  captureWatchdogTimer: ReturnType<typeof setTimeout> | null;
-  hasReceivedCaptureStats: boolean;
-  composerTargetContext: AgentContext | null;
-  startupAttemptGeneration: number;
-}
 
 export const useVoiceInputStore = defineStore('voiceInput', {
   state: (): VoiceInputStoreState => ({
@@ -99,7 +35,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     mediaDeviceListenerRegistered: false,
     captureWatchdogTimer: null,
     hasReceivedCaptureStats: false,
-    composerTargetContext: null,
+    transcriptTarget: null,
     startupAttemptGeneration: 0,
   }),
 
@@ -245,7 +181,8 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       const attemptGeneration = ++this.startupAttemptGeneration;
       this.isStarting = true;
       this.recordingSource = source;
-      this.composerTargetContext = request.source === 'composer' ? request.targetContext : null;
+      this.transcriptTarget = request.source === 'settings-test' ? null : request.target;
+      if (this.transcriptTarget && !this.transcriptTarget.isCurrent()) { await this.cleanup(); return; }
       this.error = null;
       this.liveInputLevel = 0;
       this.hasReceivedCaptureStats = false;
@@ -257,6 +194,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         this.startupAttemptGeneration === attemptGeneration
         && this.isStarting
         && this.recordingSource === source
+        && (source === 'settings-test' || Boolean(this.transcriptTarget?.isCurrent()))
       );
       const disposePendingResources = async () => {
         const stream = pendingStream;
@@ -336,6 +274,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         });
 
         pendingAudioWorklet.port.onmessage = (event) => {
+          if (this.startupAttemptGeneration !== attemptGeneration) return;
           if (event.data?.type === 'capture-stats') {
             this.hasReceivedCaptureStats = true;
             this.clearCaptureWatchdog();
@@ -405,6 +344,9 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         });
         useToasts().addToast(this.error, 'error');
         await this.cleanup();
+      } finally {
+        // An ineligible destination during asynchronous startup owns no live capture.
+        if (this.startupAttemptGeneration === attemptGeneration && this.isStarting) await this.cleanup();
       }
     },
 
@@ -414,7 +356,9 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       }
 
       const source = this.recordingSource || 'composer';
-      const composerTargetContext = source === 'composer' ? this.composerTargetContext : null;
+      const generation = this.startupAttemptGeneration;
+      const target = this.transcriptTarget;
+      const isCurrent = () => this.startupAttemptGeneration === generation && (source === 'settings-test' || Boolean(target?.isCurrent()));
       this.isRecording = false;
       this.isTranscribing = true;
       this.liveInputLevel = 0;
@@ -430,15 +374,18 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       let captureDiagnostics: VoiceInputCaptureDiagnostics | null = null;
 
       try {
-        const capture = await new Promise<VoiceInputCapturePayload>((resolve) => {
+        const capture = await new Promise<VoiceInputCapturePayload | null>((resolve) => {
           this.flushPromiseResolve = resolve;
           this.audioWorklet!.port.postMessage({ type: 'FLUSH' });
         });
+        if (!capture || !isCurrent()) return;
         captureDiagnostics = capture.diagnostics;
 
-        await this.cleanup();
+        await this.disposeCapture();
+        if (!isCurrent()) return;
 
         const result = await window.electronAPI.transcribeVoiceInput({ audioData: capture.audioData });
+        if (!isCurrent()) return;
         if (!result.ok) {
           throw new Error(result.error || t('settings.voiceInput.store.failedToTranscribeAudio'));
         }
@@ -452,7 +399,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
             error: null,
             diagnostics: capture.diagnostics,
           });
-          if (source === 'composer') {
+          if (source !== 'settings-test') {
             useToasts().addToast(t('settings.voiceInput.store.noSpeechDetected'), 'info');
           }
           return;
@@ -467,7 +414,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
             error: null,
             diagnostics: capture.diagnostics,
           });
-          if (source === 'composer') {
+          if (source !== 'settings-test') {
             useToasts().addToast(t('settings.voiceInput.store.noTranscriptReturned'), 'info');
           }
           return;
@@ -482,13 +429,9 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           diagnostics: capture.diagnostics,
         });
 
-        if (source === 'composer' && composerTargetContext) {
-          composerTargetContext.requirement = mergeTranscriptWithDraft(
-            composerTargetContext.requirement,
-            result.text,
-          );
-        }
+        if (target && isCurrent()) target.appendTranscript(result.text);
       } catch (error) {
+        if (!isCurrent()) return;
         this.error = error instanceof Error ? error.message : t('settings.voiceInput.store.voiceTranscriptionFailed');
         this.setLatestResult({
           source,
@@ -498,13 +441,15 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           error: this.error,
           diagnostics: captureDiagnostics,
         });
-        if (source === 'composer') {
+        if (source !== 'settings-test') {
           useToasts().addToast(this.error, 'error');
         }
       } finally {
+        this.flushPromiseResolve = null;
+        await this.disposeCapture();
         this.isTranscribing = false;
         this.recordingSource = null;
-        this.composerTargetContext = null;
+        this.transcriptTarget = null;
         this.liveInputLevel = 0;
       }
     },
@@ -515,7 +460,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       }
 
       if (this.isRecording) {
-        if (this.recordingSource !== request.source) {
+        if (this.recordingSource !== request.source || (request.source !== 'settings-test' && request.target.key !== this.transcriptTarget?.key)) {
           return;
         }
         await this.stopRecording();
@@ -540,29 +485,31 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     async cancelOperationForSource(source: VoiceInputRecordingSource): Promise<void> {
       if (
         this.recordingSource !== source
-        || (!this.isStarting && !this.isRecording)
+        || (!this.isStarting && !this.isRecording && !this.isTranscribing)
       ) {
         return;
       }
       await this.cleanup();
     },
 
+    async cancelOperationForTarget(key: string): Promise<void> {
+      if (this.transcriptTarget?.key === key) await this.cleanup();
+    },
     async cleanup(): Promise<void> {
       this.startupAttemptGeneration += 1;
-      this.clearCaptureWatchdog();
-      const stream = this.stream;
-      const audioContext = this.audioContext;
-      const audioWorklet = this.audioWorklet;
-      this.audioContext = null;
-      this.audioWorklet = null;
-      this.stream = null;
+      this.transcriptTarget = null;
+      if (!this.isTranscribing) this.recordingSource = null;
+      const settle = this.flushPromiseResolve;
       this.flushPromiseResolve = null;
-      this.isStarting = false;
-      this.isRecording = false;
-      this.recordingSource = null;
-      this.composerTargetContext = null;
-      this.liveInputLevel = 0;
-      this.hasReceivedCaptureStats = false;
+      settle?.(null);
+      await this.disposeCapture();
+    },
+    async disposeCapture(): Promise<void> {
+      this.clearCaptureWatchdog();
+      const stream = this.stream, audioContext = this.audioContext, audioWorklet = this.audioWorklet;
+      this.audioContext = null; this.audioWorklet = null; this.stream = null;
+      this.isStarting = false; this.isRecording = false;
+      this.liveInputLevel = 0; this.hasReceivedCaptureStats = false;
       await disposeVoiceCaptureResources(stream, audioContext, audioWorklet);
     },
   },
