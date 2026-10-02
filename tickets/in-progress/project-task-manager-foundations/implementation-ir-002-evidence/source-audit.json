@@ -1,0 +1,54 @@
+{
+  "ticket": "PROJ-TASK-MANAGER-20261002-001",
+  "implementationRevision": "IR-002",
+  "sourceCheckpoint": "4d88b42e2360a6827cb31e2481410607ca1407ad",
+  "preservedMerge": "a5123e7d08f66bbb08440340db167fa4ccb5eba0",
+  "preservedMergeParents": [
+    "5e902fc1965f86fce2bfa15ed0a23e8ff8beb7bb",
+    "5e3cb2f720e6fc80173099075daf55594ed58de9"
+  ],
+  "mergeStillAncestor": true,
+  "changedFiles": [
+    "autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts",
+    "autobyteus-web/tests/integration/voice-input-extension.integration.test.ts"
+  ],
+  "productionChanges": [],
+  "sourceDiffCheck": {
+    "exitCode": 0,
+    "output": ""
+  },
+  "mentionSuite": {
+    "testCount": 11,
+    "allBodiesAssertionsUnchanged": true,
+    "onlyMockMethodChanged": true
+  },
+  "existingVoiceIntegrationScenario": {
+    "preservedExceptAssertionDiagnostic": true,
+    "additionalFixtureContractTests": 1
+  },
+  "incoming375": {
+    "missing": 0,
+    "unexpectedHashDifferences": 0,
+    "expectedOwnedDifferences": [
+      {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts",
+        "incomingSha256": "786a31afe2a76e35b4dd8e37c3274111cf1c1c20a1af8628c90431dfa9d0917e",
+        "currentSha256": "b876c05e3820e21ea257b2903833fab22aab93e7495842833d15686ce35637ba",
+        "expectedOwnedChange": true
+      },
+      {
+        "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/autobyteus-web/tests/integration/voice-input-extension.integration.test.ts",
+        "incomingSha256": "ab2a4df37723dc37f2b491c6781052cb8e36118f583919c3ba21b81822a0de9e",
+        "currentSha256": "cadc6d2813fe50b55f49829a49889b72b8162ffaf07c92dee06d4607f4cfecd2",
+        "expectedOwnedChange": true
+      }
+    ]
+  },
+  "deliveryArtifacts": {
+    "unchanged": true,
+    "stagedByImplementation": false
+  },
+  "temporaryReproductionTestRemoved": true,
+  "noOwnedAppInstanceOrPreviewStarted": true,
+  "generatedSdkOutputCleanup": "Not applicable; no shared build/prepare or SDK output generation this round"
+}

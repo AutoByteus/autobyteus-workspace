@@ -1,28 +1,33 @@
 # Implementation Handoff — Project Task Manager Foundations
 
 ## Upstream Artifact Package
-- Package `PROJ-TASK-MANAGER-20261002-001`, ticket `project-task-manager-foundations`, initial implementation `IR-001`; 2026-10-02.
-- Assigned workspace **/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations**, branch `codex/project-task-manager-foundations`; source base `origin/personal@e04cfef23550c3b78286a53befc6bd5d71fb1061` unchanged. No integration, push, release or installation change.
-- Implementation code/test checkpoint **560a51129b3d49a84868cc7b47f6a055150fe175** (95 changed paths). Upstream reviewed design checkpoint `5b225685ea6104d662d4981633f58abfb46f4c32`; architecture Pass commit `9f138b8276b24c6ea811a9531dc8833aa34b50c9`. Subsequent `113e37f9b` and `a0a6f768d` are upstream receipt-only documentation, preserved.
+- Package `PROJ-TASK-MANAGER-20261002-001`, ticket `project-task-manager-foundations`, implementation rework **IR-002 / Local Fix**; initial IR-001 preserved; 2026-10-02.
+- Assigned workspace **/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations**, branch `codex/project-task-manager-foundations`. Bootstrap base `e04cfef23550c3b78286a53befc6bd5d71fb1061`; Delivery integrated `origin/personal@5e3cb2f720e6fc80173099075daf55594ed58de9` at merge **a5123e7d08f66bbb08440340db167fa4ccb5eba0**. The completed merge and parents are preserved. No reset/replay, fetch, push, target merge, release or installation change by this round.
+- Current IR-002 test-only correction checkpoint **4d88b42e2360a6827cb31e2481410607ca1407ad** (2 test files; production unchanged this round); initial code/test baseline **560a51129b3d49a84868cc7b47f6a055150fe175** (95 changed paths). Upstream reviewed design checkpoint `5b225685ea6104d662d4981633f58abfb46f4c32`; architecture Pass commit `9f138b8276b24c6ea811a9531dc8833aa34b50c9`. Subsequent `113e37f9b` and `a0a6f768d` are upstream receipt-only documentation, preserved.
 - Canonical upstream directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations/tickets/in-progress/project-task-manager-foundations`.
 - Approved requirements: **requirements-doc.md**, exact approvals **requirements-approval-sr-010.md** / **requirements-approval-sr-013.md** (SD-AP-001 core; SD-AP-002 bounded Refresh). Investigation: **investigation-notes.md**. Cumulative solution record: **solution-revision-record.md**. Required completed design: **design-spec.md**, supplemented by **design-handoff-sr-014.md** and **architecture-clarification-sr-015.md**.
 - Independent architecture review applies: **design-review-report.md**, **architecture-review-revision-record.md**, informational **architecture-pass-receipt-sr-015.md**. ARCH-REV-002 / Round 2 / SR-015 Pass, ARCH-F-001 independently Resolved; prior Fail remains historical.
 - Exact read-only external Product authority: `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/project-task-manager-foundations/ui-ux-spec.md`, UF-017 / UI `84ed47bac6877e2cdc6350cca789b0c30ffb55a3`, receipt `f66efa9c5c1d9976137f6c134120529466b34e48`, normative VIS-001–020. Only the subsequently approved Refresh addition supersedes its absence in the original toolbar. No competing UI specification or Product edits.
 - **implementation-upstream-reference-inventory.md** holds 129 absolute existing references: original 128-file cumulative package plus the informational architecture Pass receipt. Includes historical refinements/reviews/feedback/fixtures with their as-of/deferred dispositions, not expanded active scope. Those references accompany this handoff.
 
+- Rework trigger: **delivery-local-fix-request.md**, **delivery-revision-record.md**, DR-001 initial Blocked — Local Fix / DLF-001–002; all original delivery logs/commands/merge receipts under **delivery-evidence/** retained unchanged. Detailed correction **implementation-local-fix-ir-002.md**, evidence **implementation-ir-002-evidence/**.
+- Independent outcomes retained as-of: **CRR-001 source Pass**, **API-REV-002 user-authorized scoped Pass95.0%**, **CRR-002 proportional test-code Pass**; canonical code/API reports and histories remain authoritative. ARCH-REV-001 Fail/API-REV-001 Blocked/harness/OOM/raw evidence retained. They are not new integrated certification.
+- Full375 incoming Delivery references verified before edits; **delivery-package-inventory.json** remains immutable as-of DR-001. **implementation-ir-002-package-inventory.json** carries cumulative current references including original129 and initial implementation artifacts, with expected2 test-file changes separated. Delivery-owned reports/evidence stay untracked and unchanged; only owned corrections/artifacts committed.
+
 ## Current Implementation Summary
 - Initial implementation against the passed SR-015 package: three explicitly selected native/MCP data tools; current-record Task status/description patch; Task-owned durable context; ordinary Project/Task authoring/detail routes; continuous board; bounded physical Refresh; accurate aggregate deletion counts; optional destination-owned local voice.
-- Current revision record: **implementation-revision-record.md**, **IR-001**. Related solution `SR-001–015` / current `SR-015`; architecture `ARCH-REV-001` historical / `ARCH-REV-002` current. Code-review `CRR-*`: N/A. API/E2E `API-REV-*`: N/A. Delivery `DR-*`: N/A. Triggering implementation findings: N/A (initial baseline, not a claimed resolution of a missing prior implementation record).
-- Source and this current handoff remain authoritative. Local failed attempts and subsequent corrected checks are disclosed as implementation work, not specialist review results.
+- Implementation cycle **Rework / Local Fix**; current revision record **implementation-revision-record.md**, **IR-002**. Current SR-015/cumulative SR-001–015; ARCH-REV-001 historical Fail / ARCH-REV-002 Pass; CRR-001 source Pass / CRR-002 proportional test-code Pass; API-REV-001 historical Blocked / API-REV-002 scoped Pass95.0%; DR-001 Blocked — Local Fix. Triggering findings **DLF-001 / DLF-002**.
+- Current delta: mention-suite double now implements `cancelOperationForTarget`, preserving all11 test bodies/assertions; voice integration fixture hashes/serves one immutable setup Buffer, adds repeated-download SHA/byte regression and lastError assertion diagnostic. Exactly2 test files; no production/UI change, no removal/weakened cancellation or microphone tests.
+- Local exact expanded renderer rerun **125/125 in13files**, exit0; all11 mentions and all19 voice lifecycle/sink cases passed. Three serial fixture reruns **2/2 each**, exit0. New regression demonstrably fails against pre-fix fixture after timestamp boundary; original Delivery install failure cause still unproven. Current code/handoff authoritative; this is ready for independent review, not resolution/AC acceptance by assertion.
 
 ## Routing Classification (Mandatory)
 - **task_size=Large; architectural_risk=High — Confirmed**, unchanged from design-spec classification/health/spines. Multi-boundary source changes, persisted references, commit observation, tool exposure, byte containment, request/count ordering, local voice lifetimes and UI replacement independently support it.
 - Selected route: **Code Review**, selected by the recorded `get_handoff_rules` result below. No direct API/E2E bypass. Lightweight direct-route self-review: N/A; independent source review remains required.
-- New design impact/escalation: **None identified**. Existing supported-scenario and ownership decisions matched implementation. Full web typecheck failure and optional real voice uncertainty remain visible, not silently downgraded.
+- New design impact/escalation: **None identified**. Existing supported-scenario and ownership decisions matched the baseline and are unaffected by IR-002 fixture-only correction; reviewed design/classification remains valid. Full web typecheck failure and optional real voice uncertainty remain visible, not silently downgraded.
 - MP-004 stays **Not Reachable**: no interactive Projects node-rebind journey. Existing synchronous binding watchers and captured-client/currentness guards remain; ordinary route/Project/local-write/Cancel ordering is implemented. No switching coordinator, recovery state, subscription or product switching tests. Injected binding/sink assertions are guard contracts only.
 
 ## Reviewed Behavior Implementation Trace
-Paths below resolve in the assigned workspace. Outcomes are implementation/local evidence, not production AC acceptance.
+Paths below resolve in the assigned workspace. Baseline production trace is retained; IR-002 changes only test fixtures for BEH-008 / DS-008 and preserves the integrated mention/editor contract. No new intended product behavior or requirement; outcomes are implementation/local evidence, not refreshed production AC acceptance.
 
 | Behavior | Approved change / preserved outcome | Actual production path | Implementation outcome |
 |---|---|---|---|
@@ -51,12 +56,13 @@ Scope Guardrail: **Yes**. Manager/team user-created externally; sidebar/resource
 2. Draft TTL is 24h per-file mtime; saved references never TTL-expire. Old unpublished copies are reclaimed only with fresh Task-scoped Project-locked reference proof on explicit context operations. Missing/failed proof preserves bytes; orphan bytes after failed creation may remain until explicit Project cleanup. Descendant symlinks/traversal fail closed; configured root symlink remains allowed. Adversarial/local filesystem races and real-volume capacity still require independent scrutiny.
 3. Workspace registration and Project JSON are separate owners. Registration may remain after Project Save failure. No claim that a physical folder was created or removed; no saga.
 4. Manual fetched data can become stale between clicks; external simultaneous writers are not coordinated with delegation. Client generations are local publication guards, not durable revision/CAS locks.
-5. Optional real desktop voice, device/permission/IPC settlement and rendered recording state are not validated here. Unit capture/transcription doubles do not establish that capability.
-6. Full repository web VueTSC check **FAILED**: 387 diagnostics outside changed/new files in this run; their origins were not all independently diagnosed. No type suppression, dependency/lock changes or compatibility shim was introduced. Source-local diagnostic filtering is not a full typecheck pass.
+5. Real mic/device/permission/extension/transcript/live IPC is **Not Tested — user-waived, independently UNVERIFIED**, per api-e2e-user-voice-validation-waiver.md. AC-018 remains unchanged; optional hardware validation is not requested. Unit/integration fake capture/transcript is not real voice Pass or finalization authorization.
+6. Full repository web VueTSC **FAILED387 vs source-base388** as-of API validation. Existing websocket.ts:15:3 TS2322 message-shape origin is partly unattributed; not rerun for this test-only fix. No full Pass, type suppression, dependency/lock change, blanket defect-owner attribution or compatibility shim. Source-local filtering is not full checker acceptance.
 
 ## Task Design Health Assessment Implementation Check
 - Posture: Feature/Behavior Change with bounded prerequisite refactors. Root classifications: Missing Invariant, Boundary/Ownership Issue and Shared Structure Looseness.
 - Refactor Needed Now: **Yes, bounded; implementation matched**. Neutral policy/writer extracted, byte ownership separated, field-mask Task patch replaced description-only method, voice destination separated from AgentContext, read/count publication centralized, obsolete overlays/cards/routes removed.
+- IR-002 local test defects only: stale double and request-time mutable fixture archive. No additional production refactor needed; owners/contracts/health remain valid. Test files exempt source-size limits; no changed production file or >220 delta this round.
 - No unrelated discovery/delegation/Team/gateway/security/startup-migration refactor. Deferred risk rationale remains valid. No challenged design decision requiring Design Impact identified.
 
 ## Legacy / Compatibility Removal Check
@@ -64,7 +70,7 @@ Scope Guardrail: **Yes**. Manager/team user-created externally; sidebar/resource
 - Removed old ProjectFormDialog, ProjectTaskDialog, ProjectWorkspaceLinkDialog, ProjectTaskCard, their replaced component tests and `[id].vue` route; renamed generic voice component with real callers updated. Existing destructive ProjectDialogFrame and direct workspace-link APIs remain supported, not obsolete authoring fallbacks.
 - No prototype store, demo latency/transcript/sample persistence, arbitrary locator-fetch, fabricated run owner, schemaVersion, migration/startup audit or global admission gate.
 - Shared structures remain tight; canonical design guidance reapplied. Every changed source is below 500 effective non-empty lines. >220 deltas were decomposed or explicitly assessed by cohesive owner (see **implementation-local-source-audit.md**, **implementation-source-delta.tsv**).
-- Existing extension integration fixture was adjusted to the new sink type as caller cleanup, with no new API/E2E coverage authored or executed; independent validation owns that layer.
+- IR-001 adjusted the existing extension integration fixture to the sink type as caller cleanup. IR-002 corrects immutable archive setup and adds1 narrow fixture invariant; exact existing renderer/fixture commands locally rerun at Delivery request. This is not broader API/E2E coverage or sign-off; independent validation owns that gate. No production compatibility or old source-only cancellation accommodation.
 
 ## Persisted Data Transition Check
 - **Directly Usable — No Migration**, per design-spec persisted-data decision. Existing required Project/Task identities, statuses, text, timestamps and root snapshots remain valid; absent tasks/context means empty.
@@ -72,6 +78,7 @@ Scope Guardrail: **Yes**. Manager/team user-created externally; sidebar/resource
 - Mixed/no-Task/released fixtures, exact known keys, restart references, independent patches, real bytes, TTL, precommit and post-rename failures were locally checked. No installed corpus sampled or converted, no new migration marker/gate. Deviations: None.
 
 ## Environment / Dependency Notes
+- IR-002 reread root TESTING.md/package AGENTS/shared design principles; no closer TESTING guideline. Used existing `test:nuxt --run` layer and exact Delivery commands; no new install/build/prepare/app/device environment. Original environment notes below are IR-001 as-of history. Delivery reports/logs remain pre-existing untracked artifacts, not staged or modified.
 - Read root TESTING.md, package AGENTS and development scripts. Worktree-local frozen pnpm install, Prisma generation, `pnpm -C autobyteus-server-ts prepare:shared`, Nuxt prepare; no manifest/lock change.
 - Nuxt's typecheck fallback fetched an incompatible latest TypeScript; explicit downloaded VueTSC 3.3.12 was run against repository TypeScript 5.9.3 via its observed `run(tscPath)` API. It still reports full-repository errors. Earlier command/config/parser attempts are retained as failed tooling logs, not passes.
 - Before rerunning server checks after cleanup, rebuild shared prerequisites with `pnpm -C autobyteus-server-ts prepare:shared`; our untracked generated SDK dist directories were removed, not committed. Web generated build outputs/node_modules are not handoff source.
@@ -79,6 +86,20 @@ Scope Guardrail: **Yes**. Manager/team user-created externally; sidebar/resource
 
 ## Local Implementation Checks Run
 These are local implementation checks only, not API/E2E sign-off.
+
+### IR-002 current focused verification
+| Check | Exact command / scope | Result / artifact |
+|---|---|---|
+| Exact integrated renderer rerun | Unmodified renderer-integrated.log command from delivery-evidence/commands.json (all13 files including mentions and voice fixture) | **125/125**, exit0; implementation-ir-002-evidence/renderer-expanded.log / commands.json. All124 original cases plus1 immutable-fixture case |
+| Serial fixture stability | `pnpm -C autobyteus-web test:nuxt tests/integration/voice-input-extension.integration.test.ts --run`, three serial executions | **2/2 each**, exit0; voice-fixture-stability-1/2/3.log. Repeat executions not additional unique coverage |
+| Pre-fix fixture regression | Exact merged fixture plus new checksum/repeated-download test in temporary test file; select only archive invariant | **Expected Fail**, exit1 /1failed /1skipped, after1100ms archive bytes differ; reproduction log/source retained, temp test removed. Proves hazard, not original install-failure cause |
+| Hygiene/containment | Two-file committed diff check; assertion-body comparison; merge ancestry;375 input SHA check | Pass; test-delta.patch / source-audit.json / incoming-inventory-check.json; production unchanged and original Delivery evidence untouched |
+
+Own new logs remove terminal empty lines only; zero-context Git patch preserves exact delta. Initial artifact-only staging whitespace warnings/correction recorded in artifact-hygiene.json; original Delivery/API/IR-001 evidence untouched.
+
+Full commands/exits and focused limits: **implementation-local-fix-ir-002.md**. DR-001 shared prepare/server150/150/20files remain fresh as-of Delivery, not rerun here. No new full build/typecheck/API/browser/package execution. Independent current integrated validation remains downstream.
+
+### IR-001 historical implementation checks (not rerun by IR-002)
 
 | Check | Exact command / scope | Result / artifact |
 |---|---|---|
@@ -92,6 +113,7 @@ These are local implementation checks only, not API/E2E sign-off.
 Earlier failures were corrected during this same initial round (fixture expectations, row selectors, focus settling, typed sink callers, localization insertion and narrow toolbar), then relevant final checks rerun. Historical logs are retained without treating them as current results. Captured text logs have trailing whitespace normalized for repository hygiene; commands, diagnostics and outcomes are preserved.
 
 ## Frontend Rendered-Result Check
+- **IR-002: Not Applicable** — test-only fixture changes, no production rendered frontend or user interaction change. No new browser/desktop/runtime fidelity claim. The following is retained IR-001 pre-integration self-inspection; API-REV-002 browser16/16 and desktop typed/detail/Refresh proof are also pre-integration.
 - **Completed web-equivalent implementation feedback loop**, not full desktop/production acceptance. Actual forms/detail/board/workspace/context/pending/error/keyboard/focus/layout interactions were inspected against the approved Product spec and existing native shell/design system.
 - Normal development stack used only isolated worktree-owned data. Desktop 1512×862/806, narrow 390×844 and desktop viewport 1070 with 683px board container; no horizontal document overflow. 752px container-based lane switch verified. Full search row wraps below 480px to accommodate the approved Refresh addition without squeezing it; Refresh remains beside New task.
 - Real uploads and renderer reload persisted; explicit file edit/Cancel/Save, inline delete focus/Escape, aggregate workspace registration/no mkdir, external manifest write→manual Refresh/search retention, injected transport pending/error and accurate all-Done deletion totals inspected. Zero final renderer page errors.
@@ -99,14 +121,13 @@ Earlier failures were corrected during this same initial round (fixture expectat
 - Real optional microphone/extension/device/IPC and VIS-014 recording, full desktop-shell, phone and independent native/MCP HTTP/auth remain **unverified**. Browser voice was honestly unavailable; no sample transcript or availability fiction used.
 
 ## Downstream Coverage Hints / Still Required
-- Code Reviewer: independently inspect all production boundaries, commit observer and cleanup proof/containment, raw native preparation and MCP result/error parity/selection, current-record field masks, count/request/route guards, voice cancellation/busy ownership, ordinary route/file presentation and removed paths. Preserve Large/High and review before API/E2E.
-- API/E2E owner after source review: author/maintain actual API/MCP/auth/session and realistic persistence/byte/restart/fault/deletion coverage; verify native preparation/transport selection and known errors on actual runtime surfaces. Existing Projects probe targets obsolete overlays and includes unsupported same-window switching; adapt coverage to approved ordinary routes and guard-contract-only injected binding tests, not a switching product journey.
-- Validate false-default visibility and three-tool selection independently; no Manager/model delegation workflow is needed for data-tool correctness. Preserve existing discovery/delegation/resources/history.
-- Real Project form registration-failure boundaries, full all/open counts, 100+ Tasks and browser/manual Refresh ordering; optional isolated-desktop voice/device/permissions/no-speech/errors/late IPC/composer/settings and actual rendered fidelity remain risks to close. Missing capability must be reported, not passed using a double.
-- API/E2E results, independent confidence/AC acceptance, documentation sync, final integration/push/deployment and user verification remain downstream work. No source-review Pass or production acceptance is claimed here.
+- Independent Code Reviewer: re-enter the returned Large/High route on current merged candidate; inspect IR-002 exact2-file delta, preserved11 mention assertions and production target cancellation caller; fixture setup/download/SHA contract, new regression and retained install/enable/transcript assertions. Prior CRR-001/002 remain as-of, not automatically renewed by local tests.
+- API/E2E owner after review: determine required proportional current integrated revalidation under approved user-authorized scope. Existing API/browser/package evidence is pre-integration; local125/125 and stable fake fixture do not certify whole integrated runtime. Preserve optional hardware waiver; no new microphone/install/permission work requested.
+- Delivery resumes current-base checks, canonical docs sync, explicit integrated user verification and authorized finalization/release decisions only after applicable review/validation. DR-001 reports remain Blocked as-of; no terminal completion eligible here. Optional voice waiver is not completion approval.
+- Storage/rename/cleanup containment, aggregate workspace registration, counts/Refresh/voice settlement risk posture and all Scope Guardrail exclusions unchanged. MP-004 Not Reachable; binding tests guard-only. No new Manager/model/team/scheduler/phone journey.
 
 ## Handoff Rule Selection
-Final `get_handoff_rules` returned five rules. The sole most-specific applicable rule is:
-> When implementation is complete and the carried classification is task_size=Large or architectural_risk=High, implementation-scoped validation is complete, and the cumulative implementation package is ready for independent source review.
+Final current `get_handoff_rules` returned5 rules. Select only the most-specific completed Delivery Local Fix rule:
+> When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.
 
-Exact returned recipient: **/software_engineering_team/code_reviewer**. Initial baseline, not Local Fix; direct low-risk and design-gap rules do not apply. Scoped checks are complete with the explicitly reported full-repository typecheck failure and optional voice limitations; this does not claim their broader acceptance. Notify only this recipient with the cumulative package; no delegation or additional notification. No receiving-role work is performed here.
+Exact returned recipient **/software_engineering_team/code_reviewer**. IR-002 local validation complete; current overall Large/High confirmed; updated cumulative package ready for independent source review. General initial-complete rule is less specific; direct low-risk/design-gap rules do not apply. Only this recipient receives the correction; no direct Delivery/API bypass or additional notification/delegation. Subsequent independent review/validation and Delivery decisions are not performed here. Rule evidence: **implementation-ir-002-evidence/handoff-rule.json**.
