@@ -1,0 +1,91 @@
+Validated /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/published-update-metadata/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+Validated /Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization/tickets/done/project-task-manager-foundations/delivery-round-3-evidence/published-update-metadata/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize
+{
+  "verifiedAt": "2026-10-02T19:58:26.580889+00:00",
+  "tag": "v1.4.92-beta.11",
+  "releaseCommit": "777548b050527ab3ff5904a085c0c95677e50e74",
+  "githubReleaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.11",
+  "githubPrerelease": true,
+  "draft": false,
+  "expectedAssets": [
+    "latest-mac.yml",
+    "latest-linux.yml",
+    "latest-linux-arm64.yml",
+    "latest.yml",
+    "AutoByteus_personal_macos-arm64-1.4.92-beta.11.dmg",
+    "AutoByteus_personal_macos-arm64-1.4.92-beta.11.dmg.blockmap",
+    "AutoByteus_personal_macos-arm64-1.4.92-beta.11.zip",
+    "AutoByteus_personal_macos-arm64-1.4.92-beta.11.zip.blockmap",
+    "AutoByteus_personal_linux-arm64-1.4.92-beta.11.AppImage",
+    "AutoByteus_personal_macos-x64-1.4.92-beta.11.dmg",
+    "AutoByteus_personal_macos-x64-1.4.92-beta.11.dmg.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.92-beta.11.zip",
+    "AutoByteus_personal_macos-x64-1.4.92-beta.11.zip.blockmap",
+    "AutoByteus_personal_linux-x64-1.4.92-beta.11.AppImage",
+    "AutoByteus_personal_windows-1.4.92-beta.11.exe",
+    "AutoByteus_personal_android-1.4.92-beta.11-release.apk",
+    "AutoByteus_personal_android-1.4.92-beta.11-release.apk.sha256"
+  ],
+  "allAssetsUploadedNonemptyAndGithubDigestPresent": true,
+  "downloadedMetadata": [
+    {
+      "name": "latest-mac.yml",
+      "downloadedSha256": "sha256:856f2d39f217f9bdf882eacd9fa06a81a3732181ad1c5b7f4668309ebde3d781",
+      "bytes": 945,
+      "referencedPublishedAssets": [
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.11.zip",
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.11.dmg",
+        "AutoByteus_personal_macos-x64-1.4.92-beta.11.zip",
+        "AutoByteus_personal_macos-x64-1.4.92-beta.11.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.11.zip"
+      ]
+    },
+    {
+      "name": "latest-linux-arm64.yml",
+      "downloadedSha256": "sha256:a76009c10660329c393cee213d7241235213f7b7192c9e586689754a0fd238fc",
+      "bytes": 441,
+      "referencedPublishedAssets": [
+        "AutoByteus_personal_linux-arm64-1.4.92-beta.11.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.92-beta.11.AppImage"
+      ]
+    },
+    {
+      "name": "latest.yml",
+      "downloadedSha256": "sha256:8496d00e9a6d98a10633d5ca7cffe0bfdfedb99d5311c96272cdb4faf5cd295a",
+      "bytes": 378,
+      "referencedPublishedAssets": [
+        "AutoByteus_personal_windows-1.4.92-beta.11.exe",
+        "AutoByteus_personal_windows-1.4.92-beta.11.exe"
+      ]
+    },
+    {
+      "name": "latest-linux.yml",
+      "downloadedSha256": "sha256:fa32723b70641938019ba0e8cffbee2329a6b387f39379371be27485947f9256",
+      "bytes": 437,
+      "referencedPublishedAssets": [
+        "AutoByteus_personal_linux-x64-1.4.92-beta.11.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.92-beta.11.AppImage"
+      ]
+    },
+    {
+      "name": "AutoByteus_personal_android-1.4.92-beta.11-release.apk.sha256",
+      "downloadedSha256": "sha256:260d595bff1e2ed532adbd510da85d92f4f936f6cf16125294b21929b8ee561b",
+      "bytes": 121
+    }
+  ],
+  "desktopWorkflow": 37053036495,
+  "androidWorkflow": 37053036337,
+  "dockerWorkflow": 37053036521,
+  "iosWorkflow": 37053036592,
+  "allFourTagWorkflows": "Completed/success, exactly one each, no dispatch/rerun",
+  "dockerImage": "autobyteus/autobyteus-server:1.4.92-beta.11",
+  "dockerArchitectures": [
+    "amd64",
+    "arm64"
+  ],
+  "dockerManifestDigest": "sha256:dced4da34a4d3208d57f55d26fae14ce841ba4ee2fe5fd37865f4b5f2a0bedfb",
+  "dockerBetaAliasMatchesVersion": false,
+  "dockerBetaAliasDisposition": "Intentionally unchanged by successful CI: newer v1.4.92-beta.12 was fetched before alias promotion; forward-only newest-tag policy prevented beta.11 replacing the alias. Version-pinned beta.11 multi-arch image is published/visible; no claim alias serves it.",
+  "iosResult": "CI signed archive/upload step success to App Store Connect/TestFlight; processing availability and installation not independently tested; no public App Store submission.",
+  "limits": "Asset publication/digests/update metadata and registry visibility, not local installer launch, actual updater installation, Projects phone proof, full VueTSC or real microphone capability. No installed user environment changes."
+}

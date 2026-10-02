@@ -1,0 +1,11 @@
+{
+  "initialDeliveryCheck": "Failed incorrect assumption that beta alias must match any completed release",
+  "resolvedBy": "Actual CI decision line plus freshly fetched recognized tags and documented newest-tag policy",
+  "newestCheck": false,
+  "higherTagObserved": "v1.4.92-beta.12",
+  "betaAliasDigest": "sha256:3ebd16ace3928ba8056d146e401ed30e013b6b483315e185979cd1b53cf9a6c6",
+  "versionManifestDigest": "sha256:dced4da34a4d3208d57f55d26fae14ce841ba4ee2fe5fd37865f4b5f2a0bedfb",
+  "aliasMatchesVersion": false,
+  "disposition": "Intentionally unchanged by successful CI: newer v1.4.92-beta.12 was fetched before alias promotion; forward-only newest-tag policy prevented beta.11 replacing the alias. Version-pinned beta.11 multi-arch image is published/visible; no claim alias serves it.",
+  "noSourceTestPipelineOrRegistryMutation": true
+}

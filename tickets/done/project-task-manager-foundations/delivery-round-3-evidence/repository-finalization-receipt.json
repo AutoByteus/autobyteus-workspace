@@ -1,0 +1,13 @@
+{
+  "target": "origin/personal",
+  "ticketCommit": "f1bbd609d8b09f2eb694e7b76535c679977eeaf6",
+  "targetMerge": "98731a5d522eda1a22d4fa9e2cb3261d467e4432",
+  "parents": [
+    "2056b04f3b654ffe583aa956c371869f7d06444d",
+    "f1bbd609d8b09f2eb694e7b76535c679977eeaf6"
+  ],
+  "remoteTarget": "98731a5d522eda1a22d4fa9e2cb3261d467e4432\trefs/heads/personal",
+  "status": "",
+  "ticketArchive": "tickets/done/project-task-manager-foundations",
+  "result": "Repository finalization Completed; beta not started yet"
+}

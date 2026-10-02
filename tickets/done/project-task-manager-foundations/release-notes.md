@@ -1,7 +1,7 @@
 # Project Task Manager Foundations — Beta Scope Notes
 
 Status: prepared before integrated verification in DR-002; user now accepted and
-requested a new beta. Publication pending. Beta script uses generated GitHub notes;
+requested a new beta. Published as v1.4.92-beta.11; all four automatic release workflows passed. Beta script uses generated GitHub notes;
 this archived artifact retains feature scope/residuals, not a claimed script input.
 Feature remains experimental/default-off.
 
@@ -32,7 +32,8 @@ Real microphone/device/permission/official extension/transcript/live Electron
 IPC Not Tested — user-waived, independently UNVERIFIED; AC-018 unchanged.
 Latest executed full VueTSC FAILED387 vs source-base388 **pre-integration**;
 existing websocket.ts:15:3 TS2322 message-shape origin partly unattributed.
-No current full web checker/build/package Pass. Previous packaged typed/detail/
+No new full VueTSC Pass. Beta CI builds/packages now Pass for all desktop
+platforms; this is not a renewed packaged Projects/device journey. Previous packaged typed/detail/
 external-native-write→Refresh proof is pre-integration only. Original intermittent
 install cause UNPROVEN; raw failures/whitespace/OOM history retained.
 
@@ -42,3 +43,11 @@ Projects/composer/voice contracts; current Delivery server150/renderer135/Electr
 and server build passed. Full web checker/hardware limitations remain. Publication
 and rollout authority is release-deployment-report.md; no installed client/default
 change is implied by a GitHub beta release.
+
+## Published delivery evidence
+17 GitHub assets/nonempty digests verified; downloaded updater/checksum metadata
+matched digests and version/asset references. Multiarch Docker version image
+1.4.92-beta.11 verified; automatic TestFlight upload succeeded, processing/device
+availability not independently tested. A separate beta.12 was tagged concurrently;
+beta.11 is not claimed newest and CI correctly left the forward-only Docker beta
+alias unchanged. No installer/default/profile/microphone action occurred.

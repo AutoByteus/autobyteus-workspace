@@ -1,0 +1,45 @@
+{
+  "creator": 32148059,
+  "id": 1333163362,
+  "images": [
+    {
+      "architecture": "amd64",
+      "features": "",
+      "variant": null,
+      "digest": "sha256:17116e559e8d0f9e79a8c65883c88aaa524e4d6763a4e1421117b1136d0c65cd",
+      "os": "linux",
+      "os_features": "",
+      "os_version": null,
+      "size": 2462059070,
+      "status": "active",
+      "last_pulled": "2026-10-02T19:42:02.061456495Z",
+      "last_pushed": "2026-10-02T19:42:01.462386641Z"
+    },
+    {
+      "architecture": "arm64",
+      "features": "",
+      "variant": null,
+      "digest": "sha256:a2e6b380d64f6080ee1980460129cf3bf346cf364a122d8c75cf57ad0afd1b51",
+      "os": "linux",
+      "os_features": "",
+      "os_version": null,
+      "size": 2410443243,
+      "status": "active",
+      "last_pulled": "2026-10-02T19:42:01.831659732Z",
+      "last_pushed": "2026-10-02T19:42:00.636384542Z"
+    }
+  ],
+  "last_updated": "2026-10-02T19:42:02.209524Z",
+  "last_updater": 32148059,
+  "last_updater_username": "autobyteus",
+  "name": "1.4.92-beta.11",
+  "repository": 30070919,
+  "full_size": 2462059070,
+  "v2": true,
+  "tag_status": "active",
+  "tag_last_pulled": "2026-10-02T19:42:02.061456495Z",
+  "tag_last_pushed": "2026-10-02T19:42:02.209524Z",
+  "media_type": "application/vnd.oci.image.index.v1+json",
+  "content_type": "image",
+  "digest": "sha256:dced4da34a4d3208d57f55d26fae14ce841ba4ee2fe5fd37865f4b5f2a0bedfb"
+}

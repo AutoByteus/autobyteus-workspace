@@ -1,0 +1,72 @@
+[
+  {
+    "command": [
+      "git",
+      "-C",
+      "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "fetch",
+      "origin",
+      "personal"
+    ],
+    "exitCode": 0,
+    "log": "cleanup-1.log",
+    "elapsedSeconds": 2.107,
+    "completedAt": "2026-10-02T19:59:16.798981+00:00"
+  },
+  {
+    "command": [
+      "git",
+      "-C",
+      "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "merge-base",
+      "--is-ancestor",
+      "f1bbd609d8b09f2eb694e7b76535c679977eeaf6",
+      "origin/personal"
+    ],
+    "exitCode": 0,
+    "log": "cleanup-2.log",
+    "elapsedSeconds": 0.033,
+    "completedAt": "2026-10-02T19:59:16.833239+00:00"
+  },
+  {
+    "command": [
+      "git",
+      "-C",
+      "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "worktree",
+      "remove",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations"
+    ],
+    "exitCode": 0,
+    "log": "cleanup-3.log",
+    "elapsedSeconds": 20.749,
+    "completedAt": "2026-10-02T19:59:37.582358+00:00"
+  },
+  {
+    "command": [
+      "git",
+      "-C",
+      "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "branch",
+      "-d",
+      "codex/project-task-manager-foundations"
+    ],
+    "exitCode": 0,
+    "log": "cleanup-4.log",
+    "elapsedSeconds": 0.26,
+    "completedAt": "2026-10-02T19:59:37.843218+00:00"
+  },
+  {
+    "command": [
+      "git",
+      "-C",
+      "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+      "worktree",
+      "prune"
+    ],
+    "exitCode": 0,
+    "log": "cleanup-5.log",
+    "elapsedSeconds": 0.028,
+    "completedAt": "2026-10-02T19:59:37.871840+00:00"
+  }
+]

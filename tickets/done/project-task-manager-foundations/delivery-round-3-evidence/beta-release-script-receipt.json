@@ -1,0 +1,10 @@
+{
+  "command": "bash scripts/desktop-release.sh beta",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-beta-finalization",
+  "exitCode": 0,
+  "elapsedSeconds": 9.144,
+  "completedAt": "2026-10-02T19:16:28.052477+00:00",
+  "releaseCommit": "777548b050527ab3ff5904a085c0c95677e50e74",
+  "packageVersion": "1.4.92-beta.11",
+  "manualDispatch": false
+}
