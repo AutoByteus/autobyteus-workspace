@@ -14,6 +14,7 @@
 | SR-009 | Requirements | User defers CLI/client/skill, no scope increase | SD-CF-012; E-036 | Ready for Approval hybrid / no design | Ready for Approval native/MCP + manual UI / no design | REQ-010 restored; BEH-009/UC-008/REQ-017/AC-023/024/SCN-012 deferred; DEC-016 | Requirements Approval Hold |
 | SR-010 | Approval / architecture investigation | User “confirmed” then architecture turn interrupted | SD-AP-001; E-037–043 | SR-009 Ready for Approval | SR-009 approved basis; architecture not complete | Active REQ-001–004/007/009–016 and ACs + UF-017 supplement | Approval captured; no forward architecture handoff |
 | SR-011 | Requirements / user change | User requests manual Tasks-board Refresh after approval | SD-CF-013; E-044,045; DEC-017 | SR-009 approved via SR-010 / incomplete architecture | Draft Refresh delta; prior approval retained | BEH-010; REQ-018; AC-025; SCN-013; UC-007 | Requirement/supplement-direction hold |
+| SR-012 | Requirements / direction clarification | User declines further toolbar prototype round | SD-CF-014; E-046; DEC-017 | SR-011 Draft delta; prior core approved | Ready for Approval Refresh delta; no Product prerequisite | BEH-010; REQ-018; AC-025; SCN-013; UC-007 | Bounded requirements approval hold |
 
 ## SR-001 — Experimental manager/tool foundation analysis and UI brainstorming request
 - Phase/classification: Requirements / Initial Baseline.
@@ -170,3 +171,13 @@
 - Approval/design impact: retain SD-AP-001 for unchanged REQ/ACs, hold affected architecture until explicit refined delta + any revised behavior-defining supplement approval. No task-size/risk/implementation/production-validation readiness claimed.
 - Full result requirements-refinement-sr-011.md and current evidence/inventory persisted before routing. get_handoff_rules found no matching rule after persistence: routine requirements/supplement choice, no renewed Product request, marketing, completed architecture or delivery receipt gap. No send_message_to or delegation required/performed. No specialist work, source/runtime/feature/data/test or remote changes.
 - Next action: user direction on focused Product toolbar revision and updated approval basis; then finish architecture for tools/manual UI only.
+
+
+## SR-012 — No additional Product review for Refresh
+- Trigger: SD-CF-014 “no need i guess. because its clear right?” directly answers the suggested focused Product toolbar review. User declines another prototype round; this must not become a Product prerequisite or handoff.
+- Prior/current: SR-011 Draft Refresh delta → Ready for Approval with supplement direction resolved. Unchanged SR-009 core remains approved SD-AP-001; no renewed delta approval is inferred from an answer to a Product-direction question. Prior owned checkpoint 58a5cbbf98651f4c3b65a2c3869250441bf96768.
+- Impact: evidence/readiness clarification only, no new intended behavior. Preserve BEH-010/REQ-018/AC-025/SCN-013/UC-007 and stable IDs. DEC-017 Product choice resolved; proposed interaction/placement still pending explicit approval. Existing toolbar styling applies to the proposed single Refresh control beside New task; all other normative external UI unchanged.
+- Canonical edits: requirements status/readiness/current supplement applicability/DEC-017; investigation SD-CF-014/E-046 and current context/inventory; this record and requirements-refinement-sr-012.md. Earlier rounds/results remain unchanged as-of history. Product files not edited; no new visual specification or screenshot acceptance.
+- Approval/design boundary: ask approval only for bounded Refresh delta; do not reopen three tools, Manager ownership, sidebar, stopping, CLI, or authoring continuity. Affected architecture remains on hold; design-spec, size/risk, independent review, implementation and production acceptance N/A.
+- Result/routing: full local result persisted before rule lookup; get_handoff_rules returned no matching rule (Product declined, no marketing, completed architecture or delivery receipt gap); no send_message_to/delegation required or performed. No specialist-ready outcome. No source/runtime/installed-data/feature/test/build/integration/remote work.
+- Next: explicit Refresh-delta approval, then resume architecture against cumulative approved tools/manual UI basis.
