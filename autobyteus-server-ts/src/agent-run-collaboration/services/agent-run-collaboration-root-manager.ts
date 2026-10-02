@@ -208,7 +208,7 @@ export class AgentRunCollaborationRootManager implements StandaloneAgentRunColla
     const tree = await this.store.readTree(dir, hostRunId);
     if (!tree) return null;
     const messages = await this.store.readMessages(dir, hostRunId) ?? emptyAgentRunCollaborationMessages(hostRunId);
-    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({ tree, messages, statuses: Object.freeze([]) }) });
+    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({ tree, messages, statuses: Object.freeze([]), inputStates: Object.freeze([]) }) });
   }
 
   private async load(metadata: AgentRunMetadata): Promise<AgentRunCollaborationRoot> {

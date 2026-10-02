@@ -1,0 +1,996 @@
+diff --git a/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts b/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
+index dfc893ff2..cdc53d89b 100644
+--- a/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
++++ b/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
+@@ -164,7 +164,8 @@ const tokenRunSummary = (
+   if (expectedIdentity.root.rootSubjectKind === "agent_team") {
+     if (rootTeamRunId !== expectedIdentity.root.rootRunId) throw new Error("run_summary_after_event root_team_run_id is invalid");
+   } else if (rootTeamRunId !== null) {
+-    throw new Error("AgentOrg token summary must not claim a Team root");
++    // AgentOrg and Agent roots attribute usage by AgentRun; no Team root is claimed.
++    throw new Error(`${expectedIdentity.root.rootSubjectKind} token summary must not claim a Team root`);
+   }
+   const summary = agentTokenUsageRunSummarySchema.parse(rootNeutral) as Omit<TokenUsageRunSummaryPayload, "root_team_run_id">;
+   if (summary.run_id !== expectedIdentity.agentRunId) throw new Error("run_summary_after_event run_id is invalid");
+@@ -179,8 +180,8 @@ const token = (payload: Record<string, unknown>, expectedIdentity: Collaboration
+   if (expectedIdentity.root.rootSubjectKind === "agent_team" && required(claimedRoot, "root_team_run_id") !== expectedIdentity.root.rootRunId) {
+     throw new Error("root_team_run_id does not match the TeamRun execution");
+   }
+-  if (expectedIdentity.root.rootSubjectKind === "agent_org" && claimedRoot !== null && claimedRoot !== undefined) {
+-    throw new Error("AgentOrg token usage must not claim a Team root");
++  if (expectedIdentity.root.rootSubjectKind !== "agent_team" && claimedRoot !== null && claimedRoot !== undefined) {
++    throw new Error(`${expectedIdentity.root.rootSubjectKind} token usage must not claim a Team root`);
+   }
+   return Object.freeze({
+   usageEventId: required(raw(payload, "usage_event_id", "usageEventId"), "usage_event_id"),
+diff --git a/autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts b/autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+index 38414ca2b..d2de4c827 100644
+--- a/autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
++++ b/autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+@@ -19,6 +19,8 @@ import {
+   getAgentStreamBroadcaster,
+ } from "../../services/agent-streaming/agent-stream-broadcaster.js";
+ import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
++import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
++import type { RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+ import type {
+   SendMessageCommandAckPayload,
+   AgentRunCommandCoordinatorInput,
+@@ -39,6 +41,7 @@ export class AgentRunCommandCoordinator {
+     overlayStore?: AgentRunCommandStatusOverlayStore;
+     projectionService?: AgentRunStatusProjectionService;
+     broadcaster?: AgentStreamBroadcaster;
++    collaborationRoots?: Pick<AgentRunCollaborationRootManager, "getActive">;
+   } = {}) {}
+ 
+   async postUserMessage(
+@@ -65,8 +68,32 @@ export class AgentRunCommandCoordinator {
+       this.clearOverlayForCommand(record);
+       input.onActiveRunReady?.(activeRun);
+ 
++      let message = input.message;
++      if (input.mentions?.length) {
++        // The host is ready (its activation ensured the Agent root); admission runs in the root's
++        // gate after the lane was released, and the post stays here for dedupe and the overlay.
++        let admission: RootCollaboratorAdmissionResult;
++        try {
++          admission = await this.admitMentions(record.runId, input);
++        } catch (error) {
++          return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", toMessage(error), { publishErrorStatus: false });
++        }
++        if (!admission.admitted) {
++          // Nothing was added or posted; the client keeps the draft and shows the notice.
++          this.registry.markRejected({
++            runId: record.runId,
++            messageId: record.messageId,
++            code: admission.code === "COLLABORATOR_ADD_FAILED" ? "COLLABORATOR_ADD_FAILED" : "COLLABORATOR_MENTION_UNAVAILABLE",
++            message: admission.message,
++            ...("collaboratorName" in admission ? { collaboratorName: admission.collaboratorName } : {}),
++          });
++          return this.recordResult(this.latestRecord(record), "rejected", false, false);
++        }
++        message = new AgentInputUserMessage(admission.content, message.senderType, message.contextFiles, message.metadata);
++      }
++
+       const result = await activeRun.postUserMessage(
+-        this.withCommandMetadata(input.message, record),
++        this.withCommandMetadata(message, record),
+         {
+           lifecycleObserver: (fact) => this.applyInputLifecycle(record, fact),
+         },
+@@ -95,6 +122,14 @@ export class AgentRunCommandCoordinator {
+     }
+   }
+ 
++  private admitMentions(runId: string, input: AgentRunCommandCoordinatorInput): Promise<RootCollaboratorAdmissionResult> {
++    const root = (this.deps.collaborationRoots ?? AgentRunCollaborationRootManager.getInstance()).getActive(runId);
++    if (!root) {
++      return Promise.resolve({ admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators." });
++    }
++    return root.admitCollaboratorMentions({ focusedAgentRunId: runId, content: input.message.content, mentions: input.mentions ?? [] });
++  }
++
+   private applyInputLifecycle(
+     originalRecord: AgentRunCommandRecord,
+     fact: AgentRunInputLifecycle,
+@@ -194,6 +229,7 @@ export class AgentRunCommandCoordinator {
+         duplicate,
+         ...(record.code ? { code: record.code } : {}),
+         ...(record.message ? { message: record.message } : {}),
++        ...(record.collaboratorName ? { collaborator_name: record.collaboratorName } : {}),
+         status: statusPayloadOverride ?? projection!.statusPayload,
+       },
+       turnId: record.turnId,
+diff --git a/autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts b/autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+index 4298d21ed..4463b119b 100644
+--- a/autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
++++ b/autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+@@ -94,6 +94,7 @@ export class AgentRunCommandRegistry {
+     messageId: string;
+     code: AgentRunCommandErrorCode;
+     message?: string;
++    collaboratorName?: string;
+   }): AgentRunCommandRecord | null {
+     return this.transitionTerminal({ ...input, state: "REJECTED" });
+   }
+@@ -137,6 +138,7 @@ export class AgentRunCommandRegistry {
+     state: "COMPLETED" | "FAILED" | "REJECTED" | "CANCELLED";
+     code?: AgentRunCommandErrorCode;
+     message?: string;
++    collaboratorName?: string;
+     turnId?: string | null;
+   }): AgentRunCommandRecord | null {
+     return this.updateOutstanding(input.runId, input.messageId, (record) => ({
+@@ -145,6 +147,7 @@ export class AgentRunCommandRegistry {
+       terminalAt: nowIso(),
+       ...(input.code ? { code: input.code } : {}),
+       ...(input.message ? { message: input.message } : {}),
++      ...(input.collaboratorName ? { collaboratorName: input.collaboratorName } : {}),
+       turnId: input.turnId ?? record.turnId,
+     }));
+   }
+diff --git a/autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts b/autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+index 14d33dfad..505d3028d 100644
+--- a/autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
++++ b/autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+@@ -1,6 +1,7 @@
+ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import type { AgentRun } from "../domain/agent-run.js";
+ import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
++import type { CollaboratorMention } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
+ 
+ export type AgentRunCommandState =
+   | "STARTING"
+@@ -28,6 +29,10 @@ export type AgentRunCommandErrorCode =
+   | "ACTIVATION_FAILED"
+   | "RUNTIME_REJECTED"
+   | "AGENT_RUN_TERMINATED_BEFORE_INPUT_FORWARD"
++  | "COLLABORATOR_MENTION_INVALID"
++  | "COLLABORATOR_MENTION_UNAVAILABLE"
++  | "COLLABORATOR_ADMISSION_FAILED"
++  | "COLLABORATOR_ADD_FAILED"
+   | "UNKNOWN_ERROR";
+ 
+ export type SendMessageCommandAckPayload = {
+@@ -40,6 +45,8 @@ export type SendMessageCommandAckPayload = {
+   duplicate: boolean;
+   code?: AgentRunCommandErrorCode;
+   message?: string;
++  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
++  collaborator_name?: string;
+   status?: AgentStatusPayload;
+ };
+ 
+@@ -53,6 +60,7 @@ export type AgentRunCommandRecord = {
+   terminalAt: string | null;
+   code?: AgentRunCommandErrorCode;
+   message?: string;
++  collaboratorName?: string;
+   turnId: string | null;
+ };
+ 
+@@ -62,6 +70,8 @@ export type AgentRunCommandCoordinatorInput = {
+   dedupeKey: string;
+   message: AgentInputUserMessage;
+   summary?: string | null;
++  /** Shared definitions the user mentioned with `@`; admitted by the run's Agent root before posting. */
++  mentions?: readonly CollaboratorMention[];
+   onActiveRunReady?: (run: AgentRun) => void;
+ };
+ 
+diff --git a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+index a13ecc6b1..62c9f6372 100644
+--- a/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
++++ b/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+@@ -1,4 +1,6 @@
+-import type { AgentOrgIndexedAgentExecution } from "../services/agent-org-execution-index.js";
++import type { AgentOrgIndexedAgentExecution, AgentOrgMessagePlacement } from "../services/agent-org-execution-index.js";
++import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
++import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+ import { buildMemberInputPresentationEvent } from "../../agent-collaboration/execution/events/member-input-presentation-event-builder.js";
+ import { projectAgentPresentationMessage } from "../../agent-collaboration/execution/events/agent-presentation-message-projector.js";
+ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+@@ -23,23 +25,28 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution
+ import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
+ import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
+ import { AgentOrgExecutionIndex } from "../services/agent-org-execution-index.js";
+-import { AgentOrgRootAgentExecutionRegistry } from "../services/agent-org-root-agent-execution-registry.js";
+-import { AgentOrgTeamExecutionDirectory } from "../services/agent-org-team-execution-directory.js";
++import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
++import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
+ import { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
+ import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
+ import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
+ import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
++import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
++import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-retirement.js";
++import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
++import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
++import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
++import type { CollaboratorMentionAdmission, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+ import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
+ import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
+ import type { RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
+ import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
+ import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
+-import { AgentOrgOperationGate } from "./agent-org-operation-gate.js";
+-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
++import { RootOperationGate } from "../../agent-collaboration/execution/services/root-operation-gate.js";
+ import {
+-  createFrozenAgentOrgTerminationScope,
+-  type FrozenAgentOrgTerminationScope,
+-} from "./frozen-agent-org-termination-scope.js";
++  createFrozenRootTerminationScope,
++  type FrozenRootTerminationScope,
++} from "../../agent-collaboration/execution/backends/frozen-root-termination-scope.js";
+ import { projectAgentOrgAgentStatusSnapshots } from "../services/agent-org-agent-status-snapshot-projector.js";
+ 
+ export type AgentOrgRunPackageSnapshot = Readonly<{
+@@ -58,19 +65,21 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+   private readonly taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
+   private readonly communication: RootCommunicationEngine;
+   private readonly presentation: CollaborationAgentPresentationEventAdapter;
+-  private readonly operationGate: AgentOrgOperationGate;
+-  private readonly retiringAgentEvents = new Map<string, CollaborationMemberExecutionIdentity>();
++  private readonly operationGate: RootOperationGate;
++  private readonly recipients = new AgentOrgRecipientResolver();
++  private readonly collaborators: AgentOrgRunCollaborators;
++  private readonly eventRetirement: AgentOrgTaskEventRetirement;
+   private termination: Promise<AgentOperationResult> | null = null;
+   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
+   private failStopped = false;
+-  private frozenTerminationScope: FrozenAgentOrgTerminationScope | null = null;
++  private frozenTerminationScope: FrozenRootTerminationScope | null = null;
+ 
+   constructor(private readonly options: Readonly<{
+     root: RootExecutionIdentity;
+     tree: AgentOrgRunExecutionTreeSnapshot;
+     messages: AgentOrgCommunicationMessagesFileV1;
+-    rootAgents: AgentOrgRootAgentExecutionRegistry;
+-    teams: AgentOrgTeamExecutionDirectory;
++    rootAgents: RootAgentExecutionRegistry;
++    teams: RootTeamExecutionDirectory;
+     callbacks: FlatTeamExecutionCallbacks;
+     persistence: AgentOrgRunPersistenceCoordinator;
+     publisher: RootEventPublisher<AgentOrgRunEvent>;
+@@ -78,16 +87,23 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     memoryLocator?: RootedAgentMemoryLocator;
+     activityInspector?: AgentConversationActivityInspector;
+     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
++    collaboratorAdmission?: CollaboratorMentionAdmission;
++    /** Prepares hosted handles for new collaborator entries (published after the tree write). */
++    prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
+     onTerminated?(): void;
+   }>) {
+     this.tree = options.tree;
+     this.messages = options.messages;
+     this.index = new AgentOrgExecutionIndex(this.tree);
+     this.assertCorrelation();
+-    this.operationGate = new AgentOrgOperationGate({
+-      orgRunId: this.orgRunId,
++    this.operationGate = new RootOperationGate({
++      rootLabel: `AgentOrg '${this.orgRunId}'`,
+       canEnter: () => this.isAdmitting(),
+     });
++    this.eventRetirement = new AgentOrgTaskEventRetirement({
++      getIndex: () => this.index,
++      identityFor: (agentRunId, address) => this.identityFor(agentRunId, address as AgentTeamAddress),
++    });
+     this.presentation = new CollaborationAgentPresentationEventAdapter((agentRunId) => {
+       const agent = this.index.getAgent(agentRunId);
+       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
+@@ -103,7 +119,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+       getIndex: () => this.index,
+       isOpen: () => this.isAdmitting(),
+       authorize: (identity) => this.authorizeCurrentIdentity(identity),
+-      beginTaskExecutionEventRetirement: (reference) => this.beginTaskExecutionEventRetirement(reference),
++      beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
+       replaceTree: (tree) => this.replaceTree(tree),
+       publishTaskExecutionStarted: (host, taskExecution) => options.publisher.publish({ kind: "task_execution_started", host, taskExecution }),
+       publishAgentOffline: (identity) => this.onAgentExecutionEvent(identity, {
+@@ -114,6 +130,16 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+       memoryLocator: options.memoryLocator,
+       activityInspector: options.activityInspector,
+     }), options.taskExecutionIdleShutdown ?? {});
++    this.collaborators = new AgentOrgRunCollaborators({
++      admission: options.collaboratorAdmission,
++      identities: options.taskExecutionIdentity,
++      persistence: options.persistence,
++      getTree: () => this.tree,
++      assertAdmitting: () => this.assertAdmitting(),
++      prepareHandles: (entries) => options.prepareCollaboratorHandles(entries),
++      replaceTree: (tree) => this.replaceTree(tree),
++      publish: (event) => options.publisher.publish(event),
++    });
+     this.communication = new RootCommunicationEngine(new AgentOrgCommunicationAdapter({
+       root: options.root,
+       initial: options.messages,
+@@ -163,17 +189,30 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     });
+   }
+ 
+-  resolveRecipient(addressInput: string): ResolvedAgentOrgRecipient {
++  /** Message ingress: a configured Agent or direct Team, then a collaborator (or its member). */
++  resolveMessageRecipient(address: string): AgentOrgMessagePlacement {
+     this.assertAdmitting();
+-    const address = assertAgentTeamAddress(addressInput);
+-    if (address === "/") throw new Error("AgentOrg root '/' is structural and is not a recipient.");
+-    const placement = this.index.getConfiguredPlacement(address);
+-    if (!placement) throw new Error(`Recipient '${address}' is not an exact configured Agent or direct Team in this AgentOrg.`);
+-    return "agentRunId" in placement
+-      ? Object.freeze({ kind: "agent", address })
+-      : Object.freeze({ kind: "agent_team", address, coordinatorAddress: placement.coordinatorAddress });
++    return this.recipients.resolveMessageRecipient(this.index, address);
++  }
++
++  /** Delegation target: a configured placement first, then a collaborator of this run. */
++  resolveDelegationPlacement(address: string): ResolvedAgentOrgRecipient {
++    this.assertAdmitting();
++    return this.recipients.resolveDelegationPlacement(this.index, address);
++  }
++
++  /** Admits mentions for the focused agent in one gate; the caller posts the returned content. */
++  admitCollaboratorMentions(input: Parameters<AgentOrgRunCollaborators["admit"]>[0]): Promise<RootCollaboratorAdmissionResult> {
++    return this.operationGate.run(async () => {
++      this.assertAdmitting();
++      return this.index.getAgent(input.focusedAgentRunId)
++        ? this.collaborators.admit(input)
++        : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in AgentOrg '${this.orgRunId}'.` };
++    });
+   }
+ 
++  collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
++
+   authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
+     this.assertAdmitting();
+     this.authorizeCurrentIdentity(identity);
+@@ -185,8 +224,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+   async deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
+     return this.operationGate.run(async () => {
+       this.authorizeIdentity(sender);
+-      const recipient = this.resolveRecipient(input.recipientAddress);
+-      const receiver = this.resolveRecipientIdentity(recipient);
++      const { receiver: target } = this.resolveMessageRecipient(input.recipientAddress);
++      const receiver = this.identityFor(target.agentRunId, target.address);
+       return this.communication.deliver({
+         senderIdentity: sender,
+         senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
+@@ -221,11 +260,12 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+   delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
+     return this.operationGate.run(async () => {
+       this.authorizeIdentity(context.identity);
+-      const placement = this.resolveRecipient(input.recipient_address);
+-      if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
+-        throw new Error("An Agent cannot delegate a task to its own logical placement.");
+-      }
+-      return this.taskExecutions.delegate(context, input, placement);
++      return delegateToResolvedTarget(() => this.resolveDelegationPlacement(input.recipient_address), (placement) => {
++        if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
++          throw new Error("An Agent cannot delegate a task to its own logical placement.");
++        }
++        return this.taskExecutions.delegate(context, input, placement);
++      });
+     });
+   }
+ 
+@@ -253,7 +293,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+ 
+   onAgentExecutionEvent(identity: CollaborationMemberExecutionIdentity, event: CollaborationAgentExecutionEvent): void {
+     if (!sameRootExecutionIdentity(identity.root, this.options.root)) throw new Error("AgentOrg event belongs to another root.");
+-    if (this.isCommittedTeardownStatus(identity, event)) return;
++    if (this.eventRetirement.isCommittedTeardownStatus(identity, event)) return;
+     const adapted = this.presentation.adapt(identity, event);
+     if (adapted.kind === "rejected") {
+       this.enterFailStop();
+@@ -309,7 +349,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+   private async terminateOnce(): Promise<AgentOperationResult> {
+     const errors: string[] = [];
+     await this.operationGate.closeAndDrain();
+-    this.frozenTerminationScope ??= createFrozenAgentOrgTerminationScope({
++    this.frozenTerminationScope ??= createFrozenRootTerminationScope({
+       agentHandles: this.options.rootAgents.freezeForRootTermination(),
+       teamScopes: this.options.teams.freezeForRootTermination(),
+     });
+@@ -359,45 +399,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     });
+   }
+ 
+-  private beginTaskExecutionEventRetirement(reference: TaskExecutionReference): () => void {
+-    const execution = this.index.getTaskExecution(reference);
+-    if (!execution) throw new Error("Task execution event retirement target is not live in this AgentOrg.");
+-    const agents = execution.kind === "agent"
+-      ? [this.index.requireAgent(execution.agentRunId)]
+-      : this.index.listAgents().filter((agent) => agent.host.hostKind === "team"
+-        && this.index.listTeamAncestorsDeepestFirst(agent.host.hostRunId)
+-          .some((team) => team.teamRunId === execution.teamRunId));
+-    const retired = agents.map((agent) => this.identityFor(agent.agentRunId, agent.address));
+-    for (const identity of retired) {
+-      const current = this.retiringAgentEvents.get(identity.agentRunId);
+-      if (current && !sameCollaborationMemberExecutionIdentity(current, identity)) {
+-        throw new Error(`AgentRun '${identity.agentRunId}' already has a different event-retirement identity.`);
+-      }
+-      this.retiringAgentEvents.set(identity.agentRunId, identity);
+-    }
+-    let released = false;
+-    return () => {
+-      if (released) return;
+-      released = true;
+-      for (const identity of retired) {
+-        const current = this.retiringAgentEvents.get(identity.agentRunId);
+-        if (current && sameCollaborationMemberExecutionIdentity(current, identity)) {
+-          this.retiringAgentEvents.delete(identity.agentRunId);
+-        }
+-      }
+-    };
+-  }
+-
+-  private isCommittedTeardownStatus(
+-    identity: CollaborationMemberExecutionIdentity,
+-    event: CollaborationAgentExecutionEvent,
+-  ): boolean {
+-    const retired = this.retiringAgentEvents.get(identity.agentRunId);
+-    return event.kind === "agent_run"
+-      && event.event.eventType === "AGENT_STATUS"
+-      && Boolean(retired && sameCollaborationMemberExecutionIdentity(retired, identity));
+-  }
+-
+   async executeAgentCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
+     return (await this.executeAgentCommandWithExecutionKind(agentRunId, command)).result;
+   }
+@@ -448,7 +449,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+ 
+   /**
+    * Runtime liveness (AR-005): the host is active and, for a delegated child Agent, its
+-   * AgentRun is active. Configured Agents keep host membership (they activate lazily).
++   * AgentRun is active. Configured Agents and collaborators keep host membership (they
++   * activate lazily on their first message).
+    */
+   private isLiveAgent(agentRunId: string): boolean {
+     const agent = this.index.getAgent(agentRunId);
+@@ -463,18 +465,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
+     return agent.executionKind !== "task" || host.hasLiveDirectTaskExecution({ agentRunId });
+   }
+ 
+-  private resolveRecipientIdentity(recipient: ResolvedAgentOrgRecipient): CollaborationMemberExecutionIdentity {
+-    if (recipient.kind === "agent") {
+-      const placement = this.index.getConfiguredPlacement(recipient.address);
+-      if (!placement || !("agentRunId" in placement)) throw new Error(`Agent '${recipient.address}' is not configured.`);
+-      return this.identityFor(placement.agentRunId, placement.address);
+-    }
+-    const team = this.index.getConfiguredPlacement(recipient.address);
+-    if (!team || "agentRunId" in team) throw new Error(`Team '${recipient.address}' is not configured.`);
+-    const coordinator = team.members.find((agent) => agent.address === team.coordinatorAddress);
+-    if (!coordinator) throw new Error(`Team '${recipient.address}' has no exact coordinator.`);
+-    return this.identityFor(coordinator.agentRunId, coordinator.address);
+-  }
+   private identityFor(agentRunId: string, address: AgentTeamAddress): CollaborationMemberExecutionIdentity {
+     return createCollaborationMemberExecutionIdentity({ root: this.options.root, memberAddress: address, agentRunId });
+   }
+diff --git a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+index 5a46923e0..bf7b295cb 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+@@ -26,13 +26,19 @@ import type { TeamRunEvent } from "./team-run-event.js";
+ import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree.js";
+ import type { AgentLaunchConfiguration } from "./team-run-config.js";
+ import type { TeamRun } from "./team-run.js";
+-import { TeamExecutionIndex } from "../services/team-execution-index.js";
++import { TeamExecutionIndex, type TeamMessagePlacement } from "../services/team-execution-index.js";
++import type { FlatTeamCollaboratorHost } from "../local/flat-team-execution-factory.js";
++import type { ConfiguredMemberActivationMode } from "../local/flat-team-execution-context.js";
+ import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";
+ import { TeamRunResolver } from "../services/team-run-resolver.js";
+ import type { RootEventListener, RootSnapshotConnection } from "../services/team-run-event-publisher.js";
+ import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
+ import { TeamRecipientResolver } from "../services/team-recipient-resolver.js";
+-import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
++import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
++import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
++import { delegateToResolvedTarget } from "../../agent-collaboration/execution/task/task-delegation-target.js";
++import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
++import type { CollaboratorMentionAdmission, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+ import {
+   TaskDelegationError,
+   type DelegateTaskInput,
+@@ -77,6 +83,7 @@ export class RootTeamRun {
+   private readonly communication: TeamCommunicationService;
+   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
+   private readonly materializationGate: RootTeamRunMaterializationGate;
++  private readonly collaborators: TeamRunCollaborators;
+   private readonly unsubscribeTaskExecutionEvents: () => void;
+   private termination: Promise<AgentOperationResult> | null = null;
+   private frozenTerminationScope: FrozenTeamRunTerminationScope | null = null;
+@@ -84,6 +91,8 @@ export class RootTeamRun {
+ 
+   constructor(private readonly options: {
+     rootRun: TeamRun;
++    /** Hosts collaborators on the root TeamRun (AR-006). */
++    collaboratorHost: FlatTeamCollaboratorHost;
+     config: TeamRunConfig;
+     tree: TeamRunExecutionTreeSnapshot;
+     messages: TeamCommunicationMessagesSnapshot;
+@@ -93,6 +102,7 @@ export class RootTeamRun {
+     memoryLocator?: RootedAgentMemoryLocator;
+     activityInspector?: AgentConversationActivityInspector;
+     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
++    collaboratorAdmission?: CollaboratorMentionAdmission;
+     disposeRootSubjects?(): void;
+     onTerminated?(): void;
+   }) {
+@@ -139,6 +149,18 @@ export class RootTeamRun {
+       publish: (event) => options.publisher.publish(event),
+       replaceSnapshot: (messages) => this.replaceMessages(messages),
+     });
++    this.collaborators = new TeamRunCollaborators({
++      rootTeamRunId: this.teamRunId,
++      admission: options.collaboratorAdmission,
++      identities: options.taskExecutionIdentity,
++      persistence: options.persistence,
++      getTree: () => this.tree,
++      assertAdmitting: () => this.assertAdmitting(),
++      host: options.collaboratorHost,
++      registerTeamRun: (run) => this.teamRunResolver.registerManaged(run),
++      replaceTree: (tree) => this.replaceTree(tree),
++      publish: (event) => options.publisher.publish(event),
++    });
+     this.platformBindings = new TeamAgentPlatformBindingCommitter({
+       persistence: options.persistence,
+       getTree: () => this.tree,
+@@ -227,11 +249,33 @@ export class RootTeamRun {
+     return this.executeAgentCommand(targetAgentRunId, { kind: "post_message", message });
+   }
+ 
+-  resolveRecipient(recipientAddress: string): ResolvedTeamRecipient {
++  /** Message ingress: a configured Agent, then a collaborator (its coordinator) or a collaborator Team member. */
++  resolveMessageRecipient(recipientAddress: string): TeamMessagePlacement {
++    this.assertAdmitting();
++    return this.recipientResolver.resolveMessageRecipient(this.index, recipientAddress);
++  }
++
++  /** Delegation target: a configured Agent, else a collaborator of this run. */
++  resolveDelegationPlacement(recipientAddress: string): TeamDelegationPlacement {
+     this.assertAdmitting();
+-    return this.recipientResolver.resolve(this.index, recipientAddress);
++    return this.recipientResolver.resolveDelegationPlacement(this.index, recipientAddress);
++  }
++
++  /** Admits mentions for the focused agent in one gate; the caller posts the returned content. */
++  admitCollaboratorMentions(input: Parameters<TeamRunCollaborators["admit"]>[0]): Promise<RootCollaboratorAdmissionResult> {
++    return this.materializationGate.run(async () => {
++      this.assertAdmitting();
++      return this.index.getAgent(input.focusedAgentRunId)
++        ? this.collaborators.admit(input)
++        : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
++    });
+   }
+ 
++  collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
++
++  /** Re-hosts the run's collaborators on restore (no runtime starts; the first message does). */
++  restoreCollaborators(mode: ConfiguredMemberActivationMode): Promise<void> { return this.collaborators.restore(mode); }
++
+   authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
+     this.assertAdmitting();
+     this.authorizeCurrentIdentity(identity);
+@@ -249,14 +293,15 @@ export class RootTeamRun {
+   delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
+     return this.materializationGate.run(async () => {
+       this.authorizeIdentity(context.identity);
+-      const placement = this.resolveRecipient(input.recipient_address);
+-      if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
+-        throw new CollaborationContractError(
+-          "COLLABORATION_SELF_TARGET_REJECTED",
+-          "An Agent cannot delegate a task to its own logical placement.",
+-        );
+-      }
+-      return this.taskExecutions.delegateTask(context, input, placement);
++      return delegateToResolvedTarget(() => this.resolveDelegationPlacement(input.recipient_address), (placement) => {
++        if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
++          throw new CollaborationContractError(
++            "COLLABORATION_SELF_TARGET_REJECTED",
++            "An Agent cannot delegate a task to its own logical placement.",
++          );
++        }
++        return this.taskExecutions.delegateTask(context, input, placement);
++      });
+     });
+   }
+ 
+@@ -266,8 +311,13 @@ export class RootTeamRun {
+         return { accepted: false, code: "COLLABORATION_ROOT_MISMATCH", message: "Message root does not match the selected RootTeamRun." };
+       }
+       this.authorizeIdentity(intent.sender.participant.identity);
+-      const placement = this.resolveRecipient(intent.recipientAddress);
+-      const receiver = this.resolveConfiguredRecipientIdentity(placement);
++      const { receiver: target } = this.resolveMessageRecipient(intent.recipientAddress);
++      if (!this.isLiveAgent(target.agentRunId)) {
++        throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", `Collaboration recipient '${intent.recipientAddress}' has no live Agent ingress.`);
++      }
++      const receiver = createCollaborationMemberExecutionIdentity({
++        root: createTeamRootExecutionIdentity(this.teamRunId), memberAddress: target.address, agentRunId: target.agentRunId,
++      });
+       return this.communication.deliver({
+         intent,
+         receiverIdentity: receiver,
+@@ -367,13 +417,8 @@ export class RootTeamRun {
+     );
+   }
+ 
+-  enterPersistenceFailStop(): void {
+-    this.enterFailStop();
+-  }
+-
+-  enterLifecycleFailStop(): void {
+-    this.enterFailStop();
+-  }
++  enterPersistenceFailStop(): void { this.enterFailStop(); }
++  enterLifecycleFailStop(): void { this.enterFailStop(); }
+ 
+   private enterFailStop(): void {
+     if (this.lifecycle === "terminated" || this.failStopped) return;
+@@ -443,7 +488,10 @@ export class RootTeamRun {
+     return !!execution && execution.address === identity.memberAddress && this.isLiveAgent(identity.agentRunId);
+   }
+ 
+-  /** Runtime liveness: the containing TeamRun is active and, for a task Agent, its handle is registered. */
++  /**
++   * Runtime liveness: the containing TeamRun is active and, for a task Agent, its handle is
++   * registered. Configured members and collaborators are live with their TeamRun (lazy start).
++   */
+   private isLiveAgent(agentRunId: string): boolean {
+     const agent = this.index.getAgent(agentRunId);
+     if (!agent) return false;
+@@ -456,9 +504,8 @@ export class RootTeamRun {
+     const indexed = this.index.requireTeam(teamRunId);
+     const active = this.teamRunResolver.getActive(teamRunId);
+     if (active) return active;
+-    if (indexed.executionKind !== "configured") {
+-      throw new Error(`Task TeamRun '${teamRunId}' is not active.`);
+-    }
++    if (indexed.executionKind === "collaborator") return this.options.collaboratorHost.requireCollaboratorTeam(teamRunId);
++    if (indexed.executionKind !== "configured") throw new Error(`Task TeamRun '${teamRunId}' is not active.`);
+     return this.teamRunResolver.requireConfigured(teamRunId);
+   }
+ 
+@@ -467,21 +514,6 @@ export class RootTeamRun {
+     return this.requireTeamRun(execution.containingTeamRunId);
+   }
+ 
+-  private resolveConfiguredRecipientIdentity(placement: ResolvedTeamRecipient): CollaborationMemberExecutionIdentity {
+-    const target = this.index.getConfiguredPlacement(placement.address);
+-    if (!target || !this.isLiveAgent(target.agentRunId)) {
+-      throw new CollaborationContractError(
+-        "COLLABORATION_TARGET_NOT_FOUND",
+-        `Collaboration recipient '${placement.address}' has no live configured Agent ingress.`,
+-      );
+-    }
+-    return createCollaborationMemberExecutionIdentity({
+-      root: createTeamRootExecutionIdentity(this.teamRunId),
+-      memberAddress: target.address,
+-      agentRunId: target.agentRunId,
+-    });
+-  }
+-
+   private replaceTree(tree: TeamRunExecutionTreeSnapshot): void {
+     this.tree = tree;
+     this.index = new TeamExecutionIndex(tree);
+diff --git a/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts b/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+index 5053a0285..a4134b117 100644
+--- a/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
++++ b/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+@@ -15,7 +15,9 @@ import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js
+ import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
+ import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
+ import type { TeamRunContext } from "../domain/team-run-context.js";
+-import { FlatTeamExecutionContext } from "./flat-team-execution-context.js";
++import { FlatAgentExecutionContext, FlatTeamExecutionContext, type ConfiguredMemberActivationMode } from "./flat-team-execution-context.js";
++import type { TeamRunAgentNode } from "../domain/team-run-config.js";
++import { CollaboratorTeamExecutionRegistry, type PreparedCollaboratorTeam } from "./registries/collaborator-team-execution-registry.js";
+ import { TaskTeamExecutionFactory } from "./task-team-execution-factory.js";
+ import { ConfiguredAgentExecutionRegistry } from "./registries/configured-agent-execution-registry.js";
+ import { FlatTeamAgentExecutionHandle } from "./flat-team-agent-execution-handle.js";
+@@ -38,6 +40,8 @@ export class FlatTeamExecutionManager {
+   private readonly configured: ConfiguredAgentExecutionRegistry;
+   private readonly taskAgents: TaskAgentExecutionRegistry;
+   private readonly taskTeams: TaskTeamExecutionRegistry;
++  private readonly configResolver: FlatTeamMemberConfigResolver;
++  private readonly collaboratorTeams: CollaboratorTeamExecutionRegistry;
+ 
+   constructor(
+     private readonly context: TeamRunContext<FlatTeamExecutionContext>,
+@@ -50,9 +54,10 @@ export class FlatTeamExecutionManager {
+       callbacks: FlatTeamExecutionCallbacks;
+     },
+   ) {
++    this.configResolver = new FlatTeamMemberConfigResolver(context);
+     this.configured = new ConfiguredAgentExecutionRegistry({
+       teamContext: context,
+-      configResolver: new FlatTeamMemberConfigResolver(context),
++      configResolver: this.configResolver,
+       agentRunManager: options.agentRunManager,
+       memoryLocator: options.memoryLocator,
+       activityInspector: options.activityInspector,
+@@ -71,6 +76,46 @@ export class FlatTeamExecutionManager {
+       teamContext: context,
+       subTeamRunFactory: options.subTeamRunFactory,
+     });
++    this.collaboratorTeams = new CollaboratorTeamExecutionRegistry({
++      teamContext: context,
++      subTeamRunFactory: options.subTeamRunFactory,
++    });
++  }
++
++  /**
++   * Adds a collaborator Agent as a direct Agent of this TeamRun (Team root): its context joins
++   * `memberContexts` (routing, status) and its node the config resolver. The handle starts
++   * lazily on the first message. `commit` runs after the tree write is durable.
++   */
++  prepareCollaboratorAgent(node: TeamRunAgentNode, mode: ConfiguredMemberActivationMode): Readonly<{ commit(): void }> {
++    this.assertActive();
++    if (this.context.runtimeContext.memberContexts.some((member) =>
++      member.address === node.address || member.agentRunId === node.agentRunId)) {
++      throw new Error(`TeamRun '${this.context.teamRunId}' already has an Agent at '${node.address}'.`);
++    }
++    return Object.freeze({
++      commit: () => {
++        this.configResolver.addCollaborator(node, mode);
++        this.context.runtimeContext.memberContexts.push(new FlatAgentExecutionContext({
++          address: node.address,
++          agentRunId: node.agentRunId,
++          runtimeKind: node.runtimeKind,
++          platformAgentRunId: node.platformAgentRunId,
++        }));
++      },
++    });
++  }
++
++  /** Prepares a collaborator Team as one TeamRun under this TeamRun (lazy members, no idle shutdown). */
++  prepareCollaboratorTeam(input: Parameters<CollaboratorTeamExecutionRegistry["prepare"]>[0]): Promise<PreparedCollaboratorTeam> {
++    this.assertActive();
++    return this.collaboratorTeams.prepare(input);
++  }
++
++  requireCollaboratorTeam(teamRunId: string): TeamRun {
++    const run = this.collaboratorTeams.get(teamRunId);
++    if (!run) throw new Error(`Collaborator TeamRun '${teamRunId}' is not active in TeamRun '${this.context.teamRunId}'.`);
++    return run;
+   }
+ 
+ 
+@@ -131,13 +176,15 @@ export class FlatTeamExecutionManager {
+       ...configured,
+       ...this.taskAgents.getLeafAgentStatusSnapshots(),
+       ...this.taskTeams.listTeamRuns().flatMap((run) => run.getLeafAgentStatusSnapshots()),
++      ...this.collaboratorTeams.list().flatMap((run) => run.getLeafAgentStatusSnapshots()),
+     ];
+   }
+ 
+   hasOpenExecutionWork(): boolean {
+     return this.configured.listHandles().some((handle) => handle.hasOpenExecutionWork()) ||
+       this.taskAgents.hasRunningWork() ||
+-      this.taskTeams.hasRunningWork();
++      this.taskTeams.hasRunningWork() ||
++      this.collaboratorTeams.hasOpenExecutionWork();
+   }
+ 
+   reserveDirectAgentInput(
+@@ -245,7 +292,7 @@ export class FlatTeamExecutionManager {
+         if (!local) return this.cancelDeferredPreparation(locals);
+         locals.push(local);
+       }
+-      for (const run of this.taskTeams.listPreparedTeamRuns()) {
++      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
+         const local = await run.tryPrepareTerminationIfQuiescent();
+         if (!local) return this.cancelDeferredPreparation(locals);
+         locals.push(local);
+@@ -267,6 +314,7 @@ export class FlatTeamExecutionManager {
+     this.configured.freezeMaterialization();
+     this.taskAgents.freezeMaterialization();
+     this.taskTeams.freezeMaterialization();
++    this.collaboratorTeams.freezeMaterialization();
+ 
+     const agentHandles = [...new Set([
+       ...this.configured.listHandles().filter((handle): handle is FlatTeamAgentExecutionHandle =>
+@@ -277,6 +325,7 @@ export class FlatTeamExecutionManager {
+     const childRuns = [...new Set([
+       ...this.taskTeams.listTeamRuns(),
+       ...this.taskTeams.listPreparedTeamRuns(),
++      ...this.collaboratorTeams.list(),
+     ])];
+     const childScopes = childRuns.map((run) => run.freezeForRootTermination());
+     this.frozenTerminationScope = this.createFrozenTerminationScope(agentHandles, childScopes);
+@@ -307,7 +356,7 @@ export class FlatTeamExecutionManager {
+       for (const run of this.taskTeams.listTeamRuns()) {
+         locals.push(await run.prepareTermination());
+       }
+-      for (const run of this.taskTeams.listPreparedTeamRuns()) {
++      for (const run of [...this.taskTeams.listPreparedTeamRuns(), ...this.collaboratorTeams.list()]) {
+         locals.push(await run.prepareTermination());
+       }
+       for (const handle of [...this.configured.listHandles()].reverse()) {
+@@ -381,6 +430,7 @@ export class FlatTeamExecutionManager {
+     this.configured.dispose();
+     this.taskAgents.dispose();
+     this.taskTeams.dispose();
++    this.collaboratorTeams.dispose();
+     this.lifecycle = "terminated";
+     return { accepted: true };
+   }
+@@ -452,6 +502,7 @@ export class FlatTeamExecutionManager {
+     this.configured.dispose();
+     this.taskAgents.dispose();
+     this.taskTeams.dispose();
++    this.collaboratorTeams.dispose();
+     this.lifecycle = "terminated";
+   }
+ 
+diff --git a/autobyteus-server-ts/src/api/graphql/schema.ts b/autobyteus-server-ts/src/api/graphql/schema.ts
+index 8f602660b..1c0d0ca4e 100644
+--- a/autobyteus-server-ts/src/api/graphql/schema.ts
++++ b/autobyteus-server-ts/src/api/graphql/schema.ts
+@@ -11,6 +11,7 @@ import { AgentDefinitionResolver } from './types/agent-definition.js';
+ import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
+ import { AgentOrgDefinitionResolver } from './types/agent-org-definition.js';
+ import { AgentOrgRunResolver } from './types/agent-org-run.js';
++import { AgentRunCollaborationResolver } from './types/agent-run-collaboration.js';
+ import { TokenUsageStatisticsResolver } from './types/token-usage-stats.js';
+ import { TokenUsageAnalyticsResolver } from './types/token-usage-analytics.js';
+ import { AgentCustomizationOptionsResolver } from './types/agent-customization-options.js';
+@@ -53,6 +54,7 @@ export async function buildGraphqlSchema() {
+       AgentTeamDefinitionResolver,
+       AgentOrgDefinitionResolver,
+       AgentOrgRunResolver,
++      AgentRunCollaborationResolver,
+       TokenUsageStatisticsResolver,
+       TokenUsageAnalyticsResolver,
+       AgentCustomizationOptionsResolver,
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts b/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+index 076147b95..8b9f7ac89 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+@@ -57,22 +57,34 @@ export const projectAgentOrgExecutionEvent = (
+   run: AgentOrgRun,
+   sequenced: SequencedRootEvent<AgentOrgRunEvent>,
+ ): RootExecutionEventDto | null => {
+-  if (sequenced.event.kind === "lifecycle") return null;
+-  const event = sequenced.event.kind === "agent_presentation"
+-    ? {
++  const source = sequenced.event;
++  let event;
++  switch (source.kind) {
++    case "lifecycle":
++      return null;
++    case "agent_presentation":
++      event = {
+         kind: "agent_presentation" as const,
+-        member_address: sequenced.event.execution.memberAddress,
+-        agent_run_id: sequenced.event.execution.agentRunId,
+-        message: sequenced.event.message,
+-      }
+-    : sequenced.event.kind === "task_execution_started"
+-      ? {
+-          kind: "task_execution_started" as const,
+-          host_kind: sequenced.event.host.hostKind,
+-          host_run_id: sequenced.event.host.hostRunId,
+-          execution: requireStartedExecution(run, sequenced.event.taskExecution),
+-        }
+-      : { kind: "communication" as const, message: sequenced.event.message };
++        member_address: source.execution.memberAddress,
++        agent_run_id: source.execution.agentRunId,
++        message: source.message,
++      };
++      break;
++    case "task_execution_started":
++      event = {
++        kind: "task_execution_started" as const,
++        host_kind: source.host.hostKind,
++        host_run_id: source.host.hostRunId,
++        execution: requireStartedExecution(run, source.taskExecution),
++      };
++      break;
++    case "communication":
++      event = { kind: "communication" as const, message: source.message };
++      break;
++    case "collaborator_added":
++      event = { kind: "collaborator_added" as const, collaborator: source.collaborator };
++      break;
++  }
+   return RootExecutionEventDtoSchema.parse({
+     root_subject_kind: "agent_org",
+     root_run_id: run.orgRunId,
+diff --git a/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts b/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
+index b56ba96d9..210b81a42 100644
+--- a/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
++++ b/autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
+@@ -1,6 +1,7 @@
+ import {
+   parseTeamStreamServerMessage,
+   type AgentLaunchConfigurationDto,
++  type CollaboratorEntryDto,
+   type ConfiguredMemberExecutionDto,
+   type TaskExecutionDto,
+   type TaskTeamMemberExecutionDto,
+@@ -10,7 +11,10 @@ import {
+   type TeamStreamServerMessage,
+ } from "@autobyteus/team-stream-contracts";
+ import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
++import { isCollaboratorTeamEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+ import type {
++  CollaboratorEntry,
++  CollaboratorTeamEntry,
+   ConfiguredExecutionNode,
+   RootConfiguredTeamExecutionNode,
+   TaskExecution,
+@@ -82,6 +86,11 @@ export const projectSequencedTeamRunEvent = (
+       } });
+     case TeamRunEventSourceType.TASK_EXECUTION:
+       return projectTaskExecutionStarted(root, event.taskExecution, changeSequence);
++    case TeamRunEventSourceType.COLLABORATOR:
++      return parseTeamStreamServerMessage({ type: "COLLABORATOR_ADDED", payload: {
++        change_sequence: changeSequence,
++        collaborator: projectCollaboratorEntry(event.payload.collaborator),
++      } });
+   }
+ };
+ 
+@@ -127,10 +136,31 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
+     coordinator_address: tree.rootTeam.coordinatorAddress,
+     default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
+     members: tree.rootTeam.members.map(projectConfiguredMember),
++    collaborators: tree.rootTeam.collaborators.map(projectCollaboratorEntry),
+     task_executions: tree.rootTeam.taskExecutions.map(projectTaskExecution),
+   },
+ });
+ 
++export const projectCollaboratorEntry = (entry: CollaboratorEntry): CollaboratorEntryDto => entry.kind === "agent"
++  ? {
++      kind: "agent", address: entry.address, agent_definition_id: entry.agentDefinitionId,
++      agent_run_id: entry.agentRunId, platform_agent_run_id: entry.platformAgentRunId,
++      launch_configuration: projectLaunchConfiguration(entry.launchConfiguration),
++      added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
++    }
++  : {
++      kind: "agent_team", address: entry.address, team_definition_id: entry.teamDefinitionId,
++      team_run_id: entry.teamRunId, coordinator_address: entry.coordinatorAddress,
++      members: entry.members.map((member) => ({
++        address: member.address, agent_definition_id: member.agentDefinitionId,
++        agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId,
++      })),
++      handoffs: entry.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
++      default_launch_configuration: projectLaunchConfiguration(entry.defaultLaunchConfiguration),
++      task_executions: entry.taskExecutions.map(projectTaskExecution),
++      added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
++    };
++
+ const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
+   return {
+     kind: "configured_agent", address: member.address, agent_definition_id: member.agentDefinitionId,
+@@ -183,14 +213,14 @@ const findTaskExecution = (
+   reference: TaskExecutionReference,
+ ): { parentTeamRunId: string; execution: TaskExecution } | null => {
+   const visit = (
+-    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
++    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution | CollaboratorTeamEntry,
+   ): { parentTeamRunId: string; execution: TaskExecution } | null => {
+     const own = team.taskExecutions.find((execution) =>
+       "agentRunId" in reference
+         ? "agentRunId" in execution && execution.agentRunId === reference.agentRunId
+         : "teamRunId" in execution && execution.teamRunId === reference.teamRunId);
+     if (own) return { parentTeamRunId: team.teamRunId, execution: own };
+-    if (!("teamDefinitionName" in team)) for (const member of team.members) {
++    if (!("teamDefinitionName" in team) && !("kind" in team)) for (const member of team.members) {
+       if (!("teamRunId" in member)) continue;
+       const nested = visit(member);
+       if (nested) return nested;
+@@ -203,5 +233,10 @@ const findTaskExecution = (
+     }
+     return null;
+   };
+-  return visit(tree.rootTeam);
++  // A collaborator Team hosts its members' delegations.
++  for (const team of [tree.rootTeam, ...tree.rootTeam.collaborators.filter(isCollaboratorTeamEntry)]) {
++    const found = visit(team);
++    if (found) return found;
++  }
++  return null;
+ };

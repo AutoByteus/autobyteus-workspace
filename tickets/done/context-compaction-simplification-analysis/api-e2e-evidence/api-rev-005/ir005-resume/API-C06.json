@@ -1,0 +1,25 @@
+{
+  "case": "API-C06",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web",
+  "command": [
+    "pnpm",
+    "run",
+    "test:nuxt",
+    "services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts",
+    "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts",
+    "services/agentStreaming/__tests__/AgentStreamingService.spec.ts",
+    "services/agentStreaming/__tests__/TeamStreamingService.spec.ts",
+    "services/teamExecution/__tests__/teamExecutionViewState.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+    "stores/__tests__/agentRunStore.spec.ts",
+    "components/conversation/__tests__/UserMessage.spec.ts",
+    "components/agentInput/__tests__/AgentUserInputTextArea.spec.ts",
+    "--run"
+  ],
+  "started": "2026-09-30T20:56:07.162538+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T20:56:18.697138+00:00"
+}

@@ -1,0 +1,97 @@
+--- test-support/live-e2e/live-e2e-harness.ts (pre-fix)
++++ test-support/live-e2e/live-e2e-harness.ts
+@@ -235,7 +235,6 @@
+ 
+ export const inspectDirectSummaryRequest = (invocation: InvocationSnapshot): {
+   sourceToolTailVerified: boolean;
+-  shieldOmissionPressureVerified: boolean;
+ } => {
+   const [system, user] = invocation.messages;
+   const task = user?.content ?? '';
+@@ -249,13 +248,11 @@
+       || !task.endsWith(COMPACTION_TASK_END_SEPARATOR)) {
+     throw new Error('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
+   }
+-  if (!providerSafeCompactionText.isProviderSafeText(task) || task.includes('\uFFFD')) {
++  if (!providerSafeCompactionText.isProviderSafeText(task)) {
+     throw new Error('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');
+   }
+   return {
+     sourceToolTailVerified: hasDirectSummarySourceToolTail(task),
+-    shieldOmissionPressureVerified: task.includes('<script setup>')
+-      && task.includes('</template>') && task.includes('… [') && !task.includes('🛡️'),
+   };
+ };
+ 
+@@ -896,8 +893,7 @@
+       const requestInspections = summaryRequests.map(inspectDirectSummaryRequest);
+       process.stdout.write(`${JSON.stringify({ event: 'managed_compaction_direct_source_probe',
+         requestInspections, summaryResponses: summaryResponses.map(({ content, completionStatus }) => ({ content, completionStatus })) })}\n`);
+-      if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)
+-          || !requestInspections.some(({ shieldOmissionPressureVerified }) => shieldOmissionPressureVerified)) {
++      if (!requestInspections.some(({ sourceToolTailVerified }) => sourceToolTailVerified)) {
+         throw new Error('LIVE_E2E_DIRECT_SUMMARY_SOURCE_EVIDENCE_MISSING');
+       }
+       const acceptedSummary = parseCompactionSummary(summaryResponses[0]!.content);
+@@ -955,8 +951,6 @@
+         || rawTraceCorpus.some(({ content }) => content.includes('Native API tool continuation'))
+         || unicodeShieldSourceResults.length !== 1
+         || typeof unicodeShieldSourceResults[0]?.toolResult !== 'string'
+-        || !unicodeShieldSourceResults[0].toolResult.includes('🛡️')
+-        || unicodeShieldSourceResults[0].toolResult.includes('\uFFFD')
+       ) {
+         throw new Error('LIVE_E2E_NATIVE_TRACE_LIFECYCLE_INVALID');
+       }
+@@ -1030,7 +1024,6 @@
+         !nextRequestSummary
+         || !providerSafeCompactionText.isProviderSafeText(nextRequestSummary)
+         || !providerSafeCompactionText.isProviderSafeText(projectedInvocation)
+-        || nextRequestSummary.includes('\uFFFD')
+         || nextRequestSummary !== acceptedSummary
+         || /"record_type"\s*:/u.test(nextRequestSummary)
+         || nextCurrentUserRegion !== finalInstruction
+--- autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts (pre-fix)
++++ autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+@@ -54,7 +54,10 @@
+     },
+   );
+ 
+-  it('checks the current direct request framing and Unicode tool fixture without mutating the source', async () => {
++  it.each([
++    'Source received.',
++    'Preserved emoji 🛡️ and other Unicode: Grüße 中文 ✅; the log literally contains �.',
++  ])('accepts ordinary assistant text while checking request framing and source preservation: %s', async (assistantText) => {
+     const before = await fs.readFile(fixtureUrl, 'utf8');
+     const fixture = JSON.parse(before);
+     const messages = [
+@@ -66,7 +69,10 @@
+       ) }),
+     ];
+     const history = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([{
+-      id: 'fixture', kind: 'tool_protocol_group', startIndex: 0, endIndex: 1,
++      id: 'assistant', kind: 'message', startIndex: 0, endIndex: 0,
++      rawTraceIds: ['assistant'], messages: [new Message(MessageRole.ASSISTANT, { content: assistantText })],
++    }, {
++      id: 'fixture', kind: 'tool_protocol_group', startIndex: 1, endIndex: 2,
+       rawTraceIds: ['call', 'result'], toolCallIds: [fixture.tool_call_id],
+       matchedToolCallIds: [fixture.tool_call_id], isComplete: true, messages,
+     }], { maxItemChars: 2_000 });
+@@ -75,12 +81,17 @@
+       { role: MessageRole.USER, content: `Summary budget: 2000 tokens.\n\n${history}`, toolPayload: null, provenance: null },
+     ] };
+     expect(inspectDirectSummaryRequest(invocation)).toEqual({
+-      sourceToolTailVerified: true, shieldOmissionPressureVerified: true,
++      sourceToolTailVerified: true,
+     });
++    expect(history).toContain(assistantText);
+     expect(history).toContain(fixture.tool_call_id);
+     expect(await fs.readFile(fixtureUrl, 'utf8')).toBe(before);
+     expect(() => inspectDirectSummaryRequest({ messages: [invocation.messages[1]!] }))
+       .toThrow('LIVE_E2E_DIRECT_SUMMARY_REQUEST_INVALID');
++    const malformed = structuredClone(invocation);
++    malformed.messages[1]!.content = malformed.messages[1]!.content.replace(assistantText, '\uD83D');
++    expect(() => inspectDirectSummaryRequest(malformed))
++      .toThrow('LIVE_E2E_DIRECT_SUMMARY_UNICODE_UNSAFE');
+   });
+ });
+ 

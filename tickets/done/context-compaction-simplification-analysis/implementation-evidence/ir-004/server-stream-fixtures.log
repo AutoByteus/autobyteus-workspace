@@ -1,0 +1,280 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-XHXpRJ/workspace.
+
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > deepseek.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-mrT3zc/workspace.
+
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+stdout | tests/unit/secret-management/live-e2e-compaction-boundary.test.ts > shared live compaction setup boundary (no provider calls) > lmstudio.qwen36.compaction-agent-flow reaches fresh direct-provider setup without retired assets or exports
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+ ✓ tests/unit/secret-management/live-e2e-compaction-boundary.test.ts (8 tests) 24ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Created agent session 6ee8001c-cc4d-41d3-a06c-cfebad406a4c for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Agent Team WebSocket connected: session=6ee8001c-cc4d-41d3-a06c-cfebad406a4c, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes
+Closed agent session 6ee8001c-cc4d-41d3-a06c-cfebad406a4c
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Created agent session 0788698f-a3d6-4528-bc4c-7bb3f3a7b43a for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Agent Team WebSocket connected: session=0788698f-a3d6-4528-bc4c-7bb3f3a7b43a, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+Closed agent session 0788698f-a3d6-4528-bc4c-7bb3f3a7b43a
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Created agent session d7d7ac10-2c7e-4a97-98df-f538040a4655 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Agent Team WebSocket connected: session=d7d7ac10-2c7e-4a97-98df-f538040a4655, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+Closed agent session d7d7ac10-2c7e-4a97-98df-f538040a4655
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Created agent session 22570aa2-ad07-4aea-8fc8-50843e552749 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Agent Team WebSocket connected: session=22570aa2-ad07-4aea-8fc8-50843e552749, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > reports exact-target rejection without persistent or address fallback
+Closed agent session 22570aa2-ad07-4aea-8fc8-50843e552749
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Created agent session 886e81e3-419a-4dfd-80ff-d05a4be4b42f for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Agent Team WebSocket connected: session=886e81e3-419a-4dfd-80ff-d05a4be4b42f, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when the exact AgentRun rejects message admission
+Closed agent session 886e81e3-419a-4dfd-80ff-d05a4be4b42f
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Created agent session b5e18e3b-21ef-4994-954d-ecc1022dd4a1 for run team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Agent Team WebSocket connected: session=b5e18e3b-21ef-4994-954d-ecc1022dd4a1, run=team-run-root
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > returns a target-correlated failure when message execution throws
+Closed agent session b5e18e3b-21ef-4994-954d-ecc1022dd4a1
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (7 tests | 1 failed) 22ms
+     ✓ connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes 7ms
+     × streams strict live status N and the following Agent event N+1 after the snapshot barrier 7ms
+     ✓ routes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once 2ms
+     ✓ reports exact-target rejection without persistent or address fallback 1ms
+     ✓ returns a target-correlated failure when the exact AgentRun rejects message admission 1ms
+     ✓ returns a target-correlated failure when message execution throws 1ms
+     ✓ rejects legacy selector fields at the strict client contract boundary 1ms
+stdout | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts (11 tests | 1 failed) 82ms
+     ✓ sends the native snapshot for AGY Org root, direct Agents and nested Team members 7ms
+     × opens one correlated native Org snapshot barrier and sequences events 14ms
+     ✓ projects restored task Agent and Team runs at their configured recipient addresses 2ms
+     ✓ rejects wrong-root commands and routes a correlated command only to the exact AgentRun 2ms
+     ✓ keeps task-scoped and rejected sends out of Org history summary qualification 1ms
+     ✓ preserves an accepted ACK when derived history metadata cannot be committed 1ms
+     ✓ enqueues concurrent summary attempts in accepted-result completion order 52ms
+     ✓ acknowledges the strict INTERRUPT_GENERATION command 1ms
+     ✓ acknowledges the strict APPROVE_TOOL command 1ms
+     ✓ acknowledges the strict DENY_TOOL command 0ms
+     ✓ fails closed when the requested Org root is not active 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts > AgentOrgStreamHandler > opens one correlated native Org snapshot barrier and sequences events
+AssertionError: expected [ 'ERROR', 'ROOT_LIFECYCLE' ] to deeply equal [ 'ROOT_EXECUTION_EVENT', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "ROOT_EXECUTION_EVENT",
++   "ERROR",
+    "ROOT_LIFECYCLE",
+  ]
+
+ ❯ tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts:143:52
+    141|     test.publisher.publish({ kind: "lifecycle", isActive: false });
+    142|     const emitted = client.sent.slice(3).map((value) => CollaborationS…
+    143|     expect(emitted.map((message) => message.type)).toEqual(["ROOT_EXEC…
+       |                                                    ^
+    144|     expect(emitted[0]).toMatchObject({ payload: { root_subject_kind: "…
+    145|     expect(emitted[1]).toMatchObject({ payload: { root_subject_kind: "…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler current root stream > streams strict live status N and the following Agent event N+1 after the snapshot barrier
+AssertionError: expected [ Array(2) ] to deeply equal [ Array(2) ]
+
+- Expected
++ Received
+
+@@ -3,10 +3,11 @@
+      "payload": {
+        "agent_run_id": "nested-task-agent-run-001",
+        "change_sequence": 32,
+        "error_details": null,
+        "error_message": null,
++       "recoverableBlock": null,
+        "status": "running",
+        "tool_name": null,
+        "trigger": "turn_started",
+      },
+      "type": "AGENT_STATUS",
+
+ ❯ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:124:48
+    122|       },
+    123|     });
+    124|     expect(sent(harness.connection).slice(-2)).toEqual([
+       |                                                ^
+    125|       {
+    126|         type: "AGENT_STATUS",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  2 failed | 24 passed (26)
+   Start at  21:27:33
+   Duration  5.41s (transform 2.43s, setup 24ms, import 4.62s, tests 128ms, environment 0ms)
+

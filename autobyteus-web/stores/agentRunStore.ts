@@ -1,3 +1,5 @@
+import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { defineStore } from 'pinia';
 import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
@@ -120,7 +122,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const { config, state } = currentAgent;
       const runId = state.runId;
       const isNewAgent = runId.startsWith('temp-');
-      const isResumeOfStoppedRun = !isNewAgent && NOT_LIVE_STATUSES.has(String(state.currentStatus));
+      const isResumeOfStoppedRun = !isNewAgent && !state.recoverableBlock && NOT_LIVE_STATUSES.has(String(state.currentStatus));
       const resumeConfig = !isNewAgent ? runHistoryStore.getResumeConfig(runId) : null;
       const workspaceId = config.workspaceId;
       const workspaceRootPath = config.workspaceMetadata?.workspaceRootPath || (workspaceId
@@ -164,10 +166,12 @@ export const useAgentRunStore = defineStore('agentRun', {
       const initialSummary = userText.trim() ? userText : messageContent;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
+      const messageId = createClientMessageId();
+      let dedupeKey = `agent_run_input:${runId}:${messageId}`;
       // `@` mentions exist only for an existing run; a first message never carries them.
       const mentions = isNewAgent ? [] : mentionsPresentInText(userText, currentAgent.requestedMentions);
       const localSubmission = beginLocalUserSubmission(currentAgent, {
-        text: messageContent,
+        text: messageContent, identity: { messageId, dedupeKey },
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
         mentions,
@@ -218,6 +222,8 @@ export const useAgentRunStore = defineStore('agentRun', {
           }
 
           finalRunId = permanentRunId;
+          dedupeKey = `agent_run_input:${permanentRunId}:${messageId}`;
+          localSubmission.message.dedupeKey = dedupeKey;
           preparedRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
           activationPendingRunId = permanentRunId;
@@ -244,14 +250,11 @@ export const useAgentRunStore = defineStore('agentRun', {
         finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
-        const messageId = createClientMessageId();
         const command = {
           messageId,
-          dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+          dedupeKey,
           mentions: toCollaboratorMentionDtos(userText, mentions),
         };
-        localSubmission.message.messageId = command.messageId;
-        localSubmission.message.dedupeKey = command.dedupeKey;
         if (localSubmission.held) {
           // A send with mentions is shown only once the run accepts it (AR-007).
           await service.sendMessageAwaitingAdmission(
@@ -425,6 +428,16 @@ export const useAgentRunStore = defineStore('agentRun', {
       const agentContextsStore = useAgentContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const context = agentContextsStore.getRun(runId);
+      const state = context?.state;
+      const instance = state?.inputProjection?.runInstanceId;
+      const service = streamingServices.get(runId);
+      const binding = useWindowNodeContextStore().bindingRevision;
+      const activities = useAgentActivityStore();
+      const activityIds = activities.getNativeCompactionActivityIds(runId);
+      const ownsRequest = () => agentContextsStore.getRun(runId) === context
+        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId) === service
+        && useWindowNodeContextStore().bindingRevision === binding
+        && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);
 
       const teardownLocalRuntime = () => {
         this.clearActivationPending(runId);
@@ -443,7 +456,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         return true;
       }
 
+      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
       try {
+        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
@@ -459,6 +474,12 @@ export const useAgentRunStore = defineStore('agentRun', {
           throw new Error(result?.message || `Failed to terminate run '${runId}'.`);
         }
 
+        if (!ownsRequest()) return false;
+        childStop.confirm();
+        if (context?.config.runtimeKind === 'autobyteus' && state) {
+          state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
+            [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
+        }
         teardownLocalRuntime();
         runHistoryStore.markRunAsInactive(runId);
         runHistoryStore.refreshTreeQuietly();
@@ -466,6 +487,8 @@ export const useAgentRunStore = defineStore('agentRun', {
       } catch (error) {
         console.error(`Error terminating run '${runId}':`, error);
         return false;
+      } finally {
+        childStop?.finish();
       }
     },
 

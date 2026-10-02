@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:54639/rest/health",
+  "status": 200,
+  "body": "{\"status\":\"ok\",\"message\":\"Server is running\"}",
+  "time": "2026-10-01T19:15:11.873281+00:00",
+  "instanceId": "iso-54638-2e45"
+}

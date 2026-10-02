@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "BUILD_FAILED",
+    "message": "pnpm build:electron:mac failed with exit code 1 in /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web"
+  }
+}

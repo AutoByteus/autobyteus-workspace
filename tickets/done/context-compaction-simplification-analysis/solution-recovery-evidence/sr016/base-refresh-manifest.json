@@ -1,0 +1,1520 @@
+{
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "backupBranch": "codex/backup-compaction-before-base-refresh-20260927t093100z",
+  "oldHead": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "newBase": "f7b4f7f4abe5f36a4ae78fd013a869fd61b6c69e",
+  "oldBase": "046279298f53fb98d7688ee9dc2b2ba0fa827685",
+  "files": [
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts",
+      "kind": "file",
+      "sha256": "61586112d9bf99dc3678b48447ae6d52ca3d7060455256f6937e03d799d66129",
+      "bytes": 583
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map",
+      "kind": "file",
+      "sha256": "f2a08902b14a5fa637bd9cf6cf85d711c370e8c53a5c66c70f7b4cab4b872058",
+      "bytes": 393
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js",
+      "kind": "file",
+      "sha256": "89e7db31e5f3b9eecfcf0960e9b1c2b2bc5d881aa7416808883b23e278b05b43",
+      "bytes": 1943
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map",
+      "kind": "file",
+      "sha256": "1d6543ecd1183fb13de071e8869a80db1c837702feb04e5cb5f1408396bda644",
+      "bytes": 1711
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.d.ts",
+      "kind": "file",
+      "sha256": "e303e9ec39bdee104fff0e4fdef1a95847e822ecf1fca0af284e03970557d1e6",
+      "bytes": 2633
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.d.ts.map",
+      "kind": "file",
+      "sha256": "5b045e30b22aaae379e75d71d56900b1475951d4e142804380d5c9df5e56cdcc",
+      "bytes": 1245
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.js",
+      "kind": "file",
+      "sha256": "01cac3372e789f0885584aa479044478663febdf80bca4a56d12d7bbaff11e3f",
+      "bytes": 186
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/index.js.map",
+      "kind": "file",
+      "sha256": "831156d86d7c50bec4022b737b41fa9c12f724efd79df5f8f0874ff02a74804c",
+      "bytes": 216
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts",
+      "kind": "file",
+      "sha256": "327e013e0d2238c7e8718b71c54c2a2a021359d47964fb462ebf40f2ce8e1d6a",
+      "bytes": 730
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map",
+      "kind": "file",
+      "sha256": "689f483db2761c85cef5599f6a04552b96457c4b6b52895edfa45f9573fb9800",
+      "bytes": 497
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.js",
+      "kind": "file",
+      "sha256": "4e8c95bffe4dc4bdcb267a6c8e3221555af04c0fdead9ca665a0c409bea2baa1",
+      "bytes": 2848
+    },
+    {
+      "path": "autobyteus-application-backend-sdk/dist/launch-profile.js.map",
+      "kind": "file",
+      "sha256": "d463f36cd7b9ba3b5e1f6991687c0f7a1495b71c24f83e4ff3aa57d4db31b20d",
+      "bytes": 2584
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts",
+      "kind": "file",
+      "sha256": "3eade94c01c3ee8a859e403087558c991d5f28271d5820b2a0995f8e242e3cbf",
+      "bytes": 2155
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map",
+      "kind": "file",
+      "sha256": "16361848fb226a04b016aa3aa6b5d370458d80f87dc9cb306fa836c834925422",
+      "bytes": 1949
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js",
+      "kind": "file",
+      "sha256": "5d6bc94d25b435fcd7139519cdcdccae0bbc9e493910e847411368e10c7a02c1",
+      "bytes": 65
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map",
+      "kind": "file",
+      "sha256": "ac3be91f5599be58359b182baa67260397e5cce6e212ba8b577058e6514c71a1",
+      "bytes": 144
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts",
+      "kind": "file",
+      "sha256": "8c31dac7590ecc69e52142ca79c09c70b741943d03ac3ff9e4d673e7cbe3fb57",
+      "bytes": 3795
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map",
+      "kind": "file",
+      "sha256": "6e959615b3bf5cc5ac3487acc874208b422f2144f11bba29a4688ce0f1161d2b",
+      "bytes": 2720
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js",
+      "kind": "file",
+      "sha256": "00004fd8954d44028a724d97d70ea2830e8e00baa243f9d01efa755e6af71583",
+      "bytes": 752
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map",
+      "kind": "file",
+      "sha256": "e6b6189c28bedc19021347cc8aaa314148a101fc055b809f55a805bd2defbeaa",
+      "bytes": 738
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts",
+      "kind": "file",
+      "sha256": "d32606dc371d7eb53ceff9ac2fe574339a7a4bed7abf07d1c63828be9f71e9f2",
+      "bytes": 696
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map",
+      "kind": "file",
+      "sha256": "9f84f7a7d16ad70d2da120c6f1c383d0bd19bef84d3358aa377e6f0ff8bf7d96",
+      "bytes": 703
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js",
+      "kind": "file",
+      "sha256": "010591b002515e0dc231a63e3f07f583608c3accf8ca4559be2848fa92abb671",
+      "bytes": 63
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map",
+      "kind": "file",
+      "sha256": "979139c60bfc991b573fa5c957744d0d58d5ab8cd2b18c96c4eebf6752b5e17f",
+      "bytes": 140
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts",
+      "kind": "file",
+      "sha256": "6af1a20dce1e8b621ba36774a212746e3f877de724e5e9f922ddad4c7a5d38cd",
+      "bytes": 349
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map",
+      "kind": "file",
+      "sha256": "abe426d736ecbb988f36dea8318c40e8c1f70c2cab11c2f2cb965da72e2c8ac2",
+      "bytes": 336
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js",
+      "kind": "file",
+      "sha256": "458ee497eece6227aa7a6360d4c950f11c1ee5bab7cb0c1b33cfda5655075e8c",
+      "bytes": 688
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map",
+      "kind": "file",
+      "sha256": "0a08ea3e52a6c9e5f5223847517f8a46fd55dabb2d37b2cbd02e25265bc65d02",
+      "bytes": 895
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts",
+      "kind": "file",
+      "sha256": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12",
+      "bytes": 473
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map",
+      "kind": "file",
+      "sha256": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff",
+      "bytes": 380
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js",
+      "kind": "file",
+      "sha256": "b77ce83d9188a9ce63ca413cf67db85342b9b37e10810909e58a91323b7e9354",
+      "bytes": 1917
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map",
+      "kind": "file",
+      "sha256": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0",
+      "bytes": 2121
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts",
+      "kind": "file",
+      "sha256": "ec8872c892ae9e809e8909286e4d44623f113f00418dae8da44a5543eeef4885",
+      "bytes": 2993
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map",
+      "kind": "file",
+      "sha256": "042a2c0b3b2c6016799f4becf39b41592ad48c09ebf2b77e33852add0cf632e9",
+      "bytes": 2670
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js",
+      "kind": "file",
+      "sha256": "b4971792d41a31602603efee84de51e45aebb7c27e74fa9dd5ed4209c56f546f",
+      "bytes": 9907
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map",
+      "kind": "file",
+      "sha256": "456b4a6bfbd529c14623429401acfb9d1fee7c06bbeb8dbe87fbd0752a2a0702",
+      "bytes": 9585
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts",
+      "kind": "file",
+      "sha256": "92a7953d0c6be93b3197e1c41cc224e093cb4b140df98e9b9242ddb3934e459c",
+      "bytes": 3559
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map",
+      "kind": "file",
+      "sha256": "a3ae5904afe2257dfcd9685832cfbba2a7f3c1ddeab183c6d30b929de1f2a61d",
+      "bytes": 2451
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js",
+      "kind": "file",
+      "sha256": "a47cf1818019108570002ca3bc589db266e359d208856ecc29864b3096b2fcf7",
+      "bytes": 6167
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map",
+      "kind": "file",
+      "sha256": "10f558b4a343441d4254762c0ddb4a537e68eb712d61f7f89724f8b7c2643ff9",
+      "bytes": 5261
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts",
+      "kind": "file",
+      "sha256": "5e6093ee59029f72d3dcf7d27ad2b6b9f29ce9146d0062536172672a517f51ba",
+      "bytes": 804
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map",
+      "kind": "file",
+      "sha256": "f81a383fe9aef767e26797009f54c8a5771407f077b80ea98d29c1d8cc5a87c4",
+      "bytes": 683
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js",
+      "kind": "file",
+      "sha256": "a92f9273c2dc5f3f282d445f7b592df907809131e7688bd822c144ce529bdf0d",
+      "bytes": 2881
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map",
+      "kind": "file",
+      "sha256": "91ab4024355be9c6207ff70a8a0c1a66c87d6e7d5e4f403e871ef8583c72977f",
+      "bytes": 2780
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts",
+      "kind": "file",
+      "sha256": "e298ac67d2003f79af57a1de9aca0055b1f17b44b455054becad99241ce11fa2",
+      "bytes": 1305
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map",
+      "kind": "file",
+      "sha256": "147f0744192bf77832d42e46c80798bfdc68f809ff5d9fff8d1ab2021fb04fd6",
+      "bytes": 1390
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js",
+      "kind": "file",
+      "sha256": "d9004bf25435c48a7a1eadbd51cc4881b372a707d06f77b75c3b948f23965a6b",
+      "bytes": 61
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/application-websockets.js.map",
+      "kind": "file",
+      "sha256": "b1bcc88bcbeb0d7b1462d81bb83348adc988fa5dfe9f9e41a6af414e64b27f39",
+      "bytes": 136
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts",
+      "kind": "file",
+      "sha256": "8f076699a3e02df1c73d91508d1d421b16f3ec2812e8726f55265dfb253d1e77",
+      "bytes": 8622
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map",
+      "kind": "file",
+      "sha256": "1a5a93ce98d7befb9e252dee78b8858265fc83a0889dbc72d51b79bd0e015316",
+      "bytes": 6825
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js",
+      "kind": "file",
+      "sha256": "701b64cb0afa3e3d65671dcd5b18f4a1b5a437827a9bc5f26de906a0721cacc6",
+      "bytes": 58
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/execution-resources.js.map",
+      "kind": "file",
+      "sha256": "896a152ed5bec8423fe2c716d9db2d6de08f3f178ba354682d23d93680b04f1d",
+      "bytes": 130
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.d.ts",
+      "kind": "file",
+      "sha256": "68fbc66ebfc863ec137b007040bf04523b7ed63e0c4c54d7df3c199c2e6c4c1c",
+      "bytes": 12950
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.d.ts.map",
+      "kind": "file",
+      "sha256": "d5c23e88c1640e0789ceda3faedc72688cda0d07a14239e27013d1a0ec52fba3",
+      "bytes": 10569
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.js",
+      "kind": "file",
+      "sha256": "251aa9169c72bc841eb7d66f80740ea4a2c62e120e3128ee069663ba0babc95c",
+      "bytes": 874
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/index.js.map",
+      "kind": "file",
+      "sha256": "13fd55377993390db563b5a2463d6407dd6dd06f070b78e85ca410bb6345a753",
+      "bytes": 550
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts",
+      "kind": "file",
+      "sha256": "b1c7039ec91211f90b90b05289fec071e3028775c5ccce216b80ca93495a7b6b",
+      "bytes": 2175
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map",
+      "kind": "file",
+      "sha256": "27ac8c91a2119c40fa4c307fd7cf4ad2e4b2a018c4cb1d4780dfd75cd0b864bd",
+      "bytes": 1800
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.js",
+      "kind": "file",
+      "sha256": "138353f936d015a9d869c83906d5cb0fba5306ec0eabd66ce80b4608a42a04d3",
+      "bytes": 86
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/manifests.js.map",
+      "kind": "file",
+      "sha256": "6223b1d547c6e71bceb9fac76b28d730caf2f7b91d9e357857b109ae1652152b",
+      "bytes": 151
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts",
+      "kind": "file",
+      "sha256": "006a7d414226aa8670b288ee3536d9045e91dba880bb34c5d4164fc24ee5f406",
+      "bytes": 1069
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map",
+      "kind": "file",
+      "sha256": "849ec74f2ed68f338cc635fed6006d5223fd7bb334a8373589e81c24582552cc",
+      "bytes": 783
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js",
+      "kind": "file",
+      "sha256": "65f0e957cf24f61163a466d3715105a8a94e200a4d5d90b2ac8c795ed5776a20",
+      "bytes": 2939
+    },
+    {
+      "path": "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map",
+      "kind": "file",
+      "sha256": "9fc8c3e04902d8849811c4b0f6ff55ff0cae0ee2bb7bfcf4990b173c41a60510",
+      "bytes": 2721
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "kind": "file",
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "bytes": 8245
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "kind": "file",
+      "sha256": "7a6d08326f41b84f92fdcd35380781d12ed27711a1e87b09cdfc45f863b7cf91",
+      "bytes": 27768
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "kind": "file",
+      "sha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "bytes": 6747
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "kind": "file",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "bytes": 3255
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "kind": "file",
+      "sha256": "1a0ddc60272af503f184b509f911d52099ae1aa589aaf7f855ac15079986b548",
+      "bytes": 20611
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "kind": "file",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "bytes": 866
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "kind": "file",
+      "sha256": "977467f6c2dfde7e3e2f2e28671cd169ff1ef5f5bc8c3ef344798d8955cd4a43",
+      "bytes": 58459
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "kind": "file",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "bytes": 1364
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "kind": "file",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "bytes": 2565
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+      "kind": "file",
+      "sha256": "9fdb33407d97373734b5f68f4168c14ebc177a817c80da63487987c1a3c18dc3",
+      "bytes": 20054
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C01.json",
+      "kind": "file",
+      "sha256": "97565b8ebf9cc7932494d51e1a2ac91b13ae5d242571a9a826e7c379262224a6",
+      "bytes": 756
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C01.log",
+      "kind": "file",
+      "sha256": "0d52a07acf7d356d1f58ffab0d33a185b2e093fd9e2933dca25c8760106d30ae",
+      "bytes": 9729
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C02.json",
+      "kind": "file",
+      "sha256": "dc52e262bfaba673159b8e4a4fbe74e83d5c4df5c16bb9544312244fc5396f4e",
+      "bytes": 818
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C02.log",
+      "kind": "file",
+      "sha256": "7b01df667ad7b9049906c36100c2a3ae048f7f44b345e87ae83fb4a3b370cd7a",
+      "bytes": 61286
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C03.json",
+      "kind": "file",
+      "sha256": "7b16dbceb32c39d0da50819d8b46f757737a81c073883d930469a0f02574297b",
+      "bytes": 897
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C03.log",
+      "kind": "file",
+      "sha256": "5b86d1ae4bc2773a6a52ff0004b94954ea172df2aef8de7c42f857bb19566c69",
+      "bytes": 21976
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C04.json",
+      "kind": "file",
+      "sha256": "34503c34f99fd1e13032f836051a9208248e207dd68ae43549b96d7dd1afd9ad",
+      "bytes": 1047
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C04.log",
+      "kind": "file",
+      "sha256": "dc3d23db84a119cfa45b06ce15c2ea7f0961f1b28363b84554d14c8a88845266",
+      "bytes": 47278
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C05.json",
+      "kind": "file",
+      "sha256": "0914ab89d11699dcf70fbfb6e8bf23a1ef2e4b4dccad13725910b392624ebd5c",
+      "bytes": 799
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C05.log",
+      "kind": "file",
+      "sha256": "cc896f2e5c0a3d83321cd6ccd06169b0108d96a339ecba17f40cb84466e9098c",
+      "bytes": 19608
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C06.json",
+      "kind": "file",
+      "sha256": "e0a8e1ce3f92a5fcab44964a296164b58952f11aebc287e6083017457ac58f20",
+      "bytes": 1262
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C06.log",
+      "kind": "file",
+      "sha256": "b2765e77e522e6cab101f5a2712ed678dbd6b2bb04b0ff09a16f80b8e352ae15",
+      "bytes": 10430
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C07.json",
+      "kind": "file",
+      "sha256": "ee9286f2279569715754a3a36bb04dc5b9a6a51cbc07766b1c76738aa22a2dc1",
+      "bytes": 614
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C07.log",
+      "kind": "file",
+      "sha256": "35f2fe903e7974e3c1becd4e2a756cbb7c8a35f304aead8ffa002e8c14a0b29d",
+      "bytes": 1352
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/README.md",
+      "kind": "file",
+      "sha256": "e96181eda97b5472fea2251d62fb946653bda0b6cda9c5965d4033061bce1c54",
+      "bytes": 1795
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/cleanup.txt",
+      "kind": "file",
+      "sha256": "edd36e0e7fffd289f1d78468a2bf295d1afbcedfc3bbfac87805da1db139ba2e",
+      "bytes": 224
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/final-status.txt",
+      "kind": "file",
+      "sha256": "0f1848ef0424e11e935fd3b78ebfe9702a33e94cc8e5fefdf0ea06f38101b6e9",
+      "bytes": 942
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/input-hashes.json",
+      "kind": "file",
+      "sha256": "b8223608f59786953b16823d1330780cdb17bc383b4803da530ab5074a7ab330",
+      "bytes": 5273
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/input-status.txt",
+      "kind": "file",
+      "sha256": "2cb62594778da9a6eecacf5c0e1a20683dd9e16242e5786f7e0cc32551647286",
+      "bytes": 746
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/plan.json",
+      "kind": "file",
+      "sha256": "5fe2f7c4fca4cd9c61dc5d5380f7d3c8e0e7648d2b1fc799bb960e872cff5fdb",
+      "bytes": 2885
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/prerequisite-triage.json",
+      "kind": "file",
+      "sha256": "4344c4501089e049f6e9297e5d8c80d05c6a154d64b39bdcdcb19d2a6f9ad78d",
+      "bytes": 1271
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/results.json",
+      "kind": "file",
+      "sha256": "bc444db2d866929195b82a8680aad1a8f0f38cd2d30123e789abc046909078b2",
+      "bytes": 6928
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/run-case.py",
+      "kind": "file",
+      "sha256": "dad930a668dcbe909cd6f0d2046e34a78dec7ef962ce95f378ae6dcb943bd9fa",
+      "bytes": 2069
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-B01.json",
+      "kind": "file",
+      "sha256": "41be934fd1840cfe620bf18f36edc35192a72aa718a91445fbe4cb59d68957e6",
+      "bytes": 632
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-B01.log",
+      "kind": "file",
+      "sha256": "900bf839f32df6a7af5a78c816c2a851b50218b9142cc85a75be99c52d4309f9",
+      "bytes": 2414
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-attempt1.json",
+      "kind": "file",
+      "sha256": "72268734afa4db4744dc3737205ed6212cb43a66e3894a664e9ed46e19c99347",
+      "bytes": 756
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-attempt1.log",
+      "kind": "file",
+      "sha256": "1dcb4cf563a43c6986f17e9d2d095591c2643b389cd9bdb3ab802b8d92a37427",
+      "bytes": 9632
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-normalizer-pass.json",
+      "kind": "file",
+      "sha256": "f2da3ef9e3d11d935cd62f6ddf1c64b7663a390e56d33cf5e241fc3a0e8d3f1b",
+      "bytes": 756
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-normalizer-pass.log",
+      "kind": "file",
+      "sha256": "b805157ba8a0a537f0d55090fabd92b91348ba098b832a4c17f9961b3e477f24",
+      "bytes": 7220
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-quality-alarm-pass.json",
+      "kind": "file",
+      "sha256": "d2c2fc4211f38b211f0b36bcd422177a0b00c0d281ff3eac0e9e90d1667046e4",
+      "bytes": 756
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-quality-alarm-pass.log",
+      "kind": "file",
+      "sha256": "3a28a8e5fc7ff1b8f078a94cd335437c7b4304e9ff36d7a6264abfcbf6ce3202",
+      "bytes": 8866
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-tools-pass.json",
+      "kind": "file",
+      "sha256": "02bf4694ae9d4762d3b28439e11c0af7be72e6adc4e90e6211549733aea7cffb",
+      "bytes": 756
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01-tools-pass.log",
+      "kind": "file",
+      "sha256": "91440967d3f931291e13805545b93f6ff501dc16b1bf04afe688659aec0e870d",
+      "bytes": 8866
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01.json",
+      "kind": "file",
+      "sha256": "88f25b2a8b6fc606fb2db962d74f6896f1e88fd0e8f61bd48ff2a01f961fd8c2",
+      "bytes": 756
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01.log",
+      "kind": "file",
+      "sha256": "2fc5d5123f5dc292573d33c2e947298ddd676a4da4eeaebc6e7e5487cdad2aa4",
+      "bytes": 8866
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05-attempt1.json",
+      "kind": "file",
+      "sha256": "e38a9350e7db60fc70b6498645599c6c880da96242bd727a3ac4bd04b4aa3779",
+      "bytes": 799
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05-attempt1.log",
+      "kind": "file",
+      "sha256": "cec1fb1be572d80f167161a54ee9ffac41f58daf16c550be8b6b30e2599d42c2",
+      "bytes": 24908
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05.json",
+      "kind": "file",
+      "sha256": "6a80ae4cd5e2046a42f9cf8f845201cfdbad172c7cf787e36355f6342c5883ba",
+      "bytes": 799
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C05.log",
+      "kind": "file",
+      "sha256": "c20729f1f325f5ec717fe2d6d9482091022b03fb3c90727a887934e56585cde5",
+      "bytes": 30113
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt1.json",
+      "kind": "file",
+      "sha256": "233eedac0b49caa9b1f5bd7987c35439a1fd1dc3840b4eb72e60faa4adfb2c73",
+      "bytes": 1030
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt1.log",
+      "kind": "file",
+      "sha256": "668572a468ebb7df7beafc861a19e7dbdb223a9a5c85595d46ecf9b857a333ec",
+      "bytes": 35865
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt2.json",
+      "kind": "file",
+      "sha256": "90626825c4368205ba97ad3e20b1293d2d02f645b19401eb633b3c10e0b06e12",
+      "bytes": 1030
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt2.log",
+      "kind": "file",
+      "sha256": "ff4a749feb4266d4c1d933fc63421017a4e99ddda522bc6314fe0c7ce694d496",
+      "bytes": 54858
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt3.json",
+      "kind": "file",
+      "sha256": "299d406c01c271102b5a64b3078a1e56d78a2f7b2f01453ba471fb66ecd2f693",
+      "bytes": 1030
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt3.log",
+      "kind": "file",
+      "sha256": "bce004ab024ec37b621a46edf0ce019c4482bb56a7dd689c358bb8cf60c3e3da",
+      "bytes": 50311
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first.json",
+      "kind": "file",
+      "sha256": "b395d46ee23d7cc952394d9007a395303d05d7f6ac6672479c24de2179036c1e",
+      "bytes": 1030
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first.log",
+      "kind": "file",
+      "sha256": "b790db3233e5ff1fd357a1c8e7aae60d2f3122b548275f997dd53d1b7e08c2eb",
+      "bytes": 87277
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-preflight.json",
+      "kind": "file",
+      "sha256": "d9849d8cdeb4579cc1a16930f53cc4cfc6b722ba28fcdc9b31fa4f2641a6687a",
+      "bytes": 1112
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-preflight.log",
+      "kind": "file",
+      "sha256": "448c11b782d5c2cc5dd7b58676ee753b55a92da24b46263b56e8549234e36e03",
+      "bytes": 7873
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality-attempt1.json",
+      "kind": "file",
+      "sha256": "f8e712bcd35e3927ab06fecb1d6d63cc17e51d236144b2f76b1fae9c91e50bb9",
+      "bytes": 1029
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality-attempt1.log",
+      "kind": "file",
+      "sha256": "e4adcc5bbca4a32932acd5cffa827cc4e4fdb96adece6f9e9f2518e6f66a1e7b",
+      "bytes": 17490
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality.json",
+      "kind": "file",
+      "sha256": "b318634f74273182548d3cf8a819422e7218f11a4610903dabb8d52edc066080",
+      "bytes": 1029
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality.log",
+      "kind": "file",
+      "sha256": "b52ae1d3f584d5b0a4114ff3ccdc785d7f1265c65c3239a94630971b1eae6417",
+      "bytes": 15724
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-explicit-tuple.json",
+      "kind": "file",
+      "sha256": "4b25da91b4a4686a16f168a7237d968bd5fb256e3560e7dae516294905d194bd",
+      "bytes": 422
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-history-fixture.json",
+      "kind": "file",
+      "sha256": "f46497722a326e14538af989ba1e4d4515d56956f4e3b7e96b2268073c97fd76",
+      "bytes": 4323
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-history-readonly.json",
+      "kind": "file",
+      "sha256": "23e3565c160e84e3470dd74c55ed54b2d3695fe33a76198c5fcbf7101bdc09af",
+      "bytes": 518
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-inherit-tuple.json",
+      "kind": "file",
+      "sha256": "1e8c7ec58852dad6037a25e926da549c0953258cfdddfbc6c54e93656c3d9fd3",
+      "bytes": 173
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-unavailable-retained.json",
+      "kind": "file",
+      "sha256": "4fe04c4ffdb2e7da76819c67a5a2af9be3a3037aba6a3091ac9e50fd1573af9a",
+      "bytes": 397
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C09-unavailable-seed.json",
+      "kind": "file",
+      "sha256": "048a60acc224d22b7e44af145f58c795b79581263d9b8937a28577c77183d1d8",
+      "bytes": 241
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C10.json",
+      "kind": "file",
+      "sha256": "4ef64bbd8ee22e037f44a64c0ac0605f8ecd7dab1c21a249248819f72b8b9b8f",
+      "bytes": 463
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F004-triage.json",
+      "kind": "file",
+      "sha256": "e3d084c41c3f50d48fda0e0497d985bfaa8e1e624b832c209cf266bd25cdfeca",
+      "bytes": 674
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F005-replay.json",
+      "kind": "file",
+      "sha256": "378b0e335ecb24e2d641e63ff01810b36bc86c23be609467e3b9293391d2ae38",
+      "bytes": 1701
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/README.md",
+      "kind": "file",
+      "sha256": "db3f7b41e487092e690ce30039f3a1077bfb7126f627a6d2f74d21048a711402",
+      "bytes": 4725
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/authority-recheck.json",
+      "kind": "file",
+      "sha256": "8872aae230672244d320280a8d8e641a12b76764dd9cf0a56ceaa178cdd825c6",
+      "bytes": 532
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/browser-observations.md",
+      "kind": "file",
+      "sha256": "58746ebb6fdc0e49eec16d8ec8779a5bd99d32284846d3b10a2cf05799ed6cc1",
+      "bytes": 3187
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/durable-tests.patch",
+      "kind": "file",
+      "sha256": "0897542d6e5fd6648aa4ad9ec48a69a751be2ba72a49118c4c91b15205879ce1",
+      "bytes": 22946
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/final-cleanup-checks.json",
+      "kind": "file",
+      "sha256": "232165a3e91b7b2f9927a065b24dd731eb2ccf8c0c3634111a7908363902edf3",
+      "bytes": 680
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/final-source-audit.json",
+      "kind": "file",
+      "sha256": "e7ce5c41d89b9af6b3599acec6925513bd3fe0655f42249da60ba171f204d534",
+      "bytes": 1861
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/first-flow-observations.json",
+      "kind": "file",
+      "sha256": "64949cdbfe544613684454ad656fd90bc7cbde76ce3366dca13ac1e4a3dde4e3",
+      "bytes": 32837
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/handoff-receipt.json",
+      "kind": "file",
+      "sha256": "956df3de9227dd6ba92603db9b5c539308883b6c17ccb76ec80319b10c90d4f3",
+      "bytes": 174
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/investigation-decision-log.md",
+      "kind": "file",
+      "sha256": "288034a95228674f2e4331f6b67d79dba5def63afc3c65ba1a21e9a07511d965",
+      "bytes": 9926
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server-cleanup.json",
+      "kind": "file",
+      "sha256": "af28b893860de488f6545d0b499698e429ad5cdb4d288d5cc626a62119e3b7fc",
+      "bytes": 61
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server.json",
+      "kind": "file",
+      "sha256": "c1f506680a85fee8bb15dbd92ab069ee7241f0d95a57601fcfc8ee0501e39d47",
+      "bytes": 737
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server.log",
+      "kind": "file",
+      "sha256": "b71f155d8d8d0311716ccc720e9af9bdec113c7384dfe082e244087d0972d153",
+      "bytes": 13506
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-server.mjs",
+      "kind": "file",
+      "sha256": "e95094910b02e10dadca92e3273e392860f7db4939150a19f2ff4a4d604b578c",
+      "bytes": 2000
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web-cleanup.json",
+      "kind": "file",
+      "sha256": "f90247e38dcf634cbb0169e7da8e02d69ce2aba86698b9b036fdf6f63ae5ebd5",
+      "bytes": 47
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web.json",
+      "kind": "file",
+      "sha256": "5a1f00ebb911b1364e11d786c33fbc0222c48e6b674137d1a3a6ad5cd2c100b0",
+      "bytes": 233
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web.log",
+      "kind": "file",
+      "sha256": "f2b8635073280d8cbb09b01307013ae686c4f2610d302b84c2a4441cf8e2c16e",
+      "bytes": 1460
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/owned-web.mjs",
+      "kind": "file",
+      "sha256": "155460ebc45fecabb5caf2952e971e1447e32f82bbcaae01f7af8a858d60b006",
+      "bytes": 1632
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/plan.json",
+      "kind": "file",
+      "sha256": "9c87af9068ad338732c509cd75e210a9cc4e44a74c6e87f113ed2163fb4aebba",
+      "bytes": 3044
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/process-snapshot-probe.mjs",
+      "kind": "file",
+      "sha256": "b52c3fdcb04e6a74fb8c7adda44448885aee6cb0f56591fa3c95481ed4d6aae6",
+      "bytes": 3306
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/replay-semantic.mjs",
+      "kind": "file",
+      "sha256": "1a6c6c8dd85235719182121c7da7805d321fed9876c4faa4ba4fa2de3f9f23f3",
+      "bytes": 1381
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/results.json",
+      "kind": "file",
+      "sha256": "fa71607cac391ef16fc2197fe7153099cc5743f7b745ea3a922bef93a845b9f9",
+      "bytes": 2116
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/run-case.py",
+      "kind": "file",
+      "sha256": "71678acf7977abe77721d8c6679a0f7e1e963b657afee6c29e9dbe5e6fcc7090",
+      "bytes": 2069
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/run-owned-live.mjs",
+      "kind": "file",
+      "sha256": "f26af992387ae7c6be093f17dabe4b9f244270aa2c61211fc744561cf3ff35ad",
+      "bytes": 2481
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/seed-owned-history.mjs",
+      "kind": "file",
+      "sha256": "c4a13b6caeadb59bea26219ee778173eec766324692620e2aeb963eab9e8fffd",
+      "bytes": 3661
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-attempt1-observations.json",
+      "kind": "file",
+      "sha256": "766bda7559a494f36d5fcfb0d8f9e7fe2fd9d0cf8ac8bc8822410c69caf01f83",
+      "bytes": 7850
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-final-observations.json",
+      "kind": "file",
+      "sha256": "f8fa1c8df5a65bd28ba91adbbc52a711a5747f6bbbdfff8b8809cac34debb833",
+      "bytes": 8963
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-review.md",
+      "kind": "file",
+      "sha256": "07edf359b6d7a98b5e0f964db9679195d3815d260eccf3fc7c72a9d36a90c047",
+      "bytes": 4257
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D01-A.jsonl",
+      "kind": "file",
+      "sha256": "05dd6ba5d828a679a63edbf9c6245daef5386964cfdc798904c8ebcb2be14dce",
+      "bytes": 17131
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D02-B.jsonl",
+      "kind": "file",
+      "sha256": "fa382e4817adf4ecb936d734e7a4791be9c3e6932ab4aea2870d977e5aba2f15",
+      "bytes": 17094
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D03-B.jsonl",
+      "kind": "file",
+      "sha256": "c2bd54227a4b013f3d5762e476d0ea5d6e20e2289234e6afba1ba5190c4e0cdf",
+      "bytes": 17095
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/D04-A.jsonl",
+      "kind": "file",
+      "sha256": "8dac090a2364fd9d01f14d81fc827081970c560c537f8553a85227a4c5d76353",
+      "bytes": 16970
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/README.md",
+      "kind": "file",
+      "sha256": "bbb05c48c2d09410eb81c73568fa6c48b7aac476922cc94e3261500e342da15e",
+      "bytes": 9729
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/coordination-receipt.json",
+      "kind": "file",
+      "sha256": "3357fb75b67a2bea454e9758236825e71adcfc01041c8b739802f57cc4d66036",
+      "bytes": 182
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/cumulative-harness-diff.patch",
+      "kind": "file",
+      "sha256": "b5f2d33a59fa371054d5af154ba8e0fcd7836037836064bf3aed94392e79811b",
+      "bytes": 11397
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-comparison.json",
+      "kind": "file",
+      "sha256": "9406a7dadb1f3c58ec961bf623938aa034cd722d822d92ad2df53c02f5bcfeca",
+      "bytes": 4450
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts",
+      "kind": "file",
+      "sha256": "955db9b5c8413f531bb2515e6f20c3057816b5d809a73064a7d12608c20284b6",
+      "bytes": 6908
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-execution-import-error.json",
+      "kind": "file",
+      "sha256": "107a8fcd28bc06ada49142eaee55844d751d3fbc8cbc384f145cf13c53a9e0ad",
+      "bytes": 1009
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-execution.json",
+      "kind": "file",
+      "sha256": "82c7ba8e33fe983bc9e5e7bce0244a72c5d08be5376e634b941e69f6a8e21090",
+      "bytes": 1009
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-import-error.log",
+      "kind": "file",
+      "sha256": "0cdc28fe8ad1af16abf4bf6e26cfceedadccef62d0f986a954c0c0437b76ecd5",
+      "bytes": 1648
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-result-import-error.json",
+      "kind": "file",
+      "sha256": "be535140ad0924142a5cda5bf0b72fabe460b873886b457704a46a5ca76801f8",
+      "bytes": 78
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-result.json",
+      "kind": "file",
+      "sha256": "0d6936377498a7248c4381494683c25e22d5c77f8b42f8dad75d0af132b16b54",
+      "bytes": 78
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct.log",
+      "kind": "file",
+      "sha256": "8ab363158d2df8e90fadc60c92e66e7f753b446a6a6be41d8bc719dd86f47aa4",
+      "bytes": 3660
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/extract-full-observation.py",
+      "kind": "file",
+      "sha256": "045cfc811ee6d53b6336f7d4234ecf119e199b0b62a48c0d62d64c2a3f2f1f5c",
+      "bytes": 1710
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/final-audit.json",
+      "kind": "file",
+      "sha256": "28cb0f2f85f66beee47e0b4f7a82e997d44313bfb9acdaa661d6e56c7e43247d",
+      "bytes": 3938
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-all-exit-reconstructed.json",
+      "kind": "file",
+      "sha256": "4ca5849a34a5fdde0abeeb50d2bc24af16af380a70784d8751571f928fd71b17",
+      "bytes": 456591
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-all-exit-reconstruction.json",
+      "kind": "file",
+      "sha256": "fc45f3b8c65e404fe6dd9923fc182a1ae7efc87a0e577f5cc1f8f7337283a367",
+      "bytes": 1194
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-comparison.json",
+      "kind": "file",
+      "sha256": "5c2c564e5f849c15532d61878b7ceacbb1a59a6e72f265facca64e114e26376e",
+      "bytes": 1878
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-execution.json",
+      "kind": "file",
+      "sha256": "5af43fd8ebf7fc642f1e4ad933e22f16ebea9ec99ca3318af439d9dc79c11bc1",
+      "bytes": 1085
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-observation-setup.ts",
+      "kind": "file",
+      "sha256": "af240eb258b65a389e799e7aeba1318d31a93c0aeb761d3d1cbe67e8dda472a8",
+      "bytes": 1552
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-observations.json",
+      "kind": "file",
+      "sha256": "791c99f51070605175e7bc1fc9b94f6bc890f014f577fd3c1360b04e021c40f0",
+      "bytes": 38479
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-prerequisites.json",
+      "kind": "file",
+      "sha256": "3f143b8064fdbcc0877f3be39cb9505ec33a23ebdf09734077112c736a2c5128",
+      "bytes": 220
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-result.json",
+      "kind": "file",
+      "sha256": "0ebe2f60d7ecb008bdda971266c65d5cd1b6efa7bc2d771ec1eabebf716a0b48",
+      "bytes": 78
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-wire-observer.ts",
+      "kind": "file",
+      "sha256": "4785561002a111b803288e970962492fd7b95342fa60dea87a5f1da0e5509bb2",
+      "bytes": 2380
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full-wire.jsonl",
+      "kind": "file",
+      "sha256": "d60314c2ea85cbdcea0e8f54797b3cea4864937357051bf8252d044b202647f7",
+      "bytes": 432891
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/full.log",
+      "kind": "file",
+      "sha256": "80845d23f893012eef8cd7d9421d17f8f9726937445558096a68112ae0901a0b",
+      "bytes": 438988
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-five-pass.log",
+      "kind": "file",
+      "sha256": "c19d6868d673e6344f345f94ce14f57ad046e95b0f1e46a2546b9c63449b5542",
+      "bytes": 2564
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-import-error.log",
+      "kind": "file",
+      "sha256": "40ea5ac22577fb2fb991ffdefe42384fbb43c9d87af1040995df0fd7b71ed81e",
+      "bytes": 3682
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-initial.log",
+      "kind": "file",
+      "sha256": "299237c4fdb4fafcabe1fd51f5c8b6aad8d95098030b9bdf24bc1b7daf4471a0",
+      "bytes": 2566
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-response-fixture-error.log",
+      "kind": "file",
+      "sha256": "c223370d324707a5a48206b89d469df701909a3d55d1ff4b2f77030cc00332cd",
+      "bytes": 3869
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-six-pass.log",
+      "kind": "file",
+      "sha256": "e6114f4bbb86768ef3aac3e6f5000a0c8ead0e8a80e004f33a7479d5a747db60",
+      "bytes": 2565
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation-stream-fixture-error.log",
+      "kind": "file",
+      "sha256": "cc7898b892a7fb2b985f261687f44d01bfa6e967ac6baef7141d413f2cc200e6",
+      "bytes": 3645
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.log",
+      "kind": "file",
+      "sha256": "8d44fac762e47939367251c14c1e0f8a9e0e039868e528e81145e25dd634c90d",
+      "bytes": 2565
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/instrumentation.test.ts",
+      "kind": "file",
+      "sha256": "005360ecd4b86e0d1d2747a574a0734c7259a835cdf6a656da99b62375ba6548",
+      "bytes": 5903
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/manifest.json",
+      "kind": "file",
+      "sha256": "43501878d195f0bd7cd66a77adde590294a850d9ffa1808366fd92c331265187",
+      "bytes": 3410
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server-cleanup.json",
+      "kind": "file",
+      "sha256": "af28b893860de488f6545d0b499698e429ad5cdb4d288d5cc626a62119e3b7fc",
+      "bytes": 61
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server.json",
+      "kind": "file",
+      "sha256": "f4f1dfb9bf923fb80251c218afdfa97040e3616dbb82e7327622c663c9fdca04",
+      "bytes": 757
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server.log",
+      "kind": "file",
+      "sha256": "34443ec9560e948c97d9347a8c798076e3ba1cfcbc26cbff39cc26d9944d7da1",
+      "bytes": 13126
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owned-server.mjs",
+      "kind": "file",
+      "sha256": "684846ea5ad870e4441b971326e90b29b7c31409d20776c0bc7a141b2fe4cbb1",
+      "bytes": 2010
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/owner-regression.log",
+      "kind": "file",
+      "sha256": "3ec3cbf69c70c278f4bc119d7ee398dcfd4bcee7893c9289bf5ccbb7e09f2f62",
+      "bytes": 11027
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/preflight.json",
+      "kind": "file",
+      "sha256": "93436976b073dd3f1b005a2e5e20ee95455a880a16ca8571c243d77c42b6aec4",
+      "bytes": 186
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/reference-files.json",
+      "kind": "file",
+      "sha256": "1eca5148840587f0e44957a1199dd315df8486213617a0e7e110c88b9588aaf1",
+      "bytes": 18319
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/run-diagnostic.mjs",
+      "kind": "file",
+      "sha256": "ac93e95d63e04c9b1987963ccfecc678c3c05796647afa29d479133757278687",
+      "bytes": 1786
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/semantic-adjudication.md",
+      "kind": "file",
+      "sha256": "1965f8483d9e5a17e46861e1e3cbff79f6b859f2eafc5f53d168b9925939efa4",
+      "bytes": 4906
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-direct.config.ts",
+      "kind": "file",
+      "sha256": "342344195f5ee58faa9dc937f687441195e59d8f3abb78bee6356925d9c22445",
+      "bytes": 384
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-full.config.ts",
+      "kind": "file",
+      "sha256": "2745426d2ca162239a080703b006e01e3e7b0ebbdb502251c678ba39db46d577",
+      "bytes": 469
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/vitest-instrumentation.config.ts",
+      "kind": "file",
+      "sha256": "20625045f2d4e804821fa93cecdb18ded76d4687aba94a841a5eb69cfd443581",
+      "bytes": 452
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/wire-observer.ts",
+      "kind": "file",
+      "sha256": "4b0a0508268cc656cd376a0e4a3a5f60b70cf7369cedfa541185fddfdba54796",
+      "bytes": 2185
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "kind": "file",
+      "sha256": "561332187e0ac47bd9ff88bca030d24ed6a0db12699827deba5d340cbf95f6b4",
+      "bytes": 23842
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+      "kind": "file",
+      "sha256": "adb5ba6624326840dfb81d6e14d2e9013fa39d049f68eb54ff53030fd9a868e9",
+      "bytes": 12322
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+      "kind": "file",
+      "sha256": "4ed16d3347b77892f8b5b9724141f473e9ae99a352c0f30e1ff032ac2b7e0adb",
+      "bytes": 28026
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md",
+      "kind": "file",
+      "sha256": "0df033f0b280c9286595acc370aa28fed28fcbd16bbecdb1a2ec3beab248904e",
+      "bytes": 6996
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/README.md",
+      "kind": "file",
+      "sha256": "528a15eea98afac2fdcebec87c46a4076afea43dca59a6bce0a89e24befa4094",
+      "bytes": 5024
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/core-status.log",
+      "kind": "file",
+      "sha256": "8e7ce547863cb3e80ebd652b35299c18ad28b23974527dc25b082438f0faad6e",
+      "bytes": 19978
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/input-and-source-audit.json",
+      "kind": "file",
+      "sha256": "de9ae1e4ea62c437776d4a912145a369db59f789d651b97a3d36070d1ad8f322",
+      "bytes": 3286
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/removal-audit.txt",
+      "kind": "file",
+      "sha256": "900999ec372fc3a71fe7fb3b0767e64973911203232cb9aaf8fb4c3548dceffb",
+      "bytes": 3442
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/server-boundary-history.log",
+      "kind": "file",
+      "sha256": "df76fd99e4a18420afb24569c3514c76ee8daa7e1fa7d7f68557b774ec3c83da",
+      "bytes": 20760
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/shared-harness-residual.log",
+      "kind": "file",
+      "sha256": "4a3c0dc7727348e218f16757683ad9c610db75da2365c3394b783b1c3b85c62e",
+      "bytes": 7115
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/source-audit.json",
+      "kind": "file",
+      "sha256": "9d4e540cd5fc5a3ee6b235b4186722cca98401e0bff5b9ffd5cf2bcccb2810a5",
+      "bytes": 21837
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/source-audit.md",
+      "kind": "file",
+      "sha256": "a1d96ebe65df3cb4b31f5512684653abdc5c6ee6d1d40ab459ec065aacd1b1e1",
+      "bytes": 18839
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/README.md",
+      "kind": "file",
+      "sha256": "2f2bd789a45c6fbc3f6e294d46f9b518b9985bb1f3298fcee966db48cbfc90e2",
+      "bytes": 2716
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/origin-audit.json",
+      "kind": "file",
+      "sha256": "520526bcbcb154dd480c0c3b40df4d80ef8431bf31f77cf58e9955e19ee046ba",
+      "bytes": 3601
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/README.md",
+      "kind": "file",
+      "sha256": "2ac8f63568bd6d86d7955ba91c5e91e0a9d47152f46bf82a98c8009cdacec9bc",
+      "bytes": 5567
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/origin-audit.json",
+      "kind": "file",
+      "sha256": "0053fb832391819a6ec930cade433c5669020d7f5dfbd8a1e01dac7d01f4b3ef",
+      "bytes": 5223
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-probes.log",
+      "kind": "file",
+      "sha256": "ee87f1a19d5b1428a5ceece57e9ffd81b57b7c77db71dc48872755b5b170c1a5",
+      "bytes": 429
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-probes.test.ts",
+      "kind": "file",
+      "sha256": "705b71e9dd40d5aed23aff7ddf7b727b0616445ad2d62c83eb1d46c9b4cd161b",
+      "bytes": 3561
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/review-vitest.config.ts",
+      "kind": "file",
+      "sha256": "dd9ef7a3886f4ff5aea307b835fe40e00a0603f3500698500452b84bf8aa8168",
+      "bytes": 399
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+      "kind": "file",
+      "sha256": "5202132cd7290a2256e84e914d0e17bfc593a677b6047753e153a0b7b3ecd662",
+      "bytes": 50391
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md",
+      "kind": "file",
+      "sha256": "268a135c4239b462430b22b191af692a754927db056bbabe28f33ba46ef9d01a",
+      "bytes": 21133
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-v6-candidate.md",
+      "kind": "file",
+      "sha256": "1f7f8eb5d82daced2d47f04ffb2485f2fd1b329e9c3a8700f0d21d1090b080a7",
+      "bytes": 3586
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "kind": "file",
+      "sha256": "225f3ade511aab002bc0bd744ff02a2e7b351f34b923fa8478d526f5b45afef6",
+      "bytes": 73948
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/prompt-recovery-proposal.md",
+      "kind": "file",
+      "sha256": "6989cfce6f0ee00ec5f1dadc0609919d9147e33e98eaad7fcee3f547324bb4fe",
+      "bytes": 8293
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md",
+      "kind": "file",
+      "sha256": "2407cf48772044d5ab21e1e8428714338ce6a71d2ef7f2534a12b63d6d1ec0f7",
+      "bytes": 10475
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+      "kind": "file",
+      "sha256": "66ef830816df8a9fbb6b3707ca143c5b35f4fb809b8faebc2294025f43daa849",
+      "bytes": 29550
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "kind": "file",
+      "sha256": "c0e89dc568e221dedb29f1a7ba97511124a977e0f76f64ec494f542ddc3866cd",
+      "bytes": 84249
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/README.md",
+      "kind": "file",
+      "sha256": "aabf8d4794b0837f7ef51e37789d26b59a6775a30b3d48bd6cd8099a27e04923",
+      "bytes": 3644
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/configuration-reconstruction.json",
+      "kind": "file",
+      "sha256": "12cc89841b4b17bf0e76f2624c6cae81729393b492c47733991e0847e1390387",
+      "bytes": 997
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/frozen-repeated-input.json",
+      "kind": "file",
+      "sha256": "32e024cbae2ad994c4f6d61755a609c405f821476f642287f260e8538094eb1d",
+      "bytes": 9294
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/recovery-probes.log",
+      "kind": "file",
+      "sha256": "9181c5b062ecefea2a2009b3bef8892fe0fcf4c26feeadf46cb28ca86c128053",
+      "bytes": 817
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/recovery-probes.test.ts",
+      "kind": "file",
+      "sha256": "1ab061cb7b7530b0cae982df8fe1b60fb261e7d1030a02ae471513e60cd38cd2",
+      "bytes": 7653
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/source-and-input-audit.json",
+      "kind": "file",
+      "sha256": "86735d72f99b4036ffea373534a2580bee428ee899c64bcdafcf7072d3182b69",
+      "bytes": 5108
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr014/vitest.config.ts",
+      "kind": "file",
+      "sha256": "9c035e769e309420125186b9a711aef22dc45347e163996c6ea10a2ecd2d31f1",
+      "bytes": 379
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr015/README.md",
+      "kind": "file",
+      "sha256": "8490d870b92489d761485ea5eaf50e92d7af617b99dd629febd6e79c1489df27",
+      "bytes": 1698
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr015/evidence-reconciliation.json",
+      "kind": "file",
+      "sha256": "41ad8bb9bd11e284e55153a02e64a1df9f2e46d629554de9b25b1ee4b6287974",
+      "bytes": 2647
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr015/prompt-v5-to-v6-candidate.diff",
+      "kind": "file",
+      "sha256": "ccd2b3145c5aef059e2a88b55e2dac7694667b4292938898a851dce6d4f95d3f",
+      "bytes": 1423
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "kind": "file",
+      "sha256": "786c5426f58bbc4bb708f65bb4a887ba7051270e7ce183ba9865d5290dfe27ac",
+      "bytes": 39119
+    }
+  ],
+  "stashCommit": "892ac5e95c9226683443f150ba725cee2bab6386",
+  "rebaseExitCode": 0,
+  "newHead": "30e84de288e55152784e9ef520a3eff4f0501438",
+  "restoreExitCode": 0
+}

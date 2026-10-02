@@ -1,0 +1,20 @@
+# SR038 — Cause established; bounded design complete
+Own SR037 reproduction plus causal experiment identified accepted identity lost by native history recording/frontend reconstruction, not double execution. Current SR038 retains those existing keys through existing owners and reconciles one history/live message without text/time guessing.
+
+Approved SR033 unchanged. Optional stored keys: Directly Usable—No Migration; old absence remains unknown; attachments/media/sender and distinct identities preserved. No new queue/retry behavior. Large/High, ready for independent architecture review; not implemented or validated.
+
+Full result: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-identity-handoff.sr038.md
+Canonical design: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/diagnostic-reproduction.sr037.md; investigation E38.
+
+CRR015/API009-F001 remains open; API00977.9% executable Fail is not rescored. CRR0149.40 is historical/corrected; ARCH005 applies only to SR035. Earlier ARCH004/IR007/CRR011/API008/CRR013 passes are pre-integration only. F005 accepted-known/nonfixed/nonPass/Qwen STOP; F004 unknown; SR022 exhausted/v6 unapproved; CG033 unproved/not pump Pass; OOM/webtsc7078 non-green;14 wider+7 baseline failures unwaived. API006 withdrawn/API007 unsupported excluded. API009 three new test files still require successful review after later successful validation. Two overwritten IR009 logs remain CRR014 replacements, originals unavailable/no reconstruction. No cold-history native activity, backend-restart pending queue, power-loss, full-suite/full-web-typecheck or remote-provider semantic promise.
+Merge in progress/uncommitted; no production/durable-test/build/Git-finalization change. Fresh routing and receipt to follow actual tool results.
+
+SR038 fresh handoff rules select solely **/architecture_reviewer** for Architecture Design Complete / Large / High with unchanged Approved SR033 and aligned supplements. Direct implementation and Delivery receipt-gap rules do not match. No duplicate implementation/API/Delivery notification. Exact lookup/selection: solution-recovery-evidence/sr038/handoff-rules.json and handoff-selection.json. Send not yet confirmed; only a successful tool receipt establishes delivery.
+
+### User clarification before SR038 handoff — future correctness only
+User: “We don't have to do any immigration, just keep the future code correct.” In this context this confirms **no migration/backfill for this identity fix**. Implement correct new native writes and their normal read/live presentation path. Existing history stays untouched; missing keys are not reconstructed. No historical repair, new migration/startup-gate work, migration campaign or old-live-input retrofit is authorized. This agrees with the selected SR038 transition, not a new behavior or waiver of fresh-input correctness. Previously completed unrelated migration code remains untouched.
+
+Fresh rules rechecked after the user no-migration clarification; same sole /architecture_reviewer condition applies. See solution-recovery-evidence/sr038/handoff-rules-after-user-clarification.json and handoff-selection-after-user-clarification.json. Pending confirmed send; no duplicate recipient.
+
+SR038 handoff confirmed accepted=true / DELIVERED to sole /architecture_reviewer, existing architecture_reviewer_589564a0573e47b8b09f3e098800233f. Receipt: solution-recovery-evidence/sr038/handoff-receipt.json. Latest no-migration/future-correctness constraint included in message and attached full handoff. Pre-send audit remains the send basis, not a later review result. No duplicate recipient; Solution Designer stops after successful handoff.

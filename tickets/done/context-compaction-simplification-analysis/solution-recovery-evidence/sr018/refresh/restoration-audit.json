@@ -1,0 +1,12 @@
+{
+  "count": 286,
+  "byte_identical": 284,
+  "merged_paths": [
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "test-support/live-e2e/live-e2e-harness.ts"
+  ],
+  "head": "9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e",
+  "upstream": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "unmerged": "",
+  "ancestor_ok": true
+}

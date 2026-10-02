@@ -1,0 +1,931 @@
+
+> autobyteus@1.4.92-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentActivityStore.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/retainedActivityTermination.spec.ts stores/__tests__/retainedOrgActivityTermination.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | stores/__tests__/agentRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentOrgContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentActivityStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/retainedActivityTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/retainedOrgActivityTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/retainedOrgActivityTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/retainedActivityTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentActivityStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentOrgContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentActivityStore.spec.ts (16 tests) 16ms
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > publishes the authoritative Error status with exact navigation when preparation fails
+Error sending user input: Error: preparation failed
+    at Proxy.sendUserInputAndSubscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:209:19)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:299:9
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should not teardown local runtime when persisted termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:455:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:492:24
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should keep context when backend termination fails
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:455:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Proxy.closeAgent (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:484:28)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:549:9
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > activation pending marker (D-14) > clears the marker on a handled failure after promotion
+Error sending user input: Error: finalize failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:638:87
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > activation pending marker (D-14) > clears the marker when the stream connection times out
+Error sending user input: Error: Timed out waiting for agent stream connection for run 'perm-agent-id'.
+    at Proxy.ensureAgentStreamConnected (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:347:13)
+    at Proxy.sendUserInputAndSubscribe (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:245:25)
+
+ ✓ stores/__tests__/agentRunStore.spec.ts (27 tests) 36ms
+ ✓ stores/__tests__/agentOrgContextsStore.spec.ts (2 tests) 16ms
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts (8 tests | 8 failed) 21ms
+   × BEH-001/004: successful Stop retains same-focus expanded completed/system Activity, other members and genuine empty state 11ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: rejected Stop preserves Activity and last-known lifecycle 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: graphql Stop preserves Activity and last-known lifecycle 2ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: network Stop preserves Activity and last-known lifecycle 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-004: concurrent and already-stopped duplicate Stop sends one command 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-001/003: retained old approval cannot dispatch via retired store or old service and viewing never restores 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-002: real standalone Agent stop retains Activity in same renderer and context 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+   × BEH-003: later normal Send restores, hydrates and admits exact input without duplicating retained Activity 1ms
+     → [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ✓ stores/__tests__/retainedOrgActivityTermination.spec.ts (4 tests) 87ms
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts (28 tests | 3 failed) 118ms
+   ✓ agentTeamRunStore current rooted execution contract > connects the exact Team context to the bound Team WebSocket endpoint 4ms
+   ✓ agentTeamRunStore current rooted execution contract > reattaches an existing service to the latest context with the same root identity 1ms
+   ✓ agentTeamRunStore current rooted execution contract > latches one persistent recovery notice and blocks ordinary service reuse 1ms
+   ✓ agentTeamRunStore current rooted execution contract > commits one ready recovery candidate over the unchanged failed entries 1ms
+   ✓ agentTeamRunStore current rooted execution contract > preserves failed entries and notice when the candidate handshake rejects 1ms
+   × agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore 5ms
+     → activities.getNativeCompactionActivityIds is not a function
+   × agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects 1ms
+     → activities.getNativeCompactionActivityIds is not a function
+   × agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending 1ms
+     → activities.getNativeCompactionActivityIds is not a function
+   ✓ agentTeamRunStore current rooted execution contract > sends to the exact focused persistent execution and records the local submission 3ms
+   ✓ agentTeamRunStore current rooted execution contract > finalizes a nested Agent upload with its containing TeamRun while preserving root send scope 2ms
+   ✓ agentTeamRunStore current rooted execution contract > finalizes attachments from an explicit source owner (a Team started from a New chat) 1ms
+   ✓ agentTeamRunStore current rooted execution contract > keeps attachment ownership and dispatch fixed while focus changes during finalization 1ms
+   ✓ agentTeamRunStore current rooted execution contract > does not send after finalization rejects the selected owner and retains retry input 1ms
+   ✓ agentTeamRunStore current rooted execution contract > rejects a focused Agent with no canonical execution location before admission or dispatch 1ms
+   ✓ agentTeamRunStore current rooted execution contract > preserves the real associated Team draft when restore fails before local admission 1ms
+   ✓ agentTeamRunStore current rooted execution contract > restores an inactive Team and sends to the unchanged exact execution address 1ms
+   ✓ agentTeamRunStore current rooted execution contract > keeps the lazy-restore submission pending until exact Team admission is confirmed 52ms
+   ✓ agentTeamRunStore current rooted execution contract > retains the exact lazy-restore prompt and attachments for retry after admission failure 1ms
+   ✓ agentTeamRunStore current rooted execution contract > launches a flat mixed-runtime draft with exact direct memberAddress inputs and focus 12ms
+   ✓ agentTeamRunStore current rooted execution contract > registers the one flat Team root workspace and creates exactly one TeamRun 2ms
+   ✓ agentTeamRunStore current rooted execution contract > keeps a root workspace registration failure on the flat Team draft and does not create a TeamRun 1ms
+   ✓ agentTeamRunStore current rooted execution contract > repairs a removed flat Agent before launch and performs zero registration or create 11ms
+   ✓ agentTeamRunStore current rooted execution contract > rejects a workspace result when topology changes after registration dispatch and never creates a TeamRun 3ms
+   ✓ agentTeamRunStore current rooted execution contract > admits one exact draft before allocation and blocks edits, selection changes, and duplicate allocation until success 3ms
+   ✓ agentTeamRunStore current rooted execution contract > preserves and unlocks the exact selected draft after allocation failure, then permits one later canonical launch 2ms
+   ✓ agentTeamRunStore current rooted execution contract > first-send launch uses the admitted selected draft and sends once to the exact promoted execution 3ms
+   ✓ agentTeamRunStore current rooted execution contract > preserves an explicit approval target and never synthesizes a default target 1ms
+   ✓ agentTeamRunStore current rooted execution contract > interrupts only an AgentRun in the exact current Team execution 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 11 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > terminates once, disconnects, and preserves an offline context for history restore
+TypeError: activities.getNativeCompactionActivityIds is not a function
+ ❯ stores/agentTeamRunStore.ts:214:25
+    212|         ...entry, state: entry.agentContext.state,
+    213|         instance: entry.agentContext.state.inputProjection?.runInstanc…
+    214|         ids: activities.getNativeCompactionActivityIds(entry.agentRunI…
+       |                         ^
+    215|       }]));
+    216|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:211:63
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:431:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > does not mutate local lifecycle when backend termination rejects
+TypeError: activities.getNativeCompactionActivityIds is not a function
+ ❯ stores/agentTeamRunStore.ts:214:25
+    212|         ...entry, state: entry.agentContext.state,
+    213|         instance: entry.agentContext.state.inputProjection?.runInstanc…
+    214|         ids: activities.getNativeCompactionActivityIds(entry.agentRunI…
+       |                         ^
+    215|       }]));
+    216|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:211:63
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:450:41
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore current rooted execution contract > deduplicates concurrent Stop requests while the first mutation is pending
+TypeError: activities.getNativeCompactionActivityIds is not a function
+ ❯ stores/agentTeamRunStore.ts:214:25
+    212|         ...entry, state: entry.agentContext.state,
+    213|         instance: entry.agentContext.state.inputProjection?.runInstanc…
+    214|         ids: activities.getNativeCompactionActivityIds(entry.agentRunI…
+       |                         ^
+    215|       }]));
+    216|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:211:63
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:464:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-001/004: successful Stop retains same-focus expanded completed/system Activity, other members and genuine empty state
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:53:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: rejected Stop preserves Activity and last-known lifecycle
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: graphql Stop preserves Activity and last-known lifecycle
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: network Stop preserves Activity and last-known lifecycle
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:85:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-004: concurrent and already-stopped duplicate Stop sends one command
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:94:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-001/003: retained old approval cannot dispatch via retired store or old service and viewing never restores
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:103:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-002: real standalone Agent stop retains Activity in same renderer and context
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:114:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  stores/__tests__/retainedActivityTermination.spec.ts > BEH-003: later normal Send restores, hydrates and admits exact input without duplicating retained Activity
+ZodError: [
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      0,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      1,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "object",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_statuses",
+      2,
+      "recoverableBlock"
+    ],
+    "message": "Invalid input: expected object, received undefined"
+  },
+  {
+    "expected": "array",
+    "code": "invalid_type",
+    "path": [
+      "payload",
+      "agent_input_states"
+    ],
+    "message": "Invalid input: expected array, received undefined"
+  }
+]
+ ❯ Module.parseTeamStreamServerMessage ../autobyteus-team-stream-contracts/src/team-stream-server-message.ts:91:55
+ ❯ emit stores/__tests__/retainedActivityTermination.spec.ts:41:98
+     39|   const store = useAgentTeamRunStore()
+     40|   const service = store.connectToTeamStream(ROOT)!
+     41|   const emit = (type: string, payload: any) => { const wire = JSON.str…
+       |                                                                                                  ^
+     42|   const ready = () => {
+     43|     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
+ ❯ ready stores/__tests__/retainedActivityTermination.spec.ts:44:5
+ ❯ setup stores/__tests__/retainedActivityTermination.spec.ts:46:3
+ ❯ stores/__tests__/retainedActivityTermination.spec.ts:126:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: activities.getNativeCompactionActivityIds is not a function
+ ❯ stores/agentTeamRunStore.ts:214:25
+    212|         ...entry, state: entry.agentContext.state,
+    213|         instance: entry.agentContext.state.inputProjection?.runInstanc…
+    214|         ids: activities.getNativeCompactionActivityIds(entry.agentRunI…
+       |                         ^
+    215|       }]));
+    216|       this.stopPendingTeamIds = { ...this.stopPendingTeamIds, [rootTea…
+ ❯ Proxy.terminateTeamRun stores/agentTeamRunStore.ts:211:63
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentTeamRunStore.spec.ts:463:25
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+ ❯ runWithTimeout ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10
+
+This error originated in "stores/__tests__/agentTeamRunStore.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "keeps the lazy-restore submission pending until exact Team admission is confirmed". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed | 4 passed (6)
+      Tests  11 failed | 74 passed (85)
+     Errors  1 error
+   Start at  06:14:22
+   Duration  7.10s (transform 4.00s, setup 34.18s, collect 1.90s, tests 295ms, environment 1.71s, prepare 919ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

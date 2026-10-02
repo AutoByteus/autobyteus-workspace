@@ -1,150 +1,47 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../src/llm/utils/messages.js';
-import {
-  WorkingContextCompactionOutputValidationError,
-  WorkingContextCompactionOutputValidator,
-} from '../../../src/memory/compaction/working-context-compaction-output-validator.js';
+import { WorkingContextCompactionOutputValidator, WorkingContextCompactionOutputValidationError,
+  assertWorkingContextMessagesStructurallyValid } from '../../../src/memory/compaction/working-context-compaction-output-validator.js';
+import { WorkingContextMessageWindowPlanner } from '../../../src/memory/compaction/working-context-message-window-planner.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
-import { ANTHROPIC_ASSISTANT_TURN_KEY, withoutAnthropicThinkingInMessage } from '../../../src/llm/utils/provider-native-assistant-turn.js';
-
-const validator = new WorkingContextCompactionOutputValidator();
-const system = () => new Message(MessageRole.SYSTEM, { content: 'System', metadata: { stable: { yes: true } } });
-const baseline = () => new WorkingContext([system(), new Message(MessageRole.USER, { content: 'old' })]);
-const accepted = (finalizedContext: WorkingContext) => ({
-  finalizedContext,
-  budgetAssessment: {
-    planningBudget: { postCompactionTargetTokens: 1_000_000 },
-    estimatedFinalizedContextTokens: 1,
-    estimatedUntrackedOverheadTokens: 0,
-  },
-} as any);
-const validate = (current: WorkingContext, input: WorkingContext, next: WorkingContext) =>
-  validator.assertValid(current, input, accepted(next));
-
-const expectCode = (action: () => void, code: string) => {
-  try {
-    action();
-    throw new Error('Expected validation to fail.');
-  } catch (error) {
-    expect(error).toBeInstanceOf(WorkingContextCompactionOutputValidationError);
-    expect((error as WorkingContextCompactionOutputValidationError).code).toBe(code);
-  }
+import { makeHarness, summary } from './direct-compaction-harness.js';
+const subjects: ReturnType<typeof makeHarness>[] = [];
+afterEach(() => { subjects.splice(0).forEach((s) => s.dispose()); vi.restoreAllMocks(); });
+const fixture = () => {
+  const h = makeHarness(); subjects.push(h);
+  h.manager.beginPendingCompactionAttempt({ operationId: h.operationId, turnId: h.input.turnId });
+  const baseline = h.manager.captureCompactionBaseline();
+  const source = baseline.context.copy();
+  const plan = new WorkingContextMessageWindowPlanner().plan({ messages: source.buildMessages(), planningBudget: h.manager.requirePendingCompactionRequest().planningBudget });
+  const accepted = h.manager.prepareCompaction(baseline, { summary, selectedNewRawTraceIds: plan.rawTraceIdsToArchive, retainedMessages: plan.retainedMessages, budgetAssessment: plan.budgetAssessment });
+  return { h, baseline, source, plan, accepted,
+    validate: () => new WorkingContextCompactionOutputValidator().assertValid(baseline.context, source, accepted, plan) };
 };
-
+const system = () => new Message(MessageRole.SYSTEM, { content: 'System' });
+const expectCode = (action: () => void, code: string) => {
+  expect(action).toThrowError(expect.objectContaining({ code }));
+};
 describe('WorkingContextCompactionOutputValidator', () => {
-  it('requires an all-block Anthropic thinking reset in a retained compacted tail', () => {
-    const current = baseline();
-    const native = new Message(MessageRole.ASSISTANT, {
-      tool_payload: new ToolCallPayload([{ id: 'a', name: 'tool', arguments: {} }]),
-      metadata: { [ANTHROPIC_ASSISTANT_TURN_KEY]: { provider: 'anthropic', blocks: [
-        { type: 'thinking', thinking: 'synthetic', signature: 'signed' },
-        { type: 'tool_use', id: 'a', name: 'tool', input: {} },
-      ] } },
-    });
-    const result = new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'tool', 'done') });
-    expectCode(() => validate(current, current.copy(), new WorkingContext([system(), native, result])), 'invalid-message-shape');
-    expect(() => validate(current, current.copy(), new WorkingContext([system(), withoutAnthropicThinkingInMessage(native), result]))).not.toThrow();
+  it('accepts the planned summary with retained provenance and unchanged system head', () => { expect(fixture().validate).not.toThrow(); });
+  it('rejects alias, source mutation, changed head, invalid summary count, retained content and selection', () => {
+    let f = fixture(); f.accepted.finalizedContext = f.source;
+    expectCode(f.validate, 'aliased-context');
+    f = fixture(); f.source.appendUser('changed'); expectCode(f.validate, 'mutated-source-input');
+    f = fixture(); f.accepted.finalizedContext.replaceMessage(0, new Message(MessageRole.SYSTEM, { content: 'changed' }));
+    expectCode(f.validate, 'changed-required-head');
+    f = fixture(); f.accepted.finalizedContext = f.baseline.context.copy(); expectCode(f.validate, 'invalid-summary-region');
+    f = fixture(); const messages = f.accepted.finalizedContext.buildMessages();
+    messages.at(-1)!.content = 'changed'; f.accepted.finalizedContext = new WorkingContext(messages);
+    expectCode(f.validate, 'changed-retained-context');
+    f = fixture(); f.accepted.selectedNewRawTraceIds = ['raw-11']; expectCode(f.validate, 'invalid-selected-traces');
   });
-  it('accepts unchanged head and complete multi-call native tool protocol', () => {
-    const current = baseline();
-    const input = current.copy();
-    const next = new WorkingContext([
-      system(),
-      new Message(MessageRole.ASSISTANT, {
-        tool_payload: new ToolCallPayload([
-          { id: 'a', name: 'first', arguments: {}, nativeToolCallContext: { provider: 'anthropic', toolUseBlock: { id: 'a' } } },
-          { id: 'b', name: 'second', arguments: { nested: { x: 1 } }, nativeToolCallContext: { provider: 'openai_responses', responseOutputItems: [{ id: 'b' }] } },
-        ]),
-      }),
-      new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'first', { ok: true }) }),
-      new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('b', 'second', ['done']) }),
-      new Message(MessageRole.USER, { content: 'continue' }),
-    ]);
-    expect(() => validate(current, input, next)).not.toThrow();
+  it('rejects a finalized context over the parent target', () => {
+    const f = fixture(); f.accepted.budgetAssessment = { ...f.accepted.budgetAssessment, estimatedFinalizedContextTokens: 100_000 };
+    expectCode(f.validate, 'post_compaction_target_exceeded');
   });
-
-  it('rejects the strategy input instance, even when its content is otherwise valid', () => {
-    const current = baseline();
-    const input = current.copy();
-    expectCode(() => validate(current, input, input), 'aliased-context');
+  it('rejects malformed roles and payloads', () => {
+    expectCode(() => assertWorkingContextMessagesStructurallyValid([new Message(MessageRole.USER, { tool_payload: new ToolCallPayload([{ id: 'x', name: 'tool', arguments: {} }]) })]), 'invalid-message-shape');
   });
-
-  it('detects mutation of the isolated strategy input before head comparison', () => {
-    const current = baseline();
-    const input = current.copy();
-    input.replaceMessage(0, new Message(MessageRole.SYSTEM, { content: 'mutated input' }));
-    expectCode(
-      () => validate(current, input, new WorkingContext(input.buildMessages())),
-      'mutated-strategy-input',
-    );
-  });
-
-  it('reports a stable message-shape invariant before comparing a malformed leading head', () => {
-    const current = baseline();
-    const malformed = new WorkingContext([
-      { role: MessageRole.SYSTEM, content: 'System' } as Message,
-    ]);
-
-    expectCode(
-      () => validate(current, current.copy(), malformed),
-      'invalid-message-shape',
-    );
-  });
-
-  it.each([
-    ['omitted', new WorkingContext([
-      new Message(MessageRole.USER, { content: 'replacement' }),
-    ])],
-    ['reordered', new WorkingContext([
-      new Message(MessageRole.SYSTEM, { content: 'System B' }),
-      new Message(MessageRole.SYSTEM, { content: 'System A' }),
-      new Message(MessageRole.USER, { content: 'replacement' }),
-    ])],
-  ])('keeps the head invariant for valid %s leading output', (_label, next) => {
-    const current = new WorkingContext([
-      new Message(MessageRole.SYSTEM, { content: 'System A' }),
-      new Message(MessageRole.SYSTEM, { content: 'System B' }),
-      new Message(MessageRole.USER, { content: 'old' }),
-    ]);
-    expectCode(
-      () => validate(current, current.copy(), next),
-      'changed-required-head',
-    );
-  });
-
-  it('rejects role/payload mismatches and invalid provider-native call context', () => {
-    const current = baseline();
-    const input = current.copy();
-    const invalidRole = new WorkingContext([system(), new Message(MessageRole.USER, {
-      tool_payload: new ToolCallPayload([{ id: 'a', name: 'tool', arguments: {} }]),
-    })]);
-    expectCode(() => validate(current, input, invalidRole), 'invalid-message-shape');
-
-    const invalidNative = new WorkingContext([system(), new Message(MessageRole.ASSISTANT, {
-      tool_payload: new ToolCallPayload([{
-        id: 'a',
-        name: 'tool',
-        arguments: {},
-        nativeToolCallContext: { provider: 'unknown' } as any,
-      }]),
-    }), new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'tool', null) })]);
-    expectCode(() => validate(current, input, invalidNative), 'invalid-message-shape');
-  });
-
-  it('rejects an accepted result whose finalized estimate exceeds the planning target', () => {
-    const current = baseline();
-    const input = current.copy();
-    const next = new WorkingContext([system(), new Message(MessageRole.USER, { content: 'replacement' })]);
-    const result = accepted(next);
-    result.budgetAssessment.planningBudget.postCompactionTargetTokens = 100;
-    result.budgetAssessment.estimatedFinalizedContextTokens = 101;
-
-    expectCode(
-      () => validator.assertValid(current, input, result),
-      'post_compaction_target_exceeded',
-    );
-  });
-
   it.each([
     ['orphan result', [new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'tool', null) })]],
     ['partial batch', [
@@ -175,9 +72,8 @@ describe('WorkingContextCompactionOutputValidator', () => {
       new Message(MessageRole.TOOL, { tool_payload: new ToolResultPayload('a', 'other', null) }),
     ]],
   ])('rejects invalid tool protocol: %s', (_label, body) => {
-    const current = baseline();
     expectCode(
-      () => validate(current, current.copy(), new WorkingContext([system(), ...body])),
+      () => assertWorkingContextMessagesStructurallyValid([system(), ...body]),
       'invalid-tool-protocol',
     );
   });

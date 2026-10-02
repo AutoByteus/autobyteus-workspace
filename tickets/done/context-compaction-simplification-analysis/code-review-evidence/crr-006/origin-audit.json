@@ -1,0 +1,139 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "productionDiff": [],
+  "IR003InventoryCount": 23,
+  "sourceMismatches": [],
+  "authority": {
+    "requirements-doc.md": {
+      "sha256": "da960c7aa5c5ef89ad87fe521f2fab10804519de4ac4d0713f536dfa59df9d4e",
+      "unchangedSinceCRR005": true
+    },
+    "design-spec.md": {
+      "sha256": "a28dfbfd2a14eba28ccd235cbb15f29e06db19493110f415d24081e51300307d",
+      "unchangedSinceCRR005": true
+    },
+    "proposed-compaction-prompt.md": {
+      "sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+      "unchangedSinceCRR005": true
+    },
+    "output-format-and-coverage.md": {
+      "sha256": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5",
+      "unchangedSinceCRR005": true
+    }
+  },
+  "durablePaths": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "85a783c562221bc90f071eaafccad2ea8a25e8fe3f8854f2ffd6fcdfa113c341",
+      "reviewEntrySha256": "ee6896e22f266b40cb3169340eb14728e32bca5bb11e23ca43f34dfbb5affb07",
+      "changedThisRound": true,
+      "currentSha256": "85a783c562221bc90f071eaafccad2ea8a25e8fe3f8854f2ffd6fcdfa113c341",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "reviewEntrySha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "changedThisRound": false,
+      "currentSha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "reviewEntrySha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "changedThisRound": false,
+      "currentSha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "reviewEntrySha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "changedThisRound": false,
+      "currentSha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "reviewEntrySha256": "63d58433150b8d1a889e5c2d2fadd25f275c1846bdc8f4a76cf6f1111f717e1c",
+      "changedThisRound": true,
+      "currentSha256": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "reviewEntrySha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "changedThisRound": false,
+      "currentSha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "reviewEntrySha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "changedThisRound": false,
+      "currentSha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "reviewEntrySha256": "7a6d08326f41b84f92fdcd35380781d12ed27711a1e87b09cdfc45f863b7cf91",
+      "changedThisRound": true,
+      "currentSha256": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "reviewEntrySha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "changedThisRound": false,
+      "currentSha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "matches": true
+    }
+  ],
+  "wireRequestCount": 2,
+  "wireResponseCount": 2,
+  "finished": {
+    "time": "2026-09-30T12:29:32.886Z",
+    "event": "finished",
+    "outboundGenerationRequests": 2,
+    "guardClosed": false
+  },
+  "wireChecks": [
+    {
+      "sequence": 1,
+      "requestModel": "deepseek-v4-flash",
+      "responseModel": "deepseek-flash",
+      "temperature": 0.7,
+      "outputCap": 8192,
+      "promptHashMatches": true,
+      "responseBodyEqualsReportedSummary": true,
+      "stopReason": "stop",
+      "usageEqualsReported": true,
+      "summarySha256": "3d092ef602b2ab8b4d8ae574c0814766c9a8b790c2068ccd4d0df8c13fe19fae"
+    },
+    {
+      "sequence": 2,
+      "requestModel": "deepseek-v4-flash",
+      "responseModel": "deepseek-flash",
+      "temperature": 0.7,
+      "outputCap": 8192,
+      "promptHashMatches": true,
+      "responseBodyEqualsReportedSummary": true,
+      "stopReason": "stop",
+      "usageEqualsReported": true,
+      "summarySha256": "e328c63b5010fe2811e48e0fecf8fd564af8243b5393ce005b34a4175f1c3a80"
+    }
+  ],
+  "semanticLogMatchesReport": true,
+  "repeatedRequestIncludesActualFirstSummary": true,
+  "repeatedRequestIncludesExactCorrection": true,
+  "distinctInvocations": true,
+  "originalQwenEvidenceSha256": "f8fa1c8df5a65bd28ba91adbbc52a711a5747f6bbbdfff8b8809cac34debb833",
+  "F004TriageSha256": "e3d084c41c3f50d48fda0e0497d985bfaa8e1e624b832c209cf266bd25cdfeca",
+  "scope": "Offline identity and evidence consistency only; manual semantic judgment in report; no provider, private vault or broad suite."
+}

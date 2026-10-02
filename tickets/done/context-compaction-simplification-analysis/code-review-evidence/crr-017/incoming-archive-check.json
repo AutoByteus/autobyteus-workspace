@@ -1,0 +1,8 @@
+{
+  "archive": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/cumulative-package.tar.gz",
+  "expected_sha256": "39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5",
+  "actual_sha256": "39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5",
+  "expected_bytes": 104469189,
+  "actual_bytes": 104469189,
+  "scope": "Independent archive byte/hash check; internal 5080-file check retained read-only from API010, not independently repeated."
+}

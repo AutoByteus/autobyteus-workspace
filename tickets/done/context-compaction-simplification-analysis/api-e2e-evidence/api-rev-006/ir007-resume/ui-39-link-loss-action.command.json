@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:22:48.484Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "874AE1E81D71BE579A534ACAFD17046D",
+    "--script",
+    "()=>{const sockets=window.__api6Sockets.filter(x=>x.readyState===1&&x.url==='ws://127.0.0.1:51626/ws/agent/api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e');if(sockets.length!==1)throw new Error('exact socket not established');const at=Date.now();sockets[0].close(4001,'API6 owned link-loss emulation');return {at,closedUrl:sockets[0].url,readyState:sockets[0].readyState};}"
+  ]
+}

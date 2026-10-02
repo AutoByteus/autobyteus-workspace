@@ -1,0 +1,14 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/memory-compaction-configuration.test.ts (3 tests) 3ms
+stderr | tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > keeps unknown completion eligible and observer/cleanup errors diagnostic only
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_1b1ffae1-e495-4c23-b174-a7f57e8ec647' }
+
+ ✓ tests/unit/memory/direct-llm-compression-strategy.test.ts (30 tests) 14ms
+
+ Test Files  2 passed (2)
+      Tests  33 passed (33)
+   Start at  20:49:14
+   Duration  214ms (transform 133ms, setup 32ms, import 136ms, tests 17ms, environment 0ms)
+

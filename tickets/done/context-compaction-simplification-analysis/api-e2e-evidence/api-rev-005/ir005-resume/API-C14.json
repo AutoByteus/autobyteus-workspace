@@ -1,0 +1,19 @@
+{
+  "case": "API-C14",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/agent-execution/agent-run-compaction-recovery.test.ts",
+    "tests/unit/agent-execution/agent-run-compaction-races.test.ts",
+    "tests/unit/agent-execution/root-recovery-command.test.ts",
+    "tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T20:55:25.958710+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T20:55:33.122849+00:00"
+}

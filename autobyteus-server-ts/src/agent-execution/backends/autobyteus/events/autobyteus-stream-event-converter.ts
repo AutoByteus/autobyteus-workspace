@@ -73,6 +73,8 @@ const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
   [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
   [StreamEventType.TURN_INTERRUPTED, AgentRunEventType.TURN_INTERRUPTED],
   [StreamEventType.AGENT_STATUS, AgentRunEventType.AGENT_STATUS],
+  [StreamEventType.COMPACTION_BLOCKED, AgentRunEventType.COMPACTION_BLOCKED],
+  [StreamEventType.COMPACTION_RESUMED, AgentRunEventType.COMPACTION_RESUMED],
   [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
   [StreamEventType.TOKEN_USAGE_UPDATED, AgentRunEventType.TOKEN_USAGE_UPDATED],

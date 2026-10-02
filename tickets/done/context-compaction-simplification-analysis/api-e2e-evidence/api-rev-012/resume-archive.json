@@ -1,0 +1,12 @@
+{
+  "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-012/resume-evidence.tar.gz",
+  "sha256": "ab4470828d451312b874dd5c88edc5d3e685bc323d5e54dc479643f890f5e96c",
+  "size": 7750011,
+  "files": 590,
+  "immutablePriorArchive": {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-010/cumulative-package.tar.gz",
+    "sha256": "39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5",
+    "size": 104469189
+  },
+  "chain": "Prior API010 full cumulative snapshot + direct IR012/CRR019 current package + this API011/012 resumed evidence; canonical current reports direct. Later receipt is outside pre-send archive."
+}

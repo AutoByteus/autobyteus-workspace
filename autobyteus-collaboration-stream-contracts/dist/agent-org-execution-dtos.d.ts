@@ -318,6 +318,24 @@ export declare const agentOrgAgentStatusDtoSchema: z.ZodObject<{
     tool_name: z.ZodNullable<z.ZodString>;
     error_message: z.ZodNullable<z.ZodString>;
     error_details: z.ZodNullable<z.ZodString>;
+    recoverableBlock: z.ZodNullable<z.ZodObject<{
+        operationId: z.ZodString;
+        failureEpoch: z.ZodNumber;
+        position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"held_turn">;
+            turnId: z.ZodString;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"next_turn">;
+            failedTurnId: z.ZodString;
+        }, z.core.$strict>], "kind">;
+        state: z.ZodEnum<{
+            awaiting_user: "awaiting_user";
+            authorized: "authorized";
+            recovering: "recovering";
+        }>;
+        code: z.ZodString;
+        message: z.ZodString;
+    }, z.core.$strict>>;
 }, z.core.$strict>;
 export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
@@ -502,6 +520,71 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
         tool_name: z.ZodNullable<z.ZodString>;
         error_message: z.ZodNullable<z.ZodString>;
         error_details: z.ZodNullable<z.ZodString>;
+        recoverableBlock: z.ZodNullable<z.ZodObject<{
+            operationId: z.ZodString;
+            failureEpoch: z.ZodNumber;
+            position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"held_turn">;
+                turnId: z.ZodString;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"next_turn">;
+                failedTurnId: z.ZodString;
+            }, z.core.$strict>], "kind">;
+            state: z.ZodEnum<{
+                awaiting_user: "awaiting_user";
+                authorized: "authorized";
+                recovering: "recovering";
+            }>;
+            code: z.ZodString;
+            message: z.ZodString;
+        }, z.core.$strict>>;
+    }, z.core.$strict>>;
+    agent_input_states: z.ZodArray<z.ZodObject<{
+        agent_run_id: z.ZodString;
+        state: z.ZodObject<{
+            run_instance_id: z.ZodString;
+            revision: z.ZodNumber;
+            entries: z.ZodArray<z.ZodObject<{
+                sequence: z.ZodNumber;
+                message_id: z.ZodNullable<z.ZodString>;
+                dedupe_key: z.ZodNullable<z.ZodString>;
+                turn_id: z.ZodNullable<z.ZodString>;
+                state: z.ZodEnum<{
+                    queued: "queued";
+                    held: "held";
+                    forwarded: "forwarded";
+                }>;
+                content: z.ZodString;
+                sender_type: z.ZodEnum<{
+                    user: "user";
+                    agent: "agent";
+                    system: "system";
+                }>;
+                file_attachments: z.ZodArray<z.ZodObject<{
+                    uri: z.ZodString;
+                    file_type: z.ZodString;
+                    file_name: z.ZodNullable<z.ZodString>;
+                }, z.core.$strict>>;
+            }, z.core.$strict>>;
+            recoverableBlock: z.ZodNullable<z.ZodObject<{
+                operationId: z.ZodString;
+                failureEpoch: z.ZodNumber;
+                position: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                    kind: z.ZodLiteral<"held_turn">;
+                    turnId: z.ZodString;
+                }, z.core.$strict>, z.ZodObject<{
+                    kind: z.ZodLiteral<"next_turn">;
+                    failedTurnId: z.ZodString;
+                }, z.core.$strict>], "kind">;
+                state: z.ZodEnum<{
+                    awaiting_user: "awaiting_user";
+                    authorized: "authorized";
+                    recovering: "recovering";
+                }>;
+                code: z.ZodString;
+                message: z.ZodString;
+            }, z.core.$strict>>;
+        }, z.core.$strict>;
     }, z.core.$strict>>;
 }, z.core.$strict>;
 export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{

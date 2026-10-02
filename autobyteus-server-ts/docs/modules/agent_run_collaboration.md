@@ -16,7 +16,7 @@ Collaborators, admission and the candidate policy are shared by all roots; see
 ## Which runs host collaborators
 
 A standalone run can host collaborators unless it is a server helper run
-(`launchPurpose: "server_helper"`, such as the memory compactor and the skill improver) or an
+(`launchPurpose: "server_helper"`, such as the skill improver) or an
 application-owned run (`applicationExecutionContext`). This one rule
 (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
 An eligible host always has `send_message_to` and `delegate_task` from its first turn and a short
@@ -108,6 +108,32 @@ service resolves a child through the third root family `agents`.
   `/rest/agent-collaborations/:host/agent-runs/:agent/context-files/:file`. The host keeps the
   ordinary standalone owners.
 - **Message references.** `/rest/agent-collaborations/:host/communication/messages/:messageId/references/:referenceId/content`.
+
+## Native Compaction, Live Input And Whole-Host Stop
+
+Agent-root children use the same native recovery/admission contract as Team/Org
+members: accepted A may remain Held before parent dispatch; later accepted B
+remains Queued and can permit the current failed epoch. Successful recovery
+resumes FIFO without replaying consumed work. The host retains its standalone
+stream/command owner; collaboration commands and snapshots target children,
+including native leaves in hosted Teams, not the host a second time.
+
+`collectAgentRootInputSnapshots` admits exact indexed child run IDs, rejects a
+non-child snapshot and deduplicates repeated Team-recursive leaves. Strict live
+GraphQL and reconnect snapshots expose those input facts; an inactive stored
+package cannot invent pending native state. Renderer projection is not retry
+permission or backend-restart queue persistence.
+
+Whole-host Stop fences root admission, stops children and then stops the host.
+The frontend captures exact root/context/service revisions before awaiting the
+command, retires the matching stream and reconciles confirmed terminal state
+for all loaded children, including hosted-Team members. Failed or superseded
+commands cannot mutate a replacement context. Late compaction output must not
+commit or revive the stopped operation. Existing terminal Activity rows may
+survive an in-memory projection refresh, but a new inactive renderer does not
+synthesize a native compaction journal from Offline status. See
+[frontend activity](../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity)
+and [memory](agent_memory.md) for the persistence boundaries.
 
 ## Known limits
 

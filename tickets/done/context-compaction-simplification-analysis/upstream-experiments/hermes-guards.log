@@ -1,0 +1,22 @@
+▶ not activated — using HERMES_PYTHON: /tmp/autobyteus-compaction-research-20260926.kVSGz5/hermes-probe-venv/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 3 test files (~26 tests) under ['tests/agent/test_pre_compress_memory_context.py', 'tests/agent/test_compressor_truncated_summary_guard.py', 'tests/agent/test_context_compressor_reasoning_fallback.py']; running with -j 1
+[ 69.2% |    18/~26 | ✓25 | ✗ 0] ✓ tests/agent/test_compressor_truncated_summary_guard.py (25✓, 4.2s)
+[ 84.6% |    22/~26 | ✓29 | ✗ 0] ✓ tests/agent/test_context_compressor_reasoning_fallback.py (4✓, 1.6s)
+[100.0% |    26/~26 | ✓33 | ✗ 0] ✓ tests/agent/test_pre_compress_memory_context.py (4✓, 0.6s)
+
+=== Summary: 3 files, 33 tests passed, 0 failed (100% complete) in 6.5s (1 workers) ===
+  Durations cached to test_durations.json (3 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   3
+  Total subprocess CPU-wall: 6.5s  (runner wall: 6.5s, parallelism: 1x)
+  P50: 1.60s  P90: 4.23s  P95: 4.23s  P99: 4.23s  Max: 4.23s
+  <1s: 1 files (33%)  <2s: 2 files (67%)
+  Top 10 slowest:
+      4.23s  tests/agent/test_compressor_truncated_summary_guard.py
+      1.60s  tests/agent/test_context_compressor_reasoning_fallback.py
+      0.63s  tests/agent/test_pre_compress_memory_context.py

@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { MemoryStore } from './base-store.js';
+import { MemoryStore, type PreparedCompactionArchive } from './base-store.js';
 import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
 import { EpisodicItem } from '../models/episodic-item.js';
@@ -51,23 +51,12 @@ export class FileMemoryStore extends MemoryStore {
     return this.runStore.listRawTraceDicts();
   }
 
-  override findEpisodicItemsByIds(ids: readonly string[]): EpisodicItem[] {
-    return this.runStore.findEpisodicItemsByIds(ids);
+  override prepareCompactionArchive(traceIds: readonly string[]): PreparedCompactionArchive {
+    return this.runStore.prepareCompactionArchive(traceIds);
   }
 
-  override findSemanticItemsByIds(ids: readonly string[]): SemanticItem[] {
-    return this.runStore.findSemanticItemsByIds(ids);
-  }
-
-  override hasMemoryArtifactIds(input: {
-    episodeIds: readonly string[];
-    semanticIds: readonly string[];
-  }): boolean {
-    return this.runStore.hasMemoryArtifactIds(input);
-  }
-
-  override archiveCompactedRawTraces(traceIds: readonly string[]): void {
-    this.runStore.archiveCompactedRawTraces(traceIds);
+  override prunePreparedCompactionArchive(prepared: PreparedCompactionArchive, retainedIds: readonly string[]): void {
+    this.runStore.prunePreparedCompactionArchive(prepared, retainedIds);
   }
 
   override recordSystemInstructionSupply(content: string, suppliedAt: number): SystemInstructionCaptureResult {

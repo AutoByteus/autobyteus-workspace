@@ -1,0 +1,5 @@
+
+ RUN  v4.0.18 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/compaction-baseline-73ftil2i/autobyteus-ts
+
+
+BASELINE_TIMEOUT=35 seconds; process group stopped

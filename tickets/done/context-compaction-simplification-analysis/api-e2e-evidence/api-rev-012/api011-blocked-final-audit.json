@@ -1,0 +1,47 @@
+{
+  "time": "2026-10-01T18:26:09.322219+00:00",
+  "pinCount": 10626,
+  "unchanged": 10621,
+  "changed": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+      "before": "cdbd05b6253ad29210f12d2fdfe685bf4a1fd6aaef5fd6e52d13d0c26ce7278c",
+      "after": "eae14a8149c6b7b628f6d7e5bedf9e462169ef27bbfa60cf53b109d55672d496"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+      "before": "d9bb19610d878259d06e0de598467ac83af415166e24b0af8c7e97965020e7a1",
+      "after": "28e3893154a8acac845d466ad770dceda0f2a0f304817b916bd06ced0a9c4bb3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "before": "e0ea735db3f40f6047bee702fadbd5925653c9eaec1b2c55ffb683d6740ba878",
+      "after": "93ab34143603883f7704deb3b0f4cf29950b971bbbc36f349e3232632a378338"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+      "before": "2bc401f0be656f5c5b69eb51e20f8deae7c2157e5bfafb1696d16a8eaaa60e98",
+      "after": "e6ed84f94d0eb7b5b5ff82ca8aac510f010160ea16877da006acb2c454ccd8d6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+      "before": "0f3373de469fe26d76dff65abd1e0bb774144e72f69b4b0532ec296167e72af9",
+      "after": "7d30a64b44ab8282a9652b8db2df21f971cb1947ce6219d4a512bd70b78f334b"
+    }
+  ],
+  "missing": [],
+  "unexpectedChanges": [],
+  "unexpectedMissing": [],
+  "gitChecks": {
+    "head": true,
+    "mergeHead": true,
+    "branch": true,
+    "stash": true,
+    "rawIndex": true,
+    "logicalIndex": true,
+    "zeroUnmerged": true
+  },
+  "stagedCount": 672,
+  "api15Preserved": true,
+  "limitations": "Enumerated entry pins, not machine/private-data census. Documented full build regenerated derived outputs; old packaged/prebuild outputs archived, not substituted. No runtime sources edited."
+}

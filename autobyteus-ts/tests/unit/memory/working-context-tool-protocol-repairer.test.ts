@@ -100,6 +100,7 @@ describe('repairWorkingContextToolProtocol', () => {
       MessageRole.TOOL,
     ]);
     expect((repaired.messages[1].tool_payload as ToolResultPayload).toolResult).toBe('SAFE_FACT');
+    expect((repaired.messages[1].tool_payload as ToolResultPayload).toolError).toBeNull();
     expect((repaired.messages[2].tool_payload as ToolResultPayload).toolResult).toBe(
       null,
     );

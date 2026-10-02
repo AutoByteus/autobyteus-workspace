@@ -1,0 +1,291 @@
+{
+  "pin_count": 9777,
+  "changes": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/index.d.ts": {
+      "before": {
+        "sha256": "0c729035c302e41973c4f4aa5ad4a1a69d76e448d7bdf5d258ca775507753f1a",
+        "bytes": 269
+      },
+      "after": {
+        "sha256": "3e56acc6f0e26ac5c84b44c12120adf172463a1e65027cab05303db25eaaca22",
+        "bytes": 315
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/index.d.ts.map": {
+      "before": {
+        "sha256": "4f15664f9e7edd2270efffcd44f0fe0864556080b578ebadc4247737ce24f910",
+        "bytes": 217
+      },
+      "after": {
+        "sha256": "531e131eac0d12890378c2f6cbb5b6c4f6328220c135f693b70e3ad054c46a0b",
+        "bytes": 240
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/index.js": {
+      "before": {
+        "sha256": "32718e10c3bd99265e505b5c72da3d431887a7fb7f942a697be69a2098b32a0b",
+        "bytes": 267
+      },
+      "after": {
+        "sha256": "cf876a3d1aa7141f2e97131dc9374f8edf3b2a3b211620d6a3806da6efb1959b",
+        "bytes": 313
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/dist/index.js.map": {
+      "before": {
+        "sha256": "2bc6c89b5746434d07514bdd8b6181f9dfe7857c5028c3d92be0de128415a2c0",
+        "bytes": 215
+      },
+      "after": {
+        "sha256": "35cfea6255f5febb97d1c7741336c34be3ab42e1a9b5ce43dff90a24a53d62cc",
+        "bytes": 238
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/src/index.ts": {
+      "before": {
+        "sha256": "7d54b6aa3143911e840c8a74b3d0028eaf587a8c26ed31dafce0a6800724137f",
+        "bytes": 234
+      },
+      "after": {
+        "sha256": "091c45c0a4755c1daab7cac030cd8068de22fc2c4fbb96b4830fcb3e3d9c6dbc",
+        "bytes": 281
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-memory/domain/models.ts": {
+      "before": {
+        "sha256": "c0bf2cc82a75d4dde6974f6207a10d2a3262c514798ff1a6fbaa4934ca1f4c64",
+        "bytes": 4992
+      },
+      "after": {
+        "sha256": "b367ece80f87f0ff4b627509227ddfe42e32fdbce1f34fdfc506b94099e60aac",
+        "bytes": 5036
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts": {
+      "before": {
+        "sha256": "47aa623837ebff26417928d559b5fc0be0e3c34a6f98ecc825509cbd07e577e5",
+        "bytes": 4736
+      },
+      "after": {
+        "sha256": "fca28421328c09a5029bc45db6687bf318bfcd42e4cc35a8649d2d7482603590",
+        "bytes": 4984
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts": {
+      "before": {
+        "sha256": "3f50ce1ad0aa9928fa47c892be7100a779b0da1a874d8a8aeddf7de8fa48fe89",
+        "bytes": 3314
+      },
+      "after": {
+        "sha256": "2f4cca44c0bb5f8dcf0e43ca3d7306408d940ed0e86550a82d957e42b9802ee5",
+        "bytes": 3404
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts": {
+      "before": {
+        "sha256": "c33870fe73756c3cf0e4bcd97278471157d58c6e2f7207d6c635eb765a9ab1cd",
+        "bytes": 8662
+      },
+      "after": {
+        "sha256": "f49a63d2d5a8ecc309af02962c49f8635a9dc4947fc19779beb30c643dc00993",
+        "bytes": 11047
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/run-projection-types.ts": {
+      "before": {
+        "sha256": "47717c5c3daf8e3151679c7eab9862519717ad9973941894814500f5a78b6629",
+        "bytes": 4440
+      },
+      "after": {
+        "sha256": "4bf6b1ee4907d6ce18edbfa3492fc8f9bb8fc3603f0e55201f203dca820d69c6",
+        "bytes": 4484
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts": {
+      "before": {
+        "sha256": "93253b7d10009631180240fd97f3ad138ae4d8f1e532fbee12a24a60eb44492e",
+        "bytes": 2115
+      },
+      "after": {
+        "sha256": "427c12a658eed8fd4eee3a0716db5f9f104bff32ecea1c14fc37632e2572afdf",
+        "bytes": 2437
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts": {
+      "before": {
+        "sha256": "c96e43c566ca2240dfdf00bbadc2464804e77a248878e850a98f3f0a81ed30b6",
+        "bytes": 11504
+      },
+      "after": {
+        "sha256": "ab0446f58af48cc68fd2af88a74533b5084d737f7ac93f63062a08b14f0639ae",
+        "bytes": 11644
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/agent-memory/raw-trace-record-normalizer.test.ts": {
+      "before": {
+        "sha256": "456aa68a937582e2d9e98f56a693de647acac7507b65a7e2a448c9a640b6e627",
+        "bytes": 2842
+      },
+      "after": {
+        "sha256": "a9005db83c50de24cce809e76af4d399ef0d667feff44782bf14557c4c496c2c",
+        "bytes": 3718
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/run-history/projection/user-file-attachment-projection.test.ts": {
+      "before": {
+        "sha256": "80e22d6248a01cedcefca5f28c40ce6fc1e9883997677f249e835c62148dd4fb",
+        "bytes": 5529
+      },
+      "after": {
+        "sha256": "e879190fced07275219e86fd6f45b8baa770418c41a3a8f9589fe2d3e875da7b",
+        "bytes": 6536
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts": {
+      "before": {
+        "sha256": "5c96cbb3962248c1a6db4f67b727e5674ac7dabf06528677bd1b48579e9a8b66",
+        "bytes": 2123
+      },
+      "after": {
+        "sha256": "04bf740db017fe6e09ed525c654418d830d359775af12d06a2f4af336ec6d32d",
+        "bytes": 2366
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/memory-manager.ts": {
+      "before": {
+        "sha256": "97efec51b874f6bba60731daa9add34efae9a6829d7ed0c8cb6e65cf7514d9d9",
+        "bytes": 25588
+      },
+      "after": {
+        "sha256": "d52a565846f2b437b9f61ba6af951b4b53e667ec153c345dbc3266a3f9769a2f",
+        "bytes": 25670
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/models/raw-trace-item.ts": {
+      "before": {
+        "sha256": "fff7f5cfb286a7419938d5803d616a231474bfe9ad6867e557a65e63b739e9c6",
+        "bytes": 4437
+      },
+      "after": {
+        "sha256": "259c7f257d0771efa82164e24daf7c485453e7f7a2abb74e6732cdb6024c351e",
+        "bytes": 5113
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/raw-trace-ingestion.ts": {
+      "before": {
+        "sha256": "cfccb7fd3f5adbd8ee0ba846b88871dd866b9e2395a05912e0695ec4e1d44cdd",
+        "bytes": 5801
+      },
+      "after": {
+        "sha256": "853f68d9fa91afccd438c3eba5ae6a2008375b505c47612eb1cef82076aeec66",
+        "bytes": 5946
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts": {
+      "before": {
+        "sha256": "68232116af095ac90b0e718bcab36a45040276253a8aebd26fb7b25bb827c5b8",
+        "bytes": 4857
+      },
+      "after": {
+        "sha256": "6f38eda5a5949a2827b4d0999aaf5a93391f1a4fc69eef80b0a1d5e924719d4f",
+        "bytes": 5770
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/tests/unit/memory/raw-trace-item.test.ts": {
+      "before": {
+        "sha256": "8a66ce1c49722a1333e730bf72f0c9847d97b07708ecce84852109a1c28b63ae",
+        "bytes": 1856
+      },
+      "after": {
+        "sha256": "78ed4aee93f6100a9c4871e359d4bdd0718e677fd8b22a0434f75b7a667b1c13",
+        "bytes": 3109
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts": {
+      "before": {
+        "sha256": "c76e1b7d62ab1d6ca367b61b4eb39f513324f30319d3e2abb09a6d2e5b16a361",
+        "bytes": 2104
+      },
+      "after": {
+        "sha256": "d31b42671f1e71f4a13c5144b490c003a0739478554dc8871a09721983d98104",
+        "bytes": 1196
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts": {
+      "before": {
+        "sha256": "d31b2ab33365a87d2e33fd2fa430d9e2a7d3b5e952ee860e7f3a27b32775c720",
+        "bytes": 3892
+      },
+      "after": {
+        "sha256": "648dac0b8c699d014f549e382cc0498093361a8d87501ea0df17a47159a97458",
+        "bytes": 6321
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runHydration/runProjectionConversation.ts": {
+      "before": {
+        "sha256": "591c097df375377fd296049913a4be44b29d1c65838aeafc4c7a30f62cd8ed22",
+        "bytes": 12127
+      },
+      "after": {
+        "sha256": "e370f805c174239ba6b10b9ec4968cb2187ae0fee4fb3dc61a7bd671883ecc83",
+        "bytes": 14622
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/utils/contextFiles/contextAttachmentModel.ts": {
+      "before": {
+        "sha256": "973fbf60c868fbe00106998799d0abd958c7ee2562ec0439928244f151443cc8",
+        "bytes": 11678
+      },
+      "after": {
+        "sha256": "1f670888d8cf54358c946cc93ba2769ad6fa7f8584a4124702fa5102132dadc6",
+        "bytes": 11758
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md": {
+      "before": {
+        "sha256": "e216e11382849a8163cecb3f12f06266218d43fab03b31c942690c82aaebc1eb",
+        "bytes": 9532
+      },
+      "after": {
+        "sha256": "72ef4b28f079468dea02bff9eedb231fa12251b0744d79db90b92babb8af8fa0",
+        "bytes": 15216
+      }
+    },
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md": {
+      "before": {
+        "sha256": "6edc8c4b76fd2fe03ea1b6e703461eacc4c8f3d41ea5bc6b9f7a5f7b2020e0b2",
+        "bytes": 43771
+      },
+      "after": {
+        "sha256": "7f505fc323e7e5ff16da3e3bedbb90a052b4174721eec8017232a84d1d31913c",
+        "bytes": 48203
+      }
+    }
+  },
+  "unexpected_changes": [],
+  "git_before": {
+    "HEAD": "026476691c62bda309ce7f2a9342ebb444959f98",
+    "MERGE_HEAD": "d057801c89f26bc69a97331b59631c00519aec98",
+    "branch": "codex/context-compaction-simplification-analysis",
+    "raw_index": {
+      "sha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+      "bytes": 5880285
+    },
+    "logical_index_sha256": "12d0c9edc9a9195cd04b05d2e2c7f55db01c601bee80f34f9afbd29497719b16",
+    "stash": "86fa5f5445364220cb5c4e3b55fa5040a329f6ea\ndba3b62524050b93b319cb9e76d6c2bf5c9cf3a8\na79d3229bd3db18a676e3046fb8a739194cbecda\n7d5d58049503a74b8f836842231ea3d20bc20c12\n892ac5e95c9226683443f150ba725cee2bab6386\n5f6e6f75bc642511a389f7cf02c6a956593611d7\nd13667337bc3c0c8b31dbd45fcbc0cffe317b96f\n866a6983204b8fbf9d73c16190fa510dede024b9\ne5a77d947ef6a91f048a1fc36405a7761ec8001a\nc9989c105d524854e0cc030904cf0a1f68b555d4\n8d372026d457278790bde0212ff362dfa92fa987\n75e205549569483510315ab8714ad4a88a1d3c79\nc047e321cef842e75278f65497108b6492211761\n045af3b2a55d5811f73fcd5489b4033a87391801\n7a4fcdb8198c2d71161c5fed7d70bca23c359fad\n2d8cd6c1ec56e21bfa4efc3ddf2fb97040d4ae48\na106d4e0011ee83608c77c91bd6984febf0e7ddf\n143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee\n2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964\n8a46238a0e7480df845f32992f8a281be7ca9e38\n92fe82e95eb123bdfa259c74eeb1c534b26d909b\n88fbe8331d472f08678c9588766023c19d044fc6\n75ac08606b3289ea7e8ffa8bf803283da3b0605e\nc4ee4ad846608a9be11d4f9cfa9a2bd8a56f75b3\nd2e0a8347a9b5e540934a96e192952a487df0e1a\nba7597ece66ffcf3880ee692b5c0168b2f2f9fb2\n46cbb525bdd3a04922deb6aade405a7f30fc7c84\n5c45418dd1746e0fbbb99616fcaf2ccd6a77e35a\n2381de084512eaed1ae5dae13ed1f231179b7953\n34a114b2d83bcbe5dcfac52b49ef7ae55d30c0bd\n7dda370b1ee1c519b6adae93fce51b1428b22505\n7b6d701ee5ee6442538a605209229e6ca3f0bf7f\n698787e1cf2671ed9495f607812e27ce69d00eb8\nafb33236be4639cfc51f69c070169f0cce1a7976\n",
+    "unmerged": ""
+  },
+  "git_after": {
+    "HEAD": "026476691c62bda309ce7f2a9342ebb444959f98",
+    "MERGE_HEAD": "d057801c89f26bc69a97331b59631c00519aec98",
+    "branch": "codex/context-compaction-simplification-analysis",
+    "raw_index": {
+      "sha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+      "bytes": 5880285
+    },
+    "logical_index_sha256": "12d0c9edc9a9195cd04b05d2e2c7f55db01c601bee80f34f9afbd29497719b16",
+    "stash": "86fa5f5445364220cb5c4e3b55fa5040a329f6ea\ndba3b62524050b93b319cb9e76d6c2bf5c9cf3a8\na79d3229bd3db18a676e3046fb8a739194cbecda\n7d5d58049503a74b8f836842231ea3d20bc20c12\n892ac5e95c9226683443f150ba725cee2bab6386\n5f6e6f75bc642511a389f7cf02c6a956593611d7\nd13667337bc3c0c8b31dbd45fcbc0cffe317b96f\n866a6983204b8fbf9d73c16190fa510dede024b9\ne5a77d947ef6a91f048a1fc36405a7761ec8001a\nc9989c105d524854e0cc030904cf0a1f68b555d4\n8d372026d457278790bde0212ff362dfa92fa987\n75e205549569483510315ab8714ad4a88a1d3c79\nc047e321cef842e75278f65497108b6492211761\n045af3b2a55d5811f73fcd5489b4033a87391801\n7a4fcdb8198c2d71161c5fed7d70bca23c359fad\n2d8cd6c1ec56e21bfa4efc3ddf2fb97040d4ae48\na106d4e0011ee83608c77c91bd6984febf0e7ddf\n143e29eafadcb6d7cdb233e61d3f92a1bdbf77ee\n2c7f3140e36c2fddc80ff1a4a28d9da9c6b33964\n8a46238a0e7480df845f32992f8a281be7ca9e38\n92fe82e95eb123bdfa259c74eeb1c534b26d909b\n88fbe8331d472f08678c9588766023c19d044fc6\n75ac08606b3289ea7e8ffa8bf803283da3b0605e\nc4ee4ad846608a9be11d4f9cfa9a2bd8a56f75b3\nd2e0a8347a9b5e540934a96e192952a487df0e1a\nba7597ece66ffcf3880ee692b5c0168b2f2f9fb2\n46cbb525bdd3a04922deb6aade405a7f30fc7c84\n5c45418dd1746e0fbbb99616fcaf2ccd6a77e35a\n2381de084512eaed1ae5dae13ed1f231179b7953\n34a114b2d83bcbe5dcfac52b49ef7ae55d30c0bd\n7dda370b1ee1c519b6adae93fce51b1428b22505\n7b6d701ee5ee6442538a605209229e6ca3f0bf7f\n698787e1cf2671ed9495f607812e27ce69d00eb8\nafb33236be4639cfc51f69c070169f0cce1a7976\n",
+    "unmerged": ""
+  },
+  "git_unchanged": true
+}

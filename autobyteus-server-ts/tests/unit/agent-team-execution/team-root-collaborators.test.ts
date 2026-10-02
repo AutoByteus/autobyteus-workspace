@@ -9,6 +9,17 @@ afterEach(async () => {
 });
 
 describe("collaborators hosted in a Team root (AR-006)", () => {
+  it("includes a hosted collaborator Team's live input snapshots in the root package", async () => {
+    const f = await harness(); await admitBoth(f.root);
+    const { lead } = entriesOf(f.root);
+    await f.root.executeAgentCommand(lead.agentRunId, { kind: "post_message", message: { content: "Work" } as never });
+    const state = { run_instance_id: 'instance', revision: 1, entries: [], recoverableBlock: null };
+    f.handles.get(lead.agentRunId)!.handle.getInputStateSnapshots.mockReturnValue([{ agent_run_id: lead.agentRunId, state }]);
+    const connection = await f.root.openPackageSnapshotConnection();
+    expect(connection.snapshot.inputStates).toEqual([{ agent_run_id: lead.agentRunId, state }]);
+    connection.close();
+  });
+
   it("adds each collaborator once at admission, Offline, persisted with its run IDs and published", async () => {
     const f = await harness();
     const events: TeamRunEvent[] = [];

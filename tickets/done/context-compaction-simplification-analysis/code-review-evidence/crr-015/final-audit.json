@@ -1,0 +1,21 @@
+{
+  "pinned": 4197,
+  "incomingPins": 4196,
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md"
+  ],
+  "missing": [],
+  "unexpected": [],
+  "gitEntryEqual": {
+    "index": true,
+    "head": true,
+    "merge-head": true,
+    "unmerged": true,
+    "stash": true
+  },
+  "rawIndexEntrySha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+  "rawIndexFinalSha256": "9205389009e064ada5e099e3760386e05215636089f8f63ffda23751a85b0de5",
+  "rawIndexEqual": true,
+  "scope": "No source/test/API edits; reviewer authorities only. Vitest may update ignored runner cache."
+}

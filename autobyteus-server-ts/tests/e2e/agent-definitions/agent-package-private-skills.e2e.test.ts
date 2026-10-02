@@ -339,9 +339,7 @@ const createAutoByteusRuntimeProbe = (workspaceRoot: string): {
       listActiveAgentIds: vi.fn(() => Array.from(activeAgents.keys())),
     } as any,
     waitForIdle: vi.fn(async () => undefined),
-    compactionAgentRunnerFactory: vi.fn(async () => ({
-      runCompactionTask: vi.fn(async () => ({ outputText: "unused in config probe" })),
-    })),
+    compactionLlmFactory: vi.fn(async () => { throw new Error("Unexpected compaction in config probe"); }),
   });
 
   return { factory, capturedConfigs };

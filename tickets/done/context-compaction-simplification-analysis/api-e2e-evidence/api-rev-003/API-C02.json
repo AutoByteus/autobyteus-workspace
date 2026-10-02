@@ -1,0 +1,22 @@
+{
+  "case": "API-C02",
+  "attempt": "",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/memory",
+    "tests/unit/agent/compaction",
+    "tests/unit/agent/handlers/llm-complete-response-received-event-handler.test.ts",
+    "tests/unit/agent/streaming",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T12:19:41.071415+00:00",
+  "finished": "2026-09-30T12:19:42.934470+00:00",
+  "exit_code": 0,
+  "log": "API-C02.log"
+}

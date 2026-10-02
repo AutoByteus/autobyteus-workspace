@@ -12,7 +12,7 @@ const tree = emptyAgentRunCollaborationTree({
 const fakeRoot = () => ({
   getExecutionTreeSnapshot: () => tree,
   openPackageSnapshotConnection: vi.fn(async () => ({
-    snapshot: { tree, messages: emptyAgentRunCollaborationMessages(HOST), statuses: [] },
+    snapshot: { tree, messages: emptyAgentRunCollaborationMessages(HOST), statuses: [], inputStates: [] },
     baseChangeSequence: 0,
     subscribe: vi.fn(() => () => undefined),
     close: vi.fn(),

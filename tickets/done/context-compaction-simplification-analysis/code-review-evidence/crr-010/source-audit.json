@@ -1,0 +1,84 @@
+{
+  "production_path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+  "production_sha256": "2f1a379c431a9f3b5ec358f90478f5942c8b3dff01693a4a034239e61b24eb80",
+  "effective_nonempty_lines": 376,
+  "ir006_numstat": "7\t3\tautobyteus-server-ts/src/services/server-settings-service.ts",
+  "cumulative_numstat_since_refreshed_base": "15\t17\tautobyteus-server-ts/src/services/server-settings-service.ts",
+  "production_pending_diff_paths": [
+    "autobyteus-server-ts/src/services/server-settings-service.ts"
+  ],
+  "ir006_paths": [
+    {
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "sha256": "2f1a379c431a9f3b5ec358f90478f5942c8b3dff01693a4a034239e61b24eb80",
+      "matches_handoff": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts",
+      "sha256": "fa0b81bf525ec6d7cb75e6201fc6b0fdd01ca25aa7187af3f73cbba9cafc8f39",
+      "matches_handoff": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts",
+      "sha256": "f6cfec3e97a0539f0c0319252e65df38a1cb225bce6b0a193f9ba4cb41ca1fdd",
+      "matches_handoff": true
+    }
+  ],
+  "api10": [
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "fac1aec30d5ac2e988b96ce99d7103e4edbe26da7c68e323ab8b4b9909863e34",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "sha256": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "d0527b871e4132f3423204f05c033f6259d31b62e2b60485c5343df9597e321c",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "matches_ir006_intake": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "matches_ir006_intake": true
+    }
+  ],
+  "new_integration_whitespace_issues": [],
+  "approved_requirements_unchanged": true,
+  "approved_design_unchanged": true,
+  "api_report_unchanged": true,
+  "diff_query": "git diff HEAD --name-only; filter source prefixes in returned paths (corrected initial nonrecursive pathspec before result)"
+}

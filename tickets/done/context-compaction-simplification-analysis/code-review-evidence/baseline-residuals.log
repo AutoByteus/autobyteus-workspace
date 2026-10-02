@@ -1,0 +1,436 @@
+Base: 046279298f53fb98d7688ee9dc2b2ba0fa827685
+Temporary directory: /tmp/compaction-crr001-base.u1L4L4
+Dependency trees reused; base core source and base tracked presentation dist used.
+
+ RUN  v4.0.18 /private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/secret-management/live-e2e-harness.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/secret-management/live-e2e-harness.test.ts (19 tests | 1 failed) 90ms
+     ✓ keeps the tracked template exact, non-secret, and inside the ignored test DB root 2ms
+     ✓ matches one database target by normalized path rather than file URL spelling 1ms
+     × adapts the raw product backend through the canonical AgentRun event facade 5ms
+     ✓ accepts only the fixed launch schema and rejects unknown, duplicate, dynamic, or unsafe values 1ms
+     ✓ materializes fixed keys into an ordinary runtime .env while preserving mutable Settings 4ms
+     ✓ constructs a clean child environment without database or provider aliases 0ms
+     ✓ masks Vitest database aliases only while selecting the persistent live-E2E vault 1ms
+     ✓ keeps all native model fixtures in code and mapped to their static product factories 2ms
+     ✓ selects only known code-owned scenarios 0ms
+     ✓ registers managed DeepSeek compaction as a five-percent real agent flow 0ms
+     ✓ registers local Qwen compaction without a provider secret 0ms
+     ✓ accepts a final correction run as the second bounded sibling of one compaction 0ms
+     ✓ counts only runs beyond the initial-plus-one-correction bound as descendants 0ms
+     ✓ classifies only the exact value-free AutoByteus discovery-unavailable boundary 0ms
+     ✓ executes every declared agent operation and returns only value-free summaries 2ms
+     ✓ rejects an invalid agent operation before backend provisioning 0ms
+     ✓ detects exact, encoded, and structural synthetic leaks 1ms
+     ✓ captures and releases clean full-run output through the canonical process boundary 34ms
+     ✓ fails the canonical capture/artifact path without echoing seeded content 36ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > closes the usable query without iteration when post-handoff persistence fails
+Claude runtime turn failed for run 'run-1': Error: persist failed
+    at Object.<anonymous> (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:319:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.executeTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:439:7)
+    at runTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Claude runtime turn failed for run 'run-1': Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:499:13)
+    at runTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+    at ClaudeSession.executeTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:479:17)
+    at runTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:517:37)
+    at runTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a turn when Claude reports a conflicting provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:74:13)
+    at ClaudeSession.executeTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:465:41)
+    at runTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a successful-looking turn that never confirms the provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:517:37)
+    at runTurn (/private/tmp/compaction-crr001-base.u1L4L4/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (25 tests | 1 failed) 48ms
+     ✓ forwards persisted thinking and effort on a restored session turn 4ms
+     ✓ captures and publishes the exact SDK systemPrompt after a usable query is returned 3ms
+     ✓ closes the usable query without iteration when post-handoff persistence fails 5ms
+     ✓ defensively rejects an impossible explicit start while another turn is active 1ms
+     ✓ does not clear an identified active turn for missing or mismatched completion identity 0ms
+     ✓ caches and sends local context file reference paths in user content 1ms
+     ✓ caches and sends an already-normalized finalized context-file path 0ms
+     ✓ applies idle status before emitting normal turn completion 1ms
+     ✓ auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode 7ms
+     ✓ keeps manual mode gated for a safe outside-scratch permission request until approval resolves 4ms
+     ✓ enriches generic Claude process exits with bounded redacted stderr diagnostics 2ms
+     ✓ classifies Claude terminal auth result chunks as runtime errors instead of completed turns 1ms
+     ✓ settles an interrupted active turn before emitting TURN_INTERRUPTED 2ms
+     ✓ keeps manager-owned closure cleanup idempotent without an active turn execution 0ms
+     ✓ rejects a foreign interrupt turn without mutating the active query 2ms
+     ✓ delegates terminate to the session manager dependency 0ms
+     ✓ exposes the caller-reserved provider UUID before the first query 0ms
+     ✓ resumes an interrupted incomplete turn using its immutable reserved provider UUID 2ms
+     × switches an opened but unconfirmed first query to exact resume after interrupt 2ms
+     ✓ uses SDK sessionId for the first turn and resume for every completed follow-up 2ms
+     ✓ continues to resume restored Claude runs with the restored provider session id 0ms
+     ✓ fails a turn when Claude reports a conflicting provider UUID 2ms
+     ✓ fails a successful-looking turn that never confirms the provider UUID 1ms
+     ✓ emits provider-derived text segment ids and preserves text-tool-text order 2ms
+     ✓ coalesces partial stream_event text deltas by message and content block 2ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts (5 tests | 4 failed) 15ms
+     × retains exact tool identity across a retry diagnostic 9ms
+     × correlates started/local-completed/raw output and admits it through the strict Team boundary 2ms
+     × uses an exact direct raw provider tool name without inventing correlation 2ms
+     × suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output 1ms
+     ✓ fails closed when lifecycle facts conflict for the same invocation 0ms
+stdout | tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-execution/agent-run-provisioning-service.test.ts (4 tests | 1 failed) 13ms
+     ✓ prepares a standalone run identity through the catalog without persisted live status 6ms
+     × does not persist activation failure state and permits retry from prepared facts 3ms
+     ✓ delegates prepared cancellation to the catalog boundary 1ms
+     ✓ cleans up only expired prepared identities 2ms
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts (8 tests | 8 failed) 4ms
+     × keeps multi-turn text/tool order without repeating result.response 2ms
+     × keeps headless denial failed despite result SUCCESS 0ms
+     × maps exit0 DONE to provider-step success without inventing shell exit 0ms
+     × maps exit8_empty DONE to provider-step success without inventing shell exit 0ms
+     × maps not_found DONE to provider-step success without inventing shell exit 0ms
+     × does not mark headless denial green when the turn reports SUCCESS 0ms
+     × prioritizes an explicit tool error even when AGY labels the step DONE 0ms
+     × emits assistant text that satisfies the canonical segment lifecycle contract 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts
+TypeError: service.activatePreparedRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-provisioning-service.test.ts:169:26
+    167|     const service = buildService();
+    168| 
+    169|     await expect(service.activatePreparedRun(runId)).rejects.toThrow("…
+       |                          ^
+    170|     expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalle…
+    171|     expect(metadataByRunId.get(runId)).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade
+Error: AgentRun provider input normalizer is required.
+ ❯ new AgentRun src/agent-execution/domain/agent-run.ts:77:13
+     75|     this.backend = options.backend;
+     76|     if (!options.providerInputNormalizer || typeof options.providerInp…
+     77|       throw new Error("AgentRun provider input normalizer is required.…
+       |             ^
+     78|     this.providerInputNormalizer = options.providerInputNormalizer;
+     79|     this.commandObservers = [...(options.commandObservers ?? [])];
+ ❯ wrapProductAgentBackendForLiveE2e ../test-support/live-e2e/live-e2e-harness.ts:92:27
+ ❯ tests/unit/secret-management/live-e2e-harness.test.ts:144:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > keeps multi-turn text/tool order without repeating result.response
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-tool-event-capture/multi_turn.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:31:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > keeps headless denial failed despite result SUCCESS
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-tool-event-capture/run_command_denied.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:38:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps exit0 DONE to provider-step success without inventing shell exit
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe/exit0.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:44:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps exit8_empty DONE to provider-step success without inventing shell exit
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe/exit8_empty.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:44:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > maps not_found DONE to provider-step success without inventing shell exit
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe/not_found.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:44:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > does not mark headless denial green when the turn reports SUCCESS
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe/denied.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:52:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > prioritizes an explicit tool error even when AGY labels the step DONE
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-command-outcome-matrix-probe/exit0.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:57:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts > AGY canonical stream conversion > emits assistant text that satisfies the canonical segment lifecycle contract
+Error: ENOENT: no such file or directory, open '/private/tmp/compaction-crr001-base.u1L4L4/tickets/in-progress/antigravity-cli-runtime-redesign-20260924/agy-tool-event-capture/run_command_nonzero.stdout.jsonl'
+ ❯ fixture tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:11:76
+
+ ❯ convert tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:15:20
+ ❯ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts:76:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "close": [Function Mock],
+        "interrupt": [Function Mock],
+        Symbol(Symbol.asyncIterator): [Function [Symbol.asyncIterator]],
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:863:28
+    861|       "placeholder interrupt abort signal",
+    862|     );
+    863|     expect(closeQuery).not.toHaveBeenCalled();
+       |                            ^
+    864|     firstQuery.release();
+    865|     await interruptPromise;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:92:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:134:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:188:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/15]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:216:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/15]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  15 failed | 46 passed (61)
+   Start at  21:41:59
+   Duration  5.52s (transform 2.38s, setup 29ms, import 4.50s, tests 170ms, environment 0ms)
+

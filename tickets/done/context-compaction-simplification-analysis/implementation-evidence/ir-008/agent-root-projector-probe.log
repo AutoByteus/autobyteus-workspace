@@ -1,0 +1,46 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/agent-root-projector.probe.test.ts (2 tests | 1 failed) 9ms
+     ✓ empty-root control parses 3ms
+     × ordinary admitted dormant collaborator snapshot parses 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/agent-root-projector.probe.test.ts > IR008 Agent-root merged contract diagnostic > ordinary admitted dormant collaborator snapshot parses
+AssertionError: expected [Function] to not throw an error but '[\n  {\n    "expected": "object",\n  …' was thrown
+
+- Expected: 
+undefined
+
++ Received: 
+"[
+  {
+    \"expected\": \"object\",
+    \"code\": \"invalid_type\",
+    \"path\": [
+      \"root_agent\",
+      \"agent_statuses\",
+      0,
+      \"recoverableBlock\"
+    ],
+    \"message\": \"Invalid input: expected object, received undefined\"
+  }
+]"
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/agent-root-projector.probe.test.ts:35:102
+     33| describe("IR008 Agent-root merged contract diagnostic", () => {
+     34|   it("empty-root control parses", () => expect(() => project(false)).n…
+     35|   it("ordinary admitted dormant collaborator snapshot parses", () => e…
+       |                                                                                                      ^
+     36| });
+     37| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  12:28:21
+   Duration  333ms (transform 130ms, setup 0ms, import 207ms, tests 9ms, environment 0ms)
+

@@ -1,0 +1,12 @@
+{
+  "case": "C07-R",
+  "argv": [
+    "node",
+    "--test",
+    "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T06:53:57.602423+00:00",
+  "finished": "2026-10-01T06:53:57.811460+00:00",
+  "exit": 0
+}

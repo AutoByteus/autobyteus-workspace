@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-01T18:07:27.037480+00:00",
+  "endpoint": "http://127.0.0.1:62667/graphql",
+  "request": {
+    "query": "mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id name}}",
+    "variables": {
+      "input": {
+        "name": "API11 Team",
+        "description": "Owned API11 two-member native team",
+        "instructions": "API11 fixture team",
+        "coordinatorMemberName": "lead",
+        "nodes": [
+          {
+            "memberName": "lead",
+            "ref": "api11-lead",
+            "refScope": "SHARED"
+          },
+          {
+            "memberName": "peer",
+            "ref": "api11-peer",
+            "refScope": "SHARED"
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "api11-deterministic-32768:lmstudio@127.0.0.1:62749"
+        }
+      }
+    }
+  },
+  "response": {
+    "data": {
+      "createAgentTeamDefinition": {
+        "id": "api11-team",
+        "name": "API11 Team"
+      }
+    }
+  }
+}

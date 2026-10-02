@@ -1,0 +1,22 @@
+{
+  "case": "API008-C01",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "tests/unit/secret-management/live-e2e-harness.test.ts",
+    "tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+    "--no-watch"
+  ],
+  "startedAt": "2026-10-01T07:19:10.528141+00:00",
+  "finishedAt": "2026-10-01T07:19:21.289851+00:00",
+  "durationSeconds": 10.761,
+  "exitCode": 0,
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-008/API008-C01.log",
+  "scope": "offline unit/reporting contract only; no real-provider or UI run"
+}

@@ -1,0 +1,63 @@
+[codex/context-compaction-simplification-analysis 026476691] chore: checkpoint reviewed compaction candidate before delivery integration
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 142 files changed, 8801 insertions(+), 3216 deletions(-)
+ create mode 100644 autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts
+ create mode 100644 autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/native-compaction-terminal-drain.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts
+ create mode 100644 autobyteus-web/services/activity/nativeCompactionActivityReconciliation.ts
+ create mode 100644 autobyteus-web/stores/__tests__/nativeCompactionActivity.spec.ts
+ create mode 100644 autobyteus-web/stores/__tests__/nativeCompactionTermination.spec.ts
+ create mode 100644 autobyteus-web/stores/__tests__/nativeOrgCompactionTermination.spec.ts
+ create mode 100644 autobyteus-web/types/activity/compactionPhase.ts
+ create mode 100644 test-support/live-e2e/compaction-quality-checks.ts
+ create mode 100644 test-support/live-e2e/live-e2e-safe-error.ts
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/acceptance-disposition.sr020.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-review-report.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-retry-policy-request.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/api-validation-coordination.sr019.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr019.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr029.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr030.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr034.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr018.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr028.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr033.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/code-review-design-request.strategy-boundary.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-v6-candidate.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/input-hold-proposal.sr027.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/production-scenario-clarification.sr031.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/prompt-recovery-proposal.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/release-notes.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-documentation-cleanup.sr023.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr021.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr022.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr024.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr025.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr026.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr027.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/strategy-boundary-analysis.sr021.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/strategy-execution-investigation.sr025.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/summary-budget-removal-experiment.sr022.md
+ create mode 100644 tickets/in-progress/context-compaction-simplification-analysis/terminal-compaction-activity.sr032.md

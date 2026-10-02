@@ -1,0 +1,11 @@
+--- entry/test-support/live-e2e/live-e2e-harness.ts
++++ current/test-support/live-e2e/live-e2e-harness.ts
+@@ -241,7 +241,7 @@
+   if (invocation.messages.length !== 2 || system?.role !== MessageRole.SYSTEM
+       || system.content !== COMPACTION_SUMMARY_PROMPT || user?.role !== MessageRole.USER
+       || invocation.messages.some(({ toolPayload }) => toolPayload != null)
+-      || !/^Summary budget: \d+ tokens\.\n\n/u.test(task)
++      || !task.startsWith(COMPACTION_TASK_INTRO + '\n\n')
+       || countOccurrences(task, COMPACTION_TASK_INTRO) !== 1
+       || countOccurrences(task, TARGET_HISTORY_OPEN_TAG) !== 1
+       || countOccurrences(task, TARGET_HISTORY_CLOSE_TAG) !== 1

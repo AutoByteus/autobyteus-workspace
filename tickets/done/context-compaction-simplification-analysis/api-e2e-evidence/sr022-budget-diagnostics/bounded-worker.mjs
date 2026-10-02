@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import {spawn} from 'node:child_process';
+const file=new URL('worker.json',import.meta.url);
+const child=spawn('pnpm',process.argv.slice(2),{env:process.env,stdio:'inherit',detached:true});
+const state={pid:child.pid,started:new Date().toISOString(),closed:false,timedOut:false};
+const save=()=>fs.writeFileSync(file,JSON.stringify(state,null,2));save();
+const signal=(s)=>{try{process.kill(-child.pid,s);}catch(error){if(error.code!=='ESRCH')throw error;}};
+const timer=setTimeout(()=>{state.timedOut=true;save();signal('SIGTERM');setTimeout(()=>signal('SIGKILL'),5000).unref();},1700000);
+child.on('close',(code,sig)=>{clearTimeout(timer);Object.assign(state,{closed:true,code,signal:sig,finished:new Date().toISOString()});save();process.exitCode=state.timedOut?124:code??1;});
+process.once('SIGTERM',()=>signal('SIGTERM'));
+process.once('SIGINT',()=>signal('SIGINT'));

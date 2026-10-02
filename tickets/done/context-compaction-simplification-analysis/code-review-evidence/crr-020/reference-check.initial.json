@@ -1,0 +1,8 @@
+{
+  "cumulative_count": 5859,
+  "bounded_attachment_count": 348,
+  "missing": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-020/reference-check.json"
+  ],
+  "archives": "Unmodified complete API010 archive plus API012 resume archive; hashes in archive-hash-check.json; direct current authorities and all API15 attached."
+}

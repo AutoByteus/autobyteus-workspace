@@ -1,0 +1,522 @@
+{
+  "scope": "Actual unchanged MemoryManager writer and bootstrapper; synthetic temporary data. Not a target successor-guard implementation/test.",
+  "sources": {
+    "autobyteus-ts/src/llm/utils/messages.ts": "115df613ce4d0fdd13c62962ccae8af11e3d13a82e501796bb70f0704cc381f6",
+    "autobyteus-ts/src/memory/working-context-finalizer.ts": "2b457268c9c2c8f641e67455d8a594fdfca10a38786c86052ee3a0b27e7dd314",
+    "autobyteus-ts/src/memory/working-context.ts": "1723dc053bc5cea13a1dacb6ff685dd5ac21923a9f529c40dbaf1fcd302b5b0c",
+    "autobyteus-ts/src/memory/working-context-finalization-validation.ts": "a321de4193db96fd7eb3f573eca0c0406e1d9fcecfb9007792398fa2ef1d3c93",
+    "autobyteus-ts/src/memory/working-context-provenance.ts": "556ffe7642490b2363b3798cc4cadccce603f5e066434901ff4a8e80a3a4fef2",
+    "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts": "fc7d0fcec15c57aad988bfe53ef764a9c003f0b667067fc0b30674de9c06c22d",
+    "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts": "20c0d3092a14adc19e5664118257cd9538d66e09fd57fb38691ce21452485e01",
+    "autobyteus-ts/src/memory/compaction/working-context-message-unit-builder.ts": "47c865a51e5fe337e462d34029de9901f8ceffb4e3933c5906031bdce8323f56",
+    "autobyteus-ts/src/llm/utils/provider-native-assistant-turn.ts": "e023c082119eb7a5df020bc683940d1ce8e7002f864a1c518068d3197df78733",
+    "autobyteus-ts/src/llm/utils/tool-call-delta.ts": "c90ab306eef2a8f3267df30e77651a86c35dac0a8e4b7764b0c8a786ab412dcf",
+    "autobyteus-ts/src/memory/memory-manager.ts": "505a7d133350ff36d4b8a5b6f7bf6764a8c715a8e51897d1eadb2ac0d9665232",
+    "autobyteus-ts/src/llm/user-message.ts": "224b26c37669dc9a38c642f5ae6d13776af2a8e89390ecde7dec5daa8b4a199f",
+    "autobyteus-ts/src/agent/events/agent-events.ts": "59ab1e3b5f4d788e8e1882f52d96ccc5ce6e82ef95dfe646ffa4cd3275df63c2",
+    "autobyteus-ts/src/memory/models/raw-trace-item.ts": "fff7f5cfb286a7419938d5803d616a231474bfe9ad6867e557a65e63b739e9c6",
+    "autobyteus-ts/src/agent/message/context-file-reference.ts": "b383619d0676d7d33300c64e14156a133cd44805ee40b57cbfcfc7428eb8a6aa",
+    "autobyteus-ts/src/agent/message/context-file-type.ts": "943ed4b3870b9546428e1bcd35baab30c3c725b99d2bf96583871ccb91c4810b",
+    "autobyteus-ts/src/utils/media-file-kind.ts": "195caa62530c4cc7418e5038faf83e24a65ec9b53935f10f6b5da70b60f725e0",
+    "autobyteus-ts/src/memory/models/raw-trace-attachments.ts": "8d86aebf683f28222d54cb67f8c2d7cad1a5e0b28bace291298f70d6f5a5d5c4",
+    "autobyteus-ts/src/memory/models/memory-types.ts": "3709bcb17416d644ed0dc31aead19749af3190f1801a71432fe4295e28830ea1",
+    "autobyteus-ts/src/memory/models/tool-call-identity.ts": "226293d137171a52e719830b001dc2f41640469183f49a9650bc0b7b5c7298d5",
+    "autobyteus-ts/src/memory/turn-tracker.ts": "b47c04d7b56ed64c77fab402359456cd808275ca30363507ccd80f777a231de2",
+    "autobyteus-ts/src/memory/tool-interaction-builder.ts": "1eef5e20ce3b5819d87c05a6151f4c4703649f6ba3ab97663629842dabe336b4",
+    "autobyteus-ts/src/memory/models/tool-interaction.ts": "84cb85797ff38269f0bc13489b73abc03a20e4bf5da5191bf91e58572579a893",
+    "autobyteus-ts/src/memory/tool-trace-lifecycle-index.ts": "de1b5a96b1bac95dc5e1f5b1c60db0e7866f5dc22c12e30761e2bf4f639d5af6",
+    "autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts": "f636132651107a081664d3e48d494d5b368de34088db02c58d662bcde344c54c",
+    "autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts": "ead2d4dbd24594a765ff9b10a83c622d6d65333b1ca3575bfa3ffae401204587",
+    "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts": "2173a64d588591641330c375625ea9d41d1bcda267c520f1e58511bed63887aa",
+    "autobyteus-ts/src/memory/compaction/accepted-compaction-builder.ts": "f7c026fbef53ec0863ceb081dee901f0d764fcb3f7fc37cd3ae72d1729ce64f8",
+    "autobyteus-ts/src/memory/compaction/message-budget-strategy.ts": "0a220f26ee75bef122727734a0e8f7b3938dfd1d64781506a3e879548ef61c36",
+    "autobyteus-ts/src/utils/llm-output-formatter.ts": "443452060a205d37d62115da5e22442037df837ec627bc7ee754e4e8acbabbe2",
+    "autobyteus-ts/src/memory/compaction/accepted-compaction-committer.ts": "b160f59a8934b9635206a42eb5d4b736ab5c131242b32f2e5be7cb9eae9483e7",
+    "autobyteus-ts/src/memory/compaction/compaction-planning-budget.ts": "f6b9f99e75efd116c285c7f2c653baf29a32b94e28024dcecf37e03b233a7eb8",
+    "autobyteus-ts/src/memory/compaction/compaction-threshold-gate.ts": "0451650963457be24dc4489f80190d8a78cbaafdccce84378044d217a7793423",
+    "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts": "a68c81a22db4c2bb9fe16ce1dcb0ba9c66555859088e73f91195f30e5eecc6b3",
+    "autobyteus-ts/src/memory/policies/compaction-policy.ts": "28d3718f3aadd520c5b98ff0f8d66ab14da6213688d3f4915513dd09c0fb5b42",
+    "autobyteus-ts/src/memory/raw-trace-ingestion.ts": "caffd578635912698751ada809dfb3a5cee9acb7f358d691eb47e80e1f3cb3b6",
+    "autobyteus-ts/src/memory/tool-trace-lifecycle-state.ts": "5ad26af0fe014c0bed1beb1820caffb3a92c05dfd1945e794af69f5331611b8f",
+    "autobyteus-ts/src/memory/recent-raw-trace-selector.ts": "3383c9fad295475d733f4b5212046ca527bc7e541f960f9649e909dd3cce7aac",
+    "autobyteus-ts/src/memory/memory-projection-scope.ts": "722df8eb6b7ee85e46fc903fa077395012b82ab459189aed80dd6ca1f086f56b",
+    "autobyteus-ts/src/memory/operation-boundary-trace.ts": "0a188f691e2549d7c0c784771fbc41ec19f9faae0094e52d4532380ffcd8660d",
+    "autobyteus-ts/src/memory/llm-request-recovery.ts": "5202bb59f9310d36a38ec03f5d875d8781b8370fdb79de8076408ed94048e5a5",
+    "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts": "5ed7e9bdd51c070b5ac15fb2cbaeeba81629e6d93b3638ddaf0ae565aecc427b",
+    "autobyteus-ts/src/memory/store/file-store.ts": "c0b84148b384c06a7763773e696f852d014e17c871df95602e4d3ceddd163f20",
+    "autobyteus-ts/src/memory/store/base-store.ts": "1ba3229d2896b4051b637b6a799739f0a369623e72823605896287cba7e45877",
+    "autobyteus-ts/src/memory/models/episodic-item.ts": "881de0501286441811375c44cfb2285da39dfe5b06d4632916a7b87a169a9165",
+    "autobyteus-ts/src/memory/models/semantic-item.ts": "70b9dd1351ce10120a6c681b9abf25ef80dfaae6e32fae8bdf15710e1f055fc3",
+    "autobyteus-ts/src/memory/store/run-memory-file-store.ts": "76672dfa70cedea367c18c675433e3ab14f9605c475d48860fd9a25931f0d7f9",
+    "autobyteus-ts/src/memory/models/system-instruction-trace.ts": "33974fa3ccc2b8d87e65b75ffa83e1d66a97330ab56618aef0f39ad51440d088",
+    "autobyteus-ts/src/memory/store/memory-file-names.ts": "1e9f2540479f30c388897196d49971376287ff9648d19306d02fb4836496cf32",
+    "autobyteus-ts/src/memory/store/raw-trace-archive-manager.ts": "952a72f869c68287772997bb0f0e9da78d4b4d17841b1c244221632c55713985",
+    "autobyteus-ts/src/memory/store/raw-trace-archive-manifest.ts": "8aa35385a268a49e975d1ad2ee366d045d762f44c2169ff6582f76c7a8c7032d",
+    "autobyteus-ts/src/memory/store/working-context-snapshot-store.ts": "f2adf3c77c3bc7575b81c049f8aa919ea9a0f4e1bbc4ee670b8210b1b15cc495",
+    "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts": "7a239191fdf1570861a09603cd3423a17a4d507bc24726517f847a49da66318b",
+    "autobyteus-ts/src/agent/tool-invocation.ts": "e76b732516f05914ba5ed5be87c5a81d08da2fcd176c129e298e2437e00846f2"
+  },
+  "results": [
+    {
+      "name": "Writer cut point: 0 snapshot / 0 raw results restores without losing summary",
+      "status": "PASS"
+    },
+    {
+      "name": "Writer cut point: 1 snapshot / 1 raw results restores without losing summary",
+      "status": "PASS"
+    },
+    {
+      "name": "Writer cut point: 2 snapshot / 2 raw results restores without losing summary",
+      "status": "PASS"
+    },
+    {
+      "name": "Writer cut point: 0 snapshot / 2 raw results restores without losing summary",
+      "status": "PASS"
+    }
+  ],
+  "observations": [
+    {
+      "resultCount": 0,
+      "snapshotResults": 0,
+      "rawAhead": false,
+      "writerSnapshot": {
+        "schema_version": 5,
+        "agent_id": "sr019-0",
+        "messages": [
+          {
+            "role": "system",
+            "content": "System",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [],
+                "turnId": null
+              }
+            }
+          },
+          {
+            "role": "user",
+            "content": "Keep the confirmed summary and pending approval.",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "composed_user",
+                "constituents": [
+                  {
+                    "kind": "compacted_memory",
+                    "textRange": {
+                      "start": 0,
+                      "end": 48
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_calls": [
+                {
+                  "id": "call-a",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-a"
+                  }
+                },
+                {
+                  "id": "call-b",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-b"
+                  }
+                }
+              ]
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462229_turn_0001_call-a_call",
+                  "rt_1790766462229_turn_0001_call-b_call"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          }
+        ]
+      },
+      "envelope": true,
+      "preRepairFullValidation": false,
+      "postRestoreFullValidation": true,
+      "summaryPreserved": true,
+      "beforeBytes": 1052,
+      "restoredToolResultCount": 2
+    },
+    {
+      "resultCount": 1,
+      "snapshotResults": 1,
+      "rawAhead": false,
+      "writerSnapshot": {
+        "schema_version": 5,
+        "agent_id": "sr019-1",
+        "messages": [
+          {
+            "role": "system",
+            "content": "System",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [],
+                "turnId": null
+              }
+            }
+          },
+          {
+            "role": "user",
+            "content": "Keep the confirmed summary and pending approval.",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "composed_user",
+                "constituents": [
+                  {
+                    "kind": "compacted_memory",
+                    "textRange": {
+                      "start": 0,
+                      "end": 48
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_calls": [
+                {
+                  "id": "call-a",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-a"
+                  }
+                },
+                {
+                  "id": "call-b",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-b"
+                  }
+                }
+              ]
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462236_turn_0001_call-a_call",
+                  "rt_1790766462236_turn_0001_call-b_call"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          },
+          {
+            "role": "tool",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_call_id": "call-a",
+              "tool_name": "inspect",
+              "tool_result": {
+                "ok": true
+              },
+              "tool_error": null
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462237_turn_0001_call-a_result"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          }
+        ]
+      },
+      "envelope": true,
+      "preRepairFullValidation": false,
+      "postRestoreFullValidation": true,
+      "summaryPreserved": true,
+      "beforeBytes": 1405,
+      "restoredToolResultCount": 2
+    },
+    {
+      "resultCount": 2,
+      "snapshotResults": 2,
+      "rawAhead": false,
+      "writerSnapshot": {
+        "schema_version": 5,
+        "agent_id": "sr019-2",
+        "messages": [
+          {
+            "role": "system",
+            "content": "System",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [],
+                "turnId": null
+              }
+            }
+          },
+          {
+            "role": "user",
+            "content": "Keep the confirmed summary and pending approval.",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "composed_user",
+                "constituents": [
+                  {
+                    "kind": "compacted_memory",
+                    "textRange": {
+                      "start": 0,
+                      "end": 48
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_calls": [
+                {
+                  "id": "call-a",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-a"
+                  }
+                },
+                {
+                  "id": "call-b",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-b"
+                  }
+                }
+              ]
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462243_turn_0001_call-a_call",
+                  "rt_1790766462243_turn_0001_call-b_call"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          },
+          {
+            "role": "tool",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_call_id": "call-a",
+              "tool_name": "inspect",
+              "tool_result": {
+                "ok": true
+              },
+              "tool_error": null
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462243_turn_0001_call-a_result"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          },
+          {
+            "role": "tool",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_call_id": "call-b",
+              "tool_name": "inspect",
+              "tool_result": {
+                "ok": true
+              },
+              "tool_error": null
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462244_turn_0001_call-b_result"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          }
+        ]
+      },
+      "envelope": true,
+      "preRepairFullValidation": true,
+      "postRestoreFullValidation": true,
+      "summaryPreserved": true,
+      "beforeBytes": 1758,
+      "restoredToolResultCount": 2
+    },
+    {
+      "resultCount": 2,
+      "snapshotResults": 0,
+      "rawAhead": true,
+      "writerSnapshot": {
+        "schema_version": 5,
+        "agent_id": "sr019-2-raw-ahead",
+        "messages": [
+          {
+            "role": "system",
+            "content": "System",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [],
+                "turnId": null
+              }
+            }
+          },
+          {
+            "role": "user",
+            "content": "Keep the confirmed summary and pending approval.",
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": null,
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "composed_user",
+                "constituents": [
+                  {
+                    "kind": "compacted_memory",
+                    "textRange": {
+                      "start": 0,
+                      "end": 48
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "role": "assistant",
+            "content": null,
+            "reasoning_content": null,
+            "image_urls": [],
+            "audio_urls": [],
+            "video_urls": [],
+            "tool_payload": {
+              "tool_calls": [
+                {
+                  "id": "call-a",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-a"
+                  }
+                },
+                {
+                  "id": "call-b",
+                  "name": "inspect",
+                  "arguments": {
+                    "path": "synthetic-b"
+                  }
+                }
+              ]
+            },
+            "metadata": {
+              "autobyteus_memory_provenance": {
+                "kind": "single",
+                "rawTraceIds": [
+                  "rt_1790766462250_turn_0001_call-a_call",
+                  "rt_1790766462250_turn_0001_call-b_call"
+                ],
+                "turnId": "turn_0001"
+              }
+            }
+          }
+        ]
+      },
+      "envelope": true,
+      "preRepairFullValidation": false,
+      "postRestoreFullValidation": true,
+      "summaryPreserved": true,
+      "beforeBytes": 1062,
+      "restoredToolResultCount": 2
+    }
+  ]
+}

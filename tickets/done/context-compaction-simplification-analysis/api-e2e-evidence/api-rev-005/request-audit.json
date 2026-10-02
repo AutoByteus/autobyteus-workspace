@@ -1,0 +1,56 @@
+{
+  "outcome": "Requirement Gap / Design Impact; API005 acceptance not completed",
+  "durableHashesUnchanged": true,
+  "headUnchanged": true,
+  "authorityHashes": {
+    "code-review-report.md": {
+      "current": "8680973a2ec3a6dd8547c5a9d2cb9718448a1bf90a6adf2763e332ed636ca905",
+      "unchanged": true
+    },
+    "code-review-revision-record.md": {
+      "current": "ade3e877acc078d972b40c8e9002cdcf6f393b00da3c668afa9419add9f1096f",
+      "unchanged": true
+    },
+    "requirements-doc.md": {
+      "current": "3c8b538f93fe407a843263f00a4f103e6835b050aa9e42d6989b952c3f321d64",
+      "unchanged": true
+    },
+    "design-spec.md": {
+      "current": "37420682b90ded65707ff8ec9465a963288a676cc8a15d9f3c421435d36e59d6",
+      "unchanged": true
+    },
+    "solution-revision-record.md": {
+      "current": "7ffbf7e95190f4ad5b2f0ae8dcccd3d28fcba3f078391dae87f5fa5efa10b0f1",
+      "unchanged": true
+    },
+    "implementation-handoff.md": {
+      "current": "081f078579c6fd372975c558f142120652cb5132d8fc2004655aab89136d5f19",
+      "unchanged": true
+    },
+    "acceptance-disposition.sr020.md": {
+      "current": "c54399510910452dab5df08ec84cb9846a56c6352465f377179969fed9edb92e",
+      "unchanged": true
+    },
+    "proposed-compaction-prompt.md": {
+      "current": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+      "unchanged": true
+    }
+  },
+  "productionSourceDiff": [],
+  "liveProviderGenerations": 0,
+  "temporaryRetryProbes": 6,
+  "freshPrerequisiteTests": 28,
+  "buildStart": "Pass readiness only; no UI journey",
+  "cleanup": {
+    "instanceId": "iso-64217-1323",
+    "wasRunning": true,
+    "forced": false,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-uj4rRR",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  },
+  "priorCompletedResult": "API004 Fail90.7 unchanged",
+  "newConfidence": "N/A\u2014acceptance interrupted by user policy change"
+}

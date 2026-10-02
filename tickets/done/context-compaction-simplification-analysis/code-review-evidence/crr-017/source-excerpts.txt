@@ -1,0 +1,314 @@
+
+### TESTING.md
+14: | Layer | What it proves | Command |
+15: | --- | --- | --- |
+16: | Web unit and component tests | Nuxt renderer components, stores, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
+17: | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
+18: | All web tests | Both of the above | `pnpm -C autobyteus-web test` |
+19: | Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
+20: | Core library tests | `autobyteus-ts` agent runtime, tools, LLM layer | `pnpm -C autobyteus-ts test` |
+21: | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
+22: | Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
+23: | Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
+24: | Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run` |
+25: | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
+26: | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
+27: | Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
+28: 
+53: ## Choosing the path
+54: 
+55: Start with the smallest layer that directly proves the change, then add the
+56: layer that closes the remaining confidence gap.
+57: 
+58: | The change affects… | Prove it with… |
+59: | --- | --- |
+60: | Backend logic, APIs, persistence, runtimes | Server tests (+ `pnpm test:e2e` for API journeys) |
+61: | Core agent runtime or tools | `autobyteus-ts` tests (+ server tests for integration) |
+62: | Renderer UI, stores, client–server behavior that also runs in a browser | Web unit tests + a browser dev-path probe |
+63: | Desktop-shell behavior: Electron main process, preload/IPC, updater, windows, app lifecycle, embedded server startup, packaging | Electron main-process tests + an **isolated desktop instance** of a worktree build |
+64: | A full real-product journey a user would perform | An **isolated desktop instance** of a worktree build |
+65: | Behavior against real model or search providers | Real-provider E2E (preflight first), or an isolated instance with keys imported |
+66: | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
+67: 
+68: Browser probes are fast and headless; use them for web-equivalent behavior.
+69: An isolated desktop instance is slower (it needs an app build) but exercises the
+70: real desktop app; use it whenever desktop-shell behavior or the full product
+71: matters.
+72: 
+73: ## Rules
+74: 
+75: 1. **Test unreleased changes on a worktree build.** The installed app does not
+76:    contain your change. Use `pnpm --silent isolated-app start --build` (or
+77:    `--from-worktree` when that worktree's app is already built). Builds without
+78:    isolated-launch support are refused with `APP_ISOLATION_UNSUPPORTED`.
+79: 2. **Never test against the user's running AutoByteus** or its data
+80:    (`~/.autobyteus`, the OS application-data folders). Only isolated instances,
+81:    test-owned databases and the development stack are test targets.
+
+### package.json
+13:     "android:server:start": "bash scripts/android-run-server-termux.sh",
+14:     "android:server:start:bg": "bash scripts/android-run-server-termux.sh --background",
+15:     "android:server:stop": "bash scripts/android-run-server-termux.sh --stop",
+16:     "android:server:status": "bash scripts/android-run-server-termux.sh --status",
+17:     "isolated-app": "node autobyteus-web/scripts/isolated-app/cli.mjs",
+18:     "release": "bash scripts/desktop-release.sh release",
+19:     "release:test": "bash scripts/desktop-release.sh test",
+
+### autobyteus-web/package.json
+18:     "dev": "nuxt dev --host 0.0.0.0",
+19:     "build": "nuxt build",
+20:     "guard:web-boundary": "node ./scripts/guard-web-boundary.mjs",
+21:     "guard:localization-boundary": "node ./scripts/guard-localization-boundary.mjs",
+22:     "audit:localization-literals": "node ./scripts/audit-localization-literals.mjs",
+38:     "prepare-server:windows": "node ./scripts/prepare-server.mjs",
+39:     "verify-packaged-terminal-runtime": "node ./scripts/verify-packaged-terminal-runtime.mjs",
+40:     "build:electron": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js",
+41:     "build:electron:linux": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux",
+42:     "build:electron:windows": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --windows",
+43:     "build:electron:mac": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac",
+44:     "build:electron:linux:x64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=x64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --x64",
+45:     "build:electron:linux:arm64": "cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=arm64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --arm64",
+46:     "test:e2e:workspace-responsive": "node tests/e2e/workspace-responsive-probe.mjs",
+
+### autobyteus-web/scripts/isolated-app/instanceLifecycle.mjs
+43: function buildCommandForPlatform(platform) {
+44:   if (platform === 'darwin') return 'build:electron:mac'
+45:   if (platform === 'linux') return 'build:electron:linux'
+46:   throw environmentError('UNSUPPORTED_PLATFORM', `Isolated app lifecycle supports macOS and Linux, not ${platform}`)
+47: }
+48: 
+49: function runBuild({ webRoot, platform, sourceEnv, spawnProcess = spawn }) {
+50:   const script = buildCommandForPlatform(platform)
+51:   const env = { ...sourceEnv }
+52:   delete env.ELECTRON_RUN_AS_NODE
+53:   return new Promise((resolve, reject) => {
+54:     // Build output goes to stderr so stdout stays one JSON value.
+55:     const child = spawnProcess('pnpm', [script], { cwd: webRoot, env, stdio: ['ignore', 2, 2] })
+56:     child.once('error', (error) => reject(environmentError('BUILD_FAILED', `Could not run pnpm ${script}: ${error.message}`)))
+57:     child.once('close', (code) => {
+58:       if (code === 0) resolve()
+59:       else reject(environmentError('BUILD_FAILED', `pnpm ${script} failed with exit code ${code} in ${webRoot}`))
+60:     })
+61:   })
+62: }
+297:     if (options.build) {
+298:       await build({ webRoot, platform, sourceEnv })
+299:     }
+300:     const executablePath = await resolveExecutable({
+301:       app: options.app,
+302:       fromWorktree: options.fromWorktree || options.build,
+303:     })
+304:     await assertIsolatedLaunchSupported(executablePath)
+305:     const controlPort = await resolveControlPort(options.controlPort, options.serverPort)
+306:     const serverPort = await selectServerPort(options.serverPort, controlPort)
+307:     const ownsDataRoot = !options.dataRoot
+308:     const dataRoot = ownsDataRoot ? createAutoDataRoot() : resolveCallerDataRoot(options.dataRoot)
+
+### autobyteus-web/scripts/guard-web-boundary.mjs
+43: const staleWorkspaceLink = path.join(appRoot, 'node_modules', 'autobyteus-ts');
+44: if (fs.existsSync(staleWorkspaceLink)) {
+45:   const stat = fs.lstatSync(staleWorkspaceLink);
+46:   if (stat.isSymbolicLink()) {
+47:     const targetPath = fs.realpathSync(staleWorkspaceLink);
+48:     if (!targetPath.startsWith(`${appRoot}${path.sep}`)) {
+49:       fs.unlinkSync(staleWorkspaceLink);
+50:       console.warn(
+51:         `[guard:web-boundary] Removed stale external symlink: ${staleWorkspaceLink} -> ${targetPath}`,
+52:       );
+53:     }
+54:   } else {
+55:     fail(
+56:       `Invalid local node_modules entry at ${staleWorkspaceLink}. ` +
+57:         "Run 'pnpm install' in autobyteus-web to reset dependencies.",
+58:     );
+59:   }
+60: }
+61: 
+62: const includeDirs = [
+63:   'components',
+64:   'composables',
+65:   'electron',
+66:   'graphql',
+67:   'pages',
+68:   'plugins',
+69:   'services',
+70:   'stores',
+71:   'types',
+72:   'utils',
+73: ];
+74: 
+75: const fileExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.vue']);
+76: const scriptExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.sh']);
+77: const importPatterns = [
+78:   /from\s+['"]autobyteus-ts(?:\/[^'"]*)?['"]/,
+79:   /require\(\s*['"]autobyteus-ts(?:\/[^'"]*)?['"]\s*\)/,
+80:   /from\s+['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]/,
+81:   /require\(\s*['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]\s*\)/,
+82: ];
+83: const contractRuntimeImportPatterns = [
+84:   /from\s+['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]/,
+85:   /require\(\s*['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]\s*\)/,
+86:   /import\(\s*['"]@autobyteus\/team-stream-contracts(?:\/[^'"]*)?['"]\s*\)/,
+87: ];
+88: 
+89: function walkDir(dirPath, collector, extensions = fileExtensions) {
+90:   if (!fs.existsSync(dirPath)) {
+91:     return;
+92:   }
+93:   for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+94:     const fullPath = path.join(dirPath, entry.name);
+95:     if (entry.isDirectory()) {
+96:       walkDir(fullPath, collector, extensions);
+97:       continue;
+98:     }
+99:     if (entry.isFile() && extensions.has(path.extname(entry.name))) {
+100:       collector(fullPath);
+101:     }
+102:   }
+103: }
+104: 
+105: const violations = [];
+106: const guardScriptRelativePath = path.join('scripts', 'guard-web-boundary.mjs');
+107: 
+108: for (const dir of includeDirs) {
+109:   walkDir(path.join(appRoot, dir), (filePath) => {
+110:     const content = fs.readFileSync(filePath, 'utf8');
+111:     const lines = content.split('\n');
+112:     for (let index = 0; index < lines.length; index += 1) {
+113:       const line = lines[index];
+114:       if (importPatterns.some((pattern) => pattern.test(line))) {
+115:         violations.push(`${path.relative(appRoot, filePath)}:${index + 1}: ${line.trim()}`);
+116:       }
+117:     }
+118:   });
+119: }
+120: 
+151:     }
+152:   }
+153: });
+154: 
+155: if (violations.length > 0) {
+156:   fail(
+157:     'Direct autobyteus-ts dependencies are not allowed in active autobyteus-web code:\n' +
+158:       violations.join('\n'),
+159:   );
+160: }
+161: 
+162: console.log('[guard:web-boundary] Passed.');
+
+### autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts
+1: import 'reflect-metadata';
+2: import { describe, it, expect, vi } from 'vitest';
+3: import { createPinia, setActivePinia } from 'pinia';
+4: import { readFileSync, writeFileSync } from 'node:fs';
+5: import { AgentInputUserMessage } from '../../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';
+6: import { ContextFile } from '../../../../autobyteus-ts/dist/agent/message/context-file.js';
+7: import { ContextFileType } from '../../../../autobyteus-ts/dist/agent/message/context-file-type.js';
+8: import { SenderType } from '../../../../autobyteus-ts/dist/agent/sender-type.js';
+9: import path from 'node:path';
+10: import { createNativeRootFixture, HOST } from '../../../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture';
+11: import { eventually, summary } from '../../../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture';
+12: import { projectAgentCollaborationView } from '../../../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector';
+13: import { toMemoryTraceEvent } from '../../../../autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer';
+14: import { buildHistoricalReplayEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events';
+15: import { buildRunProjectionBundleFromEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-utils';
+16: import { dedupeRunProjectionConversationEntries } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
+17: import { AgentRootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts';
+18: import { stageAgentRunCollaborationContext } from '../agentRunCollaborationHydration';
+19: import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
+20: 
+21: const query = vi.hoisted(() => vi.fn());
+22: vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query }) }));
+23: vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({}) }));
+24: vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }));
+25: 
+26: // Narrow in-process integration. Real native producer/FIFO and real saved/live hydration;
+27: // provisioning + model are controlled. No HTTP, packaged reload or provider-quality claim.
+28: describe('native-produced saved history joins actual hosted pending input', () => {
+29:   it.each(['agent', 'agent_team'] as const)('%s: held A / queued B remains one each across fresh hydration and recovery', async kind => {
+30:     setActivePinia(createPinia());
+31:     const f = await createNativeRootFixture(kind, false);
+32:     let release: ((value: string) => void) | undefined;
+33:     try {
+34:       const connection = await f.connect();
+35:       f.request();
+36:       f.compress.mockRejectedValueOnce(new Error('controlled compaction failure'));
+37:       const files = [
+38:         new ContextFile('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64"%3E%3Crect width="64" height="64" fill="skyblue"/%3E%3C/svg%3E', ContextFileType.IMAGE, 'Preview image.svg'),
+39:         new ContextFile('/evidence/report.txt', ContextFileType.TEXT, 'Original acceptance report.txt'),
+40:       ];
+41:       expect((await f.root.executeAgentCommand(f.run.runId, { kind: 'post_message', message: new AgentInputUserMessage(
+42:         'A', SenderType.USER, files, { message_id: 'A', dedupe_key: 'input:A' },
+43:       ) })).accepted).toBe(true);
+44:       await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user');
+45:       const held = f.run.getInputStateSnapshot();
+46:       expect(held.entries.map(e => [e.message_id, e.state])).toEqual([['A', 'held']]);
+47:       const rawPath = path.join(f.native.context.config.memoryDir!, 'raw_traces_active.jsonl');
+48:       const serialized = readFileSync(rawPath, 'utf8');
+49:       const rows = serialized.trim().split('\n').map(row => JSON.parse(row));
+50:       const a = rows.filter(row => row.trace_type === 'user' && row.message_id === 'A');
+51:       expect(a).toHaveLength(1);
+52:       expect(a[0]).toMatchObject({ message_id: 'A', dedupe_key: 'input:A' });
+53:       expect(a[0].id).not.toBe('A');
+54:       expect(a[0].file_attachments).toEqual([{ uri: files[1].uri, file_type: 'text', file_name: files[1].fileName }]);
+55:       expect(a[0].media.images).toEqual([files[0].uri]);
+56:       const conversation = dedupeRunProjectionConversationEntries(buildRunProjectionBundleFromEvents(
+57:         f.run.runId, buildHistoricalReplayEvents(rows.map(toMemoryTraceEvent)),
+58:       ).conversation);
+59:       const savedA = conversation.find(e => e.messageId === 'A')!;
+60:       expect(savedA).toMatchObject({ kind: 'message', role: 'user', dedupeKey: 'input:A' });
+61:       query.mockImplementation(async ({ variables }) => ({ data: { agentRunCollaborationMemberProjection: {
+62:         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
+63:         conversation: variables.agentRunId === f.run.runId ? conversation : [], activities: [], hasEarlierActiveTraceEvents: false,
+64:       } } }));
+65:       const hydrate = async () => {
+66:         const view = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView((await f.manager.getInspection(HOST))!)).root_agent;
+67:         const staged = await stageAgentRunCollaborationContext({ hostRunId: HOST, view });
+68:         staged.commitActivities();
+69:         return staged.context.getAgentContext(f.run.runId)!;
+70:       };
+71:       for (let i = 0; i < 2; i++) {
+72:         const ctx = await hydrate();
+73:         expect(ctx.conversation.messages.filter(m => m.type === 'user' && m.text === 'A')).toMatchObject([
+74:           { messageId: 'A', pendingInput: { state: 'held' }, timestamp: new Date(savedA.ts! * 1000) },
+75:         ]);
+76:       }
+77:       expect(readFileSync(rawPath, 'utf8')).toBe(serialized);
+78:       expect(f.run.getInputStateSnapshot()).toEqual(held);
+79:       expect(f.parent.requests).toHaveLength(3);
+80:       expect(f.compress).toHaveBeenCalledOnce();
+81:       f.compress.mockRejectedValueOnce(new Error('second controlled compaction failure'));
+82:       await f.send(connection.session, 'B');
+83:       await eventually(() => f.native.getCompactionRecovery()?.state === 'awaiting_user' && f.compress.mock.calls.length === 2);
+84:       const pending = f.run.getInputStateSnapshot();
+85:       expect(pending.entries.map(e => [e.message_id, e.state])).toEqual([['A', 'held'], ['B', 'queued']]);
+86:       const ctx = await hydrate();
+87:       expect(ctx.conversation.messages.filter(m => m.type === 'user' && ['A', 'B'].includes(m.text))).toMatchObject([
+88:         { messageId: 'A', pendingInput: { state: 'held' } }, { messageId: 'B', pendingInput: { state: 'queued' } },
+89:       ]);
+90:       expect((ctx.conversation.messages.find(m => m.type === 'user' && m.messageId === 'A') as any).contextFilePaths).toEqual(expect.arrayContaining([
+91:         expect.objectContaining({ locator: files[0].uri, type: 'Image', displayName: 'Preview image.svg' }),
+92:         expect.objectContaining({ locator: files[1].uri, displayName: files[1].fileName }),
+93:       ]));
+94:       // Optional local-check artifacts are newly produced by this test, never inputs/oracles.
+95:       if (process.env.NATIVE_INPUT_CAPTURE_DIR) writeFileSync(path.join(process.env.NATIVE_INPUT_CAPTURE_DIR, `${kind}.json`), JSON.stringify({
+96:         raw: rows, conversation, pending, messages: ctx.conversation.messages.filter(m => m.type === 'user' && ['A', 'B'].includes(m.text)),
+97:       }, null, 2));
+98:       expect(handleAgentInputState(pending, ctx)).toBe(false);
+99:       expect(f.parent.requests).toHaveLength(3);
+100:       // A genuinely new user C authorizes the next retry; no hydration command does.
+101:       f.compress.mockImplementationOnce(() => new Promise(resolve => { release = resolve; }));
+102:       await f.send(connection.session, 'C');
+103:       await eventually(() => !!release);
+104:       release!(summary);
+105:       await eventually(() => f.parent.requests.length === 6 && f.run.getInputStateSnapshot().entries.length === 0);
+106:       handleAgentInputState(f.run.getInputStateSnapshot(), ctx);
+107:       expect(ctx.conversation.messages.filter(m => m.type === 'user' && ['A', 'B'].includes(m.text))).toHaveLength(2);
+108:       expect(ctx.conversation.messages.every(m => m.type !== 'user' || !m.pendingInput)).toBe(true);
+109:       expect(f.parent.requests.slice(3).map(messages => messages.at(-1)?.content)).toEqual([a[0].content, 'B', 'C']);
+110:       expect(f.forwarded.mock.calls.filter(([event]) => event.message.content === 'A')).toHaveLength(1);
+111:       expect(f.forwarded.mock.calls.filter(([event]) => event.message.content === 'B')).toHaveLength(1);
+112:       expect(f.compress).toHaveBeenCalledTimes(3);
+113:     } finally { release?.(summary); await f.close(); }
+114:   }, 20000);
+115: });

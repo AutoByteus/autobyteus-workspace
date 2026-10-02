@@ -1,0 +1,55 @@
+{
+  "fresh_scoped_total": {
+    "passed": 312,
+    "files": 27
+  },
+  "checks": [
+    {
+      "name": "core-regression-final",
+      "command": "pnpm -C autobyteus-ts exec vitest run tests/unit/memory/pending-compaction-executor.test.ts tests/unit/memory/direct-llm-compression-strategy.test.ts tests/unit/memory/memory-manager-compaction-coordinator.test.ts tests/unit/llm/api/compaction-single-attempt-transport.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/integration/agent/runtime/agent-runtime-compaction.test.ts --no-watch",
+      "exit": 0,
+      "passed": 106,
+      "files": 6,
+      "scope": "implementation-local; not API/E2E signoff"
+    },
+    {
+      "name": "server-regression-final",
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-execution/agent-run-compaction-races.test.ts tests/unit/agent-execution/agent-run-compaction-recovery.test.ts tests/unit/agent-execution/root-recovery-command.test.ts tests/unit/agent-execution/native-compaction-terminal-drain.test.ts --no-watch",
+      "exit": 0,
+      "passed": 39,
+      "files": 6,
+      "scope": "implementation-local; not API/E2E signoff"
+    },
+    {
+      "name": "web-regression-final",
+      "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/nativeCompactionActivity.spec.ts stores/__tests__/nativeCompactionTermination.spec.ts stores/__tests__/nativeOrgCompactionTermination.spec.ts components/workspace/agent/__tests__/CompactionStatusRow.spec.ts components/progress/__tests__/CompactionActivityItem.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentActivityStore.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/retainedOrgActivityTermination.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts services/teamExecution/__tests__/teamExecutionViewState.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts --run",
+      "exit": 0,
+      "passed": 167,
+      "files": 15,
+      "scope": "implementation-local; not API/E2E signoff"
+    },
+    {
+      "name": "core-typecheck-final",
+      "command": "pnpm -C autobyteus-ts exec tsc --noEmit -p tsconfig.build.json",
+      "exit": 0
+    },
+    {
+      "name": "server-typecheck-final",
+      "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+      "exit": 0
+    },
+    {
+      "name": "web-tsc-8gb",
+      "command": "NODE_OPTIONS=--max-old-space-size=8192 pnpm -C autobyteus-web exec tsc --noEmit -p tsconfig.json",
+      "exit": 2,
+      "diagnostics": 7078,
+      "note": "Plain tsc, NOT vue-tsc; no same-command baseline or overall pass. Five changed-test .vue resolution diagnostics; no changed production TS path diagnostic. Vue SFC typecheck not established."
+    }
+  ],
+  "excluded_from_total": [
+    "overlapping intermediate reruns",
+    "API-owned historical 346",
+    "renderer manual feedback",
+    "failed characterization and plain tsc"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-26",
+  "node": "v22.23.1",
+  "typescript": "5.9.3",
+  "repositories": {
+    "hermes": {
+      "repository": "https://github.com/NousResearch/hermes-agent",
+      "commit": "9fc7f17906eab1dd81ddfdf8a1edeecac1e79940"
+    },
+    "opencode": {
+      "repository": "https://github.com/anomalyco/opencode",
+      "commit": "696f41bc8e7586657375d53390925fc54c25d34c"
+    },
+    "zcode": {
+      "repository": "https://github.com/zai-org/ZCode",
+      "commit": "29628c9acdb81b703bbd4080c207a0e7ce5e276e"
+    },
+    "dsh": {
+      "repository": "https://github.com/deepseek-ai/deepseek-harness",
+      "commit": "477b4f420553e8a52c2fbccc464d7561b239c443"
+    },
+    "codex": {
+      "repository": "https://github.com/openai/codex",
+      "commit": "25270df2615eb4da5b9d4a9a392226933fb096c5"
+    }
+  },
+  "source_sha256": {
+    "hermes/agent/context_compressor.py": "a11a3ba4f39b50620a066072da332a756e03122f7f69bf3dbd91ad63b98ed70b",
+    "opencode/packages/core/src/session/compaction.ts": "35bc2da1578b6bb80a3c39c1d6c51f234f34ce6586dd4f9d230e2a31b257138d",
+    "opencode/packages/opencode/src/agent/prompt/compaction.txt": "552db0de0af1873a8acd4a631e2548345d4c43192de1d9be69c8feab4b41f80c",
+    "zcode/apps/zcode-cli/packages/core/src/compact/prompt.ts": "b1318080df3bec5f1ca77804fc9513cb50b7cd94d98b1c70cd81cede50e839c9",
+    "dsh/packages/compaction/compaction-basic/src/summarizer.ts": "03ef6eb0b6a011530829820e30ff709c2c1b34cfa37a98c19c0037432b9d2f55",
+    "codex/codex-rs/prompts/templates/compact/prompt.md": "ab0c334d4faca17e3afbb9b16967c1b2fdcc7242a9a0880af57949fa236d6d07",
+    "codex/codex-rs/prompts/templates/compact/summary_prefix.md": "e9b088e794a6bb9082ac053fcc760bd818d7e720ee4bcdc72c6e480de7b7cb0e"
+  },
+  "output_sha256": {
+    "README.md": "b75c160529cd6dc16e1c8d24667ee107f81fce33eda3cf6b53abee3728777c52",
+    "hermes.md": "2e96e7524337f1c6faa82695607659f9770aa10ad601600b428c7260e9bf0408",
+    "opencode.md": "8e2d2c470d730e75f97a56c14890bea333ce1a35935a1504e730ca3a124a283d",
+    "zcode.md": "ce929d122df14382f3969ac34b0855540423c9341690a867017db4433d4cdf09",
+    "dsh.md": "05dbb882e2e46059e25e52fc99823e7a476bb4707b48872266100d964f1808d0",
+    "codex.md": "cc45916f5aead4304117db5508d06950dbd06ddbfcc655247037d6bb02124fc0",
+    "autobyteus-original.md": "3d9af64d0b81c28fb0337641f3f9c75140b3971b9d687a66f16a9cf469a71ed4"
+  },
+  "hermes_settings": {
+    "has_user_turn": true,
+    "tail_mode": "lean",
+    "summary_budget_argument": 4096,
+    "focus_topic": null,
+    "memory_context": "",
+    "date_binding": "{{CURRENT_DATE}}"
+  },
+  "coverage": "Five pinned source prompt collections. Runtime-selected history/date replaced with marked placeholders. No model generation; no production source modification."
+}

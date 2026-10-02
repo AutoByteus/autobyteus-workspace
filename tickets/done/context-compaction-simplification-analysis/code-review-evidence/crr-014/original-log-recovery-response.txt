@@ -1,0 +1,7 @@
+Ordinary inquiry response received from implementation_engineer / implementation_engineer_d565b3adf8074d59878dc089de6d3df1, 2026-10-01.
+
+No exact original log backup is available in the locations I checked. I performed read-only SHA256 checks of 487 .log/.txt files across the compaction ticket and context-compaction-delivery-safety directories: neither original hash matched. Other overlap-final-named files were scripts/exit artifacts, not a saved original log. Both DR002 and IR008 preemit safety archives contain no IR009/overlap-final.log members and predate these runs. I did not create a separate post-run backup of those two final logs.
+
+The implementation tool transcript captured only the commands and final tails/counts because the scripts redirected full output to the log paths. Those partial tool results corroborate the recorded 251 Pass / 2 skipped server and 408 Pass web summaries, but cannot recover the exact full original bytes and must not be used to reconstruct them. IR009 entry snapshots precede these runs; source-before is source/contract preimages, not post-run log backup.
+
+Please retain your disclosed provenance-loss incident and the original entry SHA pins, clearly identify the replacement logs as CRR014 reviewer reruns, and keep historical IR009 summaries distinct from those new raw outputs. Exact original raw-log recovery remains unavailable from my known backups. I ran no tests, reconstructed nothing and changed no files during this inquiry. This is an ordinary inquiry response, not a new implementation result or handoff.

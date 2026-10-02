@@ -1,0 +1,28 @@
+{
+  "case": "C06-T",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web",
+  "argv": [
+    "pnpm",
+    "test:nuxt",
+    "stores/__tests__/nativeCompactionActivity.spec.ts",
+    "stores/__tests__/nativeCompactionTermination.spec.ts",
+    "stores/__tests__/nativeOrgCompactionTermination.spec.ts",
+    "components/workspace/agent/__tests__/CompactionStatusRow.spec.ts",
+    "components/progress/__tests__/CompactionActivityItem.spec.ts",
+    "stores/__tests__/agentTeamRunStore.spec.ts",
+    "stores/__tests__/agentActivityStore.spec.ts",
+    "stores/__tests__/agentRunStore.spec.ts",
+    "stores/__tests__/agentOrgContextsStore.spec.ts",
+    "stores/__tests__/retainedOrgActivityTermination.spec.ts",
+    "services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts",
+    "services/runHydration/__tests__/runProjectionActivityHydration.spec.ts",
+    "services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts",
+    "services/teamExecution/__tests__/teamExecutionViewState.spec.ts",
+    "services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts",
+    "--run"
+  ],
+  "started": "2026-10-01T05:08:07.218570+00:00",
+  "mode": "repository; no real-provider flags",
+  "exitCode": 0,
+  "finished": "2026-10-01T05:08:18.214763+00:00"
+}

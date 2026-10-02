@@ -1,0 +1,56 @@
+--- before/test-support/live-e2e/live-e2e-harness.ts
++++ after/test-support/live-e2e/live-e2e-harness.ts
+@@ -147,7 +147,6 @@
+   directSummaryTaskFramingVerified: true;
+   directSummarySourceToolTailVerified: true;
+   directSummaryProviderSafeUnicodeVerified: true;
+-  directSummaryShieldOmissionPressureVerified: true;
+   noCategoryArtifactsVerified: true;
+   unicodeShieldSourceImmutableVerified: true;
+   summaryPromptSha256: string;
+@@ -1059,7 +1058,6 @@
+         directSummaryTaskFramingVerified: true,
+         directSummarySourceToolTailVerified: true,
+         directSummaryProviderSafeUnicodeVerified: true,
+-        directSummaryShieldOmissionPressureVerified: true,
+         noCategoryArtifactsVerified: true,
+         unicodeShieldSourceImmutableVerified: true,
+         summaryPromptSha256,
+--- before/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
++++ after/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+@@ -138,7 +138,6 @@
+           directSummaryTaskFramingVerified: true,
+           directSummarySourceToolTailVerified: true,
+           directSummaryProviderSafeUnicodeVerified: true,
+-          directSummaryShieldOmissionPressureVerified: true,
+           noCategoryArtifactsVerified: true,
+           unicodeShieldSourceImmutableVerified: true,
+         });
+--- before/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
++++ after/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts
+@@ -23,6 +23,25 @@
+ afterEach(() => vi.restoreAllMocks());
+ 
+ describe('shared live compaction setup boundary (no provider calls)', () => {
++  // Reporting-contract guard only, not a live-flow or model-quality assertion.
++  // F006 retired the omission predicate; neither producer/type nor consumer may
++  // claim its verification. The executable Unicode/framing checks remain below.
++  it.each([
++    ['flow result type and producer', '../../../../test-support/live-e2e/live-e2e-harness.ts'],
++    ['registered result consumer', '../../e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts'],
++  ])('retires unsupported omission-pressure reporting from %s', async (_label, relativePath) => {
++    const source = await fs.readFile(new URL(relativePath, import.meta.url), 'utf8');
++    expect(source.includes('directSummaryShieldOmissionPressureVerified')).toBe(false);
++    for (const retainedField of [
++      'directSummaryTaskFramingVerified',
++      'directSummarySourceToolTailVerified',
++      'directSummaryProviderSafeUnicodeVerified',
++      'unicodeShieldSourceImmutableVerified',
++    ]) {
++      expect(source.includes(retainedField)).toBe(true);
++    }
++  });
++
+   it.each(['deepseek.compaction-agent-flow', 'lmstudio.qwen36.compaction-agent-flow'])(
+     '%s reaches fresh direct-provider setup without retired assets or exports', async (scenarioId) => {
+       const scenario = new LiveE2eScenarioExecution(scenarioId, liveE2eScenarios[scenarioId]!, {} as never, 'http://127.0.0.1:1');

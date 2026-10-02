@@ -1,0 +1,16 @@
+{
+  "case": "API-C11-corrected",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T21:09:13.240673+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 0,
+  "finished": "2026-09-30T21:09:14.833255+00:00"
+}

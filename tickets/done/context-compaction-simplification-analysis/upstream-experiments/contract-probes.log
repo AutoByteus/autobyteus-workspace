@@ -1,0 +1,20 @@
+PASS ZCode accepts one non-JSON Markdown summary
+PASS ZCode strips analysis wrapper and retains summary text
+PASS ZCode rejects empty text at runtime validation boundary
+PASS ZCode rejects model tool calls even with text
+PASS ZCode preserves transcript pointer and recent-tail notice in wrapper
+PASS ZCode prompt requests text, not episodic/semantic JSON
+PASS OpenCode fresh prompt requests one Markdown checkpoint
+PASS OpenCode next prompt incorporates exactly one previous summary and newer work
+PASS OpenCode prompt has no required episodic/semantic/JSON output
+PASS DSH one-shot accepts plain Markdown with real stream assembler
+PASS DSH replays original system/messages/tools before final summary directive
+PASS DSH second pass receives prior checkpoint and merge instruction
+PASS DSH rejects whitespace-only model output
+PASS DSH rejects token-truncated nonempty output
+PASS DSH rejects image output
+PASS DSH filters reasoning out of checkpoint text
+PASS DSH fails closed for explicit provider error
+PASS DSH rejects missing provider/model before request
+PASS DSH framing produces one checkpoint block, not memory categories
+TOTAL 19 passed

@@ -246,7 +246,7 @@ describe('AutobyteusLLM', () => {
     await llm.cleanup();
 
     expect(cleanup).toHaveBeenCalledTimes(2);
-    expect(cleanup).toHaveBeenCalledWith('run-1');
-    expect(cleanup).toHaveBeenCalledWith('run-2');
+    expect(cleanup).toHaveBeenCalledWith('run-1', {});
+    expect(cleanup).toHaveBeenCalledWith('run-2', {});
   });
 });

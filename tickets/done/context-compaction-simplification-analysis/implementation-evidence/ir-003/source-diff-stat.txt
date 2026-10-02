@@ -1,0 +1,24 @@
+ ...ative-working-context-snapshots-v5-migration.ts |    23 +-
+ .../runtime/build-application-platform-runtime.ts  |     2 -
+ .../src/config/compaction-model-settings.ts        |     3 +-
+ .../startup/compaction-model-settings-migration.ts |    33 -
+ .../compaction-parent-credentials.test.ts          |    30 +
+ ...-working-context-snapshots-v5-migration.test.ts |   128 +-
+ .../application-platform-runtime-isolation.test.ts |    32 +-
+ .../unit/config/compaction-model-settings.test.ts  |    16 +
+ .../compaction-model-settings-migration.test.ts    |    47 -
+ .../working-context-compaction-output-validator.ts |     7 +-
+ .../memory-manager-working-context-controller.ts   |     1 -
+ .../native-working-context-snapshot-shapes.ts      |   197 +
+ ...native-working-context-snapshot-v5-converter.ts |     6 +-
+ .../working-context-snapshot-bootstrapper.ts       |    13 +-
+ .../memory/working-context-snapshot-serializer.ts  |   144 +-
+ .../working-context-tool-protocol-repairer.ts      |     2 +-
+ .../memory/released-native-snapshot-shapes.json    | 12842 +++++++++++++++++++
+ ...er-working-context-snapshot-persistence.test.ts |    29 +-
+ .../native-working-context-snapshot-shapes.test.ts |    31 +
+ ...e-working-context-snapshot-v5-converter.test.ts |    10 +-
+ .../working-context-snapshot-bootstrapper.test.ts  |    63 +-
+ .../working-context-snapshot-serializer.test.ts    |    91 +-
+ .../working-context-tool-protocol-repairer.test.ts |     1 +
+ 23 files changed, 13506 insertions(+), 245 deletions(-)

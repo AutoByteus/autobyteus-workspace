@@ -1,0 +1,10 @@
+{
+  "base": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "over220": [
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "nonempty": 391,
+      "cumulativeChanged": 232
+    }
+  ]
+}

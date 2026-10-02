@@ -3,7 +3,8 @@ import type { AgentRunCollaborationViewDto } from '@autobyteus/collaboration-str
 export const created = '2026-09-30T00:00:00.000Z'
 export const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: '/ws' }
 
-export const agentRootView = (): AgentRunCollaborationViewDto => ({
+type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentRunCollaborationViewDto[K] }
+export const agentRootView = (): MutableView => ({
   base_change_sequence: 4,
   is_active: true,
   execution_tree: {
@@ -26,10 +27,10 @@ export const agentRootView = (): AgentRunCollaborationViewDto => ({
     messageId: 'm1', senderAgentRunId: 'cua-run', receiverAgentRunId: 'host-run', content: 'Done, research assistant.',
     messageType: 'direct_message', referenceFiles: [], createdAt: created,
   }] },
+  agent_input_states: [],
   agent_statuses: [
-    { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle' },
-    { agent_run_id: 'pp-run', member_address: '/product_team/prototyper', status: 'running' },
-    { agent_run_id: 'pb-run', member_address: '/product_team/bootstrapper', status: 'offline' },
+    { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { agent_run_id: 'pp-run', member_address: '/product_team/prototyper', status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+    { agent_run_id: 'pb-run', member_address: '/product_team/bootstrapper', status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
   ],
-} as AgentRunCollaborationViewDto)
-
+} as MutableView)

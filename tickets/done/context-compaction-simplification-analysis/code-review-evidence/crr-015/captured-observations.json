@@ -1,0 +1,135 @@
+{
+  "result": "Captured evidence consistency verified; PRODUCT FAIL, not acceptance",
+  "equalBeforeAfterStates": true,
+  "oldTimeOrigin": 1790859976183.3,
+  "newDocument": {
+    "sentinel": null,
+    "timeOrigin": 1790860118043.5
+  },
+  "children": [
+    {
+      "kind": "agent",
+      "runId": "api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d",
+      "input": {
+        "run_instance_id": "94e7a2fb-ea81-402a-8d78-e057e3f47d6d",
+        "revision": 12,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "482afc18-2a66-440a-8f83-2b4d5c089e40",
+            "dedupe_key": "member_input:daily_assistant_c885a1076e524ac493bf01d1ac03a4c5:api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d:482afc18-2a66-440a-8f83-2b4d5c089e40",
+            "turn_id": "turn_0002",
+            "state": "held",
+            "content": "API9-AGENT-RECONNECT-HELD-A\n",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupju2jj_1",
+          "failureEpoch": 2,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0002"
+          },
+          "state": "awaiting_user",
+          "code": "API9_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      },
+      "history": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "API9-AGENT-RECONNECT-HELD-A\n",
+          "media": null,
+          "ts": 1790860068.974
+        }
+      ],
+      "domCopies": 2,
+      "heldLabeledCopies": 1,
+      "nativeRaw": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_reviewer_5d6ebf31c2ab46c9a7107528e6da6f2d/raw_traces_active.jsonl",
+          "entry": {
+            "id": "rt_1790860068974",
+            "ts": 1790860068.974,
+            "turn_id": "turn_0002",
+            "seq": 1,
+            "trace_type": "user",
+            "content": "API9-AGENT-RECONNECT-HELD-A\n",
+            "source_event": "LLMUserMessageReadyEvent",
+            "media": {
+              "images": [],
+              "audio": [],
+              "video": []
+            }
+          }
+        }
+      ],
+      "heldParentRequests": []
+    },
+    {
+      "kind": "team",
+      "runId": "api9_lead_3a6a5e7b787943b594a6461899fe6043",
+      "input": {
+        "run_instance_id": "0e8c27fd-a6fb-4695-a5a4-a9a2da1be54f",
+        "revision": 12,
+        "entries": [
+          {
+            "sequence": 2,
+            "message_id": "9e504a42-e7bb-4491-ad1b-a712727162b5",
+            "dedupe_key": "member_input:daily_assistant_c885a1076e524ac493bf01d1ac03a4c5:api9_lead_3a6a5e7b787943b594a6461899fe6043:9e504a42-e7bb-4491-ad1b-a712727162b5",
+            "turn_id": "turn_0002",
+            "state": "held",
+            "content": "API9-TEAM-RECONNECT-HELD-A\n",
+            "sender_type": "user",
+            "file_attachments": []
+          }
+        ],
+        "recoverableBlock": {
+          "operationId": "compaction_operation_mupjtk2s_1",
+          "failureEpoch": 2,
+          "position": {
+            "kind": "held_turn",
+            "turnId": "turn_0002"
+          },
+          "state": "awaiting_user",
+          "code": "API9_SYNTHETIC_503",
+          "message": "Compaction failed \u2014 send a message to retry"
+        }
+      },
+      "history": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "API9-TEAM-RECONNECT-HELD-A\n",
+          "media": null,
+          "ts": 1790860054.547
+        }
+      ],
+      "domCopies": 2,
+      "heldLabeledCopies": 1,
+      "nativeRaw": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/product/owned-run-memory-before-cleanup/collaboration/api9_team_9c1e5092646448b0adda985405be70d8/api9_lead_3a6a5e7b787943b594a6461899fe6043/raw_traces_active.jsonl",
+          "entry": {
+            "id": "rt_1790860054547",
+            "ts": 1790860054.547,
+            "turn_id": "turn_0002",
+            "seq": 1,
+            "trace_type": "user",
+            "content": "API9-TEAM-RECONNECT-HELD-A\n",
+            "source_event": "LLMUserMessageReadyEvent",
+            "media": {
+              "images": [],
+              "audio": [],
+              "video": []
+            }
+          }
+        }
+      ],
+      "heldParentRequests": []
+    }
+  ]
+}

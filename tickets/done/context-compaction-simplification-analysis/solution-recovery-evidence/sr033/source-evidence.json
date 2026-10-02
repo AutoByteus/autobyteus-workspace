@@ -1,0 +1,197 @@
+{
+  "method": "Read-only source inspection with sed/cat/rg; no executable product check. Hashes captured at final design. See investigation E33 for causal limits.",
+  "sources": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "sha256": "aefb343aed80844c1cf5f7585d27a0f5b86aba68d33159d7721d1a0b0beb60ce"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "sha256": "51216e0f474022ff62eaf0dc730c20c25c40fd343dd7dbce6a560f1f8ff0df6b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/interruption/turn-execution-scope.ts",
+      "sha256": "8b289e40788a2739a35565aa4efa94b5e05adc589b382ab0b6166a9677ad9bd8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/interruption/abortable-operation.ts",
+      "sha256": "b6e59e90f6c2ed4d204dabd8ddf62146173206daf8a73d008d65254cd50aeca3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/agent-turn.ts",
+      "sha256": "a28a4fab11297c71657466df1aab3b8d9d786b50fda477ffe432b5574a4be9f0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+      "sha256": "0ef3a4673b6cf010c9f21a77b301394ed8e852540b49338fbdcea5ef6004e116"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "sha256": "d38d0ce310c2be7ed9ab9625296cee2d441f5ae70e0983bf0fb679ecd76cc45d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/llm-phase-compaction.ts",
+      "sha256": "9ee80c01cab5654d112f983476fe32ad3399effdefb308ffbbb1477704c394a3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/runtime/agent-worker.ts",
+      "sha256": "4e5acd6c7b09a4f8fb3ef205626e6cdc7f9623f2acf4d92366ffe6829b9ba54d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "sha256": "3f017f0c278aa8682b6fe6206f43d4b19c46c548a454485018da0242eea90a04"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts",
+      "sha256": "0297bc01af9aaaca18155bb1a3c76cb37525a740c84398d923e3b042c6ace9e1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+      "sha256": "d849436d40f5a9d53f73a48ccca4a7882a93ad4636e94e642bde2419e3fa2507"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "sha256": "b214d5ae6f5ffac68bdc2073c612f14bf1236ea2ac7c992562cf7ce0f075d6ef"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/models/raw-trace-item.ts",
+      "sha256": "fff7f5cfb286a7419938d5803d616a231474bfe9ad6867e557a65e63b739e9c6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "sha256": "3ffa0e271ea0b0237dc44a17f452b7490cb4d026484d63a2ee42c8212c8cfeab"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "sha256": "2f1db2c063929b947a61fad8a414eff9395c1488dcc0d986fa7a3cd19204a096"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts",
+      "sha256": "081ace9a2d2ae8434eae0c0c1c7bbb064079b66e1128bcdc2adbae268a08c6df"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run-root-shutdown-fence.ts",
+      "sha256": "963fdeb81453816f9bcab247779c356ac06fb4907cfe8a23cef2b0ff00c8dd90"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/prepared-agent-run-termination.ts",
+      "sha256": "720667bbbe218cfed795b769517a540545d026aa2a19aab963c173d9cf94fe4b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts",
+      "sha256": "7fdeeab8ebc5a3aa614dacf3e340e78bd35933ad63b37b53a2ccb199a59c08f3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/agent-run-event-dispatch-queue.ts",
+      "sha256": "16010d8f5e125589e112e7038e8e0b2e094eb7257ab62b41839052e0f405d911"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts",
+      "sha256": "b01acec2b14f364fcb17a60463920e775c956402bd8cc922c4071538249cdb1e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-memory/services/agent-run-memory-recorder.ts",
+      "sha256": "29cb5e6912b05df6e41be6cb47936517b402252d57cab3897c59c74fcc0e0bee"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-memory/services/provider-compaction-boundary-recorder.ts",
+      "sha256": "d2308bcb9d99d3f546bf23708a4e58e3afee79f5123dc815aaf40f154e03507f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+      "sha256": "d2db90a864dc12fe45c2d741c379ea89e94aa08d5c6639ec224c3a327af41325"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts",
+      "sha256": "66405aa065cd6790133c1156fe2ae3ccaebd211ec4e712f8835bad6875838915"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts",
+      "sha256": "a5ef2b0d91389876cbb269c934543d01cc473179a46e2a383e6aec0cab875daa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "sha256": "f08a71d138a57a1b15fada0cebaa538f93c613b7176696abd1259bc589407992"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "sha256": "01b1fae9d94997af9c4cf3f11bbba703c3327a569b08032e42171861247a1aad"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "sha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "sha256": "7711abe653499dcbac7740326abfa88c4f1e300246b798503cc10663750772e7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts",
+      "sha256": "bca4fd40a660c1d318cece9f96af920c8a60aa5bf55b0e87743d78ac754c4976"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentActivityStore.ts",
+      "sha256": "a8b1f259c1973f80ad7820be9869bb84712ecf241f3ace1748e9ce1208caa769"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/types/agent/AgentRunState.ts",
+      "sha256": "e629ccd2de6b6901b4c35d328d6ac53ef69ed4f19771e4f16adc3a508a4277b0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/AgentStreamingService.ts",
+      "sha256": "ed7e4d04006aff365f6737940d293958c2c26f331cc18c34078e8965692290be"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts",
+      "sha256": "f0b262cde4a943dc6f7f7d02bed4cdda27abef3cc47c7850094ed9cc4ce199cf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "sha256": "a40cac7508766e3802d2e31b3e614f303a11999dbef5b48711769888d56443e5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "sha256": "cf76efbe06d1e98cadc3bead5d78f806f5b5ba9b64bb06f0f020eb05c1c705bf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runStatus/agentRuntimeStatusState.ts",
+      "sha256": "ee472d8cda0d29ae651a80c7fc1f146f4ce2295eb061278777247d0c96ace9ca"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts",
+      "sha256": "8ebb18ccd1f9252dc62abe42fd01f72290097025455e67e149ebaaa087357017"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runOpen/runOpenStrategyPolicy.ts",
+      "sha256": "8c8729b289b7438209df308febe21e99e2eeb0c7423e3252de80c4823f1e365c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runHydration/runContextHydrationService.ts",
+      "sha256": "224287c6b8fb64bd75541845c59ad54c16fca3454205568dd14acd29bc9322da"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runHydration/runProjectionActivityHydration.ts",
+      "sha256": "bc456be44c86b1578cd7913a8c487ccf0cb3ad547399325c3790fba62f10a6f9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/activity/runActivityWindowPolicy.ts",
+      "sha256": "d2b2ddcf1efba551d9c35a6aad9bf3b8ad636d1b11bf1eaa67e829760b6d8766"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/utils/compactionActivityPresentation.ts",
+      "sha256": "b1437fd0efffe08e393a194fca6e11e6d5eb451264dbdc365698d9b56a91270b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/components/workspace/agent/CompactionStatusRow.vue",
+      "sha256": "ffabf28186ba279cd853163fcc11afa216e966dd88eab26f90d53588802448f6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/docs/design/data_migration_guideline.md",
+      "sha256": "39e6e2a528824850f0dd185d5dd5bfa0ef8502015e36b9284d60ce5670a500f0"
+    }
+  ]
+}

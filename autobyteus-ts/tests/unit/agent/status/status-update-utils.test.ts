@@ -119,6 +119,7 @@ describe('status_update_utils', () => {
 
     const emitCalls: any[] = [];
     agentContext.state.statusManagerRef = {
+      executeLifecycleProcessors: async () => undefined,
       emit_status_update: async (...args: any[]) => {
         emitCalls.push(args);
       }
@@ -133,7 +134,7 @@ describe('status_update_utils', () => {
     expect(emitCalls).toHaveLength(1);
     expect(emitCalls[0][0]).toBe(AgentStatus.IDLE);
     expect(emitCalls[0][1]).toBe(AgentStatus.PROCESSING_USER_INPUT);
-    expect(emitCalls[0][2]).toEqual({ trigger: 'UserMessageReceivedEvent' });
+    expect(emitCalls[0][2]).toEqual({ trigger: 'UserMessageReceivedEvent', recoverableBlock: null });
     expect(agentContext.state.eventStore?.allEvents().length).toBe(1);
   });
 

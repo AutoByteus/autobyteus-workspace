@@ -1,0 +1,30 @@
+{
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "result": "Implementation Complete for Independent Source Review",
+  "source_paths": 171,
+  "committed_owned_paths": 167,
+  "pending_API_adaptations": 4,
+  "source_inventory_matches": true,
+  "exact_v5_source_unchanged": true,
+  "live_provider_calls": 0,
+  "source_review_or_API_or_delivery_pass_claimed": false,
+  "rendered_validation": "unavailable native pipe/no controlled surfaces",
+  "full_web_typecheck": "Fail 6836 diagnostics; not waived",
+  "collaboration_contracts": "4 pass/7 baseline-reproduced failures, not waived",
+  "root_identical_id_diagnostic": "2 pass/2 fail retained; unsupported trigger premise unestablished SR031",
+  "canonical_files": {
+    "implementation-handoff.md": "28416e6e399c220b92a4209e3494f843c39215d64314dab4254660c414725456",
+    "implementation-revision-record.md": "bec3f0f15b7abe64bab25f32803dcbb56a3e9567389cdfdeeceab0eab3f5d5f8"
+  },
+  "no_owned_preview_running": true,
+  "no_temporary_preview_page": true,
+  "handoff": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /code_reviewer.",
+    "target_agent_run_id": "code_reviewer_7bd4b2c09af543088c0238d792d0fd98"
+  }
+}

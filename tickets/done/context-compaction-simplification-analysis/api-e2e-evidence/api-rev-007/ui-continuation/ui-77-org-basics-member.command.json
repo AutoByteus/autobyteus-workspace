@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-01T06:43:50.405Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=58629",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "1469900218F0745D8971D3503A116153",
+    "--script",
+    "async()=>({actions:[await __abDemo.type({selector:'main input[type=\"text\"]'},'API7 Recovery Org',{delayMs:0,clear:true}),await __abDemo.type({selector:'main textarea'},'Owned offline organization termination validation',{delayMs:0,clear:true}),await __abDemo.click({text:'Add member'})],text:document.body.innerText.slice(-1700),fields:[...document.querySelectorAll('input,select')].map(e=>({id:e.id,ph:e.placeholder,type:e.type,value:e.value}))})",
+    "--dialog",
+    "accept"
+  ]
+}

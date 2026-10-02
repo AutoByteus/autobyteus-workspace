@@ -1,0 +1,91 @@
+Auto-merging autobyteus-agent-presentation-contracts/dist/index.d.ts
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/dist/index.d.ts
+Auto-merging autobyteus-agent-presentation-contracts/dist/index.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/dist/index.d.ts.map
+Auto-merging autobyteus-agent-presentation-contracts/dist/index.js
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/dist/index.js
+Auto-merging autobyteus-agent-presentation-contracts/dist/index.js.map
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/dist/index.js.map
+Auto-merging autobyteus-agent-presentation-contracts/src/index.ts
+CONFLICT (content): Merge conflict in autobyteus-agent-presentation-contracts/src/index.ts
+Auto-merging autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts
+Auto-merging autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map
+Auto-merging autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js
+Auto-merging autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map
+CONFLICT (content): Merge conflict in autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map
+Auto-merging autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts
+Auto-merging autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map
+Auto-merging autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js
+Auto-merging autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map
+CONFLICT (content): Merge conflict in autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map
+Auto-merging autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts
+Auto-merging autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts
+Auto-merging autobyteus-collaboration-stream-contracts/tests/root-execution-view-dtos.test.mjs
+Auto-merging autobyteus-server-ts/docs/modules/agent_tools.md
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts
+Auto-merging autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts left in tree.
+CONFLICT (modify/delete): autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts left in tree.
+Auto-merging autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts
+Auto-merging autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts
+Auto-merging autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+Auto-merging autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+Auto-merging autobyteus-server-ts/src/api/graphql/schema.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts
+Auto-merging autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts
+Auto-merging autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts
+CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts
+CONFLICT (modify/delete): autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts deleted in HEAD and modified in origin/personal.  Version origin/personal of autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts left in tree.
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js
+Auto-merging autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts
+Auto-merging autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js
+Auto-merging autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts
+Auto-merging autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map
+Auto-merging autobyteus-team-stream-contracts/dist/team-stream-server-message.js
+Auto-merging autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map
+CONFLICT (content): Merge conflict in autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map
+Auto-merging autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts
+Auto-merging autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts
+Auto-merging autobyteus-team-stream-contracts/src/team-stream-server-message.ts
+Auto-merging autobyteus-ts/docs/agent_memory_design.md
+CONFLICT (content): Merge conflict in autobyteus-ts/docs/agent_memory_design.md
+Auto-merging autobyteus-ts/docs/agent_memory_design_nodejs.md
+CONFLICT (content): Merge conflict in autobyteus-ts/docs/agent_memory_design_nodejs.md
+Auto-merging autobyteus-ts/src/memory/memory-manager.ts
+Auto-merging autobyteus-web/components/agentInput/AgentUserInputTextArea.vue
+Auto-merging autobyteus-web/components/conversation/UserMessage.vue
+Auto-merging autobyteus-web/docs/agent_execution_architecture.md
+Auto-merging autobyteus-web/docs/settings.md
+Auto-merging autobyteus-web/services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Auto-merging autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts
+Auto-merging autobyteus-web/services/agentOrgExecution/__tests__/taskBearingOrgFixture.ts
+Auto-merging autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts
+Auto-merging autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Auto-merging autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts
+Auto-merging autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Auto-merging autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts
+Auto-merging autobyteus-web/services/agentStreaming/protocol/messageTypes.ts
+Auto-merging autobyteus-web/services/runSubmission/localUserSubmission.ts
+Auto-merging autobyteus-web/services/teamExecution/__tests__/teamExecutionViewState.spec.ts
+Auto-merging autobyteus-web/services/teamExecution/teamExecutionViewState.ts
+Auto-merging autobyteus-web/stores/agentOrgContextsStore.ts
+CONFLICT (content): Merge conflict in autobyteus-web/stores/agentOrgContextsStore.ts
+Auto-merging autobyteus-web/stores/agentRunStore.ts
+CONFLICT (content): Merge conflict in autobyteus-web/stores/agentRunStore.ts
+Auto-merging autobyteus-web/stores/agentTeamRunStore.ts
+Auto-merging autobyteus-web/types/conversation.ts
+Automatic merge failed; fix conflicts and then commit the result.

@@ -1,0 +1,11 @@
+{
+  "revision": "IR-009",
+  "classification": {
+    "task_size": "Large",
+    "architectural_risk": "High"
+  },
+  "outcome": "Implementation complete for source review",
+  "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+  "recipient_address": "/code_reviewer",
+  "reason": "Most specific: completion of DR002 implementation-owned integration Local Fix after SR035/ARCH-REV005 resolved the intervening design impact. General completion also matches but is less specific. No direct API or Delivery forwarding."
+}

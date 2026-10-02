@@ -1,0 +1,12 @@
+{
+  "result": "Architecture Design Complete",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "requirements": "Approved SR033 unchanged",
+  "selected_rule": {
+    "when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval.",
+    "recipient_address": "/architecture_reviewer"
+  },
+  "other_rules": "Not applicable: not Low risk; not a Delivery receipt. Single most-specific route only.",
+  "purpose": "Continue existing independent review; ARCH-F003 verification pending, no claimed verdict."
+}

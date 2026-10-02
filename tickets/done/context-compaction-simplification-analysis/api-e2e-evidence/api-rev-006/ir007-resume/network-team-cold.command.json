@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:46:41.104Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "0748F33CFBF34DFF5819FCF40B0907F2",
+    "--script",
+    "()=>({observer:window.__api6Observer,timeOrigin:performance.timeOrigin,text:document.body.innerText.slice(-900),nativeRows:document.querySelectorAll('[data-testid=\"compaction-status-row\"],[data-testid=\"compaction-activity-item\"]').length})"
+  ]
+}

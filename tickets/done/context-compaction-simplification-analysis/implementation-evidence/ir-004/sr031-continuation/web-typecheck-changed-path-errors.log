@@ -1,0 +1,12 @@
+services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts(374,40): error TS2540: Cannot assign to 'is_active' because it is a read-only property.
+services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts(375,21): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.
+services/agentStreaming/__tests__/TeamStreamingService.spec.ts(200,52): error TS2339: Property 'segments' does not exist on type 'AIMessage | UserMessage'.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(115,9): error TS2554: Expected 4 arguments, but got 3.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(451,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(466,7): error TS2554: Expected 4 arguments, but got 3.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(473,19): error TS2345: Argument of type '{ code: string; message: string; }' is not assignable to parameter of type 'ErrorPayload'.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(495,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts(528,13): error TS2322: Type '{ code: string; message: string; }' is not assignable to type 'ErrorPayload'.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(238,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(247,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.
+services/teamExecution/__tests__/teamExecutionViewState.spec.ts(261,29): error TS2540: Cannot assign to 'task_executions' because it is a read-only property.

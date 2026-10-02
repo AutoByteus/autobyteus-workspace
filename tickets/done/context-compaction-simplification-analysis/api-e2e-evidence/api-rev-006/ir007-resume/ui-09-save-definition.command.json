@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:16:18.307Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "874AE1E81D71BE579A534ACAFD17046D",
+    "--script",
+    "async()=>{let actions=[await __abDemo.click({text:'api6-deterministic-32768:lmstudio@127.0.0.1:51536'})];if(document.querySelector('#skill_scope_all_installed').checked)actions.push(await __abDemo.click({selector:'#skill_scope_all_installed'}));actions.push(await __abDemo.click({text:'Create Agent'}));await new Promise(r=>setTimeout(r,300));return{actions,text:document.body.innerText};}"
+  ]
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "condition": "history only",
+    "copies": [
+      {
+        "type": "user",
+        "text": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+        "timestamp": "2026-10-01T15:01:31.291Z",
+        "contextFilePaths": []
+      }
+    ]
+  },
+  {
+    "condition": "live only",
+    "copies": [
+      {
+        "type": "user",
+        "text": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+        "timestamp": "2026-10-01T15:04:51.996Z",
+        "contextFilePaths": [],
+        "messageId": "b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "dedupeKey": "member_input:daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9:sd036_reviewer_a870e816a17441b8b7454ae92cefeafe:b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "pendingInput": {
+          "runInstanceId": "a50eef09-3f0f-4000-a907-be7ac1838e0b",
+          "state": "held"
+        }
+      }
+    ]
+  },
+  {
+    "condition": "history plus live",
+    "copies": [
+      {
+        "type": "user",
+        "text": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+        "timestamp": "2026-10-01T15:01:31.291Z",
+        "contextFilePaths": []
+      },
+      {
+        "type": "user",
+        "text": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+        "timestamp": "2026-10-01T15:04:51.996Z",
+        "contextFilePaths": [],
+        "messageId": "b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "dedupeKey": "member_input:daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9:sd036_reviewer_a870e816a17441b8b7454ae92cefeafe:b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "pendingInput": {
+          "runInstanceId": "a50eef09-3f0f-4000-a907-be7ac1838e0b",
+          "state": "held"
+        }
+      }
+    ]
+  },
+  {
+    "condition": "same snapshot twice",
+    "count": 2
+  },
+  {
+    "condition": "in-memory upstream keys only; current builder unchanged",
+    "count": 2
+  },
+  {
+    "condition": "in-memory exact identity after builder; no production edit",
+    "copies": [
+      {
+        "type": "user",
+        "text": "SD036-HELD-A: Please continue the diagnostic. This is one user message.",
+        "timestamp": "2026-10-01T15:01:31.291Z",
+        "contextFilePaths": [],
+        "messageId": "b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "dedupeKey": "member_input:daily_assistant_f89e17d3b1e442b196c21af10eb4f8b9:sd036_reviewer_a870e816a17441b8b7454ae92cefeafe:b093f789-dcbc-4a56-9fa9-5d92512e7715",
+        "pendingInput": {
+          "runInstanceId": "a50eef09-3f0f-4000-a907-be7ac1838e0b",
+          "state": "held"
+        }
+      }
+    ]
+  },
+  {
+    "condition": "in-memory distinct identity with identical text",
+    "count": 2
+  }
+]

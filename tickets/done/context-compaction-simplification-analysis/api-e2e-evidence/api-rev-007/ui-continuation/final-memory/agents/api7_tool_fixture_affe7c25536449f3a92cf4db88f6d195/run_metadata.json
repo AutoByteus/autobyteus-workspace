@@ -1,0 +1,15 @@
+{
+  "runId": "api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195",
+  "agentDefinitionId": "api7-tool-fixture",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/temp_workspace",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn/server-data/memory/agents/api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195",
+  "llmModelIdentifier": "api7-deterministic-32768:lmstudio@127.0.0.1:58634",
+  "llmConfig": null,
+  "autoExecuteTools": false,
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195",
+  "preparedAt": "2026-10-01T06:48:56.580Z",
+  "preparedExpiresAt": "2026-10-02T06:48:56.580Z",
+  "startedAt": "2026-10-01T06:48:56.693Z",
+  "applicationExecutionContext": null
+}

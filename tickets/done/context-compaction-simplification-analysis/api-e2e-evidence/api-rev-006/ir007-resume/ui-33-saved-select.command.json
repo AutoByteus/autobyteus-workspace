@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:21:30.340Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "874AE1E81D71BE579A534ACAFD17046D",
+    "--script",
+    "async()=>{const action=await __abDemo.click({selector:'button[data-test=\"workspace-agent-run-row\"][data-run-id=\"api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e\"]'});await new Promise(r=>setTimeout(r,350));return{action,href:location.href,text:document.body.innerText.slice(-1600),responses:window.__api6Observer.events.filter(e=>e.kind==='consumed_http_response').slice(-8).map(e=>({at:e.at,status:e.status,keys:Object.keys(JSON.parse(e.body).data||{})}))};}"
+  ]
+}

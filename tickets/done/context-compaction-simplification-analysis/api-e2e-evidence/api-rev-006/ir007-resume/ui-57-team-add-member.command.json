@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:33:30.160Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "058FB67A1696E17A8D8FE36226991FF8",
+    "--script",
+    "()=>{const source=[...document.querySelectorAll('[draggable=\"true\"]')].find(e=>e.textContent.includes('API6 Terminal Fixture'));const target=[...document.querySelectorAll('div')].find(e=>e.textContent.trim()==='Drop Agents here to add them to this Team');if(!source||!target)throw new Error('missing actual drag nodes');const dataTransfer=new DataTransfer();source.dispatchEvent(new DragEvent('dragstart',{bubbles:true,dataTransfer}));target.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,dataTransfer}));target.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer}));source.dispatchEvent(new DragEvent('dragend',{bubbles:true,dataTransfer}));return {types:[...dataTransfer.types],note:'actual library drag/drop handlers, synthetic DOM events, not physical drag proof'};}"
+  ]
+}

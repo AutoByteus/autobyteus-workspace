@@ -68,13 +68,11 @@ legacy local task tools but does not remove any foundation tool. The existing
 `write_file` trusted-local path, approval, overwrite, and execution contracts
 remain authoritative.
 
-The product-owned built-in definition ID `autobyteus-memory-compactor` is the
-least-authority exception. The native resolver returns an empty effective
-exposure for that exact definition before foundation defaults, configured names,
-or team tools are composed, so its final `AgentConfig.tools` is empty on create
-and restore. Display names or arbitrary empty configurations do not activate the
-exception; ordinary native agents with empty persisted `toolNames` still receive
-the four-tool baseline.
+Direct native compaction bypasses Agent construction entirely and sends no tool
+schemas to its isolated LLM. The former exact-ID Memory Compactor empty-tool
+exception is removed. It must not be used to infer tool exposure for ordinary
+agents: even an ordinary empty persisted `toolNames` set receives the native
+four-tool baseline and applicable Team tools.
 
 Claude Agent SDK and Codex App Server continue to call the runtime-neutral
 boundary directly. They do not inherit the native baseline; their configured

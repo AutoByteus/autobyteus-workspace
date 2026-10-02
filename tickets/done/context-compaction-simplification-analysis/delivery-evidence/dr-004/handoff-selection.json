@@ -1,0 +1,19 @@
+{
+  "classification": "Delivery Completed",
+  "selected": {
+    "when": "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt.",
+    "recipient_address": "/solution_designer"
+  },
+  "matchingRules": [
+    {
+      "when": "When Delivery Engineer classifies the result as Delivery Completed after explicit user verification, repository finalization, and all applicable release, deployment and safe-cleanup gates are Completed or truthfully Not required. Include the same package identifier, complete cumulative artifacts and final evidence for Solution Designer to verify the terminal receipt.",
+      "recipient_address": "/solution_designer"
+    }
+  ],
+  "excluded": [
+    "No new code/packaging Local Fix",
+    "No upstream issue blocks final handoff"
+  ],
+  "condition": "User acceptance, repository finalization, publication/rollout-scope verification and safe cleanup completed; production deployment/migration not required. Dispatch follows completion-record push.",
+  "duplicateNotifications": "None; only exact selected recipient"
+}

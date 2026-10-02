@@ -1,0 +1,54 @@
+{
+  "api": {
+    "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts": {
+      "expected": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "current": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451"
+    },
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts": {
+      "expected": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b",
+      "current": "b4d95e9b04396c4d4707bc1346204a5e742c32c6f246e7cec97e5c61ea93eb8b"
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts": {
+      "expected": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf",
+      "current": "0a474ee2f2899c1f6b9b73ef217c593e56f875751022491185b842d0e8161faf"
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts": {
+      "expected": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+      "current": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5"
+    },
+    "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts": {
+      "expected": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea",
+      "current": "306d383688146eb180d3f55088b32aa9f054f61b8bf7bf34e9844a9f896c77ea"
+    },
+    "test-support/live-e2e/compaction-quality-checks.ts": {
+      "expected": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "current": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4"
+    },
+    "test-support/live-e2e/live-e2e-harness.ts": {
+      "expected": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd",
+      "current": "acd8f2ce1b843ac64596631f6377b355b2c18b3ca9ade6aa190e99732d57dbcd"
+    },
+    "test-support/live-e2e/live-e2e-safe-error.ts": {
+      "expected": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+      "current": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6"
+    },
+    "test-support/live-e2e/run-live-e2e.mjs": {
+      "expected": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "current": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f"
+    }
+  },
+  "all_api_unchanged": true,
+  "sd_inspected_sdk_source_matches": {
+    "autobyteus-server-ts/docs/design/data_migration_guideline.md": true,
+    "autobyteus-ts/src/llm/base.ts": true,
+    "autobyteus-ts/src/utils/gemini-helper.ts": true,
+    "autobyteus-ts/node_modules/@google/genai/dist/node/index.mjs": true,
+    "autobyteus-ts/node_modules/@google/genai/dist/genai.d.ts": true,
+    "autobyteus-ts/node_modules/@anthropic-ai/sdk/src/client.ts": true,
+    "autobyteus-ts/node_modules/openai/src/client.ts": true,
+    "autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/sdks.ts": true,
+    "autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/retries.ts": true,
+    "autobyteus-ts/node_modules/@mistralai/mistralai/src/funcs/chatComplete.ts": true,
+    "autobyteus-ts/node_modules/ollama/dist/browser.mjs": true
+  }
+}

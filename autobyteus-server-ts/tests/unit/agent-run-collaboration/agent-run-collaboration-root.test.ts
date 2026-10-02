@@ -1,3 +1,5 @@
+import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -140,6 +142,32 @@ describe("Agent root of a standalone run", () => {
     expect(await f.manager.ensureRoot(metadata(f.memoryDir, { launchPurpose: "server_helper" }))).toBeNull();
   });
 
+  it("captures hosted Agent/Team live inputs only, deduplicates recursive leaves, and keeps inspection non-restoring", async () => {
+    const f = await buildManager();
+    const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
+    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "Review",
+      mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }] });
+    await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: '/product_team' as never, content: 'Wake team' });
+    const block = { operationId: "op", failureEpoch: 1, position: { kind: "held_turn", turnId: "A" },
+      state: "awaiting_user", code: "failed", message: "retry required" };
+    const state = { run_instance_id: "native-instance", revision: 3, recoverableBlock: block,
+      entries: ["A", "B"].map((id, index) => ({ sequence: index + 1, message_id: id, dedupe_key: `input:${id}`,
+        turn_id: index ? null : "A", state: index ? "queued" : "held", content: id, sender_type: "user", file_attachments: [] })) };
+    for (const [id, observed] of f.handles) Object.assign(observed.handle, {
+      getInputStateSnapshots: () => id === "designer-run-3" ? [] : [{ agent_run_id: id, state }, { agent_run_id: id, state }],
+    });
+    f.host.crash();
+    const inspection = (await f.manager.getInspection(HOST))!;
+    expect(f.restores).not.toHaveBeenCalled();
+    const projected = projectAgentCollaborationView(inspection);
+    if (projected.root_subject_kind !== 'agent') throw new Error('Wrong root');
+    expect(projected.root_agent.agent_input_states.map(s => s.agent_run_id).sort()).toEqual(["code-reviewer-run-1", "lead-run-2"]);
+    expect(projected.root_agent.agent_input_states[0]!.state.entries.map(e => e.state)).toEqual(["held", "queued"]);
+    expect(projected.root_agent.agent_input_states.some(s => s.agent_run_id === HOST)).toBe(false);
+    Object.assign(f.handles.get("code-reviewer-run-1")!.handle, { getInputStateSnapshots: () => [{ agent_run_id: HOST, state }] });
+    await expect(root.openPackageSnapshotConnection()).rejects.toThrow('not an Agent-root child');
+  });
+
   it("creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores", async () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
@@ -179,6 +207,18 @@ describe("Agent root of a standalone run", () => {
       expect.arrayContaining([["/code_reviewer", "offline"], ["/product_team/lead", "offline"], ["/product_team/designer", "offline"]]),
     );
 
+    for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
+    const snapshotConnection = await root.openPackageSnapshotConnection();
+    const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
+      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence });
+    expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
+    if (projected.root_subject_kind === 'agent') {
+      expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
+      expect(projected.root_agent.agent_input_states).toEqual([]);
+    }
+    expect(CollaborationStreamServerMessageSchema.safeParse({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: projected }).success).toBe(true);
+    snapshotConnection.close();
+
     // send_message_to by address reaches the one hosted instance and starts it.
     const reviewerHandle = f.handles.get("code-reviewer-run-1")!;
     expect(reviewerHandle.input.physicalScope).toEqual({ root: createAgentRootExecutionIdentity(HOST), ancestorTeamRunIds: [] });
@@ -205,6 +245,7 @@ describe("Agent root of a standalone run", () => {
     await expect(root.delegateTask({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
       .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
     await flushMicrotasks();
+    for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
     const tree = root.getExecutionTreeSnapshot();
     expect(tree.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);
     const team = tree.collaborators[1]!;

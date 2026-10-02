@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { agentAddressSchema, agentPresentationMessageSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
+import { agentAddressSchema, agentInputStateSchema, agentPresentationMessageSchema, nonEmptyStringSchema, } from "@autobyteus/agent-presentation-contracts";
 import { agentOrgAgentStatusDtoSchema, agentOrgCommunicationMessageDtoSchema, collaboratorEntryDtoSchema, taskExecutionDtoSchema, } from "./agent-org-execution-dtos.js";
 const timestamp = nonEmptyStringSchema;
 /**
@@ -30,6 +30,7 @@ export const agentRunCollaborationViewDtoSchema = z.object({
     execution_tree: agentRunCollaborationTreeDtoSchema,
     communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,
     agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
+    agent_input_states: z.array(z.object({ agent_run_id: nonEmptyStringSchema, state: agentInputStateSchema }).strict()),
 }).strict();
 export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("agent_presentation"), member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema, message: agentPresentationMessageSchema }).strict(),

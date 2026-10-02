@@ -1,0 +1,1 @@
+import {createApp} from 'vue'; import Preview from './Preview.vue'; import './styles.css'; const app=createApp(Preview); app.config.globalProperties.$t=(key:string)=> key.endsWith('compaction_held')?'Held until memory compaction succeeds':key.endsWith('queued')?'Queued':key.endsWith('context_files')?'Context files':key; app.mount('#app');

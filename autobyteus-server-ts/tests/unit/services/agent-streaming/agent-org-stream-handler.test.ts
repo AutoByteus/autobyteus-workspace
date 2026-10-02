@@ -18,7 +18,7 @@ const execution = createCollaborationMemberExecutionIdentity({
 });
 const statuses = [{
   execution,
-  details: { status: "idle" as const, trigger: null, errorMessage: null },
+  details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null },
   statusHint: "IDLE" as const,
 }];
 
@@ -53,10 +53,10 @@ const taskBearingPackage = () => {
       memberAddress: member.address,
       agentRunId: member.agentRunId,
     }),
-    details: { status: "idle" as const, trigger: null, errorMessage: null },
+    details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null },
     statusHint: "IDLE" as const,
   }));
-  return { tree: executionTree, messages, statuses: [...statuses, ...taskStatuses] };
+  return { tree: executionTree, messages, inputStates: [], statuses: [...statuses, ...taskStatuses] };
 };
 
 const connection = () => {
@@ -64,7 +64,7 @@ const connection = () => {
   return { sent, socket: { send: (value: string) => sent.push(value), close: vi.fn() } };
 };
 
-const harness = (snapshot = { tree, messages, statuses }) => {
+const harness = (snapshot = { tree, messages, statuses, inputStates: [] }) => {
   const publisher = new RootEventPublisher<AgentOrgRunEvent>();
   const executeAgentCommand = vi.fn(async () => ({ accepted: true }));
   const executeAgentCommandWithExecutionKind = vi.fn(async (agentRunId: string) => ({
@@ -135,7 +135,7 @@ describe("AgentOrgStreamHandler", () => {
       execution,
       message: { type: "AGENT_STATUS", payload: {
         status: "running", trigger: "user", tool_name: null,
-        error_message: null, error_details: null,
+        error_message: null, error_details: null, recoverableBlock: null,
       } },
     });
     test.publisher.publish({ kind: "lifecycle", isActive: false });

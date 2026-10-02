@@ -1,0 +1,37 @@
+{
+  "time": "2026-10-01T20:21:06.790716+00:00",
+  "runs": [
+    {
+      "conclusion": "success",
+      "databaseId": 36915859617,
+      "headSha": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36915859617",
+      "workflowName": "Android APK Release"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 36915859789,
+      "headSha": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36915859789",
+      "workflowName": "Desktop Release"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 36915859697,
+      "headSha": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36915859697",
+      "workflowName": "iOS App Store Connect Release"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 36915859653,
+      "headSha": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+      "status": "completed",
+      "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36915859653",
+      "workflowName": "Server Docker Release"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "revision": "API-REV-008",
+  "finding": "CRR-012/TR-001",
+  "source": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-007/flow.log",
+  "sourceSha256": "66411303344b6c8ca6e894822df1a04a822952f20be6076297ed4b1f6e54f250",
+  "logModified": false,
+  "annotations": [
+    {
+      "line": 475,
+      "scenarioId": "deepseek.compaction-agent-flow",
+      "status": "PASSED",
+      "field": "directSummaryShieldOmissionPressureVerified",
+      "emittedValue": true,
+      "interpretation": "Unsupported retired verification claim; not observed/calculated by this run; exclude from proof."
+    }
+  ],
+  "scope": "Annotates API007 success record after F006 removed the corresponding predicate; no new product glyph requirement and no retroactive rescore of successful behavior."
+}

@@ -1,0 +1,1550 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentRuntimeState initialized for agent_id 'recovery_tester_7783'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_7783': No tools provided in config.
+Agent 'recovery_tester_7783': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_7783'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_7783' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_7783'.
+Registered AgentContext for agent_id 'recovery_tester_7783'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_7783'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_7783'.
+Agent 'recovery_tester_7783' created and stored successfully.
+Agent 'recovery_tester_7783' requesting runtime to start.
+AgentRuntime for 'recovery_tester_7783': Starting worker.
+AgentWorker 'recovery_tester_7783': Starting...
+AgentWorker 'recovery_tester_7783' asyncRun(): Starting.
+Agent 'recovery_tester_7783': Runtime init completed (event store initialized).
+Agent 'recovery_tester_7783': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_7783': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_7783': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_7783': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_7783': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_7783': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_7783': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_7783': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_7783': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_7783': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_7783': Final processed system prompt configured and captured. Trace ID: rt_1790858532627_16dd0d7d-74c3-4378-a226-f1c75a815831. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_7783': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentWorker 'recovery_tester_7783' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentEventStream (ID: 65734256-01fd-4a2a-b744-3547db5a7342) initialized for agent_id 'recovery_tester_7783'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7783',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7783',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7783',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_7783',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjns_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+compaction_failed {
+  agent_id: 'recovery_tester_7783',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjns_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: controlled compression exhaustion'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_7783',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjns_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+compaction_completed {
+  agent_id: 'recovery_tester_7783',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjns_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7783',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7783',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_7783' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentWorker 'recovery_tester_7783': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: bbba5a88-a3f1-421c-9852-80fd623fea81, AgentID: recovery_tester_7783) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_7783' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_7783': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentWorker 'recovery_tester_7783': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_7783': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+Unregistered AgentContext for agent_id 'recovery_tester_7783'.
+AgentRuntime for 'recovery_tester_7783': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentRuntime for 'recovery_tester_7783' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentEventStream (ID: 65734256-01fd-4a2a-b744-3547db5a7342) for 'recovery_tester_7783': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=false)
+AgentEventStream (ID: 65734256-01fd-4a2a-b744-3547db5a7342) for 'recovery_tester_7783': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentRuntimeState initialized for agent_id 'recovery_tester_1897'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_1897': No tools provided in config.
+Agent 'recovery_tester_1897': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_1897'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_1897' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_1897'.
+Registered AgentContext for agent_id 'recovery_tester_1897'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_1897'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_1897'.
+Agent 'recovery_tester_1897' created and stored successfully.
+Agent 'recovery_tester_1897' requesting runtime to start.
+AgentRuntime for 'recovery_tester_1897': Starting worker.
+AgentWorker 'recovery_tester_1897': Starting...
+AgentWorker 'recovery_tester_1897' asyncRun(): Starting.
+Agent 'recovery_tester_1897': Runtime init completed (event store initialized).
+Agent 'recovery_tester_1897': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_1897': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_1897': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_1897': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_1897': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_1897': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_1897': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_1897': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_1897': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_1897': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_1897': Final processed system prompt configured and captured. Trace ID: rt_1790858532915_8ebda6bb-8afd-42dc-843e-ee7e875a91b5. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_1897': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentWorker 'recovery_tester_1897' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentEventStream (ID: 9bc2e8af-feb3-4c7d-830b-70ffa2a70ff2) initialized for agent_id 'recovery_tester_1897'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1897',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1897',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1897',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_1897',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'recovery_tester_1897',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjth_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_1897',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjth_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+compaction_failed {
+  agent_id: 'recovery_tester_1897',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjth_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: controlled compression exhaustion'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_1897' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_1897' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentWorker 'recovery_tester_1897': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0b268062-9899-4e3f-b0b6-d3846d39b52b, AgentID: recovery_tester_1897) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_1897' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_1897': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentWorker 'recovery_tester_1897': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_1897': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Unregistered AgentContext for agent_id 'recovery_tester_1897'.
+AgentRuntime for 'recovery_tester_1897': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+AgentRuntime for 'recovery_tester_1897' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentRuntimeState initialized for agent_id 'recovery_tester_3485'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_3485': No tools provided in config.
+Agent 'recovery_tester_3485': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_3485'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_3485' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_3485'.
+Registered AgentContext for agent_id 'recovery_tester_3485'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_3485'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_3485'.
+Agent 'recovery_tester_3485' created and stored successfully.
+Agent 'recovery_tester_3485' requesting runtime to start.
+AgentRuntime for 'recovery_tester_3485': Starting worker.
+AgentWorker 'recovery_tester_3485': Starting...
+AgentWorker 'recovery_tester_3485' asyncRun(): Starting.
+Agent 'recovery_tester_3485': Runtime init completed (event store initialized).
+Agent 'recovery_tester_3485': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_3485': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_3485': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_3485': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_3485': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_3485': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_3485': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_3485': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_3485': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_3485': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_3485': Final processed system prompt configured and captured. Trace ID: rt_1790858533037_5f90db09-cb67-4c0d-b093-f9b0aa1286ed. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_3485': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentWorker 'recovery_tester_3485' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentEventStream (ID: fb90c16f-8552-4301-8cab-89a10cc02c38) initialized for agent_id 'recovery_tester_3485'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3485',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3485',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3485',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_3485',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjwx_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+compaction_failed {
+  agent_id: 'recovery_tester_3485',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjwx_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: controlled compression exhaustion'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_3485',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjwx_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+compaction_completed {
+  agent_id: 'recovery_tester_3485',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixjwx_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3485',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_3485',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+Agent 'recovery_tester_3485' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentWorker 'recovery_tester_3485': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentExternalEventNotifier (NotifierID: 849069c1-7372-4a21-b96c-a9017170c1e8, AgentID: recovery_tester_3485) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_3485' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_3485': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentWorker 'recovery_tester_3485': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_3485': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+Unregistered AgentContext for agent_id 'recovery_tester_3485'.
+AgentRuntime for 'recovery_tester_3485': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentRuntime for 'recovery_tester_3485' stop() method completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentEventStream (ID: fb90c16f-8552-4301-8cab-89a10cc02c38) for 'recovery_tester_3485': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=false)
+AgentEventStream (ID: fb90c16f-8552-4301-8cab-89a10cc02c38) for 'recovery_tester_3485': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentRuntimeState initialized for agent_id 'recovery_tester_4188'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_4188': No tools provided in config.
+Agent 'recovery_tester_4188': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_4188'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_4188' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_4188'.
+Registered AgentContext for agent_id 'recovery_tester_4188'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_4188'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_4188'.
+Agent 'recovery_tester_4188' created and stored successfully.
+Agent 'recovery_tester_4188' requesting runtime to start.
+AgentRuntime for 'recovery_tester_4188': Starting worker.
+AgentWorker 'recovery_tester_4188': Starting...
+AgentWorker 'recovery_tester_4188' asyncRun(): Starting.
+Agent 'recovery_tester_4188': Runtime init completed (event store initialized).
+Agent 'recovery_tester_4188': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_4188': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_4188': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_4188': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_4188': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_4188': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_4188': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_4188': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_4188': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_4188': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_4188': Final processed system prompt configured and captured. Trace ID: rt_1790858533209_0d41c9f4-dfe3-470d-9229-3005fd7a8ccd. Final length: 28.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_4188': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentWorker 'recovery_tester_4188' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentEventStream (ID: 17e7de24-b26e-49ca-b265-79afd930b0e4) initialized for agent_id 'recovery_tester_4188'. Subscribed to notifier.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4188',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4188',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4188',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_4188',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'recovery_tester_4188',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixk1l_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_4188',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixk1l_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+compaction_failed {
+  agent_id: 'recovery_tester_4188',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupixk1l_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: controlled compression exhaustion'
+}
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_4188' requesting runtime interrupt.
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Agent 'recovery_tester_4188' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentWorker 'recovery_tester_4188': Stop requested.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e37b717d-e86f-4d0b-9c61-acde98d74044, AgentID: recovery_tester_4188) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_4188' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_4188': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentWorker 'recovery_tester_4188': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_4188': Shutdown sequence completed.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Unregistered AgentContext for agent_id 'recovery_tester_4188'.
+AgentRuntime for 'recovery_tester_4188': Context unregistered.
+
+stdout | tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+AgentRuntime for 'recovery_tester_4188' stop() method completed.
+
+ ❯ tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts (4 tests | 2 failed) 706ms
+     ✓ agent: reconnect preserves live input identity without replay (postResponse=false) 297ms
+     × agent: reconnect preserves live input identity without replay (postResponse=true) 123ms
+     ✓ agent_team: reconnect preserves live input identity without replay (postResponse=false) 172ms
+     × agent_team: reconnect preserves live input identity without replay (postResponse=true) 112ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent: reconnect preserves live input identity without replay (postResponse=true)
+Error: Agent 'recovery_tester_1897' has no active turn to interrupt.
+ ❯ AgentRunCollaborationRootManager.terminateRoot src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts:182:33
+    180|     if (!root) return false;
+    181|     const result = await root.terminate();
+    182|     if (!result.accepted) throw new Error(result.message ?? `Agent roo…
+       |                                 ^
+    183|     this.unregister(root);
+    184|     return true;
+ ❯ Object.close tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts:117:13
+ ❯ tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts:51:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts > native recovery through admitted Agent-root collaborators > agent_team: reconnect preserves live input identity without replay (postResponse=true)
+Error: Agent 'recovery_tester_4188' has no active turn to interrupt.
+ ❯ AgentRunCollaborationRootManager.terminateRoot src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts:182:33
+    180|     if (!root) return false;
+    181|     const result = await root.terminate();
+    182|     if (!result.accepted) throw new Error(result.message ?? `Agent roo…
+       |                                 ^
+    183|     this.unregister(root);
+    184|     return true;
+ ❯ Object.close tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts:117:13
+ ❯ tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts:51:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  14:42:08
+   Duration  5.16s (transform 2.74s, setup 16ms, import 3.97s, tests 706ms, environment 0ms)
+

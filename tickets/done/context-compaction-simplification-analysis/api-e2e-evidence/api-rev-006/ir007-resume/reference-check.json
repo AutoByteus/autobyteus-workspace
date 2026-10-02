@@ -1,0 +1,7 @@
+{
+  "count": 2053,
+  "allExist": true,
+  "missing": [],
+  "selfIndexIncluded": true,
+  "note": "Existence audited; entry hashes distinguish expected owned changes. No claim all references read line-by-line."
+}

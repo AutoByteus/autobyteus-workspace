@@ -42,6 +42,13 @@ The server must execute these steps in order:
   complete candidate before snapshot replacement and only then removes obsolete
   episode, semantic, and compacted-memory-manifest files. Raw traces/manifests and
   lineage remain untouched.
+- That historical converter uses a frozen migration-owned codec. Before conversion
+  it preserves exact current versionless successor locations byte-for-byte,
+  including valid pending tool intents, partial batches and raw-ahead states.
+  Invalid versionless-current data fails unchanged rather than converting to
+  empty. Normal bootstrap, not this guard, repairs protocol and saves current
+  `{agent_id, messages}` snapshots. Direct compaction adds no new migration and
+  must not reset a successful ledger record.
 - `AppDataMigrationRunner` attempts every registered pending migration and
   persists/returns `SUCCEEDED`, warning, or `FAILED` results without an aggregate
   startup exception. `startConfiguredServer` logs infrastructure/result failures

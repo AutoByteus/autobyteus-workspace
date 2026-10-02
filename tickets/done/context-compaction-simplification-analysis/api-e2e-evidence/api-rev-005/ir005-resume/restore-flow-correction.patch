@@ -1,0 +1,20 @@
+--- /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-005/ir005-resume/restore-flow-before.ts
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+@@ -92,7 +92,7 @@
+     }
+   });
+ 
+-  it('restores an exact strict-v5 snapshot and persists an ordinary continuation', async () => {
++  it('restores a current versionless snapshot and persists an ordinary continuation', async () => {
+     const agentId = 'agent_restore';
+ 
+     const snapshot = new WorkingContextFinalizer().finalize({
+@@ -140,7 +140,7 @@
+       agentId,
+       'Continue after restore.',
+     );
+-    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages', 'schema_version']);
++    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages']);
+     expect(WorkingContextSnapshotSerializer.validate(continuedPayload)).toBe(true);
+     const { workingContext: continuedContext } = WorkingContextSnapshotSerializer.deserialize(
+       continuedPayload,

@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
     addDoneCallback: vi.fn()
   },
   statusManagerInstance: {
+    executeLifecycleProcessors: vi.fn(async () => undefined),
     emit_status_update: vi.fn(async () => undefined)
   },
   registerContext: vi.fn(),
@@ -93,6 +94,11 @@ const makeContext = () => {
   const config = new AgentConfig('name', 'role', 'desc', llm);
   const state = new AgentRuntimeState('agent-1');
   state.memoryManager = {
+    getCompactionRecovery: () => null,
+    canStartCompactionTurn: () => true,
+    bindCompactionRetryTurn: () => true,
+    retireCompactionTurn: () => undefined,
+    revokeCompactionRetry: () => undefined,
     startTurn: () => 'turn-1'
   } as any;
   return new AgentContext('agent-1', config, state);

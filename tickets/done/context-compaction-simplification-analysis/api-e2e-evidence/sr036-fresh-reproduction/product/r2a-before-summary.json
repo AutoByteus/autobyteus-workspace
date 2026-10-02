@@ -1,0 +1,54 @@
+{
+  "agent": {
+    "kind": "agent",
+    "address": "/sr036_reviewer",
+    "agentDefinitionId": "sr036-reviewer",
+    "agentRunId": "sr036_reviewer_c7e7eb6337504f05ab752ee60d864111",
+    "platformAgentRunId": null,
+    "launchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405",
+      "llmConfig": null,
+      "autoExecuteTools": true,
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/temp_workspace"
+    },
+    "addedAt": "2026-10-01T14:43:39.216Z",
+    "addedViaAgentRunId": "daily_assistant_e663420272024bbcb4d566ddddd49fb4"
+  },
+  "state": {
+    "run_instance_id": "c0d31567-72e6-43e5-a3c4-515a8da0036d",
+    "revision": 16,
+    "entries": [
+      {
+        "sequence": 3,
+        "message_id": "4c013136-deb0-452d-aff4-5ba470bf84c4",
+        "dedupe_key": "member_input:daily_assistant_e663420272024bbcb4d566ddddd49fb4:sr036_reviewer_c7e7eb6337504f05ab752ee60d864111:4c013136-deb0-452d-aff4-5ba470bf84c4",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R2A-HELD",
+        "sender_type": "user",
+        "file_attachments": [
+          {
+            "uri": "/rest/agent-collaborations/daily_assistant_e663420272024bbcb4d566ddddd49fb4/agent-runs/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/context-files/ctx_29e0524390ff__attachment.txt",
+            "file_type": "text",
+            "file_name": "ctx_29e0524390ff__attachment.txt"
+          }
+        ]
+      }
+    ],
+    "recoverableBlock": {
+      "operationId": "compaction_operation_mupnaauj_1",
+      "failureEpoch": 2,
+      "position": {
+        "kind": "held_turn",
+        "turnId": "turn_0003"
+      },
+      "state": "awaiting_user",
+      "code": "SR036_SYNTHETIC_503",
+      "message": "Compaction failed \u2014 send a message to retry"
+    }
+  },
+  "rawPaths": [
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/memory/agents/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_reviewer_c7e7eb6337504f05ab752ee60d864111/raw_traces_active.jsonl"
+  ]
+}

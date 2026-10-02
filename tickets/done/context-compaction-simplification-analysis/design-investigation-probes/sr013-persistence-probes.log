@@ -1,0 +1,6 @@
+PASS Existing v5 category-rendered text remains directly readable without category files
+PASS Current bootstrap gate rejects that otherwise valid saved text without lineage
+PASS Existing archive owner can persist complete archive copies without pruning active traces
+PASS A stop after archive-copy preparation leaves the old snapshot and source evidence intact
+PASS Reusing a completed archive boundary needs no second archive segment
+PASS Save replacement first, then prune archived IDs: retained trace and all corpus evidence survive

@@ -1,3 +1,4 @@
+import { completionFromReason } from './completion-status.js';
 import { Ollama } from 'ollama';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
@@ -68,6 +69,9 @@ export class OllamaLLM extends BaseLLM {
       Object.assign(request, this.config.extraParams);
     }
 
+    if (this.config.maxTokens !== null) {
+      request.options = { ...(request.options as Record<string, unknown> ?? {}), num_predict: this.config.maxTokens };
+    }
     return request;
   }
 
@@ -123,6 +127,7 @@ export class OllamaLLM extends BaseLLM {
     const usage = this.toTokenUsage(response);
 
       return new CompleteResponse({
+        ...completionFromReason(response.done_reason, response.done === true ? ['stop'] : [], ['length'], response.done === false || Boolean(response.message?.tool_calls?.length)),
         content: messageParts.content,
         reasoning: messageParts.reasoning,
         usage

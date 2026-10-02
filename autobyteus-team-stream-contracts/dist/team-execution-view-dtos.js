@@ -1,3 +1,4 @@
+import { compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
 import { jsonValueSchema, nonEmptyStringSchema, nullableNonEmptyStringSchema } from "./schema-helpers.js";
 const isCanonicalRootedAddress = (value) => {
@@ -105,5 +106,6 @@ export const teamAgentStatusDtoSchema = z.object({
     status: z.enum(["offline", "initializing", "idle", "running", "error"]),
     trigger: nullableNonEmptyStringSchema, tool_name: nullableNonEmptyStringSchema,
     error_message: nullableNonEmptyStringSchema, error_details: nullableNonEmptyStringSchema,
+    recoverableBlock: compactionRecoveryBlockSchema.nullable(),
 }).strict();
 //# sourceMappingURL=team-execution-view-dtos.js.map

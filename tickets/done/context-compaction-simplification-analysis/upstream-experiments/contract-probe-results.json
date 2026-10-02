@@ -1,0 +1,103 @@
+{
+  "date": "2026-09-26",
+  "kind": "isolated source-declaration and mock-provider probes",
+  "typescript": "5.9.3",
+  "node": "v22.23.1",
+  "passed": 19,
+  "results": [
+    {
+      "name": "ZCode accepts one non-JSON Markdown summary",
+      "status": "PASS"
+    },
+    {
+      "name": "ZCode strips analysis wrapper and retains summary text",
+      "status": "PASS"
+    },
+    {
+      "name": "ZCode rejects empty text at runtime validation boundary",
+      "status": "PASS"
+    },
+    {
+      "name": "ZCode rejects model tool calls even with text",
+      "status": "PASS"
+    },
+    {
+      "name": "ZCode preserves transcript pointer and recent-tail notice in wrapper",
+      "status": "PASS"
+    },
+    {
+      "name": "ZCode prompt requests text, not episodic/semantic JSON",
+      "status": "PASS"
+    },
+    {
+      "name": "OpenCode fresh prompt requests one Markdown checkpoint",
+      "status": "PASS"
+    },
+    {
+      "name": "OpenCode next prompt incorporates exactly one previous summary and newer work",
+      "status": "PASS"
+    },
+    {
+      "name": "OpenCode prompt has no required episodic/semantic/JSON output",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH one-shot accepts plain Markdown with real stream assembler",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH replays original system/messages/tools before final summary directive",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH second pass receives prior checkpoint and merge instruction",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH rejects whitespace-only model output",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH rejects token-truncated nonempty output",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH rejects image output",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH filters reasoning out of checkpoint text",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH fails closed for explicit provider error",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH rejects missing provider/model before request",
+      "status": "PASS"
+    },
+    {
+      "name": "DSH framing produces one checkpoint block, not memory categories",
+      "status": "PASS"
+    }
+  ],
+  "sources": {
+    "zcode/apps/zcode-cli/packages/core/src/compact/prompt.ts": "b1318080df3bec5f1ca77804fc9513cb50b7cd94d98b1c70cd81cede50e839c9",
+    "zcode/apps/zcode-cli/packages/core/src/runtime/methods/compact-active-helpers.ts": "2ebbcf79189e7864f83c0c563970a6a93f026539f12aacc978079d8806f41db2",
+    "opencode/packages/core/src/session/compaction.ts": "35bc2da1578b6bb80a3c39c1d6c51f234f34ce6586dd4f9d230e2a31b257138d",
+    "dsh/packages/util/values/src/index.ts": "6968960415feba883163314f4eb6e71497a18131d571bc300070fd16c2c359b1",
+    "dsh/packages/util/brand/src/index.ts": "f9d6da858d7308117227dcc2306ce7246b7309b2ae22d413d289cbae51e83e98",
+    "dsh/packages/llm/llm/src/error.ts": "63df8344d49df8f90054852c1de81bc6e56c11de11179e37dcad882be5758035",
+    "dsh/packages/llm/llm/src/index.ts": "95364943b5c48dba3cb2239981a6ebe89393b55927b4d646ee72a581f23e6914",
+    "dsh/packages/llm/llm/src/content.ts": "e679f0972cef3f6301c4a9f321ee288ef0a63223ec51c093349c186cdc81ff35",
+    "dsh/packages/llm/llm/src/assembler.ts": "a2d065645058a70195a504b101e9eed23df3eaced3def868d602f3a863b03887",
+    "dsh/packages/compaction/compaction-basic/src/summarizer.ts": "03ef6eb0b6a011530829820e30ff709c2c1b34cfa37a98c19c0037432b9d2f55"
+  },
+  "limitations": [
+    "Not full application integration suites.",
+    "No live-model quality, latency, or recall measurement.",
+    "ZCode error envelope construction substituted; DSH provider mocked; DSH uncalled assembler message factory guarded.",
+    "OpenCode tests only its actual prompt builder, not Effect orchestration."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "pnpm",
+    "test:nuxt",
+    "--run",
+    "services/runHydration/__tests__/acceptedInputIdentity.spec.ts",
+    "services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+    "stores/__tests__/agentRootCompactionIntegration.spec.ts"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web",
+  "started": "2026-10-01T19:12:55.882898+00:00",
+  "exitCode": 0,
+  "finished": "2026-10-01T19:13:06.098363+00:00"
+}

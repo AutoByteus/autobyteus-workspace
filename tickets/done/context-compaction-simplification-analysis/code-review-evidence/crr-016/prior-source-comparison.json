@@ -1,0 +1,1162 @@
+[
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/collaborator-mention-note.ts",
+    "matches_crr014": true,
+    "nonempty": 104
+  },
+  {
+    "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+    "matches_crr014": false,
+    "nonempty": 6
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 151
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 56
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/index.ts",
+    "matches_crr014": true,
+    "nonempty": 3
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 217
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-address-allocator.ts",
+    "matches_crr014": true,
+    "nonempty": 36
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-candidate-policy.ts",
+    "matches_crr014": true,
+    "nonempty": 126
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+    "matches_crr014": true,
+    "nonempty": 35
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-entry-builder.ts",
+    "matches_crr014": true,
+    "nonempty": 96
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-errors.ts",
+    "matches_crr014": true,
+    "nonempty": 26
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-identity-allocator.ts",
+    "matches_crr014": true,
+    "nonempty": 58
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-mention-admission.ts",
+    "matches_crr014": true,
+    "nonempty": 137
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-root-port.ts",
+    "matches_crr014": true,
+    "nonempty": 25
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-runnability-validator.ts",
+    "matches_crr014": true,
+    "nonempty": 43
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-source-projector.ts",
+    "matches_crr014": true,
+    "nonempty": 127
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/collaborator-handle-preparation.ts",
+    "matches_crr014": true,
+    "nonempty": 58
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/frozen-root-termination-scope.ts",
+    "matches_crr014": true,
+    "nonempty": 52
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-agent-execution-registry.ts",
+    "matches_crr014": true,
+    "nonempty": 261
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/root-team-execution-directory.ts",
+    "matches_crr014": true,
+    "nonempty": 246
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/located-execution-structure.ts",
+    "matches_crr014": true,
+    "nonempty": 17
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/member-execution-context.ts",
+    "matches_crr014": true,
+    "nonempty": 88
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/root-execution-identity.ts",
+    "matches_crr014": true,
+    "nonempty": 145
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+    "matches_crr014": true,
+    "nonempty": 368
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/collaboration-execution-location-service.ts",
+    "matches_crr014": true,
+    "nonempty": 96
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/services/root-operation-gate.ts",
+    "matches_crr014": true,
+    "nonempty": 32
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts",
+    "matches_crr014": true,
+    "nonempty": 41
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-target.ts",
+    "matches_crr014": true,
+    "nonempty": 22
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/events/processors/token-usage/token-usage-context-enricher.ts",
+    "matches_crr014": true,
+    "nonempty": 43
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/prompt/carpenter-prompt-composer.ts",
+    "matches_crr014": true,
+    "nonempty": 66
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "matches_crr014": true,
+    "nonempty": 412
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+    "matches_crr014": true,
+    "nonempty": 309
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+    "matches_crr014": true,
+    "nonempty": 189
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+    "matches_crr014": true,
+    "nonempty": 74
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts",
+    "matches_crr014": true,
+    "nonempty": 253
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+    "matches_crr014": true,
+    "nonempty": 280
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-collaboration-binding.ts",
+    "matches_crr014": true,
+    "nonempty": 19
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "matches_crr014": true,
+    "nonempty": 412
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/shared/runtime-agent-tool-exposure.ts",
+    "matches_crr014": true,
+    "nonempty": 68
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/domain/memory-recording-models.ts",
+    "matches_crr014": true,
+    "nonempty": 106
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/collaboration-member-memory-targets.ts",
+    "matches_crr014": true,
+    "nonempty": 150
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-event-accumulator.ts",
+    "matches_crr014": true,
+    "nonempty": 259
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts",
+    "matches_crr014": true,
+    "nonempty": 232
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/store/agent-memory-layout.ts",
+    "matches_crr014": true,
+    "nonempty": 111
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-memory/store/external-runtime-memory-writer.ts",
+    "matches_crr014": true,
+    "nonempty": 118
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-event.ts",
+    "matches_crr014": true,
+    "nonempty": 14
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run-execution-tree.ts",
+    "matches_crr014": true,
+    "nonempty": 30
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+    "matches_crr014": true,
+    "nonempty": 484
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-agent-status-snapshot-projector.ts",
+    "matches_crr014": true,
+    "nonempty": 41
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-index.ts",
+    "matches_crr014": true,
+    "nonempty": 267
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-scope-builder.ts",
+    "matches_crr014": true,
+    "nonempty": 209
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 46
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-reference-content-service.ts",
+    "matches_crr014": true,
+    "nonempty": 88
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-collaborators.ts",
+    "matches_crr014": true,
+    "nonempty": 91
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-execution-tree-mutator.ts",
+    "matches_crr014": true,
+    "nonempty": 181
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-planner.ts",
+    "matches_crr014": true,
+    "nonempty": 82
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-event-retirement.ts",
+    "matches_crr014": true,
+    "nonempty": 51
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-execution-adapter.ts",
+    "matches_crr014": true,
+    "nonempty": 292
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-task-source-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 38
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root-event.ts",
+    "matches_crr014": true,
+    "nonempty": 15
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "matches_crr014": true,
+    "nonempty": 469
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-tree.ts",
+    "matches_crr014": true,
+    "nonempty": 45
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts",
+    "matches_crr014": true,
+    "nonempty": 20
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-collaborators.ts",
+    "matches_crr014": true,
+    "nonempty": 87
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-communication-adapter.ts",
+    "matches_crr014": true,
+    "nonempty": 73
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-execution-index.ts",
+    "matches_crr014": true,
+    "nonempty": 225
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-host-context-builder.ts",
+    "matches_crr014": true,
+    "nonempty": 64
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+    "matches_crr014": true,
+    "nonempty": 15
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-location-service.ts",
+    "matches_crr014": true,
+    "nonempty": 183
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-member-view-projection-service.ts",
+    "matches_crr014": true,
+    "nonempty": 95
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-persistence-coordinator.ts",
+    "matches_crr014": true,
+    "nonempty": 140
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 44
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts",
+    "matches_crr014": true,
+    "nonempty": 173
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "matches_crr014": true,
+    "nonempty": 239
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-execution-adapter.ts",
+    "matches_crr014": true,
+    "nonempty": 269
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-task-source-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 25
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-tree-mutator.ts",
+    "matches_crr014": true,
+    "nonempty": 127
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+    "matches_crr014": true,
+    "nonempty": 497
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run-event.ts",
+    "matches_crr014": true,
+    "nonempty": 56
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run-execution-tree.ts",
+    "matches_crr014": true,
+    "nonempty": 47
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-factory.ts",
+    "matches_crr014": true,
+    "nonempty": 121
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "matches_crr014": true,
+    "nonempty": 494
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/collaborator-team-execution-registry.ts",
+    "matches_crr014": true,
+    "nonempty": 72
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/configured-agent-execution-registry.ts",
+    "matches_crr014": true,
+    "nonempty": 64
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/flat-team-member-config-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 33
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+    "matches_crr014": true,
+    "nonempty": 92
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/resolved-team-recipient.ts",
+    "matches_crr014": true,
+    "nonempty": 5
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-execution-index.ts",
+    "matches_crr014": true,
+    "nonempty": 318
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-flat-execution-callbacks.ts",
+    "matches_crr014": true,
+    "nonempty": 89
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-recipient-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 60
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-collaborator-hosting.ts",
+    "matches_crr014": true,
+    "nonempty": 53
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-root-materializer.ts",
+    "matches_crr014": true,
+    "nonempty": 128
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-collaborators.ts",
+    "matches_crr014": true,
+    "nonempty": 111
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-builder.ts",
+    "matches_crr014": true,
+    "nonempty": 80
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-mutator.ts",
+    "matches_crr014": true,
+    "nonempty": 219
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/task-delegation-execution-resolution.ts",
+    "matches_crr014": true,
+    "nonempty": 25
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-adapter.ts",
+    "matches_crr014": true,
+    "nonempty": 257
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts",
+    "matches_crr014": true,
+    "nonempty": 34
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-source-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 40
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-tools/task-delegation/task-delegation-tool-contract.ts",
+    "matches_crr014": true,
+    "nonempty": 75
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/schema.ts",
+    "matches_crr014": true,
+    "nonempty": 85
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/services/collaborator-root-port-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 73
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts",
+    "matches_crr014": true,
+    "nonempty": 80
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/graphql/types/run-history.ts",
+    "matches_crr014": true,
+    "nonempty": 253
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/agent-collaboration-references.ts",
+    "matches_crr014": true,
+    "nonempty": 41
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/context-files.ts",
+    "matches_crr014": true,
+    "nonempty": 285
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/rest/index.ts",
+    "matches_crr014": true,
+    "nonempty": 52
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/websocket/agent.ts",
+    "matches_crr014": true,
+    "nonempty": 181
+  },
+  {
+    "path": "autobyteus-server-ts/src/api/websocket/index.ts",
+    "matches_crr014": true,
+    "nonempty": 45
+  },
+  {
+    "path": "autobyteus-server-ts/src/application-agent-tools/services/application-agent-tool-capability.ts",
+    "matches_crr014": true,
+    "nonempty": 133
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts",
+    "matches_crr014": true,
+    "nonempty": 139
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-finalization-service.ts",
+    "matches_crr014": true,
+    "nonempty": 126
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 192
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+    "matches_crr014": true,
+    "nonempty": 119
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+    "matches_crr014": true,
+    "nonempty": 75
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/agent-run-history-index-types.ts",
+    "matches_crr014": true,
+    "nonempty": 31
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/collaborator-entry-tree-mapping.ts",
+    "matches_crr014": true,
+    "nonempty": 36
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts",
+    "matches_crr014": true,
+    "nonempty": 126
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts",
+    "matches_crr014": false,
+    "nonempty": 107
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/run-projection-types.ts",
+    "matches_crr014": false,
+    "nonempty": 133
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+    "matches_crr014": false,
+    "nonempty": 70
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+    "matches_crr014": false,
+    "nonempty": 248
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-org-member-run-view-projection-service.ts",
+    "matches_crr014": true,
+    "nonempty": 131
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+    "matches_crr014": true,
+    "nonempty": 490
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts",
+    "matches_crr014": true,
+    "nonempty": 144
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts",
+    "matches_crr014": true,
+    "nonempty": 120
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/standalone-run-liveness.ts",
+    "matches_crr014": true,
+    "nonempty": 54
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/team-member-run-view-projection-service.ts",
+    "matches_crr014": true,
+    "nonempty": 99
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-org-run-execution-tree-schema.ts",
+    "matches_crr014": true,
+    "nonempty": 138
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-path.ts",
+    "matches_crr014": true,
+    "nonempty": 11
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-schema.ts",
+    "matches_crr014": true,
+    "nonempty": 93
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-collaboration-tree-store.ts",
+    "matches_crr014": true,
+    "nonempty": 68
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-history-index-record-types.ts",
+    "matches_crr014": true,
+    "nonempty": 13
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-history-index-store.ts",
+    "matches_crr014": true,
+    "nonempty": 168
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-metadata-store.ts",
+    "matches_crr014": true,
+    "nonempty": 112
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts",
+    "matches_crr014": true,
+    "nonempty": 24
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/run-execution-tree-shared-record-schemas.ts",
+    "matches_crr014": true,
+    "nonempty": 435
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/store/team-run-execution-tree-schema.ts",
+    "matches_crr014": true,
+    "nonempty": 117
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-stream-handler.ts",
+    "matches_crr014": true,
+    "nonempty": 155
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "matches_crr014": true,
+    "nonempty": 79
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+    "matches_crr014": true,
+    "nonempty": 90
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+    "matches_crr014": true,
+    "nonempty": 202
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts",
+    "matches_crr014": true,
+    "nonempty": 469
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts",
+    "matches_crr014": true,
+    "nonempty": 257
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts",
+    "matches_crr014": true,
+    "nonempty": 229
+  },
+  {
+    "path": "autobyteus-server-ts/src/skill-improvement/services/improver-session/skill-improvement-improver-session-service.ts",
+    "matches_crr014": true,
+    "nonempty": 270
+  },
+  {
+    "path": "autobyteus-server-ts/src/token-usage/providers/token-usage-display-field-capturer.ts",
+    "matches_crr014": true,
+    "nonempty": 138
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 65
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-control-message-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 29
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 216
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-stream-server-message.ts",
+    "matches_crr014": true,
+    "nonempty": 93
+  },
+  {
+    "path": "autobyteus-team-stream-contracts/src/team-task-execution-message-dtos.ts",
+    "matches_crr014": true,
+    "nonempty": 20
+  },
+  {
+    "path": "autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts",
+    "matches_crr014": false,
+    "nonempty": 51
+  },
+  {
+    "path": "autobyteus-ts/src/agent/message/inter-agent-sender.ts",
+    "matches_crr014": true,
+    "nonempty": 10
+  },
+  {
+    "path": "autobyteus-ts/src/memory/memory-manager.ts",
+    "matches_crr014": false,
+    "nonempty": 497
+  },
+  {
+    "path": "autobyteus-ts/src/memory/raw-trace-ingestion.ts",
+    "matches_crr014": false,
+    "nonempty": 151
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputForm.vue",
+    "matches_crr014": true,
+    "nonempty": 51
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+    "matches_crr014": true,
+    "nonempty": 332
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/CollaboratorAddFailureNotice.vue",
+    "matches_crr014": true,
+    "nonempty": 38
+  },
+  {
+    "path": "autobyteus-web/components/agentInput/MentionChipRow.vue",
+    "matches_crr014": true,
+    "nonempty": 32
+  },
+  {
+    "path": "autobyteus-web/components/chat/ChatTargetMenu.vue",
+    "matches_crr014": true,
+    "nonempty": 77
+  },
+  {
+    "path": "autobyteus-web/components/conversation/UserMessage.vue",
+    "matches_crr014": true,
+    "nonempty": 148
+  },
+  {
+    "path": "autobyteus-web/components/conversation/segments/InterAgentMessageSegment.vue",
+    "matches_crr014": true,
+    "nonempty": 152
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentEventMonitor.vue",
+    "matches_crr014": true,
+    "nonempty": 88
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceSurface.vue",
+    "matches_crr014": true,
+    "nonempty": 109
+  },
+  {
+    "path": "autobyteus-web/components/workspace/agent/AgentWorkspaceView.vue",
+    "matches_crr014": true,
+    "nonempty": 78
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/AgentRunTaskRows.vue",
+    "matches_crr014": true,
+    "nonempty": 64
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue",
+    "matches_crr014": true,
+    "nonempty": 231
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue",
+    "matches_crr014": true,
+    "nonempty": 419
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/WorkspaceTransientExecutionRow.vue",
+    "matches_crr014": true,
+    "nonempty": 216
+  },
+  {
+    "path": "autobyteus-web/components/workspace/history/workspaceHistorySectionContracts.ts",
+    "matches_crr014": true,
+    "nonempty": 98
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "matches_crr014": true,
+    "nonempty": 29
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/runMentionScope.ts",
+    "matches_crr014": true,
+    "nonempty": 53
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/useComposerTarget.ts",
+    "matches_crr014": true,
+    "nonempty": 66
+  },
+  {
+    "path": "autobyteus-web/composables/agentInput/useRunMentionMenu.ts",
+    "matches_crr014": true,
+    "nonempty": 145
+  },
+  {
+    "path": "autobyteus-web/composables/useContextAttachmentComposer.ts",
+    "matches_crr014": true,
+    "nonempty": 357
+  },
+  {
+    "path": "autobyteus-web/composables/useWorkspaceHistoryTreeState.ts",
+    "matches_crr014": true,
+    "nonempty": 449
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/collaboratorQueries.ts",
+    "matches_crr014": true,
+    "nonempty": 36
+  },
+  {
+    "path": "autobyteus-web/graphql/queries/runHistoryQueries.ts",
+    "matches_crr014": true,
+    "nonempty": 305
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationChildContextFactory.ts",
+    "matches_crr014": true,
+    "nonempty": 30
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "matches_crr014": true,
+    "nonempty": 298
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "matches_crr014": true,
+    "nonempty": 110
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationIndex.ts",
+    "matches_crr014": true,
+    "nonempty": 110
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "matches_crr014": true,
+    "nonempty": 247
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgCommunicationPerspective.ts",
+    "matches_crr014": true,
+    "nonempty": 59
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgContextHydration.ts",
+    "matches_crr014": true,
+    "nonempty": 166
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+    "matches_crr014": true,
+    "nonempty": 323
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionViewIndex.ts",
+    "matches_crr014": true,
+    "nonempty": 155
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgMemberContextFactory.ts",
+    "matches_crr014": true,
+    "nonempty": 45
+  },
+  {
+    "path": "autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts",
+    "matches_crr014": true,
+    "nonempty": 474
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/AgentStreamingService.ts",
+    "matches_crr014": true,
+    "nonempty": 314
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/TeamStreamingService.ts",
+    "matches_crr014": true,
+    "nonempty": 425
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts",
+    "matches_crr014": true,
+    "nonempty": 247
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/handlers/memberInputMessageHandler.ts",
+    "matches_crr014": true,
+    "nonempty": 42
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts",
+    "matches_crr014": true,
+    "nonempty": 73
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/protocol/messageTypes.ts",
+    "matches_crr014": true,
+    "nonempty": 313
+  },
+  {
+    "path": "autobyteus-web/services/agentStreaming/teamClientMessageFactory.ts",
+    "matches_crr014": true,
+    "nonempty": 47
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/agentSourceSelectors.ts",
+    "matches_crr014": true,
+    "nonempty": 117
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/collaboratorAddFailures.ts",
+    "matches_crr014": true,
+    "nonempty": 26
+  },
+  {
+    "path": "autobyteus-web/services/collaborators/collaboratorCandidatesService.ts",
+    "matches_crr014": true,
+    "nonempty": 93
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/runProjectionConversation.ts",
+    "matches_crr014": false,
+    "nonempty": 384
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamMemberProjectionHydrationService.ts",
+    "matches_crr014": true,
+    "nonempty": 155
+  },
+  {
+    "path": "autobyteus-web/services/runHydration/teamRunContextHydrationService.ts",
+    "matches_crr014": true,
+    "nonempty": 320
+  },
+  {
+    "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+    "matches_crr014": true,
+    "nonempty": 167
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts",
+    "matches_crr014": true,
+    "nonempty": 153
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionTreeMutations.ts",
+    "matches_crr014": true,
+    "nonempty": 93
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionTreeSelectors.ts",
+    "matches_crr014": true,
+    "nonempty": 326
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewModels.ts",
+    "matches_crr014": true,
+    "nonempty": 68
+  },
+  {
+    "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+    "matches_crr014": true,
+    "nonempty": 406
+  },
+  {
+    "path": "autobyteus-web/stores/activeContextStore.ts",
+    "matches_crr014": true,
+    "nonempty": 278
+  },
+  {
+    "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+    "matches_crr014": true,
+    "nonempty": 352
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "matches_crr014": true,
+    "nonempty": 285
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "matches_crr014": true,
+    "nonempty": 456
+  },
+  {
+    "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+    "matches_crr014": true,
+    "nonempty": 482
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTeamExecutionRows.ts",
+    "matches_crr014": true,
+    "nonempty": 106
+  },
+  {
+    "path": "autobyteus-web/stores/runHistoryTypes.ts",
+    "matches_crr014": true,
+    "nonempty": 259
+  },
+  {
+    "path": "autobyteus-web/types/agent/AgentContext.ts",
+    "matches_crr014": true,
+    "nonempty": 44
+  },
+  {
+    "path": "autobyteus-web/types/conversation.ts",
+    "matches_crr014": true,
+    "nonempty": 92
+  },
+  {
+    "path": "autobyteus-web/types/node.ts",
+    "matches_crr014": true,
+    "nonempty": 60
+  },
+  {
+    "path": "autobyteus-web/types/segments.ts",
+    "matches_crr014": true,
+    "nonempty": 111
+  },
+  {
+    "path": "autobyteus-web/types/workspace/activeAgentWorkspaceTarget.ts",
+    "matches_crr014": true,
+    "nonempty": 93
+  },
+  {
+    "path": "autobyteus-web/types/workspace/collaborationMessagesContextView.ts",
+    "matches_crr014": true,
+    "nonempty": 35
+  },
+  {
+    "path": "autobyteus-web/utils/agentOrgHistoryRows.ts",
+    "matches_crr014": true,
+    "nonempty": 229
+  },
+  {
+    "path": "autobyteus-web/utils/collaboration/interAgentDelivery.ts",
+    "matches_crr014": true,
+    "nonempty": 13
+  },
+  {
+    "path": "autobyteus-web/utils/collaboration/memberDisplayName.ts",
+    "matches_crr014": true,
+    "nonempty": 13
+  },
+  {
+    "path": "autobyteus-web/utils/collaborators/collaboratorMentionText.ts",
+    "matches_crr014": true,
+    "nonempty": 72
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+    "matches_crr014": false,
+    "nonempty": 304
+  },
+  {
+    "path": "autobyteus-web/utils/contextFiles/contextFileOwner.ts",
+    "matches_crr014": true,
+    "nonempty": 90
+  },
+  {
+    "path": "autobyteus-web/utils/nodeEndpoints.ts",
+    "matches_crr014": true,
+    "nonempty": 68
+  },
+  {
+    "path": "autobyteus-web/utils/runTreeProjection.ts",
+    "matches_crr014": true,
+    "nonempty": 371
+  },
+  {
+    "path": "autobyteus-web/utils/runTreeSummary.ts",
+    "matches_crr014": true,
+    "nonempty": 24
+  },
+  {
+    "path": "autobyteus-web/utils/teamCommunication/teamCommunicationPerspective.ts",
+    "matches_crr014": true,
+    "nonempty": 59
+  }
+]

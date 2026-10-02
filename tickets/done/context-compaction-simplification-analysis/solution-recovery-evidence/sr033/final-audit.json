@@ -1,0 +1,22 @@
+{
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "entry_pending_count": 1421,
+  "entry_unchanged_count": 1415,
+  "changed_entry_paths": [
+    "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/terminal-compaction-activity.sr032.md"
+  ],
+  "concurrent_other_owner_paths": [],
+  "requirements_001_012_and_AC001_017_table_rows_unchanged": true,
+  "references_count": 1083,
+  "missing_references": [],
+  "SD_scope": "Owned ticket documents only; entry inventory captured after approval edits, exact before-SR033 preimages separate. Other changed artifacts belong to API evidence clarification; not SD edits.",
+  "executable_claim": "No tests/runtime/provider calls executed. Source read/audit only.",
+  "owned_diff_check": "git diff --check on six owned canonical/hold documents exit0",
+  "route": "sole /architecture_reviewer"
+}

@@ -14,6 +14,7 @@ package's script from its own directory.
 | Layer | What it proves | Command |
 | --- | --- | --- |
 | Web unit and component tests | Nuxt renderer components, stores, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
+| Workspace native-to-web integration | Native producer/FIFO and saved/live web hydration at a workspace-owned test boundary (`test-support/native-input-history/`) | `pnpm test:native-input-history` |
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | All web tests | Both of the above | `pnpm -C autobyteus-web test` |
 | Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
@@ -30,6 +31,19 @@ package's script from its own directory.
 
 Notes:
 
+- **Workspace native-to-web integration** is owned by `test-support/`, outside
+  the web package. The web must not depend on the core, including its local
+  test setup. Do not move a core import into a web test-only folder or hide it
+  behind an alias, dynamic import, server re-export or helper.
+  `pnpm test:native-input-history` first runs the unchanged web boundary guard,
+  then an explicit workspace harness using the existing Nuxt test environment.
+  It uses current core `dist` outputs (build changed core source first with
+  `pnpm -C autobyteus-ts build`) and controlled model/provisioning/Apollo doubles.
+  Both native Agent and hosted-Team cases retain fresh raw-history, FIFO and
+  hydration assertions. They do not prove HTTP or packaged renderer reload.
+  Web guard contract checks run with `pnpm -C autobyteus-web test:nuxt
+  tests/integration/web-boundary-guard.integration.test.ts --run`.
+  A guard pass is only a build prerequisite, not a full build or product pass.
 - **Real-provider credentials** live in the encrypted vault of the target
   database. Provision them with the importer, never by editing `.env` files:
   `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`

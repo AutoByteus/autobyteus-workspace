@@ -1,0 +1,153 @@
+{
+  "method": "Read-only source tracing and rg caller inventory; no executable probes/tests",
+  "sources": {
+    "E29-1": {
+      "observation": "Assembler calls executeIfAuthorized only when !identity.isToolContinuation. LlmPhase supplies toolInvocationBatches.length > 0. Only other production executor call is post-response/no tool invocations; it catches independently and returns final/isError on failure. It is not a pre-tool-continuation hold. Preserve its existing later-user-turn pending retry rather than re-run consumed output.",
+      "files": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/llm-request-assembler.ts",
+          "sha256": "b2c03783798a6ffac29e274f959a9842eac6b3e9fe4b62f7fd507f48b51db0d0"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/llm-phase.ts",
+          "sha256": "e91b2187f59d462fab519cfd59e8cc1ca12b79c367c1277c803865e4396c537d"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+          "sha256": "b4b868977f3e84af2849f661179df35f848d11a82674ad824c808f26d0b0c121"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+          "sha256": "2173a64d588591641330c375625ea9d41d1bcda267c520f1e58511bed63887aa"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+          "sha256": "e33b0ebd8ddd506f2151253ec199bcf4702635f411e392ec224ab3c8c535a14d"
+        }
+      ]
+    },
+    "E29-2": {
+      "observation": "parseCompactionSummary requires exactly one ordered marker pair, trims body, validates six exact ordered headings/bullet-or-none predicate and returns untagged body. A second tagged parse at host would reject its successful result. Share pure body validator; keep envelope parser direct-only.",
+      "files": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+          "sha256": "9847d03a505dd6ffa52a63e1ff1306533762ccb931193c2229a5c9e8d17df003"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts",
+          "sha256": "35d67617b1827f14746ec8f10ea5516e4bab587e4f42930478f12f3ebf2a1ed6"
+        }
+      ]
+    },
+    "E29-3": {
+      "observation": "Supported user SEND_MESSAGE -> standalone command coordinator or Team/Org post_message -> configured handle.postMessage -> AgentRun.postUserMessage. Input defaults USER, Team/Org explicitly add user_message origin. Immediate admit reserve+commit+release is synchronous within dispatchQueue. Reservation-only callbacks run outside queue; production RootCommunicationEngine recipient builders explicitly use SenderType.AGENT/inter_agent_delivery. No user recovery trigger on reservation commit/release; no new release clock justified.",
+      "files": [
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+          "sha256": "f0c1bb825b746da22850b11eca9ee25811c8a3dcf297f9f016c7347843f09e44"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts",
+          "sha256": "0c321ca902c5f675d1fd95cd19b183d4f8ddb52fc2122e430d62bfebb9bed403"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/input/agent-run-input-reservation.ts",
+          "sha256": "d079f1fcebe124648af5b031b6a611a2ac5d810153e4c51921cc498ba3d4f635"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+          "sha256": "b71723e18412ed4e1c206eaa9ef16f3c8c59050c5925f4fc05269257bcbe8e55"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts",
+          "sha256": "a003c706d73180717af88e3cc4014aa42d89e49a8d2cc620a17f5de91c8f526f"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts",
+          "sha256": "56883009bd2db04632adc77b71bddfbdd4233fa0e4c52a42be04cf202f4147ef"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-org-stream-handler.ts",
+          "sha256": "8a6dc8157944a20e0cf19a7462bab49ac22a52c0057461c2603f2a98808f0163"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+          "sha256": "2072f9310618924c71698d38c0768bb41291ad8ebb0f66fe5d4564d294efa316"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+          "sha256": "189bd5bb8b0db39339ef00c4e23ed5b1709199243792d05fa23475a6439d9c98"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+          "sha256": "49dc3074701918b7d65e5a18c5db7d24970541960d5d3ee81b02e8f42f7a4880"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+          "sha256": "d191e3f41b7ff7d961dc1afd5703dfcbc5c81a3069a315a8f532a9fe5d92f644"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+          "sha256": "55380320bc63761b97b01c5ca573610934bc9b8c2aba091338db0fd4bfde2475"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+          "sha256": "15a9a58ec9d75df5b5b6e8a0496a41668ca590224d990aecf1f60597d12f29fc"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+          "sha256": "ba3619fef21110c4969476425d87400f19e523ba2a9bf97b20ff1704462ecf77"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+          "sha256": "9521b85373546473053d31acf742b820fc640b6feea81ca46c6b014f83229d5d"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-engine.ts",
+          "sha256": "16bf6f4d2f78b22a11552987214317064839bacb54b3d77f568f3c81f9f742fb"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/communication/root-communication-runtime-builder.ts",
+          "sha256": "d6928a589b8d6b0921438a46fde3a44350d63f22685ed1701f32d731b6dce9b8"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/team-communication/team-communication-adapter.ts",
+          "sha256": "4080e9e7b776e0fd6d4f7506354fb0be09aaf8f96b2f328443c5f9cab26c82ab"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/services/agent-org-communication-adapter.ts",
+          "sha256": "0addc7e4b9cdb336598b42280545b35dda8d07fbfb136c0501de3fe87498ddfc"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-team-execution/services/inter-agent-message-runtime-builders.ts",
+          "sha256": "63fdb9749691652381b613a61259110325dd0b9a77d40976c0ebccc75b3ad25a"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-communication/services/global-agent-run-message-runtime-builders.ts",
+          "sha256": "bc0f597c1ee55d1a8bad9c6f3822008ea7c1215a6294d707fecb5315343d2fb4"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/message/agent-input-user-message.ts",
+          "sha256": "8132d6db4d42f81731acd5e333119dba970e0bb83b9cd37b06b8c4e137199cc3"
+        },
+        {
+          "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/event-inbox/agent-event-inbox-entry.ts",
+          "sha256": "3537e15329036a331a6d6d0a184733d3e201490111f44d47ff25903c57100065"
+        }
+      ]
+    }
+  },
+  "queries": [
+    "rg -n executeIfAuthorized autobyteus-ts/src",
+    "rg -n reserveUserMessage autobyteus-server-ts/src",
+    "rg -n \"reserveRecipientInput|buildRecipientInput|buildRootCommunicationInputMessage\" autobyteus-server-ts/src",
+    "rg -n \"post_message|postUserMessage|reserveInput\" relevant Team/Org/configured-handle paths"
+  ],
+  "limits": [
+    "Source reachability is not executable validation.",
+    "No independent supported pre-tool-continuation hold path established.",
+    "No genuine-user reservation/release ingress established.",
+    "Existing post-response failure behavior is explicitly not redesigned in this clarification."
+  ],
+  "setup_note": "An initial broad find for AGENTS.md was stopped by exact owned process PID after producing unrelated-worktree paths; only read-only listing. Applicable ticket/worktree ancestors checked directly. No unrelated process cleanup."
+}

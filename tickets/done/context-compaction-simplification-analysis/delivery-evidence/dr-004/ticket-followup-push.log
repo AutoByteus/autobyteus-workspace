@@ -1,0 +1,6 @@
+remote: 
+remote: GitHub found 938 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (20 critical, 421 high, 427 moderate, 70 low). To find out more, visit:        
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot        
+remote: 
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   e098c44fd..19e883180  codex/context-compaction-simplification-analysis -> codex/context-compaction-simplification-analysis

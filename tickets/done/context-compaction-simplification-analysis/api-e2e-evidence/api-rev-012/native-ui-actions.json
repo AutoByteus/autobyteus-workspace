@@ -1,0 +1,24 @@
+{
+  "resumption": "User challenged premature native-control Blocked classification; no user UI assistance occurred",
+  "nativeTool": "mcp__cua_repl",
+  "app": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "actions": [
+    {
+      "action": "getApp exact bundle",
+      "result": "Correct API11 isolated validation window, A Held/B Queued displayed; prior cgWindowNotFound no longer occurs; underlying transient cause unknown"
+    },
+    {
+      "action": "View menu click then Reload",
+      "result": "new document; resume-reload-proof.json"
+    },
+    {
+      "action": "Cmd+R",
+      "result": "second new document; resume-repeat-proof.json"
+    },
+    {
+      "action": "After product Stop Cmd+R",
+      "result": "first attempt refused stale UI state (CLI had changed selection); refreshed AX and repeated; actual new document resume-stop-cold-proof.json"
+    }
+  ],
+  "prohibition": "No raw CDP/AppleScript/OS-event workaround, no user app, no backend restart; native action itself exercised documented Electron Reload"
+}

@@ -1,0 +1,187 @@
+{
+  "scope": "CRR-007 focused failure origin; no provider execution, no retrospective full-flow pass",
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "origin": {
+    "glyphOccurrenceCount": 1,
+    "glyphRoles": [
+      "Assistant"
+    ],
+    "toolBlocksIdenticalUnderAssistantOnlyChange": true,
+    "unicodeToolCount": 1,
+    "unicodeToolHasExcerptMarker": true,
+    "unicodeToolContainsGlyph": false,
+    "oldPredicateOriginal": false,
+    "oldPredicateAssistantOnlyVariation": true
+  },
+  "reviewGapAndCorrection": {
+    "predicatePresentInReviewedIR002": true,
+    "blanketReplacementCharacterBanPresentInReviewedIR002": true,
+    "currentGlobalGlyphPredicateRemoved": true,
+    "currentLiteralReplacementCharacterBansRemoved": true,
+    "coreSafeUnicodeValidatorStillUsed": true,
+    "exactRawSourceStillUsed": true,
+    "snapshotEqualityStillUsed": true,
+    "nextRequestEqualityStillUsed": true
+  },
+  "apiPaths": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "matches": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "matches": true
+    }
+  ],
+  "implementationPaths": [
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/config/compaction-model-settings.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/startup/compaction-model-settings-migration.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-parent-credentials.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/config/compaction-model-settings.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/startup/compaction-model-settings-migration.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-shapes.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/fixtures/memory/released-native-snapshot-shapes.json",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/native-working-context-snapshot-shapes.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-snapshot-serializer.test.ts",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/tests/unit/memory/working-context-tool-protocol-repairer.test.ts",
+      "matches": true
+    }
+  ],
+  "productionDeltaFromHEAD": [],
+  "observedStage": "final-assertions",
+  "completedTurns": 4,
+  "originalError": {
+    "category": "Error",
+    "code": null,
+    "status": null,
+    "condition": null
+  },
+  "wireRequests": 9,
+  "requestKinds": {
+    "parent": 8,
+    "summary": 1
+  },
+  "allHttp200": true,
+  "nextParentExactlyOneAcceptedSummary": true,
+  "snapshotFileEquality": "Not tested by this review; original flow threw before file assertions",
+  "referencesPresent": true,
+  "protectedEntryPaths": 425,
+  "authorityHashes": {
+    "requirements-doc.md": "3c8b538f93fe407a843263f00a4f103e6835b050aa9e42d6989b952c3f321d64",
+    "design-spec.md": "37420682b90ded65707ff8ec9465a963288a676cc8a15d9f3c421435d36e59d6",
+    "acceptance-disposition.sr020.md": "c54399510910452dab5df08ec84cb9846a56c6352465f377179969fed9edb92e",
+    "solution-revision-record.md": "7ffbf7e95190f4ad5b2f0ae8dcccd3d28fcba3f078391dae87f5fa5efa10b0f1",
+    "proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+    "output-format-and-coverage.md": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5",
+    "api-e2e-execution-coverage-report.md": "b2f2dc77f7d9e4b9d8b01f97db5e706c6b2e42937ab9ace88b79f266d9933c61",
+    "api-e2e-revision-record.md": "c50d215228d617d07e31faad7d53c0193a449a062a2f2c342a61d457f1383e7a"
+  }
+}

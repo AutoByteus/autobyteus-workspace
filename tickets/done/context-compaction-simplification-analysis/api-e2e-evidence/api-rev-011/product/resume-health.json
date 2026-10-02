@@ -1,0 +1,1 @@
+{"schema_version":"1","ok":true,"command":"health-check","result":{"connected":true,"endpoint":"http://127.0.0.1:62666","context_count":1,"page_count":1}}

@@ -1,0 +1,39 @@
+{
+  "ownedServerPid": 78739,
+  "ownedServerUrl": "http://127.0.0.1:56881",
+  "ownedRuntime": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-007-deepseek",
+  "ownedDatabase": {
+    "databasePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-007-deepseek.db",
+    "databaseUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-007-deepseek.db",
+    "rootKeyPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-007-deepseek.db.secret.key"
+  },
+  "bootstrapCleanup": {
+    "runtimeRemoved": true,
+    "databaseRemoved": true,
+    "rootKeyRemoved": true
+  },
+  "observedAssertions": [
+    {
+      "name": "owned database/rootkey/runtime removed",
+      "pass": true
+    },
+    {
+      "name": "owned builtserver exited",
+      "pass": true
+    },
+    {
+      "name": "owned server port released",
+      "pass": true
+    },
+    {
+      "name": "source stat unchanged importer-only access",
+      "pass": true
+    },
+    {
+      "name": "normal harness-owned flow workspace removed",
+      "pass": true
+    }
+  ],
+  "sourceAccess": "Only documented importer; stat-only source check otherwise; no source modifications",
+  "noUnrelatedProcessesOrDataChanged": true
+}

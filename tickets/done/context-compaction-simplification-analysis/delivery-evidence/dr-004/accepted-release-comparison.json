@@ -1,0 +1,15 @@
+{
+  "acceptedHead": "a73f0481655f4cce288c0a7a2aae20bdd5285535",
+  "releaseHead": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+  "runtimeSourceChanges": [],
+  "nonTicketChanges": [
+    "autobyteus-server-ts/docs/modules/agent_memory.md",
+    "autobyteus-server-ts/docs/modules/agent_run_collaboration.md",
+    "autobyteus-server-ts/docs/modules/run_history.md",
+    "autobyteus-ts/docs/agent_memory_design.md",
+    "autobyteus-web/docs/agent_execution_architecture.md",
+    "autobyteus-web/package.json"
+  ],
+  "interpretation": "Only Delivery docs and beta version metadata differ outside ticket; no production/test implementation delta after user acceptance",
+  "checkedAt": "2026-10-01T19:42:12.514820+00:00"
+}

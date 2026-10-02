@@ -1,0 +1,41 @@
+--- /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-005/ir005-resume/server-settings-before-F007.ts
++++ /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+@@ -716,4 +716,38 @@
+     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toBe(persisted);
+   });
+ 
++  it("saves the numeric compaction context ceiling through ordinary settings", async () => {
++    const key = "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE";
++    const originalValue = process.env[key];
++    delete process.env[key];
++    try {
++      initializeOwnedSettingsConfig();
++      const updated = await execGraphql<{ updateServerSetting: string }>(
++        `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,
++        { key, value: "16000" },
++      );
++      expect(updated.updateServerSetting).toContain("updated successfully");
++      const listed = await execGraphql<{
++        getServerSettings: Array<{ key: string; value: string; isEditable: boolean }>;
++      }>("{ getServerSettings { key value isEditable } }");
++      expect(listed.getServerSettings.find(setting => setting.key === key)).toMatchObject({
++        value: "16000", isEditable: true,
++      });
++    } finally {
++      if (originalValue === undefined) delete process.env[key];
++      else process.env[key] = originalValue;
++    }
++  });
++
++  it("keeps credential-like settings out of the ordinary numeric-control write path", async () => {
++    initializeOwnedSettingsConfig();
++    const updated = await execGraphql<{ updateServerSetting: string }>(
++      `mutation Set($key: String!, $value: String!) { updateServerSetting(key: $key, value: $value) }`,
++      { key: "API5_SYNTHETIC_API_KEY", value: "not-a-real-credential" },
++    );
++    expect(updated.updateServerSetting).toContain("write-only credential editor");
++    expect(appConfigProvider.config.get("API5_SYNTHETIC_API_KEY")).toBeUndefined();
++    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain("API5_SYNTHETIC_API_KEY");
++  });
++
+ });

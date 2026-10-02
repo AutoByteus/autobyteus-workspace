@@ -1,0 +1,11 @@
+{
+  "result": "Blocked",
+  "selectedRule": null,
+  "recipient": null,
+  "reason": "Current semantic-quality evidence requires fresh authorized provider budget and isolated credential provisioning. Local emulation cannot supply model-quality evidence. Skill Blocked rule: preserve artifacts and ask user; no colleague handoff. No executable product failure or upstream requirement ambiguity newly established.",
+  "userQuestion": "request_user_input_async accepted; no answer received at this checkpoint",
+  "noDelivery": true,
+  "independentSuccessfulTestReview": "Pending; not requested on Blocked result",
+  "lookupAfterCanonicalResultPersisted": true,
+  "handoffSent": false
+}

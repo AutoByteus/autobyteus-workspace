@@ -1,0 +1,223 @@
+{
+  "result": "Pass for listed assertions only",
+  "checks": [
+    {
+      "assertion": "35 unique product requests, no reset across fixture repair",
+      "result": "Pass",
+      "evidence": [
+        "loopback-wire.jsonl",
+        "fixture-continuation/loopback-wire.jsonl"
+      ]
+    },
+    {
+      "assertion": "only seven explicitly authorized parent requests",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "no cancelled A/B/D/E, Team A/B or Org A/B parent dispatch",
+      "result": "Pass",
+      "evidence": "parent last-user input, not mere text search of historical messages"
+    },
+    {
+      "assertion": "request 9 aborted",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "request 17 aborted",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "request 26 aborted",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "request 35 aborted",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "late response 9 discarded",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "late response 26 discarded",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "late response 35 discarded",
+      "result": "Pass",
+      "evidence": "both wire logs"
+    },
+    {
+      "assertion": "original fixture timeout was after product request17 abort",
+      "result": "Pass",
+      "evidence": "loopback-wire.jsonl; second late release NOT executed"
+    },
+    {
+      "assertion": "no unexplained generation guard failure",
+      "result": "Pass",
+      "evidence": "both product wire logs; separate guard processes excluded"
+    },
+    {
+      "assertion": "agent-before-terminate-snapshot.json baseline preserved without summary replacement",
+      "result": "Pass",
+      "evidence": [
+        "agent-before-terminate-snapshot.json",
+        "agent-after-late-release-snapshot.json"
+      ]
+    },
+    {
+      "assertion": "agent-second-before-terminate-snapshot.json baseline preserved without summary replacement",
+      "result": "Pass",
+      "evidence": [
+        "agent-second-before-terminate-snapshot.json",
+        "agent-final-files/working_context_snapshot.json"
+      ]
+    },
+    {
+      "assertion": "team-before-terminate-snapshot.json baseline preserved without summary replacement",
+      "result": "Pass",
+      "evidence": [
+        "team-before-terminate-snapshot.json",
+        "team-after-late-release-files/working_context_snapshot.json"
+      ]
+    },
+    {
+      "assertion": "org-before-terminate-snapshot.json baseline preserved without summary replacement",
+      "result": "Pass",
+      "evidence": [
+        "org-before-terminate-snapshot.json",
+        "org-after-late-release-files/working_context_snapshot.json"
+      ]
+    },
+    {
+      "assertion": "standalone actual consumed HTTP200 success",
+      "result": "Pass",
+      "evidence": "terminateAgentRun"
+    },
+    {
+      "assertion": "standalone terminal event precedes command confirmation",
+      "result": "Pass",
+      "evidence": [
+        "compaction_operation_mup37tkj_1",
+        "terminateAgentRun"
+      ]
+    },
+    {
+      "assertion": "Team actual consumed HTTP200 success",
+      "result": "Pass",
+      "evidence": "terminateAgentTeamRun"
+    },
+    {
+      "assertion": "Team terminal event precedes command confirmation",
+      "result": "Pass",
+      "evidence": [
+        "compaction_operation_mup3o1sc_1",
+        "terminateAgentTeamRun"
+      ]
+    },
+    {
+      "assertion": "Org deliberate stream retirement precedes successful command then real historical inspection",
+      "result": "Pass",
+      "evidence": "network-org-termination.json"
+    },
+    {
+      "assertion": "Org all three configured member projections fetched after confirmed success",
+      "result": "Pass",
+      "evidence": "network-org-termination.json; only root had native activity"
+    },
+    {
+      "assertion": "Org terminal event not invented after deliberate retirement",
+      "result": "Pass",
+      "evidence": "network-org-termination.json; confirmed success reconciliation supplies terminal presentation"
+    },
+    {
+      "assertion": "ui-74-team-activity real consumers Stopped and static",
+      "result": "Pass",
+      "evidence": "ui-74-team-activity.json"
+    },
+    {
+      "assertion": "ui-95-org-stopped-activity real consumers Stopped and static",
+      "result": "Pass",
+      "evidence": "ui-95-org-stopped-activity.json"
+    },
+    {
+      "assertion": "standalone real icons static",
+      "result": "Pass",
+      "evidence": "ui-46-stopped-animation.json"
+    },
+    {
+      "assertion": "real transport reconnect republishes exact held input/runtime/revision",
+      "result": "Pass",
+      "evidence": "network-before-cold-restart.json / ui39\u201340"
+    },
+    {
+      "assertion": "transport reconnect generated no request",
+      "result": "Pass",
+      "evidence": "before/after-link-loss-state.json"
+    },
+    {
+      "assertion": "in-memory saved selection generated no request",
+      "result": "Pass",
+      "evidence": "agent states + network-saved-selection.json"
+    },
+    {
+      "assertion": "in-memory saved selection consumed actual projection",
+      "result": "Pass",
+      "evidence": "network-saved-selection.json"
+    },
+    {
+      "assertion": "later standalone work has distinct native activity identity",
+      "result": "Pass",
+      "evidence": "network-before-cold-restart.json; ui45 retains both"
+    },
+    {
+      "assertion": "real standalone restart changed renderer context",
+      "result": "Pass",
+      "evidence": "isolated-restart.json, old/new tab and marker"
+    },
+    {
+      "assertion": "cold standalone selection reads projection without invented native replay",
+      "result": "Pass",
+      "evidence": "network-cold-selection.json and fixture states"
+    },
+    {
+      "assertion": "second real restart changed renderer context",
+      "result": "Pass",
+      "evidence": "isolated-final-restart.json and ui99"
+    },
+    {
+      "assertion": "cold Team selection hydrates both members, no invented native replay",
+      "result": "Pass",
+      "evidence": "network-team-cold.json"
+    },
+    {
+      "assertion": "cold Org selection hydrates all members, no invented native replay",
+      "result": "Pass",
+      "evidence": "network-org-cold.json"
+    },
+    {
+      "assertion": "cold Team/Org open generated no requests",
+      "result": "Pass",
+      "evidence": "pre-final-cold-state.json / final-product-fixture-state.json"
+    }
+  ],
+  "productRequests": 35,
+  "parent": 7,
+  "compaction": 28,
+  "remote": 0,
+  "excluded": [
+    "semantic model quality",
+    "second standalone late release",
+    "all members concurrently recovering",
+    "seven-member full Org UI",
+    "crash/power loss",
+    "physical drag hit testing"
+  ]
+}

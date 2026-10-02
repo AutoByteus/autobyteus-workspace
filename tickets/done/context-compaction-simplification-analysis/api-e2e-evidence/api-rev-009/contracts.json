@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--test",
+    "autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs",
+    "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "exit": 0,
+  "finished": "2026-10-01T12:39:43.379743+00:00"
+}

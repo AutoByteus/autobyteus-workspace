@@ -1,0 +1,26 @@
+[codex/context-compaction-simplification-analysis 19e883180] chore(delivery): retain historical source evidence and finalization receipts
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 11 files changed, 9683 insertions(+)
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/staging-reconciliation.json
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-final-commit.exit
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-final-commit.log
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-finalization.json
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-push.exit
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-push.log
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@anthropic-ai/sdk/src/client.ts
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@mistralai/mistralai/src/funcs/chatComplete.ts
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/retries.ts
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/@mistralai/mistralai/src/lib/sdks.ts
+ create mode 100644 tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-007/source-before/autobyteus-ts/node_modules/openai/src/client.ts

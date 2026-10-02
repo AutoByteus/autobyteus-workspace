@@ -143,6 +143,10 @@ export class AgentRunCommandCoordinator {
       case "admitted":
         this.registry.markAdmitted(identity);
         return;
+      case "held":
+        this.registry.markHeld({ ...identity, turnId: fact.turnId });
+        return;
+      case "resumed":
       case "forwarded":
         this.registry.markForwarded({ ...identity, turnId: fact.turnId });
         return;

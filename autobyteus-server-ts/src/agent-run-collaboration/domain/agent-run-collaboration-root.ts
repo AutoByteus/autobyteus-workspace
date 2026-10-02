@@ -1,3 +1,4 @@
+import { collectAgentRootInputSnapshots } from "../services/agent-run-collaboration-input-snapshot.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
@@ -67,6 +68,7 @@ export type AgentRunCollaborationPackageSnapshot = Readonly<{
   tree: AgentRunCollaborationTreeSnapshot;
   messages: AgentRunCollaborationMessagesFileV1;
   statuses: readonly CollaborationAgentStatusSnapshot[];
+  inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
 
 /**
@@ -323,6 +325,10 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
       tree: this.tree,
       messages: this.messages,
       statuses: this.getAgentStatusSnapshots(),
+      inputStates: collectAgentRootInputSnapshots(this.index, [
+        ...this.options.rootAgents.getInputStateSnapshots(),
+        ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots()),
+      ]),
     }));
   }
 

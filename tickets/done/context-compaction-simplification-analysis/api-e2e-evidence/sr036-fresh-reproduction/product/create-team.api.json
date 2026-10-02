@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-01T14:37:34.341609+00:00",
+  "endpoint": "http://127.0.0.1:63335/graphql",
+  "request": {
+    "query": "mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id name}}",
+    "variables": {
+      "input": {
+        "name": "SR036 Team",
+        "description": "Owned SR036 two-member Team",
+        "instructions": "SR036 fixture",
+        "coordinatorMemberName": "lead",
+        "nodes": [
+          {
+            "memberName": "lead",
+            "ref": "sr036-lead",
+            "refScope": "SHARED"
+          },
+          {
+            "memberName": "peer",
+            "ref": "sr036-peer",
+            "refScope": "SHARED"
+          }
+        ],
+        "handoffs": [],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405"
+        }
+      }
+    }
+  },
+  "response": {
+    "data": {
+      "createAgentTeamDefinition": {
+        "id": "sr036-team",
+        "name": "SR036 Team"
+      }
+    }
+  }
+}

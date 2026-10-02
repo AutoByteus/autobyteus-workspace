@@ -1,0 +1,341 @@
+{
+  "utc": "2026-10-01T03:36:21.353364+00:00",
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "status": " M autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts\n M autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.d.ts.map\n M autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js\n M autobyteus-agent-presentation-contracts/dist/agent-presentation-message-dtos.js.map\n M autobyteus-agent-presentation-contracts/dist/index.d.ts\n M autobyteus-agent-presentation-contracts/dist/index.d.ts.map\n M autobyteus-agent-presentation-contracts/dist/index.js\n M autobyteus-agent-presentation-contracts/dist/index.js.map\n M autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts\n M autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.d.ts.map\n M autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js\n M autobyteus-collaboration-stream-contracts/dist/agent-org-execution-dtos.js.map\n M autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts\n M autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map\n M autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js\n M autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.js.map\n M autobyteus-server-ts/src/services/server-settings-service.ts\n M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts\n M autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts\n M autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts\n M autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts\n M autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts\n M autobyteus-team-stream-contracts/dist/team-agent-message-dtos.d.ts.map\n M autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js\n M autobyteus-team-stream-contracts/dist/team-agent-message-dtos.js.map\n M autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts\n M autobyteus-team-stream-contracts/dist/team-execution-view-dtos.d.ts.map\n M autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js\n M autobyteus-team-stream-contracts/dist/team-execution-view-dtos.js.map\n M autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts\n M autobyteus-team-stream-contracts/dist/team-stream-server-message.d.ts.map\n M autobyteus-team-stream-contracts/dist/team-stream-server-message.js\n M autobyteus-team-stream-contracts/dist/team-stream-server-message.js.map\n M autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts\n M test-support/live-e2e/live-e2e-harness.ts\n M test-support/live-e2e/run-live-e2e.mjs\n M tickets/in-progress/context-compaction-simplification-analysis/analysis-report.md\n M tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md\n M tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md\n M tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md\n M tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md\n M tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-proposal.md\n M tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md\n M tickets/in-progress/context-compaction-simplification-analysis/design-spec.md\n M tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md\n M tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md\n M tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md\n M tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md\n M tickets/in-progress/context-compaction-simplification-analysis/prompt-refinement-notes.md\n M tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md\n M tickets/in-progress/context-compaction-simplification-analysis/simplification-design-direction.md\n M tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md\n M tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md\n?? autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts\n?? autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.d.ts.map\n?? autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js\n?? autobyteus-agent-presentation-contracts/dist/agent-input-state-dto.js.map\n?? autobyteus-application-backend-sdk/dist/\n?? autobyteus-application-sdk-contracts/dist/\n?? autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts\n?? autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts\n?? autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts\n?? test-support/live-e2e/compaction-quality-checks.ts\n?? test-support/live-e2e/live-e2e-safe-error.ts\n?? tickets/in-progress/context-compaction-simplification-analysis/acceptance-disposition.sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md\n?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/\n?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md\n?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md\n?? tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md\n?? tickets/in-progress/context-compaction-simplification-analysis/api-retry-policy-request.md\n?? tickets/in-progress/context-compaction-simplification-analysis/api-validation-coordination.sr019.md\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr019.md\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr029.md\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr030.md\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-002/\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-003/\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-004/\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr018.md\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-design-request.strategy-boundary.md\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-002/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-003/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-004/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-005/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-006/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-007/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-008/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-009/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-010/\n?? tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/strategy-boundary-request/\n?? tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-v6-candidate.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/analysis-report.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/analysis-report.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/compaction-prompt-proposal.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/compaction-prompt-proposal.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr017.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr018.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr019.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr029.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr030.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr031.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr032.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.before-sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.md.unhanded-sr031-candidate.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/design-spec.sr013-before-sr016-status.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/input-hold-proposal.sr027.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.before-sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr029.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr030.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr031.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr032.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/investigation-notes.md.before-sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/output-format-and-coverage.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/output-format-and-coverage.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/output-format-and-coverage.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/output-format-and-coverage.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/output-format-and-coverage.md.before-sr029.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/prompt-recovery-proposal.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/prompt-refinement-notes.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/recovery-investigation-plan.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.before-sr017.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.before-sr018.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.before-sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr032.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/requirements-doc.md.before-sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/simplification-design-direction.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.before-sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr029.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr030.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr031.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr032.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-progress-result.md.before-sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-recovery-evidence__sr022__README.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-recovery-evidence__sr022__README.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.before-sr020.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.before-sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr029.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr030.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr031.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr032.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision-record.md.before-sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision.sr022.md.before-sr022-assumption.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision.sr022.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/solution-revision.sr022.md.before-sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-boundary-analysis.sr021.before-sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-boundary-analysis.sr021.md.before-sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-boundary-analysis.sr021.md.before-sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-boundary-analysis.sr021.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-boundary-analysis.sr021.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-boundary-analysis.sr021.md.before-text-boundary-clarification.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-execution-investigation.sr025.md.before-sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/strategy-execution-investigation.sr025.md.before-sr028.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/summary-budget-removal-experiment.sr022.md.before-sr022-diagnostic-result.md\n?? tickets/in-progress/context-compaction-simplification-analysis/history/terminal-compaction-activity.sr032.md.before-sr033.md\n?? tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/handoff-receipt.json\n?? tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-004/\n?? tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-005/\n?? tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-006/\n?? tickets/in-progress/context-compaction-simplification-analysis/input-hold-proposal.sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/production-scenario-clarification.sr031.md\n?? tickets/in-progress/context-compaction-simplification-analysis/prompt-recovery-proposal.md\n?? tickets/in-progress/context-compaction-simplification-analysis/recovery-investigation-plan.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-documentation-cleanup.sr023.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr024.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr026.md\n?? tickets/in-progress/context-compaction-simplification-analysis/solution-revision.sr027.md\n?? tickets/in-progress/context-compaction-simplification-analysis/strategy-boundary-analysis.sr021.md\n?? tickets/in-progress/context-compaction-simplification-analysis/strategy-execution-investigation.sr025.md\n?? tickets/in-progress/context-compaction-simplification-analysis/summary-budget-removal-experiment.sr022.md\n?? tickets/in-progress/context-compaction-simplification-analysis/terminal-compaction-activity.sr032.md\n",
+  "sources": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "sha256": "aefb343aed80844c1cf5f7585d27a0f5b86aba68d33159d7721d1a0b0beb60ce",
+      "actual": "aefb343aed80844c1cf5f7585d27a0f5b86aba68d33159d7721d1a0b0beb60ce",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "sha256": "51216e0f474022ff62eaf0dc730c20c25c40fd343dd7dbce6a560f1f8ff0df6b",
+      "actual": "51216e0f474022ff62eaf0dc730c20c25c40fd343dd7dbce6a560f1f8ff0df6b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/interruption/turn-execution-scope.ts",
+      "sha256": "8b289e40788a2739a35565aa4efa94b5e05adc589b382ab0b6166a9677ad9bd8",
+      "actual": "8b289e40788a2739a35565aa4efa94b5e05adc589b382ab0b6166a9677ad9bd8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/interruption/abortable-operation.ts",
+      "sha256": "b6e59e90f6c2ed4d204dabd8ddf62146173206daf8a73d008d65254cd50aeca3",
+      "actual": "b6e59e90f6c2ed4d204dabd8ddf62146173206daf8a73d008d65254cd50aeca3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/agent-turn.ts",
+      "sha256": "a28a4fab11297c71657466df1aab3b8d9d786b50fda477ffe432b5574a4be9f0",
+      "actual": "a28a4fab11297c71657466df1aab3b8d9d786b50fda477ffe432b5574a4be9f0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+      "sha256": "0ef3a4673b6cf010c9f21a77b301394ed8e852540b49338fbdcea5ef6004e116",
+      "actual": "0ef3a4673b6cf010c9f21a77b301394ed8e852540b49338fbdcea5ef6004e116",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "sha256": "d38d0ce310c2be7ed9ab9625296cee2d441f5ae70e0983bf0fb679ecd76cc45d",
+      "actual": "d38d0ce310c2be7ed9ab9625296cee2d441f5ae70e0983bf0fb679ecd76cc45d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/llm-phase-compaction.ts",
+      "sha256": "9ee80c01cab5654d112f983476fe32ad3399effdefb308ffbbb1477704c394a3",
+      "actual": "9ee80c01cab5654d112f983476fe32ad3399effdefb308ffbbb1477704c394a3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/runtime/agent-worker.ts",
+      "sha256": "4e5acd6c7b09a4f8fb3ef205626e6cdc7f9623f2acf4d92366ffe6829b9ba54d",
+      "actual": "4e5acd6c7b09a4f8fb3ef205626e6cdc7f9623f2acf4d92366ffe6829b9ba54d",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "sha256": "3f017f0c278aa8682b6fe6206f43d4b19c46c548a454485018da0242eea90a04",
+      "actual": "3f017f0c278aa8682b6fe6206f43d4b19c46c548a454485018da0242eea90a04",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts",
+      "sha256": "0297bc01af9aaaca18155bb1a3c76cb37525a740c84398d923e3b042c6ace9e1",
+      "actual": "0297bc01af9aaaca18155bb1a3c76cb37525a740c84398d923e3b042c6ace9e1",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+      "sha256": "d849436d40f5a9d53f73a48ccca4a7882a93ad4636e94e642bde2419e3fa2507",
+      "actual": "d849436d40f5a9d53f73a48ccca4a7882a93ad4636e94e642bde2419e3fa2507",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "sha256": "b214d5ae6f5ffac68bdc2073c612f14bf1236ea2ac7c992562cf7ce0f075d6ef",
+      "actual": "b214d5ae6f5ffac68bdc2073c612f14bf1236ea2ac7c992562cf7ce0f075d6ef",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/models/raw-trace-item.ts",
+      "sha256": "fff7f5cfb286a7419938d5803d616a231474bfe9ad6867e557a65e63b739e9c6",
+      "actual": "fff7f5cfb286a7419938d5803d616a231474bfe9ad6867e557a65e63b739e9c6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "sha256": "3ffa0e271ea0b0237dc44a17f452b7490cb4d026484d63a2ee42c8212c8cfeab",
+      "actual": "3ffa0e271ea0b0237dc44a17f452b7490cb4d026484d63a2ee42c8212c8cfeab",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "sha256": "2f1db2c063929b947a61fad8a414eff9395c1488dcc0d986fa7a3cd19204a096",
+      "actual": "2f1db2c063929b947a61fad8a414eff9395c1488dcc0d986fa7a3cd19204a096",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts",
+      "sha256": "081ace9a2d2ae8434eae0c0c1c7bbb064079b66e1128bcdc2adbae268a08c6df",
+      "actual": "081ace9a2d2ae8434eae0c0c1c7bbb064079b66e1128bcdc2adbae268a08c6df",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+      "actual": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run-root-shutdown-fence.ts",
+      "sha256": "963fdeb81453816f9bcab247779c356ac06fb4907cfe8a23cef2b0ff00c8dd90",
+      "actual": "963fdeb81453816f9bcab247779c356ac06fb4907cfe8a23cef2b0ff00c8dd90",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/prepared-agent-run-termination.ts",
+      "sha256": "720667bbbe218cfed795b769517a540545d026aa2a19aab963c173d9cf94fe4b",
+      "actual": "720667bbbe218cfed795b769517a540545d026aa2a19aab963c173d9cf94fe4b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/dispatch-processed-agent-run-events.ts",
+      "sha256": "7fdeeab8ebc5a3aa614dacf3e340e78bd35933ad63b37b53a2ccb199a59c08f3",
+      "actual": "7fdeeab8ebc5a3aa614dacf3e340e78bd35933ad63b37b53a2ccb199a59c08f3",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/agent-run-event-dispatch-queue.ts",
+      "sha256": "16010d8f5e125589e112e7038e8e0b2e094eb7257ab62b41839052e0f405d911",
+      "actual": "16010d8f5e125589e112e7038e8e0b2e094eb7257ab62b41839052e0f405d911",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts",
+      "sha256": "b01acec2b14f364fcb17a60463920e775c956402bd8cc922c4071538249cdb1e",
+      "actual": "b01acec2b14f364fcb17a60463920e775c956402bd8cc922c4071538249cdb1e",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-memory/services/agent-run-memory-recorder.ts",
+      "sha256": "29cb5e6912b05df6e41be6cb47936517b402252d57cab3897c59c74fcc0e0bee",
+      "actual": "29cb5e6912b05df6e41be6cb47936517b402252d57cab3897c59c74fcc0e0bee",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-memory/services/provider-compaction-boundary-recorder.ts",
+      "sha256": "d2308bcb9d99d3f546bf23708a4e58e3afee79f5123dc815aaf40f154e03507f",
+      "actual": "d2308bcb9d99d3f546bf23708a4e58e3afee79f5123dc815aaf40f154e03507f",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+      "sha256": "d2db90a864dc12fe45c2d741c379ea89e94aa08d5c6639ec224c3a327af41325",
+      "actual": "d2db90a864dc12fe45c2d741c379ea89e94aa08d5c6639ec224c3a327af41325",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts",
+      "sha256": "66405aa065cd6790133c1156fe2ae3ccaebd211ec4e712f8835bad6875838915",
+      "actual": "66405aa065cd6790133c1156fe2ae3ccaebd211ec4e712f8835bad6875838915",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts",
+      "sha256": "a5ef2b0d91389876cbb269c934543d01cc473179a46e2a383e6aec0cab875daa",
+      "actual": "a5ef2b0d91389876cbb269c934543d01cc473179a46e2a383e6aec0cab875daa",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "sha256": "f08a71d138a57a1b15fada0cebaa538f93c613b7176696abd1259bc589407992",
+      "actual": "f08a71d138a57a1b15fada0cebaa538f93c613b7176696abd1259bc589407992",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "sha256": "01b1fae9d94997af9c4cf3f11bbba703c3327a569b08032e42171861247a1aad",
+      "actual": "01b1fae9d94997af9c4cf3f11bbba703c3327a569b08032e42171861247a1aad",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "sha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771",
+      "actual": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "sha256": "7711abe653499dcbac7740326abfa88c4f1e300246b798503cc10663750772e7",
+      "actual": "7711abe653499dcbac7740326abfa88c4f1e300246b798503cc10663750772e7",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts",
+      "sha256": "bca4fd40a660c1d318cece9f96af920c8a60aa5bf55b0e87743d78ac754c4976",
+      "actual": "bca4fd40a660c1d318cece9f96af920c8a60aa5bf55b0e87743d78ac754c4976",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentActivityStore.ts",
+      "sha256": "a8b1f259c1973f80ad7820be9869bb84712ecf241f3ace1748e9ce1208caa769",
+      "actual": "a8b1f259c1973f80ad7820be9869bb84712ecf241f3ace1748e9ce1208caa769",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/types/agent/AgentRunState.ts",
+      "sha256": "e629ccd2de6b6901b4c35d328d6ac53ef69ed4f19771e4f16adc3a508a4277b0",
+      "actual": "e629ccd2de6b6901b4c35d328d6ac53ef69ed4f19771e4f16adc3a508a4277b0",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/AgentStreamingService.ts",
+      "sha256": "ed7e4d04006aff365f6737940d293958c2c26f331cc18c34078e8965692290be",
+      "actual": "ed7e4d04006aff365f6737940d293958c2c26f331cc18c34078e8965692290be",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts",
+      "sha256": "f0b262cde4a943dc6f7f7d02bed4cdda27abef3cc47c7850094ed9cc4ce199cf",
+      "actual": "f0b262cde4a943dc6f7f7d02bed4cdda27abef3cc47c7850094ed9cc4ce199cf",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "sha256": "a40cac7508766e3802d2e31b3e614f303a11999dbef5b48711769888d56443e5",
+      "actual": "a40cac7508766e3802d2e31b3e614f303a11999dbef5b48711769888d56443e5",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "sha256": "cf76efbe06d1e98cadc3bead5d78f806f5b5ba9b64bb06f0f020eb05c1c705bf",
+      "actual": "cf76efbe06d1e98cadc3bead5d78f806f5b5ba9b64bb06f0f020eb05c1c705bf",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runStatus/agentRuntimeStatusState.ts",
+      "sha256": "ee472d8cda0d29ae651a80c7fc1f146f4ce2295eb061278777247d0c96ace9ca",
+      "actual": "ee472d8cda0d29ae651a80c7fc1f146f4ce2295eb061278777247d0c96ace9ca",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runOpen/agentRunOpenCoordinator.ts",
+      "sha256": "8ebb18ccd1f9252dc62abe42fd01f72290097025455e67e149ebaaa087357017",
+      "actual": "8ebb18ccd1f9252dc62abe42fd01f72290097025455e67e149ebaaa087357017",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runOpen/runOpenStrategyPolicy.ts",
+      "sha256": "8c8729b289b7438209df308febe21e99e2eeb0c7423e3252de80c4823f1e365c",
+      "actual": "8c8729b289b7438209df308febe21e99e2eeb0c7423e3252de80c4823f1e365c",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runHydration/runContextHydrationService.ts",
+      "sha256": "224287c6b8fb64bd75541845c59ad54c16fca3454205568dd14acd29bc9322da",
+      "actual": "224287c6b8fb64bd75541845c59ad54c16fca3454205568dd14acd29bc9322da",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/runHydration/runProjectionActivityHydration.ts",
+      "sha256": "bc456be44c86b1578cd7913a8c487ccf0cb3ad547399325c3790fba62f10a6f9",
+      "actual": "bc456be44c86b1578cd7913a8c487ccf0cb3ad547399325c3790fba62f10a6f9",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/activity/runActivityWindowPolicy.ts",
+      "sha256": "d2b2ddcf1efba551d9c35a6aad9bf3b8ad636d1b11bf1eaa67e829760b6d8766",
+      "actual": "d2b2ddcf1efba551d9c35a6aad9bf3b8ad636d1b11bf1eaa67e829760b6d8766",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/utils/compactionActivityPresentation.ts",
+      "sha256": "b1437fd0efffe08e393a194fca6e11e6d5eb451264dbdc365698d9b56a91270b",
+      "actual": "b1437fd0efffe08e393a194fca6e11e6d5eb451264dbdc365698d9b56a91270b",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/components/workspace/agent/CompactionStatusRow.vue",
+      "sha256": "ffabf28186ba279cd853163fcc11afa216e966dd88eab26f90d53588802448f6",
+      "actual": "ffabf28186ba279cd853163fcc11afa216e966dd88eab26f90d53588802448f6",
+      "match": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/docs/design/data_migration_guideline.md",
+      "sha256": "39e6e2a528824850f0dd185d5dd5bfa0ef8502015e36b9284d60ce5670a500f0",
+      "actual": "39e6e2a528824850f0dd185d5dd5bfa0ef8502015e36b9284d60ce5670a500f0",
+      "match": true
+    }
+  ],
+  "authority": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+      "sha256": "999ff0aab0dbffc861dfc4c7ebd1c242ff53017e5e097bcf421ed82918808215"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "sha256": "e4183533f751af3f3ddcd90a33506a43dab5cef1acf8a6bdb61dba2d8642ef40"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "sha256": "3fb01e3e6a5aac0b5dc8297ea1589ae438a9b062ba694332fc0a3092ce55c3f9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "sha256": "3e2cce18c49cd1d8d8b88773e046e241558cb15578a9e1da9d0016b053567d28"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md",
+      "sha256": "2df83ee4f45e7ffbbe244afd692fecff4e1813c3935c6b64d01c43a20c01b81c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md",
+      "sha256": "19a52021866457c1f2e034ea77f59305da606c3753226cc01b4077d37a0e4f46"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr033.md",
+      "sha256": "29ab80a6566bf2df8476d5d7cd84440964448e62db92f6ce01afad92735f130f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md",
+      "sha256": "1f6807c1cf69a91c7457f9769963b8978bed3416a17acf271d16cc87bb6ecae2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+      "sha256": "90d416ce996968502c1a34d5396d6f0c43560e146b843a4fd9ad5aaf19de634d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "sha256": "27650089db2bd9a2f49291a27f53337a97e949eeabfe2413ad0a706e2a1d0f45"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md",
+      "sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7"
+    }
+  ]
+}

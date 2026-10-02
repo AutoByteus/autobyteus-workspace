@@ -1,0 +1,16 @@
+{
+  "repository": 85.0,
+  "finalCategories": [
+    75,
+    95,
+    90,
+    95,
+    90,
+    90,
+    90
+  ],
+  "final": 89.3,
+  "result": "Blocked",
+  "broaderValidation": "Blocked for remaining real-provider semantic dependency",
+  "testReview": "Pending \u2014 Large/High; no successful overall validation"
+}

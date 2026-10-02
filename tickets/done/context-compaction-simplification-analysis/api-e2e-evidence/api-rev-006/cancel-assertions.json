@@ -1,0 +1,10 @@
+{
+  "result": "Pass",
+  "abortedRequest": 23,
+  "lateResponseDiscarded": true,
+  "preexistingMessagesUnchanged": 17,
+  "oneCancellationNote": true,
+  "cancelledENotDispatched": true,
+  "freshFParentRequest": 25,
+  "remote": 0
+}

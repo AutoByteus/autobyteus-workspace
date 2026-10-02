@@ -1,0 +1,1 @@
+export default { test: { environment: "node", pool: "forks", fileParallelism: false, include: ['/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-008/agent-root-projector.probe.test.ts'] } };

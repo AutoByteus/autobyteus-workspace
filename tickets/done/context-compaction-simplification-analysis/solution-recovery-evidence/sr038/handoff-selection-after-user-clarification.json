@@ -1,0 +1,11 @@
+{
+  "selected": {
+    "when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval.",
+    "recipient_address": "/architecture_reviewer"
+  },
+  "classification": "Architecture Design Complete / Large / High",
+  "requirements": "Approved SR033 unchanged",
+  "userConstraint": "No migration or backfill; future correctness only",
+  "status": "Selected, not yet sent",
+  "excluded": "No direct implementation or Delivery receipt gap; one recipient only"
+}

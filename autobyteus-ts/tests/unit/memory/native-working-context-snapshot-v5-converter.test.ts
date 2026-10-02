@@ -5,7 +5,7 @@ import {
   type NativeSnapshotReferenceFact,
 } from '../../../src/memory/migration/native-working-context-snapshot-v5-converter.js';
 import { getWorkingContextMessageProvenance } from '../../../src/memory/working-context-provenance.js';
-import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
+import { ReleasedNativeSnapshotV5Codec } from '../../../src/memory/migration/native-working-context-snapshot-shapes.js';
 
 const encoder = new TextEncoder();
 const provenance = (rawTraceIds: string[], turnId = 'turn-1') => ({
@@ -132,8 +132,8 @@ describe('NativeWorkingContextSnapshotV5Converter', () => {
       });
       expect(retained[2]?.tool_payload).toBeInstanceOf(ToolCallPayload);
       expect(retained[3]?.tool_payload).toBeInstanceOf(ToolResultPayload);
-      expect(WorkingContextSnapshotSerializer.validate(
-        WorkingContextSnapshotSerializer.serialize(result.workingContext, {
+      expect(ReleasedNativeSnapshotV5Codec.validate(
+        ReleasedNativeSnapshotV5Codec.serialize(result.workingContext, {
           agent_id: 'agent-migrate',
         }),
       )).toBe(true);
@@ -229,11 +229,11 @@ describe('NativeWorkingContextSnapshotV5Converter', () => {
       omissions: { reasonCodes: expect.arrayContaining([reasonCode]) },
     });
     if (result.kind !== 'candidate') throw new Error('expected candidate');
-    const payload = WorkingContextSnapshotSerializer.serialize(result.workingContext, {
+    const payload = ReleasedNativeSnapshotV5Codec.serialize(result.workingContext, {
       agent_id: 'agent-migrate',
     });
     expect(payload).toEqual({ schema_version: 5, agent_id: 'agent-migrate', messages: [] });
-    expect(WorkingContextSnapshotSerializer.validate(payload)).toBe(true);
+    expect(ReleasedNativeSnapshotV5Codec.validate(payload)).toBe(true);
   });
 
   it.each([

@@ -1,0 +1,8 @@
+{
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "head": "599cc4776a2da6c746be9719064fd1a7efdfa36e",
+  "base": "cb01dea2392e4bd7233855218e9a1a5b65ec3530",
+  "target": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "backup": "codex/backup-compaction-before-sr018-20260930t104013z",
+  "pending_count": 286
+}

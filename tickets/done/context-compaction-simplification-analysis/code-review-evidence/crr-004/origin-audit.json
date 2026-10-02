@@ -1,0 +1,95 @@
+{
+  "revision": "CRR-004",
+  "entryPoint": "API/E2E Failure-Origin Review",
+  "head": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "primaryFailure": "API-F005",
+  "secondaryFailure": "API-F004",
+  "priorFailure": "API-F001 resolved at bounded source/log check",
+  "productionDelta": [],
+  "sevenDurableHashesMatch": true,
+  "semanticObservationsEqualLogEvents": true,
+  "renderedRequestReplay": "2 tests pass, no provider",
+  "summarySha256": "ebcb7970652c231e3a8e36aa9eaf415bbd07b6d5aef9130a73104029cec31cc7",
+  "correction": "Correction: retention is now 30 days, replacing 7 days. Cancel the proposed cloud export entirely. Inventory remains completed. Keep risk assessment active. Add the owner-review checkpoint APPROVAL-73 to the plan; approval for implementation is still pending. The latest unresolved request is to compare rollback options, not to implement them. pnpm verify:helios is still unrun.",
+  "completionStatus": "complete",
+  "completionReason": "stop",
+  "outcome": "Unclear remedy/causal isolation; Solution Designer coordination",
+  "inputHashes": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+      "sha256": "4a93380a45452c364aabd867183d443254b7b4275e08332801000a3ab63ce117"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "sha256": "eb401bfd7e0c7461c77873824a6f6845752170eb83f052551b8fb8a1d9d08031"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md",
+      "sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md",
+      "sha256": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "sha256": "413d4f9c1deae7b2fc59d600cffa6e976b176c33b481db46db9dc5f288dcde61"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+      "sha256": "8e391b00c60296e6db67e6407a3170d58969c5ad5bcef5af9c90ddc90324dfc4"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+      "sha256": "3deba5ecf2f8b0e74f22588c56da12f76ed771fa471eb10490da733952321b69"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+      "sha256": "9fc0a226d18d5b1d783732185c5343ad0f49a90e4cec7f8ea126a08de548a7d3"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-review.md",
+      "sha256": "07edf359b6d7a98b5e0f964db9679195d3815d260eccf3fc7c72a9d36a90c047"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-final-observations.json",
+      "sha256": "f8fa1c8df5a65bd28ba91adbbc52a711a5747f6bbbdfff8b8809cac34debb833"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/semantic-attempt1-observations.json",
+      "sha256": "766bda7559a494f36d5fcfb0d8f9e7fe2fd9d0cf8ac8bc8822410c69caf01f83"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality.log",
+      "sha256": "b52ae1d3f584d5b0a4114ff3ccdc785d7f1265c65c3239a94630971b1eae6417"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-quality-attempt1.log",
+      "sha256": "e4adcc5bbca4a32932acd5cffa827cc4e4fdb96adece6f9e9f2518e6f66a1e7b"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first-attempt3.log",
+      "sha256": "bce004ab024ec37b621a46edf0ce019c4482bb56a7dd689c358bb8cf60c3e3da"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C08-first.log",
+      "sha256": "b790db3233e5ff1fd357a1c8e7aae60d2f3122b548275f997dd53d1b7e08c2eb"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F004-triage.json",
+      "sha256": "e3d084c41c3f50d48fda0e0497d985bfaa8e1e624b832c209cf266bd25cdfeca"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-F005-replay.json",
+      "sha256": "378b0e335ecb24e2d641e63ff01810b36bc86c23be609467e3b9293391d2ae38"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/API-C01.log",
+      "sha256": "2fc5d5123f5dc292573d33c2e947298ddd676a4da4eeaebc6e7e5487cdad2aa4"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-002/final-source-audit.json",
+      "sha256": "e7ce5c41d89b9af6b3599acec6925513bd3fe0655f42249da60ba171f204d534"
+    }
+  ]
+}

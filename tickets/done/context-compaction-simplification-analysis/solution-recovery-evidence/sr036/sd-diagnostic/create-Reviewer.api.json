@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-01T14:59:43.600706+00:00",
+  "endpoint": "http://127.0.0.1:64588/graphql",
+  "request": {
+    "query": "mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id name}}",
+    "variables": {
+      "input": {
+        "name": "SD036 Reviewer",
+        "description": "Solution Designer isolated diagnostic only",
+        "instructions": "SD036 synthetic diagnostic. Acknowledge only. No external work.",
+        "toolNames": [
+          "read_file"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "sd036-deterministic-32768:lmstudio@127.0.0.1:64571"
+        }
+      }
+    }
+  },
+  "response": {
+    "data": {
+      "createAgentDefinition": {
+        "id": "sd036-reviewer",
+        "name": "SD036 Reviewer"
+      }
+    }
+  }
+}

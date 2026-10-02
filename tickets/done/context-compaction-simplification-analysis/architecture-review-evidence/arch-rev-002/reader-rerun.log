@@ -1,0 +1,8 @@
+PASS Existing current-shape v5 summary is readable without consulting category files
+PASS Removing only obsolete root version currently rejects otherwise identical content
+PASS Adding an irrelevant root attribute currently rejects otherwise identical content
+PASS Wrong known-field type remains an actual structural failure
+PASS Missing current provenance is not repaired by a tolerant-root proposal
+PASS Released converter treats a versionless payload as unsupported and produces no summary
+PASS Existing settings codec rejects unknown root fields rather than projecting them
+PASS Existing settings null/null default is valid without legacy input

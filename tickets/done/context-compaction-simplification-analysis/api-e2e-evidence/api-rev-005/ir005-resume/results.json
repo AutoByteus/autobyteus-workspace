@@ -1,0 +1,28 @@
+{
+  "revision": "API-REV-005",
+  "result": "Fail",
+  "confidencePercent": 78.6,
+  "scores": [
+    50,
+    90,
+    75,
+    95,
+    85,
+    65,
+    90
+  ],
+  "distinctSelectedPass": 542,
+  "distinctSelectedFail": 1,
+  "fileCount": 46,
+  "finding": "API-F007",
+  "resolvedTestAuthoringFinding": "API005-LF001",
+  "broader": "Required; executed partially, failure stops campaign",
+  "remoteCalls": 0,
+  "scriptedParentCalls": 3,
+  "scriptedCompactionCalls": 0,
+  "newDurablePaths": [
+    "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts"
+  ],
+  "currentSource": "6908ccff483f1eca522caa65bfaaf6dcfcc26750"
+}

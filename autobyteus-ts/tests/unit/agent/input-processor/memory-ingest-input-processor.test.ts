@@ -38,6 +38,19 @@ const makeContext = () => {
 };
 
 describe('MemoryIngestInputProcessor', () => {
+  it('retains accepted keys from the original input, never rewritten metadata', async () => {
+    const context = makeContext();
+    context.state.memoryManager = { ingestUserMessage: vi.fn() } as any;
+    context.state.activeTurn = { turnId: 'turn-1' } as any;
+    const original = new AgentInputUserMessage('original', SenderType.USER, null, { message_id: 'A', dedupe_key: 'token' });
+    const processed = new AgentInputUserMessage('processed', SenderType.USER, null, { message_id: 'wrong' });
+    await new MemoryIngestInputProcessor().process(processed, context, { agentInputUserMessage: original } as any);
+    expect(context.state.memoryManager!.ingestUserMessage).toHaveBeenCalledWith(
+      expect.objectContaining({ content: 'processed' }), 'turn-1', 'LLMUserMessageReadyEvent', [], null,
+      { messageId: 'A', dedupeKey: 'token' },
+    );
+  });
+
   it('ingests user message into the already-active turn', async () => {
     const context = makeContext();
     const processor = new MemoryIngestInputProcessor();
@@ -56,7 +69,8 @@ describe('MemoryIngestInputProcessor', () => {
       'turn_0001',
       'LLMUserMessageReadyEvent',
       [],
-      null
+      null,
+      { messageId: undefined, dedupeKey: undefined }
     );
   });
 

@@ -1,0 +1,72 @@
+{
+  "scanned_files": 1577,
+  "scope": "Listed web source/local tests/scripts and root source config; excludes generated/resources/dependency trees. Lexical scan plus manual config/import review, not a whole-repository computed-import theorem.",
+  "harness_or_native_fixture_references": [],
+  "core_name_occurrences_for_manual_review": [
+    {
+      "path": "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+      "line": 16,
+      "text": "    dependencies: productionCoreDependency ? { 'autobyteus-ts': 'workspace:*' } : {},"
+    },
+    {
+      "path": "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+      "line": 22,
+      "text": "    \"import { AgentInputUserMessage } from '../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';\\n\");"
+    },
+    {
+      "path": "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+      "line": 38,
+      "text": "    expect(result.stderr).toContain('Direct autobyteus-ts dependencies are not allowed');"
+    },
+    {
+      "path": "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+      "line": 46,
+      "text": "    expect(result.stderr).toContain(\"dependencies must not include 'autobyteus-ts'\");"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 22,
+      "text": "if (dependencies['autobyteus-ts']) {"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 24,
+      "text": "    \"Invalid dependency: package.json dependencies must not include 'autobyteus-ts'. \" +"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 43,
+      "text": "const staleWorkspaceLink = path.join(appRoot, 'node_modules', 'autobyteus-ts');"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 78,
+      "text": "  /from\\s+['\"]autobyteus-ts(?:\\/[^'\"]*)?['\"]/,"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 79,
+      "text": "  /require\\(\\s*['\"]autobyteus-ts(?:\\/[^'\"]*)?['\"]\\s*\\)/,"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 80,
+      "text": "  /from\\s+['\"](?:\\.\\.\\/)+autobyteus-ts\\/[^'\"]+['\"]/,"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 81,
+      "text": "  /require\\(\\s*['\"](?:\\.\\.\\/)+autobyteus-ts\\/[^'\"]+['\"]\\s*\\)/,"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 135,
+      "text": "    if (line.includes('autobyteus-ts')) {"
+    },
+    {
+      "path": "autobyteus-web/scripts/guard-web-boundary.mjs",
+      "line": 157,
+      "text": "    'Direct autobyteus-ts dependencies are not allowed in active autobyteus-web code:\\n' +"
+    }
+  ]
+}

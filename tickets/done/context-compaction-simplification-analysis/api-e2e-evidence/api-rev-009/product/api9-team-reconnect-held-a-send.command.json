@@ -1,0 +1,16 @@
+{
+  "time": "2026-10-01T13:07:33.204740+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "async (arg) => {const r=await __abDemo.type({selector:\"main textarea\"},arg.text,{clear:true,delayMs:0});if(!r.ok)throw Error(JSON.stringify(r));const s=await __abDemo.click({text:\"Send message\"});if(!s.ok)throw Error(JSON.stringify(s));return {sent:arg.marker,length:arg.text.length};}",
+    "--arg-json",
+    "{\"marker\": \"API9-TEAM-RECONNECT-HELD-A\", \"text\": \"API9-TEAM-RECONNECT-HELD-A\\n\"}"
+  ],
+  "controlPort": 56935
+}

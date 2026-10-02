@@ -1,0 +1,792 @@
+{
+  "base": "046279298f53fb98d7688ee9dc2b2ba0fa827685",
+  "sourceCommit": "7886aeb78449fa54a09ce715fc6e0d74134b386f",
+  "changedHandwrittenProductionFiles": [
+    {
+      "file": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "nonEmptyLines": 122,
+      "added": 4,
+      "deleted": 4,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+      "nonEmptyLines": 122,
+      "added": 3,
+      "deleted": 3,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+      "nonEmptyLines": 96,
+      "added": 4,
+      "deleted": 4,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "nonEmptyLines": 369,
+      "added": 2,
+      "deleted": 2,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "nonEmptyLines": 450,
+      "added": 9,
+      "deleted": 60,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.ts",
+      "nonEmptyLines": 29,
+      "added": 1,
+      "deleted": 4,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts",
+      "nonEmptyLines": 39,
+      "added": 42,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "nonEmptyLines": 202,
+      "added": 5,
+      "deleted": 5,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+      "nonEmptyLines": 111,
+      "added": 3,
+      "deleted": 3,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/api/graphql/schema.ts",
+      "nonEmptyLines": 79,
+      "added": 0,
+      "deleted": 2,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts",
+      "nonEmptyLines": 304,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "nonEmptyLines": 23,
+      "added": 0,
+      "deleted": 6,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts",
+      "nonEmptyLines": 61,
+      "added": 2,
+      "deleted": 4,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/config/compaction-model-settings.ts",
+      "nonEmptyLines": 28,
+      "added": 31,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "nonEmptyLines": 119,
+      "added": 3,
+      "deleted": 3,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "nonEmptyLines": 371,
+      "added": 8,
+      "deleted": 14,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/startup/compaction-model-settings-migration.ts",
+      "nonEmptyLines": 31,
+      "added": 33,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "nonEmptyLines": 79,
+      "added": 7,
+      "deleted": 93,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/context/agent-config.ts",
+      "nonEmptyLines": 116,
+      "added": 1,
+      "deleted": 7,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "nonEmptyLines": 209,
+      "added": 0,
+      "deleted": 9,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/llm-request-assembler.ts",
+      "nonEmptyLines": 121,
+      "added": 4,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/loop/llm-phase-compaction.ts",
+      "nonEmptyLines": 98,
+      "added": 0,
+      "deleted": 1,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "nonEmptyLines": 373,
+      "added": 4,
+      "deleted": 59,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+      "nonEmptyLines": 252,
+      "added": 12,
+      "deleted": 12,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/clients/autobyteus-client.ts",
+      "nonEmptyLines": 492,
+      "added": 2,
+      "deleted": 2,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/anthropic-llm.ts",
+      "nonEmptyLines": 306,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/autobyteus-llm.ts",
+      "nonEmptyLines": 141,
+      "added": 3,
+      "deleted": 2,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/completion-status.ts",
+      "nonEmptyLines": 17,
+      "added": 19,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/gemini-llm.ts",
+      "nonEmptyLines": 263,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/mistral-llm.ts",
+      "nonEmptyLines": 128,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/ollama-llm.ts",
+      "nonEmptyLines": 178,
+      "added": 5,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/openai-compatible-llm.ts",
+      "nonEmptyLines": 177,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/api/openai-responses-llm.ts",
+      "nonEmptyLines": 368,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/base.ts",
+      "nonEmptyLines": 173,
+      "added": 1,
+      "deleted": 1,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/llm-factory.ts",
+      "nonEmptyLines": 322,
+      "added": 3,
+      "deleted": 1,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/llm/utils/response-types.ts",
+      "nonEmptyLines": 70,
+      "added": 6,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/accepted-compaction-builder.ts",
+      "nonEmptyLines": 31,
+      "added": 18,
+      "deleted": 115,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/accepted-compaction-committer.ts",
+      "nonEmptyLines": 32,
+      "added": 26,
+      "deleted": 34,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts",
+      "nonEmptyLines": 104,
+      "added": 3,
+      "deleted": 3,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-execution.ts",
+      "nonEmptyLines": 17,
+      "added": 19,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts",
+      "nonEmptyLines": 52,
+      "added": 0,
+      "deleted": 7,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+      "nonEmptyLines": 34,
+      "added": 36,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts",
+      "nonEmptyLines": 2,
+      "added": 2,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts",
+      "nonEmptyLines": 69,
+      "added": 72,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts",
+      "nonEmptyLines": 44,
+      "added": 7,
+      "deleted": 7,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "nonEmptyLines": 87,
+      "added": 64,
+      "deleted": 104,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts",
+      "nonEmptyLines": 249,
+      "added": 34,
+      "deleted": 9,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts",
+      "nonEmptyLines": 59,
+      "added": 1,
+      "deleted": 14,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts",
+      "nonEmptyLines": 29,
+      "added": 3,
+      "deleted": 11,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/index.ts",
+      "nonEmptyLines": 71,
+      "added": 2,
+      "deleted": 22,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "nonEmptyLines": 318,
+      "added": 25,
+      "deleted": 95,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts",
+      "nonEmptyLines": 76,
+      "added": 5,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/memory-manager.ts",
+      "nonEmptyLines": 489,
+      "added": 2,
+      "deleted": 12,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts",
+      "nonEmptyLines": 60,
+      "added": 2,
+      "deleted": 29,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/store/base-store.ts",
+      "nonEmptyLines": 23,
+      "added": 6,
+      "deleted": 17,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/store/file-store.ts",
+      "nonEmptyLines": 72,
+      "added": 5,
+      "deleted": 16,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/store/run-memory-file-store.ts",
+      "nonEmptyLines": 386,
+      "added": 27,
+      "deleted": 62,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/working-context-provenance.ts",
+      "nonEmptyLines": 175,
+      "added": 11,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/components/progress/CompactionActivityItem.vue",
+      "nonEmptyLines": 103,
+      "added": 5,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/components/settings/CompactionConfigCard.vue",
+      "nonEmptyLines": 231,
+      "added": 24,
+      "deleted": 83,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/components/settings/CompactionModelSettings.vue",
+      "nonEmptyLines": 50,
+      "added": 50,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/graphql/queries/server_settings_queries.ts",
+      "nonEmptyLines": 27,
+      "added": 0,
+      "deleted": 1,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/localization/messages/en/settings.ts",
+      "nonEmptyLines": 398,
+      "added": 12,
+      "deleted": 9,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/localization/messages/zh-CN/settings.ts",
+      "nonEmptyLines": 398,
+      "added": 12,
+      "deleted": 9,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "nonEmptyLines": 255,
+      "added": 13,
+      "deleted": 13,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "nonEmptyLines": 32,
+      "added": 6,
+      "deleted": 6,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "nonEmptyLines": 143,
+      "added": 1,
+      "deleted": 1,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/stores/serverSettings.ts",
+      "nonEmptyLines": 393,
+      "added": 0,
+      "deleted": 15,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/types/activity/RunActivity.ts",
+      "nonEmptyLines": 61,
+      "added": 7,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/types/agent/AgentRunState.ts",
+      "nonEmptyLines": 77,
+      "added": 7,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-web/utils/compactionModelSettings.ts",
+      "nonEmptyLines": 12,
+      "added": 12,
+      "deleted": 0,
+      "hardLimit": "Pass",
+      "deltaOver220": false
+    }
+  ],
+  "removedProductionFiles": [
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 23,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 257,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": true
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 116,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 206,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 27,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent-config.json",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 11,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 37,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 21,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 181,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 61,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-response-parser.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 271,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": true
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-result-normalizer.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 123,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/compaction-result.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 34,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 28,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 77,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 52,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 33,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 9,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 50,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 120,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/lineage/compaction-lineage-scope.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 38,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/lineage/compaction-lineage-store.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 10,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 45,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 58,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/projection/compacted-memory-projection-bundle.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 23,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/projection/current-compaction-output-loader.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 41,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    },
+    {
+      "file": "autobyteus-ts/src/memory/store/file-compaction-lineage-store.ts",
+      "nonEmptyLines": 0,
+      "added": 0,
+      "deleted": 85,
+      "hardLimit": "N/A \u2014 removed",
+      "deltaOver220": false
+    }
+  ]
+}

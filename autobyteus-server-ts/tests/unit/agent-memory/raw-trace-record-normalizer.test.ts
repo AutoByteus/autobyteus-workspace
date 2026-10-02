@@ -75,3 +75,18 @@ describe("raw trace record normalizer outcome presence", () => {
     expect(event).toHaveProperty("toolError", null);
   });
 });
+
+
+it('retains normalized optional accepted keys only for user traces', () => {
+  expect(toMemoryTraceEvent({ ...base, trace_type: 'user', message_id: ' A ', dedupe_key: ' token ', sender_id: 'exact sender' })).toMatchObject({
+    messageId: 'A', dedupeKey: 'token', senderId: 'exact sender', id: 'rt-1', turnId: 'turn-1',
+  });
+  for (const trace_type of ['assistant', 'tool_call', 'reasoning']) {
+    const event = toMemoryTraceEvent({ ...base, trace_type, message_id: 'A', dedupe_key: 'token' });
+    expect(event).not.toHaveProperty('messageId'); expect(event).not.toHaveProperty('dedupeKey');
+  }
+  for (const value of [undefined, null, '', '  ', 1, {}]) {
+    const event = toMemoryTraceEvent({ ...base, trace_type: 'user', message_id: value, dedupe_key: value });
+    expect(event).not.toHaveProperty('messageId'); expect(event).not.toHaveProperty('dedupeKey');
+  }
+});

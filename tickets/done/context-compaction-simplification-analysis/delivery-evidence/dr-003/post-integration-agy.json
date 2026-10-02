@@ -1,0 +1,15 @@
+{
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts",
+    "tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+  "started": "2026-10-01T19:08:33.319495+00:00",
+  "finished": "2026-10-01T19:08:35.025290+00:00",
+  "exitCode": 0
+}

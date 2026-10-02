@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:33:12.336Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "058FB67A1696E17A8D8FE36226991FF8",
+    "--script",
+    "async()=>{const r=[];for(const [id,value] of [['team-name','API6 Terminal Team'],['team-description','Owned offline terminal control validation'],['team-instructions','Only acknowledge API6 synthetic inputs. Do not call tools or other agents.']])r.push(await __abDemo.type({selector:'#'+id},value,{delayMs:0,clear:true}));r.push(await __abDemo.select({selector:'#team-definition-runtime-kind'},{label:'AutoByteus'}));return {actions:r,drop:[...document.querySelectorAll('div')].filter(e=>e.textContent.trim()==='Drop Agents here to add them to this Team').map(e=>e.parentElement.outerHTML.slice(0,3000))};}"
+  ]
+}

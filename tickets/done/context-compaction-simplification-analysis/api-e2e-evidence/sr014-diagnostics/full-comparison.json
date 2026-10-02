@@ -1,0 +1,59 @@
+{
+  "actualFullFlowAttempts": 1,
+  "registeredTests": "2Pass, scoped full-flow observation with test-environment deviation",
+  "exitStage": "passed",
+  "error": null,
+  "completedTurns": 4,
+  "successfulTools": 4,
+  "directSummaries": 1,
+  "wireRequests": 9,
+  "parentRequests": 8,
+  "compactorRequests": 1,
+  "wireFinishes": [
+    {
+      "sequence": 1,
+      "reason": "tool_calls"
+    },
+    {
+      "sequence": 2,
+      "reason": "stop"
+    },
+    {
+      "sequence": 3,
+      "reason": "tool_calls"
+    },
+    {
+      "sequence": 4,
+      "reason": "stop"
+    },
+    {
+      "sequence": 5,
+      "reason": "tool_calls"
+    },
+    {
+      "sequence": 6,
+      "reason": "stop"
+    },
+    {
+      "sequence": 7,
+      "reason": "stop"
+    },
+    {
+      "sequence": 8,
+      "reason": "tool_calls"
+    },
+    {
+      "sequence": 9,
+      "reason": "stop"
+    }
+  ],
+  "assertions": "All original full-flow assertions preserved and passed",
+  "historicalAPI_F004": "Open: this later positive observation cannot reconstruct original failed cause",
+  "warnings": {
+    "tokenUsageReadinessWarning": true,
+    "alsoPresentInPriorAPI_REV002PositiveLog": false
+  },
+  "observationLimit": "Large all-exit stdout was interleaved by Vitest; reconstruct five exact fragments with attached script/audit. Actual wire JSONL persisted directly, not reconstructed.",
+  "boundaryLimit": "No token-usage SQL persistence validation; events/requests/full-flow artifact observed. Original failed request/exception remains unavailable.",
+  "environmentDeviation": "Temporary observation Vitest config runs registered file but omits repository prisma-env/global setup. Worker logs TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED; absent in retained API-REV-002 positive log. Generation controls/assertions match, but full environment equivalence is NOT established. No substitute attempt permitted or run."
+}

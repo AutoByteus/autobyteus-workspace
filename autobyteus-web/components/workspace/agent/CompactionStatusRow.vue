@@ -10,7 +10,7 @@
         />
         <div class="min-w-0 flex-1">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="font-semibold">{{ activity.message }}</span>
+            <span class="font-semibold">{{ activity.phase === 'stopped' ? 'Stopped' : activity.message }}</span>
             <span class="rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide" :class="chipClasses">
               {{ presentation.label }}
             </span>
@@ -38,6 +38,11 @@ const props = defineProps<{
 const presentation = computed(() => getCompactionPhasePresentation(props.activity.phase));
 
 const toneClasses = {
+  gray: {
+    row: 'border-gray-200 bg-gray-50 text-gray-900',
+    icon: 'text-gray-600',
+    chip: 'border-gray-200 bg-gray-100 text-gray-700',
+  },
   amber: {
     row: 'border-amber-200 bg-amber-50 text-amber-900',
     icon: 'text-amber-600',

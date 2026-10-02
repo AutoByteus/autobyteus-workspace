@@ -1,0 +1,15 @@
+{
+  "result": "Architecture Design Complete",
+  "revision": "SR035",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "requirements": "Approved SR033 unchanged + upstream Approved SR008",
+  "selected": {
+    "when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval.",
+    "recipient_address": "/architecture_reviewer"
+  },
+  "otherRulesMatch": false,
+  "soleRecipient": "/architecture_reviewer",
+  "handoffConfirmed": true,
+  "receipt": "handoff-receipt.json"
+}

@@ -1,0 +1,7 @@
+{
+  "old_absent": true,
+  "interim_candidate_absent": true,
+  "entire_mock_and_test_body_identical": true,
+  "body_sha256": "ce00b65543c0d733570bbbd2190c42c804388ef7e6e702b49ad7eae485f959ba",
+  "only_depth_and_frontend_alias_change": true
+}

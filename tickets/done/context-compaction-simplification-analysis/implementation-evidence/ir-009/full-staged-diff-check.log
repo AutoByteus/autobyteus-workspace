@@ -1,0 +1,21 @@
+autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts:35: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/c-02-observation.log:45: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-agy.log:325: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-all-runtimes.log:1503: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-autobyteus.log:1118: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-claude.log:328: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-codex.log:343: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-grok-acp-wire-summary.txt:8: trailing whitespace.
++  -> completed {"type": "SearchTool", "result_count": 2, "content": "{\n  \"results\": [\n    {\n      \"server\": \"autobyteus_agent_tools\",\n      \"tools\": [\n        {\n          \"tool_name\": \"autobyteus_agent_tools__delegate_task\",\n          \"description\": \"Start one fresh instance of a mounted Agent or AgentTeam in the same rooted\\nAgentTeam and give it this work as its first message. recipient_address\\nidentifies the Agent or AgentTeam definition to instantiate. An Agent target\\nstarts one 
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-grok-acp-wire-summary.txt:12: trailing whitespace.
++  -> completed {"type": "SearchTool", "result_count": 2, "content": "{\n  \"results\": [\n    {\n      \"server\": \"autobyteus_agent_tools\",\n      \"tools\": [\n        {\n          \"tool_name\": \"autobyteus_agent_tools__delegate_task\",\n          \"description\": \"Start one fresh instance of a mounted Agent or AgentTeam in the same rooted\\nAgentTeam and give it this work as its first message. recipient_address\\nidentifies the Agent or AgentTeam definition to instantiate. An Agent target\\nstarts one 
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-grok-acp-wire-summary.txt:34: trailing whitespace.
++  -> completed {"type": "SearchTool", "result_count": 2, "content": "{\n  \"results\": [\n    {\n      \"server\": \"autobyteus_agent_tools\",\n      \"tools\": [\n        {\n          \"tool_name\": \"autobyteus_agent_tools__delegate_task\",\n          \"description\": \"Start one fresh instance of a mounted Agent or AgentTeam in the same rooted\\nAgentTeam and give it this work as its first message. recipient_address\\nidentifies the Agent or AgentTeam definition to instantiate. An Agent target\\nstarts one 
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/le-01-grok.log:325: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-agy.log:450: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-claude-codex-final.log:709: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-claude.log:464: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-codex.log:492: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-grok.log:398: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-lmstudio-di001.log:1106: new blank line at EOF.
+tickets/done/cross-scope-agent-mentions/api-e2e-evidence/r2-le-lmstudio.log:2126: new blank line at EOF.

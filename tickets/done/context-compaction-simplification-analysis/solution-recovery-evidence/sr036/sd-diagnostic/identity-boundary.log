@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+ ✓ ../tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr036/sd-diagnostic/identity-boundary.probe.test.ts (8 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  17:04:51
+   Duration  362ms (transform 85ms, setup 0ms, collect 110ms, tests 5ms, environment 0ms, prepare 51ms)
+

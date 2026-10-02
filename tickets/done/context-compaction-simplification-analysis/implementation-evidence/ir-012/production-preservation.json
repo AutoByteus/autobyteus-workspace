@@ -1,0 +1,108 @@
+{
+  "production_files": [
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/accepted-input-identity.ts",
+      "ir011_sha256": "d25ee53e5b71f35133d13f30dc009c6309842046c86c77c68ce32d0873ab480b",
+      "current_sha256": "d25ee53e5b71f35133d13f30dc009c6309842046c86c77c68ce32d0873ab480b",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+      "ir011_sha256": "091c45c0a4755c1daab7cac030cd8068de22fc2c4fbb96b4830fcb3e3d9c6dbc",
+      "current_sha256": "091c45c0a4755c1daab7cac030cd8068de22fc2c4fbb96b4830fcb3e3d9c6dbc",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/domain/models.ts",
+      "ir011_sha256": "b367ece80f87f0ff4b627509227ddfe42e32fdbce1f34fdfc506b94099e60aac",
+      "current_sha256": "b367ece80f87f0ff4b627509227ddfe42e32fdbce1f34fdfc506b94099e60aac",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts",
+      "ir011_sha256": "fca28421328c09a5029bc45db6687bf318bfcd42e4cc35a8649d2d7482603590",
+      "current_sha256": "fca28421328c09a5029bc45db6687bf318bfcd42e4cc35a8649d2d7482603590",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts",
+      "ir011_sha256": "2f4cca44c0bb5f8dcf0e43ca3d7306408d940ed0e86550a82d957e42b9802ee5",
+      "current_sha256": "2f4cca44c0bb5f8dcf0e43ca3d7306408d940ed0e86550a82d957e42b9802ee5",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts",
+      "ir011_sha256": "f49a63d2d5a8ecc309af02962c49f8635a9dc4947fc19779beb30c643dc00993",
+      "current_sha256": "f49a63d2d5a8ecc309af02962c49f8635a9dc4947fc19779beb30c643dc00993",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/run-projection-types.ts",
+      "ir011_sha256": "4bf6b1ee4907d6ce18edbfa3492fc8f9bb8fc3603f0e55201f203dca820d69c6",
+      "current_sha256": "4bf6b1ee4907d6ce18edbfa3492fc8f9bb8fc3603f0e55201f203dca820d69c6",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts",
+      "ir011_sha256": "427c12a658eed8fd4eee3a0716db5f9f104bff32ecea1c14fc37632e2572afdf",
+      "current_sha256": "427c12a658eed8fd4eee3a0716db5f9f104bff32ecea1c14fc37632e2572afdf",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts",
+      "ir011_sha256": "ab0446f58af48cc68fd2af88a74533b5084d737f7ac93f63062a08b14f0639ae",
+      "current_sha256": "ab0446f58af48cc68fd2af88a74533b5084d737f7ac93f63062a08b14f0639ae",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts",
+      "ir011_sha256": "04bf740db017fe6e09ed525c654418d830d359775af12d06a2f4af336ec6d32d",
+      "current_sha256": "04bf740db017fe6e09ed525c654418d830d359775af12d06a2f4af336ec6d32d",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager.ts",
+      "ir011_sha256": "d52a565846f2b437b9f61ba6af951b4b53e667ec153c345dbc3266a3f9769a2f",
+      "current_sha256": "d52a565846f2b437b9f61ba6af951b4b53e667ec153c345dbc3266a3f9769a2f",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/models/raw-trace-item.ts",
+      "ir011_sha256": "259c7f257d0771efa82164e24daf7c485453e7f7a2abb74e6732cdb6024c351e",
+      "current_sha256": "259c7f257d0771efa82164e24daf7c485453e7f7a2abb74e6732cdb6024c351e",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-ts/src/memory/raw-trace-ingestion.ts",
+      "ir011_sha256": "853f68d9fa91afccd438c3eba5ae6a2008375b505c47612eb1cef82076aeec66",
+      "current_sha256": "853f68d9fa91afccd438c3eba5ae6a2008375b505c47612eb1cef82076aeec66",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts",
+      "ir011_sha256": "d31b42671f1e71f4a13c5144b490c003a0739478554dc8871a09721983d98104",
+      "current_sha256": "d31b42671f1e71f4a13c5144b490c003a0739478554dc8871a09721983d98104",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts",
+      "ir011_sha256": "648dac0b8c699d014f549e382cc0498093361a8d87501ea0df17a47159a97458",
+      "current_sha256": "648dac0b8c699d014f549e382cc0498093361a8d87501ea0df17a47159a97458",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/services/runHydration/runProjectionConversation.ts",
+      "ir011_sha256": "e370f805c174239ba6b10b9ec4968cb2187ae0fee4fb3dc61a7bd671883ecc83",
+      "current_sha256": "e370f805c174239ba6b10b9ec4968cb2187ae0fee4fb3dc61a7bd671883ecc83",
+      "matches": true
+    },
+    {
+      "path": "autobyteus-web/utils/contextFiles/contextAttachmentModel.ts",
+      "ir011_sha256": "1f670888d8cf54358c946cc93ba2769ad6fa7f8584a4124702fa5102132dadc6",
+      "current_sha256": "1f670888d8cf54358c946cc93ba2769ad6fa7f8584a4124702fa5102132dadc6",
+      "matches": true
+    }
+  ],
+  "count": 17,
+  "all_match": true
+}

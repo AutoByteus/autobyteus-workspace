@@ -1,0 +1,790 @@
+{
+  "base": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "rows": [
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts",
+      "nonempty": 32,
+      "changed": 33
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts",
+      "nonempty": 132,
+      "changed": 13
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/src/index.ts",
+      "nonempty": 4,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts",
+      "nonempty": 124,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/root-execution-view-dtos.ts",
+      "nonempty": 142,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts",
+      "nonempty": 377,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-status-overlay.ts",
+      "nonempty": 35,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/collaboration-agent-execution-event.ts",
+      "nonempty": 51,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/domain/live-agent-input-snapshot.ts",
+      "nonempty": 3,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-event.ts",
+      "nonempty": 128,
+      "changed": 11
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/agent-presentation-message-projector.ts",
+      "nonempty": 99,
+      "changed": 13
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-adapter.ts",
+      "nonempty": 367,
+      "changed": 12
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.ts",
+      "nonempty": 94,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts",
+      "nonempty": 121,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.ts",
+      "nonempty": 46,
+      "changed": 11
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "nonempty": 143,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+      "nonempty": 444,
+      "changed": 69
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "nonempty": 276,
+      "changed": 16
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.ts",
+      "nonempty": 29,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts",
+      "nonempty": 82,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts",
+      "nonempty": 203,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts",
+      "nonempty": 173,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts",
+      "nonempty": 228,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts",
+      "nonempty": 40,
+      "changed": 43
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run-command-observer-dispatch.ts",
+      "nonempty": 48,
+      "changed": 10
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run-event.ts",
+      "nonempty": 53,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "nonempty": 490,
+      "changed": 219
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts",
+      "nonempty": 16,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts",
+      "nonempty": 42,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts",
+      "nonempty": 304,
+      "changed": 16
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts",
+      "nonempty": 70,
+      "changed": 9
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts",
+      "nonempty": 68,
+      "changed": 76
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts",
+      "nonempty": 464,
+      "changed": 58
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-contract.ts",
+      "nonempty": 69,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-input-lifecycle.ts",
+      "nonempty": 48,
+      "changed": 49
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts",
+      "nonempty": 210,
+      "changed": 10
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts",
+      "nonempty": 275,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-registry.ts",
+      "nonempty": 186,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts",
+      "nonempty": 64,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-status-projection-service.ts",
+      "nonempty": 186,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/domain/agent-org-run.ts",
+      "nonempty": 495,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+      "nonempty": 258,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "nonempty": 410,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/backends/team-run-backend.ts",
+      "nonempty": 38,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts",
+      "nonempty": 467,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-event.ts",
+      "nonempty": 116,
+      "changed": 10
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-agent-status.ts",
+      "nonempty": 64,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/domain/team-run.ts",
+      "nonempty": 44,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-agent-execution-handle.ts",
+      "nonempty": 174,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "nonempty": 445,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-run-backend.ts",
+      "nonempty": 46,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/registries/task-agent-execution-registry.ts",
+      "nonempty": 230,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-server-ts/src/api/graphql/schema.ts",
+      "nonempty": 83,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts",
+      "nonempty": 259,
+      "changed": 23
+    },
+    {
+      "path": "autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.ts",
+      "nonempty": 33,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts",
+      "nonempty": 61,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-server-ts/src/config/compaction-model-settings.ts",
+      "nonempty": 27,
+      "changed": 30
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-org-execution-view-projector.ts",
+      "nonempty": 78,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "nonempty": 154,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/models.ts",
+      "nonempty": 71,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-event-websocket-projector.ts",
+      "nonempty": 122,
+      "changed": 9
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-agent-status-websocket-projector.ts",
+      "nonempty": 33,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/team-execution-view-projector.ts",
+      "nonempty": 195,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "nonempty": 372,
+      "changed": 22
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/src/team-agent-message-dtos.ts",
+      "nonempty": 63,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts",
+      "nonempty": 161,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-team-stream-contracts/src/team-stream-server-message.ts",
+      "nonempty": 88,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-ts/src/agent/agent.ts",
+      "nonempty": 138,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-recovery-controller.ts",
+      "nonempty": 66,
+      "changed": 74
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts",
+      "nonempty": 9,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts",
+      "nonempty": 79,
+      "changed": 100
+    },
+    {
+      "path": "autobyteus-ts/src/agent/context/agent-config.ts",
+      "nonempty": 110,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/agent/context/agent-runtime-state.ts",
+      "nonempty": 230,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts",
+      "nonempty": 220,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-ts/src/agent/events/notifiers.ts",
+      "nonempty": 213,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-ts/src/agent/factory/agent-factory.ts",
+      "nonempty": 209,
+      "changed": 9
+    },
+    {
+      "path": "autobyteus-ts/src/agent/llm-request-assembler.ts",
+      "nonempty": 119,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+      "nonempty": 238,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/llm-phase-compaction.ts",
+      "nonempty": 98,
+      "changed": 1
+    },
+    {
+      "path": "autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "nonempty": 369,
+      "changed": 81
+    },
+    {
+      "path": "autobyteus-ts/src/agent/runtime/agent-runtime.ts",
+      "nonempty": 218,
+      "changed": 22
+    },
+    {
+      "path": "autobyteus-ts/src/agent/runtime/agent-worker.ts",
+      "nonempty": 335,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-ts/src/agent/status/manager.ts",
+      "nonempty": 79,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-ts/src/agent/status/status-deriver.ts",
+      "nonempty": 126,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-ts/src/agent/status/status-update-utils.ts",
+      "nonempty": 95,
+      "changed": 29
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/compaction-recovery-data.ts",
+      "nonempty": 11,
+      "changed": 11
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts",
+      "nonempty": 252,
+      "changed": 24
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-event-payloads.ts",
+      "nonempty": 98,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/events/stream-events.ts",
+      "nonempty": 132,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-ts/src/agent/streaming/streams/agent-event-stream.ts",
+      "nonempty": 331,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-ts/src/clients/autobyteus-client.ts",
+      "nonempty": 492,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-ts/src/events/event-types.ts",
+      "nonempty": 32,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/anthropic-llm.ts",
+      "nonempty": 308,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/autobyteus-llm.ts",
+      "nonempty": 141,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/completion-status.ts",
+      "nonempty": 17,
+      "changed": 19
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/gemini-llm.ts",
+      "nonempty": 265,
+      "changed": 12
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/mistral-llm.ts",
+      "nonempty": 130,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/ollama-llm.ts",
+      "nonempty": 178,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/openai-compatible-llm.ts",
+      "nonempty": 179,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/openai-responses-llm.ts",
+      "nonempty": 370,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-ts/src/llm/api/provider-request-kwargs.ts",
+      "nonempty": 42,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-ts/src/llm/base.ts",
+      "nonempty": 174,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-ts/src/llm/llm-factory.ts",
+      "nonempty": 322,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-ts/src/llm/utils/response-types.ts",
+      "nonempty": 70,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/accepted-compaction-builder.ts",
+      "nonempty": 31,
+      "changed": 133
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/accepted-compaction-committer.ts",
+      "nonempty": 32,
+      "changed": 60
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-content-builder.ts",
+      "nonempty": 59,
+      "changed": 66
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-conversation-history-renderer.ts",
+      "nonempty": 104,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-execution.ts",
+      "nonempty": 30,
+      "changed": 34
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-recovery.ts",
+      "nonempty": 20,
+      "changed": 20
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-runtime-settings.ts",
+      "nonempty": 52,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts",
+      "nonempty": 40,
+      "changed": 44
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts",
+      "nonempty": 2,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/compression-strategy.ts",
+      "nonempty": 4,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/direct-llm-compression-strategy.ts",
+      "nonempty": 94,
+      "changed": 100
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/memory-compaction-configuration.ts",
+      "nonempty": 46,
+      "changed": 17
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts",
+      "nonempty": 96,
+      "changed": 176
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-output-validator.ts",
+      "nonempty": 253,
+      "changed": 50
+    },
+    {
+      "path": "autobyteus-ts/src/memory/compaction/working-context-compaction-proposal.ts",
+      "nonempty": 27,
+      "changed": 12
+    },
+    {
+      "path": "autobyteus-ts/src/memory/index.ts",
+      "nonempty": 73,
+      "changed": 29
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "nonempty": 391,
+      "changed": 232
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager-working-context-controller.ts",
+      "nonempty": 75,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-ts/src/memory/memory-manager.ts",
+      "nonempty": 496,
+      "changed": 30
+    },
+    {
+      "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-shapes.ts",
+      "nonempty": 190,
+      "changed": 197
+    },
+    {
+      "path": "autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts",
+      "nonempty": 499,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts",
+      "nonempty": 55,
+      "changed": 44
+    },
+    {
+      "path": "autobyteus-ts/src/memory/store/base-store.ts",
+      "nonempty": 23,
+      "changed": 23
+    },
+    {
+      "path": "autobyteus-ts/src/memory/store/file-store.ts",
+      "nonempty": 72,
+      "changed": 21
+    },
+    {
+      "path": "autobyteus-ts/src/memory/store/run-memory-file-store.ts",
+      "nonempty": 386,
+      "changed": 89
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-provenance.ts",
+      "nonempty": 175,
+      "changed": 11
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-snapshot-serializer.ts",
+      "nonempty": 133,
+      "changed": 144
+    },
+    {
+      "path": "autobyteus-ts/src/memory/working-context-tool-protocol-repairer.ts",
+      "nonempty": 193,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-ts/src/utils/gemini-helper.ts",
+      "nonempty": 48,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-web/components/agentInput/AgentUserInputTextArea.vue",
+      "nonempty": 273,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-web/components/conversation/UserMessage.vue",
+      "nonempty": 137,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-web/components/progress/CompactionActivityItem.vue",
+      "nonempty": 103,
+      "changed": 5
+    },
+    {
+      "path": "autobyteus-web/components/settings/CompactionConfigCard.vue",
+      "nonempty": 231,
+      "changed": 107
+    },
+    {
+      "path": "autobyteus-web/components/settings/CompactionModelSettings.vue",
+      "nonempty": 50,
+      "changed": 50
+    },
+    {
+      "path": "autobyteus-web/services/agentOrgExecution/agentOrgExecutionContext.ts",
+      "nonempty": 276,
+      "changed": 9
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts",
+      "nonempty": 237,
+      "changed": 10
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts",
+      "nonempty": 28,
+      "changed": 29
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts",
+      "nonempty": 294,
+      "changed": 4
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/handlers/compactionActivityProjection.ts",
+      "nonempty": 255,
+      "changed": 26
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/compactionTypes.ts",
+      "nonempty": 32,
+      "changed": 12
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/messageParser.ts",
+      "nonempty": 128,
+      "changed": 6
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/protocol/messageTypes.ts",
+      "nonempty": 311,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-web/services/agentStreaming/teamStreamDtoAdapters.ts",
+      "nonempty": 155,
+      "changed": 16
+    },
+    {
+      "path": "autobyteus-web/services/runStatus/agentRuntimeStatusState.ts",
+      "nonempty": 67,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-web/services/runSubmission/localUserSubmission.ts",
+      "nonempty": 119,
+      "changed": 2
+    },
+    {
+      "path": "autobyteus-web/services/teamExecution/teamExecutionViewState.ts",
+      "nonempty": 386,
+      "changed": 19
+    },
+    {
+      "path": "autobyteus-web/stores/agentOrgContextsStore.ts",
+      "nonempty": 326,
+      "changed": 3
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "nonempty": 418,
+      "changed": 11
+    },
+    {
+      "path": "autobyteus-web/stores/agentTeamRunStore.ts",
+      "nonempty": 447,
+      "changed": 8
+    },
+    {
+      "path": "autobyteus-web/stores/serverSettings.ts",
+      "nonempty": 402,
+      "changed": 15
+    },
+    {
+      "path": "autobyteus-web/types/activity/RunActivity.ts",
+      "nonempty": 61,
+      "changed": 7
+    },
+    {
+      "path": "autobyteus-web/types/agent/AgentRunState.ts",
+      "nonempty": 80,
+      "changed": 10
+    },
+    {
+      "path": "autobyteus-web/types/conversation.ts",
+      "nonempty": 90,
+      "changed": 2
+    }
+  ]
+}

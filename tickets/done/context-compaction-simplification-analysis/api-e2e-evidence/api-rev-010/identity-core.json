@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "pnpm -C autobyteus-ts exec vitest run tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts tests/unit/memory/raw-trace-item.test.ts tests/unit/memory/memory-manager.test.ts tests/unit/memory/user-file-attachments.test.ts tests/unit/memory/raw-trace-archive-manager.test.ts --no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T16:57:53.505065+00:00",
+  "finished": "2026-10-01T16:57:54.421316+00:00",
+  "exit": 0
+}

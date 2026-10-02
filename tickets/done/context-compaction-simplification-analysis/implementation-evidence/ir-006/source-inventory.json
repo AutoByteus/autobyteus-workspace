@@ -1,0 +1,25 @@
+{
+  "base_head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "current_head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "commit": "None \u2014 explicit no-commit constraint; three owned source/test paths remain pending",
+  "paths": [
+    {
+      "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+      "change": "Modify",
+      "before_sha256": "67811fdb7d7369f7bd8f7cc262be553cd1d319f8f8a7e7c9eba1586a9fad8997",
+      "sha256": "2f1a379c431a9f3b5ec358f90478f5942c8b3dff01693a4a034239e61b24eb80"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts",
+      "change": "Modify",
+      "before_sha256": "07e7eaf7fd0d075f65679ddc81fab67a6dba2373c5d570915558d237f08bf8de",
+      "sha256": "fa0b81bf525ec6d7cb75e6201fc6b0fdd01ca25aa7187af3f73cbba9cafc8f39"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts",
+      "change": "Add",
+      "before_sha256": null,
+      "sha256": "f6cfec3e97a0539f0c0319252e65df38a1cb225bce6b0a193f9ba4cb41ca1fdd"
+    }
+  ]
+}

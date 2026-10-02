@@ -1,0 +1,25 @@
+{
+  "time": "2026-10-01T17:08:31.486484+00:00",
+  "pinCount": 10381,
+  "unchanged": 10377,
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md"
+  ],
+  "missing": [],
+  "unexpectedChanges": [],
+  "gitChecks": {
+    "head": true,
+    "mergeHead": true,
+    "branch": true,
+    "stash": true,
+    "rawIndex": true,
+    "logicalIndex": true,
+    "zeroUnmerged": true
+  },
+  "stagedCount": 672,
+  "protectedAPI15AndPackaged2": true,
+  "limitations": "Enumerated entry pins, not a machine/private-data census. Standard disposable Prisma DB reset; no app launched. Build preguard failure before derived replacement. New evidence outside entry pins is intentional."
+}

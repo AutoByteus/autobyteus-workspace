@@ -1,0 +1,44 @@
+{
+  "agent": {
+    "address": "/api11_team/lead",
+    "agentDefinitionId": "api11-lead",
+    "agentRunId": "api11_lead_9e45116625bd4373835c9b67ca0e4014",
+    "platformAgentRunId": null
+  },
+  "state": {
+    "run_instance_id": "ed1a639f-3dc6-4d94-af49-86cd007d36c9",
+    "revision": 16,
+    "entries": [
+      {
+        "sequence": 3,
+        "message_id": "e7dc9e53-b751-4066-ae3e-f951d9ad29a0",
+        "dedupe_key": "member_input:daily_assistant_3fad328986b54a2282fff7e7e0b737cb:api11_lead_9e45116625bd4373835c9b67ca0e4014:e7dc9e53-b751-4066-ae3e-f951d9ad29a0",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "API11-T-HELD-A",
+        "sender_type": "user",
+        "file_attachments": [
+          {
+            "uri": "/rest/agent-collaborations/daily_assistant_3fad328986b54a2282fff7e7e0b737cb/agent-runs/api11_lead_9e45116625bd4373835c9b67ca0e4014/context-files/ctx_557c727f2a1b__attachment.txt",
+            "file_type": "text",
+            "file_name": "ctx_557c727f2a1b__attachment.txt"
+          }
+        ]
+      }
+    ],
+    "recoverableBlock": {
+      "operationId": "compaction_operation_mupuqzm9_1",
+      "failureEpoch": 2,
+      "position": {
+        "kind": "held_turn",
+        "turnId": "turn_0003"
+      },
+      "state": "awaiting_user",
+      "code": "API11_SYNTHETIC_503",
+      "message": "Compaction failed \u2014 send a message to retry"
+    }
+  },
+  "rawPaths": [
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/memory/agents/daily_assistant_3fad328986b54a2282fff7e7e0b737cb/collaboration/api11_team_fc475e18be474df087e5473a9fbb161a/api11_lead_9e45116625bd4373835c9b67ca0e4014/raw_traces_active.jsonl"
+  ]
+}

@@ -10,7 +10,6 @@ export const GET_SERVER_SETTINGS = gql`
       isEditable
       isDeletable
     }
-    getEffectiveWorkingContextCompactionStrategyId
     getEffectiveStreamingContentFlushIntervalMs
   }
 `

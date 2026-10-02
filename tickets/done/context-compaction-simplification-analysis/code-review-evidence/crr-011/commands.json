@@ -1,0 +1,56 @@
+[
+  {
+    "id": "core",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-ts exec vitest run tests/unit/memory/pending-compaction-executor.test.ts tests/unit/memory/direct-llm-compression-strategy.test.ts tests/unit/memory/memory-manager-compaction-coordinator.test.ts tests/unit/llm/api/compaction-single-attempt-transport.test.ts tests/unit/agent/runtime/agent-runtime.test.ts tests/integration/agent/runtime/agent-runtime-compaction.test.ts --no-watch",
+    "exit": 0,
+    "tests_passed": 106,
+    "files_passed": 6
+  },
+  {
+    "id": "server",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts tests/unit/agent-execution/agent-run-compaction-races.test.ts tests/unit/agent-execution/agent-run-compaction-recovery.test.ts tests/unit/agent-execution/root-recovery-command.test.ts tests/unit/agent-execution/native-compaction-terminal-drain.test.ts --no-watch",
+    "exit": 0,
+    "tests_passed": 39,
+    "files_passed": 6
+  },
+  {
+    "id": "web",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/nativeCompactionActivity.spec.ts stores/__tests__/nativeCompactionTermination.spec.ts stores/__tests__/nativeOrgCompactionTermination.spec.ts components/workspace/agent/__tests__/CompactionStatusRow.spec.ts components/progress/__tests__/CompactionActivityItem.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentActivityStore.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentOrgContextsStore.spec.ts stores/__tests__/retainedOrgActivityTermination.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts services/teamExecution/__tests__/teamExecutionViewState.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts --run",
+    "exit": 0,
+    "tests_passed": 167,
+    "files_passed": 15
+  },
+  {
+    "id": "web-streams",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-web test:nuxt services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts --run",
+    "exit": 0,
+    "tests_passed": 74,
+    "tests_failed": 0,
+    "files": 4
+  },
+  {
+    "id": "retained-team-diagnostic",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-web test:nuxt stores/__tests__/retainedActivityTermination.spec.ts --run",
+    "exit": 1,
+    "tests_passed": 0,
+    "tests_failed": 8,
+    "files": 1
+  },
+  {
+    "id": "core-typecheck",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-ts exec tsc --noEmit -p tsconfig.build.json",
+    "exit": 0
+  },
+  {
+    "id": "server-typecheck",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "command": "pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.build.json",
+    "exit": 0
+  }
+]

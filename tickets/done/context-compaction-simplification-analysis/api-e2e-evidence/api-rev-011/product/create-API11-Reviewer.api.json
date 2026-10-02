@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-01T18:07:26.992952+00:00",
+  "endpoint": "http://127.0.0.1:62667/graphql",
+  "request": {
+    "query": "mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id name}}",
+    "variables": {
+      "input": {
+        "name": "API11 Reviewer",
+        "description": "Owned API11 deterministic native fixture",
+        "instructions": "API11 fixture. Acknowledge the latest input. No remote work.",
+        "toolNames": [
+          "read_file"
+        ],
+        "defaultLaunchConfig": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "api11-deterministic-32768:lmstudio@127.0.0.1:62749"
+        }
+      }
+    }
+  },
+  "response": {
+    "data": {
+      "createAgentDefinition": {
+        "id": "api11-reviewer",
+        "name": "API11 Reviewer"
+      }
+    }
+  }
+}

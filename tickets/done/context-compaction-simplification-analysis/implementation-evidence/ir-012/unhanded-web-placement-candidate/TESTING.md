@@ -1,0 +1,140 @@
+# Testing AutoByteus
+
+This is the testing guideline for the AutoByteus workspace. Read it before
+planning validation for a change. It tells you which test layers exist, which
+commands run them, which path to choose for a given change, and the rules every
+test run must follow. Details live in the linked documents; this file is the
+map.
+
+## Test layers and commands
+
+Run commands from the repository root unless noted. `pnpm -C <dir>` runs a
+package's script from its own directory.
+
+| Layer | What it proves | Command |
+| --- | --- | --- |
+| Web unit and component tests | Nuxt renderer components, stores, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
+| Native-to-web integration tests | In-process core/server production paths joined to real frontend hydration (`autobyteus-web/tests/integration/`) | `pnpm -C autobyteus-web test:nuxt tests/integration/native-accepted-input-history.integration.test.ts --run` |
+| Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
+| All web tests | Both of the above | `pnpm -C autobyteus-web test` |
+| Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
+| Core library tests | `autobyteus-ts` agent runtime, tools, LLM layer | `pnpm -C autobyteus-ts test` |
+| Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
+| Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
+| Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
+| Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run` |
+| Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
+| Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
+| Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
+
+Notes:
+
+- **Native-to-web integration** belongs in `autobyteus-web/tests/integration/`,
+  alongside the native-to-live projection checks, not in production `services/`
+  or its colocated unit tests. It may use core/server test fixtures; production
+  web code must not import the core runtime. The native accepted-input check uses
+  current core `dist` outputs (build changed core source first with
+  `pnpm -C autobyteus-ts build`) and controlled model/provisioning/Apollo doubles;
+  it does not prove HTTP, packaged renderer reload or external-provider behavior.
+  Both hosted Agent and Team cases run through the normal Nuxt test command.
+  Before a desktop build, check `pnpm -C autobyteus-web guard:web-boundary`;
+  guard contract checks run with `pnpm -C autobyteus-web test:nuxt
+  tests/integration/web-boundary-guard.integration.test.ts --run`.
+  A guard pass is only a build prerequisite, not a full build or product pass.
+- **Real-provider credentials** live in the encrypted vault of the target
+  database. Provision them with the importer, never by editing `.env` files:
+  `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`
+  (answer the `IMPORT` prompt; agents without an interactive terminal can wrap
+  the command in `script -q /dev/null …` on macOS or `script -qc "…" /dev/null`
+  on Linux). Preflight reports what is configured; missing capabilities are
+  reported, never counted as passed. See
+  [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md).
+- **Browser dev-path probes** document their prerequisites in the file header.
+  Most start their own Nuxt dev server against mocked backend routes; others
+  take a `--base-url` of a running frontend. For a real local stack use
+  `pnpm dev` (backend `http://127.0.0.1:8000`, frontend
+  `http://127.0.0.1:3000`); see
+  [Local full-stack development](README.md#local-full-stack-development).
+- **Isolated desktop instances** are full AutoByteus desktop apps with their
+  own ports and data folder. Start, control, screenshot, record and stop them as
+  described in [Isolated AutoByteus Instances](docs/isolated-app-instances.md).
+  Control them with the browser-automation skill
+  (`autobyteus_mcps/browser-automation`), using
+  `CHROME_REMOTE_DEBUGGING_PORT=<controlPort>` (as reported by `start`) and
+  `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
+
+## Choosing the path
+
+Start with the smallest layer that directly proves the change, then add the
+layer that closes the remaining confidence gap.
+
+| The change affects… | Prove it with… |
+| --- | --- |
+| Backend logic, APIs, persistence, runtimes | Server tests (+ `pnpm test:e2e` for API journeys) |
+| Core agent runtime or tools | `autobyteus-ts` tests (+ server tests for integration) |
+| Renderer UI, stores, client–server behavior that also runs in a browser | Web unit tests + a browser dev-path probe |
+| Desktop-shell behavior: Electron main process, preload/IPC, updater, windows, app lifecycle, embedded server startup, packaging | Electron main-process tests + an **isolated desktop instance** of a worktree build |
+| A full real-product journey a user would perform | An **isolated desktop instance** of a worktree build |
+| Behavior against real model or search providers | Real-provider E2E (preflight first), or an isolated instance with keys imported |
+| Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
+
+Browser probes are fast and headless; use them for web-equivalent behavior.
+An isolated desktop instance is slower (it needs an app build) but exercises the
+real desktop app; use it whenever desktop-shell behavior or the full product
+matters.
+
+## Rules
+
+1. **Test unreleased changes on a worktree build.** The installed app does not
+   contain your change. Use `pnpm --silent isolated-app start --build` (or
+   `--from-worktree` when that worktree's app is already built). Builds without
+   isolated-launch support are refused with `APP_ISOLATION_UNSUPPORTED`.
+2. **Never test against the user's running AutoByteus** or its data
+   (`~/.autobyteus`, the OS application-data folders). Only isolated instances,
+   test-owned databases and the development stack are test targets.
+3. **Use the ports `start` reports.** Without `--control-port`, `start` picks
+   a free control port, so parallel instances do not collide. Keep the reported
+   `instanceId` and `controlPort`: pass that `controlPort` to browser-automation
+   and that `instanceId` to `restart`/`stop`.
+4. **Credentials go through the importer** into the target database, then
+   `pnpm --silent isolated-app restart <instanceId>` for an isolated instance.
+5. **Stop what you started.** `pnpm --silent isolated-app stop <instanceId>` for instances,
+   `Ctrl+C` for `pnpm dev`. Leave other processes and data alone.
+6. **Assertions first.** Prove behavior with test assertions, API results and
+   DOM/state checks. Screenshots and recordings are supporting evidence, not
+   proof on their own.
+7. **Page dialogs are answered by the agent.** When an action may raise a
+   native page dialog (`confirm`, `prompt`, "Leave site?"), pass the decision
+   with it: `run-script … --dialog accept` or `--dialog dismiss`
+   (`--prompt-text` for prompts, which exist in browsers only, not in the
+   Electron app). Without a decision the command fails with
+   `DIALOG_DECISION_REQUIRED` and the dialog's message; re-run with your
+   decision. OS dialogs (file pickers) and dialogs left open in other tabs are
+   answered on screen — by the user, or with an OS-level screen-control
+   (computer-use) tool where one is available. While
+   such a dialog is open, browser commands fail with `PAGE_BLOCKED` (within
+   about 8 s) until it is answered.
+8. **Linux:** use `--from-worktree`/`--build` or an extracted AppImage
+   (`--app <dir>/squashfs-root/autobyteus`), a real or virtual display, and
+   `ffmpeg` for recordings. See
+   [Isolated instances on Linux](docs/isolated-app-instances.md#linux).
+
+## Evidence and cleanup
+
+- Keep test artifacts (screenshots, recordings, logs) in the ticket or test
+  output folder, not in the repository root.
+- Record in the validation report which layers ran, the exact commands, and
+  anything not covered and why.
+- After a run, `pnpm --silent isolated-app list` should show no instances you
+  started.
+
+## Related documentation
+
+- [README: Packaged Electron API/E2E testing](README.md#packaged-electron-apie2e-testing)
+- [README: Local full-stack development](README.md#local-full-stack-development)
+- [README: Testing (Codex Runtime)](README.md#testing-codex-runtime)
+- [Frontend testing](autobyteus-web/README.md#testing) and
+  [packaged E2E launches](autobyteus-web/README.md#packaged-electron-e2e-launches)
+- [Server tests](autobyteus-server-ts/README.md#tests)
+- [Isolated AutoByteus Instances](docs/isolated-app-instances.md)
+- [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md)

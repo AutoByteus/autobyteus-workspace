@@ -1,0 +1,24 @@
+{
+  "kind": "API006 incomplete checkpoint received / existing SR032 decision hold",
+  "sender_run_id": "api_e2e_engineer_96e63b834264434986f16a8037990c3f",
+  "source_sha256": {
+    "api-e2e-evidence/api-rev-006/README.md": "9a91562ed9fb51a94330c0381aabc5bf5c0eafeb0be062332c3de7b684a93a1e",
+    "api-e2e-execution-coverage-report.md": "394ecd7cfacc1133055cda4593ca53a8547193c9d29bd5a5b84a56090e191d40",
+    "api-e2e-evidence/api-rev-006/cleanup.json": "360bb99bf43b5841e9a2d0f20248775eb7f68b360ffe7b9c8a88db54eeada10f"
+  },
+  "approved_change": false,
+  "API006_completed": false,
+  "latest_completed": "API005 Fail78.6",
+  "settings_F007": "API owner closed on current desktop product surface",
+  "repository_checks": "346 distinct Pass / 28 files; 2 focused subset not additive",
+  "product_requests": {
+    "local": 32,
+    "parent": 12,
+    "compaction": 20,
+    "remote": 0
+  },
+  "separate_guard": "7 checks / 4 local fixture generations, not semantic evidence",
+  "API_stage": "stopped pending owner decision/package return",
+  "cleanup": "API-owned isolated app and emulator stopped; own data removed; evidence retained",
+  "new_SD_tests_or_runtime_work": false
+}

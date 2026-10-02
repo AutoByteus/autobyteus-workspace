@@ -1,0 +1,219 @@
+{
+  "inputPinCount": 3659,
+  "changed": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md",
+      "entrySha256": "17cbaa179443c4dd2f6f49999b5f010a797af0dcbee39d1b144577aeac92e8c7",
+      "currentSha256": "4ce12694d2535959c387a0ae7250dd2065d98b9ba2f936059110edb678a44e4e",
+      "disposition": "canonical source result"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md",
+      "entrySha256": "b3def4adb819b9e53f93918413b07aa2f4e738e7ab6caf009e93b614fd5e02a5",
+      "currentSha256": "40205c2688f7ddb4da80bf4d52070801a80e3cfd0330d2645eb59a38e42b5a55",
+      "disposition": "cumulative CRR014 entry"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-009/server-overlap-final.log",
+      "entrySha256": "b35110ab0de6ec94667b2b1fd994d20922907acc89551fdb5c5e68c436a56860",
+      "currentSha256": "07b1bf19e731f4f8e970326bc7dbda973299714871b813fc1aa034c96dda5096",
+      "disposition": "disclosed reviewer-owned provenance loss / CRR014 replacement"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-009/web-overlap-final.log",
+      "entrySha256": "5b87d359d539396218cca05c47915874e149c9a216cba6ee3a3c3d1ef671f1ea",
+      "currentSha256": "e9ac1c8fc75a5e91a0d12e54d7413274f6ce1aa9666835d5e075914f1eb22061",
+      "disposition": "disclosed reviewer-owned provenance loss / CRR014 replacement"
+    }
+  ],
+  "missing": [],
+  "unexpectedChanges": [],
+  "gitUnchanged": {
+    "head": false,
+    "merge_head": false,
+    "index": false,
+    "unmerged": true,
+    "stash": false
+  },
+  "stagedPathCount": 672,
+  "unmergedCount": 0,
+  "source31": [
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/stores/agentRunStore.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts",
+      "matchesIR009Pin": true
+    }
+  ],
+  "api12": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "test-support/live-e2e/live-e2e-safe-error.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "matchesIR009Pin": true
+    },
+    {
+      "path": "autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts",
+      "matchesIR009Pin": true
+    }
+  ],
+  "testReportUnchanged": true,
+  "ownedDiffCheckExit": 0,
+  "claimLimit": "Two original IR009 raw logs lost; replacements are CRR014 reviewer reruns. All other entry-pinned artifacts unchanged except canonical review report/revision record. No blanket evidence-preservation claim."
+}
