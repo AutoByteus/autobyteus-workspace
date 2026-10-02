@@ -15,6 +15,7 @@
 | SR-010 | Approval / architecture investigation | User “confirmed” then architecture turn interrupted | SD-AP-001; E-037–043 | SR-009 Ready for Approval | SR-009 approved basis; architecture not complete | Active REQ-001–004/007/009–016 and ACs + UF-017 supplement | Approval captured; no forward architecture handoff |
 | SR-011 | Requirements / user change | User requests manual Tasks-board Refresh after approval | SD-CF-013; E-044,045; DEC-017 | SR-009 approved via SR-010 / incomplete architecture | Draft Refresh delta; prior approval retained | BEH-010; REQ-018; AC-025; SCN-013; UC-007 | Requirement/supplement-direction hold |
 | SR-012 | Requirements / direction clarification | User declines further toolbar prototype round | SD-CF-014; E-046; DEC-017 | SR-011 Draft delta; prior core approved | Ready for Approval Refresh delta; no Product prerequisite | BEH-010; REQ-018; AC-025; SCN-013; UC-007 | Bounded requirements approval hold |
+| SR-013 | Approval / architecture resumed | User “approve” to explicit Refresh addition approval request | SD-AP-002; E-047; DEC-017 | SR-012 Ready for Approval delta | Cumulative Approved basis; design resumed | REQ-018/AC-025/SCN-013/BEH-010 | Approval captured |
 
 ## SR-001 — Experimental manager/tool foundation analysis and UI brainstorming request
 - Phase/classification: Requirements / Initial Baseline.
@@ -181,3 +182,10 @@
 - Approval/design boundary: ask approval only for bounded Refresh delta; do not reopen three tools, Manager ownership, sidebar, stopping, CLI, or authoring continuity. Affected architecture remains on hold; design-spec, size/risk, independent review, implementation and production acceptance N/A.
 - Result/routing: full local result persisted before rule lookup; get_handoff_rules returned no matching rule (Product declined, no marketing, completed architecture or delivery receipt gap); no send_message_to/delegation required or performed. No specialist-ready outcome. No source/runtime/installed-data/feature/test/build/integration/remote work.
 - Next: explicit Refresh-delta approval, then resume architecture against cumulative approved tools/manual UI basis.
+
+
+## SR-013 — Explicit Refresh approval
+- User “approve” (2026-10-02) directly answers the final explicit bounded Refresh approval question. SD-AP-002 approves exact SR-012 checkpoint b750447d8e842b98890baf25a887b75cde3835d2, REQ-018/AC-025/SCN-013/BEH-010/DEC-017 under UC-007. Unchanged core remains SD-AP-001 approved and Product supplement UF-017 unchanged except original toolbar absence of Refresh.
+- Ready for Approval delta → Approved cumulative basis; architecture resumes, no automatic implementation/finalization/review bypass. SD-CF-014 no-further-Product-review direction retained. Stable IDs and all historical records preserved.
+- Canonical requirements status/approval/AC/scenario/decision/readiness reconciled; E-047 and requirements-approval-sr-013.md record exact authority. No source, product tests, runtime/installed-data/feature/remote changes. No completed design/risk/forward handoff claimed by this approval entry.
+- Next: complete architecture, classify actual implementation scope/risk, then use rule-based result handoff.
