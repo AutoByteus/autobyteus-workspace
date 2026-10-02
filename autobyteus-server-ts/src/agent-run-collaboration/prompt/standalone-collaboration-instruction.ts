@@ -1,3 +1,4 @@
+import { WORK_REQUEST_EXECUTION_LLM_INSTRUCTION } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 /**
@@ -10,6 +11,10 @@ export const renderStandaloneCollaborationInstruction = (input: {
   memberAddress: AgentTeamAddress;
 }): string => [
   "## Collaboration",
+  "",
+  "### Work Requests and Outcomes",
+  "",
+  WORK_REQUEST_EXECUTION_LLM_INSTRUCTION,
   "",
   "You can work with other agents and agent teams: the ones the user brings into this run, and any available agent or team.",
   "",
