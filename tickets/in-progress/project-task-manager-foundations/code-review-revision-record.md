@@ -8,6 +8,7 @@ The current code-review-report.md is authoritative for source review; api-e2e-te
 |---|---|---|---|---|---|
 | CRR-001 | code-review-report.md | Implementation Review Round 1; IR-001 after ARCH-REV-002 Pass | N/A | Pass; Large / High; 10.0/10 (100/100) | None |
 | CRR-002 | api-e2e-test-review-report.md | Proportional test-code review Round 1; API-REV-002 scoped Pass | CRR-001 source Pass; prior test-review N/A | Pass; Large / High; source score unchanged, test score N/A | None |
+| CRR-003 | code-review-report.md | Implementation Review Round 2; IR-002 after DR-001 DLF-001/002 | CRR-001 source Pass; CRR-002 test Pass as-of | Pass — correction verified, renewed validation pending; Large / High | DLF-001/002 correction dispositions; no new review finding |
 
 ## Revision Entries
 
@@ -61,3 +62,27 @@ The current code-review-report.md is authoritative for source review; api-e2e-te
 - Residuals preserved: actual installed voice **Not Tested — user-waived, independently UNVERIFIED**, product AC-018 unchanged; full web checker **FAILED387 vs base388**, no new exact failing sites/codes but one old message-shape delta origin incompletely attributed. No full typecheck/real voice/final delivery acceptance Pass claimed. Historical Blocked/harness/OOM/raw-whitespace evidence retained.
 - Recommended next recipient: **Delivery Engineer**, per final returned successful-test-review rule; complete cumulative package with all five tests/exact diff, report and updated history.
 - Ownership/hygiene: reviewer report/history only; no source/test fixes or user data/permissions/installation/default changes, integration/push/release. No additional microphone validation requested.
+
+### CRR-003 — Delivery Local Fix independent re-entry
+
+- Date/package: 2026-10-02; PROJ-TASK-MANAGER-20261002-001.
+- Canonical report: [code-review-report.md](code-review-report.md), **Implementation Review Round2**; latest authoritative source gate. Separate api-e2e-test-review-report.md/CRR-002 remains unchanged as-of pre-integration successful test review.
+- Trigger: **IR-002** after **DR-001 Blocked — Local Fix**, DLF-001/002, delivery-local-fix-request.md and original integrated failed/isolated-pass evidence. Not API/E2E failure-origin or successful renewed API/E2E entry point.
+- Related chain: cumulative SR-001–015/current SR-015; ARCH-REV-002 Pass/prior ARCH-REV-001 Fail retained; IR-001/IR-002; prior CRR-001 source Pass/CRR-002 test-code Pass; API-REV-002 scoped Pass95.0%/prior API-REV-001 Blocked retained; **DR-001** current Blocked as-of.
+- Reviewed candidate: correction **4d88b42e2360a6827cb31e2481410607ca1407ad**, handoff **ff4aafa285dac517757f83a244a038fa0566a44c**; preserved Delivery merge **a5123e7d08f66bbb08440340db167fa4ccb5eba0**, parents **5e902fc1965f86fce2bfa15ed0a23e8ff8beb7bb** / **5e3cb2f720e6fc80173099075daf55594ed58de9**. No reset/replay/remerge/fetch/push.
+- Prior authoritative source result **CRR-001 Pass**; prior completed review **CRR-002 proportional Pass**. Neither establishes renewed merged-candidate runtime acceptance. Current review **Pass**, **Large/High/Reviewed confirmed**; source score10.0/10 retained for unaffected and revalidated criteria. No test-size/confidence scoring.
+- Scope/why: current merged composer/voice/checksum context and exact two-test correction; DLF-001 target mock matches production teardown while all11 bodies/assertions remain byte-identical; DLF-002 immutable captured archive and byte/SHA regression match established release contract, existing install/transcript scenario retained except diagnostic. No production change or lifecycle weakening by correction.
+
+#### Prior Finding / Triggering Finding Resolution
+
+| ID | Prior authority / evidence | Current independently verified disposition |
+|---|---|---|
+| Prior code-review findings | CRR-001/002 None | None to resolve; no fabricated prior Pass/finding |
+| DLF-001 | DR-001 stale source-cancellation mock, first real component teardown fails | Correction verified for review; all11 assertions retained, independent125/125 passes. Renewed API/E2E/Delivery validation pending |
+| DLF-002 | DR-001 fixture status failure, serial isolated Pass; hash hypothesis unproven | Immutable once-built captured bytes/SHA and retained install assertions verified; synthetic pre-fix hazard supported. Original intermittent cause still UNPROVEN; renewed validation pending |
+
+- New/remaining code-review finding IDs: **None**. DLF IDs remain Delivery IDs, not retroactive production/code-review defects. No requirements/design/premise change; MP-004 Not Reachable and guard-only posture unchanged.
+- Independent evidence: code-review-ir-002-evidence commands.json / renderer-expanded.log **125/125 in13files, exit0**, including11 mention and19 voice cases; static-review.json incoming459 hashes/missing/ancestry/test preservation verified before report append. Original67 source audit files remain, current max453/integrated composer415; correction test files exempt source thresholds.
+- Limits: scoped repository rerun is not renewed API/E2E. DR-001 server150/150 and API-REV-002 browser16/16/package results retained as-of, latter pre-integration. Original install cause unproven; real voice user-waived/independently UNVERIFIED; AC-018 unchanged; last full checker FAILED387/base388/message-shape origin partly unattributed, not rerun. No integrated user verification/finalization approval/terminal package.
+- Recommended next recipient: **API/E2E Engineer**, most-specific returned completed test-code/fixture Local Fix rerun rule. Delivery resumes only after applicable validation and review route.
+- Ownership/hygiene: reviewer report/history and own scoped evidence only; Delivery's pre-existing untracked reports/evidence preserved byte-identical/unstaged. No source/test fix, Product/docs/user-profile/installation/permission/default changes, integration/push/release or new microphone request.

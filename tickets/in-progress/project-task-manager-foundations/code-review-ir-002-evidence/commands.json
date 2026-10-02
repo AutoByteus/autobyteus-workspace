@@ -1,0 +1,23 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-web",
+    "test:nuxt",
+    "stores/__tests__/projectTaskStore.spec.ts",
+    "stores/__tests__/projectStore.spec.ts",
+    "stores/__tests__/voiceInputStore.spec.ts",
+    "components/projects/__tests__",
+    "components/agentInput/__tests__/AgentUserInputTextArea.spec.ts",
+    "components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts",
+    "components/settings/__tests__/VoiceInputExtensionCard.spec.ts",
+    "composables/projects/__tests__",
+    "components/chat/__tests__/ChatComposer.spec.ts",
+    "tests/integration/voice-input-extension.integration.test.ts",
+    "--run"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/project-task-manager-foundations",
+  "exitCode": 0,
+  "elapsedSeconds": 13.501,
+  "scope": "Independent reviewer scoped integrated renderer rerun; repository contract evidence, not renewed API/E2E or real microphone certification"
+}
