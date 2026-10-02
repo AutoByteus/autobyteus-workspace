@@ -276,12 +276,23 @@ operation gate:
 2. **Run-wide**: a configured placement, a collaborator, or a collaborator-Team
    member.
 3. **Catalog**: an address that `CatalogAddressMap` maps to an eligible
-   definition not in the run is brought in with
-   `CollaboratorAdmission.ensure` under the gate the root already holds (no
-   re-entry), then resolved again and delivered; the first message starts it.
-   A failed add returns `COLLABORATOR_ADD_FAILED` with the reason in `message`
-   and adds nothing. Two concurrent first messages serialize on the gate; the
-   second finds the instance.
+   definition not in the run is brought in by the root's `*Collaborators.bringInAt`
+   (`CollaboratorAdmission.ensure`, inside the operation the root's gate already
+   admitted; no gate re-entry), then resolved again and delivered; the first
+   message starts it. A failed add returns `COLLABORATOR_ADD_FAILED` with the
+   reason in `message` and adds nothing.
+
+   **Concurrency.** The root gates (`RootOperationGate`,
+   `RootTeamRunMaterializationGate`) are admission and drain barriers, not
+   mutexes: they let operations run concurrently and only drain them on
+   termination. Collaborator admissions are serialized by a per-root
+   `CollaboratorAdmissionQueue` (`collaborator-admission-queue.ts`, a promise
+   chain inside each root's `*Collaborators` service). It serializes `@`
+   admissions (`ensure`) and catalog bring-ins (`bringInAt`) alike, and
+   `bringInAt` re-reads the catalog map against the current tree inside the
+   queue. So when two first messages to the same new address arrive together,
+   the second finds the instance the first committed and reuses it; no second
+   instance and no duplicate-address failure (RS-003).
 
 Any other address is the normal `COLLABORATION_TARGET_NOT_FOUND`.
 
@@ -399,6 +410,16 @@ Known limits:
 - A build older than this collaborator model rejects execution trees whose
   collaborator entries carry run IDs (downgrade). There is no migration, and none
   is needed, because the earlier entry shape was never released.
+- Catalog copies record an optional `source` on their task execution. A build
+  older than agent-initiated collaborators ignores it, so it cannot restore a
+  catalog copy (unsupported downgrade). Stored runs need no migration: copies
+  without `source` read as before, and earlier copies keep their recorded
+  placement.
+- Self-delegation: Team and Org roots refuse it ("An Agent cannot delegate a task
+  to its own logical placement."). The Agent root refuses `delegate_task` to the
+  host's address (not found), but it has no other self-guard. A collaborator that
+  delegates to its own address gets an ordinary extra copy of itself
+  (code-review C-11; harmless).
 
 ### Sender Of An Agent-To-Agent Message (RD-004)
 

@@ -406,7 +406,16 @@ Team persisted files:
   root carries a complete `defaultLaunchConfiguration`; every direct configured
   Agent carries a complete `launchConfiguration`. The root also carries
   `collaborators` (entries for shared Agents and Agent Teams brought in with
-  `@`; read as `[]` when absent, always written). The tree is read tolerantly
+  `@` or by an agent's first message; read as `[]` when absent, always written).
+  A delegated child that is a **catalog copy** carries an optional `source`
+  (`store/task-execution-source-schema.ts`):
+  - for an Agent: `{kind: "agent", agentDefinitionId, launchConfiguration}`;
+  - for a Team: `{kind: "agent_team", teamDefinitionId, coordinatorAddress, members, handoffs, defaultLaunchConfiguration}`.
+
+  Activation and restore read it first. When it is absent, the copy's source is
+  the configured placement or collaborator at its address, as for every record
+  written before catalog copies. The same field is used in the Org and Agent-root
+  trees. The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use

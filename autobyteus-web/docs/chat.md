@@ -243,6 +243,14 @@ the launch target and is unchanged.
   standalone runs (`collaboratorExecutionNodes`). A collaborator Team opens once
   when it appears (F-02). `collaborator_added` adds the contexts in place, so the
   pending send that added it keeps its acknowledgement.
+- **Agent-initiated collaborators and catalog copies.** An agent can bring a listed
+  catalog Agent or Team in with its first `send_message_to`, or start catalog copies
+  with `delegate_task` (server: `list_available_agents`, see the server
+  `agent_communication.md`). These look the same as user-added ones:
+  - collaborator rows arrive through the same `collaborator_added`;
+  - catalog copies are ordinary task rows whose task DTO carries `source`, read by
+    `services/collaborators/agentSourceSelectors.ts`;
+  - messages show as Team/Org tab rows and "From <Sender>:".
 - **Names (F-03).** Rows, the Team/Org tab and "From <Sender>:" use one formatter,
   `utils/collaboration/memberDisplayName.ts` (`product prototyper`, and
   `Product Prototyper` in sentences).

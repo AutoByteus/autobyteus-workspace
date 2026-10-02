@@ -277,7 +277,9 @@ queue.
 - Agent-initiated collaborators and catalog copies: `AgentOrgRecipientResolver`
   resolves `send_message_to(address)` with the shared `MessageRecipientResolution`
   (sender instance, run-wide, then a catalog bring-in through
-  `AgentOrgRunCollaborators.ensure` under the held operation gate) and
+  `AgentOrgRunCollaborators.bringInAt`, serialized with `@` admissions by the
+  root's `CollaboratorAdmissionQueue`; see
+  [Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution)) and
   `delegate_task(address)` with a catalog placement after configured and
   collaborator placements. A catalog copy records its `source`, which
   `AgentOrgTaskSourceResolver` reads first on activation and restore.

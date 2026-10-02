@@ -431,7 +431,9 @@ message and delegation addressing lives in `services/team-run-message-delivery.t
 (`TeamRunMessageDelivery`), called inside the materialization gate:
 `send_message_to(address)` resolves with the shared `MessageRecipientResolution`
 (the sender's own Team instance first, then run-wide, then a catalog bring-in via
-`TeamRunCollaborators.ensure` under the held gate), and `delegate_task(address)`
+`TeamRunCollaborators.bringInAt`; the materialization gate admits concurrently,
+so `@` admissions and bring-ins are serialized by the root's
+`CollaboratorAdmissionQueue`), and `delegate_task(address)`
 adds a catalog placement with a source snapshot after configured and
 collaborator placements. Copies are placed by address through the shared
 `resolveTaskCopyHost` (REQ-012; the Team root's rule, now shared by all roots); catalog copies
@@ -539,12 +541,15 @@ After optional authored `Team Instruction`, the Carpenter prompt renders one
 section, before `Working Environment`. The shared exact renderer supplies the
 canonical member address, logical directory/file analogy, absolute non-root
 address rule, Team coordinator ingress rule, and the complete intent-first
-collaboration contract. The exact copy distinguishes ordinary communication
-with an existing execution from starting a fresh delegated instance (its
-"Delegated Agents" section), prohibits duplicate work-packet delivery, tells the
-Agent to talk to a delegated instance only through its returned run ID, states
-that a quiet delegated agent is shut down and restored with its conversation on
-the next message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
+collaboration contract (REQ-009 wording). The exact copy distinguishes ordinary
+communication with the one instance at an address (its "Ordinary
+Communication" section), where a teammate's address reaches the member of the
+sender's own team instance and an available agent or team is brought in on
+first use, from spawning a new copy with every `delegate_task` call (its
+"Delegated Agents" section). It also prohibits duplicate work-packet delivery,
+tells the Agent to follow up on a copy only through its returned run ID, states
+that a quiet copy is shut down and restored with its conversation on the next
+message, and presents possible rule-based handoffs that the Agent evaluates against its outcome. The
 Agent selects the single rule whose condition most specifically applies and
 notifies only that rule's recipient; it does not fan out one outcome to
 additional recipients. The renderer injects no flat recipient, representative,
