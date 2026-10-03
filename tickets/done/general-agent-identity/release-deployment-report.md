@@ -89,3 +89,10 @@ This section supersedes DR-001's pending/non-applicable status; DR-001 history r
 
 ### Raw evidence fidelity
 Source/docs consistency check passed. Full staged `git diff --cached --check` reports whitespace-only diagnostics in newly preserved upstream raw .log evidence (WARN trailing spaces / final blank lines). Raw execution evidence is retained byte-for-byte, not normalized to fabricate a clean log check. This is not a source/test defect. Repository artifact hygiene passed; no generated SDK dist staged.
+
+### DR-002 repository and release launch evidence
+- Task archive final commit/push Completed: b9aeeb871875440339e4370f2530c52cddf5ba9e.
+- Isolated clean clone personal fetched/up-to-date, merge Completed: a97ba47d8e517e4e825f8d4e3104e98df78a6153; target push Completed. Original dirty shared personal remains unchanged intentionally.
+- Stable release commit/tag push Completed: a634eba53dc8016767e0e14344b8c157484d159c / v1.4.92; package 1.4.92, no prerelease suffix.
+- Exactly one helper invocation/tag-push workflow 37099703169; no manual dispatch. CI publication still in progress, so rollout/terminal gates not passed.
+- Inherited Dependabot warning disclosed: 938 default-branch advisories (20 critical, 421 high, 427 moderate, 70 low), not investigated or asserted fixed by General Agent validation.
