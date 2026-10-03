@@ -1,0 +1,39 @@
+{
+  "tags": {
+    "1.4.93-beta.2": {
+      "image": "docker.io/autobyteus/autobyteus-server:1.4.93-beta.2",
+      "digest": "sha256:4a005c61433fc1aa38f54a205c24ee55993b158539e09864d8925661aaa58348",
+      "contentType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ],
+      "manifestDigestVerified": true
+    },
+    "beta": {
+      "image": "docker.io/autobyteus/autobyteus-server:beta",
+      "digest": "sha256:4a005c61433fc1aa38f54a205c24ee55993b158539e09864d8925661aaa58348",
+      "contentType": "application/vnd.oci.image.index.v1+json",
+      "platforms": [
+        {
+          "architecture": "amd64",
+          "os": "linux"
+        },
+        {
+          "architecture": "arm64",
+          "os": "linux"
+        }
+      ],
+      "manifestDigestVerified": true
+    }
+  },
+  "betaMatchesVersion": true,
+  "workflowConclusion": "success",
+  "workflowAttempt": 1
+}

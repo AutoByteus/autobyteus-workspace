@@ -1,0 +1,409 @@
+Merge made by the 'ort' strategy.
+ TESTING.md                                         |   29 +
+ .../mobile/MobileLaunchRunOptionsCard.vue          |    2 +-
+ .../__tests__/MobileLaunchRunOptionsCard.spec.ts   |   21 +
+ .../config/__tests__/AgentRunConfigForm.spec.ts    |   16 +
+ .../config/__tests__/TeamRunConfigForm.spec.ts     |   14 +
+ .../__tests__/useDefinitionLaunchDefaults.spec.ts  |   41 +
+ .../composables/useDefinitionLaunchDefaults.ts     |    4 +-
+ autobyteus-web/docs/agent_management.md            |   18 +
+ autobyteus-web/docs/agent_teams.md                 |   14 +
+ autobyteus-web/package.json                        |    3 +-
+ .../stores/__tests__/agentRunConfigStore.spec.ts   |   15 +-
+ .../stores/__tests__/teamRunConfigStore.spec.ts    |   13 +
+ .../tests/e2e/existing-run-model-config-probe.mjs  |   10 +
+ .../e2e/fixtures/fresh-run-auto-approval.page.vue  |   30 +
+ .../tests/e2e/fresh-run-auto-approval-probe.mjs    |  446 ++
+ .../e2e/team-reload-member-freshness-probe.mjs     |   59 +-
+ .../types/agent/__tests__/TeamRunConfig.spec.ts    |    2 +-
+ .../agent-first-send-unit-tests.log                |   66 +
+ .../api-e2e-browser.log                            |  368 ++
+ .../api-e2e-coverage-investigation.md              |  130 +
+ .../api-e2e-execution-coverage-report.md           |  117 +
+ .../api-e2e-focused.log                            |   82 +
+ .../api-e2e-mobile-unit.log                        |   26 +
+ .../api-e2e-preservation.log                       |  266 +
+ .../api-e2e-revision-record.md                     |   44 +
+ .../api-e2e-saved-readers.log                      |    5 +
+ .../api-e2e-test-case-ledger.md                    |  299 +
+ .../api-e2e-test-review-report.md                  |   57 +
+ .../api-rev002-browser.log                         |  341 +
+ .../api-rev002-focused.log                         |   82 +
+ .../api-rev002-narrow.log                          |   42 +
+ .../api-rev002-preservation.log                    |  266 +
+ .../api-rev002-saved-readers.log                   |    5 +
+ .../architecture-review-revision-record.md         |   26 +
+ .../browser-initial-harness-attempt.json           |   56 +
+ .../browser-probe-api-rev002/B08-agent-fresh.png   |  Bin 0 -> 76045 bytes
+ .../browser-probe-api-rev002/B08-team-fresh.png    |  Bin 0 -> 76392 bytes
+ .../fresh-run-auto-approval-evidence.json          | 1444 +++++
+ .../browser-probe-api-rev002/nuxt-dev.log          |   24 +
+ .../browser-probe/B01-failure.png                  |  Bin 0 -> 77465 bytes
+ .../browser-probe/B02-failure.png                  |  Bin 0 -> 57094 bytes
+ .../browser-probe/B04-failure.png                  |  Bin 0 -> 33647 bytes
+ .../browser-probe/B05-failure.png                  |  Bin 0 -> 93983 bytes
+ .../browser-probe/B08-agent-fresh.png              |  Bin 0 -> 76935 bytes
+ .../browser-probe/B08-failure.png                  |  Bin 0 -> 77446 bytes
+ .../browser-probe/B08-team-fresh.png               |  Bin 0 -> 77284 bytes
+ .../fresh-run-auto-approval-evidence.json          | 1472 +++++
+ .../browser-probe/nuxt-dev.log                     |   21 +
+ .../browser-second-harness-attempt.json            |   46 +
+ .../code-review-focused-tests.log                  |   82 +
+ .../code-review-report.md                          |  162 +
+ .../code-review-revision-record.md                 |  157 +
+ .../crr-003-focused-tests.log                      |   42 +
+ .../crr-005-integrated-tests.log                   |  126 +
+ .../delivery-revision-record.md                    |   30 +
+ .../dependency-install.log                         |   27 +
+ .../design-review-report.md                        |  175 +
+ .../auto-approve-default-run-setup/design-spec.md  |   89 +
+ .../desktop-agent-after-restart.json               |    1 +
+ .../desktop-agent-before-restart.json              |    1 +
+ .../desktop-agent-opt-out.json                     |    1 +
+ .../desktop-initial-dom.json                       |    1 +
+ .../desktop-list-after-stop.json                   |   77 +
+ .../desktop-list-running.json                      |   94 +
+ .../desktop-restart.json                           |   20 +
+ .../desktop-restarted-dom.json                     |    1 +
+ .../desktop-stop.json                              |   15 +
+ .../desktop-team-after-restart.json                |    1 +
+ .../desktop-team-after-restart.png                 |  Bin 0 -> 165654 bytes
+ .../desktop-team-before-restart.json               |    1 +
+ .../desktop-team-opt-out.json                      |    1 +
+ .../desktop-team-restart.json                      |   20 +
+ .../desktop-team-restarted-dom.json                |    1 +
+ .../docs-sync-report.md                            |   30 +
+ .../evidence/api-rev003/browser-rerun.log          |  341 +
+ .../api-rev003/browser-rerun/B08-agent-fresh.png   |  Bin 0 -> 76097 bytes
+ .../api-rev003/browser-rerun/B08-team-fresh.png    |  Bin 0 -> 76392 bytes
+ .../fresh-run-auto-approval-evidence.json          | 1440 +++++
+ .../evidence/api-rev003/browser-rerun/nuxt-dev.log |   21 +
+ .../evidence/api-rev003/browser.log                |  136 +
+ .../evidence/api-rev003/browser/B04-failure.png    |  Bin 0 -> 35710 bytes
+ .../api-rev003/browser/B08-agent-fresh.png         |  Bin 0 -> 76045 bytes
+ .../evidence/api-rev003/browser/B08-team-fresh.png |  Bin 0 -> 76392 bytes
+ .../browser/fresh-run-auto-approval-evidence.json  |  502 ++
+ .../evidence/api-rev003/browser/nuxt-dev.log       |   23 +
+ .../evidence/api-rev003/durable-test.diff          |   88 +
+ .../evidence/api-rev003/focused.log                |  196 +
+ .../evidence/api-rev003/integrated-static.json     |   15 +
+ .../evidence/api-rev003/narrow.log                 |  126 +
+ .../evidence/api-rev003/preservation.log           |  266 +
+ .../evidence/api-rev003/product.log                |    5 +
+ .../evidence/api-rev003/product/app.log            |  454 ++
+ .../product/approval-agent-after-restart-off.png   |  Bin 0 -> 146400 bytes
+ .../product/approval-agent-after-restart-off.txt   |   36 +
+ .../product/approval-agent-after-restart-on.png    |  Bin 0 -> 140720 bytes
+ .../product/approval-agent-after-restart-on.txt    |   36 +
+ .../product/approval-team-after-reload-off.png     |  Bin 0 -> 162797 bytes
+ .../product/approval-team-after-reload-off.txt     |   39 +
+ .../product/approval-team-after-reload-on.png      |  Bin 0 -> 163241 bytes
+ .../product/approval-team-after-reload-on.txt      |   40 +
+ .../product/approval-team-after-restart-on.png     |  Bin 0 -> 162904 bytes
+ .../product/approval-team-after-restart-on.txt     |   39 +
+ .../evidence/api-rev003/product/evidence.json      | 6556 ++++++++++++++++++++
+ .../evidence/api-rev003/product/final-sources.json |    8 +
+ .../evidence/api-rev003/product/import.png         |  Bin 0 -> 209897 bytes
+ .../evidence/api-rev003/product/import.txt         |   31 +
+ .../evidence/api-rev003/product/list.json          |   77 +
+ .../evidence/api-rev003/product/list.log           |    0
+ .../evidence/api-rev003/product/pending-read.png   |  Bin 0 -> 103207 bytes
+ .../evidence/api-rev003/product/pending-read.txt   |   33 +
+ .../evidence/api-rev003/product/read-error.png     |  Bin 0 -> 81331 bytes
+ .../evidence/api-rev003/product/read-error.txt     |   16 +
+ .../evidence/api-rev003/product/restart.json       |   20 +
+ .../evidence/api-rev003/product/restart.log        |    0
+ .../evidence/api-rev003/product/shared-v1.png      |  Bin 0 -> 121117 bytes
+ .../evidence/api-rev003/product/shared-v1.txt      |   52 +
+ .../evidence/api-rev003/product/shared-v2.png      |  Bin 0 -> 121283 bytes
+ .../evidence/api-rev003/product/shared-v2.txt      |   51 +
+ .../evidence/api-rev003/product/shared-v3.png      |  Bin 0 -> 120892 bytes
+ .../evidence/api-rev003/product/shared-v3.txt      |   50 +
+ .../evidence/api-rev003/product/shared-v4.png      |  Bin 0 -> 120683 bytes
+ .../evidence/api-rev003/product/shared-v4.txt      |   50 +
+ .../evidence/api-rev003/product/start.json         |   20 +
+ .../evidence/api-rev003/product/start.log          |  753 +++
+ .../evidence/api-rev003/product/stop.json          |   15 +
+ .../evidence/api-rev003/product/stop.log           |    0
+ .../evidence/api-rev003/product/team-v1.png        |  Bin 0 -> 125339 bytes
+ .../evidence/api-rev003/product/team-v1.txt        |   46 +
+ .../evidence/api-rev003/product/team-v2.png        |  Bin 0 -> 125615 bytes
+ .../evidence/api-rev003/product/team-v2.txt        |   46 +
+ .../evidence/api-rev003/product/team-v3.png        |  Bin 0 -> 125827 bytes
+ .../evidence/api-rev003/product/team-v3.txt        |   46 +
+ .../evidence/api-rev003/product/team-v4.png        |  Bin 0 -> 125342 bytes
+ .../evidence/api-rev003/product/team-v4.txt        |   46 +
+ .../evidence/api-rev003/product/worker-v1.png      |  Bin 0 -> 129527 bytes
+ .../evidence/api-rev003/product/worker-v1.txt      |   55 +
+ .../evidence/api-rev003/product/worker-v2.png      |  Bin 0 -> 129768 bytes
+ .../evidence/api-rev003/product/worker-v2.txt      |   54 +
+ .../evidence/api-rev003/product/worker-v3.png      |  Bin 0 -> 129444 bytes
+ .../evidence/api-rev003/product/worker-v3.txt      |   53 +
+ .../evidence/api-rev003/product/worker-v4.png      |  Bin 0 -> 129203 bytes
+ .../evidence/api-rev003/product/worker-v4.txt      |   53 +
+ .../evidence/api-rev003/saved-readers.log          |    5 +
+ .../saved-readers/API-E2E-004-A-agent-saved.png    |  Bin 0 -> 80274 bytes
+ .../saved-readers/API-E2E-004-B-team-saved.png     |  Bin 0 -> 190786 bytes
+ .../saved-readers/API-E2E-004-C-team-narrow.png    |  Bin 0 -> 42148 bytes
+ .../API-E2E-004-D-agent-run-active.png             |  Bin 0 -> 79900 bytes
+ .../saved-readers/API-E2E-004-E-agent-replaced.png |  Bin 0 -> 85256 bytes
+ .../API-E2E-004-F-team-verified-narrow.png         |  Bin 0 -> 179428 bytes
+ .../existing-run-model-config-evidence.json        |  457 ++
+ .../evidence/api-rev003/saved-readers/nuxt-dev.log |   37 +
+ .../evidence/delivery/delivery-resume-refresh.md   |    7 +
+ .../evidence/delivery/integration-conflict.diff    |   18 +
+ .../evidence/delivery/integration-refresh.md       |   12 +
+ .../release/artifact-preparation-correction.md     |    2 +
+ .../delivery/release/post-acceptance-refresh.json  |   13 +
+ .../delivery/release/shared-checkout-before.json   |  136 +
+ .../integrated-local-tests.log                     |  196 +
+ .../integrated-preservation-check.json             |    8 +
+ .../integrated-preservation-tests.log              |  266 +
+ .../integrated-static-checks.log                   |  287 +
+ .../implementation-ir-003/integration-recovery.md  |    9 +
+ .../implementation-ir-003/merge-attempt.log        |    3 +
+ .../implementation-ir-003/merge-commit.log         |   14 +
+ .../implementation-ir-003/package-resolution.json  |    8 +
+ .../implementation-ir-003/preservation-before.json |   72 +
+ .../handoff-summary.md                             |   23 +
+ .../implementation-handoff.md                      |  148 +
+ .../implementation-preview/agent-fresh-desktop.png |  Bin 0 -> 45879 bytes
+ .../agent-opt-out-mobile.png                       |  Bin 0 -> 40411 bytes
+ .../implementation-preview/fresh-approval.page.vue |   51 +
+ .../ir-002/mobile-approval.page.vue                |   30 +
+ .../implementation-preview/ir-002/mobile-fresh.png |  Bin 0 -> 35494 bytes
+ .../ir-002/mobile-opt-out.png                      |  Bin 0 -> 36477 bytes
+ .../implementation-preview/ir-002/nuxt-dev.log     |   22 +
+ .../ir-002/rendered-state-evidence.json            |   67 +
+ .../implementation-preview/nuxt-dev.log            |   44 +
+ .../rendered-state-evidence.json                   |  182 +
+ .../implementation-preview/team-fresh-desktop.png  |  Bin 0 -> 53162 bytes
+ .../implementation-preview/team-fresh-mobile.png   |  Bin 0 -> 58302 bytes
+ .../implementation-revision-record.md              |   79 +
+ .../investigation-notes.md                         |   71 +
+ .../ir-002-local-tests.log                         |   42 +
+ .../isolated-start.log                             |  670 ++
+ .../local-tests-final.log                          |   82 +
+ .../local-tests-rerun.log                          |   82 +
+ .../auto-approve-default-run-setup/local-tests.log |   62 +
+ .../nuxt-prepare.log                               |    4 +
+ .../preservation-unit-tests.log                    |   50 +
+ .../release-deployment-report.md                   |   47 +
+ .../release-notes.md                               |    8 +
+ .../requirements-doc.md                            |   94 +
+ .../API-E2E-004-A-agent-saved.png                  |  Bin 0 -> 80274 bytes
+ .../API-E2E-004-B-team-saved.png                   |  Bin 0 -> 190786 bytes
+ .../API-E2E-004-C-team-narrow.png                  |  Bin 0 -> 42148 bytes
+ .../API-E2E-004-D-agent-run-active.png             |  Bin 0 -> 79863 bytes
+ .../API-E2E-004-E-agent-replaced.png               |  Bin 0 -> 85256 bytes
+ .../API-E2E-004-F-team-verified-narrow.png         |  Bin 0 -> 179428 bytes
+ .../existing-run-model-config-evidence.json        |  457 ++
+ .../saved-reader-probe-api-rev002/nuxt-dev.log     |   37 +
+ .../API-E2E-004-A-agent-saved.png                  |  Bin 0 -> 80274 bytes
+ .../API-E2E-004-B-team-saved.png                   |  Bin 0 -> 190786 bytes
+ .../API-E2E-004-C-team-narrow.png                  |  Bin 0 -> 42148 bytes
+ .../API-E2E-004-D-agent-run-active.png             |  Bin 0 -> 79900 bytes
+ .../API-E2E-004-E-agent-replaced.png               |  Bin 0 -> 85272 bytes
+ .../API-E2E-004-F-team-verified-narrow.png         |  Bin 0 -> 179428 bytes
+ .../existing-run-model-config-evidence.json        |  457 ++
+ .../saved-reader-probe/nuxt-dev.log                |   37 +
+ .../solution-designer-result.md                    |   23 +
+ .../solution-revision-record.md                    |   46 +
+ .../user-verification.md                           |    8 +
+ 211 files changed, 23577 insertions(+), 7 deletions(-)
+ create mode 100644 autobyteus-web/tests/e2e/fixtures/fresh-run-auto-approval.page.vue
+ create mode 100644 autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs
+ create mode 100644 tickets/done/auto-approve-default-run-setup/agent-first-send-unit-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-browser.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-coverage-investigation.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-execution-coverage-report.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-focused.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-mobile-unit.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-preservation.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-revision-record.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-saved-readers.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-test-case-ledger.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-rev002-browser.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-rev002-focused.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-rev002-narrow.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-rev002-preservation.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/api-rev002-saved-readers.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/architecture-review-revision-record.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-initial-harness-attempt.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe-api-rev002/B08-agent-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe-api-rev002/B08-team-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe-api-rev002/fresh-run-auto-approval-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe-api-rev002/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B01-failure.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B02-failure.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B04-failure.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B05-failure.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B08-agent-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B08-failure.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/B08-team-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/fresh-run-auto-approval-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-probe/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/browser-second-harness-attempt.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/code-review-focused-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/code-review-report.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/code-review-revision-record.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/crr-003-focused-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/crr-005-integrated-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/delivery-revision-record.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/dependency-install.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/design-review-report.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/design-spec.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-agent-after-restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-agent-before-restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-agent-opt-out.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-initial-dom.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-list-after-stop.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-list-running.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-restarted-dom.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-stop.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-team-after-restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-team-after-restart.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-team-before-restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-team-opt-out.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-team-restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/desktop-team-restarted-dom.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/docs-sync-report.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser-rerun.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser-rerun/B08-agent-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser-rerun/B08-team-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser-rerun/fresh-run-auto-approval-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser-rerun/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser/B04-failure.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser/B08-agent-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser/B08-team-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser/fresh-run-auto-approval-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/browser/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/durable-test.diff
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/focused.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/integrated-static.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/narrow.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/preservation.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/app.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-agent-after-restart-off.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-agent-after-restart-off.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-agent-after-restart-on.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-agent-after-restart-on.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-team-after-reload-off.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-team-after-reload-off.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-team-after-reload-on.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-team-after-reload-on.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-team-after-restart-on.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/approval-team-after-restart-on.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/final-sources.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/import.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/import.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/list.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/list.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/pending-read.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/pending-read.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/read-error.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/read-error.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/restart.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/restart.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v1.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v1.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v2.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v2.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v3.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v3.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v4.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/shared-v4.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/start.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/start.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/stop.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/stop.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v1.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v1.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v2.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v2.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v3.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v3.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v4.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/team-v4.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v1.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v1.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v2.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v2.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v3.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v3.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v4.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/product/worker-v4.txt
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/API-E2E-004-A-agent-saved.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/API-E2E-004-B-team-saved.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/API-E2E-004-C-team-narrow.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/API-E2E-004-D-agent-run-active.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/API-E2E-004-E-agent-replaced.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/API-E2E-004-F-team-verified-narrow.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/existing-run-model-config-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/api-rev003/saved-readers/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/delivery/delivery-resume-refresh.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/delivery/integration-conflict.diff
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/delivery/integration-refresh.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/delivery/release/artifact-preparation-correction.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/delivery/release/post-acceptance-refresh.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/delivery/release/shared-checkout-before.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/integrated-local-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/integrated-preservation-check.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/integrated-preservation-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/integrated-static-checks.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/integration-recovery.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/merge-attempt.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/merge-commit.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/package-resolution.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/evidence/implementation-ir-003/preservation-before.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/handoff-summary.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-handoff.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/agent-fresh-desktop.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/agent-opt-out-mobile.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/fresh-approval.page.vue
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/ir-002/mobile-approval.page.vue
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/ir-002/mobile-fresh.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/ir-002/mobile-opt-out.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/ir-002/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/ir-002/rendered-state-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/rendered-state-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/team-fresh-desktop.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-preview/team-fresh-mobile.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/implementation-revision-record.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/investigation-notes.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/ir-002-local-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/isolated-start.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/local-tests-final.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/local-tests-rerun.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/local-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/nuxt-prepare.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/preservation-unit-tests.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/release-deployment-report.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/release-notes.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/requirements-doc.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/API-E2E-004-A-agent-saved.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/API-E2E-004-B-team-saved.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/API-E2E-004-C-team-narrow.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/API-E2E-004-D-agent-run-active.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/API-E2E-004-E-agent-replaced.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/API-E2E-004-F-team-verified-narrow.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/existing-run-model-config-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe-api-rev002/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/API-E2E-004-A-agent-saved.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/API-E2E-004-B-team-saved.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/API-E2E-004-C-team-narrow.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/API-E2E-004-D-agent-run-active.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/API-E2E-004-E-agent-replaced.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/API-E2E-004-F-team-verified-narrow.png
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/existing-run-model-config-evidence.json
+ create mode 100644 tickets/done/auto-approve-default-run-setup/saved-reader-probe/nuxt-dev.log
+ create mode 100644 tickets/done/auto-approve-default-run-setup/solution-designer-result.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/solution-revision-record.md
+ create mode 100644 tickets/done/auto-approve-default-run-setup/user-verification.md

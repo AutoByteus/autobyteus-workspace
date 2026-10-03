@@ -1,0 +1,14 @@
+{
+  "worktreeRemoval": "Completed",
+  "worktreePrune": "Completed",
+  "localTicketBranchRemoval": "Completed",
+  "localTransportBranchRemoval": "Completed",
+  "remoteTicketBranchRemoval": "Completed",
+  "remoteTransportBranchRemoval": "Not required \u2014 never pushed",
+  "onlyTaskWorktreesRemoved": true,
+  "durableExportVerifiedBeforeRemoval": true,
+  "generatedSDKOutputsPreservedOutsideGit": "/Users/normy/autobyteus_org/autobyteus-delivery-records/auto-approve-default-run-setup/preserved-generated-build-output",
+  "sharedCheckoutHeadStatusFilesIndexUnchanged": true,
+  "dataAndProcessCleanup": "Current API product stop/list proves task-owned app/root/ports removed; Delivery started no app",
+  "remainingBlocker": null
+}
