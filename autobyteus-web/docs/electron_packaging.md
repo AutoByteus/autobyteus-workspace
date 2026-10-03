@@ -986,6 +986,15 @@ Project Task draft and Settings test controls:
   appendTranscript. useComposerVoiceTarget adapts the actual composer context;
   the Task draft owns its editable text. No active-AgentContext lookup, fake run
   identity, auto-save/run launch or automatic audio attachment is involved;
+- each mounted useComposerVoiceTarget owns one current destination lifetime.
+  An eligible exact context object under the same node binding revision retains
+  the same sink object and key even when Team publications recreate presentation
+  wrappers. Background updates alone must not cancel startup, recording, audio
+  flush or pending transcription. The key is not a run ID or a per-render ID;
+- an observed null/read-only target, exact context replacement (even with the
+  same run ID), node rebinding or unmount retires that lifetime. Returning to a
+  previously observed destination creates a new sink; retired sinks cannot
+  become current again. Separate mounted owners have separate keys;
 - generic `components/voiceInput/VoiceInputButton.vue` cancels only the matching
   target on replacement/unmount. `cancelOperationForTarget(key)` cannot cancel
   another destination. Settings uses source-scoped cancellation without a text
@@ -1011,7 +1020,9 @@ Synthetic archive-timestamp hazards are not proof of an actual installed failure
 
 These destination/resource rules do not change managed release assets, local
 model policy, IPC result shape or persisted extension settings. See
-[Projects](projects.md#optional-local-voice-destination) for Task authoring scope.
+[Projects](projects.md#optional-local-voice-destination) for Task authoring scope
+and the [composer voice lifetime regression](../../TESTING.md#composer-voice-lifetime-regression)
+for repeatable renderer/native-browser coverage and its evidence limits.
 
 ## Related Documentation
 

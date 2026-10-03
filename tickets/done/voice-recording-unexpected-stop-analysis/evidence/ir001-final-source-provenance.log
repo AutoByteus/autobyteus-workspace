@@ -1,0 +1,23 @@
+Final implementation source and test hashes
+93ee593d1cd977897cc4018a25b6eaa1bf49c75354cdc310d60c81894c7965dc  autobyteus-web/composables/voiceInput/useComposerVoiceTarget.ts
+f3aaa435df50121718c7bed408090b6872ca7ff67e4b6915e4f982569a8eebea  autobyteus-web/composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+ca595d865ba8254c393c7f85d2a9a288f9a8b877c1714fb2edf6cf35d0dc5c2e  autobyteus-web/tests/integration/composer-voice-lifetime.integration.test.ts
+Preserved SR-001 evidence hashes (compare ir001-red-source-provenance.log)
+5c3bee453d82b73a210f7e8b1a6a51c100360391cda923616229fec0a5653115  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.cjs
+4233c663713d83a59f3bfb3938a66cbefca85d04cea18f0db220ce1494b5a5bd  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.json
+e8e737254193c27a6e8a35b22295b00c5783a658e5496da22be1783d5a8380ba  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.json
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.stderr.log
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.stderr.log
+3f4136c641faae3fd8adc9247fb78460fc017113839f628dcc2828dca32b9dfd  tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/source-provenance.log
+Source nonempty line count
+40
+Source diff
+24	4	autobyteus-web/composables/voiceInput/useComposerVoiceTarget.ts
+Preview removed
+yes
+Owned preview listener
+Development commit
+f1243aba0254f16eb47710a63c7c9ab195148ae5
+Working tree status
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/voice-recording-unexpected-stop-analysis/

@@ -1,0 +1,27 @@
+
+> autobyteus@1.4.93-beta.2 test:e2e:composer-voice-lifetime /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> node tests/e2e/composer-voice-lifetime-probe.mjs --output-dir ../tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final
+
+AssertionError [ERR_ASSERTION]: Refusing to overwrite evidence /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/evidence.json; choose a fresh output directory
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:120:3
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+{
+  "result": "Fail",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/evidence.json",
+  "cases": {},
+  "cleanup": {
+    "dev": {
+      "result": "not-started"
+    }
+  }
+}
+ ELIFECYCLE  Command failed with exit code 1.

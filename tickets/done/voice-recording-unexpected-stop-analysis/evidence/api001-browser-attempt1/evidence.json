@@ -1,0 +1,98 @@
+{
+  "startedAt": "2026-10-03T13:17:39.701Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue",
+  "pagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/pages/api-e2e-composer-voice-lifetime.vue",
+  "cases": {
+    "B-001": {
+      "result": "Fail",
+      "description": "Run caller survives repeated publications and Stop appends once/no Send",
+      "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('composer').getByRole('textbox')\u001b[22m\n",
+      "state": {
+        "kind": "run",
+        "visible": true,
+        "focused": "lead",
+        "starting": false,
+        "recording": false,
+        "transcribing": false,
+        "captureStats": false,
+        "level": 0,
+        "pendingMedia": false,
+        "pendingIpc": false,
+        "publications": 0,
+        "wrappersChanged": 0,
+        "sends": 0,
+        "stops": 0,
+        "cancellations": 0,
+        "ipc": 0,
+        "tracks": [],
+        "audioContexts": [],
+        "wavs": [],
+        "error": null,
+        "leadDraft": "",
+        "reviewerDraft": ""
+      }
+    }
+  },
+  "pageErrors": [],
+  "apiRequests": [],
+  "cleanup": {
+    "renderer": {
+      "kind": "run",
+      "visible": true,
+      "focused": "lead",
+      "starting": false,
+      "recording": false,
+      "transcribing": false,
+      "captureStats": false,
+      "level": 0,
+      "pendingMedia": false,
+      "pendingIpc": false,
+      "publications": 0,
+      "wrappersChanged": 0,
+      "sends": 0,
+      "stops": 0,
+      "cancellations": 0,
+      "ipc": 0,
+      "tracks": [],
+      "audioContexts": [],
+      "wavs": [],
+      "error": null,
+      "leadDraft": "",
+      "reviewerDraft": ""
+    },
+    "browser": {
+      "result": "closed",
+      "pid": 29404
+    },
+    "dev": {
+      "result": "terminated",
+      "pid": 29360,
+      "exitCode": 0,
+      "signal": null,
+      "groupExited": true,
+      "portClosed": true
+    },
+    "page": "removed"
+  },
+  "failures": [
+    {
+      "id": "B-001",
+      "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('composer').getByRole('textbox')\u001b[22m\n",
+      "stack": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('composer').getByRole('textbox')\u001b[22m\n\n    at open (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:62:37)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:146:5\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:98:26)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:145:3"
+    },
+    {
+      "message": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('composer').getByRole('textbox')\u001b[22m\n",
+      "stack": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('composer').getByRole('textbox')\u001b[22m\n\n    at open (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:62:37)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:146:5\n    at async scenario (/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:98:26)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs:145:3"
+    }
+  ],
+  "port": 64410,
+  "baseUrl": "http://127.0.0.1:64410",
+  "devPid": 29360,
+  "browserPid": 29404,
+  "browserVersion": "154.0.8037.97",
+  "result": "Fail",
+  "finishedAt": "2026-10-03T13:18:31.029Z"
+}

@@ -1,0 +1,39 @@
+Node/pnpm: v22.23.1 10.28.2
+Implementation commit: f1243aba0254f16eb47710a63c7c9ab195148ae5
+Unchanged IR/SR source/evidence: 93ee593d1cd977897cc4018a25b6eaa1bf49c75354cdc310d60c81894c7965dc autobyteus-web/composables/voiceInput/useComposerVoiceTarget.ts
+Unchanged IR/SR source/evidence: f3aaa435df50121718c7bed408090b6872ca7ff67e4b6915e4f982569a8eebea autobyteus-web/composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+Unchanged IR/SR source/evidence: ca595d865ba8254c393c7f85d2a9a288f9a8b877c1714fb2edf6cf35d0dc5c2e autobyteus-web/tests/integration/composer-voice-lifetime.integration.test.ts
+Unchanged IR/SR source/evidence: 5c3bee453d82b73a210f7e8b1a6a51c100360391cda923616229fec0a5653115 tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.cjs
+Unchanged IR/SR source/evidence: 4233c663713d83a59f3bfb3938a66cbefca85d04cea18f0db220ce1494b5a5bd tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.json
+Unchanged IR/SR source/evidence: e8e737254193c27a6e8a35b22295b00c5783a658e5496da22be1783d5a8380ba tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.json
+Unchanged IR/SR source/evidence: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/recording-lifecycle-probe.stderr.log
+Unchanged IR/SR source/evidence: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/pre-projects-probe.stderr.log
+Unchanged IR/SR source/evidence: 3f4136c641faae3fd8adc9247fb78460fc017113839f628dcc2828dca32b9dfd tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/source-provenance.log
+API durable: ac7f719fcf136c02ad01ab533736bf133bc2a738025211054725ea55f48c2c31 autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs
+API durable: 37c19aa776eace7a1a57eb9f78ec6860dec1e53d4161ab2b66586b294e8e1d7f autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue
+API durable: 92872582446e36f16bc8c69995c1afdf7d2b26bf9d4969c5044bc152dfc8a0e1 autobyteus-web/package.json
+Owned cleanup: api001-browser-attempt1 {'result': 'terminated', 'pid': 29360, 'exitCode': 0, 'signal': None, 'groupExited': True, 'portClosed': True}
+Owned cleanup: api001-browser-attempt2 {'result': 'terminated', 'pid': 32054, 'exitCode': 0, 'signal': None, 'groupExited': True, 'portClosed': True}
+Owned cleanup: api001-browser-final {'result': 'terminated', 'pid': 37477, 'exitCode': 0, 'signal': None, 'groupExited': True, 'portClosed': True}
+Owned cleanup: api001-browser-original-control {'result': 'terminated', 'pid': 39467, 'exitCode': 0, 'signal': None, 'groupExited': True, 'portClosed': True}
+Temporary page absent and not packaged. No browser profile/user data reused.
+Removed owned generated-cache quarantine: /tmp/composer-voice-api001-cache.Ogrvd0
+Removed exact owned fixed-source backup: /tmp/composer-voice-api001-fixed.goHwmu
+Working tree:  M autobyteus-web/package.json
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-web/tests/e2e/composer-voice-lifetime-probe.mjs
+?? autobyteus-web/tests/e2e/fixtures/composer-voice-lifetime.page.vue
+?? tickets/in-progress/voice-recording-unexpected-stop-analysis/
+
+Collision guard: refused existing output, preserved evidence SHA, no resources started; see api001-collision-guard.log.
+
+API test development commit: 0c17debbf8e81dd549cc2d42d7cd2e39d020b7de
+0c17debbf test(voice-input): exercise composer lifetimes with native browser capture
+ autobyteus-web/package.json                        |   1 +
+ .../tests/e2e/composer-voice-lifetime-probe.mjs    | 212 +++++++++++++++++++++
+ .../e2e/fixtures/composer-voice-lifetime.page.vue  | 117 ++++++++++++
+ 3 files changed, 330 insertions(+)
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/voice-recording-unexpected-stop-analysis/
+Exact adapter source 98d8fb36a632ce0f46136cda20129d1fe1ee0ac8 SHA256 518f5cf916a84685e0f0d5ad911a848d5e6178d6dfffd2ca5f943484077e7142
+Exact adapter source f1243aba0254f16eb47710a63c7c9ab195148ae5 SHA256 93ee593d1cd977897cc4018a25b6eaa1bf49c75354cdc310d60c81894c7965dc

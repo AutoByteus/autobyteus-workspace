@@ -1,0 +1,16 @@
+{
+  "tool": "get_handoff_rules",
+  "observedDate": "2026-10-03",
+  "result": "Implementation Complete",
+  "revision": "IR-001",
+  "classification": {
+    "task_size": "Small",
+    "architectural_risk": "Low"
+  },
+  "selectedRule": {
+    "when": "When implementation is complete, implementation-scoped validation and the lightweight implementation self-review are complete, the carried classification is task_size=Small or Medium and architectural_risk=Low, and the cumulative package is ready for direct API/E2E validation without Code Reviewer.",
+    "recipient_address": "/api_e2e_engineer"
+  },
+  "reason": "Initial implementation complete; local checks and self-review complete; cumulative package ready. Large/High, Local Fix and upstream-gap conditions do not apply.",
+  "notificationPolicy": "One matching most-specific rule; notify only exact returned /api_e2e_engineer."
+}

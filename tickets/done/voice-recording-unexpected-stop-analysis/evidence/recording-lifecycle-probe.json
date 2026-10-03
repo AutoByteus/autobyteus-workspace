@@ -1,0 +1,57 @@
+{
+  "sourceRef": "worktree HEAD",
+  "mode": "Controlled production-source renderer probe, not Electron/microphone/transport E2E",
+  "dependencyVersions": {
+    "vue": "3.5.28",
+    "pinia": "2.3.1"
+  },
+  "cases": [
+    {
+      "scenario": "Ordinary render with unchanged dependencies",
+      "remainsRecording": true,
+      "unchangedVoiceTarget": true
+    },
+    {
+      "scenario": "Context status mutation without publication replacement",
+      "remainsRecording": true,
+      "unchangedVoiceTarget": true
+    },
+    {
+      "scenario": "Valid Team communication between OTHER members while recording",
+      "applied": "applied",
+      "sameContext": true,
+      "sameRunId": true,
+      "oldSinkStillCurrent": true,
+      "sameNodeBinding": true,
+      "regeneratedComposerWrapper": true,
+      "changedVoiceKey": true,
+      "remainsRecording": false,
+      "tracksStopped": 1,
+      "contextsClosed": 1,
+      "transcriptionCalls": 0,
+      "toasts": 0,
+      "latestResult": "recording",
+      "cancellationActions": [
+        {
+          "name": "cancelOperationForTarget",
+          "args": [
+            "composer-df77bc0d8uc"
+          ]
+        },
+        {
+          "name": "cleanup"
+        },
+        {
+          "name": "disposeCapture"
+        }
+      ]
+    },
+    {
+      "scenario": "Genuine supported member switch",
+      "beforeSwitch": "designer-run",
+      "afterSwitch": "reviewer-run",
+      "remainsRecording": false,
+      "totalTracksStopped": 2
+    }
+  ]
+}
