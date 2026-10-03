@@ -1,117 +1,117 @@
 # API/E2E Execution Coverage Report — General Agent
 
 ## Execution round meta and routing
-- Current round: 1; API-REV-001; prior round/result/confidence N/A.
-- Trigger: Implementation Complete / IR-001, approved SR-002.
-- Task size Small; architectural risk Low; input Direct Low-Risk, unchanged.
-- Successful-output route: Delivery. Current result is **Fail**, focused failure-origin review.
-- Successful test-code review: Not Required — direct low-risk route; this handoff requests
-  failure-origin review only, not successful-test review.
-- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity; branch task/general-agent-identity.
-- Development implementation commit: 8a4177f5b686bbaa9ce62448196c8948cded5e03;
-  base 806907faeb567d2b703e10fe984fcd01be0b41fd. No push/merge/release.
+- Latest authoritative round 2; **API-REV-002**, **Pass / 95%**.
+- Trigger: Code Reviewer CRR-001 / API-F001/API-F002 confirmed Local Fix, API/E2E-owned.
+- Prior API round 1: API-REV-001 **Fail / 94.29%**, preserved in api-e2e-revision-record.md.
+- Task size Small; architectural risk Low; original Direct Low-Risk route unchanged.
+- Architecture and full implementation-source review: N/A — not applicable.
+- Focused failure-origin review: CRR-001 applicable; proportional test-code review:
+  **Required — CRR-001 failure-recovery gate**, pending. No full source review requested.
+  Original clean direct-route policy would be Not Required; recovery exception prevents
+  direct delivery for this repaired package. Successful-output route: Code Reviewer.
+- Worktree /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity; task/general-agent-identity.
+- Base 806907faeb567d2b703e10fe984fcd01be0b41fd; IR-001 implementation
+  8a4177f5b686bbaa9ce62448196c8948cded5e03; API-REV-001 development
+  a1136e8dd48b9d7e9217bd939bd54687116038c7. No push/merge/release.
 
-### Cumulative authoritative artifact package
-All upstream artifacts below were read before coverage changes/execution:
+## Cumulative authoritative package
+All paths below are absolute. Cumulative upstream retained/reviewed; no requirement,
+design, production or intended-behavior revision introduced by test maintenance.
 - Requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/requirements-doc.md
-- Investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/investigation-notes.md
-- Solution revisions: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/solution-revision-record.md
+- Investigation notes: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/investigation-notes.md
 - Design: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/design-spec.md
+- Solution history: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/solution-revision-record.md
 - Exact approved supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/general-agent-prompt.md
 - Solution handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/solution-handoff.md
 - Implementation handoff: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/implementation-handoff.md
-- Implementation revisions: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/implementation-revision-record.md
+- Implementation history: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/implementation-revision-record.md
 - Preview supplement: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/preview-observations.md
+- Origin review: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/code-review-report.md
+- Review history: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/code-review-revision-record.md
+- Origin evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/code-review-origin-evidence.txt
 - Coverage investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-e2e-coverage-investigation.md
 - Ledger: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-e2e-test-case-ledger.md
-- API/E2E revisions: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-e2e-revision-record.md
-- Architecture review/report/revisions, source code review/report/revisions, Product:
-  N/A — not applicable. Delivery/rework report N/A — initial validation.
+- API/E2E history: /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-e2e-revision-record.md
+- Architecture review/report/history, full source review, Product and delivery reentry:
+  N/A — not applicable. Focused origin review is **not** N/A.
 
 ## Investigation and execution basis
-Investigation written before durable edits and final execution: Yes. TESTING.md,
-server/web AGENTS.md, package scripts, README testing sections, Vitest/Prisma setup,
-docs/isolated-app-instances.md and lifecycle skill followed. No closer guideline.
-Changed surfaces are content/config/bootstrap persistence/API/default Chat and
-existing discovery bindings; no shell source/eligibility/routing changes.
-Full product journey used a worktree-built isolated Electron app, not installed app.
-Browser CLI doc locator discrepancy: mcps folder lacks SKILL.md; readable supported
-bundle used at /Users/normy/autobyteus_org/autobyteus-skills/browser-automation/SKILL.md.
-
-Plan followed with two API/E2E-owned execution corrections in B01, both resolved:
-first concurrent desktop rebuild cleaned dist while C01 read it; sequential retry
-exposed test-only trailing-newline trimming. Final sequential retry used faithful
-body bytes and all C01/C02/C13 passed. Neither is a production defect. No unrecorded
-case result inferred. Narrow R03 overlapped R02 process tail; authoritative broader
-R03 ran sequentially afterward. No DB overlap evidence relied on for final proof.
+Investigation updated before edits/execution: Yes. Root TESTING.md, server/web AGENTS.md,
+README/scripts/Vitest/Prisma setup and current Team module/GraphQL/config/source/admission
+and host composition read. Only two stale E2E files changed this round. Existing helpers
+remain fail-fast; no always-available mock, production alias or policy bypass introduced.
+The failed scenarios are valid package catalog/flat-Team authoring/persistence guards,
+not new General Agent requirements. Approved SR-002/IR-001 and exact template remain
+unchanged. No scope/design ambiguity found. Plan followed: repair, prior-failure files
+first, same affected directory sequentially; retain valid unaffected product evidence.
 
 ## Ledger reconciliation and changed-boundary matrix
-Ledger initialized before execution: Yes. Case completion/checkpoints persisted.
-All cases terminated; no running/interrupted/unstarted cases. Authoritative rows:
-| ID | BEH/SCN / AC | Surface/evidence | Final result |
+Ledger updated before execution; each completed command persisted before next case.
+R03 reused; API-F001/002 resolution recorded. No pending/interrupted/running cases.
+Round-1 R01/R02/B01/D01/D02 evidence retained, not counted as new executions.
+| ID | AC / contract | Surface/evidence | Current result |
 | --- | --- | --- | --- |
-| R01 | 001/003 / AC-001–004/006 | 9 bootstrap + 30 web tests; exact supplement/hash/base-config comparison | Pass |
-| R02 | 002 / AC-005 | 54 tests / 7 files: actual config native/MCP exposure, empty/no-context, root/admission/catalog contracts | Pass |
-| R03 | 001 / AC-001–006 and adjacent definition regression guard | Added 2 GraphQL tests pass; broader directory 19 pass / 3 fail (5 files) | Fail |
-| B01 | 001 / AC-001–004/006 | Live HTTP/process/browser C01/C02/C13 final sequential run | Pass |
-| D01 | 001 / AC-001/004/006 | Packaged default Chat same-ID launch, displayed name, exact prompt, model reply | Pass |
-| D02 | 001 / AC-006 | Packaged stop/restart + ordinary API reader and UI historical reopen | Pass |
+| R01 | AC-001–004/006 | 9 bootstrap + 30 web tests; approved hash/base-config equality (round 1) | Pass — retained |
+| R02 | AC-005 | 54 discovery/exposure/root/admission/catalog tests (round 1) | Pass — retained |
+| R03 | AC-001–006 and adjacent definition regressions | round 2 repaired package 8/8, persistence 1/1, then full 5-file directory 22/22 incl. General Agent fresh/old API | Pass |
+| B01 | AC-001–004/006 | final round-1 live HTTP/browser C01/C02/C13, exact file/hash/config, 2 process restarts | Pass — retained |
+| D01 | AC-001/004/006 | actual worktree desktop same-ID default Chat/name/config/model reply | Pass — retained |
+| D02 | AC-006 | same isolated instance restart + history/API reader/UI reopen | Pass — retained |
 
-## Exact commands and evidence
-Commands run from /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity; filenames below are relative to /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity.
-| Layer | Command / mode | Result / log |
-| --- | --- | --- |
-| R01 server | pnpm -C autobyteus-server-ts exec vitest run tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts --no-watch | 9 pass; api-r01-server.log |
-| R01 web | pnpm -C autobyteus-web test:nuxt stores/__tests__/chatDraftStore.spec.ts services/chat/__tests__/chatLaunchService.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts components/agents/__tests__/AgentDefinitionForm.spec.ts --run | 30 pass; api-r01-web.log |
-| R02 | pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/agent-discovery/list-available-agents-tool.test.ts tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts tests/unit/agent-run-collaboration tests/unit/agent-collaboration/collaborators --no-watch | 54 pass; api-r02.log |
-| R03 narrow | pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts --no-watch | 2 pass; api-r03-narrow.log |
-| R03 broader | pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions --no-watch | 19 pass / 3 fail; api-r03.log |
-| B01 initial | pnpm -C autobyteus-web test:e2e:chat-entry-live --cases C01,C02,C13 --output-dir ../tickets/in-progress/general-agent-identity/api-live | C01 execution setup failure; C02/C13 pass; api-live.log |
-| B01 retry | same, output-dir ../tickets/in-progress/general-agent-identity/api-live-rerun | C01 test-body newline failure; C02/C13 pass; api-live-rerun.log |
-| B01 final | same, output-dir ../tickets/in-progress/general-agent-identity/api-live-final | all 3 pass; api-live-final.log + api-live-final/chat-entry-live-evidence.json |
-| D01 | pnpm --silent isolated-app start --build | production guards/server/template smoke/renderer/main build/package/start pass; api-desktop-build.log, api-desktop-start.json |
-| D02 | pnpm --silent isolated-app restart iso-64690-9092 | pass; api-desktop-restart.json |
-| static checks | node --check autobyteus-web/tests/e2e/chat-entry-live-probe.mjs; git diff --check | pass |
-
-Server global Vitest reset uses assigned worktree tests/.tmp/autobyteus-server-test.db.
-Package-wide typecheck not rerun: upstream verified pre-existing TS6059 configuration
-failure; server-build.log/server-typecheck.log retain exact implementation evidence.
-Production compilation ran successfully again inside desktop build. No whole-server,
-whole-web, whole-live-probe or all-provider suite success claimed.
-
-## Failure details requiring focused origin review
-| Finding | Case / acceptance relationship | Expected | Observed / evidence | Preliminary owner |
-| --- | --- | --- | --- | --- |
-| API-F001 | R03: agent-packages-graphql.e2e.test.ts, imports/removes linked local package; checks/updates managed GitHub package. Adjacent definition/collaboration regression guard, no task AC failure established | valid package fixtures and configured real admission dependency permit Team listing | 2 fail: definitionAdmissionService.scan/requireAvailable unavailable helper; team fixtures also omit current handoffs key; api-r03.log | Local Fix — API/E2E test fixture/setup; independently confirm |
-| API-F002 | R03: json-file-persistence-contract.e2e.test.ts. Adjacent persisted definition guard for AC-006, no task production regression established | query current TeamMember contract | GraphQL rejects removed TeamMember.refType before behavior execution; api-r03.log | Local Fix — stale API test contract; independently confirm |
-
-The two failing test files, Studio E2E helper and Team GraphQL type are byte-identical
-at recorded base (api-broader-failure-provenance.txt). No baseline worktree suite was
-executed, so this is provenance + direct-origin evidence, not a claimed executed base
-pass/fail. Approved rename changes no Team schema/admission path. Do not alter correct
-production contracts or expand General Agent requirements to make these tests pass.
-Review should confirm whether narrow repair is appropriate or these unrelated stale
-cases should be explicitly excluded from this package's affected-scope gate.
-
-## Mandatory confidence scorecard
-| Category | Post-repository | Final | Final evidence / residual |
+## Prior failure resolution
+| Finding | CRR-001 confirmed origin | Repair and proof | Resolution |
 | --- | --- | --- | --- |
-| Requirement and AC proof | 90% | 95% | all critical AC directly proven; model routing judgment not promised |
-| Changed-boundary directness | 95% | 95% | installed approved bytes + real bootstrap/API/package/default launch |
-| Cross-boundary realism/mock gap | 90% | 95% | real packaged renderer/backend/Codex launch and reply; existing root policy tested with execution/model doubles |
-| Environment/config/identity fidelity | 95% | 95% | isolated reported ports/root and real config; same ID; no credentials copied |
-| Edge/lifecycle/recovery | 90% | 95% | 2 live server restarts and packaged restart; old reader-valid snapshot preserved |
-| User/browser/desktop | 75% | 95% | actual desktop name/config/launch/reply/reopen; screenshot inspected, no in-scope layout defect |
-| Durable regression quality/relevance | 90% | 90% | exact linked API regression tests and corrected C13 pass; adjacent broad stale failures still unresolved |
-Post-repository overall 89.29%; final **94.29%**, simple mean of seven categories.
-All final categories >=90%; clean >=95% target **not met**. Critical AC direct proof:
-Yes. No critical task behavior observed failing; current Fail records broader affected
-repository-check failure and unresolved validation-gate treatment, not production defect.
-Additional validation surface for remaining gap is focused failure-origin review and
-appropriate test validity/fixture repair, not another browser/model rerun.
+| API-F001 | missing concrete admission setup, invalid incomplete Team fixture and obsolete duplicate-Team precedence premise | package file owns temp suite root; injects real DefinitionSourceRegistry/DefinitionAdmissionService with real Agent/Team/Org dependencies; canonical complete Team files. Proves unique Teams available, duplicated Team exact lookup null/list omitted, then re-admitted after external package removal. Separate default Agent precedence retained. Package import/update/remove/rollback guards all execute | Resolved — 8 tests pass alone and in directory |
+| API-F002 | removed Team refType query/input/type/save expectation; rename missing expectedRevision | persistence file owns temp suite root; current memberName/ref/refScope fields, exact canonical config including handoffs/null defaults; returned create revision feeds rename, updated revision changes, config remains equal. Existing Agent noop/rename and MCP persistence preserved | Resolved — 1 complete persistence test passes alone and in directory |
+Round-1 temporary C01 dist-race/newline-test failures were already resolved before
+API-REV-001; retained historical logs are not new round-2 failures. No baseline suite
+execution claimed; unchanged-base provenance files remain historical evidence only.
 
-## Broader validation execution and product observations
-Decision **Required**, executed Live API/Lifecycle + Project Desktop Validation.
+## Current repository execution
+Commands from /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity, sequential, using assigned worktree test-owned
+SQLite tests/.tmp/autobyteus-server-test.db; suite roots only created by these tests.
+| Order | Exact command | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts --no-watch | 1 file / 8 tests pass | /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-r03-repair-packages.log |
+| 2 | pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts --no-watch | 1 file / 1 test pass | /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-r03-repair-persistence.log |
+| 3 | pnpm -C autobyteus-server-ts exec vitest run tests/e2e/agent-definitions --no-watch | 5 files / 22 tests pass (includes previous 8+1 rerun, not 31 distinct cases) | /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-r03-round2.log |
+| 4 | git diff --check; approved template/base-config/helper byte comparisons | Pass, no production or helper delta | /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/in-progress/general-agent-identity/api-round2-fidelity.txt |
+Full affected directory now green without skips, exclusions or deleted cases. No
+whole-server/web/all-provider suite claimed. Package-wide TS6059 typecheck remains
+known baseline limitation, not rerun/passed; production build/template smoke passed
+in round 1 desktop build. Relevant original logs retained (api-r01-*.log, api-r02.log,
+api-r03.log, server-build.log/server-typecheck.log and web-unit.log).
+
+## Mandatory post-repository and final confidence scorecard
+Scores use cumulative actual evidence, explicitly retaining unchanged round-1 product
+proof. Round-2 repository repairs close the sole remaining gap; no new broader run.
+| Category | API-REV-001 final | Round-2 post-repository / final | Supporting change or retained evidence / residual |
+| --- | --- | --- | --- |
+| Requirement / AC proof | 95% | 95% | new General Agent API rerun + unchanged exact prompt/default Chat launch; no critical gap |
+| Changed-boundary directness | 95% | 95% | concrete scoped registry/admission and real GraphQL/current disk writes, no policy bypass |
+| Cross-boundary realism/mock gap | 95% | 95% | actual source inventory/availability/persistence, retained desktop/Codex; GitHub transport/extraction fixture-controlled |
+| Environment/config/identity fidelity | 95% | 95% | own temp roots/test DB, explicit concrete dependencies, same approved template/config verified |
+| Edge/lifecycle/recovery | 95% | 95% | duplicate Team refuses then becomes available after conflict removed; revision-correct rename; real restart/history evidence retained |
+| User/browser/desktop | 95% | 95% | prior packaged UI/name/config/default launch/reply/reopen still applies; no production/renderer/shell change |
+| Durable regression quality/relevance | 90% | 95% | all 22 affected E2E tests now valid/pass, stale assertions replaced without dropping lifecycle/persistence guards |
+Prior 94.29%; current post-repository/final **95%**, simple mean of all seven 95% scores.
+Every category >=90%, clean >=95% target met. Every critical AC directly proven: Yes.
+No material new broader risk. Percentage increased because invalid test boundaries now
+execute against real current authorities, not merely because reviewer assigned origin.
+Negligible residual uncertainty: finite scoped cases and model choice judgment; no
+forced specialist/skill-use promise, exhaustive provider coverage or public-package edit.
+
+## Broader validation decision (round 2)
+Additional execution **Not Required**. Sole rework is durable test/fixture correction;
+real source/admission/current persistence boundaries now execute directly in repository.
+Production source/config/shell/renderer unchanged; previous isolated default Chat/restart
+and actual HTTP lifecycle evidence still proves those boundaries. Rebuilding/repeating
+model journeys would not improve this repaired coverage gap. Original round-1 broader
+Required/executed decision retained; it is not falsely relabeled as a fresh round-2 pass.
+
+## Retained round-1 broader validation evidence (not rerun in round 2)
+Round-1 decision **Required**, executed Live API/Lifecycle + Project Desktop Validation. Round-2 additional broader execution **Not Required**, because only test/fixture corrections changed and the sole coverage gap is now directly exercised.
 - Live probes own sanitized env, temp SQLite/free backend/frontend ports and headless
   Chrome. Final evidence has no browser errors. C01 verifies General Agent full body,
   approved hash, one discovery entry, exact config and no duplicate stable ID. C13
@@ -160,41 +160,42 @@ not old-schema fallback. Existing unrelated broad package legacy cases were not 
 Historical stored-address no-rewrite follows untouched runtime/root store and existing
 root persistence tests; no manually rewritten address or production historical fixture.
 
-## Durable coverage changed this round
-| Path | Action | Requirement / reason | Execution |
+
+## Durable coverage changed — cumulative and this round
+| Path | Action / round | Boundary/reason | Execution |
 | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-server-ts/tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts | Added (2 tests) | AC-001–006 actual bootstrap→GraphQL fresh/existing exact identity/config, old snapshot ordinary reader | 2 pass both narrow/broader |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-web/tests/e2e/chat-entry-live-probe.mjs | Updated C01/C13 | full installed/config/API proof; replace obsolete prompt-edit-survives-startup assertion per approved AE-001/011 and existing platform lifecycle | final C01/C02/C13 pass |
-Removed paths: None. No production source modifications by API/E2E. Complete cumulative
-changed tests supplied as references for failure-origin investigation, not policy-required
-successful test review.
+| /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts | Updated / round 2 | real scoped admission, canonical Team fixture, ambiguity refusal/re-admission + Agent precedence | 8/8 alone, included 22/22 directory |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts | Updated / round 2 | current fields/config, revision rename, own root, existing lifecycle/MCP guard preserved | 1/1 alone, included directory |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-server-ts/tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts | Added / round 1, unchanged round 2 | AC-001–006 fresh/existing actual bootstrap→GraphQL/old snapshot reader | 2/2 rerun in directory |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-web/tests/e2e/chat-entry-live-probe.mjs | C01/C13 updated / round 1, unchanged round 2 | full exact installed/API/config proof and platform-owned overwrite/restoration | round-1 C01/C02/C13 final pass retained |
+Removed paths/cases None. Studio E2E helper unchanged; attached as dependency evidence,
+not a changed helper path. No production source edits by API/E2E in either round.
+Cumulative paths supplied for proportional failure-recovery test-code review.
 
-## Temporary scaffolding, dependencies and exclusions
-Temporary checks: exact supplement/base-config Python assertion, owned desktop CLI
-UI/API/history observations and file comparison. No new parallel runtime harness.
-Existing discovery/root tests use controlled catalogs and fake execution/model validators;
-actual listing/admission/root contracts execute. Desktop model call is real. No claim that
-agent always delegates or always chooses a skill. SCN-003 proof is exact approved prompt
-and preserved ALL_INSTALLED/tools, as acceptance explicitly defines. Public package,
-migration, unrelated shell behavior, contrived races and full provider matrix out of scope.
-Broader definition suite was not replaced by mocks or labeled green.
+## Temporary probes, mocks, exclusions and cleanup
+Round 2 temporary assertions check exact unchanged approved bytes/hash/config/helper,
+and verify own suite roots removed (api-round2-fidelity.txt/api-round2-cleanup.json).
+No services, browser, desktop or provider call started this round. Package fixture
+GitHub HTTP/archive extraction is controlled to verify deterministic staged filesystem
+transactions; real registry/admission/readers/persistence run, no availability mock.
+Prior discovery tests have controlled catalogs/execution doubles, prior desktop model
+call was real. No broad helper fallback, ID aliases, schema relaxation, migration or
+historical rewrite. Existing unrelated legacy package record test was not edited.
+No new compatibility-only coverage added.
 
-## Cleanup and retained artifacts
-- All three live-probe attempts closed owned browser/children and removed own temp roots;
-  final JSON confirms, no lingering owned listener. Original failure evidence retained.
-- Desktop stop iso-64690-9092 succeeded without force; own root removed and control/backend
-  ports released; list confirms own record absent (api-desktop-stop.json/after-list.json).
-  Other existing instance records were not stopped/reused/modified.
-- Own broad skill-locator find child ended; no user app/browser globally stopped.
-- Only test data/temp processes cleaned. Ticket logs/JSON/screenshot and local generated
-  dist/package build kept for downstream evidence/reuse; untracked generated SDK dist
-  from implementation not staged. Delivery owns eventual worktree/finalization cleanup.
+Round-1 probe browsers/children/temp roots and isolated desktop iso-64690-9092 were
+already cleaned, root removed/ports released/list record absent; retained stop/list
+JSON proves it. Round-2 suite app-data/env and case-owned roots cleaned/verified; other
+file-local E2E fixtures clean via existing afterEach. Logs/JSON/screenshot/local build
+kept for downstream; source/docs staged selectively, generated SDK dist not staged.
+No user installed app/data touched and no push/merge/release. No new blocked evidence.
 
-## Latest authoritative result and preliminary classification
-**Fail — final validation confidence 94.29%.** Broader Required and executed; all
-critical General Agent AC have direct proof and no task implementation defect found.
-Remaining API-F001/F002 are preliminary **Local Fix — API/E2E stale test/setup**, with
-unchanged-base evidence; request independent focused origin/validity review before
-repair or gate exclusion. Final confidence target not met due that unresolved adjacent
-coverage guard. No blocker needing user dependency; no delivery/release handoff yet.
-Next recipient: /code_reviewer, selected Fail rule from get_handoff_rules.
+## Latest authoritative result and handoff
+**Pass / 95%, API-REV-002.** API-F001/API-F002 resolved; no open production or test
+failure in affected directory. Broader additional execution Not Required (prior full
+product/live evidence retained). Critical AC lacking direct proof None.
+Proportional test-code review **Required under CRR-001 failure-recovery gate** before
+delivery. Small/Low classification unchanged, full source review N/A. Returned Pass
+rules requiring Large/High or no pending test review do not match this recovery state;
+return cumulative result to requesting /code_reviewer under no-match return contract.
+Do not route to delivery until that separate review gate completes.

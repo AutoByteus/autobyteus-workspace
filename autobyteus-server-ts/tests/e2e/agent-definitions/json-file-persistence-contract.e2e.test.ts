@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import os from "node:os";
 import { createRequire } from "node:module";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -55,9 +56,14 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let closeStudioServices: (() => void) | null = null;
+  let suiteRoot: string;
   const cleanupPaths = new Set<string>();
 
   beforeAll(async () => {
+    suiteRoot = await fs.mkdtemp(path.join(os.tmpdir(), "json-file-persistence-suite-"));
+    vi.stubEnv("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
+    appConfigProvider.resetForTests();
+    appConfigProvider.initialize({ appDataDir: suiteRoot });
     closeStudioServices = configureE2eStudioApplicationApiServices().close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
@@ -67,7 +73,12 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
 
-  afterAll(() => closeStudioServices?.());
+  afterAll(async () => {
+    closeStudioServices?.();
+    appConfigProvider.resetForTests();
+    vi.unstubAllEnvs();
+    await fs.rm(suiteRoot, { recursive: true, force: true });
+  });
 
   afterEach(async () => {
     for (const filePath of cleanupPaths) {
@@ -212,10 +223,10 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
           category
           instructions
           coordinatorMemberName
+          revision
           nodes {
             memberName
             ref
-            refType
             refScope
           }
         }
@@ -229,10 +240,10 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
         category: string | null;
         instructions: string;
         coordinatorMemberName: string;
+        revision: string;
         nodes: Array<{
           memberName: string;
           ref: string;
-          refType: "AGENT" | "AGENT_TEAM";
           refScope?: "SHARED" | "TEAM_LOCAL" | null;
         }>;
       };
@@ -247,7 +258,6 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
           {
             memberName: "leader",
             ref: createdAgent.createAgentDefinition.id,
-            refType: "AGENT",
             refScope: "SHARED",
           },
         ],
@@ -255,6 +265,11 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     });
 
     expect(createdTeam.createAgentTeamDefinition.id).toBe(expectedTeamId);
+    expect(createdTeam.createAgentTeamDefinition.revision).toEqual(expect.any(String));
+    expect(createdTeam.createAgentTeamDefinition.revision.length).toBeGreaterThan(0);
+    expect(createdTeam.createAgentTeamDefinition.nodes).toEqual([
+      { memberName: "leader", ref: expectedAgentId, refScope: "SHARED" },
+    ]);
 
     const teamMdPath = path.join(teamDir, "team.md");
     const teamConfigPath = path.join(teamDir, "team-config.json");
@@ -270,12 +285,14 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     expect(teamMdRaw).toContain("Team contract instructions");
 
     const teamConfig = JSON.parse(teamConfigRaw) as Record<string, unknown>;
-    expect(teamConfig).toMatchObject({
+    expect(teamConfig).toEqual({
       coordinatorMemberName: "leader",
       members: [
-        { memberName: "leader", ref: expectedAgentId, refType: "agent", refScope: "shared" },
+        { memberName: "leader", ref: expectedAgentId, refScope: "shared" },
       ],
+      handoffs: [],
       avatarUrl: null,
+      defaultLaunchConfig: null,
     });
     expect(teamFiles.some((name) => name.endsWith(".yaml") || name.endsWith(".yml"))).toBe(false);
 
@@ -284,17 +301,26 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
         updateAgentTeamDefinition(input: $input) {
           id
           name
+          revision
         }
       }
     `;
-    await execGraphql(updateTeamMutation, {
+    const updatedTeam = await execGraphql<{
+      updateAgentTeamDefinition: { id: string; name: string; revision: string };
+    }>(updateTeamMutation, {
       input: {
         id: createdTeam.createAgentTeamDefinition.id,
+        expectedRevision: createdTeam.createAgentTeamDefinition.revision,
         name: `${teamName} renamed`,
       },
     });
     const renamedTeamMd = await fs.readFile(teamMdPath, "utf-8");
     expect(renamedTeamMd).toContain(`name: ${teamName} renamed`);
+    expect(updatedTeam.updateAgentTeamDefinition).toMatchObject({
+      id: expectedTeamId, name: `${teamName} renamed`, revision: expect.any(String),
+    });
+    expect(updatedTeam.updateAgentTeamDefinition.revision).not.toBe(createdTeam.createAgentTeamDefinition.revision);
+    expect(JSON.parse(await fs.readFile(teamConfigPath, "utf8"))).toEqual(teamConfig);
 
     const serverId = `stdio_${unique}`;
     const mcpsJsonPath = path.join(dataDir, "mcps.json");

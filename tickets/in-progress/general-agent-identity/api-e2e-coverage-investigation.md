@@ -151,3 +151,65 @@ Final 94.29%: six categories 95%, durable regression 90%; broader adjacent API-F
 stale-test/setup failures remain unresolved. All critical General Agent AC directly
 proven; result Fail requests focused origin/validity review rather than altering production
 contract or silently excluding failed broader guard. No durable files removed.
+
+## API-REV-002 re-entry plan — CRR-001 Local Fix (before edits)
+Trigger: code-review-report.md / code-review-revision-record.md CRR-001; read complete
+origin report/evidence and cumulative SR-002/IR-001/API-REV-001 package retained above.
+Prior authoritative API result Fail / 94.29%; not overridden by origin attribution.
+Small / Low Direct Low-Risk unchanged. Full source/architecture reviews N/A; focused
+failure-origin review now applicable. Confirmed test/setup owner API/E2E; no production
+change or requirement/design approval needed for current-contract coverage correction.
+
+| Coverage | Revised validity decision | Narrow repair / authoritative current basis |
+| --- | --- | --- |
+| agent-packages-graphql.e2e.test.ts setup | Needs Update | own suite temp app-data root, explicit real DefinitionSourceRegistry/DefinitionAdmissionService with real Agent/Team/Org dependencies; preserve throwing helper default |
+| same Team writer | Needs Update | complete canonical avatarUrl/defaultLaunchConfig/handoffs and current memberName/ref/refScope; no refType metadata needed |
+| same duplicate-Team precedence assertion | Needs Update | current admission rejects multiply registered Team ID; prove unique Teams remain listed, ambiguous exact lookup null, re-admitted after conflicting external package removed; Agent default precedence is separate and stays asserted |
+| json-file-persistence-contract.e2e.test.ts | Needs Update | current member query/input/type/save shape, returned revision for existing rename; preserve disk/create/update/MCP guard |
+| Studio E2E helper | Still Valid | fail-fast intentional; no blanket service fallback or always-available stub |
+| General Agent API and R01/R02 / B01/D01/D02 | Still Valid | production/content and earlier durable identity/live/desktop tests unchanged; rerun actual built-in API proof within same directory, retain valid product evidence with round-1 provenance |
+
+Recheck prior unresolved failures first: repaired package file, repaired persistence file,
+then same complete definition E2E directory sequentially (R03). No unrelated compatibility
+case edits/removals or production policy relaxation. Own test SQLite/temporary roots;
+no desktop restart/rebuild/model call needed for test-only repairs. Broader decision for
+round 2: Not Required for additional execution if repository checks close the sole stale
+coverage gap; round-1 broader Required/executed evidence remains applicable, not rerun.
+Recompute mandatory seven-category scorecard after execution. Return passing repair
+for separate proportional test-code review under CRR-001 failure-recovery gate; do not
+route directly to delivery even though classification remains Small/Low. On renewed
+Fail, request focused origin review with concrete new evidence.
+
+## API-REV-002 repository results and mandatory confidence gate
+Prior failures first, sequentially: package file 8/8 pass (api-r03-repair-packages.log),
+persistence file 1/1 pass (api-r03-repair-persistence.log), then same complete directory
+5 files / 22 tests pass (api-r03-round2.log), including actual General Agent fresh/old
+startup-to-GraphQL and historical current-reader tests. No skips/removals/exclusions.
+API-F001/F002 resolved by executed contract-correct test repairs, not attribution alone.
+Helper remains fail-fast/unchanged. No production path modified; approved prompt/config
+fidelity rechecked (api-round2-fidelity.txt). Repaired suites own isolated temp roots,
+restoring package-root environment and removing their roots; verified api-round2-cleanup.json.
+
+| Category | Post-round-2 repository / final | Supports / residual |
+| --- | --- | --- |
+| Requirement / AC proof | 95% | current General Agent API rerun plus unchanged round-1 exact prompt/default Chat product proof; no critical gap |
+| Changed-boundary directness | 95% | real scoped registry/admission/current canonical persistence, new identity API; no production edits |
+| Cross-boundary realism / mock gap | 95% | GraphQL/file/registry/candidate validation execute; Github transport extraction fixture-only, unchanged real desktop/Codex proof retained |
+| Environment/config/identity fidelity | 95% | owned suite roots/test DB, helper explicit overrides, exact prompt/config recheck, prior isolated product retained |
+| Edge/lifecycle/recovery | 95% | ambiguous Team rejected and restored after package removal, revision rename; prior real restart/history proof unchanged |
+| User/browser/desktop | 95% | round-1 direct packaged default Chat/reply/reopen still applies; not rerun, no renderer/shell/production delta |
+| Durable regression quality/relevance | 95% | all 22 affected API tests pass; stale contracts repaired without mocks/skips, retained lifecycle guards |
+Overall 95%, simple average; all categories >=90%, all critical AC directly proven.
+Broader additional execution **Not Required** for test-only correction: sole prior gap
+was invalid tests/setup, now direct repository boundaries execute. Round-1 broader
+Required/executed remains cumulative evidence, not relabeled as new round-2 execution.
+No material new browser/shell/model/runtime uncertainty. Known baseline server TS6059
+package typecheck not passed/changed; production compilation earlier passed.
+
+Current result **Pass / 95%**. CRR-001 failure-recovery requires separate proportional
+test-code review before delivery; this is not full source review or size/risk escalation.
+Current changed test paths: agent-packages-graphql.e2e.test.ts and
+json-file-persistence-contract.e2e.test.ts; cumulative changed coverage additionally
+includes general-agent-identity.e2e.test.ts and web chat-entry-live-probe.mjs.
+Removed paths None. Return cumulative package to requesting Code Reviewer because
+no direct-to-delivery rule matches while mandated recovery review is pending.

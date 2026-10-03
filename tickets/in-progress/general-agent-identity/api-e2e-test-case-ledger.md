@@ -44,3 +44,25 @@ failures). No pending/running cases. Own B01 interim issues resolved in final ru
 Own desktop iso-64690-9092 stopped; root removed, ports released, own record absent.
 Reconciled into api-e2e-execution-coverage-report.md: Yes. Authoritative API-REV-001
 result Fail / 94.29%, focused failure-origin review pending.
+
+## Round 2 / API-REV-002 planned recovery (2026-10-03)
+Trigger CRR-001 / confirmed API-F001/API-F002 test/setup Local Fix. R03 reused.
+R01/R02/B01/D01/D02 prior round Pass evidence retained, not new executions.
+| Event | ID | Expected / observed | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Planned | R03 / API-F001 | real scoped admission + canonical Team fixtures; package import/update/remove | Not Tested | api-r03-repair-packages.log |
+| Planned | R03 / API-F002 | current flat-Team persistence + revision rename + existing MCP proof | Not Tested | api-r03-repair-persistence.log |
+| Planned | R03 | sequential complete definition directory incl. actual General Agent API | Not Tested | api-r03-round2.log |
+| Started | R03 / API-F001 | repaired package test with concrete scoped admission/current fixtures | N/A | api-r03-repair-packages.log |
+| Completed | R03 / API-F001 | package file 8 tests pass; unique Team listing/conflict refusal/removal re-admission and Agent precedence preserved | Pass | api-r03-repair-packages.log |
+| Started | R03 / API-F002 | canonical flat-Team persistence/revision rename/MCP | N/A | api-r03-repair-persistence.log |
+| Completed | R03 / API-F002 | persistence file 1 test passes through current Team create/save/revision rename + MCP | Pass | api-r03-repair-persistence.log |
+| Started | R03 | authoritative sequential full affected directory | N/A | api-r03-round2.log |
+| Completed | R03 | sequential directory 5 files / 22 tests all pass including new General Agent API; API-F001/API-F002 resolved by execution | Pass | api-r03-round2.log |
+
+## Round-2 final reconciliation
+R03 Pass / 22 affected API tests; repaired files separately passed first (8 + 1).
+API-F001/API-F002 resolved. R01/R02/B01/D01/D02 retained valid round-1 Pass evidence,
+not re-executed. No pending/interrupted/running cases. Own suite roots verified removed;
+no services/desktop/model run started this round. Report reconciled: Yes.
+API-REV-002 authoritative Pass / 95%; proportional recovery test-code review pending.
