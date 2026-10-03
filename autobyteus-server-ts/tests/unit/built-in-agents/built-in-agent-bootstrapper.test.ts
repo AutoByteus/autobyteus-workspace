@@ -1,10 +1,11 @@
+import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
-import { serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
+import { parseAgentMd, serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
 import {
   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
@@ -300,16 +301,16 @@ describe("BuiltInAgentBootstrapper", () => {
     expect(await fs.readFile(path.join(compactorAgentDir(), 'agent.md'),'utf8')).toBe('historical source');
   });
 
-  describe("Daily Assistant (platform-owned)", () => {
+  describe("General Agent (platform-owned)", () => {
     const builtInDailyAssistantDir = (): string => agentDir(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
 
-    it("creates the Daily Assistant from the template with read_file and all installed skills", async () => {
+    it("creates the General Agent at the stable default ID with the exact approved template and config", async () => {
       const services = createServices();
 
       const result = await bootstrapBuiltInAgents(services);
 
       expect(resultFor(result, DAILY_ASSISTANT_AGENT_DEFINITION_ID)).toMatchObject({
-        displayName: "Daily Assistant",
+        displayName: "General Agent",
         agentDir: builtInDailyAssistantDir(),
         syncedAgentMd: true,
         syncedAgentConfig: true,
@@ -317,24 +318,89 @@ describe("BuiltInAgentBootstrapper", () => {
         resolved: true,
         initializedSetting: false,
       });
+      expect(DAILY_ASSISTANT_AGENT_DEFINITION_ID).toBe("autobyteus-daily-assistant");
+      const template = await readTemplate("daily-assistant", "agent.md");
+      expect(createHash("sha256").update(template).digest("hex")).toBe(
+        "d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a",
+      );
+      await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
+        .resolves.toBe(template);
       const config = await readJson(path.join(builtInDailyAssistantDir(), "agent-config.json"));
-      expect(config).toMatchObject({
+      expect(config).toEqual({
+        toolNames: [
+          "run_bash", "read_file", "read_url", "search_web", "close_tab", "dom_snapshot",
+          "list_tabs", "navigate_to", "open_tab", "run_script", "screenshot",
+          "get_process_output", "start_background_process", "stop_background_process",
+          "download_media", "edit_image", "generate_image", "generate_speech",
+          "read_media_file", "list_available_agents",
+        ],
         skillNames: [],
         skillScope: "ALL_INSTALLED",
+        inputProcessorNames: [],
+        llmResponseProcessorNames: [],
+        toolExecutionResultProcessorNames: [],
+        toolInvocationPreprocessorNames: [],
+        lifecycleProcessorNames: [],
+        avatarUrl: null,
         defaultLaunchConfig: null,
       });
-      expect(config.toolNames).toContain("read_file");
       const visibleDefinitions = await services.agentDefinitionService.getVisibleAgentDefinitions();
       const visible = visibleDefinitions.find((definition) => definition.id === DAILY_ASSISTANT_AGENT_DEFINITION_ID);
-      expect(visible).toMatchObject({ name: "Daily Assistant", skillScope: "ALL_INSTALLED", ownershipScope: "shared" });
-      expect(visible?.toolNames).toContain("read_file");
+      expect(visibleDefinitions.filter((definition) => definition.id === DAILY_ASSISTANT_AGENT_DEFINITION_ID))
+        .toHaveLength(1);
+      expect(visible).toMatchObject({
+        id: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+        ...parseAgentMd(template),
+        skillScope: "ALL_INSTALLED",
+        ownershipScope: "shared",
+        toolNames: config.toolNames,
+        defaultLaunchConfig: null,
+      });
+    });
+
+    it("refreshes an existing same-ID old identity without rewriting history or saved references", async () => {
+      await fs.mkdir(builtInDailyAssistantDir(), { recursive: true });
+      await fs.writeFile(path.join(builtInDailyAssistantDir(), "agent.md"), serializeAgentMd({
+        name: "Daily Assistant",
+        description: "Previous built-in identity",
+        role: "General Agent",
+      }, "OLD BUILT-IN INSTRUCTIONS"));
+      await fs.writeFile(path.join(builtInDailyAssistantDir(), "agent-config.json"), '{"toolNames":["read_file"]}');
+      const historyDir = path.join(tempDataDir, "memory");
+      await fs.mkdir(historyDir, { recursive: true });
+      const historyPath = path.join(historyDir, "run_history_index.json");
+      const history = JSON.stringify([{
+        runId: "existing-run",
+        agentDefinitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+        agentName: "Daily Assistant",
+        workspaceRootPath: tempDataDir,
+        summary: "Previous conversation",
+        createdAt: "2026-10-02T10:00:00.000Z",
+        archivedAt: null,
+        terminatedAt: "2026-10-02T11:00:00.000Z",
+      }]);
+      await fs.writeFile(historyPath, history);
+      const services = createServices();
+
+      await bootstrapBuiltInAgents(services);
+
+      await expect(fs.readFile(historyPath, "utf-8")).resolves.toBe(history);
+      await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
+        .resolves.toBe(await readTemplate("daily-assistant", "agent.md"));
+      const definition = await services.agentDefinitionService.getFreshAgentDefinitionById(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
+      expect(definition).toMatchObject({ id: DAILY_ASSISTANT_AGENT_DEFINITION_ID, name: "General Agent" });
+      expect(definition?.toolNames).toContain("list_available_agents");
+      expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([
+        DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+        RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      ].sort());
     });
 
     it("replaces edited files and agent-local skills from the template on the next startup", async () => {
       const services = createServices();
       await bootstrapBuiltInAgents(services);
       await services.agentDefinitionService.updateAgentDefinition(DAILY_ASSISTANT_AGENT_DEFINITION_ID, {
-        instructions: "USER EDITED DAILY ASSISTANT",
+        instructions: "USER EDITED GENERAL AGENT",
         skillScope: "CONFIGURED",
         skillNames: ["my-skill"],
         toolNames: ["run_bash"],

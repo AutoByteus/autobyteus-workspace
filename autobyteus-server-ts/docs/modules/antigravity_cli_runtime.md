@@ -95,7 +95,7 @@ The run's request strength comes from the definition's skill scope
 duplicate name, a same-name skill in `<workspace>/.agents/skills/`, a vanished
 folder, a missing `SKILL.md`, or a failed link) is handled as follows:
 
-- `prefer_workspace` (an `ALL_INSTALLED` agent such as the Daily Assistant):
+- `prefer_workspace` (an `ALL_INSTALLED` agent such as the General Agent):
   skipped with one sanitized warning (`disposition=skipped-unusable`, or
   `skipped-workspace-owned` for a workspace skill, with `reason=…`); the run
   starts with the remaining skills.

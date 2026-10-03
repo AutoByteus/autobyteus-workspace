@@ -23,10 +23,10 @@ and `/workspace` execution-link queries accept team links only.
 
 `stores/chatDraftStore.ts` owns one New chat draft: an unregistered `temp-*`
 `AgentContext` plus the chat-only choices (target, workspace, auto-approve,
-`starting`). The draft defaults to the built-in Daily Assistant
+`starting`). The draft defaults to the built-in General Agent
 (`DEFAULT_CHAT_AGENT_DEFINITION_ID`, seeded by the server with
 `skillScope: ALL_INSTALLED`) and picks a model in this order: last-used chat
-model (`autobyteus.chat.lastModel`), the Daily Assistant default launch config,
+model (`autobyteus.chat.lastModel`), the General Agent default launch config,
 then the first model of the AutoByteus runtime. `startNewChat(preset)` resets
 the draft; the left panel pencil, the tree `+` and catalog Run actions use it.
 
@@ -51,7 +51,7 @@ then model/thinking controls, mic and the primary send/stop action last.
   skills become removable chips on `AgentContext.requestedSkillNames` and are
   prefixed to the message by `utils/skills/skillRequestInstruction.ts`; sent
   user messages parse that prefix back into chips.
-- `@` opens the target menu: shared agents (except Daily Assistant) and shared
+- `@` opens the target menu: shared agents (except General Agent) and shared
   teams.
 - The workspace menu accepts an existing workspace or an absolute folder path
   (`~` is rejected); the folder is loaded at send time. Its search box (the
@@ -206,7 +206,7 @@ the launch target and is unchanged.
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
   time the menu opens and invalidated when a collaborator is added. Shared
-  Agents (no Daily Assistant or built-ins), then shared Agent Teams, minus what
+  Agents (no General Agent or built-ins), then shared Agent Teams, minus what
   is already in the run; Agent Orgs are never offered. The footer names the
   focused agent, which receives the message.
 - **Scope.** `useComposerTarget` sets `mentionScope` from the active target

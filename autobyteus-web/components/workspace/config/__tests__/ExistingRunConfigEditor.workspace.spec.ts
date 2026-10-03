@@ -11,9 +11,9 @@ vi.mock('pinia', async (original) => {
 })
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({ subject: { kind: 'agent_run', runId: 'run-1' } }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resumeConfigByRunId: {}, teamResumeConfigByTeamRunId: {} }) }))
-vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Daily Assistant' }) }) }))
+vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'General Agent' }) }) }))
 vi.mock('~/stores/agentContextsStore', () => ({
-  useAgentContextsStore: () => ({ getConfigForRun: () => ({ agentDefinitionName: 'Daily Assistant', workspaceId: mocks.hydratedWorkspaceId, workspaceMetadata: null }) }),
+  useAgentContextsStore: () => ({ getConfigForRun: () => ({ agentDefinitionName: 'General Agent', workspaceId: mocks.hydratedWorkspaceId, workspaceMetadata: null }) }),
 }))
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({

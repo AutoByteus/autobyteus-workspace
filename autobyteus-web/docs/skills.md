@@ -24,7 +24,7 @@ read/write behavior is determined by the underlying filesystem permissions.
 
 The server keeps exactly one copy of every skill name (its skills folder, then
 agent packages, then added folders, then runtime default folders such as
-`~/.codex/skills`). The Skills page, `/` tags, agents and the Daily Assistant
+`~/.codex/skills`). The Skills page, `/` tags, agents and the General Agent
 all use that copy, and opening, editing or deleting a skill acts on it.
 
 - **Duplicates are rejected at import.** Adding a skill folder

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { ToolCategory } from "autobyteus-ts/tools/tool-category.js";
@@ -16,15 +17,74 @@ import {
 import { resolveAutoByteusAgentTools } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.js";
 import { resolveClaudeSessionToolingOptions } from "../../../../src/agent-execution/backends/claude/session/claude-session-tooling-options.js";
 import { buildClaudeAgentToolsMcpToolName } from "../../../../src/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
+import { MemberExecutionContext } from "../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { testMemberExecutionContext } from "../../../fixtures/current-team-run-fixtures.js";
 
+const generalAgentConfig = JSON.parse(readFileSync(
+  new URL("../../../../src/built-in-agents/templates/daily-assistant/agent-config.json", import.meta.url),
+  "utf-8",
+)) as { toolNames: string[] };
+
 const listed = [
+  { name: "Research Engineer", kind: "agent" as const, address: "/research_engineer" as never, description: "Research" },
   { name: "Product Team", kind: "agent_team" as const, address: "/product_team" as never, description: "Product" },
 ];
 const withLister = () => testMemberExecutionContext({ listAvailableAgents: vi.fn(async () => listed) });
 const withoutLister = () => testMemberExecutionContext();
 
 describe("list_available_agents (REQ-001/002)", () => {
+  it("exposes actual General Agent discovery through native and MCP bindings in a standalone host context", async () => {
+    const context = new MemberExecutionContext({ ...withLister(), teamScoped: false });
+    const exposure = buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context);
+    expect(exposure.listAvailableAgentsEnabled).toBe(true);
+    expect(exposure.sendMessageToEnabled).toBe(true);
+    expect(exposure.enabledTaskDelegationToolNames).toContain("delegate_task");
+    expect(exposure.getHandoffRulesEnabled).toBe(false);
+    const resolved = resolveAutoByteusAgentTools({
+      agentDefinition: { name: "General Agent", toolNames: generalAgentConfig.toolNames } as never,
+      runtimeToolExposure: exposure,
+      senderRunId: "run-general-agent",
+      memberExecutionContext: context,
+      logger: { warn: vi.fn(), error: vi.fn() },
+    });
+    expect(resolved.actualToolNames.filter((name) => name === LIST_AVAILABLE_AGENTS_TOOL_NAME)).toHaveLength(1);
+    const tool = resolved.tools.find((candidate) =>
+      (candidate.constructor as { getName?: () => string }).getName?.() === LIST_AVAILABLE_AGENTS_TOOL_NAME)!;
+    expect(JSON.parse(await (tool as unknown as { _execute(): Promise<string> })._execute())).toEqual({ agents: listed });
+
+    const [adapter] = new ListAvailableAgentsMcpAdapterProvider().getAdapters();
+    const availability = (memberExecutionContext: typeof context | null) => adapter!.isAvailable({
+      runtimeExposure: exposure,
+      sender: memberExecutionContext ? { memberExecutionContext } as never : null,
+      executionContext: {} as never,
+      applicationAgentTools: null,
+    });
+    expect(availability(context)).toBe(true);
+    expect(availability(withoutLister())).toBe(false);
+    expect(availability(null)).toBe(false);
+    await expect(adapter!.execute({
+      session: { sender: { memberExecutionContext: context } } as never,
+      rawArguments: {},
+    })).resolves.toMatchObject({ kind: "mcp_tool_result", result: { structuredContent: { agents: listed } } });
+
+    const claude = resolveClaudeSessionToolingOptions({
+      runtimeToolExposure: exposure,
+      hasMaterializedSkills: false,
+      memberExecutionContext: context,
+    });
+    expect(claude.listAvailableAgentsToolingEnabled).toBe(true);
+    expect(claude.agentToolsMcpEnabledToolNames).toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
+  });
+
+  it("keeps an empty eligible catalog a valid discovery result for General Agent", async () => {
+    const context = new MemberExecutionContext({
+      ...testMemberExecutionContext({ listAvailableAgents: async () => [] }),
+      teamScoped: false,
+    });
+    expect(buildRuntimeAgentToolExposure(generalAgentConfig.toolNames, context).listAvailableAgentsEnabled).toBe(true);
+    await expect(listAvailableAgentsFor(context.collaboration)).resolves.toEqual({ agents: [] });
+  });
+
   it("is a registry tool for the picker, with the REQ-009 wording", () => {
     const definition = ensureListAvailableAgentsToolRegistered();
     expect(defaultToolRegistry.getToolDefinition(LIST_AVAILABLE_AGENTS_TOOL_NAME)).toBe(definition);
