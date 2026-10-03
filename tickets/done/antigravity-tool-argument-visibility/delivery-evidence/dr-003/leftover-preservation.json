@@ -1,0 +1,126 @@
+{
+  "result": "Preserved outside worktree; no unrelated/user data deleted",
+  "root": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003",
+  "items": [
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-application-backend-sdk/dist",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/autobyteus-application-backend-sdk/dist",
+      "sha256": {
+        "autobyteus-application-backend-sdk/dist/launch-profile.d.ts": "9b2c7f9af1ad49bc293c54f65935720270b070e73c2b1defee3deaa65d41ec98",
+        "autobyteus-application-backend-sdk/dist/application-agent-target-address.js": "89e7db31e5f3b9eecfcf0960e9b1c2b2bc5d881aa7416808883b23e278b05b43",
+        "autobyteus-application-backend-sdk/dist/launch-profile.js.map": "17dcfd3c405ff2fc61dc45b20bcd9428295a76d6a310173b3516a9774b56040b",
+        "autobyteus-application-backend-sdk/dist/launch-profile.js": "146bf9583a87251a62676fadb195cff7d58c592f88af64b9cf6d567666b922b9",
+        "autobyteus-application-backend-sdk/dist/launch-profile.d.ts.map": "b5e3ad70759f6c420e7c8765b558ede55f862e1babf261666c03b3026eb5a5e9",
+        "autobyteus-application-backend-sdk/dist/index.js": "01cac3372e789f0885584aa479044478663febdf80bca4a56d12d7bbaff11e3f",
+        "autobyteus-application-backend-sdk/dist/application-agent-target-address.js.map": "1d6543ecd1183fb13de071e8869a80db1c837702feb04e5cb5f1408396bda644",
+        "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts": "61586112d9bf99dc3678b48447ae6d52ca3d7060455256f6937e03d799d66129",
+        "autobyteus-application-backend-sdk/dist/index.js.map": "831156d86d7c50bec4022b737b41fa9c12f724efd79df5f8f0874ff02a74804c",
+        "autobyteus-application-backend-sdk/dist/application-agent-target-address.d.ts.map": "f2a08902b14a5fa637bd9cf6cf85d711c370e8c53a5c66c70f7b4cab4b872058",
+        "autobyteus-application-backend-sdk/dist/index.d.ts": "bba19a526653ed235d6aeb69e0c37ffd541e354f8f5dd37b9e309c0068ef8f92",
+        "autobyteus-application-backend-sdk/dist/index.d.ts.map": "a37a0819e2f476f4c5b3942ed87a1940222f1895bad1f83957716321bcbc1954"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-application-sdk-contracts/dist",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/autobyteus-application-sdk-contracts/dist",
+      "sha256": {
+        "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts.map": "1a5a93ce98d7befb9e252dee78b8858265fc83a0889dbc72d51b79bd0e015316",
+        "autobyteus-application-sdk-contracts/dist/execution-resources.js.map": "896a152ed5bec8423fe2c716d9db2d6de08f3f178ba354682d23d93680b04f1d",
+        "autobyteus-application-sdk-contracts/dist/execution-resources.d.ts": "8f076699a3e02df1c73d91508d1d421b16f3ec2812e8726f55265dfb253d1e77",
+        "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts": "e298ac67d2003f79af57a1de9aca0055b1f17b44b455054becad99241ce11fa2",
+        "autobyteus-application-sdk-contracts/dist/application-agent-communication.js": "00004fd8954d44028a724d97d70ea2830e8e00baa243f9d01efa755e6af71583",
+        "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts.map": "abe426d736ecbb988f36dea8318c40e8c1f70c2cab11c2f2cb965da72e2c8ac2",
+        "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts": "92a7953d0c6be93b3197e1c41cc224e093cb4b140df98e9b9242ddb3934e459c",
+        "autobyteus-application-sdk-contracts/dist/application-websockets.js.map": "b1bcc88bcbeb0d7b1462d81bb83348adc988fa5dfe9f9e41a6af414e64b27f39",
+        "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js.map": "9fc8c3e04902d8849811c4b0f6ff55ff0cae0ee2bb7bfcf4990b173c41a60510",
+        "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js.map": "10f558b4a343441d4254762c0ddb4a537e68eb712d61f7f89724f8b7c2643ff9",
+        "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js.map": "456b2aeb896be26ea795cd3b796a2807475bd7efc5b0d9fa46473d6832de3ce0",
+        "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts": "ec8872c892ae9e809e8909286e4d44623f113f00418dae8da44a5543eeef4885",
+        "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts.map": "1931697506cf1ca1cdec5974e9265ccd1ab6829caf96b07aedea4044cc9190ff",
+        "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts.map": "f81a383fe9aef767e26797009f54c8a5771407f077b80ea98d29c1d8cc5a87c4",
+        "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts": "006a7d414226aa8670b288ee3536d9045e91dba880bb34c5d4164fc24ee5f406",
+        "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js": "a92f9273c2dc5f3f282d445f7b592df907809131e7688bd822c144ce529bdf0d",
+        "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts": "3eade94c01c3ee8a859e403087558c991d5f28271d5820b2a0995f8e242e3cbf",
+        "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js.map": "ac3be91f5599be58359b182baa67260397e5cce6e212ba8b577058e6514c71a1",
+        "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts": "d32606dc371d7eb53ceff9ac2fe574339a7a4bed7abf07d1c63828be9f71e9f2",
+        "autobyteus-application-sdk-contracts/dist/application-agent-communication.js.map": "e6b6189c28bedc19021347cc8aaa314148a101fc055b809f55a805bd2defbeaa",
+        "autobyteus-application-sdk-contracts/dist/application-websockets.d.ts.map": "147f0744192bf77832d42e46c80798bfdc68f809ff5d9fff8d1ab2021fb04fd6",
+        "autobyteus-application-sdk-contracts/dist/index.js": "251aa9169c72bc841eb7d66f80740ea4a2c62e120e3128ee069663ba0babc95c",
+        "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.js": "65f0e957cf24f61163a466d3715105a8a94e200a4d5d90b2ac8c795ed5776a20",
+        "autobyteus-application-sdk-contracts/dist/execution-resources.js": "701b64cb0afa3e3d65671dcd5b18f4a1b5a437827a9bc5f26de906a0721cacc6",
+        "autobyteus-application-sdk-contracts/dist/manifests.d.ts.map": "27ac8c91a2119c40fa4c307fd7cf4ad2e4b2a018c4cb1d4780dfd75cd0b864bd",
+        "autobyteus-application-sdk-contracts/dist/manifests.js": "138353f936d015a9d869c83906d5cb0fba5306ec0eabd66ce80b4608a42a04d3",
+        "autobyteus-application-sdk-contracts/dist/application-agent-tools.js": "b4971792d41a31602603efee84de51e45aebb7c27e74fa9dd5ed4209c56f546f",
+        "autobyteus-application-sdk-contracts/dist/application-agent-member-address.d.ts": "6af1a20dce1e8b621ba36774a212746e3f877de724e5e9f922ddad4c7a5d38cd",
+        "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts.map": "6e959615b3bf5cc5ac3487acc874208b422f2144f11bba29a4688ce0f1161d2b",
+        "autobyteus-application-sdk-contracts/dist/manifests.js.map": "6223b1d547c6e71bceb9fac76b28d730caf2f7b91d9e357857b109ae1652152b",
+        "autobyteus-application-sdk-contracts/dist/application-agent-bindings.d.ts.map": "16361848fb226a04b016aa3aa6b5d370458d80f87dc9cb306fa836c834925422",
+        "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.js.map": "91ab4024355be9c6207ff70a8a0c1a66c87d6e7d5e4f403e871ef8583c72977f",
+        "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js": "458ee497eece6227aa7a6360d4c950f11c1ee5bab7cb0c1b33cfda5655075e8c",
+        "autobyteus-application-sdk-contracts/dist/standalone-application-bootstrap.d.ts.map": "849ec74f2ed68f338cc635fed6006d5223fd7bb334a8373589e81c24582552cc",
+        "autobyteus-application-sdk-contracts/dist/application-agent-tools.d.ts.map": "042a2c0b3b2c6016799f4becf39b41592ad48c09ebf2b77e33852add0cf632e9",
+        "autobyteus-application-sdk-contracts/dist/application-agent-events.d.ts.map": "9f84f7a7d16ad70d2da120c6f1c383d0bd19bef84d3358aa377e6f0ff8bf7d96",
+        "autobyteus-application-sdk-contracts/dist/application-agent-events.js.map": "979139c60bfc991b573fa5c957744d0d58d5ab8cd2b18c96c4eebf6752b5e17f",
+        "autobyteus-application-sdk-contracts/dist/index.js.map": "13fd55377993390db563b5a2463d6407dd6dd06f070b78e85ca410bb6345a753",
+        "autobyteus-application-sdk-contracts/dist/application-iframe-contract.js": "a47cf1818019108570002ca3bc589db266e359d208856ecc29864b3096b2fcf7",
+        "autobyteus-application-sdk-contracts/dist/manifests.d.ts": "b1c7039ec91211f90b90b05289fec071e3028775c5ccce216b80ca93495a7b6b",
+        "autobyteus-application-sdk-contracts/dist/application-agent-bindings.js": "5d6bc94d25b435fcd7139519cdcdccae0bbc9e493910e847411368e10c7a02c1",
+        "autobyteus-application-sdk-contracts/dist/application-agent-events.js": "010591b002515e0dc231a63e3f07f583608c3accf8ca4559be2848fa92abb671",
+        "autobyteus-application-sdk-contracts/dist/application-iframe-contract.d.ts.map": "a3ae5904afe2257dfcd9685832cfbba2a7f3c1ddeab183c6d30b929de1f2a61d",
+        "autobyteus-application-sdk-contracts/dist/application-agent-communication.d.ts": "8c31dac7590ecc69e52142ca79c09c70b741943d03ac3ff9e4d673e7cbe3fb57",
+        "autobyteus-application-sdk-contracts/dist/application-agent-tools.js.map": "456b4a6bfbd529c14623429401acfb9d1fee7c06bbeb8dbe87fbd0752a2a0702",
+        "autobyteus-application-sdk-contracts/dist/index.d.ts": "31b7018454cb7721433a337d2a38c1cd35e75f7c96d97f40da50c2f9519fe0f8",
+        "autobyteus-application-sdk-contracts/dist/application-runtime-bootstrap.d.ts": "5e6093ee59029f72d3dcf7d27ad2b6b9f29ce9146d0062536172672a517f51ba",
+        "autobyteus-application-sdk-contracts/dist/application-agent-target-url.js": "b77ce83d9188a9ce63ca413cf67db85342b9b37e10810909e58a91323b7e9354",
+        "autobyteus-application-sdk-contracts/dist/application-websockets.js": "d9004bf25435c48a7a1eadbd51cc4881b372a707d06f77b75c3b948f23965a6b",
+        "autobyteus-application-sdk-contracts/dist/index.d.ts.map": "f7b10a5e26d8aaa5c95107a7f9d79da0090a97065dbf067e110be4224d10a287",
+        "autobyteus-application-sdk-contracts/dist/application-agent-target-url.d.ts": "0d67f4f2c5661a24d84e2bb48d910e2efe29c080c4c21ee7b8f759ff3ac09e12",
+        "autobyteus-application-sdk-contracts/dist/application-agent-member-address.js.map": "0a08ea3e52a6c9e5f5223847517f8a46fd55dabb2d37b2cbd02e25265bc65d02"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/capsule",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/capsule",
+      "sha256": {
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/capsule/.agents/mcp_config.json": "e93fc8db2b1bd77107fe6c758bca9545fa864cf7cce8ab93a7b2b93a1d566a7b",
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/capsule/.agents/agents/argument-probe/agent.md": "8911bf41c701084924aa29de98d28322676975da448c87634a6bf365e47392cd"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace",
+      "sha256": {
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt": "c4552858ddd4e648ac3775b49542ab186f032030c958511517b95a2426086c9f",
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/timing-marker.txt": "c0055007a415af17200bac80b6ca42a785bd8a543dab09474f7a0d717cc0e78f"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/cli.log",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/cli.log",
+      "sha256": {
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/cli.log": "d198af6269f9404844bbdd9e3240b1e1ab29db126ff7145ae6f86f69c5d0f318"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/stderr.txt",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/stderr.txt",
+      "sha256": {
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/stderr.txt": "40542ebd9588d9faae4e0f9df80d55785c7bfc1a845d4b6c3db204a83e3a1113"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-cli.log",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-cli.log",
+      "sha256": {
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-cli.log": "ae0c09d7b76b0ffc6bf58858635e9cf154febe8961f8f2c43435a318aea45ae5"
+      }
+    },
+    {
+      "original": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-stderr.txt",
+      "preserved": "/Users/normy/autobyteus_org/.codex_tmp/antigravity-tool-argument-visibility-preserved-20261003/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-stderr.txt",
+      "sha256": {
+        "tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-stderr.txt": "40542ebd9588d9faae4e0f9df80d55785c7bfc1a845d4b6c3db204a83e3a1113"
+      }
+    }
+  ]
+}

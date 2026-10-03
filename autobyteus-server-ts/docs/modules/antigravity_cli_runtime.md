@@ -189,6 +189,14 @@ historical backfill, tool replay, result/diff recovery or provider-format suppor
 promise across future AGY releases. MCP projection and native-image result
 resolution remain separate and unchanged.
 
+Argument capture is producer-owned: history and the frontend do not retry a
+provider lookup to repair an already recorded summary. See
+[recorded native inputs](./run_history.md#recorded-antigravity-native-tool-inputs)
+for the saved-data boundary and the
+[native argument regression](../../../TESTING.md#antigravity-native-argument-capture-regression)
+for deterministic transport/restore coverage and the separate real-provider
+and rendered-validation requirements.
+
 AGY carries every MCP call through its own `call_mcp_tool` step with wrapper
 parameters `ServerName`, `ToolName` and `Arguments`. The converter presents
 such a call as the tool that was actually called (`agy-mcp-tool-call.ts`): a

@@ -357,6 +357,26 @@ as a launch API response field, but that value is not a stored standalone
 history or metadata field. Explicit cancellation and stale-prepared cleanup
 remove only unactivated prepared identities.
 
+## Recorded Antigravity Native Tool Inputs
+
+For newly recorded `antigravity_cli` native calls, the backend selects reliable
+call-specific typed inputs before the first canonical tool STARTED event. The
+ordinary recorder stores that first snapshot; saved projections and Activity
+consume the recorded arguments without reading AGY's local transcript. Removing
+the provider source does not remove inputs already captured in AutoByteus history.
+
+The same rule applies to future calls after normal run restoration with its
+exact saved provider conversation binding. Previously recorded summary-only
+calls remain readable and unchanged; neither reopen nor restore backfills them.
+No history schema migration, alternate archive or tool replay is introduced.
+If the producer cannot safely associate detailed evidence, the verified stream
+summary is the recorded result, not a claim of complete inputs. Result/output
+or edit-diff recovery is separate and is not performed by this path.
+
+Source guards, association, bounded reads and lifecycle cancellation belong to
+the [Antigravity runtime](./antigravity_cli_runtime.md), not history readers or
+frontend hydration.
+
 ## Persistence Files
 
 Memory root:
