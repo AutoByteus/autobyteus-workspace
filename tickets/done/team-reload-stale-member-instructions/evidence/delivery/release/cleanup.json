@@ -1,0 +1,67 @@
+{
+  "publicationAllWorkflowsSuccess": true,
+  "archivedTicketFilesVerified": 165,
+  "taskUntrackedOnlyOwnedGeneratedSDKDist": true,
+  "taskIgnoredBuildDependenciesOwned": true,
+  "operations": [
+    {
+      "command": [
+        "git",
+        "-C",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+        "worktree",
+        "remove",
+        "--force",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "-C",
+        "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+        "worktree",
+        "remove",
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-beta-finalize"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "-d",
+        "codex/team-reload-stale-member-instructions"
+      ],
+      "exitCode": 0,
+      "stdout": "Deleted branch codex/team-reload-stale-member-instructions (was e1b0184a3).\n",
+      "stderr": "warning: deleting branch 'codex/team-reload-stale-member-instructions' that has been merged to\n         'refs/remotes/origin/codex/team-reload-stale-member-instructions', but not yet merged to HEAD\n"
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "-d",
+        "delivery/team-reload-beta-finalize"
+      ],
+      "exitCode": 0,
+      "stdout": "Deleted branch delivery/team-reload-beta-finalize (was e5e43dc40).\n",
+      "stderr": "warning: deleting branch 'delivery/team-reload-beta-finalize' that has been merged to\n         'refs/remotes/origin/personal', but not yet merged to HEAD\n"
+    }
+  ],
+  "taskWorktreeRemoved": true,
+  "temporaryFinalizerRemoved": true,
+  "localTicketBranchDeleted": true,
+  "localFinalizerBranchDeleted": true,
+  "worktreePrune": "Not required \u2014 normal removal deregistered both; no unrelated worktrees pruned",
+  "remoteTicketBranchCleanup": "Not required \u2014 retained pushed audit branch",
+  "sharedCheckoutUnchanged": true,
+  "sharedLocalPersonal": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "ownedInstances": "None (upstream E-007 completed; none started by delivery)",
+  "complete": true
+}

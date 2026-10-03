@@ -1,0 +1,33 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Reloading...
+Create Team
+RP
+Reload Proof Team
+
+Team description v3.
+
+test
+Run
+View Details
+→
+W
+worker
+S
+shared
+
+Coordinator
+
+worker
+
+Members
+
+2

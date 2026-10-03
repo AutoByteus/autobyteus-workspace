@@ -1,0 +1,18 @@
+{
+  "image": "docker.io/autobyteus/autobyteus-server:1.4.93-beta.1",
+  "digest": "sha256:387865cc600a3524d4fa894c90077d5afe55c50114e5858df0c97b45880d93f7",
+  "contentType": "application/vnd.oci.image.index.v1+json",
+  "platforms": [
+    {
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    {
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  ],
+  "manifestDigestVerified": true,
+  "workflowRunAttempt": 2,
+  "workflowConclusion": "success"
+}

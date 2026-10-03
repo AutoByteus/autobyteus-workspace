@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useAgentTeamDefinitionStore } from '../agentTeamDefinitionStore';
+import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries';
 import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQueries';
 import { loadAgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences';
 import { GetAgentOrgReferencedAgent, GetAgentOrgReferencedTeam } from '~/graphql/queries/agentOrgDefinitionQueries';
@@ -105,21 +106,25 @@ describe('agentTeamDefinitionStore', () => {
       },
       errors: [],
     });
-    mockQuery.mockResolvedValue({
-      data: {
-        agentTeamDefinitions: [
-          {
-            id: 'refreshed-team',
-            name: 'Refreshed Team',
-            description: 'Loaded after catalog refresh',
-            instructions: 'Use refreshed team catalog data.',
-            coordinatorMemberName: 'lead',
-            nodes: [],
-            ownershipScope: 'SHARED',
-          },
-        ],
-      },
-      errors: [],
+    mockQuery.mockImplementation(async ({ query }) => {
+      if (query === GetAgentDefinitions) return { data: { agentDefinitions: [] } };
+      if (query !== GetAgentTeamDefinitions) throw new Error('Unexpected query');
+      return {
+        data: {
+          agentTeamDefinitions: [
+            {
+              id: 'refreshed-team',
+              name: 'Refreshed Team',
+              description: 'Loaded after catalog refresh',
+              instructions: 'Use refreshed team catalog data.',
+              coordinatorMemberName: 'lead',
+              nodes: [],
+              ownershipScope: 'SHARED',
+            },
+          ],
+        },
+        errors: [],
+      };
     });
 
     const store = useAgentTeamDefinitionStore();
@@ -128,7 +133,11 @@ describe('agentTeamDefinitionStore', () => {
     expect(mockMutate).toHaveBeenCalledWith({
       mutation: RefreshAgentTeamDefinitionCatalog,
     });
-    expect(mockQuery).toHaveBeenCalledWith({
+    expect(mockQuery).toHaveBeenCalledTimes(2);
+    expect(mockQuery).toHaveBeenNthCalledWith(1, {
+      query: GetAgentDefinitions, fetchPolicy: 'network-only',
+    });
+    expect(mockQuery).toHaveBeenNthCalledWith(2, {
       query: GetAgentTeamDefinitions,
       fetchPolicy: 'network-only',
     });

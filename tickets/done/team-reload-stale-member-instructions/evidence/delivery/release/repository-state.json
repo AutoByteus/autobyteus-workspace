@@ -1,0 +1,31 @@
+{
+  "ticketFinalCommit": "e1b0184a32bf45142dae2681abcf4ba38657c184",
+  "ticketPush": "Completed",
+  "targetMergeCommit": "bcb1fbb6d81aa63370d719573c538b97a23e4fe5",
+  "targetMergePush": "Completed",
+  "releaseCommit": "e5e43dc404fce4a88a415640e684de90cb93d5d1",
+  "releaseTag": "v1.4.93-beta.1",
+  "annotatedTagObject": "1e80e4d7aaf10f1a1eeeaac4c3c2170f79f46a1c",
+  "releaseBranchPush": "Completed",
+  "releaseTagPush": "Completed",
+  "targetRemoteBranch": "origin/personal",
+  "safeFinalizerBranch": "delivery/team-reload-beta-finalize",
+  "workflowIds": {
+    "desktop": 37111514780,
+    "android": 37111514790,
+    "ios": 37111514797,
+    "docker": 37111514729
+  },
+  "publicationStatus": "Completed",
+  "cleanupStatus": "Completed",
+  "userVerification": "explicit acceptance of automated evidence; user: finalize and release a new beta.",
+  "durableExport": "/Users/normy/autobyteus_org/autobyteus-delivery-records/team-reload-stale-member-instructions",
+  "desktopReleaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.93-beta.1",
+  "desktopWorkflow": 37111514780,
+  "androidWorkflow": 37111514790,
+  "iosWorkflow": 37111514797,
+  "dockerWorkflow": 37111514729,
+  "dockerRunAttempt": 2,
+  "allWorkflowConclusions": "success",
+  "installedUserAppChanged": false
+}

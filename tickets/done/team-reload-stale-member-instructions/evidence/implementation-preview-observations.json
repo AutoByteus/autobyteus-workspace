@@ -1,0 +1,11 @@
+{
+  "url": "http://127.0.0.1:54589/implementation-team-reload-preview",
+  "ports": {
+    "backend": 54588,
+    "frontend": 54589
+  },
+  "workerText": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nComplete preview edit\nFail next member read\nInspect Worker\nBack to team\nW\nWorker\n\nTeam: bridge\n\nTeam-local\n\nTOOLS\n\n1\n\nSKILLS\n\n0\n\nRun Agent\nEdit\nDescription\n\nPreview description v2\n\nCATEGORY\n\nUncategorized\n\nPREFERRED RUNTIME\n\nNot set\n\nPREFERRED MODEL\n\nNot set\n\nInstructions\nPreview instructions v2\nSkills\n\nNone configured.\n\nTools\nread_file",
+  "errorText": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nNo run history yet.\nSettings\nComplete preview edit\nFail next member read\nInspect Worker\nReload\nCreate Team\n\nError loading agent team definitions:\n\nPreview member read unavailable",
+  "errors": [],
+  "limitation": "Temporary preview fixture with controlled client, actual TeamList/AgentDetail and production stores; not real source/API/navigation validation."
+}

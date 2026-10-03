@@ -27,6 +27,7 @@ package's script from its own directory.
 | Antigravity (AGY) runtime live E2E | The installed `agy` CLI with real model calls | One variable per file, named in the file header: `RUN_AGY_E2E=1`, `RUN_AGY_CAPABILITY_E2E=1`, `RUN_AGY_BACKGROUND_E2E=1` or `RUN_AGY_RECOVERY_E2E=1`, then the same `vitest run` command |
 | Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
 | Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
+| Team Reload member freshness (real product) | Completed local source edits, cold/warm scoped/shared member inspection, repeated Reload, required-read error/retry, source preservation and owned cleanup | `pnpm -C autobyteus-web test:e2e:team-reload-member-freshness` |
 | Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
 
 Notes:
@@ -65,6 +66,28 @@ Notes:
   (`autobyteus_mcps/browser-automation`), using
   `CHROME_REMOTE_DEBUGGING_PORT=<controlPort>` (as reported by `start`) and
   `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
+
+### Team Reload Member Freshness Regression
+
+Run `pnpm -C autobyteus-web test:e2e:team-reload-member-freshness` from the
+repository root. This probe builds the current worktree's packaged app by default,
+starts its own isolated instance, imports disposable sources through the normal
+UI, and asserts real source/HTTP/DOM behavior. Only one required Agent read is
+fault-injected to verify loading, visible failure, and same-button retry.
+No model credentials are needed. Prerequisites are installed workspace
+dependencies, a graphical macOS/Linux environment, and isolated-launch support;
+Linux execution requires the display setup described in the isolated-instance
+guide (the initial validation was macOS only).
+
+`--skip-build` is valid only when this worktree's packaged artifact was rebuilt
+from its current source; never reuse an installed app or a pre-change binary as
+proof. Use `--output-dir <dir>` for retained JSON, HTTP responses, DOM, screenshots,
+and launch/cleanup logs. Relative output paths resolve from `autobyteus-web/`;
+the default is `autobyteus-web/test-results/team-reload-member-freshness`.
+The optional `--ledger-file <absolute-path>` appends case results as they finish.
+The probe stops its exact instance and removes its own data/source fixtures on
+success or failure. Inspect cleanup results as well as case results; unrelated
+instances and the user's app/data must remain untouched.
 
 ## Choosing the path
 
