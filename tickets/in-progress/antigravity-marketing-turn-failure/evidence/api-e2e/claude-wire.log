@@ -1,0 +1,183 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:1765) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Agent websocket attached for run claude-runtime-error-API-CL01
+Created agent session e2719bd7-d88b-4d33-a4e2-3003e0fe7487 for run claude-runtime-error-API-CL01
+Agent WebSocket connected: session=e2719bd7-d88b-4d33-a4e2-3003e0fe7487, run=claude-runtime-error-API-CL01
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL01 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Closed agent session e2719bd7-d88b-4d33-a4e2-3003e0fe7487
+Agent WebSocket disconnected: e2719bd7-d88b-4d33-a4e2-3003e0fe7487
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Agent websocket attached for run claude-runtime-error-API-CL02
+Created agent session 1d9c0391-5d9f-45aa-bc42-738bb4c8d2ef for run claude-runtime-error-API-CL02
+Agent WebSocket connected: session=1d9c0391-5d9f-45aa-bc42-738bb4c8d2ef, run=claude-runtime-error-API-CL02
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL02 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Closed agent session 1d9c0391-5d9f-45aa-bc42-738bb4c8d2ef
+Agent WebSocket disconnected: 1d9c0391-5d9f-45aa-bc42-738bb4c8d2ef
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Agent websocket attached for run claude-runtime-error-API-CL03
+Created agent session f570c982-1922-4cbf-9721-1f849bfecaa7 for run claude-runtime-error-API-CL03
+Agent WebSocket connected: session=f570c982-1922-4cbf-9721-1f849bfecaa7, run=claude-runtime-error-API-CL03
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL03 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Closed agent session f570c982-1922-4cbf-9721-1f849bfecaa7
+Agent WebSocket disconnected: f570c982-1922-4cbf-9721-1f849bfecaa7
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Agent websocket attached for run claude-runtime-error-API-CL04
+Created agent session e3a710f9-ef33-4a4e-a490-b87910938b43 for run claude-runtime-error-API-CL04
+Agent WebSocket connected: session=e3a710f9-ef33-4a4e-a490-b87910938b43, run=claude-runtime-error-API-CL04
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > API-CL04 preserves supplied SDK failure text over public WebSocket and the next same-session turn
+Closed agent session e3a710f9-ef33-4a4e-a490-b87910938b43
+Agent WebSocket disconnected: e3a710f9-ef33-4a4e-a490-b87910938b43
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > interrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+Agent websocket attached for run claude-ws-interrupt-same-process
+Created agent session af5d01db-1d3d-4853-bae7-0ec3d565028d for run claude-ws-interrupt-same-process
+Agent WebSocket connected: session=af5d01db-1d3d-4853-bae7-0ec3d565028d, run=claude-ws-interrupt-same-process
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > delivers a message sent to a busy agent into the running turn (AC-003)
+Closed agent session af5d01db-1d3d-4853-bae7-0ec3d565028d
+Agent WebSocket disconnected: af5d01db-1d3d-4853-bae7-0ec3d565028d
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > delivers a message sent to a busy agent into the running turn (AC-003)
+Agent websocket attached for run claude-ws-busy-append
+Created agent session 3d2bd028-4c33-483e-8644-52f7ee139cee for run claude-ws-busy-append
+Agent WebSocket connected: session=3d2bd028-4c33-483e-8644-52f7ee139cee, run=claude-ws-busy-append
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+Closed agent session 3d2bd028-4c33-483e-8644-52f7ee139cee
+Agent WebSocket disconnected: 3d2bd028-4c33-483e-8644-52f7ee139cee
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+Agent websocket attached for run claude-ws-append-after-settle
+Created agent session fdc6c9ea-8f7d-4be2-b84e-5aa3260f6ab4 for run claude-ws-append-after-settle
+Agent WebSocket connected: session=fdc6c9ea-8f7d-4be2-b84e-5aa3260f6ab4, run=claude-ws-append-after-settle
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > announces a background completion and streams the turn Claude starts on its own (AC-002)
+Closed agent session fdc6c9ea-8f7d-4be2-b84e-5aa3260f6ab4
+Agent WebSocket disconnected: fdc6c9ea-8f7d-4be2-b84e-5aa3260f6ab4
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket streaming session (fake CLI) > announces a background completion and streams the turn Claude starts on its own (AC-002)
+Agent websocket attached for run claude-ws-background-notice
+Created agent session e0507af9-bf4b-4a23-a2cd-baa1126bab67 for run claude-ws-background-notice
+Agent WebSocket connected: session=e0507af9-bf4b-4a23-a2cd-baa1126bab67, run=claude-ws-background-notice
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E
+Closed agent session e0507af9-bf4b-4a23-a2cd-baa1126bab67
+Agent WebSocket disconnected: e0507af9-bf4b-4a23-a2cd-baa1126bab67
+
+ ✓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (9 tests | 1 skipped) 316ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed | 1 skipped (9)
+   Start at  15:07:35
+   Duration  7.42s (transform 4.46s, setup 16ms, import 6.57s, tests 316ms, environment 0ms)
+
