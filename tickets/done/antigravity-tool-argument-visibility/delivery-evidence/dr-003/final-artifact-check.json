@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-03T19:37:44.302919+00:00",
+  "durableRepository": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+  "archive": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-tool-argument-visibility",
+  "referenceCount": 317,
+  "missingFiles": [],
+  "all229UpstreamReferencesRetained": true,
+  "factualSupplementCount": 13,
+  "sharedUnrelatedTrackedHashesUnchanged": {
+    "tickets/done/embedded-browser-open-tab-investigation/docs-sync-report.md": true,
+    "tickets/done/embedded-browser-open-tab-investigation/handoff-summary.md": true,
+    "tickets/done/embedded-browser-open-tab-investigation/release-deployment-report.md": true
+  },
+  "worktreeAndCloneAbsent": true,
+  "localTicketBranchAbsent": true,
+  "allPublicationChecksPass": true,
+  "currentReviewerAuthoritiesUnchangedByDelivery": true
+}
