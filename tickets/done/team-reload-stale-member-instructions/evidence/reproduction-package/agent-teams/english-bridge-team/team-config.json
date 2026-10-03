@@ -1,0 +1,26 @@
+{
+  "coordinatorMemberName": "english_translator",
+  "members": [
+    {
+      "memberName": "english_translator",
+      "ref": "english-translator",
+      "refType": "agent",
+      "refScope": "team_local"
+    },
+    {
+      "memberName": "worker",
+      "ref": "worker",
+      "refType": "agent",
+      "refScope": "team_local"
+    }
+  ],
+  "handoffs": [
+    {
+      "from": "/english_translator",
+      "to": "/worker",
+      "rules": [
+        "When the result is Translation Ready: the complete English request has been checked against the user's source message, saved in english-request.md, and is ready for task execution."
+      ]
+    }
+  ]
+}

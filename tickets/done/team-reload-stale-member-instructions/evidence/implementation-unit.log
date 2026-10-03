@@ -1,0 +1,147 @@
+
+> autobyteus@1.4.92 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentTeamDefinitionStore.spec.ts stores/__tests__/agentTeamDefinitionRefresh.spec.ts stores/__tests__/agentDefinitionStore.spec.ts components/agentTeams/__tests__/AgentTeamList.spec.ts components/agentTeams/__tests__/AgentTeamDetail.spec.ts components/agents/__tests__/AgentDetail.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web
+
+stderr | components/agents/__tests__/AgentDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentDefinitionStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamDefinitionRefresh.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentTeams/__tests__/AgentTeamDetail.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentDefinitionStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/agentDefinitionStore.spec.ts (5 tests) 8ms
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates mutation transport/GraphQL failures and supports retry
+Failed to refresh agent team definition catalog: Error: mutation transport failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:131:23
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:863:59
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates mutation transport/GraphQL failures and supports retry
+Failed to refresh agent team definition catalog: Error: mutation graphql failure
+    at Proxy.refreshAndReloadAllAgentTeamDefinitions (/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/agentTeamDefinitionStore.ts:155:15)
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates agent transport/GraphQL failures and supports retry
+Failed to reload agent definitions: Error: agent transport failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:131:23
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:863:59
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates agent transport/GraphQL failures and supports retry
+Failed to refresh agent team definition catalog: Error: agent transport failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:131:23
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:863:59
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+ ✓ stores/__tests__/agentTeamDefinitionStore.spec.ts (7 tests) 12ms
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates agent transport/GraphQL failures and supports retry
+Failed to reload agent definitions: Error: agent graphql failure
+    at Proxy.reloadAllAgentDefinitions (/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/agentDefinitionStore.ts:142:15)
+    at Proxy.refreshAndReloadAllAgentTeamDefinitions (/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/agentTeamDefinitionStore.ts:160:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:140:7
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates agent transport/GraphQL failures and supports retry
+Failed to refresh agent team definition catalog: Error: agent graphql failure
+    at Proxy.reloadAllAgentDefinitions (/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/agentDefinitionStore.ts:142:15)
+    at Proxy.refreshAndReloadAllAgentTeamDefinitions (/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/agentTeamDefinitionStore.ts:160:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:140:7
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates team transport/GraphQL failures and supports retry
+Failed to refresh agent team definition catalog: Error: team transport failure
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:131:23
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:863:59
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > propagates team transport/GraphQL failures and supports retry
+Failed to refresh agent team definition catalog: Error: team graphql failure
+    at Proxy.refreshAndReloadAllAgentTeamDefinitions (/Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/agentTeamDefinitionStore.ts:168:15)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/stores/__tests__/agentTeamDefinitionRefresh.spec.ts:140:7
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ stores/__tests__/agentTeamDefinitionRefresh.spec.ts (6 tests) 136ms
+ ✓ components/agents/__tests__/AgentDetail.spec.ts (5 tests) 78ms
+ ✓ components/agentTeams/__tests__/AgentTeamDetail.spec.ts (4 tests) 59ms
+stderr | components/agentTeams/__tests__/AgentTeamList.spec.ts > AgentTeamList > keeps Reload disabled while required reads are pending, shows failure, and permits retry
+Failed to reload agent teams: Error: Member definitions unavailable
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web/components/agentTeams/__tests__/AgentTeamList.spec.ts:156:16
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ components/agentTeams/__tests__/AgentTeamList.spec.ts (5 tests) 46ms
+
+ Test Files  6 passed (6)
+      Tests  32 passed (32)
+   Start at  10:26:49
+   Duration  8.27s (transform 4.47s, setup 41.00s, collect 1.88s, tests 338ms, environment 1.77s, prepare 1.07s)

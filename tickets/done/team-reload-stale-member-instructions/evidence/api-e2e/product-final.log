@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.92 test:e2e:team-reload-member-freshness /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web
+> node tests/e2e/team-reload-member-freshness-probe.mjs --skip-build --output-dir ../tickets/in-progress/team-reload-stale-member-instructions/evidence/api-e2e/product --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/tickets/in-progress/team-reload-stale-member-instructions/api-e2e-test-case-ledger.md
+
+Pass: /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/tickets/in-progress/team-reload-stale-member-instructions/evidence/api-e2e/product/evidence.json

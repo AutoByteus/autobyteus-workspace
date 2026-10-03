@@ -1,0 +1,12 @@
+{
+  "userMessage": "finalize and release a new beta.",
+  "acceptedAutomatedEvidence": true,
+  "handsOnVerificationClaimed": false,
+  "betaAuthorized": true,
+  "target": "origin/personal",
+  "targetSha": "d6f6c7a9ff11f8a3a2f11aabd413de2ef8818b2b",
+  "targetAdvanced": false,
+  "newBaseCommits": 0,
+  "reintegrationRequired": false,
+  "renewedVerificationRequired": false
+}

@@ -1,0 +1,409 @@
+
+> autobyteus@1.4.92 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/agentTeamDefinitionRefresh.spec.ts -t 'preserves first discovery' --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/autobyteus-web
+
+stderr | stores/__tests__/agentTeamDefinitionRefresh.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentTeamDefinitionRefresh.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ❯ stores/__tests__/agentTeamDefinitionRefresh.spec.ts (6 tests | 1 failed | 5 skipped) 16ms
+   × explicit Team Reload member publication > preserves first discovery, then refreshes warmed scoped/shared members on every Reload 15ms
+     → expected [ { query: { …(3) }, …(1) } ] to deeply equal [ { query: { …(3) }, …(1) }, …(1) ]
+   ↓ explicit Team Reload member publication > awaits mutation, Agent publication and Team publication before successful completion
+   ↓ explicit Team Reload member publication > propagates mutation transport/GraphQL failures and supports retry
+   ↓ explicit Team Reload member publication > propagates agent transport/GraphQL failures and supports retry
+   ↓ explicit Team Reload member publication > propagates team transport/GraphQL failures and supports retry
+   ↓ explicit Team Reload member publication > keeps package-coordinator Team reload query-only without refreshing Agent state
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentTeamDefinitionRefresh.spec.ts > explicit Team Reload member publication > preserves first discovery, then refreshes warmed scoped/shared members on every Reload
+AssertionError: expected [ { query: { …(3) }, …(1) } ] to deeply equal [ { query: { …(3) }, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -7,354 +7,10 @@
+            "description": undefined,
+            "directives": [],
+            "kind": "OperationDefinition",
+            "name": {
+              "kind": "Name",
+-             "value": "GetAgentDefinitions",
+-           },
+-           "operation": "query",
+-           "selectionSet": {
+-             "kind": "SelectionSet",
+-             "selections": [
+-               {
+-                 "alias": undefined,
+-                 "arguments": [],
+-                 "directives": [],
+-                 "kind": "Field",
+-                 "name": {
+-                   "kind": "Name",
+-                   "value": "agentDefinitions",
+-                 },
+-                 "selectionSet": {
+-                   "kind": "SelectionSet",
+-                   "selections": [
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "__typename",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "id",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "name",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "role",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "description",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "instructions",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "category",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "avatarUrl",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "toolNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "inputProcessorNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "llmResponseProcessorNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "toolExecutionResultProcessorNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "toolInvocationPreprocessorNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "lifecycleProcessorNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "skillNames",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "skillScope",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownershipScope",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownerTeamId",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownerTeamName",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownerApplicationId",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownerApplicationName",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownerPackageId",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "ownerLocalApplicationId",
+-                       },
+-                       "selectionSet": undefined,
+-                     },
+-                     {
+-                       "alias": undefined,
+-                       "arguments": [],
+-                       "directives": [],
+-                       "kind": "Field",
+-                       "name": {
+-                         "kind": "Name",
+-                         "value": "defaultLaunchConfig",
+-                       },
+-                       "selectionSet": {
+-                         "kind": "SelectionSet",
+-                         "selections": [
+-                           {
+-                             "alias": undefined,
+-                             "arguments": [],
+-                             "directives": [],
+-                             "kind": "Field",
+-                             "name": {
+-                               "kind": "Name",
+-                               "value": "llmModelIdentifier",
+-                             },
+-                             "selectionSet": undefined,
+-                           },
+-                           {
+-                             "alias": undefined,
+-                             "arguments": [],
+-                             "directives": [],
+-                             "kind": "Field",
+-                             "name": {
+-                               "kind": "Name",
+-                               "value": "runtimeKind",
+-                             },
+-                             "selectionSet": undefined,
+-                           },
+-                           {
+-                             "alias": undefined,
+-                             "arguments": [],
+-                             "directives": [],
+-                             "kind": "Field",
+-                             "name": {
+-                               "kind": "Name",
+-                               "value": "llmConfig",
+-                             },
+-                             "selectionSet": undefined,
+-                           },
+-                         ],
+-                       },
+-                     },
+-                   ],
+-                 },
+-               },
+-             ],
+-           },
+-           "variableDefinitions": [],
+-         },
+-       ],
+-       "kind": "Document",
+-       "loc": {
+-         "end": 659,
+-         "start": 0,
+-       },
+-     },
+-   },
+-   {
+-     "fetchPolicy": "network-only",
+-     "query": {
+-       "definitions": [
+-         {
+-           "description": undefined,
+-           "directives": [],
+-           "kind": "OperationDefinition",
+-           "name": {
+-             "kind": "Name",
+              "value": "GetAgentTeamDefinitions",
+            },
+            "operation": "query",
+            "selectionSet": {
+              "kind": "SelectionSet",
+
+ ❯ stores/__tests__/agentTeamDefinitionRefresh.spec.ts:69:60
+     67|       expect(query).not.toHaveBeenCalled();
+     68|       await teams.refreshAndReloadAllAgentTeamDefinitions();
+     69|       expect(query.mock.calls.map(([request]) => request)).toEqual([
+       |                                                            ^
+     70|         { query: GetAgentDefinitions, fetchPolicy: 'network-only' },
+     71|         { query: GetAgentTeamDefinitions, fetchPolicy: 'network-only' …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  10:25:34
+   Duration  6.42s (transform 3.44s, setup 5.69s, collect 20ms, tests 16ms, environment 220ms, prepare 164ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

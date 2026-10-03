@@ -1,0 +1,4 @@
+CONFIRMED: Team Reload updates Team snapshot, leaves existing Worker snapshot stale.
+Operations after source update: [{"kind":"mutation","mutation":"RefreshAgentTeamDefinitionCatalog"},{"kind":"query","query":"GetAgentTeamDefinitions","fetchPolicy":"network-only"}]
+CONFIRMED: network-only Agent catalog read publishes latest Worker instructions and description.
+LIMIT: controlled Apollo boundary; not a real HTTP/browser/packaged-app reproduction. No implementation changed.
