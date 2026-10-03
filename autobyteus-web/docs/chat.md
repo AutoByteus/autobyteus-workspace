@@ -30,6 +30,13 @@ model (`autobyteus.chat.lastModel`), the General Agent default launch config,
 then the first model of the AutoByteus runtime. `startNewChat(preset)` resets
 the draft; the left panel pencil, the tree `+` and catalog Run actions use it.
 
+The displayed rename does not change the default definition ID
+`autobyteus-daily-assistant`. New Chat uses the current General Agent definition
+and prompt after server startup; existing conversation history is not migrated,
+reset or relabeled. Previously captured names may still say Daily Assistant.
+General Agent can discover accessible specialists when appropriate and use its
+own available skills or direct tools; it is not required to delegate every request.
+
 Every draft model set records an explicit `llmConfig` (`explicitChatModelConfig`):
 the model schema's non-thinking defaults through
 `applyModelConfigSchemaDefaults` (`utils/llmConfigSchema.ts`, the same function

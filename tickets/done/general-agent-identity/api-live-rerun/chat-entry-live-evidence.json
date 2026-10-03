@@ -1,0 +1,109 @@
+{
+  "startedAt": "2026-10-03T04:32:34.218Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds General Agent (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Fail",
+      "ms": 61,
+      "error": "API authored body differs from approved prompt",
+      "details": null
+    },
+    "C02": {
+      "title": "Landing: / → /chat, Chat first with pencil, New chat defaults",
+      "result": "Pass",
+      "ms": 4575,
+      "details": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams"
+        ],
+        "workspace": "Temp workspace",
+        "approval": "Auto-approve",
+        "model": "Choose a model\nAutoByteus"
+      }
+    },
+    "C13": {
+      "title": "General Agent platform-owned restart lifecycle: edited prompt overwritten; deleted config restored",
+      "result": "Pass",
+      "ms": 4120,
+      "details": {
+        "promptRefreshed": true,
+        "configRestored": true,
+        "restored": {
+          "id": "autobyteus-daily-assistant",
+          "name": "General Agent",
+          "instructions": "You are General Agent, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+          "toolNames": [
+            "run_bash",
+            "read_file",
+            "read_url",
+            "search_web",
+            "close_tab",
+            "dom_snapshot",
+            "list_tabs",
+            "navigate_to",
+            "open_tab",
+            "run_script",
+            "screenshot",
+            "get_process_output",
+            "start_background_process",
+            "stop_background_process",
+            "download_media",
+            "edit_image",
+            "generate_image",
+            "generate_speech",
+            "read_media_file",
+            "list_available_agents"
+          ],
+          "skillScope": "ALL_INSTALLED"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 56716
+    },
+    {
+      "label": "frontend",
+      "pid": 56728
+    },
+    {
+      "label": "backend-restart-1",
+      "pid": 57575
+    },
+    {
+      "label": "backend-restart-2",
+      "pid": 58203
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 58203,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 57575,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 56728,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 56716,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-MqSvTl"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-MqSvTl",
+  "backendUrl": "http://127.0.0.1:64769",
+  "frontUrl": "http://127.0.0.1:64770",
+  "browserErrors": [],
+  "completedAt": "2026-10-03T04:33:01.029Z"
+}

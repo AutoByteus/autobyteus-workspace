@@ -1,0 +1,153 @@
+{
+  "startedAt": "2026-10-03T04:34:28.347Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds General Agent (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 10,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "General Agent",
+          "description": "General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+          "role": "General Agent",
+          "instructions": "You are General Agent, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+          "toolNames": [
+            "run_bash",
+            "read_file",
+            "read_url",
+            "search_web",
+            "close_tab",
+            "dom_snapshot",
+            "list_tabs",
+            "navigate_to",
+            "open_tab",
+            "run_script",
+            "screenshot",
+            "get_process_output",
+            "start_background_process",
+            "stop_background_process",
+            "download_media",
+            "edit_image",
+            "generate_image",
+            "generate_speech",
+            "read_media_file",
+            "list_available_agents"
+          ],
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "description": "Probe Legacy probe agent",
+          "role": "Helper",
+          "instructions": "You are a helper. Follow the user's request exactly and reply briefly.\n",
+          "toolNames": [],
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        },
+        "promptHash": "d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a"
+      }
+    },
+    "C02": {
+      "title": "Landing: / → /chat, Chat first with pencil, New chat defaults",
+      "result": "Pass",
+      "ms": 4490,
+      "details": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams"
+        ],
+        "workspace": "Temp workspace",
+        "approval": "Auto-approve",
+        "model": "Choose a model\nAutoByteus"
+      }
+    },
+    "C13": {
+      "title": "General Agent platform-owned restart lifecycle: edited prompt overwritten; deleted config restored",
+      "result": "Pass",
+      "ms": 3833,
+      "details": {
+        "promptRefreshed": true,
+        "configRestored": true,
+        "restored": {
+          "id": "autobyteus-daily-assistant",
+          "name": "General Agent",
+          "instructions": "You are General Agent, a general-purpose agent for practical tasks and requests.\n\nHelp the user complete their work clearly and effectively. Handle straightforward requests directly; you do not need to involve a specialist for every question or task.\n\nFor work that benefits from specialized expertise or a dedicated workflow, use `list_available_agents` to discover the available agents and agent teams. It returns their names, descriptions, kinds, and addresses. Use that information to identify a suitable specialist or team, and collaborate with it when appropriate through the available collaboration tools. Do not assume that every specialist in the public agents package is installed or available in the current run.\n\nA specialist performs work using its own skills and workflow. Discovering a specialist does not automatically make its skills available to you.\n\nWhen working directly, use a relevant skill available to you. If none applies, complete the task using your own reasoning and available tools.\n\nIf specialist discovery is unavailable or no suitable specialist is available, work directly within your capabilities. If you lack a required capability or necessary information, explain the limitation or ask the user for what is needed rather than claiming you can complete the work.\n\nUse tools when they are helpful, respect the user's instructions and applicable approval boundaries, and communicate clearly about progress and results. Do not claim that a tool action, collaboration, or task succeeded unless the available evidence confirms it.\n",
+          "toolNames": [
+            "run_bash",
+            "read_file",
+            "read_url",
+            "search_web",
+            "close_tab",
+            "dom_snapshot",
+            "list_tabs",
+            "navigate_to",
+            "open_tab",
+            "run_script",
+            "screenshot",
+            "get_process_output",
+            "start_background_process",
+            "stop_background_process",
+            "download_media",
+            "edit_image",
+            "generate_image",
+            "generate_speech",
+            "read_media_file",
+            "list_available_agents"
+          ],
+          "skillScope": "ALL_INSTALLED"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 63205
+    },
+    {
+      "label": "frontend",
+      "pid": 63436
+    },
+    {
+      "label": "backend-restart-1",
+      "pid": 63820
+    },
+    {
+      "label": "backend-restart-2",
+      "pid": 64310
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 64310,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 63820,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 63436,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 63205,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-TsisBD"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-TsisBD",
+  "backendUrl": "http://127.0.0.1:64900",
+  "frontUrl": "http://127.0.0.1:64901",
+  "browserErrors": [],
+  "completedAt": "2026-10-03T04:34:46.619Z"
+}

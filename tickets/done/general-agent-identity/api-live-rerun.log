@@ -1,0 +1,8 @@
+
+> autobyteus@1.4.92-beta.12 test:e2e:chat-entry-live /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-web
+> node tests/e2e/chat-entry-live-probe.mjs --cases C01,C02,C13 --output-dir ../tickets/in-progress/general-agent-identity/api-live-rerun
+
+C01 Fail Fresh data root seeds General Agent (ALL_INSTALLED); pre-existing config reads as CONFIGURED — API authored body differs from approved prompt
+C02 Pass Landing: / → /chat, Chat first with pencil, New chat defaults
+C13 Pass General Agent platform-owned restart lifecycle: edited prompt overwritten; deleted config restored
+ ELIFECYCLE  Command failed with exit code 1.

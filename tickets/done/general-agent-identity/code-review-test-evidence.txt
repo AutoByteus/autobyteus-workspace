@@ -1,0 +1,8 @@
+Proportional review diff inventory: implementation 8a4177f5b686bbaa9ce62448196c8948cded5e03 to current HEAD 1e67b2beea4e3a9c320bb8d907f6b146defb2568
+M	autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+A	autobyteus-server-ts/tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+M	autobyteus-web/tests/e2e/chat-entry-live-probe.mjs
+Studio helper unchanged from implementation: True
+Retained round-1 live results: {"C01": "Pass", "C02": "Pass", "C13": "Pass"}
+Reviewer current owned-root existence: {"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-OofcTM": false, "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-ccYmqY": false, "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-LR0QGo": false, "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-eQTHSI": false, "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-N9BOXa": false, "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-53NWNw": false}
