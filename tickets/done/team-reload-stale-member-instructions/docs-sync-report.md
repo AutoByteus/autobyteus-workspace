@@ -7,7 +7,7 @@
 - Independent architecture/source/test-code review: N/A — not applicable.
 - Bootstrap and checked integrated base: origin/personal `d6f6c7a9ff11f8a3a2f11aabd413de2ef8818b2b`.
 - Candidate: codex/team-reload-stale-member-instructions at `9b62f56de48e7112337ac643a0f6321ed2517743`, with API-owned test/manifest changes retained.
-- Post-integration verification: /Users/normy/autobyteus_org/autobyteus-worktrees/team-reload-stale-member-instructions/tickets/done/team-reload-stale-member-instructions/evidence/delivery/integration-checks.log.
+- Post-integration verification: /Users/normy/autobyteus_org/autobyteus-delivery-records/team-reload-stale-member-instructions/tickets/done/team-reload-stale-member-instructions/evidence/delivery/integration-checks.log.
 
 ## Why Docs Were Updated
 The formerly team-only client refresh now requires current Agent definitions before Team publication. This completion contract and its existing-run boundary belong in canonical runtime docs; the durable real-product test needs a discoverable usage guide.
@@ -32,5 +32,4 @@ The formerly team-only client refresh now requires current Agent definitions bef
 No file/component was removed. Replaced concept: backend refresh plus Team-only client read suffices for complete member freshness. No legacy path or compatibility layer added.
 
 ## Delivery Continuation
-Docs sync: Pass / Updated. Initial integration was already current, before any delivery edits. Source/probe hashes match validated evidence; syntax and diff checks pass. No integration-driven executable rerun needed because no new base commits or effective source changes were integrated.
-Next: explicit user verification hold. No push, archival, final commit/merge, version/tag, release or worktree cleanup yet. No code/design/requirements finding.
+Docs sync Pass / Updated. Initial and post-acceptance remote checks were already current; no effective source reintegration needed. Validated production/probe hashes match released tag. Syntax/diff/hygiene checks Pass. Finalized and published v1.4.93-beta.1; all release workflows success, safe cleanup complete. See /Users/normy/autobyteus_org/autobyteus-delivery-records/team-reload-stale-member-instructions/tickets/done/team-reload-stale-member-instructions/release-deployment-report.md and /Users/normy/autobyteus_org/autobyteus-delivery-records/team-reload-stale-member-instructions/finalization-receipt.json. No obsolete source components removed; no schema/compatibility change.

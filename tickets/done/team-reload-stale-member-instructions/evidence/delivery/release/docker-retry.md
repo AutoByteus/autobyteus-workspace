@@ -1,0 +1,1 @@
+Docker attempt 1: external antigravity install.sh download invoked by bash returned cannot execute binary file on linux/arm64 (exit 126); Dockerfile/CLI install path unchanged by this fix, immediately preceding same-policy release succeeded. Retry failed job once at same immutable release SHA using gh run rerun --failed; no new tag or duplicate desktop workflow.
