@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildAgentRunTemplate,
+  buildTeamRunTemplate,
   buildEditableAgentRunSeed,
   buildEditableTeamRunSeed,
 } from '../useDefinitionLaunchDefaults'
@@ -31,6 +33,7 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
     const seed = buildEditableAgentRunSeed(source)
     ;((seed.llmConfig?.nested as Record<string, unknown>).levels as string[]).push('mutated')
 
+    expect(seed.autoExecuteTools).toBe(false)
     expect(seed.isLocked).toBe(false)
     expect(source.isLocked).toBe(true)
     expect((source.llmConfig?.nested as Record<string, unknown>).levels).toEqual(['low', 'xhigh'])
@@ -71,6 +74,7 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
     ;((seed.rootConfig.llmConfig?.metadata as Record<string, unknown>).allowed as string[]).push('mutated')
     ;((seed.agentOverrides['/Reviewers/Reviewer'].llmConfig?.nested as Record<string, unknown>).values as string[]).push('mutated')
 
+    expect(seed.rootConfig.autoExecuteTools).toBe(false)
     expect(seed.isLocked).toBe(false)
     expect(source.isLocked).toBe(true)
     expect((source.rootConfig.llmConfig?.metadata as Record<string, unknown>).allowed).toEqual(['high'])
@@ -132,5 +136,42 @@ describe('canonical view seed parameter fidelity', () => {
     const config = source({ reasoning_effort: 'low' })
     config.agentOverrides['/lead'] = change === 'model' ? { llmModelIdentifier: 'member-model' } : { runtimeKind: 'codex_app_server' }
     expect(projectTeamRunLaunchRecords(config, members).memberConfigs[0].llmConfig).toBeNull()
+  })
+})
+
+describe('fresh launch approval defaults', () => {
+  it.each([undefined, 'autobyteus', 'codex_app_server', 'claude_agent_sdk', 'antigravity_cli', 'grok_build'])(
+    'starts fresh Agent and Team templates approved for %s', (runtimeKind) => {
+      const definition = { id: 'definition', name: 'Definition', defaultLaunchConfig: runtimeKind ? { runtimeKind } : null }
+      const agent = buildAgentRunTemplate(definition)
+      const team = buildTeamRunTemplate(definition)
+      expect(agent.autoExecuteTools).toBe(true)
+      expect(team.rootConfig.autoExecuteTools).toBe(true)
+      expect(agent.runtimeKind).toBe(runtimeKind ?? 'autobyteus')
+      expect(team.rootConfig.runtimeKind).toBe(runtimeKind ?? 'autobyteus')
+      expect(team.agentOverrides).toEqual({})
+      // A fresh constructor invocation does not carry an earlier launch's opt-out.
+      agent.autoExecuteTools = false
+      team.rootConfig.autoExecuteTools = false
+      expect(buildAgentRunTemplate(definition).autoExecuteTools).toBe(true)
+      expect(buildTeamRunTemplate(definition).rootConfig.autoExecuteTools).toBe(true)
+    },
+  )
+
+  it('inherits fresh Team approval while retaining explicit member false in records and derived seeds', () => {
+    const members: readonly TeamDefinitionMemberNode[] = [
+      { kind: 'agent', address: '/lead', displayName: 'Lead', agentDefinitionId: 'lead' },
+      { kind: 'agent', address: '/reviewer', displayName: 'Reviewer', agentDefinitionId: 'reviewer' },
+    ]
+    const config = buildTeamRunTemplate({ id: 'team', name: 'Team' })
+    expect(projectTeamRunLaunchRecords(config, members).memberConfigs.map(member => member.autoExecuteTools)).toEqual([true, true])
+    config.agentOverrides['/reviewer'] = { autoExecuteTools: false }
+    const view = resolveTeamRunConfiguration(config, members)
+    const seed = buildEditableTeamRunSeed(view)
+    expect(seed.rootConfig.autoExecuteTools).toBe(true)
+    expect(seed.agentOverrides['/reviewer'].autoExecuteTools).toBe(false)
+    expect(projectTeamRunLaunchRecords(seed, members).memberConfigs.map(member => member.autoExecuteTools)).toEqual([true, false])
+    config.rootConfig.autoExecuteTools = false
+    expect(buildEditableTeamRunSeed(resolveTeamRunConfiguration(config, members)).rootConfig.autoExecuteTools).toBe(false)
   })
 })

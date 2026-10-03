@@ -132,7 +132,7 @@ export const buildAgentRunTemplate = (
     runtimeKind: normalizeRuntimeKind(defaults?.runtimeKind),
     workspaceId: null,
     workspaceMetadata: null,
-    autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
+    autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), true),
     isLocked: false,
     llmConfig: normalizeModelConfig(defaults?.llmConfig),
   }
@@ -149,7 +149,7 @@ export const buildTeamRunTemplate = (
       workspace: { workspaceId: null, workspaceMetadata: null },
       llmModelIdentifier: normalizeModelIdentifier(defaults?.llmModelIdentifier),
       llmConfig: normalizeModelConfig(defaults?.llmConfig),
-      autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
+      autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), true),
     },
     teamOverrides: {},
     agentOverrides: {},

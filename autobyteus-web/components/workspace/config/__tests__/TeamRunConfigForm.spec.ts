@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { shallowMount } from '@vue/test-utils'
 import TeamRunConfigForm from '../TeamRunConfigForm.vue'
+import { buildTeamRunTemplate } from '~/composables/useDefinitionLaunchDefaults'
 import TeamMemberConfigTree from '../TeamMemberConfigTree.vue'
 import TeamScopeConfigEditor from '../TeamScopeConfigEditor.vue'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
@@ -103,6 +104,19 @@ const mountForm = (model: TeamRunFormModel = editableModel()) => shallowMount(Te
 })
 
 describe('TeamRunConfigForm launch and existing-run presentation', () => {
+  it('passes fresh approved root and inherited member state to editors and emits opt-out', async () => {
+    const wrapper = mountForm(editableModel({ config: buildTeamRunTemplate(rootDefinition) }))
+    const root = wrapper.findComponent(TeamScopeConfigEditor)
+    expect(root.props('scope').effectiveConfig.autoExecuteTools).toBe(true)
+    expect(wrapper.findComponent(TeamMemberConfigTree).props('memberNodes')
+      .every((member: any) => member.effectiveConfig.autoExecuteTools === true)).toBe(true)
+    root.vm.$emit('update-root', 'auto', false)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.emitted('edit-config')).toEqual([
+      [{ kind: 'set_root_auto_execute_tools', autoExecuteTools: false }],
+    ])
+  })
+
   it('preserves the personal-baseline root order and projects inherited direct-Agent values', () => {
     const wrapper = mountForm()
     const root = wrapper.findComponent(TeamScopeConfigEditor)

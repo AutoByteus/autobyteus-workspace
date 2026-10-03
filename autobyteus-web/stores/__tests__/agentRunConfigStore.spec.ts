@@ -44,7 +44,7 @@ describe('agentRunConfigStore', () => {
       expect(store.config?.runtimeKind).toBe('codex')
       expect(store.config?.llmConfig).toEqual({ reasoning_effort: 'high' })
       expect(store.config?.workspaceId).toBeNull()
-      expect(store.config?.autoExecuteTools).toBe(false)
+      expect(store.config?.autoExecuteTools).toBe(true)
       expect(store.config?.isLocked).toBe(false)
     })
 
@@ -81,6 +81,18 @@ describe('agentRunConfigStore', () => {
     })
   })
 
+  it('retains deliberate opt-out through ordinary edits and allowed runtime changes', () => {
+    const store = useAgentRunConfigStore()
+    store.setTemplate(mockAgentDef)
+    store.updateAgentConfig({ autoExecuteTools: false })
+    store.updateAgentConfig({ llmModelIdentifier: 'another-model' })
+    store.setWorkspaceLoaded('ws-selected', '/workspace/selected')
+    store.updateAgentConfig({ runtimeKind: 'claude_agent_sdk' })
+    expect(store.config?.autoExecuteTools).toBe(false)
+    store.updateAgentConfig({ runtimeKind: 'antigravity_cli' })
+    expect(store.config?.autoExecuteTools).toBe(true)
+  })
+
   describe('setAgentConfig', () => {
     it('should default runtime kind when loading legacy config', () => {
       const store = useAgentRunConfigStore()
@@ -94,6 +106,7 @@ describe('agentRunConfigStore', () => {
       } as any)
 
       expect(store.config?.runtimeKind).toBe('autobyteus')
+      expect(store.config?.autoExecuteTools).toBe(false)
     })
   })
 
