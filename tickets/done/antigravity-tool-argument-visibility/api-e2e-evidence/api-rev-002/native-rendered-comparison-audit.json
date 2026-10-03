@@ -1,0 +1,72 @@
+{
+  "conversationId": "60463604-0f61-47ca-b34e-14228c362876",
+  "comparisons": [
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-2",
+      "toolName": "write_to_file",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-4",
+      "toolName": "view_file",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-6",
+      "toolName": "replace_file_content",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-8",
+      "toolName": "replace_file_content",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-10",
+      "toolName": "grep_search",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-12",
+      "toolName": "find_by_name",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-14",
+      "toolName": "list_dir",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-16",
+      "toolName": "run_command",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    },
+    {
+      "invocationId": "agy-tool-6e55a87c-d882-49f4-969b-6668559def34-18",
+      "toolName": "view_file",
+      "providerFirstTerminalRawRenderedExact": true,
+      "identityEqual": true
+    }
+  ],
+  "allNineEqual": true,
+  "finalFileContent": "AFTER_NATIVE_9382\nsecond line\n",
+  "browserErrors": [],
+  "screenshotsDirectlyInspected": [
+    "integrated-live.png",
+    "integrated-saved-narrow.png"
+  ],
+  "viewports": [
+    "1100x850",
+    "390x844"
+  ],
+  "collapseReopen": true,
+  "documentOverflow": false
+}

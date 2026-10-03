@@ -1,0 +1,237 @@
+{
+  "all13ParsedOrRead": true,
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/production-coverage.json",
+      "bytes": 3498,
+      "sha256": "567fb5fc1c1d42a259b0087568127c626b1c2c414f374bc8530fe73fd5491f8e",
+      "keys": [
+        "capturedAtUtc",
+        "runId",
+        "providerConversation",
+        "rawTraceRows",
+        "toolCalls",
+        "sources",
+        "plannerToolCallCounts",
+        "mappingNote",
+        "unmatchedSteps",
+        "coverage"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/production-selected-calls.json",
+      "bytes": 19821,
+      "sha256": "bef193ffba382daaee2c12fda53b3ae5f7d851925991527cdddd8f4b17ac10ee",
+      "keys": [
+        "sources",
+        "note",
+        "examples"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-comparison.json",
+      "bytes": 7700,
+      "sha256": "d8261440212500b1f9f1328a4b966f25d276f6e0473a320ee28e584040606bb2",
+      "keys": [
+        "version",
+        "conversation",
+        "comparison"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/analyze.py",
+      "bytes": 4425,
+      "sha256": "28c6e67336f5ec28855f388dfba0f58e9b8ff2f3fb3adaebe7c6770fffcebde2",
+      "lines": 52
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/probe.py",
+      "bytes": 4021,
+      "sha256": "c6b2a70164d0ea4b31eee5caef3ad0f2cfb59170aef15f5979cdc95a42301fb9",
+      "lines": 54
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/launch.json",
+      "bytes": 3354,
+      "sha256": "3a8d1347793cf4fffb0944c684495e8abc77f9ba9a26eab09f1224fcf7a1ca39",
+      "keys": [
+        "argv",
+        "cwd",
+        "prompt",
+        "date",
+        "version"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/stdout.jsonl",
+      "bytes": 11744,
+      "sha256": "2812e4d4c1dea795f16bc52d0bc947e31124cdfbb291a5f1f12d2dcb2e48e578",
+      "rows": 29
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/transcript_full.jsonl",
+      "bytes": 12277,
+      "sha256": "e3ef09c47b1cfa91ecab5252be407fb2696e1d00836f46c649154ac895b6c078",
+      "rows": 18
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/transcript.jsonl",
+      "bytes": 12445,
+      "sha256": "32c3afb0fe3d08e94acd04b71b57da357bd8b39536f3071cdbbecd9a7b5097f6",
+      "rows": 18
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/summary.json",
+      "bytes": 567,
+      "sha256": "f180488b7b35b87ce3d8ba217267577c8ec569e4ba606f8c9446b7cf84dae796",
+      "keys": [
+        "conversation",
+        "sent",
+        "result",
+        "exitCode",
+        "fileContent"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-probe.py",
+      "bytes": 2340,
+      "sha256": "d66b01b96a0c5ff3acdbfafeedd72866563b1cb34b499e90dc49829ac229402d",
+      "lines": 34
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-evidence.json",
+      "bytes": 9637,
+      "sha256": "51eaeb89129310234ef1bd028403daf1e1788554c45485b298ea295f046bbeb5",
+      "keys": [
+        "argv",
+        "prompt",
+        "conversation",
+        "pid",
+        "snapshots",
+        "stdout",
+        "result",
+        "exitCodeAfterRequestedStop",
+        "fileContent"
+      ]
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/architecture-correlation-evidence.json",
+      "bytes": 5698,
+      "sha256": "fd079dc9a8f6568ed76242f4e0521f8a197db22f3f9557721dae63d81d2b689e",
+      "keys": [
+        "capturedAtUtc",
+        "purpose",
+        "nativeCallsChecked",
+        "counts",
+        "mismatchedSteps",
+        "source",
+        "sourceBytes",
+        "maxCompleteRowBytes",
+        "allToolBearingPlannersSingleCall",
+        "firstProbeMaxCompleteRowBytes",
+        "caveat",
+        "summaryMismatchDetails",
+        "lossySummaryAgreement"
+      ]
+    }
+  ],
+  "eightInvestigativeCallsRechecked": [
+    {
+      "step": 2,
+      "tool": "write_to_file",
+      "actualKeys": [
+        "CodeContent",
+        "Description",
+        "Overwrite",
+        "TargetFile",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "view_file",
+      "actualKeys": [
+        "AbsolutePath",
+        "EndLine",
+        "StartLine",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "replace_file_content",
+      "actualKeys": [
+        "AllowMultiple",
+        "Description",
+        "EndLine",
+        "Instruction",
+        "ReplacementContent",
+        "StartLine",
+        "TargetContent",
+        "TargetFile",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "grep_search",
+      "actualKeys": [
+        "CaseInsensitive",
+        "Includes",
+        "MatchPerLine",
+        "Query",
+        "SearchPath",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "find_by_name",
+      "actualKeys": [
+        "MaxDepth",
+        "Pattern",
+        "SearchDirectory",
+        "Type",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "list_dir",
+      "actualKeys": [
+        "DirectoryPath",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "run_command",
+      "actualKeys": [
+        "CommandLine",
+        "Cwd",
+        "IsDaemon",
+        "WaitMsBeforeAsync",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "view_file",
+      "actualKeys": [
+        "AbsolutePath",
+        "EndLine",
+        "StartLine",
+        "toolAction",
+        "toolSummary"
+      ]
+    }
+  ],
+  "note": "Historical feasibility only; no original source file accessed/re-executed"
+}

@@ -1,0 +1,93 @@
+
+> autobyteus@1.4.93-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/runHydration/__tests__/runContextHydrationService.spec.ts services/runHydration/__tests__/runProjectionActivityHydration.spec.ts components/progress/__tests__/ToolActivityItem.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-web
+
+stderr | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runContextHydrationService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/progress/__tests__/ToolActivityItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/progress/__tests__/ToolActivityItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runContextHydrationService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts (7 tests) 3ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts (4 tests) 3ms
+stderr | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts > runProjectionActivityHydration > hydrates exact system content and omits only malformed system rows
+[runProjectionActivityHydration] Omitted malformed system instruction activity.
+
+ ✓ services/runHydration/__tests__/runProjectionActivityHydration.spec.ts (4 tests) 3ms
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: 'tool-4',
+  tool_name: 'delete_file',
+  reason: null,
+  error: null
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (14 tests) 12ms
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (14 tests) 8ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts (11 tests) 29ms
+ ✓ components/progress/__tests__/ToolActivityItem.spec.ts (4 tests) 27ms
+ ✓ services/runHydration/__tests__/runContextHydrationService.spec.ts (1 test) 3ms
+
+ Test Files  8 passed (8)
+      Tests  59 passed (59)
+   Start at  18:02:40
+   Duration  8.29s (transform 3.64s, setup 58.06s, collect 760ms, tests 90ms, environment 2.39s, prepare 1.55s)
+

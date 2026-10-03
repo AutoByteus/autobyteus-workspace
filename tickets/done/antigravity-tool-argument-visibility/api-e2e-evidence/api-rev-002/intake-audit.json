@@ -1,0 +1,563 @@
+{
+  "startedAt": "2026-10-03T17:19:00.402113+00:00",
+  "reviewedHead": "025a612d814e0d1a3217c5d8ed264e2d14b050e8",
+  "merge": "d2401d236d37088f063d8969a03c682810951b53",
+  "upstreamManifest": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/cumulative-package.json",
+  "upstreamReferenceCount": 138,
+  "missingFiles": [],
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/requirements-doc.md",
+      "sha256": "5112c973a1f4bd01dbed681d89f06cd58554f944268a0d93b0251e6b14f2d031"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/investigation-notes.md",
+      "sha256": "63b49d423ec7108c3ba43c3b09e1e798689e1ae687c7f735e03745722885c608"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/design-spec.md",
+      "sha256": "3962ba5a03edcf6d72ee90707956371d726cea1fd5d21ec45570c474b03b67a8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/solution-revision-record.md",
+      "sha256": "6c553bdedc127d2de4b1e7fb475b7ec62632f1f629ad1340e1ac311fb520b277"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/solution-handoff.md",
+      "sha256": "7a023508321d8cae557cd589ef490d06eb73479c2a5f0fd10f9ab13fde1faecc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/design-review-report.md",
+      "sha256": "8248df2fc71df15cd121af551c3408ae4fb1dca19263f999fddd514b98dcdaa5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/architecture-review-revision-record.md",
+      "sha256": "e268a4ce4a058cb729228fe632304f85b0ac88618435548906eeefd130636b7e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/investigation-result.md",
+      "sha256": "a2901c37dd9f9bb1cb21a6376b0be0bea510f2e8a5b66f3bae45316e801be31c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-handoff.md",
+      "sha256": "c26ffc7d180d5584f7741482583aeaecb87f02f5bacaa021aaeb1a27619acfb4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-revision-record.md",
+      "sha256": "657c72926b363d8d37eef4f3cd832deb670cc0681118b2584f11cdaaa8324a18"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-report.md",
+      "sha256": "627436edacd904d3c415f46a73a2cd6ebe5e49731b9ff6db45165d597bd50a69"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-revision-record.md",
+      "sha256": "cb7c264ea4fb3c22d4e13ffba87e7349cf7a27dbb1206ea221f0e0c6458c3cf3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-coverage-investigation.md",
+      "sha256": "520788b9cfdbb591ce30db72e888d90a6816ab59dcc5b2fc5d73d89be97d8c43"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-execution-coverage-report.md",
+      "sha256": "9ec51afff268c46f222cfbd7ab905aa1d394456c7fa2d72e6a098a1c345c28bd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-revision-record.md",
+      "sha256": "5632e059f4f648edf8002b3e2e1daa3f15830987c0c03673fb40cf31e5f5cf67"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-test-case-ledger.md",
+      "sha256": "23a46b6a05f0fa1be0714cbc4eedeae03de0316a496bca4d2f9d139194eb9438"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/production-coverage.json",
+      "sha256": "567fb5fc1c1d42a259b0087568127c626b1c2c414f374bc8530fe73fd5491f8e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/production-selected-calls.json",
+      "sha256": "bef193ffba382daaee2c12fda53b3ae5f7d851925991527cdddd8f4b17ac10ee"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-comparison.json",
+      "sha256": "d8261440212500b1f9f1328a4b966f25d276f6e0473a320ee28e584040606bb2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/analyze.py",
+      "sha256": "28c6e67336f5ec28855f388dfba0f58e9b8ff2f3fb3adaebe7c6770fffcebde2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/probe.py",
+      "sha256": "c6b2a70164d0ea4b31eee5caef3ad0f2cfb59170aef15f5979cdc95a42301fb9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/launch.json",
+      "sha256": "3a8d1347793cf4fffb0944c684495e8abc77f9ba9a26eab09f1224fcf7a1ca39"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/stdout.jsonl",
+      "sha256": "2812e4d4c1dea795f16bc52d0bc947e31124cdfbb291a5f1f12d2dcb2e48e578"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/transcript_full.jsonl",
+      "sha256": "e3ef09c47b1cfa91ecab5252be407fb2696e1d00836f46c649154ac895b6c078"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/transcript.jsonl",
+      "sha256": "32c3afb0fe3d08e94acd04b71b57da357bd8b39536f3071cdbbecd9a7b5097f6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/summary.json",
+      "sha256": "f180488b7b35b87ce3d8ba217267577c8ec569e4ba606f8c9446b7cf84dae796"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-probe.py",
+      "sha256": "d66b01b96a0c5ff3acdbfafeedd72866563b1cb34b499e90dc49829ac229402d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-evidence.json",
+      "sha256": "51eaeb89129310234ef1bd028403daf1e1788554c45485b298ea295f046bbeb5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/architecture-correlation-evidence.json",
+      "sha256": "fd079dc9a8f6568ed76242f4e0521f8a197db22f3f9557721dae63d81d2b689e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/local-validation.md",
+      "sha256": "b6913f91ac364e36cde10d72b1356e3b490726568ee1faf735db1b5d472c8b64"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/focused-regressions-final.log",
+      "sha256": "f28f94fb1a233f9e0cb8e260d84ac8a98cff252ecc8a838bfd9b4eaf96e9a52a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/server-build-final.log",
+      "sha256": "56b7c57003657d42fd5690b6f7fa73f427169118fc21f59794d3375c37f5d168"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/source-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/focused-test-typecheck-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/focused-test-tsconfig.json",
+      "sha256": "7e456e756273c38b4f873ea58b91912de1132de909ac527b066014fd586aae30"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/typecheck.log",
+      "sha256": "3cbc8d10533c5c24f5ae87853e6b436d405f9b462043b96e1e016e4c382c8b20"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/lifecycle-persistence-tests.log",
+      "sha256": "3a4cafcf684ede4fcb3d0eaeb7aee9add8ab7a2f71cef900aa38b3a12bad4141"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/lifecycle-rerun.log",
+      "sha256": "41ce6b4c8468bd5bea6bd89bc8455723c4d56b294b7a19f073abff600def4128"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/focused-test-typecheck.log",
+      "sha256": "4b4d775c73ad37d7d1daf5879a90461b9d1cbe9d984efa1df7f133504e2aec1d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/handoff-rule-result.json",
+      "sha256": "886699f629386c788deb5e788ade726c12db43b7a4e768c4ca95010d0762c364"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/preview/interaction-results.json",
+      "sha256": "86ba62ee446192ae98e2ccce1ba9fd079acba1b7377480fa2a48158d0b4df2d9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/preview/live-expanded.png",
+      "sha256": "e90ceecbe704c417bea16f6a83dd48c2e919b347fb18a639843bd39b91c9f089"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/preview/saved-narrow-expanded.png",
+      "sha256": "ebd04c139e599e9fde74fae89965494823827ec01ae6fba396b7d3c3ec220778"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/preview/native-arguments.page.vue",
+      "sha256": "bb3e1b6e2169706c88c06508d434994835d3bf796b5062d87700eb8333cc29c8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/preview/nuxt.log",
+      "sha256": "92acb74268df0ef0cde25600ae876c3310d738cc33e6da1e8525e9ca5b3a02db"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/review-validation.md",
+      "sha256": "56a0b74bb171dd04a2908384caf980a66ce995f176c6333a9286d2230e3adb8a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/focused-regressions.log",
+      "sha256": "52e145fd00e1b8f00f986429e264f902944780d8628119bc916185c0bcaf03ab"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/source-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/basis-and-source-audit.json",
+      "sha256": "fed7f5c60264f3cce074bf6f9105520593f9734c0d01ebd8299e733ec67a234d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/handoff-rule-result.json",
+      "sha256": "0e7886fc6adb1953baee1eb808d10e49520c534ad6a2efe1e1d13dd4b69dd9ba"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts",
+      "sha256": "008e2cea6aef3f713a31848cb816086e9303be87786aeb8b1c27fa1781e2a3f0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "sha256": "e44d49e8da1e297fbc7856447f438131e2c65b6d6d92844b8ecd35a09f13baa6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/fixtures/agy-native-arguments-turn.mjs",
+      "sha256": "146a54d0fe903835caeb8606c50d0755a35a42362de3e723fe32eca1d067c9ab"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/TESTING.md",
+      "sha256": "2a81eec79b5e5bd413ec4709e97e44629e3f82c0e63d1e7e40ec98fcd0c0490f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/browser.json",
+      "sha256": "49ff35d22dde2efebf3017fb43df55d215700d486b8a7e77f883ee77ad6647e6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/cleanup-audit.json",
+      "sha256": "2ccc4e8f42e8fd1d5db9d1c31281e9fd80c646dfad46fbe6f3cb9764b645622a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/initial-live-comparison.json",
+      "sha256": "a630fbd7dd846db4c345c2b2d42a62176bb712f58fbe91495dac3d7d648ba95f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/initial-live-native-transcript.jsonl",
+      "sha256": "23db2cce4a7e2a3161d02ae46f30895fe55b280a25b465a35a1d42acfbff0144"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/initial-live-raw.jsonl",
+      "sha256": "0f4c5bfa38ac385ebeab546a2bfb781b76a0fe919c14a6b1f66bd8fdf82573f8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/integrated-live.png",
+      "sha256": "29005154f3fdc6f646c30d9990e8c7b7ab2bc43e21d5352b72acea8de4f79a3a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/integrated-nuxt-initial.log",
+      "sha256": "aee2c1d6e33b40989386ca3897d47ca2758017ec4c21c02dfdae876dfe03c5fa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/integrated-nuxt.log",
+      "sha256": "aee2c1d6e33b40989386ca3897d47ca2758017ec4c21c02dfdae876dfe03c5fa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/integrated-saved-narrow.png",
+      "sha256": "f8c922f6dce7e6cdc10fc805802f566cac72c1655e0949c66383a790697df41d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/integrated-saved.png",
+      "sha256": "f29f1f85fd3bfdf3c8929e95fe4854b50030060e46d1c89f53d958d285bf193a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-cleanup-initial.json",
+      "sha256": "259fe274aedab7fcfe154e747d9b44a6466409620591f5fa4023fd1b5b46fdf9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-cleanup-second.json",
+      "sha256": "cb69fb2232ddc0abcbc18eedfb3b88d708f53887f47cda6c037e008fa981e88c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-cleanup.json",
+      "sha256": "8fdf8d446d08ebf4d83fb2856e31bafdca60d217ac63d8fc680b187609db5b3f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-launch-initial.json",
+      "sha256": "8c77aed4753e110e9aaa29f5893dfa059466db974e022e1cc0419eff92716483"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-launch-second.json",
+      "sha256": "ceb687740694d366d52d5f126df70b7655fd66f7fefe624b97d1c1f0d64cc738"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-launch.json",
+      "sha256": "8c51c45e17b9366f38f490744b028b9420029cd725d8715b46117c39ee9c032d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-metadata.json",
+      "sha256": "3c59482eec8dc55e6e8230474bdca3dbfeed6f1b68e10fc62a084add807fab85"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-native-second.json",
+      "sha256": "8f57ce6008876cf164a6525e80c3b3684e47af3d7932fa5ff56626a55674d329"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-native.json",
+      "sha256": "4705dda95081e35102216c524687ab0c2d0d2406f8c4c9de818130191e92f94e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-projection.json",
+      "sha256": "dbb694c1b8455da1074bf4e0adfee444555b0ef8cecaaa19a11eb309623c569c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-raw-traces.jsonl",
+      "sha256": "2d7c46f6f5d01f9c95b4920669b525afdcbe112be3698799fa47807afc029b08"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-rendered-probe.ts",
+      "sha256": "275b0885534cfe25fab020914f564743f9fb2ae9c6fc75de2afbf9e713f4dc94"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-transcript-full.jsonl",
+      "sha256": "7868c63bf9253c0ffb1d2e2ac10d6e2f101071e085f3bfc1be8795571c4426a5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-validation-initial.log",
+      "sha256": "6e2d14e75aa8be054551ca09d814ddec2509e1bc7de275d0d7bae9307e5a7ccc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-validation-second.log",
+      "sha256": "5f31aedeab793accf764bbe24f621fd6c7b318ea577384260440ed6c81434bc1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-validation.log",
+      "sha256": "5373a1497e624e4cd542cb2c386a1469aafef25b5d010a1cdad7cf2346c5e591"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-ws-second.json",
+      "sha256": "f3a41561e92b351fd8a4817a48d233f3cf7a1f8093d06b3a021034539c076076"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/live-ws.json",
+      "sha256": "4d7f1cd4764a26355ebbc99f1669607c8ab2618099b3151519a7dc435b924557"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/native-arguments-integrated.page.vue",
+      "sha256": "43c7e1ce65a5426c47d81277f96ca9944c08c38c0808d0b9465e93d73cd4155c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/native-transport-final.log",
+      "sha256": "aaf5b03ec2204bfe0d9295b79e56714ddff2fc84c5fa3c4f6814cbcb01f9f6b4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/native-transport.log",
+      "sha256": "f372ce06f629c44310b53fa5f9ca374f8726bbfb29c0ce8fd17ec5a9d142b4ab"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/regressions.log",
+      "sha256": "a756b1259937b78324f2764b585aa70b4cc4bf66c11ed25a9b9637faa7694015"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/source-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/test-tsconfig.json",
+      "sha256": "f12e7c13dd7cff2eb5386abf7bf169a2162d5321370f079b3258bb77620b35c0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/test-typecheck-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/test-typecheck.log",
+      "sha256": "c06752f1019f5ec89c1f592a889be5a8cde42f35a86c104da9b9cf30df8b07a6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/upstream-inventory-audit.json",
+      "sha256": "ebeac0b71df7ffab67fb70188baad9a2e75de1055804591e29d19e51aec0aeb9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/validation-commands.md",
+      "sha256": "e2fde695b0104bcbea35a3d2d532788d502542ad2f4cd177369886c80309b807"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/web-regressions.log",
+      "sha256": "1c4447fd005fb90e8215433582a55a502b80e586289a0695b21ebff0095b0925"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/handoff-rule-result.json",
+      "sha256": "5ff939023c6b9ebad0ad3f05541dc60dd5d7c8bfdd876b113ef8055b05864e67"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/cumulative-package.json",
+      "sha256": "8c6dbd7d32d4e0bcefb5b2f5dbf11536944c3ea1ca1dd35e51611b275afdccd0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-test-review-report.md",
+      "sha256": "3302a60dfb4abd3c740b34359d74cff303724a3a1b4190fac07974557e0ed29c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/test-review-handoff-rule-result.json",
+      "sha256": "1473570bcc5a33797a4f475a13e3ad4bac40e98ec334b8102be023cfe865a123"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/delivery-revision-record.md",
+      "sha256": "7333fc03447461e2867b6fb168856cf0a93a5601d81ea6c533c664a3dc7efd15"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/docs-sync-report.md",
+      "sha256": "db0bdede4746b2f3b9974287ee523f498646efd1f780b12b5a7fd3d3dc022c2f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/handoff-summary.md",
+      "sha256": "a60d46f8aad3956e0a1b871720f4a9fdf6ce47801a21c98a1729096ac44e47df"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/release-deployment-report.md",
+      "sha256": "947234e76b01239ff9aa4db932a1b4594e951bfab505231a0ff80b0d7de7649d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/integration-status.txt",
+      "sha256": "ede6a01262b70ba6f34a956a7be00b10d894670e2837a7a53ee724b2401e45d2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/integration-refresh.json",
+      "sha256": "5c2cca4fd3c0cf92bee4de715d33df6ebfeb324a39d0ecea421fd82e6631f7cf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/auto-merged-overlap.diff",
+      "sha256": "c231dd814f115d65a6d41487ca97eaa5aa36b8be9ef0ca32b671756bac491818"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/integration-conflict.diff",
+      "sha256": "805d0b86db53a33fd5bf098a0ceb33a51bd27c7454d7366a0462f36f83de8326"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/local-fix-handoff-receipt.json",
+      "sha256": "2f941aaba05f69946fac3aa0238cd00f1ef6ce335e8ac4606f608ebd8e01febc"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-failure-cli-routing.test.ts",
+      "sha256": "d56ea743a20bf5d1e11302a7099a607bc617061846c290ffd0491b1fa304e082"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/fixture-before-conflict.mjs.txt",
+      "sha256": "8f8c8cbdf799dd9ca7af37a4905522b97ba41a0a64a0868ff8b60c3c23cd7a0b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/fixture-resolution-vs-checkpoint.diff",
+      "sha256": "556790caf74fc34e686c7167c0b718bea13d4e85c149d642b8117ba3fb67adad"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/fixture-resolution-vs-target.diff",
+      "sha256": "2f6531c5cd7b9024ca6eb6f61e3008d62af7527ab94376283efd5722280ab046"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/focused-regressions-final.log",
+      "sha256": "a10c039d21c9f27a832c7c73d5efaaf7ba16b7cb942a5cf7a63b7d802dcead31"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/focused-test-tsconfig.json",
+      "sha256": "e23e5ed6d0f20dfc306f6985f7c0f59cc06d613fdb82cb670a77a4b2a16a1d84"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/focused-test-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/focused-unit-tests.log",
+      "sha256": "3688d6ccf62d6ce86ea6764b45f6d59c4275e567da8a448a734213a12160bae3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/integration-resolution.json",
+      "sha256": "f1b75b8de825ce50f25db60d208d9756133105d477ea861dfbd79ec661916b3e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/local-validation.md",
+      "sha256": "1bc29b12587cc8a60a6e750b038a8d66b85dae11adb1e1021d20a0bbec4b148c"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/merge-commit.log",
+      "sha256": "f15266898fe2af1589784d09d7e5a00089b66eae619afa63a556eb528f848c0f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/server-build.log",
+      "sha256": "56b7c57003657d42fd5690b6f7fa73f427169118fc21f59794d3375c37f5d168"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/shared-build.log",
+      "sha256": "3ad5cbe0c24a0ee305efde1102c870542814ab50e3bf8e7ce852a41c76763eba"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/cumulative-package.json",
+      "sha256": "a700608a6725616e833ad555a340856a9d2d1ae8004573ab5873a5b16655da78"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/implementation-evidence/ir-002/handoff-rule-result.json",
+      "sha256": "6a660b80becd3928ee00e01417430770ad3ac12d8b0156cd40ecf590ea30b6a6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/review-validation.md",
+      "sha256": "56405ae42b410275726ece0065c7cc5a6d7e15546921ca950380601c6f8b1761"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/focused-regressions.log",
+      "sha256": "60d7f634c2211e8df94e6f0334bb5d1c5c12d51a96ba5540cfb68638ee4e6ca6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/source-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/integration-audit.json",
+      "sha256": "88fce39f451c59d2dba67541d055c5f66aa9b4397bd8e6725c77c6fed61aad72"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/handoff-rule-result.json",
+      "sha256": "7cec1e6a5862dc8e40949e1846c22b5affb9e0185f0d2c266169cf514e18d4f6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/cumulative-package.json",
+      "sha256": "f813fdd8f52dad169201109e7bfe4a651f0c5c15a4d296bd52e196e0e55e84d4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-marketing-turn-failure/requirements-doc.md",
+      "sha256": "1b9fbfacfea866ab8abd38ca010036421bc0d5f1b9503432c8de8fed2e2394d0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-marketing-turn-failure/design-spec.md",
+      "sha256": "ae86bc9e3fdd520c5ac40eac3bede681ca95d590f61ec872ab7e762746cc6b1a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "sha256": "7c95752264d0136447b670b0b099af375861f5e31580b7297ba6cb88f9b97252"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts",
+      "sha256": "67fbfca9aec43d086bc7aad818a67a09385c62d9f380e57ce573264290a3b183"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-brain-file.ts",
+      "sha256": "9c962b0828987ef4acdb895accf140b08eeedfbe50904fb65f890bf4b2f57324"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-native-tool-arguments-reader.ts",
+      "sha256": "a6812bbfb4cf7a8bc65faacef2314070f1a4538696f80c46abf82b2c7b4e0ed2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts",
+      "sha256": "7a16552d04c2dcbfa6ad929ae297813b849dff58e1516ad424699a5c660300db"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts",
+      "sha256": "20767675967ce7a93aca0e365387db3ca8a8706387877a387e708fc25d857b13"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+      "sha256": "5dd751d74105edbf12aa83bfa173ea1877119e636cf3b0e2792376731058c52a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts",
+      "sha256": "b868c637d8dbcd70049d34568ecf91f4ca1d1908af4214cb116b6bc37c8b8771"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/autobyteus-ts/src/llm/errors/provider-error.ts",
+      "sha256": "d8e1bc1d8f1a7357e91b2ba781ea41e4909c9e05bfb63ee0c618538efbcdbbd7"
+    }
+  ],
+  "priorApiResultApplicability": "API-REV-001 pre-integration only"
+}

@@ -1,0 +1,10 @@
+{
+  "upstreamReferenceCount": 138,
+  "finalReferencesBeforeThisAudit": 222,
+  "lostUpstreamReferences": [],
+  "missingFiles": [],
+  "all13FactualSupplementsRetained": true,
+  "reviewerArtifactsUncommittedAtEntryPreservedNotOwnedByApi": true,
+  "deliveryArtifactsHistoricalNotRewritten": true,
+  "finalReferenceCount": 224
+}

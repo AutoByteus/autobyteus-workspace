@@ -1,0 +1,15 @@
+{
+  "runId": "agy_native_input_live_784d635b_bdd1_4eaa_b59d_20_07c16b9b14c34cea8f5535fcc91e20b4",
+  "agentDefinitionId": "agy-native-input-live-784d635b-bdd1-4eaa-b59d-207a286d86ab",
+  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/workspace",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-input-live-D9pgWy/memory/agents/agy_native_input_live_784d635b_bdd1_4eaa_b59d_20_07c16b9b14c34cea8f5535fcc91e20b4",
+  "llmModelIdentifier": "gemini-3.8-flash-low",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "runtimeKind": "antigravity_cli",
+  "platformAgentRunId": "60463604-0f61-47ca-b34e-14228c362876",
+  "preparedAt": "2026-10-03T17:24:57.426Z",
+  "preparedExpiresAt": "2026-10-04T17:24:57.426Z",
+  "startedAt": "2026-10-03T17:25:03.057Z",
+  "applicationExecutionContext": null
+}

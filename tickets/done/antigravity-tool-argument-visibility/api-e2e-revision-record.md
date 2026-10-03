@@ -1,0 +1,49 @@
+# API/E2E Revision Record — antigravity-tool-argument-visibility
+Canonical coverage investigation and execution report are current truth; this cumulative index records completed rounds only.
+
+## Revision Index
+| Revision | Trigger / round | Related upstream revisions | Prior result / confidence | Current result / confidence |
+| --- | --- | --- | --- | --- |
+| API-REV-001 | code_reviewer / code-review-report.md / CRR-001 implementation round1 | SR-001 behavior; SR-002 future-only approval; SR-003 design; ARCH-REV-001; IR-001; CRR-001; DR N/A | N/A — no prior completed API result | Pass / 95% |
+| API-REV-002 | code_reviewer CRR-003 / DR-001 integrated Local Fix return, renewal round2 | SR-001/002/003; ARCH-REV-001; IR-001/002; CRR-001/002/003; API-REV-001; DR-001 | API-REV-001 Pass95% — pre-integration only | Pass /95% — renewed integrated tree |
+
+## API-REV-001 — Prove actual future native inputs across transport, restore and rendered history
+- First completed validation baseline, 2026-10-03. Trigger: independent Implementation Review Pass, no finding IDs. Medium / High, Reviewed route retained; no intended-behavior change.
+- Requirements AC-001–006 / REQ-001–004 / BEH-001–004 / SCN-001–004; existing supported withheld/background and Stop/process-close cases also checked.
+- Added 4-case durable real-server native-argument transport test and dedicated explicitly isolated provider fixture; narrowly updated existing fake CLI. Paths in canonical report; test commit **b297e0042e8eaf02f53af6048199c57af7587069**. No coverage removal/source fix/schema change.
+- E-001: full typed first STARTED/immediate raw disk before terminal, all nine native inputs, repeated same-path edits, command prefix, enriched background close and actual source-free server history reopen.
+- E-002: absent/ambiguous detailed evidence summary-only continuation; fallback is not completeness success.
+- E-003: actual GraphQL restore and new CLI exact conversation binding, future enriched calls, old summary reader/raw prefix unchanged, source-free final history.
+- R-001: 23 server files/266 tests Pass (3 opt-in files/5 tests skipped, not counted); 8 web files/59 tests Pass; production-source and focused production/new-test compiler checks Pass. General existing TS6059 still reported; initial ws-declaration gap resolved only in temporary focused config using installed workspace types, not dependency policy.
+- L-001/B-001: final temporary executable probe Pass. Nine current AGY1.2.16 actual typed inputs exactly equal first STARTED/terminal/raw saved objects; repeated actual file edits and final marker exact. Real live WS handler/Activity while command Running; actual terminate/browser reload/network-only history hydration renders all nine exact JSON objects. Disclosure/collapse/narrow overflow checked and screenshots inspected.
+- Confidence delta: post-repository85.71% → final95% (simple average, seven final categories95%). Every critical AC directly proven; no category<90%. Broader Required — Completed. Full packaged shell/user verification remains outside API claim.
+
+### Prior Failure Resolution
+None — no prior completed API round. Local execution iterations retained: wrong test metadata UUID extraction, temporary browser label case and data-test locator errors were corrected by this owner and rerun before baseline completion. Final cases all Pass; no source/requirement/design failure inferred. Initial and second logs/cleanup receipts remain in api-e2e-evidence.
+
+- Canonical artifacts created/updated: api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md, api-e2e-test-case-ledger.md, this revision record; detailed commands/data/DOM/source/probe/cleanup evidence in api-e2e-evidence.
+- New/remaining failure IDs: None. Classification on final Pass: N/A. Proportional successful test-code review required; exact returned most-specific recipient **/code_reviewer** (successful High-risk proportional test-code review). Delivery/DR N/A — not applicable before delivery; no push/merge/release/deployment.
+- Cleanup: owned runs/definitions/sockets/Studio/Nuxt/Chrome stopped; three owned real app/workspace roots removed; fake HOME removed/restored; temp page/test/tsconfig removed; six owned ports independently checked closed. CLI-created own diagnostic provider metadata retained; no user app/history/workspace or unrelated provider mutation.
+- Residual scope: undocumented provider shape/availability retains strict safe decline; no universal future-release/multi-call/oversized input completeness guarantee. No historical backfill/result recovery/tool expansion/shared migration/UI redesign/other-runtime changes approved or performed.
+
+## API-REV-002 — Renew integrated native capture and preserved error transport
+- Date2026-10-03; trigger CRR-003 independent implementation re-review Pass following DR-001 Blocked / IR-002 local merge. Medium / High unchanged. No triggering finding IDs or changed approval/design premise. Current authoritative result **Pass /95%**; current canonical investigation/report own details, prior API-REV-001 remains historical pre-integration evidence.
+- Reviewed baseline351050d8b0f8c5c58fb31aa0d557eaffac74eae3 and integrated source merge d2401d236d37088f063d8969a03c682810951b53 with checkpoint4d5f96df/incomingdc4eb547. Bootstrap98d8fb36 and targetorigin/personal unchanged. All138 upstream references/all13 supplements retained; incoming approved AGY error package used as preservation context only.
+- E-001/002/003 renewed all4 native real-server cases: first typed STARTED/raw disk before terminal, all9 exactobjects/distinct edits/prefix/background, source-free actual normal history, actual terminate→GraphQLrestore→exact CLI--conversation, future fullcalls and old actual summary byte-prefix/projected entries unchanged. Fallback not completeness.
+- F-001 renewed24 Agent/Team/Org real-server error cases: supplied/unfamiliar/structured/unusable text, redaction/private-response exclusion, partial/completed work, next user turn and actual Agent restore with same provider identity. Opt-in error browser1 skipped/not proof.
+- R-001 current23files292 AGY server tests Pass (3 opt-in livefiles5 tests skipped/not proof);10files87 web tests Pass. Source tsc0, expanded current native/error/routing focused tsc final0; bothfixture syntax/scopedwhitespace0. General pre-existing TS6059 remains not rerun/not passed. Current IR-002 production/shared/build smoke reused as upstream context only.
+- Durable delta: **one type signature** in autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts preserves generic action/result T instead of Promiseunknown. No runtime/assertion/production/contract/UI/dependency change or coverage removal. Commit **ea59e612877b857c866ab508f995607ea9064cc4**. Proportional successful test-code review Required; exact rules selected after persistence.
+- Final post-fix native+error combined rerun28 tests Pass (not extra unique tests). Unique deterministic server coverage320 (4+24+292), web87;1 separate real-native/browser executable Pass.
+- L-001/B-001 repeated current live AGY1.2.16/gemini-3.8-flash-low through actual backend/Nuxt/Chrome; own conversation60463604-0f61-47ca-b34e-14228c362876. All9 actualnative=firstSTARTED=terminal=raw=rendered objects; intended actual2edits/finalfile exact. Real WS Activity while foreground commandRunning, actual terminate/cold reload/network-only normal history, disclosure/collapse and390px no documentoverflow/pageerrors0. Screenshots inspected. Not packaged shell/full navigation/user verification.
+- Confidence: postrepository85.71%→final95%; each7 finalcategories95%; no critical AC missing or category<90. **Broader Required — Completed**, independently renewed rather than inherited prior95. No additional error/quota/browser/future-platform certification claimed.
+
+### Prior Failure Resolution / This-Round Local Delta
+No unresolved prior completed API failure. DR-001 fixture conflict repaired in IR-002/source-reviewed CRR-003; renewed native/error transports now pass on that composition. Expanded current error-test compiler newly exposed TS2769 caused by incoming optional ledger helper return erasure. Investigation/ledger recorded Needs Update before signature-only fix; initial log preserved, final compiler0 and28 transport assertions rerun unchanged. This API-owned test typing correction is not an implementation failure, new intended behavior or source finding. No live/browser execution correction needed in round2. No unresolved failure/finding/blocker.
+
+- Updated canonical investigation/report/ledger and this cumulative history; new round evidence under api-e2e-evidence/api-rev-002, all round1 evidence retained.
+- Cleanup independently confirms5 captured owned roots removed,2 known liveports closed,3 temporaryfiles removed; fixture receipts root0/sockets/server closed/cleanupErrors[]. Userapp/node8001/history/provider registry unrelated state untouched. Own newly created CLI diagnostic metadata retained; upstream SDKdist/native scratch untouched.
+- Delivery DR-001 blocked reports remain historical unchanged; no remote push/targetmerge/release/deployment/DeliveryCompleted/Terminal. Current source review/test review remain separate; new helper review pending.
+
+- Actual route selected by fresh get_handoff_rules: single Pass + High-risk + proportional-test-review rule, **/code_reviewer**. Rules/decision in api-e2e-evidence/api-rev-002/handoff-rule-result.json. No duplicate Delivery notification.
+
+- API artifacts/evidence commit d73c698c993a69eb19568a994cfff10f92bdc842 (helper commit separate). Artifact-wide whitespace exit2 flags only6 rawlog EOF blanklines and valid unified-diff blank context; exact output retained, no source/test formatting failure or blanketartifact Pass. Outside reviewer files/dist/scratch unchanged.

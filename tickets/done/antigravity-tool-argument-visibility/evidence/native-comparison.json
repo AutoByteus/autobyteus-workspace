@@ -1,0 +1,200 @@
+{
+  "version": "1.2.16",
+  "conversation": "a5fcdebd-7b3b-44f7-a504-8affe0873386",
+  "comparison": [
+    {
+      "step": 2,
+      "tool": "write_to_file",
+      "streamParameters": {
+        "TargetFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt"
+      },
+      "actualInput": {
+        "CodeContent": "BEFORE_MARKER_7831\nsecond line\n",
+        "Description": "Create marker file for argument visibility probe",
+        "Overwrite": true,
+        "TargetFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt",
+        "toolAction": "Writing file",
+        "toolSummary": "Marker file creation"
+      },
+      "nativeOnlyKeys": [
+        "CodeContent",
+        "Description",
+        "Overwrite",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": null,
+      "nativeOutputAvailable": true
+    },
+    {
+      "step": 4,
+      "tool": "view_file",
+      "streamParameters": {
+        "AbsolutePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt"
+      },
+      "actualInput": {
+        "AbsolutePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing file",
+        "toolSummary": "Marker file inspection"
+      },
+      "nativeOnlyKeys": [
+        "EndLine",
+        "StartLine",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": "3 lines, 31 bytes",
+      "nativeOutputAvailable": false
+    },
+    {
+      "step": 6,
+      "tool": "replace_file_content",
+      "streamParameters": {
+        "TargetFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt"
+      },
+      "actualInput": {
+        "AllowMultiple": false,
+        "Description": "Update marker string to AFTER_MARKER_7831",
+        "EndLine": 2,
+        "Instruction": "Replace BEFORE_MARKER_7831 with AFTER_MARKER_7831",
+        "ReplacementContent": "AFTER_MARKER_7831",
+        "StartLine": 1,
+        "TargetContent": "BEFORE_MARKER_7831",
+        "TargetFile": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt",
+        "toolAction": "Updating marker",
+        "toolSummary": "Replace marker string"
+      },
+      "nativeOnlyKeys": [
+        "AllowMultiple",
+        "Description",
+        "EndLine",
+        "Instruction",
+        "ReplacementContent",
+        "StartLine",
+        "TargetContent",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": null,
+      "nativeOutputAvailable": true
+    },
+    {
+      "step": 8,
+      "tool": "grep_search",
+      "streamParameters": {
+        "Query": "AFTER_MARKER_7831",
+        "SearchPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace"
+      },
+      "actualInput": {
+        "CaseInsensitive": false,
+        "Includes": [
+          "*.txt"
+        ],
+        "MatchPerLine": true,
+        "Query": "AFTER_MARKER_7831",
+        "SearchPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace",
+        "toolAction": "Searching marker",
+        "toolSummary": "Grep search marker"
+      },
+      "nativeOnlyKeys": [
+        "CaseInsensitive",
+        "Includes",
+        "MatchPerLine",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": "marker.txt:AFTER_MARKER_7831",
+      "nativeOutputAvailable": true
+    },
+    {
+      "step": 10,
+      "tool": "find_by_name",
+      "streamParameters": {
+        "Pattern": "*.txt",
+        "SearchDirectory": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace"
+      },
+      "actualInput": {
+        "MaxDepth": 1,
+        "Pattern": "*.txt",
+        "SearchDirectory": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace",
+        "Type": "file",
+        "toolAction": "Finding marker file",
+        "toolSummary": "Find marker file"
+      },
+      "nativeOnlyKeys": [
+        "MaxDepth",
+        "Type",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": "marker.txt",
+      "nativeOutputAvailable": true
+    },
+    {
+      "step": 12,
+      "tool": "list_dir",
+      "streamParameters": {
+        "DirectoryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace"
+      },
+      "actualInput": {
+        "DirectoryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace",
+        "toolAction": "Listing directory",
+        "toolSummary": "List workspace directory"
+      },
+      "nativeOnlyKeys": [
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": "marker.txt",
+      "nativeOutputAvailable": true
+    },
+    {
+      "step": 14,
+      "tool": "run_command",
+      "streamParameters": {
+        "CommandLine": "printf ARGUMENT_PROBE_OK"
+      },
+      "actualInput": {
+        "CommandLine": "printf ARGUMENT_PROBE_OK",
+        "Cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace",
+        "IsDaemon": false,
+        "WaitMsBeforeAsync": 1000,
+        "toolAction": "Running probe command",
+        "toolSummary": "Execute printf probe"
+      },
+      "nativeOnlyKeys": [
+        "Cwd",
+        "IsDaemon",
+        "WaitMsBeforeAsync",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": "ARGUMENT_PROBE_OK",
+      "nativeOutputAvailable": true
+    },
+    {
+      "step": 16,
+      "tool": "view_file",
+      "streamParameters": {
+        "AbsolutePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt"
+      },
+      "actualInput": {
+        "AbsolutePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/marker.txt",
+        "EndLine": 2,
+        "StartLine": 1,
+        "toolAction": "Viewing marker file",
+        "toolSummary": "Final marker file inspection"
+      },
+      "nativeOnlyKeys": [
+        "EndLine",
+        "StartLine",
+        "toolAction",
+        "toolSummary"
+      ],
+      "streamOutput": "3 lines, 30 bytes",
+      "nativeOutputAvailable": false
+    }
+  ]
+}

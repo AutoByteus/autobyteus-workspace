@@ -1,0 +1,52 @@
+{
+  "type": "implementation controlled component self-check, not API/E2E acceptance",
+  "viewport": {
+    "width": 883,
+    "height": 738
+  },
+  "results": [
+    {
+      "mode": "Saved",
+      "arguments": {
+        "TargetFile": "/owned/same.txt",
+        "TargetContent": "before\nsecond line\n",
+        "ReplacementContent": "after\n🙂\n",
+        "StartLine": 0,
+        "EndLine": 2,
+        "AllowMultiple": false,
+        "Instruction": "",
+        "Includes": [
+          "*.txt",
+          ""
+        ],
+        "metadata": {
+          "enabled": false,
+          "count": 0
+        }
+      },
+      "collapseReopen": true
+    },
+    {
+      "mode": "Summary fallback",
+      "arguments": {
+        "TargetFile": "/owned/same.txt"
+      },
+      "visible": true
+    },
+    {
+      "mode": "Old history",
+      "arguments": {
+        "TargetFile": "/owned/same.txt"
+      },
+      "visible": true
+    },
+    {
+      "mode": "Saved narrow component",
+      "width": 320,
+      "documentWidth": 883,
+      "documentScrollWidth": 883,
+      "jsonVisible": true,
+      "status": "Success"
+    }
+  ]
+}

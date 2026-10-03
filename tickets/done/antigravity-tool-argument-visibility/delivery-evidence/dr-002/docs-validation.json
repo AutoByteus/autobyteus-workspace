@@ -1,0 +1,35 @@
+{
+  "round": "DR-002",
+  "localNewLinkAndHeadingChecks": [
+    {
+      "source": "autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+      "target": "./run_history.md",
+      "heading": "Recorded Antigravity Native Tool Inputs",
+      "result": "Pass"
+    },
+    {
+      "source": "autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+      "target": "../../../TESTING.md",
+      "heading": "Antigravity Native Argument Capture Regression",
+      "result": "Pass"
+    },
+    {
+      "source": "autobyteus-server-ts/docs/modules/run_history.md",
+      "target": "./antigravity_cli_runtime.md",
+      "heading": null,
+      "result": "Pass"
+    },
+    {
+      "source": "TESTING.md",
+      "target": "autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+      "heading": null,
+      "result": "Pass"
+    }
+  ],
+  "scopedDocsWhitespaceExit": 0,
+  "untrackedNotesWhitespace": "Pass",
+  "currentReviewerAuthoritiesUnchanged": true,
+  "productSourceOrDurableTestsChangedByDelivery": false,
+  "executableRerunThisRound": "None \u2014 latest base already integrated and current validated source/test candidate unchanged",
+  "artifactInclusiveWhitespace": "Not claimed; historical raw EOF/unified-diff whitespace retained"
+}

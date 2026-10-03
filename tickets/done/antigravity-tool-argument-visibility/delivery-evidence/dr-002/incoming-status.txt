@@ -1,0 +1,16 @@
+M tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-test-review-report.md
+ M tickets/in-progress/antigravity-tool-argument-visibility/code-review-report.md
+ M tickets/in-progress/antigravity-tool-argument-visibility/code-review-revision-record.md
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/antigravity-tool-argument-visibility/api-e2e-evidence/manual-electron/
+?? tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-003/
+?? tickets/in-progress/antigravity-tool-argument-visibility/code-review-evidence/crr-004/
+?? tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/dr-001/
+?? tickets/in-progress/antigravity-tool-argument-visibility/delivery-evidence/dr-002/
+?? tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/capsule/
+?? tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/cli.log
+?? tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/stderr.txt
+?? tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-cli.log
+?? tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/timing-stderr.txt
+?? tickets/in-progress/antigravity-tool-argument-visibility/evidence/native-probe/workspace/

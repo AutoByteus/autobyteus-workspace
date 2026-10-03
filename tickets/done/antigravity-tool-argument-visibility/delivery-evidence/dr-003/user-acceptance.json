@@ -1,0 +1,11 @@
+{
+  "reference": "USER-ACCEPTANCE-2026-10-03-FINALIZE-BETA",
+  "recordedAt": "2026-10-03T18:49:29.537818+00:00",
+  "source": "Direct user message to Delivery after DR-002 user-verification hold and current worktree manual Electron instance availability",
+  "exactText": "finalize and release a new beta",
+  "acceptedCandidate": "772a6ee1bda0ef8ae4547f1fefa51b7c1e5b0f5e plus synchronized documentation/reviewer artifacts",
+  "meaning": "Explicit acceptance/finalization signal for presented current candidate and beta publication authorization",
+  "handsOnTestClaims": "No specific test actions/results inferred from this instruction. Manual candidate build/readiness receipts retained separately.",
+  "publicationScope": "New beta via documented helper; not stable release or production app/data mutation",
+  "materialChangesSincePresentedCandidate": false
+}
