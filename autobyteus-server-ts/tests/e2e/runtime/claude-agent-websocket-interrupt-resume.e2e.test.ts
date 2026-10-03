@@ -25,6 +25,7 @@ import { AgentSessionManager } from "../../../src/services/agent-streaming/agent
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { ClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 type SdkQueryCall = {
@@ -426,6 +427,71 @@ const closeHarness = async (harness: {
 };
 
 describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
+  it.each([
+    ["API-CL01", { errors: ["Rate limit reached. token=PRIVATE_CLAUDE_SECRET", "Try again later."] },
+      "Rate limit reached. token=<redacted>\nTry again later."],
+    ["API-CL02", { errors: ["Workspace temporarily unavailable. <img src=x onerror=alert(1)>"] },
+      "Workspace temporarily unavailable. <img src=x onerror=alert(1)>"],
+    ["API-CL03", { result: "Existing scalar cause", errors: ["Ignored list cause"] }, "Existing scalar cause"],
+    ["API-CL04", { errors: [null, {}, "  "] }, "Claude runtime returned an error result."],
+  ])("%s preserves supplied SDK failure text over public WebSocket and the next same-session turn", async (id, failure, expected) =>
+    recordCase(String(id), async () => {
+      const workspace = await createWorkspace("claude-runtime-error");
+      let firstUuid = "";
+      const { sdkClient, sdkCalls, clis } = createFakeCliSdkClient({ onInput: (message, cli) => {
+        if (cli.userTexts.length === 1) {
+          firstUuid = message.uuid;
+          cli.init();
+          cli.emit({ type: "assistant", message: { id: `msg-${randomUUID()}`, role: "assistant", content: [
+            { type: "text", text: "CLAUDE_PARTIAL_WORK" },
+            { type: "tool_use", id: "toolu-long", name: "Bash", input: { command: "echo CLAUDE_COMPLETED_WORK" } },
+          ] } });
+        } else { cli.assistant("CLAUDE_NEXT_TURN_OK"); cli.result([message.uuid]); }
+      } });
+      const runId = `claude-runtime-error-${id}`;
+      const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls, workspaceRoot: workspace });
+      const frames: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      harness.socket.on("message", (raw) => frames.push(JSON.parse(String(raw))));
+      try {
+        const sessionId = harness.sessionManager.requireRunSession(runId).sessionId;
+        const failed = waitForJsonMessage(harness.socket, (frame) => frame.type === "ERROR" && frame.payload?.error_effect === "terminal", "SDK terminal error");
+        const started = waitForJsonMessage(harness.socket, (frame) => frame.type === "TOOL_EXECUTION_STARTED", "provider tool start");
+        sendE2eSendMessageCommand(harness.socket, { content: "Ordinary work that fails." });
+        await started;
+        // Emulate the normal external tool→next model call sequence, not one synchronous SDK burst
+        // whose future terminal state can outrun the run's serialized source-event pipeline.
+        const succeeded = waitForJsonMessage(harness.socket, (frame) => frame.type === "TOOL_EXECUTION_SUCCEEDED", "provider tool completes");
+        clis[0]!.emit({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu-long", content: "CLAUDE_COMPLETED_WORK" }] } });
+        await succeeded;
+        clis[0]!.result([firstUuid], { subtype: "error_during_execution", is_error: true,
+          ...failure as Record<string, unknown>, response: "PRIVATE_RESPONSE_MARKER" });
+        const observed = await failed;
+        expect(observed.payload).toMatchObject({ code: "CLAUDE_RUNTIME_TURN_FAILED", error_scope: "turn", error_effect: "terminal" });
+        expect(observed.payload?.message).toBe(`CLAUDE_RUNTIME_RESULT_ERROR: ${expected}`);
+        expect(frames.some((frame) => frame.type === "TURN_COMPLETED")).toBe(false);
+        expect(frames.filter((frame) => frame.type === "ERROR")).toHaveLength(1);
+        const completed = frames.filter((frame) => frame.type === "TOOL_EXECUTION_SUCCEEDED");
+        expect(completed).toHaveLength(1);
+        expect(JSON.stringify(frames)).toContain("CLAUDE_PARTIAL_WORK");
+        expect(JSON.stringify(frames)).toContain("CLAUDE_COMPLETED_WORK");
+        expect(JSON.stringify(frames)).not.toMatch(/PRIVATE_CLAUDE_SECRET|PRIVATE_RESPONSE_MARKER|\[object Object\]/);
+        expect(clis[0]?.userTexts).toHaveLength(1); // No automatic send/retry.
+        const nextStart = frames.length;
+        const next = waitForJsonMessage(harness.socket, (frame) => frame.type === "TURN_COMPLETED", "next user completion");
+        sendE2eSendMessageCommand(harness.socket, { content: "Continue the same work." });
+        await next;
+        expect(frames.slice(nextStart).some((frame) => frame.type === "ERROR")).toBe(false);
+        expect(frames.filter((frame) => frame.type === "TOOL_EXECUTION_SUCCEEDED")).toEqual(completed);
+        expect(JSON.stringify(frames.slice(nextStart))).toContain("CLAUDE_NEXT_TURN_OK");
+        expect(sdkCalls).toHaveLength(1); expect(sdkCalls[0]?.options?.sessionId).toBe(sessionId);
+        expect(harness.sessionManager.requireRunSession(runId).sessionId).toBe(sessionId);
+        expect(clis[0]?.userTexts).toEqual(["Ordinary work that fails.", "Continue the same work."]);
+        const dir = process.env["AGY_ERROR_EVIDENCE_DIR"];
+        if (dir) await fs.writeFile(path.join(dir, `${id}.json`), JSON.stringify({ expected, frames, sessionId, sdkCalls: sdkCalls.length }, null, 2) + "\n");
+      } finally { await closeHarness(harness); await fs.rm(workspace, { recursive: true, force: true }); }
+      expect(clis[0]?.close).toHaveBeenCalled();
+    }));
+
   it("interrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)", async () => {
     const runId = "claude-ws-interrupt-same-process";
     const marker = "E2E_CONTEXT_MARKER_AFTER_INTERRUPT_7419";
