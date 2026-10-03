@@ -3,6 +3,8 @@
 // Prerequisites: installed workspace dependencies, graphical macOS/Linux, isolated-launch support.
 // Builds this worktree by default. --skip-build reuses ONLY its current packaged artifact.
 // Owns all instances/data/fixtures it creates; never attaches to an existing/user app.
+// Optional --check-fresh-approval adds catalog Reload→fresh setup and actual restart checks;
+// approval controls only, no model execution. Existing freshness cases are unchanged.
 // Usage: pnpm test:e2e:team-reload-member-freshness [--skip-build] [--output-dir <dir>]
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -22,11 +24,12 @@ const output = path.resolve(webRoot, arg('output-dir', 'test-results/team-reload
 await fs.mkdir(output, { recursive: true });
 const evidencePath = path.join(output, 'evidence.json');
 const ledgerFile = arg('ledger-file');
+const checkFreshApproval = process.argv.includes('--check-fresh-approval');
 const ledger = async (id, event, result) => {
   if (ledgerFile) await fs.appendFile(path.resolve(ledgerFile), `\n- ${new Date().toISOString()} ${id} ${event}: ${result}; ${evidencePath}.\n`);
 };
 const evidence = { startedAt: new Date().toISOString(), platform: `${process.platform}-${process.arch}`,
-  cases: {}, requests: [], responses: [], consoleErrors: [], pageErrors: [], cleanup: {} };
+  freshApprovalChecks: checkFreshApproval, cases: {}, requests: [], responses: [], consoleErrors: [], pageErrors: [], cleanup: {} };
 const save = () => fs.writeFile(evidencePath, JSON.stringify(evidence, null, 2) + '\n');
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const wait = async (description, callback) => {
@@ -235,6 +238,60 @@ try {
     const sources = await sourceSnapshot(); await fs.writeFile(path.join(output, 'final-sources.json'), JSON.stringify(sources, null, 2));
     return { local, shared, sourceFiles: Object.keys(sources), preservation: 'byte-identical before/after every successful Reload' };
   });
+  if (checkFreshApproval) {
+    await run('E-008', 'ordinary Team catalog Reload then fresh Team setup on with permitted opt-out', async () => {
+      const operations = await reload();
+      await openTeam(4);
+      await page.getByRole('button', { name: 'Run', exact: true }).click();
+      const toggle = page.locator('[data-test="root-team-config-fields"]').getByRole('switch');
+      await wait('fresh Team approval true', async () => await toggle.getAttribute('aria-checked') === 'true');
+      assert(await toggle.isEnabled(), 'Fresh Team opt-out must remain available');
+      const before = await snap('approval-team-after-reload-on');
+      await toggle.click();
+      await wait('Team opt-out false', async () => await toggle.getAttribute('aria-checked') === 'false');
+      const off = await snap('approval-team-after-reload-off');
+      return { operations, freshChecked: true, optOutChecked: false, before, off, providerExecution: false };
+    });
+    await run('E-009', 'actual owned app restart then fresh catalog Agent and Team approval true', async () => {
+      const previous = instance;
+      instance = await cli(['restart', previous.instanceId]);
+      assert.equal(instance.instanceId, previous.instanceId);
+      assert.equal(instance.dataRoot, previous.dataRoot);
+      assert.notEqual(instance.pid, previous.pid, 'Restart must replace the application process');
+      browser = await chromium.connectOverCDP(instance.controlEndpoint);
+      page = browser.contexts().flatMap(context => context.pages()).find(candidate => candidate.url().includes('/renderer/index.html'));
+      assert(page?.url().startsWith('file:'), 'Restart must use owned packaged renderer');
+      page.setDefaultTimeout(30000);
+      page.on('pageerror', error => evidence.pageErrors.push(error.message));
+      page.on('console', message => { if (message.type() === 'error') evidence.consoleErrors.push(message.text()); });
+      await page.getByRole('button', { name: 'Agent Teams', exact: true }).click();
+      await page.locator('#team-search').waitFor();
+      await openTeam(4);
+      const sharedRow = page.locator('article').filter({ has: page.locator('p').filter({ hasText: /^shared$/ }) });
+      await sharedRow.locator('[data-test="agent-member-view"]').click();
+      await wait('shared Agent current instructions', async () => (await page.locator('[data-test="instruction-viewport"]').innerText()).trim() === 'Shared instructions v4.');
+      await page.getByRole('button', { name: 'Run Agent', exact: true }).click();
+      const agentToggle = page.locator('#auto-execute');
+      await wait('fresh Agent after actual restart true', async () => await agentToggle.getAttribute('aria-checked') === 'true');
+      assert(await agentToggle.isEnabled(), 'Fresh Agent opt-out must remain available');
+      const agent = await snap('approval-agent-after-restart-on');
+      await agentToggle.click();
+      await wait('Agent opt-out after restart false', async () => await agentToggle.getAttribute('aria-checked') === 'false');
+      await snap('approval-agent-after-restart-off');
+      await page.getByRole('button', { name: 'Agent Teams', exact: true }).click();
+      await page.locator('#team-search').waitFor();
+      await openTeam(4);
+      await page.getByRole('button', { name: 'Run', exact: true }).click();
+      const teamToggle = page.locator('[data-test="root-team-config-fields"]').getByRole('switch');
+      await wait('fresh Team after actual restart true', async () => await teamToggle.getAttribute('aria-checked') === 'true');
+      const team = await snap('approval-team-after-restart-on');
+      assert.deepEqual(evidence.pageErrors, [], 'Unexpected renderer errors after setup/restart');
+      assert.deepEqual(evidence.consoleErrors.filter(message => !message.includes('E2E required member read unavailable')), [], 'Unexpected console errors after setup/restart');
+      return { previousPid: previous.pid, restartedPid: instance.pid, instanceId: instance.instanceId,
+        sameOwnedDataRoot: instance.dataRoot === previous.dataRoot, agentFreshChecked: true, agentOptOutChecked: false,
+        teamFreshChecked: true, agent, team, providerExecution: false };
+    });
+  }
   evidence.result = 'Pass';
 } catch (error) {
   evidence.result = 'Fail'; evidence.error = error.stack;

@@ -109,6 +109,35 @@ An isolated desktop instance is slower (it needs an app build) but exercises the
 real desktop app; use it whenever desktop-shell behavior or the full product
 matters.
 
+## Fresh Agent/Team approval regressions
+
+- `pnpm -C autobyteus-web test:e2e:fresh-run-auto-approval --output-dir <dir>`
+  exercises production Library/config/mobile/Chat/copy surfaces through a
+  test-owned Nuxt page and Chrome. Install dependencies and run
+  `pnpm -C autobyteus-web exec nuxt prepare` first; use `--browser-executable`
+  if Chrome is not discovered. The eight cases check fresh true, permitted
+  opt-out, member inheritance/overrides, runtime locks and client launch inputs.
+  Mutations deliberately reject **after** capture: this is client-network-boundary
+  proof, not backend/model/runtime-enforcement certification. A cold Nuxt
+  dependency optimization reload can disrupt selection; preserve the failed
+  attempt separately if repeating after warmup, never suppress its assertions.
+- `pnpm -C autobyteus-web test:e2e:existing-run-model-config --output-dir <dir>`
+  includes explicit saved Agent/root/member false preservation assertions in
+  the existing six reader cases. These are controlled renderer-reader checks,
+  not database migration or desktop restart proof.
+- `pnpm -C autobyteus-web test:e2e:team-reload-member-freshness --check-fresh-approval --output-dir <dir>`
+  optionally adds E-008 (real catalog Reload → fresh Team true/permitted off)
+  and E-009 (actual owned application restart → fresh Agent true/permitted off
+  and Team true) to the existing seven product cases. It builds the current
+  worktree by default; prerequisites are installed dependencies, graphical
+  macOS/Linux and isolated-launch support. Use `--skip-build` only for that
+  worktree's already-current packaged artifact. The probe owns/cleans its
+  isolated app, data and fixtures; it performs setup/restart, not model sends.
+- Optional `--ledger-file <absolute path>` records per-case progress for these
+  probes. Keep outputs/ledger in the ticket. Never point a probe at the user's
+  installed app or data. Product restart metadata and cleanup receipts are
+  distinct from browser reload evidence.
+
 ## Rules
 
 1. **Test unreleased changes on a worktree build.** The installed app does not

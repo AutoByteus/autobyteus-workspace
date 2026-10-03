@@ -93,6 +93,24 @@ that current-only value keeps the saved ID; only choosing an offered row changes
 it. An unknown current ID remains visibly unavailable rather than becoming a
 new choice.
 
+### Fresh-run automatic approval
+
+Fresh definition-based Agent launch setup defaults automatic approval to **on**
+on desktop and mobile, including a fresh application session after restart.
+The shared frontend constructor `useDefinitionLaunchDefaults.ts` supplies this
+initial value; it is not a persisted definition preference or a backend default.
+Where the selected runtime permits it, the user can turn approval off before
+launch. Ordinary model/workspace edits and runtime changes that permit false
+retain that explicit choice. Antigravity keeps its existing always-on/locked
+policy: a default-on setting is not the same as forcing approval on.
+
+Saved run settings and editable seeds copied from existing runs retain their
+explicit approval values, including false. New Chat keeps its existing on
+default. Automatic approval lets runtime-supported tool/access requests proceed
+without manual confirmation; it does not grant new capabilities or guarantee
+completion without unrelated interruptions. This frontend default does not
+change direct API callers, Agent Org defaults, backend enforcement or storage.
+
 Direct run-config forms do not expose a launch-time skill-access selector.
 Runtime skill exposure is defined by the agent definition's `skillScope`:
 

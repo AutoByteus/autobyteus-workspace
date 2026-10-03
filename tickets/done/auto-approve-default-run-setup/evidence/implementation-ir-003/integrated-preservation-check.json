@@ -1,0 +1,8 @@
+{
+  "deliveryBlockerAndSDKFilesChecked": 70,
+  "changed": [],
+  "reviewedProductionAndThreeDurableFilesUnchangedFromCheckpoint": true,
+  "latestBase901e157IsAncestorOfIntegratedHEAD": true,
+  "manualResolution": "package.json only; retains three probe scripts, upstream version 1.4.93-beta.1",
+  "integratedCommit": "90a608f5e49a3c780ff47d80920ff2fa650a1270"
+}
