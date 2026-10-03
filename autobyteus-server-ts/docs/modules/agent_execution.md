@@ -422,6 +422,39 @@ transformer can validate that status against the same evidence. A status-only
 `AGENT_STATUS error` remains a valid runtime snapshot but cannot settle an
 identified command by itself.
 
+## Runtime Error Message Presentation
+
+Public error text is selected at the owning runtime adapter and travels through
+the existing canonical `ERROR`, Agent/member projection, streaming handler and
+shared chat error card. The card can retain its generic heading while showing
+the actual supplied explanation as inert text. Message selection does not
+change the lifecycle authority, codes, scopes/effects or identity rules above.
+It is not a new diagnostic/log feed or recovery policy.
+
+- AGY terminal results select the `error` string or `error.message`, trim outer
+  whitespace and apply the existing `redactProviderSecrets`. Missing, empty or
+  unusable text retains `Antigravity could not complete this turn.`. The provider
+  `response` and private diagnostics are not copied into public errors. Native
+  image failure/denial controls are separate and unchanged. See
+  [Antigravity CLI Runtime](antigravity_cli_runtime.md#terminal-error-messages).
+- Claude terminal results retain scalar precedence: `result`, `message`,
+  `error_message`, then string `error`. When none supplies usable text, non-empty
+  string entries from the SDK's `errors[]` are joined in source order with
+  newlines; malformed entries are not serialized. The selected terminal text
+  uses the same existing credential redaction. Existing authentication
+  recognition, error-code/generic fallback and tracker settlement remain. An
+  `errors[]` field alone does not make an unrelated event terminal.
+- Native AutoByteus, Codex and ACP/Grok keep their existing informative error
+  paths. There is no recognized-cause allowlist or quota-specific translation,
+  invented reset time/code, whole-response dump or arbitrary ordinary-message
+  truncation. Existing redaction is not universal secret detection.
+
+The improved explanation does not retry, switch runtimes/models/accounts,
+reset a conversation or discard successful work. Explicit next input uses the
+existing dispatch/restore path with the same run/provider identity; external
+provider capacity and recovery are not guaranteed. Existing persisted string
+fields and historical generic messages are directly usable without migration.
+
 ## Runtime Segment Identity And Ordering
 
 The provider boundary supplies truthful source identity, while `AgentRun` owns

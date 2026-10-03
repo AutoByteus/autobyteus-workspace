@@ -259,7 +259,7 @@ describe("AGY canonical stream conversion", () => {
     });
   });
 
-  it.each(["ERROR", "UNKNOWN", undefined])("redacts failed terminal result with status %s, even without a tool", (status) => {
+  it.each(["ERROR", "UNKNOWN", undefined])("redacts credentials in failed terminal result with status %s, even without a tool", (status) => {
     const diagnostics: unknown[] = [];
     const converter = new AgyStreamEventConverter("run", "conversation", "gemini", (value) => diagnostics.push(value));
     converter.startTurn("turn");
@@ -270,12 +270,44 @@ describe("AGY canonical stream conversion", () => {
     expect(events.map((item) => item.eventType)).toEqual([AgentRunEventType.ERROR]);
     expect(events[0]).toMatchObject({ statusHint: "ERROR", payload: {
       turn_id: "turn", code: "AGY_TURN_ERROR", error_scope: "turn", error_effect: "terminal",
-      message: "Antigravity could not complete this turn.",
+      message: "token=<redacted>",
     } });
     expect(JSON.stringify(events)).not.toMatch(/private-|UNKNOWN|provider_status|raw_usage_json/);
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0]).toMatchObject({ kind: "turn", turnId: "turn", providerError: "token=private-error" });
   });
+  it.each([
+    "Individual quota reached for this model. Resets in 3h28m50s.",
+    "  Workspace unavailable.  ",
+    { message: "Workspace service temporarily unavailable. Try again later.", code: "UNFAMILIAR" },
+    "Read limit reached. token=PRIVATE_AGY_SECRET Authorization: Bearer PRIVATE_BEARER",
+    "<script>alert('runtime')</script> Workspace unavailable.",
+    `Workspace unavailable. ${"Provider explanation. ".repeat(160)}`,
+  ])("preserves useful terminal error text without exposing the response (%j)", (error) => {
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+    converter.startTurn("turn");
+    const terminal = converter.convert({ event: "result", result: {
+      conversation_id: "conversation", status: "ERROR", error, response: "PRIVATE_RESPONSE_MARKER",
+    } });
+    const rawText = typeof error === "string" ? error : error.message;
+    expect(terminal).toEqual([{ eventType: AgentRunEventType.ERROR, runId: "run", statusHint: "ERROR", payload: {
+      turn_id: "turn", code: "AGY_TURN_ERROR", error_scope: "turn", error_effect: "terminal",
+      message: rawText.trim().replace("PRIVATE_AGY_SECRET", "<redacted>").replace("PRIVATE_BEARER", "<redacted>"),
+    } }]);
+    expect(JSON.stringify(terminal)).not.toContain("PRIVATE_RESPONSE_MARKER");
+  });
+  it.each([undefined, null, "", "   ", 42, [], { message: 42 }, { message: "  ", response: "private" }].map((error) => [error]))(
+    "uses only the generic fallback for unusable terminal error %j", (error) => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+      converter.startTurn("turn");
+      const terminal = converter.convert({ event: "result", result: {
+        conversation_id: "conversation", status: "ERROR", error, response: "PRIVATE_RESPONSE_MARKER",
+      } });
+      expect(terminal.map((event) => event.eventType)).toEqual([AgentRunEventType.ERROR]);
+      expect(terminal[0]?.payload.message).toBe("Antigravity could not complete this turn.");
+      expect(JSON.stringify(terminal)).not.toContain("PRIVATE_RESPONSE_MARKER");
+    },
+  );
   it("treats SUCCESS with an explicit error as a failed terminal turn and keeps prior tool DONE factual", () => {
     const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
     converter.startTurn("turn");

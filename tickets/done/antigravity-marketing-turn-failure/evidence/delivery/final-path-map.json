@@ -1,0 +1,19 @@
+{
+  "durableRepositoryRoot": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+  "durableTicketRoot": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-marketing-turn-failure",
+  "maps": [
+    {
+      "old": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/in-progress/antigravity-marketing-turn-failure",
+      "new": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-marketing-turn-failure"
+    },
+    {
+      "old": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure",
+      "new": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/antigravity-marketing-turn-failure"
+    },
+    {
+      "old": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure",
+      "new": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo"
+    }
+  ],
+  "note": "Historical absolute execution references retained verbatim; ticket-relative links and this mapping own current final locations."
+}

@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"tab_id\": \"a1bf65\",\n  \"result_json\": \"{\\\"viewport\\\":{\\\"width\\\":626,\\\"height\\\":738},\\\"cases\\\":[{\\\"name\\\":\\\"unfamiliar\\\",\\\"message\\\":\\\"Workspace service temporarily unavailable. Try again later.\\\",\\\"markupElements\\\":0,\\\"overflow\\\":false},{\\\"name\\\":\\\"markup\\\",\\\"message\\\":\\\"<img src=x onerror=alert(\\\\\\\"runtime\\\\\\\")> Read limit reached. token=<redacted>\\\",\\\"markupElements\\\":0,\\\"overflow\\\":false},{\\\"name\\\":\\\"fallback\\\",\\\"message\\\":\\\"Antigravity could not complete this turn.\\\",\\\"markupElements\\\":0,\\\"overflow\\\":false},{\\\"name\\\":\\\"claude\\\",\\\"message\\\":\\\"Rate limit reached.\\\\nTry again later. token=<redacted>\\\",\\\"markupElements\\\":0,\\\"overflow\\\":false}],\\\"detailOpen\\\":true,\\\"details\\\":\\\"<script>alert(1)</script> Inert detail text.\\\"}\"\n}"
+    }
+  ]
+}

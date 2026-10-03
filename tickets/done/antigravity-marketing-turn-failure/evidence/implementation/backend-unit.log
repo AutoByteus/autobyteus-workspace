@@ -1,0 +1,165 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts (9 tests) 151ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > closes the opened process and fails the turn when system-instruction persistence fails
+Claude input for run 'run-1' failed before send: Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:239:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.openStreamingSession (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:361:7)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:104:17)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:215:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:121:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:246:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession streaming lifecycle > enriches a failed process open with bounded redacted stderr diagnostics
+Claude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:107:13)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:215:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:121:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:360:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > fails the active turn visibly on an unexpected exit and reopens with resume on the next input (AC-009)
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:798:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > treats a conflicting provider UUID as fatal for the process and fails the active turn
+Claude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:82:13)
+    at ClaudeSession.handleFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:396:37)
+    at Object.onFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:116:32)
+    at ClaudeSessionProcess.runPump (/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:127:26)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession process lifetime > marks still-running background tasks stopped on unexpected exit (REQ-009, AC-011)
+Claude process for run 'run-1' exited: Error: killed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:850:112
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:859:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession token usage > marks the first observation after a reopen following an unexpected exit, but never a create generation
+Claude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:968:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (42 tests) 55ms
+stdout | tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts (76 tests) 17ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts (26 tests) 10ms
+ ✓ tests/unit/agent-execution/backends/antigravity/agy-provider-diagnostic-sink.test.ts (3 tests) 9ms
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session-output-events.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-execution/backends/claude/session/claude-session-output-events.test.ts (15 tests) 3ms
+
+ Test Files  6 passed (6)
+      Tests  171 passed (171)
+   Start at  14:33:29
+   Duration  5.01s (transform 1.28s, setup 33ms, import 3.84s, tests 245ms, environment 0ms)

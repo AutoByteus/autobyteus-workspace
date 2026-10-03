@@ -1,0 +1,14 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Delivered message to /delivery_engineer.\",\"target_agent_run_id\":\"delivery_engineer_ba78e84cef33415387e78b6992f5f90c\"}"
+    }
+  ],
+  "structuredContent": {
+    "accepted": true,
+    "code": "DELIVERED",
+    "message": "Delivered message to /delivery_engineer.",
+    "target_agent_run_id": "delivery_engineer_ba78e84cef33415387e78b6992f5f90c"
+  }
+}

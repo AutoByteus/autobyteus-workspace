@@ -1,3 +1,4 @@
+import { redactProviderSecrets } from "autobyteus-ts";
 import { normalizeBrowserMcpToolResult } from "../../../../agent-tools/browser/browser-mcp-result-normalizer.js";
 import { OPEN_TAB_TOOL_NAME } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
@@ -184,7 +185,8 @@ export class AgyStreamEventConverter {
         safeReasonCode: status !== "SUCCESS" ? "TERMINAL_STATUS_NOT_SUCCESS" : "TERMINAL_ERROR_PRESENT",
         providerStatus: status, providerError: payload.error, providerResponse: payload.response });
       events.push(this.event(AgentRunEventType.ERROR, {
-        turn_id: turnId, code: "AGY_TURN_ERROR", message: "Antigravity could not complete this turn.",
+        turn_id: turnId, code: "AGY_TURN_ERROR",
+        message: redactProviderSecrets(errorText(payload.error).trim()) || "Antigravity could not complete this turn.",
         error_scope: "turn", error_effect: "terminal",
       }, "ERROR"));
       this.turnId = null;

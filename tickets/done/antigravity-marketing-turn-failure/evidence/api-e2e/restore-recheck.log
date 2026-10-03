@@ -1,0 +1,312 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:63096) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/memory
+============================================================
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-03T12:58:40.903Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'create_or_update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Populating agent definition cache for the first time...
+[2026-10-03T12:58:41.377Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+[2026-10-03T12:58:41.383Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 21 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent definition cache populated with 46 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+In-memory cache: Added new agent definition with ID agy-runtime-error-48709936-2f26-4d03-bd36-2489154a8e9d.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Definition created successfully with ID: agy-runtime-error-48709936-2f26-4d03-bd36-2489154a8e9d
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+[2026-10-03T12:58:41.514Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-error-team-4bf69ed7-7f81-44d8-a4cf-0e853d267703.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Team Definition created successfully with ID: agy-error-team-4bf69ed7-7f81-44d8-a4cf-0e853d267703
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Created and registered workspace ID: agent_ws_4db8d0a96b7d21e9ca757ca5d070904ecac6b457fa8123d09387e8b7e1a25fbe
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Reusing registered workspace ID: agent_ws_4db8d0a96b7d21e9ca757ca5d070904ecac6b457fa8123d09387e8b7e1a25fbe
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Published antigravity_cli agent run 'agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Agent websocket attached for run agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2
+Created agent session 8d4cf92a-b083-49ec-93b7-d680e91de169 for run agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2
+Agent WebSocket connected: session=8d4cf92a-b083-49ec-93b7-d680e91de169, run=agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-runtime-error-e2e-ftP1hF/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Reusing registered workspace ID: agent_ws_4db8d0a96b7d21e9ca757ca5d070904ecac6b457fa8123d09387e8b7e1a25fbe
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Published antigravity_cli agent run 'agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport > restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work
+Agent websocket attached for run agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2
+Created agent session dfdca384-e51a-4f25-96d7-078ce41c047f for run agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2
+Agent WebSocket connected: session=dfdca384-e51a-4f25-96d7-078ce41c047f, run=agy_runtime_error_48709936_2f26_4d03_bd36_248915_c8fd9fa3f3a240e496f2b6baf120f0a2
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session dfdca384-e51a-4f25-96d7-078ce41c047f
+Agent WebSocket disconnected: dfdca384-e51a-4f25-96d7-078ce41c047f
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Closed agent session 8d4cf92a-b083-49ec-93b7-d680e91de169
+Agent WebSocket disconnected: 8d4cf92a-b083-49ec-93b7-d680e91de169
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+[2026-10-03T12:58:42.172Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID agy-error-team-4bf69ed7-7f81-44d8-a4cf-0e853d267703.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Team Definition with ID agy-error-team-4bf69ed7-7f81-44d8-a4cf-0e853d267703 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+In-memory cache: Removed agent definition with ID agy-runtime-error-48709936-2f26-4d03-bd36-2489154a8e9d.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through real Agent/Team/Org public transport
+Agent Definition with ID agy-runtime-error-48709936-2f26-4d03-bd36-2489154a8e9d deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 24 skipped) 1288ms
+     ✓ restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work  620ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 24 skipped (25)
+   Start at  14:58:33
+   Duration  8.29s (transform 4.47s, setup 15ms, import 6.48s, tests 1.29s, environment 0ms)
+

@@ -1,0 +1,46 @@
+{
+  "package": "voice-recording-unexpected-stop-analysis",
+  "revision": "DR-002",
+  "at": "2026-10-03T13:56:35.993400+00:00",
+  "user_verification": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/voice-recording-unexpected-stop-analysis/user-verification.md",
+  "verification_type": "Explicit acceptance/proceed instruction on presented evidence; not manual real-device testing",
+  "task_size": "Small",
+  "architectural_risk": "Low",
+  "route": "Direct low-risk",
+  "bootstrap_and_post_acceptance_base": "98d8fb36a632ce0f46136cda20129d1fe1ee0ac8",
+  "target_advanced": false,
+  "implementation_commit": "f1243aba0254f16eb47710a63c7c9ab195148ae5",
+  "api_test_commit": "0c17debbf8e81dd549cc2d42d7cd2e39d020b7de",
+  "ticket_finalization_commit": "df26059792404797cc9846908bea597b35b5ec28",
+  "ticket_push": "Completed",
+  "target_branch": "personal",
+  "target_update": "Completed - fast-forward from 806907faeb567d2b703e10fe984fcd01be0b41fd to refreshed base",
+  "merge_commit": "a78e29c5ceb92a220eb1e8d07fa18be7086aa494",
+  "merge_parents": [
+    "98d8fb36a632ce0f46136cda20129d1fe1ee0ac8",
+    "df26059792404797cc9846908bea597b35b5ec28"
+  ],
+  "target_merge_push": "Completed",
+  "remote_heads_at_merge_verification": {
+    "refs/heads/codex/voice-recording-unexpected-stop-analysis": "df26059792404797cc9846908bea597b35b5ec28",
+    "refs/heads/personal": "a78e29c5ceb92a220eb1e8d07fa18be7086aa494"
+  },
+  "archive": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/voice-recording-unexpected-stop-analysis",
+  "source_and_upstream_evidence_hashes": "Match API provenance after target merge",
+  "independent_validation": "75 distinct tests / 9 files; 7 Chrome native-media/worklet journeys; final Nuxt build; 95.71% bounded renderer confidence",
+  "delivery_rerun": "20 overlapping focused tests / 2 files Passed",
+  "cleanup": {
+    "task_worktree": "Completed - normal removal without force",
+    "worktree_prune": "Completed",
+    "local_ticket_branch": "Completed - deleted with git branch -d",
+    "remote_ticket_branch": "Not required - retained as pushed audit branch",
+    "owned_generated_sdk_output": "52 untracked generated files removed only from dedicated task worktree, never staged",
+    "upstream_chrome_nuxt_route": "Completed before Delivery; cleanup JSON reconciled"
+  },
+  "unrelated_main_files_preserved": 129,
+  "release_publication_deployment_version_tag_rollout": "Not required - user explicitly declined a new release",
+  "data_transition": "Not Affected / None",
+  "completion_receipt_commit": "Containing commit discoverable via git log -1 --format=%H -- tickets/done/voice-recording-unexpected-stop-analysis/release-deployment-report.md; final hash supplied in terminal message",
+  "terminal_dispatch": "Eligible; artifact written before actual messaging call; successful send_message_to confirmation is delivery authority",
+  "blockers": []
+}

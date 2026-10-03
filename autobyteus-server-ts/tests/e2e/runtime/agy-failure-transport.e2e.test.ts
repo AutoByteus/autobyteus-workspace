@@ -1,125 +1,166 @@
 import "reflect-metadata";
+import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import fs from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
-import { spawnSync } from "node:child_process";
-import type { FastifyInstance } from "fastify";
-import WebSocket from "ws";
+import { spawn, spawnSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
-import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { AgyRuntimeErrorFixture, until, type Scope } from "../helpers/agy-runtime-error-fixture.js";
 
+// TESTING.md: deterministic CLI only. Optional RUN_AGY_ERROR_BROWSER=1 closes the real public-stream→DOM boundary.
+// RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<absolute>/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run <this file> --no-watch
 const fakeCommand = process.env["ANTIGRAVITY_CLI_COMMAND"] ?? "";
-const enabled = process.env["RUN_AGY_FAILURE_E2E"] === "1" &&
-  spawnSync(fakeCommand, ["--version"], { stdio: "ignore" })["status"] === 0;
+const enabled = process.env["RUN_AGY_FAILURE_E2E"] === "1" && spawnSync(fakeCommand, ["--version"], { stdio: "ignore" }).status === 0;
 const suite = enabled ? describe : describe.skip;
-type Wire = { type: string; payload: Record<string, unknown> };
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const fallback = "Antigravity could not complete this turn.";
+const cases = [
+  ["quota", "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s."],
+  ["unfamiliar", "Workspace service temporarily unavailable. Reference W-771; try again later."],
+  ["structured", "Read limit reached. Try again after the provider permits requests."],
+  ["missing", fallback], ["empty", fallback], ["malformed", fallback],
+  ["credential", 'Workspace unavailable token=<redacted> <img src=x onerror=alert(1)>'],
+] as const;
+const scopeId = { agent: "A", team: "T", org: "O" };
 
-suite("controlled AGY failure through app WebSocket and history", () => {
-  let dataDir = "";
-  let workspace = "";
-  let app: FastifyInstance;
-  let url: URL;
-  let definitionId = "";
-  const runIds: string[] = [];
-  const sockets: WebSocket[] = [];
-  const graphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
-    const response = await fetch(new URL("/graphql", url), { method: "POST",
-      headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
-    const body = await response.json() as { data?: T; errors?: Array<{ message: string }> };
-    if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
-    return body.data;
-  };
-  beforeAll(async () => {
-    dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "agy-failure-e2e-"));
-    workspace = path.join(dataDir, "workspace");
-    await fs.mkdir(workspace);
-    await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
-    appConfigProvider.config.setCustomAppDataDir(dataDir);
-    const started = await startStudioE2eRuntimeServer();
-    app = started.fastify;
-    url = started.mainUrl;
-    const created = await graphql<{ createAgentDefinition: { id: string } }>(
-      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
-      { input: { name: "agy-failure-" + randomUUID(), role: "assistant", description: "failure transport probe",
-        instructions: "Use native image generation when requested.", category: "runtime-e2e", toolNames: [] } });
-    definitionId = created.createAgentDefinition.id;
-  });
-  afterAll(async () => {
-    for (const socket of sockets) if (socket.readyState === WebSocket.OPEN) socket.close();
-    if (url) {
-      for (const runId of runIds) await graphql("mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }",
-        { agentRunId: runId }).catch(() => undefined);
-      if (definitionId) await graphql("mutation($id: String!) { deleteAgentDefinition(id: $id) { success } }",
-        { id: definitionId }).catch(() => undefined);
-    }
-    if (app) await app.close();
-    if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
-    delete process.env["AGY_FAKE_CASE"];
-  });
+suite("controlled AGY failure through real Agent/Team/Org public transport", () => {
+  const fixture = new AgyRuntimeErrorFixture();
+  beforeAll(() => fixture.start(), 60_000);
+  afterAll(() => fixture.close(), 60_000);
 
-  const execute = async (mode: "tool_denied" | "terminal_error") => {
-    process.env["AGY_FAKE_CASE"] = mode;
-    const started = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
-      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
-      { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace,
-        llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: null,
-        autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
-    expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
-    const runId = started.createAgentRun.runId!;
-    runIds.push(runId);
-    const socket = new WebSocket("ws://" + url.hostname + ":" + url.port + "/ws/agent/" + runId);
-    sockets.push(socket);
-    const messages: Wire[] = [];
-    socket.on("message", (raw: unknown) => {
-      try {
-        const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
-        if (typeof parsed.type === "string") messages.push({ type: parsed.type,
-          payload: parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
-            ? parsed.payload as Record<string, unknown> : {} });
-      } catch { /* Ignore only malformed diagnostic transport rows. */ }
+  it("retains native-image denial privacy without fabricating tool success", () => recordCase("API-D01", async () => {
+    const run = await fixture.create("agent", "tool_denied");
+    const stream = await fixture.connect(run);
+    stream.send("Generate a blue dog image.");
+    await until(() => stream.frames.some((m) => m.type === "TURN_COMPLETED"), "denied turn settled");
+    expect(stream.frames.find((m) => m.type === "TOOL_EXECUTION_STARTED")?.payload.arguments).toEqual({ ImageName: "blue_dog", Prompt: "blue dog" });
+    expect(stream.frames.some((m) => m.type === "AGENT_COMMAND_ACK" && m.payload.accepted === true)).toBe(true);
+    expect(stream.frames.some((m) => m.type === "TOOL_DENIED" && m.payload.tool_name === "generate_image")).toBe(true);
+    expect(stream.frames.some((m) => m.type === "TOOL_EXECUTION_SUCCEEDED")).toBe(false);
+    expect(JSON.stringify([stream.frames, await fixture.projection(run)])).not.toMatch(/PRIVATE_AGY_SECRET|SECRET_IMAGE|\/private\//);
+    const diagnostic = await fixture.diagnostic(run);
+    expect(diagnostic.text).toContain("PRIVATE_AGY_SECRET"); expect(diagnostic.text.length).toBeLessThan(32 * 1024); expect(diagnostic.mode).toBe(0o600);
+    await fixture.terminate(run);
+  }), 40_000);
+
+  it("retains the existing credential-only terminal-error negative without fabricated completion", () => recordCase("API-D02", async () => {
+    const run = await fixture.create("agent", "terminal_error");
+    const stream = await fixture.connect(run);
+    stream.send("Ordinary work.");
+    await until(() => stream.frames.some((m) => m.type === "ERROR"), "terminal error");
+    expect(stream.frames.find((m) => m.type === "ERROR")?.payload).toMatchObject({ code: "AGY_TURN_ERROR", message: "token=<redacted>", error_effect: "terminal" });
+    expect(stream.frames.some((m) => m.type === "TURN_COMPLETED")).toBe(false);
+    expect(JSON.stringify([stream.frames, await fixture.projection(run)])).not.toContain("PRIVATE_AGY_SECRET");
+    expect(stream.frames.some((m) => m.type === "AGENT_COMMAND_ACK" && m.payload.accepted === true)).toBe(true);
+    const diagnostic = await fixture.diagnostic(run);
+    expect(diagnostic.text).toContain("PRIVATE_AGY_SECRET"); expect(diagnostic.text.length).toBeLessThan(32 * 1024); expect(diagnostic.mode).toBe(0o600);
+    await fixture.terminate(run);
+  }), 40_000);
+
+  for (const scope of ["agent", "team", "org"] as Scope[]) {
+    it.each(cases)(`${scope}: supplied %s error survives actual public transport and normal next user turn`, (kind, expected) =>
+      recordCase(`API-${scopeId[scope]}-${String(cases.findIndex((c) => c[0] === kind) + 1).padStart(2, "0")}`, async () => {
+        const run = await fixture.create(scope);
+        const auditBefore = (await fixture.audit()).length;
+        const stream = await fixture.connect(run);
+        stream.send("Report runtime case: " + kind);
+        await until(() => stream.projected().some((m) => m.type === "ERROR"), "attributed terminal error");
+        const first = stream.projected();
+        const error = first.find((m) => m.type === "ERROR")!;
+        expect(error.payload).toMatchObject({ code: "AGY_TURN_ERROR", message: expected, error_scope: "turn", error_effect: "terminal" });
+        expect(error.payload.turn_id).toEqual(expect.any(String));
+        expect(error.payload).not.toHaveProperty("provider_status", 429);
+        if (scope === "team") expect(error.payload).toMatchObject({ agent_run_id: run.runId });
+        if (scope === "org") expect(error).toMatchObject({ agentRunId: run.runId, memberAddress: run.address });
+        expect(first.filter((m) => m.type === "ERROR")).toHaveLength(1);
+        expect(first.some((m) => m.type === "TURN_COMPLETED")).toBe(false);
+        expect(first.filter((m) => m.type === "TOOL_EXECUTION_SUCCEEDED")).toHaveLength(1);
+        const before = await fixture.projection(run);
+        expect(JSON.stringify(before)).toContain("PARTIAL_WORK_PRESERVED");
+        expect(JSON.stringify(before)).toContain("COMPLETED_WORK_PRESERVED");
+        const completedTool = before.activities.find((a: any) => a.toolName === "run_command");
+        expect(completedTool).toMatchObject({ status: "success" });
+        expect(JSON.stringify([stream.frames, before])).not.toMatch(/PRIVATE_AGY_SECRET|PRIVATE_RESPONSE_MARKER|\[object Object\]/);
+        const diagnostic = await fixture.diagnostic(run);
+        expect(diagnostic.text).toContain("PRIVATE_RESPONSE_MARKER"); expect(diagnostic.mode).toBe(0o600);
+        const firstAudit = (await fixture.audit()).slice(auditBefore);
+        expect(firstAudit).toHaveLength(1); // No automatic recovery/retry.
+        const providerIdentity = firstAudit[0].conversation_id;
+        const firstLength = first.length;
+        stream.send("Continue the same work.");
+        await until(() => stream.projected().slice(firstLength).some((m) => m.type === "TURN_COMPLETED"), "next user turn completes");
+        const next = stream.projected().slice(firstLength);
+        expect(next.filter((m) => m.type === "TURN_COMPLETED")).toHaveLength(1);
+        expect(next.some((m) => m.type === "ERROR" || m.type.startsWith("TOOL_EXECUTION"))).toBe(false);
+        expect(next.find((m) => m.type === "TURN_COMPLETED")!.payload.turn_id).not.toBe(error.payload.turn_id);
+        const audit = (await fixture.audit()).slice(auditBefore);
+        expect(audit).toHaveLength(2); expect(audit.map((row) => row.conversation_id)).toEqual([providerIdentity, providerIdentity]);
+        expect(audit.map((row) => row.content)).toEqual(["Report runtime case: " + kind, "Continue the same work."]);
+        const after = await fixture.projection(run);
+        expect(after.activities.find((a: any) => a.invocationId === completedTool.invocationId)).toEqual(completedTool);
+        expect(JSON.stringify(after)).toContain("NEXT_USER_TURN_OK");
+        await fixture.terminate(run);
+        const saved = await fixture.projection(run);
+        expect(saved.activities.find((a: any) => a.invocationId === completedTool.invocationId)).toEqual(completedTool);
+        expect(JSON.stringify(saved)).toContain("PARTIAL_WORK_PRESERVED");
+        await fixture.save(`API-${scopeId[scope]}-${kind}.json`, { run, expected, frames: stream.frames, before, after, saved,
+          audit, privateDiagnostic: { retained: true, mode: diagnostic.mode } });
+      }), 60_000);
+  }
+
+  it("restores a normally stopped failed Agent with the exact provider conversation and unchanged completed work", () => recordCase("API-C02", async () => {
+    const run = await fixture.create("agent");
+    const stream = await fixture.connect(run);
+    const start = (await fixture.audit()).length;
+    stream.send("Report runtime case: quota");
+    await until(() => stream.frames.some((m) => m.type === "ERROR"), "failed Agent before stop");
+    const before = await fixture.projection(run);
+    const readConfig = async () => (await fixture.graphql(`query($id:String!){getAgentRunResumeConfig(runId:$id){runId metadataConfig{runtimeKind llmModelIdentifier llmConfig autoExecuteTools workspaceRootPath runtimeReference{runtimeKind sessionId threadId metadata}}}}`, { id: run.runId })).getAgentRunResumeConfig;
+    const config = await readConfig();
+    await fixture.terminate(run);
+    process.env["AGY_FAKE_CASE"] = "runtime_error";
+    const restored = await fixture.graphql(`mutation($id:String!){restoreAgentRun(agentRunId:$id){success message runId}}`, { id: run.runId });
+    expect(restored.restoreAgentRun).toMatchObject({ success: true, runId: run.runId });
+    expect(await readConfig()).toEqual(config);
+    const resumed = await fixture.connect(run);
+    resumed.send("Continue the same work.");
+    await until(() => resumed.frames.some((m) => m.type === "TURN_COMPLETED"), "restored success");
+    const audit = (await fixture.audit()).slice(start);
+    expect(audit).toHaveLength(2); expect(audit[1].conversation_id).toBe(audit[0].conversation_id);
+    const after = await fixture.projection(run);
+    expect(after.activities).toEqual(before.activities);
+    expect(JSON.stringify(after)).toContain("PARTIAL_WORK_PRESERVED"); expect(JSON.stringify(after)).toContain("NEXT_USER_TURN_OK");
+    await fixture.save("API-C02.json", { run, config, before, after, audit });
+    await fixture.terminate(run);
+  }), 60_000);
+
+  it.skipIf(process.env["RUN_AGY_ERROR_BROWSER"] !== "1")("closes real Agent/Team transport→production streaming service→rendered card gap", () => recordCase("API-B01", async () => {
+    const auditStart = (await fixture.audit()).length;
+    const runs = [await fixture.create("agent"), await fixture.create("team")];
+    const manifest = path.join(fixture.dataDir, "browser-manifest.json");
+    const output = process.env["AGY_ERROR_EVIDENCE_DIR"] ?? path.join(fixture.dataDir, "browser-evidence");
+    await fs.writeFile(manifest, JSON.stringify({ serverUrl: String(fixture.url), runs, cases }));
+    const probe = path.resolve("../autobyteus-web/tests/e2e/runtime-error-transport-probe.mjs");
+    const child = spawn(process.execPath, [probe, "--manifest", manifest, "--output-dir", output], { stdio: ["ignore", "pipe", "pipe"] });
+    let log = "";
+    child.stdout.on("data", (data) => { log += String(data); }); child.stderr.on("data", (data) => { log += String(data); });
+    const timeout = setTimeout(() => child.kill("SIGTERM"), 240_000);
+    const code = await new Promise<number | null>((resolve, reject) => {
+      child.once("error", (error) => { clearTimeout(timeout); reject(error); });
+      child.once("exit", (exitCode) => { clearTimeout(timeout); resolve(exitCode); });
     });
-    await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
-    sendE2eSendMessageCommand(socket, { agent_run_id: runId, content: "Generate a blue dog image." });
-    const expected = mode === "tool_denied" ? "TURN_COMPLETED" : "ERROR";
-    const deadline = Date.now() + 20_000;
-    while (Date.now() < deadline && !messages.some((m) => m.type === expected)) await wait(100);
-    expect(messages.some((m) => m.type === expected), JSON.stringify(messages)).toBe(true);
-    await wait(200);
-    const publicWire = JSON.stringify(messages);
-    expect(messages.some((m) => m.type === "AGENT_COMMAND_ACK")).toBe(true);
-    expect(publicWire).not.toMatch(/PRIVATE_AGY_SECRET|SECRET_IMAGE|\/private\//);
-    const history = await graphql<{ getRunProjection: { conversation: unknown[] } }>(
-      "query($runId: String!) { getRunProjection(runId: $runId) { conversation } }", { runId });
-    expect(JSON.stringify(history.getRunProjection.conversation)).not.toMatch(/PRIVATE_AGY_SECRET|SECRET_IMAGE|\/private\//);
-    const diagnosticFile = path.join(dataDir, "memory", "agents", runId,
-      "agy-provider-diagnostics", "provider-failures.jsonl");
-    for (let n = 0; n < 20; n++) {
-      try { await fs.access(diagnosticFile); break; } catch { await wait(100); }
+    await fs.writeFile(path.join(output, "browser-process.log"), log);
+    const audit = (await fixture.audit()).slice(auditStart);
+    const projections = await Promise.all(runs.map(async (run) => ({ run, projection: await fixture.projection(run) })));
+    await fixture.save("browser-server-correlation.json", { code, runs, audit, projections });
+    expect(code, log).toBe(0);
+    expect(audit).toHaveLength(16);
+    for (let index = 0; index < runs.length; index++) {
+      const inputs = audit.slice(index * 8, (index + 1) * 8);
+      expect(new Set(inputs.map((row) => row.conversation_id)).size).toBe(1);
+      expect(inputs.map((row) => row.content)).toEqual([...cases.map(([kind]) => "Report runtime case: " + kind), "Continue the same work."]);
+      expect(projections[index]!.projection.activities.filter((a: any) => a.status === "success")).toHaveLength(7);
+      expect(JSON.stringify(projections[index]!.projection)).toContain("NEXT_USER_TURN_OK");
     }
-    const privateDiagnostic = await fs.readFile(diagnosticFile, "utf-8");
-    expect(privateDiagnostic).toContain("PRIVATE_AGY_SECRET");
-    expect(privateDiagnostic.length).toBeLessThan(32 * 1024);
-    expect((await fs.stat(diagnosticFile)).mode & 0o777).toBe(0o600);
-    return { runId, messages, history: history.getRunProjection.conversation,
-      privateDiagnosticKind: mode === "tool_denied" ? "tool" : "turn" };
-  };
-
-  it("redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic", async () => {
-    const observed = await execute("tool_denied");
-    expect(observed.messages.some((m) => m.type === "TOOL_DENIED" && m.payload["tool_name"] === "generate_image")).toBe(true);
-    expect(observed.messages.find((m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload["tool_name"] === "generate_image")
-      ?.payload["arguments"]).toEqual({ ImageName: "blue_dog", Prompt: "blue dog" });
-    expect(observed.messages.some((m) => m.type === "TOOL_EXECUTION_SUCCEEDED")).toBe(false);
-  }, 40_000);
-
-  it("redacts terminal provider error without a tool and does not fabricate completion", async () => {
-    const observed = await execute("terminal_error");
-    expect(observed.messages.some((m) => m.type === "ERROR" && m.payload["code"] === "AGY_TURN_ERROR"
-      && m.payload["error_effect"] === "terminal")).toBe(true);
-    expect(observed.messages.some((m) => m.type === "TURN_COMPLETED")).toBe(false);
-  }, 40_000);
+    expect(audit[0].conversation_id).not.toBe(audit[8].conversation_id);
+    for (const run of runs) await fixture.terminate(run);
+  }), 300_000);
 });

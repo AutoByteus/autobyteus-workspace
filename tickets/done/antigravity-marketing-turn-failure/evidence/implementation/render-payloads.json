@@ -1,0 +1,52 @@
+[
+  {
+    "name": "quota",
+    "payload": {
+      "code": "AGY_TURN_ERROR",
+      "message": "Individual quota reached for this model. Resets in 3h28m50s.",
+      "error_scope": "turn",
+      "error_effect": "terminal",
+      "turn_id": "render-owned-quota"
+    }
+  },
+  {
+    "name": "unfamiliar",
+    "payload": {
+      "code": "AGY_TURN_ERROR",
+      "message": "Workspace service temporarily unavailable. Try again later.",
+      "error_scope": "turn",
+      "error_effect": "terminal",
+      "turn_id": "render-owned-unfamiliar"
+    }
+  },
+  {
+    "name": "markup",
+    "payload": {
+      "code": "AGY_TURN_ERROR",
+      "message": "<img src=x onerror=alert(\"runtime\")> Read limit reached. token=<redacted>",
+      "error_scope": "turn",
+      "error_effect": "terminal",
+      "turn_id": "render-owned-markup"
+    }
+  },
+  {
+    "name": "fallback",
+    "payload": {
+      "code": "AGY_TURN_ERROR",
+      "message": "Antigravity could not complete this turn.",
+      "error_scope": "turn",
+      "error_effect": "terminal",
+      "turn_id": "render-owned-fallback"
+    }
+  },
+  {
+    "name": "claude",
+    "payload": {
+      "code": "CLAUDE_RUNTIME_RESULT_ERROR",
+      "message": "Rate limit reached.\nTry again later. token=<redacted>",
+      "turn_id": "render-owned-claude",
+      "error_scope": "turn",
+      "error_effect": "terminal"
+    }
+  }
+]

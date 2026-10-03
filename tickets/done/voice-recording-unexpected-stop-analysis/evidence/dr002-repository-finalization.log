@@ -1,0 +1,14 @@
+2026-10-03 DR-002 confirmed repository operations
+1 git commit -m "docs(delivery): archive accepted composer voice lifetime fix": exit0, df26059792404797cc9846908bea597b35b5ec28
+2 git push origin HEAD:refs/heads/codex/voice-recording-unexpected-stop-analysis: exit0, remote ticket df26059792404797cc9846908bea597b35b5ec28
+3 git fetch origin personal: exit0; unchanged 98d8fb36a632ce0f46136cda20129d1fe1ee0ac8
+4 git merge --ff-only --quiet origin/personal from shared personal checkout: exit0, target updated from 806907faeb567d2b703e10fe984fcd01be0b41fd to 98d8fb36a632ce0f46136cda20129d1fe1ee0ac8
+5 git merge --no-ff --quiet codex/voice-recording-unexpected-stop-analysis -m "Merge accepted composer voice lifetime fix into personal": exit0, a78e29c5ceb92a220eb1e8d07fa18be7086aa494, parents base98d8fb36a / ticketdf2605979
+6 git push origin HEAD:refs/heads/personal: exit0, 98d8fb36a -> a78e29c5c; ls-remote confirms exact personal and ticket hashes
+7 Before cleanup: complete archive bytes match task branch; source/SR/IR/API hashes preserved; 129 unrelated main files/status preserved
+8 Only 52 known generated untracked SDK files removed from task worktree; git status there then clean
+9 git worktree remove <dedicated-task-worktree>: exit0, no --force
+10 git worktree prune: exit0; git branch -d codex/voice-recording-unexpected-stop-analysis: exit0
+11 Removed worktree path and local branch absence checked; remote ticket retained for audit
+No version bump/tag/release helper/manual dispatch/deployment run. Remote pre-existing vulnerability warning retained in tool output, not an in-scope regression/security certification.
+Completion-record docs commit/push follows these already-completed operations; no source/runtime change or replay. Final completion-record hash is supplied in terminal message.

@@ -1,0 +1,41 @@
+
+> autobyteus@1.4.93-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/conversation/segments/__tests__/ErrorSegment.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/autobyteus-web
+
+stderr | components/conversation/segments/__tests__/ErrorSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/web-boundary-guard.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/ErrorSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/web-boundary-guard.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/ErrorSegment.spec.ts (5 tests) 12ms
+ ✓ services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (23 tests) 8ms
+ ✓ tests/integration/web-boundary-guard.integration.test.ts (3 tests) 119ms
+
+ Test Files  3 passed (3)
+      Tests  31 passed (31)
+   Start at  14:30:37
+   Duration  6.41s (transform 3.09s, setup 17.13s, collect 71ms, tests 138ms, environment 580ms, prepare 407ms)

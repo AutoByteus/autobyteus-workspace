@@ -1,0 +1,62 @@
+
+> autobyteus@1.4.93-beta.2 test:e2e:composer-voice-lifetime /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> node tests/e2e/composer-voice-lifetime-probe.mjs --output-dir ../tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final --ledger-file /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/tickets/in-progress/voice-recording-unexpected-stop-analysis/api-e2e-test-case-ledger.md
+
+{
+  "result": "Pass",
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/tickets/in-progress/voice-recording-unexpected-stop-analysis/evidence/api001-browser-final/evidence.json",
+  "cases": {
+    "B-001": "Pass",
+    "B-002": "Pass",
+    "B-003": "Pass",
+    "B-004": "Pass",
+    "B-005": "Pass",
+    "B-006": "Pass",
+    "B-007": "Pass"
+  },
+  "cleanup": {
+    "renderer": {
+      "kind": "run",
+      "visible": false,
+      "focused": "lead",
+      "starting": false,
+      "recording": false,
+      "transcribing": false,
+      "captureStats": false,
+      "level": 0,
+      "pendingMedia": false,
+      "pendingIpc": false,
+      "publications": 0,
+      "wrappersChanged": 0,
+      "sends": 0,
+      "stops": 0,
+      "cancellations": 1,
+      "ipc": 0,
+      "tracks": [
+        "ended"
+      ],
+      "audioContexts": [
+        "closed"
+      ],
+      "wavs": [],
+      "diagnostics": null,
+      "outcome": "recording",
+      "error": null,
+      "leadDraft": "existing draft",
+      "reviewerDraft": ""
+    },
+    "browser": {
+      "result": "closed",
+      "pid": 37525
+    },
+    "dev": {
+      "result": "terminated",
+      "pid": 37477,
+      "exitCode": 0,
+      "signal": null,
+      "groupExited": true,
+      "portClosed": true
+    },
+    "page": "removed"
+  }
+}

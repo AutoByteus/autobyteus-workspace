@@ -1,0 +1,82 @@
+
+> autobyteus@1.4.93-beta.2 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts tests/integration/composer-voice-lifetime.integration.test.ts stores/__tests__/voiceInputStore.spec.ts composables/projects/__tests__/useProjectTaskDraft.spec.ts components/chat/__tests__/ChatComposer.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/agentInput/__tests__/TeamComposerPublication.spec.ts tests/integration/web-boundary-guard.integration.test.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/voice-recording-unexpected-stop-analysis/autobyteus-web
+
+stderr | tests/integration/web-boundary-guard.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/composer-voice-lifetime.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/voiceInputStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatComposer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/voiceInputStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatComposer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/TeamComposerPublication.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/projects/__tests__/useProjectTaskDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/web-boundary-guard.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | tests/integration/composer-voice-lifetime.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/projects/__tests__/useProjectTaskDraft.spec.ts (5 tests) 12ms
+ ✓ composables/voiceInput/__tests__/useComposerVoiceTarget.spec.ts (7 tests) 15ms
+ ✓ tests/integration/web-boundary-guard.integration.test.ts (3 tests) 121ms
+ ✓ stores/__tests__/voiceInputStore.spec.ts (19 tests) 128ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (17 tests) 165ms
+ ✓ tests/integration/composer-voice-lifetime.integration.test.ts (13 tests) 217ms
+ ✓ components/chat/__tests__/ChatComposer.spec.ts (5 tests) 51ms
+ ✓ components/agentInput/__tests__/TeamComposerPublication.spec.ts (4 tests) 96ms
+
+ Test Files  8 passed (8)
+      Tests  73 passed (73)
+   Start at  14:58:11
+   Duration  6.58s (transform 3.63s, setup 43.03s, collect 1.58s, tests 804ms, environment 2.05s, prepare 1.59s)
+

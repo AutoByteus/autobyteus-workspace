@@ -1,0 +1,13 @@
+cli-20261003_100502.log:I1003 10:05:05.475755       1 session.go:154] Print mode: resuming conversation c0943ab1-2530-4099-872d-079f1376e7cf
+cli-20261003_100502.log:I1003 10:05:05.900906       1 conversation_manager.go:776] Forwarding user message to conversation c0943ab1-2530-4099-872d-079f1376e7cf (items=1, media=0)
+cli-20261003_100502.log:E1003 10:16:33.918597     345 errorreport.go:224] agent executor error: generating and executing: RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 4h47m23s.
+cli-20261003_100502.log:E1003 10:16:33.935588     345 errorreport.go:224] generating and executing: RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 4h47m23s.
+cli-20261003_100502.log:I1003 11:28:14.070626       1 conversation_manager.go:776] Forwarding user message to conversation c0943ab1-2530-4099-872d-079f1376e7cf (items=1, media=0)
+cli-20261003_100502.log:E1003 11:28:19.974769   16805 errorreport.go:224] agent executor error: generating and executing: RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h35m37s.
+cli-20261003_100502.log:E1003 11:28:19.981483   16805 errorreport.go:224] generating and executing: RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h35m37s.
+cli-20261003_100502.log:E1003 11:28:19.984411       1 session.go:271] Print mode: run ended with error and no response: Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h35m37s.
+cli-20261003_113456.log:I1003 11:35:00.479378       1 session.go:154] Print mode: resuming conversation c0943ab1-2530-4099-872d-079f1376e7cf
+cli-20261003_113456.log:I1003 11:35:00.539442       1 conversation_manager.go:776] Forwarding user message to conversation c0943ab1-2530-4099-872d-079f1376e7cf (items=1, media=0)
+cli-20261003_113456.log:E1003 11:35:06.517010     437 errorreport.go:224] agent executor error: generating and executing: RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.
+cli-20261003_113456.log:E1003 11:35:06.530608     437 errorreport.go:224] generating and executing: RESOURCE_EXHAUSTED (code 429): Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.
+cli-20261003_113456.log:E1003 11:35:06.531091       1 session.go:271] Print mode: run ended with error and no response: Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.

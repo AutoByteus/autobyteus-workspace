@@ -1,0 +1,53 @@
+{
+  "scope": "Implementation rendered-result self-check, not downstream API/E2E sign-off",
+  "surface": "Actual ChatComposer using real Team view, active/composer projection, adapter, button/status/store in task-owned Nuxt preview",
+  "previewUrl": "http://127.0.0.1:43187/implementation-voice-preview",
+  "viewport": "900x738 CSS px; 768px and 360px composer container widths (not a mobile viewport)",
+  "dependencyBoundaries": "Controlled permission/media/AudioContext/AudioWorkletNode/Electron transcription; backend set to unreachable http://127.0.0.1:9",
+  "recording": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"tab_id\": \"fa1bc6\",\n  \"result_json\": \"{\\\"status\\\":{\\\"focused\\\":\\\"lead\\\",\\\"starting\\\":false,\\\"recording\\\":true,\\\"transcribing\\\":false,\\\"stops\\\":0,\\\"closes\\\":0,\\\"ipc\\\":0,\\\"sends\\\":0,\\\"publications\\\":3,\\\"draft\\\":\\\"existing draft\\\"},\\\"recordingBanner\\\":\\\"Context Files (0)(drag, paste, or upload)Recording... Tap stop when you are done.0:12\\\",\\\"textarea\\\":\\\"existing draft\\\",\\\"stopDisabled\\\":false,\\\"composerWidth\\\":360}\"\n}"
+      }
+    ]
+  },
+  "transcribing": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"tab_id\": \"fa1bc6\",\n  \"result_json\": \"{\\\"status\\\":{\\\"focused\\\":\\\"lead\\\",\\\"starting\\\":false,\\\"recording\\\":false,\\\"transcribing\\\":true,\\\"stops\\\":1,\\\"closes\\\":1,\\\"ipc\\\":1,\\\"sends\\\":0,\\\"publications\\\":3,\\\"draft\\\":\\\"existing draft\\\"},\\\"transcribing\\\":\\\"Context Files (0)(drag, paste, or upload)Transcribing voice input...\\\",\\\"buttons\\\":[{\\\"title\\\":\\\"Upload files\\\",\\\"disabled\\\":false},{\\\"title\\\":\\\"Transcribing...\\\",\\\"disabled\\\":true},{\\\"title\\\":\\\"Send message\\\",\\\"disabled\\\":false}]}\"\n}"
+      }
+    ]
+  },
+  "appended": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"tab_id\": \"fa1bc6\",\n  \"result_json\": \"{\\\"status\\\":{\\\"focused\\\":\\\"lead\\\",\\\"starting\\\":false,\\\"recording\\\":false,\\\"transcribing\\\":false,\\\"stops\\\":1,\\\"closes\\\":1,\\\"ipc\\\":1,\\\"sends\\\":0,\\\"publications\\\":3,\\\"draft\\\":\\\"existing draft dictated words\\\"},\\\"textarea\\\":\\\"existing draft dictated words\\\",\\\"start\\\":true,\\\"bannerGone\\\":true}\"\n}"
+      }
+    ]
+  },
+  "starting": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"tab_id\": \"fa1bc6\",\n  \"result_json\": \"{\\\"status\\\":{\\\"focused\\\":\\\"lead\\\",\\\"starting\\\":true,\\\"recording\\\":false,\\\"transcribing\\\":false,\\\"stops\\\":1,\\\"closes\\\":1,\\\"ipc\\\":1,\\\"sends\\\":0,\\\"publications\\\":4,\\\"draft\\\":\\\"existing draft dictated words\\\"},\\\"banner\\\":\\\"Context Files (0)(drag, paste, or upload)Starting microphone...\\\",\\\"buttons\\\":[{\\\"title\\\":\\\"Upload files\\\",\\\"disabled\\\":false,\\\"busy\\\":null},{\\\"title\\\":\\\"Starting microphone...\\\",\\\"disabled\\\":true,\\\"busy\\\":\\\"true\\\"},{\\\"title\\\":\\\"Send message\\\",\\\"disabled\\\":false,\\\"busy\\\":null}]}\"\n}"
+      }
+    ]
+  },
+  "memberSwitch": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"tab_id\": \"fa1bc6\",\n  \"result_json\": \"{\\\"before\\\":{\\\"focused\\\":\\\"lead\\\",\\\"starting\\\":false,\\\"recording\\\":true,\\\"transcribing\\\":false,\\\"stops\\\":1,\\\"closes\\\":1,\\\"ipc\\\":1,\\\"sends\\\":0,\\\"publications\\\":4,\\\"draft\\\":\\\"existing draft dictated words\\\"},\\\"after\\\":{\\\"focused\\\":\\\"reviewer\\\",\\\"starting\\\":false,\\\"recording\\\":false,\\\"transcribing\\\":false,\\\"stops\\\":2,\\\"closes\\\":2,\\\"ipc\\\":1,\\\"sends\\\":0,\\\"publications\\\":4,\\\"draft\\\":\\\"\\\"},\\\"bannerGone\\\":true,\\\"startAvailable\\\":true}\"\n}"
+      }
+    ]
+  },
+  "inspection": "Idle/startup/recording/transcribing/appended/member-switch states interacted with and images inspected; established labels, spacing, colors and enabled/disabled states retained; no in-scope visual defects observed.",
+  "limitations": [
+    "No real microphone, permissions, transcription model, transport, packaged Electron or full Team workspace inspection.",
+    "No real mobile viewport or keyboard activation/a11y audit.",
+    "Preview sends diagnostic is not dispatch instrumentation; no Send was clicked. Durable integration tests, not that diagnostic, assert no automatic Send."
+  ]
+}

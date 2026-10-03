@@ -1,0 +1,6 @@
+{
+  "deployedPath": "/app/autobyteus-server-ts/dist/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js",
+  "deployedSha256": "3914ba6845c09f61935acabad689edeacb8ff7ab3167734984b0d28009f21052",
+  "sourcePath": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+  "sourceSha256": "986546c04e924c492aabd2405fa2c0e54d6cbc657a6c32288b9128158d43cc2f"
+}
