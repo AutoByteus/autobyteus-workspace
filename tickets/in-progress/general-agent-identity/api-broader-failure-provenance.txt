@@ -1,0 +1,4 @@
+autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts: unchanged-at-base=True, SHA256=237d60470e1068e2bf5051a3bbe161a9a8f3fd5fe8d28a872d393234b0ac86ac
+autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts: unchanged-at-base=True, SHA256=ddeea139662e170aecb347afd0a21a1788c8b8a3626947ff368eef20febd8526
+autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts: unchanged-at-base=True, SHA256=7b415e5b1ea859be918b3f5984cb6e360de3e71f77ea894adbcbb481fb5c05af
+autobyteus-server-ts/src/api/graphql/types/agent-team-definition.ts: unchanged-at-base=True, SHA256=dbe50bd02ad2284c2f447c274455960e77eeb15f14a844a3205c4fbfb11918d6

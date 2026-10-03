@@ -16,6 +16,7 @@
 // credentials) so C22 can check the tier-4 toast; Codex model runs cannot authenticate with it, so
 // use it with another runtime (e.g. `--runtime claude_agent_sdk --owned-codex-home --cases C21,C22`).
 import { spawn } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import net from 'node:net'
@@ -195,14 +196,24 @@ const cases = []
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
 defineCase('C01', 'Fresh data root seeds General Agent (ALL_INSTALLED); pre-existing config reads as CONFIGURED', async () => {
-  const { agentDefinitions } = await gql('{ agentDefinitions { id name skillScope skillNames } }')
+  const { agentDefinitions } = await gql('{ agentDefinitions { id name description role instructions toolNames skillScope skillNames } }')
   const da = agentDefinitions.find((a) => a.id === 'autobyteus-daily-assistant')
   const legacy = agentDefinitions.find((a) => a.id === 'probe-legacy')
   assert(da?.name === 'General Agent' && da.skillScope === 'ALL_INSTALLED', 'General Agent not seeded as ALL_INSTALLED', da)
   assert(legacy?.skillScope === 'CONFIGURED' && legacy.skillNames.join() === 'probe-alpha', 'Legacy config not read as CONFIGURED', legacy)
   const files = await listDir(path.join(dataRoot, 'agents', 'autobyteus-daily-assistant'))
   assert(files.includes('agent.md') && files.includes('agent-config.json'), 'General Agent files missing', files)
-  return { da, legacy }
+  const installed = await fs.readFile(path.join(dataRoot, 'agents', 'autobyteus-daily-assistant', 'agent.md'))
+  const template = await fs.readFile(path.join(serverDir, 'dist/built-in-agents/templates/daily-assistant/agent.md'))
+  assert(installed.equals(template), 'Installed General Agent prompt differs from shipped template')
+  const promptHash = createHash('sha256').update(installed).digest('hex')
+  assert(promptHash === 'd410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a', 'General Agent prompt differs from approved v1', promptHash)
+  assert(da.toolNames.filter((name) => name === 'list_available_agents').length === 1, 'Discovery not selected exactly once', da.toolNames)
+  assert(da.instructions === template.toString('utf8').replace(/^---\n[\s\S]*?\n---\n\n?/, ''), 'API authored body differs from approved prompt')
+  assert(agentDefinitions.filter((a) => a.id === da.id).length === 1, 'Duplicate default identity')
+  const config = await fs.readFile(path.join(dataRoot, 'agents', da.id, 'agent-config.json'), 'utf8')
+  assert(config === await fs.readFile(path.join(serverDir, 'dist/built-in-agents/templates/daily-assistant/agent-config.json'), 'utf8'), 'Installed config differs from template')
+  return { da, legacy, promptHash }
 })
 
 defineCase('C02', 'Landing: / → /chat, Chat first with pencil, New chat defaults', async (page) => {
@@ -1240,18 +1251,23 @@ defineCase('C23', 'DEC-017a: Agent Org agents use their own skills — org skill
   return { writerRun, memberRun, slash: slash.filter((n) => n.startsWith('org-')), links }
 })
 
-defineCase('C13', 'General Agent restart lifecycle: user edit preserved; deleted config restored from the template', async () => {
-  await gql('mutation($input:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$input){id}}', { input: { id: 'autobyteus-daily-assistant', instructions: 'PROBE-USER-EDIT' } })
-  await stopOwned(backend); backend = await startBackend('backend-restart-1')
-  assert((await gql('{ agentDefinition(id:"autobyteus-daily-assistant"){ instructions } }')).agentDefinition.instructions === 'PROBE-USER-EDIT', 'User edit lost on restart')
+defineCase('C13', 'General Agent platform-owned restart lifecycle: edited prompt overwritten; deleted config restored', async () => {
   const agentDir = path.join(dataRoot, 'agents', 'autobyteus-daily-assistant')
+  const templateDir = path.join(serverDir, 'dist/built-in-agents/templates/daily-assistant')
+  const promptTemplate = await fs.readFile(path.join(templateDir, 'agent.md'), 'utf8')
+  const configTemplate = await fs.readFile(path.join(templateDir, 'agent-config.json'), 'utf8')
+  const original = (await gql('{ agentDefinition(id:"autobyteus-daily-assistant"){ id name instructions toolNames skillScope } }')).agentDefinition
+  await gql('mutation($input:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$input){id}}', { input: { id: original.id, instructions: 'PROBE-USER-EDIT' } })
+  assert((await gql('{ agentDefinition(id:"autobyteus-daily-assistant"){ instructions } }')).agentDefinition.instructions === 'PROBE-USER-EDIT', 'Edit did not reach API before restart')
+  await stopOwned(backend); backend = await startBackend('backend-restart-1')
+  assert(await fs.readFile(path.join(agentDir, 'agent.md'), 'utf8') === promptTemplate, 'Platform-owned prompt not refreshed on restart')
   await fs.rm(path.join(agentDir, 'agent-config.json'))
   await stopOwned(backend); backend = await startBackend('backend-restart-2')
-  const restored = await fs.readFile(path.join(agentDir, 'agent-config.json'), 'utf8')
-  const template = await fs.readFile(path.join(serverDir, 'dist/built-in-agents/templates/daily-assistant/agent-config.json'), 'utf8')
-  assert(restored === template, 'Deleted config not restored from the template')
-  assert((await gql('{ agentDefinition(id:"autobyteus-daily-assistant"){ instructions skillScope } }')).agentDefinition.instructions === 'PROBE-USER-EDIT', 'agent.md overwritten on re-seed')
-  return { restored: true }
+  assert(await fs.readFile(path.join(agentDir, 'agent-config.json'), 'utf8') === configTemplate, 'Deleted config not restored from template')
+  assert(await fs.readFile(path.join(agentDir, 'agent.md'), 'utf8') === promptTemplate, 'Prompt differs from template after config restoration')
+  const restored = (await gql('{ agentDefinition(id:"autobyteus-daily-assistant"){ id name instructions toolNames skillScope } }')).agentDefinition
+  assert(JSON.stringify(restored) === JSON.stringify(original), 'API identity/content/config not restored', { original, restored })
+  return { promptRefreshed: true, configRestored: true, restored }
 })
 
 // ---------------------------------------------------------------------------------------------
