@@ -1,0 +1,32 @@
+{
+  "ticket": "antigravity-tool-argument-visibility",
+  "deliveryRevision": "DR-001",
+  "recordedAt": "2026-10-03T16:30:21.334675+00:00",
+  "task_size": "Medium",
+  "architectural_risk": "High",
+  "route": "Independent architecture/source/post-API durable test-code reviews",
+  "incomingArtifactHead": "161fc2f9c35a331ffd425c59c3c352a92163a038",
+  "bootstrapBase": "98d8fb36a632ce0f46136cda20129d1fe1ee0ac8",
+  "target": "origin/personal",
+  "fetchCommand": "git fetch origin personal",
+  "fetchResult": "Completed",
+  "trackedBase": "dc4eb5470c14d846df3a22b0371a675690657ccd",
+  "incomingBaseCommits": 20,
+  "checkpoint": "4d5f96df86f9d9cea0d242ac62e3982592030b97",
+  "checkpointCommand": "git commit -m \"chore(delivery): checkpoint reviewed antigravity argument package\"",
+  "mergeCommand": "git merge --no-edit origin/personal",
+  "mergeResult": "Blocked \u2014 content conflict; merge remains in progress for accountable owner",
+  "mergeHead": "dc4eb5470c14d846df3a22b0371a675690657ccd",
+  "unmergedFiles": [
+    "autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs"
+  ],
+  "checksRerun": false,
+  "checkReason": "Integration incomplete; no integrated pass claim",
+  "productSourceEditedByDelivery": false,
+  "docsSynchronizationStarted": false,
+  "userVerificationReceived": false,
+  "pushMergeReleaseDeploymentPerformed": false,
+  "classification": "Local Fix",
+  "recommendedRecipient": "/implementation_engineer",
+  "unrelatedLeftovers": "Untracked SDK dist and original native-probe scratch files remain untouched."
+}
