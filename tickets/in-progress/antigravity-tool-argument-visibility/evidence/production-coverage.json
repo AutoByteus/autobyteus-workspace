@@ -1,0 +1,143 @@
+{
+  "capturedAtUtc": "2026-10-03T13:33:16.235007+00:00",
+  "runId": "agent_package_creator_0cc60bc5ef864c279c03f388349720fa",
+  "providerConversation": "738a76ed-5cb0-4705-b131-aaaad04573c3",
+  "rawTraceRows": 1409,
+  "toolCalls": 684,
+  "sources": [
+    {
+      "path": "/Users/normy/.autobyteus/server-data/memory/agents/agent_package_creator_0cc60bc5ef864c279c03f388349720fa/raw_traces_active.jsonl",
+      "bytes": 1159150,
+      "sha256": "a8ca90bb8e1d2cc078b10a642df4839abd82bba1e5057b50987200d94c090a1b"
+    },
+    {
+      "path": "/Users/normy/.gemini/antigravity-cli/brain/738a76ed-5cb0-4705-b131-aaaad04573c3/.system_generated/logs/transcript_full.jsonl",
+      "bytes": 3020665,
+      "sha256": "6abec4d073d3169ea96aa6bc333013d6b6bdaca3fcd2070803812b32ee66e09b"
+    }
+  ],
+  "plannerToolCallCounts": {
+    "1": 684
+  },
+  "mappingNote": "For this evidence set only, each tool row maps to exactly one same-name planner call at index-1. No claim of a general provider correlation contract.",
+  "unmatchedSteps": [],
+  "coverage": {
+    "view_file": {
+      "count": 251,
+      "recordedKeys": {
+        "AbsolutePath": 251
+      },
+      "nativeOnlyKeys": {
+        "toolAction": 251,
+        "toolSummary": 251,
+        "EndLine": 200,
+        "StartLine": 200
+      },
+      "matched": 251
+    },
+    "list_dir": {
+      "count": 18,
+      "recordedKeys": {
+        "DirectoryPath": 18
+      },
+      "nativeOnlyKeys": {
+        "toolAction": 18,
+        "toolSummary": 18
+      },
+      "matched": 18
+    },
+    "find_by_name": {
+      "count": 8,
+      "recordedKeys": {
+        "Pattern": 8,
+        "SearchDirectory": 8
+      },
+      "nativeOnlyKeys": {
+        "toolAction": 8,
+        "toolSummary": 8
+      },
+      "matched": 8
+    },
+    "grep_search": {
+      "count": 97,
+      "recordedKeys": {
+        "Query": 97,
+        "SearchPath": 97
+      },
+      "nativeOnlyKeys": {
+        "CaseInsensitive": 97,
+        "toolAction": 97,
+        "MatchPerLine": 97,
+        "toolSummary": 97,
+        "Includes": 10,
+        "IsRegex": 1
+      },
+      "matched": 97
+    },
+    "run_command": {
+      "count": 142,
+      "recordedKeys": {
+        "CommandLine": 142
+      },
+      "nativeOnlyKeys": {
+        "toolAction": 142,
+        "WaitMsBeforeAsync": 142,
+        "toolSummary": 142,
+        "Cwd": 142,
+        "RunPersistent": 56
+      },
+      "matched": 142
+    },
+    "manage_task": {
+      "count": 4,
+      "recordedKeys": {
+        "Action": 4,
+        "TaskId": 4
+      },
+      "nativeOnlyKeys": {
+        "toolAction": 4,
+        "toolSummary": 4
+      },
+      "matched": 4
+    },
+    "write_to_file": {
+      "count": 15,
+      "recordedKeys": {
+        "TargetFile": 15
+      },
+      "nativeOnlyKeys": {
+        "toolAction": 15,
+        "toolSummary": 15,
+        "CodeContent": 15,
+        "Overwrite": 15,
+        "ArtifactMetadata": 6,
+        "Description": 15
+      },
+      "matched": 15
+    },
+    "get_handoff_rules": {
+      "count": 8,
+      "recordedKeys": {},
+      "nativeOnlyKeys": {},
+      "matched": 8
+    },
+    "replace_file_content": {
+      "count": 141,
+      "recordedKeys": {
+        "TargetFile": 141
+      },
+      "nativeOnlyKeys": {
+        "EndLine": 141,
+        "ReplacementContent": 141,
+        "toolAction": 141,
+        "toolSummary": 141,
+        "Instruction": 141,
+        "StartLine": 141,
+        "AllowMultiple": 141,
+        "TargetContent": 141,
+        "Description": 141
+      },
+      "matched": 141
+    }
+  }
+}
