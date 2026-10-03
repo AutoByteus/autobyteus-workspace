@@ -1,0 +1,225 @@
+{
+  "type": "independent read-only review checks; not post-fix native validation",
+  "parsedEvidenceFiles": [
+    "production-coverage.json",
+    "production-selected-calls.json",
+    "native-comparison.json",
+    "native-probe/launch.json",
+    "native-probe/stdout.jsonl",
+    "native-probe/transcript_full.jsonl",
+    "native-probe/transcript.jsonl",
+    "native-probe/summary.json",
+    "native-probe/timing-evidence.json",
+    "architecture-correlation-evidence.json"
+  ],
+  "probeAssociation": [
+    {
+      "step": 2,
+      "tool": "write_to_file",
+      "matched": true,
+      "inputKeys": [
+        "CodeContent",
+        "Description",
+        "Overwrite",
+        "TargetFile",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "TargetFile"
+      ]
+    },
+    {
+      "step": 4,
+      "tool": "view_file",
+      "matched": true,
+      "inputKeys": [
+        "AbsolutePath",
+        "EndLine",
+        "StartLine",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "AbsolutePath"
+      ]
+    },
+    {
+      "step": 6,
+      "tool": "replace_file_content",
+      "matched": true,
+      "inputKeys": [
+        "AllowMultiple",
+        "Description",
+        "EndLine",
+        "Instruction",
+        "ReplacementContent",
+        "StartLine",
+        "TargetContent",
+        "TargetFile",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "TargetFile"
+      ]
+    },
+    {
+      "step": 8,
+      "tool": "grep_search",
+      "matched": true,
+      "inputKeys": [
+        "CaseInsensitive",
+        "Includes",
+        "MatchPerLine",
+        "Query",
+        "SearchPath",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "Query",
+        "SearchPath"
+      ]
+    },
+    {
+      "step": 10,
+      "tool": "find_by_name",
+      "matched": true,
+      "inputKeys": [
+        "MaxDepth",
+        "Pattern",
+        "SearchDirectory",
+        "Type",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "Pattern",
+        "SearchDirectory"
+      ]
+    },
+    {
+      "step": 12,
+      "tool": "list_dir",
+      "matched": true,
+      "inputKeys": [
+        "DirectoryPath",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "DirectoryPath"
+      ]
+    },
+    {
+      "step": 14,
+      "tool": "run_command",
+      "matched": true,
+      "inputKeys": [
+        "CommandLine",
+        "Cwd",
+        "IsDaemon",
+        "WaitMsBeforeAsync",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "CommandLine"
+      ]
+    },
+    {
+      "step": 16,
+      "tool": "view_file",
+      "matched": true,
+      "inputKeys": [
+        "AbsolutePath",
+        "EndLine",
+        "StartLine",
+        "toolAction",
+        "toolSummary"
+      ],
+      "summaryKeys": [
+        "AbsolutePath"
+      ]
+    }
+  ],
+  "selectedProduction": [
+    {
+      "step": 987,
+      "sameNameAndSummary": true,
+      "fullInputKeys": [
+        "AllowMultiple",
+        "Description",
+        "EndLine",
+        "Instruction",
+        "ReplacementContent",
+        "StartLine",
+        "TargetContent",
+        "TargetFile",
+        "toolAction",
+        "toolSummary"
+      ]
+    },
+    {
+      "step": 1346,
+      "sameNameAndSummary": true,
+      "fullInputKeys": [
+        "AllowMultiple",
+        "Description",
+        "EndLine",
+        "Instruction",
+        "ReplacementContent",
+        "StartLine",
+        "TargetContent",
+        "TargetFile",
+        "toolAction",
+        "toolSummary"
+      ]
+    }
+  ],
+  "activeTiming": [
+    {
+      "state": "ACTIVE",
+      "step": 2,
+      "typedInputAvailable": true
+    },
+    {
+      "state": "DONE",
+      "step": 2,
+      "typedInputAvailable": true
+    }
+  ],
+  "observedCommandPrefixCases": 14,
+  "sourceSizes": [
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts",
+      "nonEmptyBefore": 143,
+      "nonEmptyAfter": 173,
+      "nonEmptyDelta": 30,
+      "numstat": "31\t1\tautobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts"
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-brain-file.ts",
+      "nonEmptyBefore": 50,
+      "nonEmptyAfter": 129,
+      "nonEmptyDelta": 79,
+      "numstat": "82\t0\tautobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-brain-file.ts"
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-native-tool-arguments-reader.ts",
+      "nonEmptyBefore": 0,
+      "nonEmptyAfter": 58,
+      "nonEmptyDelta": 58,
+      "numstat": "61\t0\tautobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-native-tool-arguments-reader.ts"
+    },
+    {
+      "file": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts",
+      "nonEmptyBefore": 213,
+      "nonEmptyAfter": 236,
+      "nonEmptyDelta": 23,
+      "numstat": "29\t5\tautobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts"
+    }
+  ],
+  "allPassed": true
+}
