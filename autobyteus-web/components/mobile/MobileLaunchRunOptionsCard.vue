@@ -5,7 +5,7 @@
         <p class="text-sm font-bold text-blue-950">Auto approve tools</p>
         <p class="mt-1 text-xs leading-relaxed text-slate-500" data-testid="mobile-run-auto-approve-tools-help">
           <template v-if="locked">Antigravity always runs with auto-approve, so it can't be turned off.</template>
-          <template v-else>High-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default.</template>
+          <template v-else>High-trust mode: automatically allows tool calls and Codex access/permission requests for this run.</template>
         </p>
       </div>
       <button
