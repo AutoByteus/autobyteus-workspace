@@ -1,7 +1,7 @@
 # Delivery Package Inventory — antigravity-marketing-turn-failure
 
 ## Authority / Path Rules
-- Current root: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/in-progress/antigravity-marketing-turn-failure.
+- Current root: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure.
 - Complete cumulative approved SR-002 / design SR-003, IR-001 and API-REV-001 package retained below. History snapshots are audit-only; canonical current requirements/design own behavior.
 - **Medium / Low; Direct Low-Risk**; independent architecture/source/test-code review reports/revisions **N/A — not applicable**, not review passes. No normative Product/prototype supplements.
 - Before archive, all listed ticket-relative paths resolve beneath this root. After archive and safe worktree cleanup, resolve them beneath the final durable `tickets/done/antigravity-marketing-turn-failure/` root recorded by finalization reports. Absolute in-progress/worktree paths within unchanged upstream records are historical execution provenance; this inventory is the location bridge.
@@ -157,4 +157,8 @@ Repository-relative paths remain unchanged by archiving or worktree cleanup:
 ## Validation / Limits
 - API baseline 409 unique tests passed, one opt-in real-Claude skipped; 95% confidence. Strict build/bootstrap and web guard separate. Delivery post-integration recheck 171 passed, not new unique tests.
 - Standard server typecheck remains inherited 836 TS6059 failure. External quota/reset/recovery, user node/installed app, full launch, packaged shell, other platforms and deployment not certified. Existing redaction not universal secret detection.
-- Verification/finalization/cleanup still pending. No terminal package sent.
+- User accepted; finalization/stable publication/cleanup in progress. No terminal package sent.
+
+## DR-002 Current Location And Release Scope
+- Ticket archived before final commit. Stable v1.4.93 requested by explicit user acceptance. Current working root /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure. Final durable root will be the primary repository tickets/done/antigravity-marketing-turn-failure after safe cleanup; latest report records exact paths.
+- Complete delivery recheck evidence: evidence/delivery/post-verification/; DR-001 canonical report snapshots: evidence/delivery/DR-001/.

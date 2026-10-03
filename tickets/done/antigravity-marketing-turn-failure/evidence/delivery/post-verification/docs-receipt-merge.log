@@ -1,0 +1,16 @@
+Merge made by the 'ort' strategy.
+ .../delivery-revision-record.md                    | 18 +++++
+ .../docs-sync-report.md                            | 13 ++-
+ .../evidence/dr002-cleanup-preservation.json       | 10 +++
+ .../evidence/dr002-final-artifact-check.log        |  4 +
+ .../evidence/dr002-finalization-receipt.json       | 46 +++++++++++
+ .../evidence/dr002-handoff-rule-result.json        |  1 +
+ .../evidence/dr002-repository-finalization.log     | 14 ++++
+ .../handoff-summary.md                             | 20 +++--
+ .../release-deployment-report.md                   | 92 +++++++++++++++++++---
+ 9 files changed, 197 insertions(+), 21 deletions(-)
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-cleanup-preservation.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-final-artifact-check.log
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-finalization-receipt.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-handoff-rule-result.json
+ create mode 100644 tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-repository-finalization.log

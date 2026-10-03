@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-10-03T14:02:46.241117+00:00",
+  "userAcceptedMessage": "finalize and release a new stable version thanks.",
+  "initialVerifiedHead": "aca686bfe1254e8cb93478155edff05fc7b2669d",
+  "firstRefreshedBase": "a78e29c5ceb92a220eb1e8d07fa18be7086aa494",
+  "firstIntegratedHead": "f1d540967e2fe6366ebfac72128c0aca6bad9d09",
+  "firstCheckpoint": "b626c9167",
+  "newBaseScope": "Accepted independent voice composer lifetime fix, tests/docs, one test script; no runtime-error adapter/transport/card change",
+  "checks": [
+    "shared build and Prisma/Nuxt prepare passed",
+    "171 focused server tests passed",
+    "82 web tests passed",
+    "36 E2E passed, one real-Claude skipped, real Agent/Team browser enabled",
+    "web boundary guard passed"
+  ],
+  "secondRefreshedBase": "01859eb53a98e6223bede602a814dd3b7f6c28c0",
+  "finalIntegratedHead": "90f7a44f7c07b86aca4abd3236379647af417aad",
+  "secondBaseScope": "Only completed voice delivery docs/evidence; no effective behavior change",
+  "secondCheck": "Claude output resolver 15 tests passed",
+  "renewedVerificationRequired": false,
+  "rationale": "Accepted scoped runtime error handoff remains materially identical; independent voice input fix is already accepted upstream and current error/continuation browser regression passes. Curated stable notes include cumulative already-approved changes.",
+  "removedOwnedGeneratedPaths": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "ownedGeneratedPathsAbsent": true,
+  "browserCleanup": {
+    "browserClosed": true,
+    "nuxtStopped": true,
+    "installedPageRemoved": true,
+    "userNode8001Accessed": false
+  },
+  "userNode8001Accessed": false
+}
