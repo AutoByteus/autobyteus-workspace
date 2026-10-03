@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-03T13:56:35.993400+00:00",
+  "task_worktree_absent": true,
+  "local_ticket_branch_absent": true,
+  "remote_ticket_retained": true,
+  "unrelated_main_status_and_hashes_unchanged": true,
+  "unrelated_file_count": 129,
+  "original_snapshot": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/voice-recording-unexpected-stop-analysis/evidence/dr002-main-preservation-before.json",
+  "source_and_evidence_hashes_unchanged": true
+}
