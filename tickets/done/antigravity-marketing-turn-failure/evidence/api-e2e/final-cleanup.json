@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-03T13:29:27.136262+00:00",
+  "removedOwnedGeneratedPaths": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "ownedPorts": [
+    {
+      "port": 64578,
+      "lsofExit": 1,
+      "listenerPresent": false
+    },
+    {
+      "port": 64544,
+      "lsofExit": 1,
+      "listenerPresent": false
+    }
+  ],
+  "testDataRemoved": true,
+  "installedPageAbsent": true,
+  "productionDiffFromImplementationEmpty": true,
+  "userNode8001Accessed": false,
+  "note": "Only this worktree generated SDK dist and assigned test SQLite files removed; ignored build outputs retained. No user app/service/data read or changed."
+}

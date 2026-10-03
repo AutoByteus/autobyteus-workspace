@@ -17,10 +17,11 @@ if (arg === "--version") {
   if (process.env.AGY_FAKE_ARGV_LOG) {
     appendFileSync(process.env.AGY_FAKE_ARGV_LOG, JSON.stringify({ argv: process.argv.slice(2), cwd: process.cwd() }) + "\n");
   }
+  const runtimeError = process.env.AGY_FAKE_CASE === "runtime_error";
   const linkedSkills = process.env.AGY_FAKE_CASE === "linked_skills";
   // Native image DONE uses a UUID conversation; the test owns that conversation's (temporary) AGY brain files.
   const imageDone = process.env.AGY_FAKE_CASE === "image_done";
-  const conversation_id = linkedSkills ? argValue("--conversation") || randomUUID()
+  const conversation_id = runtimeError ? argValue("--conversation") || randomUUID() : linkedSkills ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
   const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
@@ -72,6 +73,34 @@ if (arg === "--version") {
   };
   readline.createInterface({ input: process.stdin }).on("line", (line) => {
     turns += 1;
+    if (runtimeError) {
+      const content = String(JSON.parse(line)?.message?.content ?? "");
+      if (process.env.AGY_FAKE_INPUT_LOG) appendFileSync(process.env.AGY_FAKE_INPUT_LOG,
+        JSON.stringify({ conversation_id, turns, content }) + "\n");
+      if (content === "Continue the same work.") {
+        reply(turns * 10, "NEXT_USER_TURN_OK");
+        emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "NEXT_USER_TURN_OK" } });
+        return;
+      }
+      // Real-use sequence: useful partial assistant work and a completed tool precede the provider failure.
+      reply(turns * 10, "PARTIAL_WORK_PRESERVED");
+      const tool = { conversation_id, step_index: turns * 10 + 1, step_type: "tool", tool_name: "run_command" };
+      emit({ event: "step_update", step_update: { ...tool, state: "ACTIVE",
+        tool_info: { parameters: { CommandLine: "echo COMPLETED_WORK_PRESERVED" } } } });
+      emit({ event: "step_update", step_update: { ...tool, state: "DONE",
+        tool_info: { output: "COMPLETED_WORK_PRESERVED" } } });
+      const messages = {
+        quota: "Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 3h28m50s.",
+        unfamiliar: "Workspace service temporarily unavailable. Reference W-771; try again later.",
+        structured: { message: "Read limit reached. Try again after the provider permits requests.", diagnostic: "PRIVATE_RESPONSE_MARKER" },
+        empty: "   ", malformed: { message: { value: "PRIVATE_RESPONSE_MARKER" } },
+        credential: 'Workspace unavailable token=PRIVATE_AGY_SECRET <img src=x onerror=alert(1)>',
+      };
+      const kind = content.replace("Report runtime case: ", "");
+      emit({ event: "result", result: { conversation_id, status: "ERROR", error: messages[kind],
+        response: "PRIVATE_RESPONSE_MARKER token=PRIVATE_AGY_SECRET" } });
+      return;
+    }
     if (linkedSkills) {
       linkedSkillsTurn(line).catch((error) => emit({ event: "result", result: { conversation_id, status: "ERROR",
         error: String(error?.message ?? error), response: "" } }));

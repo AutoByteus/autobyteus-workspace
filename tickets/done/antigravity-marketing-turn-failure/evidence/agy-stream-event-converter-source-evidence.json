@@ -1,0 +1,6 @@
+{
+  "deployedPath": "/app/autobyteus-server-ts/dist/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js",
+  "deployedSha256": "38b97a8cefb1184b0500248e117258958307e6019e8614fc581be6f0fa0ec35b",
+  "sourcePath": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts",
+  "sourceSha256": "6e563533774a3a0e1b8d1425b53fc718ce77d6fb00a3afee48568655437ef65e"
+}

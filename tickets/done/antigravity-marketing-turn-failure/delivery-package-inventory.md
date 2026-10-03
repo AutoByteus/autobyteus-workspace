@@ -1,0 +1,164 @@
+# Delivery Package Inventory — antigravity-marketing-turn-failure
+
+## Authority / Path Rules
+- Current root: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure.
+- Complete cumulative approved SR-002 / design SR-003, IR-001 and API-REV-001 package retained below. History snapshots are audit-only; canonical current requirements/design own behavior.
+- **Medium / Low; Direct Low-Risk**; independent architecture/source/test-code review reports/revisions **N/A — not applicable**, not review passes. No normative Product/prototype supplements.
+- Before archive, all listed ticket-relative paths resolve beneath this root. After archive and safe worktree cleanup, resolve them beneath the final durable `tickets/done/antigravity-marketing-turn-failure/` root recorded by finalization reports. Absolute in-progress/worktree paths within unchanged upstream records are historical execution provenance; this inventory is the location bridge.
+
+## Delivery-Owned Authorities
+- [docs-sync-report.md](docs-sync-report.md)
+- [handoff-summary.md](handoff-summary.md)
+- [release-deployment-report.md](release-deployment-report.md)
+- [delivery-revision-record.md](delivery-revision-record.md)
+- [release-notes.md](release-notes.md)
+- Integration/check/preservation/own cleanup records: evidence/delivery/.
+
+## Complete Upstream Artifact / Supplement / Evidence Tree
+115 retained files; no earlier failures/rejected attempts removed.
+- [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md)
+- [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md)
+- [api-e2e-revision-record.md](api-e2e-revision-record.md)
+- [api-e2e-test-case-ledger.md](api-e2e-test-case-ledger.md)
+- [design-spec.md](design-spec.md)
+- [evidence/agy-agent-run-backend-source-evidence.json](evidence/agy-agent-run-backend-source-evidence.json)
+- [evidence/agy-stream-event-converter-source-evidence.json](evidence/agy-stream-event-converter-source-evidence.json)
+- [evidence/api-e2e/API-A-credential.json](evidence/api-e2e/API-A-credential.json)
+- [evidence/api-e2e/API-A-empty.json](evidence/api-e2e/API-A-empty.json)
+- [evidence/api-e2e/API-A-malformed.json](evidence/api-e2e/API-A-malformed.json)
+- [evidence/api-e2e/API-A-missing.json](evidence/api-e2e/API-A-missing.json)
+- [evidence/api-e2e/API-A-quota.json](evidence/api-e2e/API-A-quota.json)
+- [evidence/api-e2e/API-A-structured.json](evidence/api-e2e/API-A-structured.json)
+- [evidence/api-e2e/API-A-unfamiliar.json](evidence/api-e2e/API-A-unfamiliar.json)
+- [evidence/api-e2e/API-C02.json](evidence/api-e2e/API-C02.json)
+- [evidence/api-e2e/API-CL01.json](evidence/api-e2e/API-CL01.json)
+- [evidence/api-e2e/API-CL02.json](evidence/api-e2e/API-CL02.json)
+- [evidence/api-e2e/API-CL03.json](evidence/api-e2e/API-CL03.json)
+- [evidence/api-e2e/API-CL04.json](evidence/api-e2e/API-CL04.json)
+- [evidence/api-e2e/API-O-credential.json](evidence/api-e2e/API-O-credential.json)
+- [evidence/api-e2e/API-O-empty.json](evidence/api-e2e/API-O-empty.json)
+- [evidence/api-e2e/API-O-malformed.json](evidence/api-e2e/API-O-malformed.json)
+- [evidence/api-e2e/API-O-missing.json](evidence/api-e2e/API-O-missing.json)
+- [evidence/api-e2e/API-O-quota.json](evidence/api-e2e/API-O-quota.json)
+- [evidence/api-e2e/API-O-structured.json](evidence/api-e2e/API-O-structured.json)
+- [evidence/api-e2e/API-O-unfamiliar.json](evidence/api-e2e/API-O-unfamiliar.json)
+- [evidence/api-e2e/API-T-credential.json](evidence/api-e2e/API-T-credential.json)
+- [evidence/api-e2e/API-T-empty.json](evidence/api-e2e/API-T-empty.json)
+- [evidence/api-e2e/API-T-malformed.json](evidence/api-e2e/API-T-malformed.json)
+- [evidence/api-e2e/API-T-missing.json](evidence/api-e2e/API-T-missing.json)
+- [evidence/api-e2e/API-T-quota.json](evidence/api-e2e/API-T-quota.json)
+- [evidence/api-e2e/API-T-structured.json](evidence/api-e2e/API-T-structured.json)
+- [evidence/api-e2e/API-T-unfamiliar.json](evidence/api-e2e/API-T-unfamiliar.json)
+- [evidence/api-e2e/agent-credential-1280.png](evidence/api-e2e/agent-credential-1280.png)
+- [evidence/api-e2e/agent-credential-390.png](evidence/api-e2e/agent-credential-390.png)
+- [evidence/api-e2e/agent-quota-1280.png](evidence/api-e2e/agent-quota-1280.png)
+- [evidence/api-e2e/agent-quota-390.png](evidence/api-e2e/agent-quota-390.png)
+- [evidence/api-e2e/browser-evidence-initial.json](evidence/api-e2e/browser-evidence-initial.json)
+- [evidence/api-e2e/browser-evidence.json](evidence/api-e2e/browser-evidence.json)
+- [evidence/api-e2e/browser-process-initial.log](evidence/api-e2e/browser-process-initial.log)
+- [evidence/api-e2e/browser-process.log](evidence/api-e2e/browser-process.log)
+- [evidence/api-e2e/browser-server-correlation-initial.json](evidence/api-e2e/browser-server-correlation-initial.json)
+- [evidence/api-e2e/browser-server-correlation.json](evidence/api-e2e/browser-server-correlation.json)
+- [evidence/api-e2e/browser-server-initial.log](evidence/api-e2e/browser-server-initial.log)
+- [evidence/api-e2e/browser-server.log](evidence/api-e2e/browser-server.log)
+- [evidence/api-e2e/claude-burst-evidence.json](evidence/api-e2e/claude-burst-evidence.json)
+- [evidence/api-e2e/claude-wire-burst.log](evidence/api-e2e/claude-wire-burst.log)
+- [evidence/api-e2e/claude-wire-initial.log](evidence/api-e2e/claude-wire-initial.log)
+- [evidence/api-e2e/claude-wire.log](evidence/api-e2e/claude-wire.log)
+- [evidence/api-e2e/cleanup.json](evidence/api-e2e/cleanup.json)
+- [evidence/api-e2e/cumulative-reference-files.json](evidence/api-e2e/cumulative-reference-files.json)
+- [evidence/api-e2e/evidence-manifest.json](evidence/api-e2e/evidence-manifest.json)
+- [evidence/api-e2e/execution-index.md](evidence/api-e2e/execution-index.md)
+- [evidence/api-e2e/final-cleanup.json](evidence/api-e2e/final-cleanup.json)
+- [evidence/api-e2e/final-e2e-initial.log](evidence/api-e2e/final-e2e-initial.log)
+- [evidence/api-e2e/final-e2e.log](evidence/api-e2e/final-e2e.log)
+- [evidence/api-e2e/focused-unit.log](evidence/api-e2e/focused-unit.log)
+- [evidence/api-e2e/nuxt-initial.log](evidence/api-e2e/nuxt-initial.log)
+- [evidence/api-e2e/nuxt-prepare.log](evidence/api-e2e/nuxt-prepare.log)
+- [evidence/api-e2e/nuxt.log](evidence/api-e2e/nuxt.log)
+- [evidence/api-e2e/prepare-shared.log](evidence/api-e2e/prepare-shared.log)
+- [evidence/api-e2e/preserved-unit.log](evidence/api-e2e/preserved-unit.log)
+- [evidence/api-e2e/restore-recheck.log](evidence/api-e2e/restore-recheck.log)
+- [evidence/api-e2e/server-build.log](evidence/api-e2e/server-build.log)
+- [evidence/api-e2e/shared-fixture.log](evidence/api-e2e/shared-fixture.log)
+- [evidence/api-e2e/team-credential-1280.png](evidence/api-e2e/team-credential-1280.png)
+- [evidence/api-e2e/team-credential-390.png](evidence/api-e2e/team-credential-390.png)
+- [evidence/api-e2e/team-quota-1280.png](evidence/api-e2e/team-quota-1280.png)
+- [evidence/api-e2e/team-quota-390.png](evidence/api-e2e/team-quota-390.png)
+- [evidence/api-e2e/transport-corrected.log](evidence/api-e2e/transport-corrected.log)
+- [evidence/api-e2e/transport-first.log](evidence/api-e2e/transport-first.log)
+- [evidence/api-e2e/transport-initial.log](evidence/api-e2e/transport-initial.log)
+- [evidence/api-e2e/transport.log](evidence/api-e2e/transport.log)
+- [evidence/api-e2e/web-boundary.log](evidence/api-e2e/web-boundary.log)
+- [evidence/api-e2e/web-unit.log](evidence/api-e2e/web-unit.log)
+- [evidence/deployed-terminal-result-snippet.txt](evidence/deployed-terminal-result-snippet.txt)
+- [evidence/implementation/backend-unit-initial.log](evidence/implementation/backend-unit-initial.log)
+- [evidence/implementation/backend-unit.log](evidence/implementation/backend-unit.log)
+- [evidence/implementation/browser-tool-interaction.json](evidence/implementation/browser-tool-interaction.json)
+- [evidence/implementation/checks.md](evidence/implementation/checks.md)
+- [evidence/implementation/cleanup.json](evidence/implementation/cleanup.json)
+- [evidence/implementation/install.log](evidence/implementation/install.log)
+- [evidence/implementation/nuxt-prepare.log](evidence/implementation/nuxt-prepare.log)
+- [evidence/implementation/preserved-paths-unit.log](evidence/implementation/preserved-paths-unit.log)
+- [evidence/implementation/preview-port.txt](evidence/implementation/preview-port.txt)
+- [evidence/implementation/render-claude-1280.png](evidence/implementation/render-claude-1280.png)
+- [evidence/implementation/render-claude-390.png](evidence/implementation/render-claude-390.png)
+- [evidence/implementation/render-claude-626.png](evidence/implementation/render-claude-626.png)
+- [evidence/implementation/render-dev.log](evidence/implementation/render-dev.log)
+- [evidence/implementation/render-inspection.json](evidence/implementation/render-inspection.json)
+- [evidence/implementation/render-inspection.log](evidence/implementation/render-inspection.log)
+- [evidence/implementation/render-inspection.mjs](evidence/implementation/render-inspection.mjs)
+- [evidence/implementation/render-markup-1280.png](evidence/implementation/render-markup-1280.png)
+- [evidence/implementation/render-markup-390.png](evidence/implementation/render-markup-390.png)
+- [evidence/implementation/render-payloads.json](evidence/implementation/render-payloads.json)
+- [evidence/implementation/render-payloads.mjs](evidence/implementation/render-payloads.mjs)
+- [evidence/implementation/render-preview.page.vue](evidence/implementation/render-preview.page.vue)
+- [evidence/implementation/render-quota-626.png](evidence/implementation/render-quota-626.png)
+- [evidence/implementation/server-build.log](evidence/implementation/server-build.log)
+- [evidence/implementation/server-typecheck.log.gz](evidence/implementation/server-typecheck.log.gz)
+- [evidence/implementation/shared-build.log](evidence/implementation/shared-build.log)
+- [evidence/implementation/typecheck-limitation.txt](evidence/implementation/typecheck-limitation.txt)
+- [evidence/implementation/web-unit.log](evidence/implementation/web-unit.log)
+- [evidence/provider-quota-log-excerpts.txt](evidence/provider-quota-log-excerpts.txt)
+- [evidence/runtime-summary.json](evidence/runtime-summary.json)
+- [history/sr-001-requirements-doc.md](history/sr-001-requirements-doc.md)
+- [history/sr-001-solution-result.md](history/sr-001-solution-result.md)
+- [history/sr-002-approved-requirements-doc.md](history/sr-002-approved-requirements-doc.md)
+- [history/sr-002-solution-result.md](history/sr-002-solution-result.md)
+- [implementation-handoff.md](implementation-handoff.md)
+- [implementation-revision-record.md](implementation-revision-record.md)
+- [investigation-notes.md](investigation-notes.md)
+- [requirements-doc.md](requirements-doc.md)
+- [solution-result.md](solution-result.md)
+- [solution-revision-record.md](solution-revision-record.md)
+
+## Production / Durable Test Paths
+Repository-relative paths remain unchanged by archiving or worktree cleanup:
+- `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-output-events.ts`
+- `autobyteus-server-ts/tests/e2e/helpers/agy-runtime-error-fixture.ts`
+- `autobyteus-server-ts/tests/e2e/helpers/runtime-error-case-evidence.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/agy-failure-transport.e2e.test.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts`
+- `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`
+- `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts`
+- `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts`
+- `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session-output-events.test.ts`
+- `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts`
+- `autobyteus-web/components/conversation/segments/__tests__/ErrorSegment.spec.ts`
+- `autobyteus-web/services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts`
+- `autobyteus-web/tests/e2e/fixtures/runtime-error-transport.page.vue`
+- `autobyteus-web/tests/e2e/runtime-error-transport-probe.mjs`
+
+## Canonical Docs Updated
+- `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md`
+- `autobyteus-server-ts/docs/modules/agent_execution.md`
+
+## Validation / Limits
+- API baseline 409 unique tests passed, one opt-in real-Claude skipped; 95% confidence. Strict build/bootstrap and web guard separate. Delivery post-integration recheck 171 passed, not new unique tests.
+- Standard server typecheck remains inherited 836 TS6059 failure. External quota/reset/recovery, user node/installed app, full launch, packaged shell, other platforms and deployment not certified. Existing redaction not universal secret detection.
+- User accepted; finalization/stable publication/cleanup in progress. No terminal package sent.
+
+## DR-002 Current Location And Release Scope
+- Ticket archived before final commit. Stable v1.4.93 requested by explicit user acceptance. Current working root /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure/tickets/done/antigravity-marketing-turn-failure. Final durable root will be the primary repository tickets/done/antigravity-marketing-turn-failure after safe cleanup; latest report records exact paths.
+- Complete delivery recheck evidence: evidence/delivery/post-verification/; DR-001 canonical report snapshots: evidence/delivery/DR-001/.

@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-10-03T13:53:48.075790+00:00",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-marketing-turn-failure",
+  "branch": "codex/antigravity-marketing-turn-failure",
+  "bootstrapBase": "fe37e693e6f4f1ed0d2f12ed3d83d9106ea037d1",
+  "validatedCandidate": "6889fc13b13f83aa43b2a67b43d9f3cab5b4553f",
+  "remoteBase": "98d8fb36a632ce0f46136cda20129d1fe1ee0ac8",
+  "remoteBaseSubject": "docs(delivery): complete auto-approval beta publication and cleanup",
+  "fetchCommand": "git fetch origin personal",
+  "integrationCommand": "git merge --no-edit origin/personal",
+  "method": "Merge",
+  "checkpoint": "Not needed \u2014 validated candidate and worktree already committed/clean",
+  "newBaseCommits": 1,
+  "integratedHead": "aca686bfe1254e8cb93478155edff05fc7b2669d",
+  "conflicts": false,
+  "changedBaseScope": "Only tickets/done/auto-approve-default-run-setup documentation/evidence; no production/test/build/dependency changes",
+  "codeTestDependencyDiffFromCandidateEmpty": true,
+  "checkCommands": [
+    "pnpm -C autobyteus-server-ts prepare:shared",
+    "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts tests/unit/agent-execution/backends/antigravity/agy-provider-diagnostic-sink.test.ts tests/unit/agent-execution/backends/claude/session/claude-session-output-events.test.ts tests/unit/agent-execution/backends/claude/session/claude-session.test.ts tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts --no-watch"
+  ],
+  "checkResults": [
+    {
+      "exitCode": 0,
+      "result": "Shared builds passed",
+      "evidence": "prepare-shared.log"
+    },
+    {
+      "exitCode": 0,
+      "filesPassed": 6,
+      "testsPassed": 171,
+      "result": "Pass",
+      "evidence": "focused-unit.log"
+    }
+  ],
+  "inheritedTypecheck": "836 TS6059 rootDir/include failures, not rerun or repaired",
+  "deliveryEditsStartedAfterIntegrationAndChecks": true,
+  "userNode8001Accessed": false
+}

@@ -85,6 +85,21 @@ describe('agentStatusHandler', () => {
     };
   });
 
+  it.each([
+    'Individual quota reached for this model. Resets in 3h28m50s.',
+    'Workspace service temporarily unavailable. Try again later.',
+    '<script>alert("runtime")</script> Read limit reached. token=<redacted>',
+  ])('preserves actual runtime text and prior completed work in the terminal error segment: %s', (message) => {
+    const completedTool = { type: 'tool_call', invocationId: 'completed-tool', status: 'success', result: 'saved', logs: [] };
+    mockContext.conversation.messages.push({ type: 'ai', segments: [completedTool], isComplete: false });
+    handleError({ message, code: 'AGY_TURN_ERROR', turn_id: 'turn-1', error_scope: 'turn', error_effect: 'terminal' }, mockContext);
+    expect(mockContext.conversation.messages[0].segments).toEqual([
+      completedTool, { type: 'error', code: 'AGY_TURN_ERROR', message },
+    ]);
+    expect(completedTool).toMatchObject({ status: 'success', result: 'saved' });
+    expect(mockContext.conversation.messages[0].isComplete).toBe(true);
+  });
+
   describe('handleAgentStatus', () => {
     it('updates currentStatus', () => {
       const payload: AgentStatusPayload = { status: 'running' };

@@ -1,3 +1,4 @@
+import { redactProviderSecrets } from "autobyteus-ts";
 import {
   asObject,
   asString,
@@ -56,12 +57,16 @@ const AUTHENTICATION_FAILURE_MARKERS = [
   "please run /login",
 ] as const;
 
-const resolveResultErrorText = (payload: Record<string, unknown>): string | null =>
-  asString(payload.result) ??
-  asString(payload.message) ??
-  asString(payload.error_message) ??
-  asString(payload.error) ??
-  null;
+const resolveResultErrorText = (payload: Record<string, unknown>): string | null => {
+  const scalarText = asString(payload.result) ??
+    asString(payload.message) ??
+    asString(payload.error_message) ??
+    asString(payload.error);
+  if (scalarText) return scalarText;
+  return Array.isArray(payload.errors)
+    ? payload.errors.map(asString).filter((value): value is string => value !== null).join("\n") || null
+    : null;
+};
 
 export const resolveClaudeTurnTerminalError = (
   chunk: unknown,
@@ -93,7 +98,7 @@ export const resolveClaudeTurnTerminalError = (
     code: isAuthenticationFailure
       ? "CLAUDE_RUNTIME_AUTHENTICATION_FAILED"
       : "CLAUDE_RUNTIME_RESULT_ERROR",
-    message: errorText ?? errorCode ?? "Claude runtime returned an error result.",
+    message: redactProviderSecrets(errorText ?? errorCode ?? "Claude runtime returned an error result."),
   };
 };
 
