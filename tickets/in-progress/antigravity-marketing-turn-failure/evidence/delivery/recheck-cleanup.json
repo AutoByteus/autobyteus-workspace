@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-03T13:53:48.080293+00:00",
+  "removedOwnedGeneratedPaths": [
+    "autobyteus-application-backend-sdk/dist",
+    "autobyteus-application-sdk-contracts/dist",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal"
+  ],
+  "pathsAbsent": true,
+  "serverOrBrowserStarted": false,
+  "userNodeOrInstalledAppAccessed": false,
+  "otherWorktreesUntouched": true,
+  "note": "Focused unit setup owned assigned worktree test SQLite. Only newly generated untracked shared SDK dist removed; ignored build outputs retained. Ticket worktree/branch cleanup awaits finalization."
+}

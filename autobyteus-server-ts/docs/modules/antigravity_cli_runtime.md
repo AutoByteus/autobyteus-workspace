@@ -293,6 +293,39 @@ terminal provider result emits a safe turn error, not a successful turn or a
 raw provider response. Successful turns retain ordinary assistant text and
 completion ordering; no image-specific finalization barrier is used.
 
+## Terminal error messages
+
+For a failed or unknown terminal `result`, the converter uses AGY's supplied
+`error` string or `error.message`, trims outer whitespace, and applies the
+existing `redactProviderSecrets` credential redaction. Useful text, including
+unfamiliar causes and provider-supplied hints, reaches the existing Agent,
+Team, and Org-member chat error card. Only absent, empty, or unusable text falls
+back to `Antigravity could not complete this turn.`. This replaces blanket
+generic wording, not the separate native-image failure/denial policy above.
+
+The event remains `AGY_TURN_ERROR`, with turn-terminal scope/effect and the same
+turn identity. Selection never serializes the whole result/error object or
+appends the provider `response`, private diagnostics, stacks or logs. The private
+diagnostic callback remains separate. Error text renders as plain text through
+the current public stream and shared card; existing redaction is not a promise
+to detect every possible secret.
+
+Quota/reset wording is displayed as reported, not classified or converted into
+a countdown or inferred HTTP code. A reported reset hint does not prove future
+provider availability. The change adds no automatic retry, backoff, account or
+model switch, or conversation reset. Partial output, completed activities,
+saved configuration and exact run/provider identity remain intact. A subsequent
+explicit user message uses the existing dispatch or normal restore path; its
+success still depends on the provider. Existing generic historical messages
+remain valid; no migration or trace rewrite is required.
+
+Durable controlled coverage is in `agy-failure-transport.e2e.test.ts` and the
+web-owned `runtime-error-transport-probe.mjs`: a fixture CLI feeds actual server
+Agent/Team/Org streams, with Agent/Team browser card checks, missing/malformed
+fallbacks, credential/plain-text/private-response controls and explicit
+continuation. These checks do not certify live provider recovery, a packaged
+desktop shell, or the full Library/launch journey.
+
 ## Persistence and validation boundary
 
 Existing run metadata, provider-binding, execution-tree, and canonical trace
