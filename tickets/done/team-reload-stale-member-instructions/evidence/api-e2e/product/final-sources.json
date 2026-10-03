@@ -1,0 +1,8 @@
+{
+  "agent-teams/reload-proof-team/agents/worker/agent-config.json": "{\n  \"toolNames\": [\n    \"write_file\"\n  ],\n  \"skillNames\": []\n}",
+  "agent-teams/reload-proof-team/agents/worker/agent.md": "---\nname: Reload Proof Worker\ndescription: Worker description v4.\ncategory: test\n---\n\nWorker instructions v4.\n",
+  "agent-teams/reload-proof-team/team-config.json": "{\n  \"coordinatorMemberName\": \"worker\",\n  \"members\": [\n    {\n      \"memberName\": \"worker\",\n      \"ref\": \"worker\",\n      \"refType\": \"agent\",\n      \"refScope\": \"team_local\"\n    },\n    {\n      \"memberName\": \"shared\",\n      \"ref\": \"reload-proof-shared\",\n      \"refType\": \"agent\",\n      \"refScope\": \"shared\"\n    }\n  ],\n  \"handoffs\": []\n}",
+  "agent-teams/reload-proof-team/team.md": "---\nname: Reload Proof Team\ndescription: Team description v4.\ncategory: test\n---\n\nTeam instructions v4.\n",
+  "agents/reload-proof-shared/agent-config.json": "{\n  \"toolNames\": [\n    \"write_file\"\n  ],\n  \"skillNames\": []\n}",
+  "agents/reload-proof-shared/agent.md": "---\nname: Reload Proof Shared\ndescription: Shared description v4.\ncategory: test\n---\n\nShared instructions v4.\n"
+}

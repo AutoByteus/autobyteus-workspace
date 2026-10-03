@@ -1,0 +1,31 @@
+Back to Workspace
+API Keys
+Token Statistics
+Display
+Language
+Local Tools
+MCP Servers
+Application Packages
+Agent Packages
+Server Settings
+Extensions
+Updates
+Agent Packages
+
+Link a local package path or paste a public GitHub repository URL. GitHub packages are installed into app-managed storage, while local paths remain in place.
+
+Agent package imported.
+Built-in Storage
+Built-in | Shared Agents: 2 | Team-local Agents: 0 | Teams: 0 | Applications: 0
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-2eKWyB/server-data
+Built-in package is platform managed.
+Default
+autobyteus-team-reload-proof-RtYSp9
+Local Path | Shared Agents: 1 | Team-local Agents: 1 | Teams: 1 | Applications: 0
+/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-team-reload-proof-RtYSp9
+Local folder — reload after external changes.
+Local Path
+Reload
+Remove
+Package Path Or GitHub URL
+Import Package

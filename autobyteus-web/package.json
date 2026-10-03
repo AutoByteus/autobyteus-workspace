@@ -69,6 +69,7 @@
     "test:e2e:electron": "node scripts/run-electron-e2e.mjs",
     "test:e2e:electron:isolation": "node tests/e2e/electron-launch-profile-probe.mjs",
     "test:e2e:isolated-app": "node tests/e2e/isolated-app-lifecycle-probe.mjs",
+    "test:e2e:team-reload-member-freshness": "node tests/e2e/team-reload-member-freshness-probe.mjs",
     "test:e2e:composer-mention-discoverability": "node tests/e2e/composer-mention-discoverability-probe.mjs"
   },
   "dependencies": {

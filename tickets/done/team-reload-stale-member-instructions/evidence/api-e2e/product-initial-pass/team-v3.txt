@@ -1,0 +1,46 @@
+Chat
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+←
+Back to Agent Teams
+RP
+Reload Proof Team
+test
+Run
+Edit
+Delete
+Description
+
+Team description v3.
+
+Instructions
+Team instructions v3.
+
+Handoffs
+
+No handoffs yet
+
+Members (2)
+W
+
+worker
+
+COORDINATOR
+
+Reload Proof Worker
+
+View ↗
+S
+
+shared
+
+Reload Proof Shared
+
+View ↗

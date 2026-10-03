@@ -241,6 +241,33 @@ Agent, Team, and AgentOrg catalogs together. External/local package ownership
 remains source-authoritative; catalog refresh does not copy definitions between
 nodes or activate legacy formats.
 
+### Agent Teams Reload And Member Inspection
+
+After a completed edit to a registered local package, **Reload** on the Agent
+Teams page refreshes the Team catalog and the Agent definitions used by member
+inspection. A successful Reload makes current Team and referenced member
+instructions, descriptions, and tools available, including already-viewed
+Team-local and shared Agents. No separate Agents-page Reload or app restart is
+needed. Member IDs, navigation, source ownership, and private scopes are unchanged.
+
+The explicit refresh action performs the existing Team catalog refresh mutation,
+then awaits the Agent store's network-only reload before reading and publishing
+the Team catalog. It does not issue a second Agent refresh mutation. The separate
+query-only Team reload used by package operations remains query-only; ordinary
+first-load discovery is unchanged.
+
+A required mutation or read failure uses the existing loading/error/retry surface;
+Reload is not a successful complete refresh until the required reads finish.
+If the Agent read fails, the Team read does not proceed. If a later Team read
+fails, Agent data may already be fresh; there is no cross-catalog rollback or
+transactional snapshot guarantee. Retry uses the same Reload control.
+
+This is **definition-catalog freshness**, not live instruction hot reload.
+Reload does not rewrite package source/configuration or saved run/history state,
+and it does not replace instructions in existing executions. It does not watch
+files automatically, download GitHub changes, or guarantee one point-in-time
+snapshot when files are edited concurrently with Reload.
+
 ## Featured Teams
 
 `AgentTeamList.vue` joins admitted Team definitions with featured catalog

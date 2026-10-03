@@ -1,0 +1,58 @@
+Back to Workspace
+API Keys
+Token Statistics
+Display
+Language
+Local Tools
+MCP Servers
+Application Packages
+Agent Packages
+Server Settings
+Extensions
+Updates
+API Key Management
+
+Manage provider keys and provider-specific model discovery
+
+PROVIDERS
+Anthropic
+8
+AutoByteus
+—
+DeepSeek
+2
+Gemini
+10
+GLM
+1
+Grok
+1
+Kimi
+1
+LM Studio
+—
+MiniMax
+1
+Mistral
+2
+Ollama
+—
+OpenAI
+12
+Qwen
+6
+New Provider
+—
+Anthropic
+Not Configured
+Save Key
+Models
+LLM MODELS
+claude-fable-5
+claude-fable-5-1
+claude-opus-4.7
+claude-opus-4.8
+claude-opus-5
+claude-opus-5-5
+claude-sonnet-4.6
+claude-sonnet-5
