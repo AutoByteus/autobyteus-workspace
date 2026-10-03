@@ -1,0 +1,13 @@
+{
+  "image": "autobyteus/autobyteus-server",
+  "version": "1.4.92",
+  "latestDigestMatchesVersion": true,
+  "manifestDigest": "sha256:d74074abd55fa12cea790af9f06c5c3c413508c5f1597d7924bfcb6cf301e817",
+  "platforms": [
+    "linux/amd64",
+    "linux/arm64"
+  ],
+  "betaAliasDigest": "sha256:d74074abd55fa12cea790af9f06c5c3c413508c5f1597d7924bfcb6cf301e817",
+  "betaAliasNote": "existing forward-only beta-channel policy may include newest stable; no prerelease tag created",
+  "containerExecution": "not rerun locally; registry and successful release build proof only"
+}

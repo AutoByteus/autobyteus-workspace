@@ -1,0 +1,9 @@
+version: 1.4.92
+files:
+  - url: AutoByteus_personal_linux-arm64-1.4.92.AppImage
+    sha512: cvIS7/cpiJ4dGi4pD+mA6Vcp6gAvqUiuBV73T8SL3zcshZjagsDNOx9k9kobY3BLt5WSoSVnhHPZvLW0C4j+3g==
+    size: 446226036
+    blockMapSize: 465344
+path: AutoByteus_personal_linux-arm64-1.4.92.AppImage
+sha512: cvIS7/cpiJ4dGi4pD+mA6Vcp6gAvqUiuBV73T8SL3zcshZjagsDNOx9k9kobY3BLt5WSoSVnhHPZvLW0C4j+3g==
+releaseDate: '2026-10-03T05:28:27.491Z'

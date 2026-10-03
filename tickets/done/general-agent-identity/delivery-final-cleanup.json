@@ -1,0 +1,14 @@
+{
+  "ticketWorktreeRemoved": true,
+  "ticketWorktreePruned": true,
+  "localTicketBranchRemoved": true,
+  "remoteTicketBranchRemoved": true,
+  "finalizerCloneRemoved": true,
+  "durableArchive": "/Users/normy/autobyteus_org/autobyteus-delivery-records/general-agent-identity/tickets/done/general-agent-identity",
+  "sharedCheckoutHeadUnchanged": "806907faeb567d2b703e10fe984fcd01be0b41fd",
+  "sharedModifiedFilesByteUnchanged": true,
+  "testInstanceStopped": "iso-49566-9df7",
+  "testDataRootRetainedAsRequested": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-yU9RHz",
+  "ownedGeneratedSdkDistDiscarded": true,
+  "otherWorktreesAppsDataUntouched": true
+}

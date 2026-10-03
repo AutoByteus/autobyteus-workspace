@@ -1,0 +1,54 @@
+{
+  "workflow": "success, all seven desktop jobs",
+  "tag": "v1.4.92",
+  "draft": false,
+  "prerelease": false,
+  "stableLatest": "v1.4.92",
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92",
+  "assetCount": 17,
+  "updaterMetadata": {
+    "latest-linux-arm64.yml": {
+      "version": "1.4.92",
+      "references": [
+        "AutoByteus_personal_linux-arm64-1.4.92.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.92.AppImage"
+      ],
+      "sha256": "086c7da015e19a5d4cd77eceb957b0921c33520d5b5a0d565cacd75550cbcbff",
+      "apiDigestVerified": true,
+      "installerDigests": "valid SHA512 shape; full installer bytes not downloaded"
+    },
+    "latest-linux.yml": {
+      "version": "1.4.92",
+      "references": [
+        "AutoByteus_personal_linux-x64-1.4.92.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.92.AppImage"
+      ],
+      "sha256": "0478cf4a4006b809538e45e0dd53f55fa117b6213396d436df5358614122d04e",
+      "apiDigestVerified": true,
+      "installerDigests": "valid SHA512 shape; full installer bytes not downloaded"
+    },
+    "latest-mac.yml": {
+      "version": "1.4.92",
+      "references": [
+        "AutoByteus_personal_macos-arm64-1.4.92.zip",
+        "AutoByteus_personal_macos-arm64-1.4.92.dmg",
+        "AutoByteus_personal_macos-x64-1.4.92.zip",
+        "AutoByteus_personal_macos-x64-1.4.92.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.92.zip"
+      ],
+      "sha256": "57689e31c9f60a5b11543298bf8ebcace7fd6866bf5b7d26eb129bc9d159e491",
+      "apiDigestVerified": true,
+      "installerDigests": "valid SHA512 shape; full installer bytes not downloaded"
+    },
+    "latest.yml": {
+      "version": "1.4.92",
+      "references": [
+        "AutoByteus_personal_windows-1.4.92.exe",
+        "AutoByteus_personal_windows-1.4.92.exe"
+      ],
+      "sha256": "bc4e68b953784969d53d3768f8f7836fb07da4e9cf579d502aae6a5b57e987dd",
+      "apiDigestVerified": true,
+      "installerDigests": "valid SHA512 shape; full installer bytes not downloaded"
+    }
+  }
+}

@@ -8,7 +8,7 @@
 - Bootstrap and latest integrated base: `origin/personal` / `806907faeb567d2b703e10fe984fcd01be0b41fd`.
 - Validated candidate HEAD: `1e67b2beea4e3a9c320bb8d907f6b146defb2568`.
 - First delivery action: `git fetch origin personal`, then `git merge origin/personal` → Already up to date; remote base is ancestor of candidate. No checkpoint needed: source/test candidate already committed, no base delta/conflict, upstream untracked review/evidence retained untouched.
-- No new base integrated, so no executable rerun required. Delivery hash/config/diff/cleanup consistency checks passed; not a new API/build/model run. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/done/general-agent-identity/delivery-integration-evidence.txt`.
+- No new base integrated, so no executable rerun required. Delivery hash/config/diff/cleanup consistency checks passed; not a new API/build/model run. Evidence: `/Users/normy/autobyteus_org/autobyteus-delivery-records/general-agent-identity/tickets/done/general-agent-identity/delivery-integration-evidence.txt`.
 - All delivery edits began after this refresh. Current working candidate includes the two documentation-only additions below.
 
 ## Why Docs Were Updated
@@ -42,3 +42,6 @@ Current displayed Daily Assistant identity/self-introduction replaced by General
 
 ## DR-002 archive continuation
 User explicitly verified and requested stable publication. Base refresh remains unchanged, so the integrated docs content remains authoritative. Ticket moved to done before commit; delivery paths now reference archive. Upstream reports retain their original evidence-time paths; archive-index.md maps them to the durable package. Curated stable notes cover existing changes since v1.4.91 using git history and current canonical docs; they do not imply General Agent validation covers all prior features.
+
+## DR-003 completed continuation
+Explicit user verification, repository finalization, stable publication/rollout and safe cleanup completed. Docs state unchanged from validated integrated delivery. Current durable package: /Users/normy/autobyteus_org/autobyteus-delivery-records/general-agent-identity/tickets/done/general-agent-identity/. Release-deployment-report.md and DR-003 carry final evidence; no new behavior/source design revision.

@@ -1,47 +1,27 @@
-# General Agent identity — user-verification handoff
+# General Agent identity — authoritative completed delivery
 
-## Current result
-**User verified; authorized finalization and stable release in progress — not yet Delivery Completed.** DR-001 docs sync Pass; upstream validation/recovery review gates pass. Small / Low, Direct Low-Risk with required test-only recovery review completed. SR-002 approved, IR-001 implemented, API-REV-002 Pass / 95%, CRR-002 test-review Pass. Independent architecture/full source review N/A. CRR-001 remains historical failure-origin Fail, with API-F001/002 resolved by CRR-002; not a pending blocker.
+**Delivery Completed — DR-003**. Small / Low, Direct Low-Risk plus required recovery test-code review completed. User explicitly tested/verified and requested stable release: **“i tested it works perfectly. lets finalize and release a stable version not beta version thanks”**.
 
-## User-visible behavior to verify
-1. After normal startup, current built-in/default New Chat identity is General Agent with the complete approved prompt.
-2. It remains `autobyteus-daily-assistant`; existing conversations/references remain usable. Historical captured names may remain Daily Assistant.
-3. Existing specialist discovery is selected where context permits; direct work uses available skills/tools. No guaranteed specialist choice or universal availability.
-4. Platform-owned edits still revert on restart; no migration/reset introduced.
+## Outcomes
+- General Agent is default Chat's current displayed identity with exact approved prompt; stable definition ID autobyteus-daily-assistant, existing tools/ALL_INSTALLED/history/references unchanged. Context-gated discovery selected; specialist choice not forced or guaranteed. Built-in content still refreshes on startup; historical labels may remain Daily Assistant.
+- Approved SR-002; implementation IR-001; API-REV-002 Pass /95%; CRR-002 proportional recovery test review Pass; no findings. Architecture/full source review N/A. CRR-001 historical failure-origin Fail is resolved, not a new source verdict.
+- Initial and post-user latest-base refresh: origin/personal 806907faeb567d2b703e10fe984fcd01be0b41fd unchanged; merge Already current; no new base/recheck required. Hash/config/diff checks passed. Delivery edits docs-only.
+- Archive before final commit. Task commit b9aeeb871875440339e4370f2530c52cddf5ba9e pushed; clean independent clone personal merge a97ba47d8e517e4e825f8d4e3104e98df78a6153 pushed. Shared dirty personal checkout untouched, intentionally not fast-forwarded.
+- Stable v1.4.92 at a634eba53dc8016767e0e14344b8c157484d159c, package/tag in sync, pushed once via repository helper/archived curated notes; no beta or duplicate dispatch. Stable release and latest desktop feed verified: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92.
+- Desktop all jobs success, installers/updater metadata published; Android published; iOS TestFlight upload success (not App Store approval); Docker 1.4.92/latest matching multiarch digest verified. Separate customer deployment not required.
+- Task worktree/prune/local+remote ticket branch/finalizer clone cleanup completed; full evidence mirrored durably first. Owned user-test instance stopped, ports released; intentional --keep test data retained. No user installed app/data or unrelated working files touched.
 
-Please explicitly confirm that the delivered behavior is verified/accepted and authorize repository finalization to `origin/personal`. Earlier **“coool. lets go approved”** approved requirements/implementation, NOT delivery verification. An isolated worktree build can be reopened for manual testing on request; user's installed app/data must not be used. No release/deployment is planned absent a separate request.
+## Complete cumulative package
+Canonical durable artifact root: **/Users/normy/autobyteus_org/autobyteus-delivery-records/general-agent-identity/tickets/done/general-agent-identity/**. Same filenames tracked under remote personal `tickets/done/general-agent-identity/`; evidence-time paths in original upstream records map through archive-index.md.
+- Requirements/investigation/design/history/supplement: requirements-doc.md, investigation-notes.md, design-spec.md, solution-revision-record.md, general-agent-prompt.md, solution-handoff.md.
+- Implementation/history/preview: implementation-handoff.md, implementation-revision-record.md, preview-observations.md and original scoped execution/build logs.
+- API investigation/execution/history/ledger: api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md, api-e2e-revision-record.md, api-e2e-test-case-ledger.md and all raw API/live/desktop logs/JSON/screenshots.
+- Review: historical code-review-report.md / code-review-origin-evidence.txt; current code-review-revision-record.md, api-e2e-test-review-report.md, code-review-test-evidence.txt.
+- Delivery: docs-sync-report.md, release-deployment-report.md, delivery-revision-record.md, release-notes.md, archive-index.md, this summary, integration/cleanup/launch/release/workflow/registry/updater evidence and full delivery-package-manifest.tsv.
+- Durable test source is retained in Git at release commit/tag: server tests/e2e/agent-definitions/{agent-packages-graphql,json-file-persistence-contract,general-agent-identity}.e2e.test.ts and web tests/e2e/chat-entry-live-probe.mjs; unchanged helper studio-application-api-services.ts remains dependency. Implementation focused tests retained at same tag. No deleted task paths presented as current artifact references.
 
-## Integrated state
-- Task root: `/Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity`; branch `task/general-agent-identity`.
-- Bootstrap/finalization target: `origin/personal`, per solution-handoff.md.
-- Initial delivery refresh: `git fetch origin personal`; `git merge origin/personal` → Already up to date.
-- Checked base: `806907faeb567d2b703e10fe984fcd01be0b41fd`; candidate HEAD: `1e67b2beea4e3a9c320bb8d907f6b146defb2568`.
-- No new base commits integrated; no API/build/model rerun required or claimed. Delivery docs-only changes do not alter validated code/tests. Prompt SHA256 and exact base-config-with-one-discovery-addition rechecked; diff check Pass.
-- Delivery edits: server agent_definition.md + web chat.md, records/notes/evidence. No source/test changes or commits this delivery round.
+## Final evidence / limitations
+Affected API directory 22/22; unchanged original live C01/C02/C13 and actual isolated desktop same-ID/config/reply/restart/history proof retained; user's real acceptance separately captured. Prompt SHA256 d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a. No new baseline/whole-suite/provider sweep claimed; TS6059 package-wide typecheck unpassed although production build passed. Inherited Dependabot alerts disclosed in final report, not newly adjudicated. Updater file API digests verified; complete installer re-download/local container execution not performed.
 
-## Validation and limitations
-- Package GraphQL 8/8, current JSON persistence 1/1, affected directory 5 files / 22 tests pass sequentially (not 31 distinct tests).
-- Retained round-1 evidence: bootstrap/web focused tests, discovery/runtime exposure; live C01/C02/C13; actual worktree-built isolated desktop default Chat same-ID/name/config/model reply, restart and original history reopen. Not rerun during test-only recovery or delivery.
-- Exact prompt SHA256: `d410e6f60d923ff66849961fd8b15c461fc6c08d254ef66a7d4a92a8299cbe1a`.
-- Known baseline TS6059 typecheck not passed; production build passed. No whole-suite, baseline suite, exhaustive provider or deterministic delegation claim.
-- No unresolved findings. No task desktop/probe active; six round-2 roots absent, previous owned iso-64690-9092 absent from delivery list. Unrelated isolated-app records untouched.
-
-## Cumulative canonical package
-All following files are under `/Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/tickets/done/general-agent-identity/`; package manifest enumerates every retained upstream/evidence file with hash for handoff/finalization.
-- Approved requirements/investigation/design/history: requirements-doc.md, investigation-notes.md, design-spec.md, solution-revision-record.md, general-agent-prompt.md, solution-handoff.md.
-- Implementation: implementation-handoff.md, implementation-revision-record.md, preview-observations.md, server/web/build logs.
-- Validation: api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md, api-e2e-revision-record.md, api-e2e-test-case-ledger.md, cumulative API/live/desktop evidence.
-- Independent recovery review: code-review-report.md, code-review-origin-evidence.txt (historical origin); code-review-revision-record.md, api-e2e-test-review-report.md, code-review-test-evidence.txt (current CRR-002).
-- Delivery: docs-sync-report.md, release-deployment-report.md, delivery-revision-record.md, release-notes.md, delivery-integration-evidence.txt, delivery-isolated-app-list.json, delivery-package-manifest.tsv, this summary.
-- Durable test changes: server agent-definitions package/persistence/general-agent E2E, web chat-entry-live-probe.mjs; unchanged studio-application-api-services.ts remains dependency, not changed scope.
-
-## Remaining gates / planned finalization
-User verification pending. Ticket stays in-progress. After verification: refresh remote target again; protect edits/integrate/check/reverify if material change; archive to tickets/done/general-agent-identity; selectively commit ticket branch; push ticket branch; safely update recorded personal branch without touching unrelated shared-checkout changes; merge ticket branch, push personal. Release/version/tag/publication/deployment Not required for current scope. Complete safe owned worktree/local branch cleanup after durable evidence is archived and finalization is proven. Do not infer any gate from this plan.
-
-## DR-002 — Explicit user verification and stable release authorization
-- User signal (2026-10-03): **“i tested it works perfectly. lets finalize and release a stable version not beta version thanks”**. This is delivery verification and authorization for repository finalization plus stable publication.
-- Post-verification refresh: `git fetch origin personal --tags`; origin/personal remains 806907faeb567d2b703e10fe984fcd01be0b41fd; `git merge origin/personal` Already up to date. No base delta, executable rerun or renewed verification required.
-- Ticket archived to tickets/done/general-agent-identity before final commit. Stable version selected: **1.4.92**, promoting the current 1.4.92-beta.12 line above highest published stable v1.4.91; tag absent after refresh.
-- Updated curated notes include sourced highlights since v1.4.91 and correct the old built-in-edit-survival statement. Pre-verification General Agent notes already existed; stable publication extension follows user's explicit authorization.
-- User-test isolated iso-49566-9df7 stopped with --keep; test data intentionally retained per recorded keepDataRoot, not reset/deleted. Stop evidence attached.
-- Finalization will use an isolated clean clone with its own personal branch because the shared personal checkout has unrelated dirty delivery docs. No stash/reset/checkout or local branch movement in that checkout. Remote personal is the authoritative finalization target.
+## Receipt authority
+release-deployment-report.md records all completion gates, exact source/merge/release refs and rollout/cleanup proof. Artifact-only final receipt commit and observed remote personal SHA are recorded in delivery-final-repository-receipt.json after push and in terminal message. Solution Designer must verify this authoritative completed package before returning Terminal. No technical or user-verification blocker remains.
