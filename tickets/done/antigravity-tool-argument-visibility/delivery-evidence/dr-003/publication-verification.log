@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-03T19:29:01.327281+00:00",
+  "tag": "v1.4.94-beta.1",
+  "version": "1.4.94-beta.1",
+  "releaseCommit": "8409bd899d290553730eff0d1ba3bca22205a939",
+  "githubReleaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.94-beta.1",
+  "draft": false,
+  "prerelease": true,
+  "tagPackageVersionAndRemoteCommitMatch": true,
+  "generatedNotesPresent": true,
+  "stableGithubLatestUnchanged": "v1.4.93",
+  "expectedAssets": [
+    "AutoByteus_personal_macos-arm64-1.4.94-beta.1.dmg",
+    "AutoByteus_personal_macos-arm64-1.4.94-beta.1.dmg.blockmap",
+    "AutoByteus_personal_macos-arm64-1.4.94-beta.1.zip",
+    "AutoByteus_personal_macos-arm64-1.4.94-beta.1.zip.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.94-beta.1.dmg",
+    "AutoByteus_personal_macos-x64-1.4.94-beta.1.dmg.blockmap",
+    "AutoByteus_personal_macos-x64-1.4.94-beta.1.zip",
+    "AutoByteus_personal_macos-x64-1.4.94-beta.1.zip.blockmap",
+    "AutoByteus_personal_linux-arm64-1.4.94-beta.1.AppImage",
+    "AutoByteus_personal_linux-x64-1.4.94-beta.1.AppImage",
+    "AutoByteus_personal_windows-1.4.94-beta.1.exe",
+    "AutoByteus_personal_android-1.4.94-beta.1-release.apk",
+    "AutoByteus_personal_android-1.4.94-beta.1-release.apk.sha256",
+    "latest-mac.yml",
+    "latest-linux.yml",
+    "latest-linux-arm64.yml",
+    "latest.yml"
+  ],
+  "uploadedAssetCount": 17,
+  "assetSizesAndStatesValid": true,
+  "updaterMetadataVersionAndAssetReferencesValid": true,
+  "linuxMetadataChecks": [
+    {
+      "command": "python3 /Users/normy/autobyteus_org/autobyteus-release-antigravity-9C6ywq/scripts/validate_linux_updater_metadata.py --metadata /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-linux.yml --arch-token linux-x64",
+      "exitCode": 0,
+      "output": "Validated /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize"
+    },
+    {
+      "command": "python3 /Users/normy/autobyteus_org/autobyteus-release-antigravity-9C6ywq/scripts/validate_linux_updater_metadata.py --metadata /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-linux-arm64.yml --arch-token linux-arm64",
+      "exitCode": 0,
+      "output": "Validated /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-tool-argument-visibility/tickets/done/antigravity-tool-argument-visibility/delivery-evidence/dr-003/updater-metadata/latest-linux-arm64.yml: linux-arm64 AppImage metadata includes embedded blockMapSize"
+    }
+  ],
+  "androidChecksumMatchesGithubDigest": true,
+  "dockerVersionDigest": "sha256:58df1c44365198fee8114ecb0fd7e6fcf938a26edc8ce8540dfcea86492d551c",
+  "dockerVersionBetaSameDigest": true,
+  "dockerStableLatestUnchanged": true,
+  "dockerLinuxArchitectures": [
+    "amd64",
+    "arm64"
+  ],
+  "allFourTagPushWorkflowsSuccessful": true,
+  "iosTestFlightUploadStep": "success",
+  "iosPublishArtifactPresent": true,
+  "publicAppStoreAvailability": "External \u2014 not claimed",
+  "userInstalledAppOrDataMutated": false,
+  "binaryRuntimeOrUniversalProviderValidation": "Not claimed; current runtime/test scope and packaging/publication checks are distinct"
+}

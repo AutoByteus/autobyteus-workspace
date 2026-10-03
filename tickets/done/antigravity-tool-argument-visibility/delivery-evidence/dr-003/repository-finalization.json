@@ -1,0 +1,12 @@
+{
+  "clone": "/Users/normy/autobyteus_org/autobyteus-release-antigravity-9C6ywq",
+  "ticketCommit": "f2023d63be575a05fe117015281e72b5a523887c",
+  "ticketPush": "Completed",
+  "targetBase": "dc4eb5470c14d846df3a22b0371a675690657ccd",
+  "targetBranch": "personal",
+  "targetMerge": "9ff0a22882f5e0c12b06ccba96ba1f0ef4acc38f",
+  "targetMergeAndPush": "Completed",
+  "targetParentRevisions": "dc4eb5470c14d846df3a22b0371a675690657ccd f2023d63be575a05fe117015281e72b5a523887c",
+  "publication": "Pending beta helper",
+  "sharedCheckout": "Unrelated changes not stashed/reset; clean owned clone used"
+}

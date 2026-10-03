@@ -1,0 +1,11 @@
+{
+  "command": "bash scripts/desktop-release.sh beta",
+  "result": "Completed \u2014 helper version bump, release commit, tag and branch/tag push",
+  "tag": "v1.4.94-beta.1",
+  "version": "1.4.94-beta.1",
+  "releaseCommit": "8409bd899d290553730eff0d1ba3bca22205a939",
+  "targetBranch": "personal",
+  "notes": "Generated GitHub beta notes per helper policy; archived functional ticket notes retained, curated stable input not required",
+  "manualDispatch": "Not performed \u2014 single fresh tag-push event only",
+  "workflowPublication": "Pending verification"
+}
