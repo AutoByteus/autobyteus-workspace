@@ -1,0 +1,58 @@
+
+> autobyteus@1.4.92-beta.12 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/chatDraftStore.spec.ts services/chat/__tests__/chatLaunchService.spec.ts components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts components/agents/__tests__/AgentDefinitionForm.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/general-agent-identity/autobyteus-web
+
+stderr | components/agents/__tests__/AgentDefinitionForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/chat/__tests__/chatLaunchService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/chatDraftStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/chatDraftStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agents/__tests__/AgentDefinitionForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/chat/__tests__/chatLaunchService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/chatDraftStore.spec.ts (10 tests) 18ms
+ ✓ components/agents/__tests__/AgentDefinitionForm.spec.ts (6 tests) 47ms
+ ✓ services/chat/__tests__/chatLaunchService.spec.ts (7 tests) 8ms
+ ✓ components/workspace/config/__tests__/ExistingRunConfigEditor.workspace.spec.ts (2 tests) 12ms
+ ✓ components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts (5 tests) 33ms
+
+ Test Files  5 passed (5)
+      Tests  30 passed (30)
+   Start at  06:12:30
+   Duration  7.04s (transform 3.61s, setup 29.71s, collect 1.56s, tests 117ms, environment 1.10s, prepare 723ms)
+

@@ -1,0 +1,12 @@
+{
+  "ownedSuiteRootsRemoved": {
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-OofcTM": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-ccYmqY": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-LR0QGo": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-graphql-suite-eQTHSI": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/general-agent-api-N9BOXa": true,
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/json-file-persistence-suite-53NWNw": true
+  },
+  "servicesStarted": false,
+  "desktopRerun": false
+}

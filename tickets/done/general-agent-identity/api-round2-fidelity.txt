@@ -1,0 +1,1 @@
+Round 2: approved prompt bytes/hash unchanged; config unchanged from API-REV-001 and equal base plus discovery; fail-fast Studio E2E helper unchanged. No production source path changed in round 2.

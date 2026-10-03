@@ -119,7 +119,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   }
 
   /**
-   * Reset the draft with defaults (Daily Assistant, temp workspace, Auto-approve, last-used model),
+   * Reset the draft with defaults (General Agent, temp workspace, Auto-approve, last-used model),
    * or with a preset agent and workspace (tree `+`). Discarding a draft deletes nothing server-side.
    */
   const startNewChat = (preset: { agentDefinitionId?: string; workspaceRootPath?: string } = {}): ChatDraft => {
@@ -148,7 +148,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
 
   /**
    * Preselection order (REQ-019): the last-used runtime + model when its runtime is enabled and
-   * the model exists; otherwise Daily Assistant's default launch config; otherwise the runtime default.
+   * the model exists; otherwise General Agent's default launch config; otherwise the runtime default.
    */
   const resolveDefaultModel = async (target: ChatDraft, generation: number): Promise<void> => {
     const availability = useRuntimeAvailabilityStore()

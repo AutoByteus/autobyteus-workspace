@@ -117,11 +117,26 @@ Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-a
 Built-in templates are centralized under `src/built-in-agents/templates/`. Every built-in agent is platform-owned:
 
 - `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
-- `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file`, so it can read cataloged `SKILL.md` files) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
+- `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **General Agent**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file` for cataloged `SKILL.md` files and opt-in `list_available_agents` for accessible specialist agents and teams) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
+
+General Agent is a displayed identity/content update, not a new definition:
+`autobyteus-daily-assistant`, the `daily-assistant/` template directory and
+`DAILY_ASSISTANT_AGENT_DEFINITION_ID` stay unchanged. Normal startup refreshes
+the platform-owned definition; existing runs, saved references and stored
+collaboration addresses remain directly usable without migration or reset.
+Historical display-name snapshots may still say Daily Assistant.
+
+The shipped prompt allows straightforward work directly and specialist
+collaboration when useful. `list_available_agents` is selected by this definition,
+but runtime availability and eligible collaborators still follow the existing
+context/eligibility rules. Discovery is not an installed-public-package inventory
+and does not grant the specialist's skills to the caller. Direct work uses relevant
+available skills or reasoning/tools; no guaranteed delegation or routing order is
+introduced.
 
 The built-in-agent bootstrapper owns this lifecycle:
 
-- every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
+- every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the General Agent's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
 - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
 - the agent-definition cache is refreshed after built-in definitions resolve.
@@ -134,7 +149,7 @@ isolated tool-free LLM directly; it has no synchronized Memory Compactor agent,
 registry-selected algorithm or child Agent runtime. Old compactor-agent files and
 removed selector/strategy setting values are inert for compaction and are neither
 imported nor deleted. The optional current model/config tuple is server-owned,
-not an AgentDefinition selector. The Daily Assistant is not auto-featured;
+not an AgentDefinition selector. The General Agent is not auto-featured;
 featured placement stays an operator choice in Settings.
 
 ## Notes

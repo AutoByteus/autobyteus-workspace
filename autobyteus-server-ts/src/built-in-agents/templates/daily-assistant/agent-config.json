@@ -18,7 +18,8 @@
     "edit_image",
     "generate_image",
     "generate_speech",
-    "read_media_file"
+    "read_media_file",
+    "list_available_agents"
   ],
   "skillNames": [],
   "skillScope": "ALL_INSTALLED",

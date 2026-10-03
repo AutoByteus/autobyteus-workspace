@@ -3,11 +3,14 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
+import { AgentOrgDefinitionService } from "../../../src/agent-org-definition/services/agent-org-definition-service.js";
+import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
+import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
 import { GitHubAgentPackageInstaller } from "../../../src/agent-packages/installers/github-agent-package-installer.js";
 import { AgentPackageService } from "../../../src/agent-packages/services/agent-package-service.js";
 import { AgentPackageRegistryStore } from "../../../src/agent-packages/stores/agent-package-registry-store.js";
@@ -85,12 +88,14 @@ const writeTeamDefinition = async (
     path.join(dirPath, "team-config.json"),
     JSON.stringify(
       {
+        avatarUrl: null,
+        defaultLaunchConfig: null,
+        handoffs: [],
         coordinatorMemberName: payload.coordinator,
         members: [
           {
             memberName: payload.coordinator,
             ref: payload.memberRef,
-            refType: "agent",
             refScope: payload.memberRefScope ?? "shared",
           },
         ],
@@ -229,10 +234,29 @@ describe("Agent packages GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let closeStudioServices: (() => void) | null = null;
+  let suiteRoot: string;
   const cleanupPaths = new Set<string>();
 
   beforeAll(async () => {
-    closeStudioServices = configureE2eStudioApplicationApiServices().close;
+    suiteRoot = await fs.mkdtemp(path.join(os.tmpdir(), "agent-packages-graphql-suite-"));
+    vi.stubEnv("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
+    appConfigProvider.resetForTests();
+    appConfigProvider.initialize({ appDataDir: suiteRoot });
+    const agents = AgentDefinitionService.getInstance();
+    const teams = AgentTeamDefinitionService.getInstance({ agentDefinitionService: agents });
+    const orgs = new AgentOrgDefinitionService(undefined, agents, teams);
+    // Exercise the same concrete source/admission authorities as the host composition,
+    // scoped to this owned root and the package roots changed by these transactions.
+    const admission = new DefinitionAdmissionService({
+      registry: new DefinitionSourceRegistry({ appConfig: appConfigProvider.config }),
+      agents, teams, orgs,
+    });
+    closeStudioServices = configureE2eStudioApplicationApiServices({
+      agentDefinitionService: agents,
+      agentTeamDefinitionService: teams,
+      agentOrgDefinitionService: orgs,
+      definitionAdmissionService: admission,
+    }).close;
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -241,7 +265,12 @@ describe("Agent packages GraphQL e2e", () => {
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
 
-  afterAll(() => closeStudioServices?.());
+  afterAll(async () => {
+    closeStudioServices?.();
+    appConfigProvider.resetForTests();
+    vi.unstubAllEnvs();
+    await fs.rm(suiteRoot, { recursive: true, force: true });
+  });
 
   afterEach(async () => {
     for (const filePath of cleanupPaths) {
@@ -249,7 +278,7 @@ describe("Agent packages GraphQL e2e", () => {
     }
     cleanupPaths.clear();
 
-    delete process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
     AgentPackageService.resetInstance();
     await AgentDefinitionService.getInstance().refreshCache();
     await AgentTeamDefinitionService.getInstance().refreshCache();
@@ -425,7 +454,10 @@ describe("Agent packages GraphQL e2e", () => {
     expect(listResult.agents.some((entry) => entry.id === externalAgentId)).toBe(true);
     expect(listResult.teams.some((entry) => entry.id === externalTeamId)).toBe(true);
     expect(listResult.duplicateAgent?.name).toBe("Default Duplicate Agent");
-    expect(listResult.duplicateTeam?.name).toBe("Default Duplicate Team");
+    // Agent reader precedence is separate from Team admission's fail-closed ambiguity policy.
+    expect(listResult.duplicateTeam).toBeNull();
+    expect(listResult.teams.some((entry) => entry.id === duplicateTeamId)).toBe(false);
+    expect(listResult.teams.some((entry) => entry.id === defaultTeamId)).toBe(true);
 
     const copiedAgentPath = path.join(defaultRoot, "agents", externalAgentId);
     const copiedTeamPath = path.join(defaultRoot, "agent-teams", externalTeamId);
@@ -452,15 +484,19 @@ describe("Agent packages GraphQL e2e", () => {
     const postRemoveList = await execGraphql<{
       agents: Array<{ id: string }>;
       teams: Array<{ id: string }>;
+      duplicateTeam: { id: string; name: string } | null;
     }>(`
       query PostRemoveReads {
         agents: agentDefinitions { id }
         teams: agentTeamDefinitions { id }
+        duplicateTeam: agentTeamDefinition(id: "${duplicateTeamId}") { id name }
       }
     `);
 
     expect(postRemoveList.agents.some((entry) => entry.id === externalAgentId)).toBe(false);
     expect(postRemoveList.teams.some((entry) => entry.id === externalTeamId)).toBe(false);
+    expect(postRemoveList.duplicateTeam?.name).toBe("Default Duplicate Team");
+    expect(postRemoveList.teams.some((entry) => entry.id === duplicateTeamId)).toBe(true);
     await expect(
       fs.access(path.join(externalRoot, "agents", externalAgentId, "agent.md")),
     ).resolves.toBeUndefined();
