@@ -1,0 +1,52 @@
+{
+  "scope": "implementation rendered self-check; static public payload injection, not actual server/WebSocket journey",
+  "observations": [
+    {
+      "width": 1280,
+      "detailOpen": true,
+      "geometry": {
+        "viewportWidth": 1280,
+        "documentWidth": 1280,
+        "message": "<img src=x onerror=alert(\"runtime\")> Read limit reached. token=<redacted>",
+        "injectedMarkup": 0,
+        "focusedElement": "SUMMARY",
+        "card": {
+          "x": 304,
+          "y": 162,
+          "width": 672,
+          "height": 80,
+          "top": 162,
+          "right": 976,
+          "bottom": 242,
+          "left": 304
+        }
+      },
+      "dialogs": [],
+      "claudeMessage": "Rate limit reached.\nTry again later. token=<redacted>"
+    },
+    {
+      "width": 390,
+      "detailOpen": true,
+      "geometry": {
+        "viewportWidth": 390,
+        "documentWidth": 390,
+        "message": "<img src=x onerror=alert(\"runtime\")> Read limit reached. token=<redacted>",
+        "injectedMarkup": 0,
+        "focusedElement": "SUMMARY",
+        "card": {
+          "x": 24,
+          "y": 240,
+          "width": 342,
+          "height": 100,
+          "top": 240,
+          "right": 366,
+          "bottom": 340,
+          "left": 24
+        }
+      },
+      "dialogs": [],
+      "claudeMessage": "Rate limit reached.\nTry again later. token=<redacted>"
+    }
+  ],
+  "browserClosed": true
+}
