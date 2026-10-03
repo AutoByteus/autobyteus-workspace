@@ -318,6 +318,33 @@ describe("ClaudeSession streaming lifecycle", () => {
     expect(session.processState).toBe("OPEN");
   });
 
+  it("reports SDK errors[] without completing the failed turn and accepts the next user turn", async () => {
+    const { session, sdkClient, start, events, methods } = createSession();
+    await start("test-owned first message");
+    sdkClient.current.init();
+    sdkClient.current.emit({
+      type: "result", subtype: "error_during_execution", session_id: RESERVED_SESSION_ID,
+      is_error: true, user_message_uuids: [sdkClient.current.sent[0]!.uuid],
+      errors: ["Workspace service unavailable.", "Try again later. token=PRIVATE_CLAUDE_SECRET"],
+      response: "PRIVATE_RESPONSE_MARKER",
+    });
+    await flushClaudeSession();
+    expect(methods()).not.toContain(ClaudeSessionEventName.TURN_COMPLETED);
+    expect(methods()).not.toContain(ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA);
+    expect(events.find((event) => event.method === ClaudeSessionEventName.ERROR)?.params).toMatchObject({
+      message: "CLAUDE_RUNTIME_RESULT_ERROR: Workspace service unavailable.\nTry again later. token=<redacted>",
+      error_scope: "turn", error_effect: "terminal",
+    });
+    expect(JSON.stringify(events)).not.toMatch(/PRIVATE_CLAUDE_SECRET|PRIVATE_RESPONSE_MARKER/);
+    expect(session.hasCompletedTurn).toBe(false);
+    expect(session.processState).toBe("OPEN");
+    await start("test-owned second message");
+    sdkClient.current.completeTurn("Retry succeeded.", [sdkClient.current.sent.at(-1)!.uuid]);
+    await flushClaudeSession();
+    expect(methods().filter((method) => method === ClaudeSessionEventName.TURN_COMPLETED)).toHaveLength(1);
+    expect(session.getStatusSnapshotSource().currentStatus).toBe("IDLE");
+  });
+
   it("enriches a failed process open with bounded redacted stderr diagnostics", async () => {
     const { start, events } = createSession({
       openStreamingSession: async (options) => {

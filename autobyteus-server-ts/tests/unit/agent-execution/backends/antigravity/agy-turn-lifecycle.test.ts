@@ -78,17 +78,23 @@ describe("AGY ordinary turn lifecycle", () => {
     expect(run.process.sent).toEqual(["first", "second"]);
   });
 
-  it("emits a fixed terminal error without a tool and lets the normal next turn start", async () => {
+  it("emits the actual terminal error without a tool and lets the normal next turn complete", async () => {
     const run = setup();
     await start(run.backend, "first");
     run.process.emit({ event: "result", result: { conversation_id: conversationId,
-      status: "ERROR", error: "token=private", response: "token=private-response" } });
+      status: "ERROR", error: "Read limit reached. token=private", response: "token=private-response" } });
     await waitFor(() => run.events.some((item) => item.eventType === AgentRunEventType.ERROR));
     expect(run.events.map((item) => item.eventType)).toEqual([AgentRunEventType.TURN_STARTED, AgentRunEventType.ERROR]);
-    expect(run.events.at(-1)?.payload).toMatchObject({ code: "AGY_TURN_ERROR", error_scope: "turn", error_effect: "terminal" });
+    expect(run.events.at(-1)?.payload).toMatchObject({ code: "AGY_TURN_ERROR", error_scope: "turn", error_effect: "terminal",
+      message: "Read limit reached. token=<redacted>" });
     expect(JSON.stringify(run.events)).not.toContain("token=private");
     expect(run.backend.getLifecycleSnapshot().phase).toBe("idle");
     expect((await start(run.backend, "second")).forwarded).toBe(true);
+    expect(run.process.sent).toEqual(["first", "second"]);
+    run.process.emit(result("SUCCESS", "Retry succeeded."));
+    await waitFor(() => run.events.some((item) => item.eventType === AgentRunEventType.TURN_COMPLETED));
+    expect(run.events.filter((item) => item.eventType === AgentRunEventType.TURN_COMPLETED)).toHaveLength(1);
+    expect(run.backend.getLifecycleSnapshot().phase).toBe("idle");
   });
 
   it("keeps process close before result safe and terminal; close after result makes the run offline", async () => {
